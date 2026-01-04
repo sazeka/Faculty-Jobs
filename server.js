@@ -12,6 +12,15 @@ const CT_URL = "https://www.ct.edu/hr/jobs";
 const CSU_URL =
   "https://csucareers.calstate.edu/en-us/filter/?=&leftNavSearchFormQuery=&=&search=&search-keyword=&job-mail-subscribe-privacy=agree&work-type=instructional%20faculty%20%e2%80%93%20tenured%2ftenure-track&category=unit%203%20-%20cfa%20-%20california%20faculty%20association&job-mail-subscribe-privacy=agree";
 
+const UMASS_AMHERST_URL =
+  "https://careers.umass.edu/amherst/en-us/filter/?job-mail-subscribe-privacy=agree&search-keyword=&work-type=faculty%20full%20time";
+const UMASS_BOSTON_URL =
+  "https://employmentopportunities.umb.edu/boston/en-us/filter/?search-keyword=&work-type=faculty%20full%20time&job-mail-subscribe-privacy=agree";
+const UMASS_DARTMOUTH_URL =
+  "https://careers.umassd.edu/en-us/filter/?search-keyword=&job-mail-subscribe-privacy=agree&work-type=faculty%20full%20time";
+const UMASS_LOWELL_URL =
+  "https://explorejobs.uml.edu/lowell/en-us/filter/?job-mail-subscribe-privacy=agree&search-keyword=&work-type=faculty%20full%20time";
+
 /* ------------------------ absolute paths ------------------------ */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,15 +73,33 @@ async function scrapeAllJobs() {
       locale: "en-US",
     });
 
-    const [cunyJobs, ctJobs, csuJobs] = await Promise.all([
+    const [
+      cunyJobs,
+      ctJobs,
+      csuJobs,
+      umassAmherst,
+      umassBoston,
+      umassDartmouth,
+      umassLowell,
+    ] = await Promise.all([
       scrapeCunyFaculty(context),
       scrapeCtFacultyTeaching(context),
       scrapeCsuFaculty(context),
+      scrapeUmassCampus(context, UMASS_AMHERST_URL, "UMass Amherst"),
+      scrapeUmassCampus(context, UMASS_BOSTON_URL, "UMass Boston"),
+      scrapeUmassCampus(context, UMASS_DARTMOUTH_URL, "UMass Dartmouth"),
+      scrapeUmassCampus(context, UMASS_LOWELL_URL, "UMass Lowell"),
     ]);
 
-    const jobs = [...cunyJobs, ...ctJobs, ...csuJobs].sort((a, b) =>
-      (a.title || "").localeCompare(b.title || "")
-    );
+    const jobs = [
+      ...cunyJobs,
+      ...ctJobs,
+      ...csuJobs,
+      ...umassAmherst,
+      ...umassBoston,
+      ...umassDartmouth,
+      ...umassLowell,
+    ].sort((a, b) => (a.title || "").localeCompare(b.title || ""));
 
     return {
       scrapedAt: new Date().toISOString(),
@@ -333,15 +360,12 @@ async function scrapeCsuFaculty(context) {
   const page = await context.newPage();
   await page.goto(CSU_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
 
-  // CSU renders results after initial HTML; wait for job links to exist
   await page.waitForSelector('a[href*="/job/"]', { timeout: 30_000 });
 
   const jobs = [];
   const seen = new Set();
 
-  // CSU paginates with: <a class="more-link button" title="More Jobs" href="...page=2...">
   for (let safety = 0; safety < 80; safety++) {
-    // Only scan job anchors
     const jobAnchors = page.locator('a[href*="/job/"]');
     const n = await jobAnchors.count();
 
@@ -358,7 +382,6 @@ async function scrapeCsuFaculty(context) {
         continue;
       }
 
-      // CSU detail URLs look like /job/<digits>/...
       let isJob = false;
       try {
         const p = new URL(abs).pathname;
@@ -377,13 +400,12 @@ async function scrapeCsuFaculty(context) {
         url: abs,
         source: "CSU",
         category: "Instructional Faculty – Tenured/Tenure-Track",
-        college: null,     // campus / organization (best-effort; filled from detail)
-        location: null,    // city/state (filled from detail)
-        description: null, // not scraped for CSU (keeps cards clean)
+        college: null,
+        location: null,
+        description: null,
       });
     }
 
-    // Next page link
     const more = page.locator('a.more-link.button[title="More Jobs"]').first();
     if ((await more.count()) === 0) break;
 
@@ -399,8 +421,7 @@ async function scrapeCsuFaculty(context) {
 
   console.log(`CSU listing scraped: ${jobs.length}`);
 
-  // Enrich CSU jobs from detail pages (college + location)
-  const detailMap = await fetchCsuDetailsFromDetails(context, jobs.map((j) => j.url), 6);
+  const detailMap = await fetchPhenomDetailsFromDetails(context, jobs.map((j) => j.url), 6);
 
   return jobs.map((j) => {
     const d = detailMap.get(j.url);
@@ -412,85 +433,102 @@ async function scrapeCsuFaculty(context) {
   });
 }
 
-async function fetchCsuDetailsFromDetails(context, urls, concurrency = 6) {
-  const out = new Map(); // url -> { college, location }
-  let idx = 0;
+/* ================================================================= */
+/* ============================== UMass ============================= */
+/* ================================================================= */
 
-  async function worker() {
-    while (idx < urls.length) {
-      const url = urls[idx++];
-      const page = await context.newPage();
-      try {
-        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
-        await page.waitForTimeout(500);
-
-        const details = await page.evaluate(() => {
-          const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-
-          const getFromDtDd = (wantedKeys) => {
-            const dts = Array.from(document.querySelectorAll("dt"));
-            for (const dt of dts) {
-              const k = clean(dt.textContent).toLowerCase();
-              if (!wantedKeys.some((w) => k.includes(w))) continue;
-              const dd = dt.nextElementSibling;
-              const v = clean(dd?.textContent);
-              if (v) return v;
-            }
-            return null;
-          };
-
-          // Location is usually explicit on CSU job pages
-          const location =
-            getFromDtDd(["work location"]) ||
-            getFromDtDd(["location"]) ||
-            getFromDtDd(["city"]) ||
-            null;
-
-          // Campus/organization
-          const college =
-            getFromDtDd(["campus"]) ||
-            getFromDtDd(["organization"]) ||
-            getFromDtDd(["department"]) ||
-            getFromDtDd(["agency"]) ||
-            null;
-
-          // JSON-LD fallback for org if dt/dd is missing
-          let orgFromLd = null;
-          if (!college) {
-            const scripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));
-            for (const s of scripts) {
-              try {
-                const j = JSON.parse(s.textContent);
-                const nodes = Array.isArray(j) ? j : (j?.["@graph"] ? j["@graph"] : [j]);
-                for (const n of nodes) {
-                  if (!n || typeof n !== "object") continue;
-                  const org = n.hiringOrganization;
-                  if (typeof org === "string") orgFromLd = clean(org);
-                  else if (org && typeof org === "object" && typeof org.name === "string") orgFromLd = clean(org.name);
-                  if (orgFromLd) break;
-                }
-              } catch {}
-              if (orgFromLd) break;
-            }
-          }
-
-          return { location, college: college || orgFromLd || null };
-        });
-
-        out.set(url, details);
-      } catch {
-        // ignore failures
-      } finally {
-        await page.close();
-      }
-    }
-  }
-
-  await Promise.all(Array.from({ length: concurrency }, () => worker()));
-  return out;
+async function scrapeUmassCampus(context, startUrl, campusName) {
+  // single source ("UMass"), campus shown as pill via `college`
+  return scrapePhenomFaculty(context, startUrl, "UMass", "Faculty – Full Time", campusName);
 }
 
+async function scrapePhenomFaculty(context, startUrl, sourceName, categoryLabel, campusName = null) {
+  const page = await context.newPage();
+  await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
 
+  await page.waitForSelector('a[href*="/job/"], a[href*="/jobs/"]', { timeout: 30_000 }).catch(() => {});
+
+  const jobs = [];
+  const seen = new Set();
+
+  for (let safety = 0; safety < 120; safety++) {
+    const anchors = page.locator('a[href*="/job/"], a[href*="/jobs/"]');
+    const n = await anchors.count();
+
+    for (let i = 0; i < n; i++) {
+      const a = anchors.nth(i);
+
+      const href = await a.getAttribute("href").catch(() => null);
+      if (!href) continue;
+
+      let abs;
+      try {
+        abs = new URL(href, page.url()).toString();
+      } catch {
+        continue;
+      }
+
+      let isJob = false;
+      try {
+        const p = new URL(abs).pathname;
+        isJob = /\/job\/\d+(\/|$)/i.test(p) || /\/jobs\/\d+(\/|$)/i.test(p);
+      } catch {}
+      if (!isJob) continue;
+
+      if (seen.has(abs)) continue;
+
+      const title = ((await a.textContent().catch(() => "")) || "").replace(/\s+/g, " ").trim();
+      if (!title || title.length < 4) continue;
+
+      seen.add(abs);
+      jobs.push({
+        title,
+        url: abs,
+        source: sourceName,            // "UMass"
+        category: categoryLabel,
+        college: campusName || null,   // "UMass Amherst" etc.
+        location: null,
+        description: null,
+      });
+    }
+
+    const more = page.locator('a.more-link.button[title="More Jobs"]').first();
+    if ((await more.count()) === 0) break;
+
+    const nextHref = await more.getAttribute("href").catch(() => null);
+    if (!nextHref) break;
+
+    const nextUrl = new URL(nextHref, page.url()).toString();
+    if (nextUrl === page.url()) break;
+
+    await page.goto(nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForSelector('a[href*="/job/"], a[href*="/jobs/"]', { timeout: 30_000 }).catch(() => {});
+  }
+
+  console.log(`${campusName || sourceName} listing scraped: ${jobs.length}`);
+
+  const detailMap = await fetchPhenomDetailsFromDetails(context, jobs.map((j) => j.url), 6);
+
+  return jobs.map((j) => {
+    const d = detailMap.get(j.url);
+
+    let college = j.college; // campus label
+    const dept = d?.college || null;
+
+    // append dept/org if present and not duplicative
+    if (college && dept && dept.toLowerCase() !== college.toLowerCase()) {
+      college = `${college} — ${dept}`;
+    } else if (!college && dept) {
+      college = dept;
+    }
+
+    return {
+      ...j,
+      college,
+      location: j.location || d?.location || null,
+    };
+  });
+}
 
 /* ================================================================= */
 /* ============================ SHARED ============================== */
@@ -531,7 +569,6 @@ async function scrapeJobDetail(context, url) {
 
       let title = text("h1") || meta("meta[property='og:title']", "content") || null;
 
-      // JSON-LD fallback for title + org
       const nodes = [];
       for (const s of Array.from(document.querySelectorAll("script[type='application/ld+json']"))) {
         try {
@@ -550,7 +587,6 @@ async function scrapeJobDetail(context, url) {
       const jp = nodes.find((n) => n && typeof n === "object" && isJobPosting(n));
       if (!title && jp && typeof jp.title === "string") title = clean(jp.title);
 
-      // College (best-effort)
       let college = null;
       const org = jp?.hiringOrganization;
       if (typeof org === "string") college = clean(org);
@@ -560,7 +596,6 @@ async function scrapeJobDetail(context, url) {
         if (first) college = clean(first);
       }
 
-      // dt/dd fallback
       if (!college) {
         const dts = Array.from(document.querySelectorAll("dt"));
         const hit = dts.find((dt) => {
@@ -575,7 +610,6 @@ async function scrapeJobDetail(context, url) {
         }
       }
 
-      // Description
       const paras = Array.from(document.querySelectorAll("p"))
         .map((p) => clean(p.textContent))
         .filter((t) => t.length > 40);
@@ -585,7 +619,6 @@ async function scrapeJobDetail(context, url) {
         paras.find((t) => !t.toLowerCase().includes("reasonable accommodation")) ||
         null;
 
-      // Clean college: drop system-only
       if (college) {
         const low = college.toLowerCase();
         if (low === "cuny" || low === "the city university of new york") college = null;
@@ -607,4 +640,81 @@ async function scrapeJobDetail(context, url) {
   } finally {
     await page.close();
   }
+}
+
+// Shared detail enricher for CSU + UMass (Phenom-style job pages)
+async function fetchPhenomDetailsFromDetails(context, urls, concurrency = 6) {
+  const out = new Map(); // url -> { college, location }
+  let idx = 0;
+
+  async function worker() {
+    while (idx < urls.length) {
+      const url = urls[idx++];
+      const page = await context.newPage();
+      try {
+        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await page.waitForTimeout(450);
+
+        const details = await page.evaluate(() => {
+          const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+
+          const getFromDtDd = (wantedKeys) => {
+            const dts = Array.from(document.querySelectorAll("dt"));
+            for (const dt of dts) {
+              const k = clean(dt.textContent).toLowerCase();
+              if (!wantedKeys.some((w) => k.includes(w))) continue;
+              const dd = dt.nextElementSibling;
+              const v = clean(dd?.textContent);
+              if (v) return v;
+            }
+            return null;
+          };
+
+          const location =
+            getFromDtDd(["work location"]) ||
+            getFromDtDd(["job location"]) ||
+            getFromDtDd(["location"]) ||
+            getFromDtDd(["city"]) ||
+            null;
+
+          const college =
+            getFromDtDd(["department"]) ||
+            getFromDtDd(["organization"]) ||
+            getFromDtDd(["campus"]) ||
+            getFromDtDd(["agency"]) ||
+            null;
+
+          let orgFromLd = null;
+          if (!college) {
+            const scripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));
+            for (const s of scripts) {
+              try {
+                const j = JSON.parse(s.textContent);
+                const nodes = Array.isArray(j) ? j : (j?.["@graph"] ? j["@graph"] : [j]);
+                for (const n of nodes) {
+                  if (!n || typeof n !== "object") continue;
+                  const org = n.hiringOrganization;
+                  if (typeof org === "string") orgFromLd = clean(org);
+                  else if (org && typeof org === "object" && typeof org.name === "string") orgFromLd = clean(org.name);
+                  if (orgFromLd) break;
+                }
+              } catch {}
+              if (orgFromLd) break;
+            }
+          }
+
+          return { location, college: college || orgFromLd || null };
+        });
+
+        out.set(url, details);
+      } catch {
+        // ignore failures
+      } finally {
+        await page.close();
+      }
+    }
+  }
+
+  await Promise.all(Array.from({ length: concurrency }, () => worker()));
+  return out;
 }
