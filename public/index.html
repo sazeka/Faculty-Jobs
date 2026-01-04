@@ -74,13 +74,14 @@
       let allJobs = [];
 
       // ---------------- API base ----------------
+      // Default points to your Render deployment, so this works on GitHub Pages too.
       const DEFAULT_API_BASE = "https://faculty-jobs.onrender.com";
 
       function getApiBase() {
-        return (localStorage.getItem("apiBase") || DEFAULT_API_BASE).replace(/\/+$/, "");
+        return (localStorage.getItem("apiBase") || DEFAULT_API_BASE).trim().replace(/\/+$/, "");
       }
       function setApiBase(v) {
-        localStorage.setItem("apiBase", (v || "").replace(/\/+$/, ""));
+        localStorage.setItem("apiBase", (v || "").trim().replace(/\/+$/, ""));
       }
       function apiUrl(path) {
         return getApiBase() + path;
@@ -88,13 +89,10 @@
 
       settingsBtn.addEventListener("click", () => {
         const current = getApiBase();
-        const v = prompt(
-          "Enter API base URL:",
-          current
-        );
+        const v = prompt("Enter API base URL (Render/Fly/etc):", current);
         if (v === null) return;
         setApiBase(v);
-        load({ refresh: false });
+        load({ refresh: false }).catch(err => (statusEl.textContent = "Failed to load: " + err.message));
       });
 
       // ---------------- helpers ----------------
@@ -137,6 +135,7 @@
           pills.className = "pills";
           const seen = new Set();
 
+          // Hide source pill for CT (college pill already contains CT State <Campus>)
           if (job.source && job.source !== "CT State") addPill(pills, job.source, seen);
           if (job.category) addPill(pills, job.category, seen);
           if (job.college && job.college !== job.source) addPill(pills, job.college, seen);
@@ -153,13 +152,13 @@
           links.className = "links";
           links.innerHTML = `<a href="${escapeHtml(job.url)}" target="_blank" rel="noreferrer">View job</a>`;
 
-          card.append(title);
-          if (pills.childNodes.length) card.append(pills);
-          if (job.location) card.append(meta);
-          if (job.description) card.append(desc);
-          card.append(links);
+          card.appendChild(title);
+          if (pills.childNodes.length) card.appendChild(pills);
+          if (job.location) card.appendChild(meta);
+          if (job.description) card.appendChild(desc);
+          card.appendChild(links);
 
-          grid.append(card);
+          grid.appendChild(card);
         }
 
         shownEl.textContent = `${jobs.length} shown`;
@@ -170,12 +169,14 @@
         const src = sourceSel.value;
 
         let filtered = allJobs;
-        if (src !== "all") filtered = filtered.filter(j => j.source === src);
+
+        if (src !== "all") filtered = filtered.filter(j => (j.source || "") === src);
 
         if (term) {
           filtered = filtered.filter(j => {
-            const hay = [j.title, j.description, j.source, j.category, j.college, j.location]
-              .filter(Boolean).join(" ").toLowerCase();
+            const hay = [
+              j.title, j.description, j.source, j.category, j.college, j.location
+            ].filter(Boolean).join(" ").toLowerCase();
             return hay.includes(term);
           });
         }
@@ -183,23 +184,55 @@
         render(filtered);
       }
 
-      async function load({ refresh = false } = {}) {
+      // ---------------- fetch with cold-start retry + HTML guard ----------------
+      async function load({ refresh = false, retry = true } = {}) {
         statusEl.textContent = "Fetching jobs…";
+        shownEl.textContent = "";
         grid.innerHTML = "";
 
         const url = refresh ? apiUrl("/api/jobs?refresh=1") : apiUrl("/api/jobs");
-        const r = await fetch(url);
-        const data = await r.json();
+
+        let r;
+        try {
+          r = await fetch(url, { cache: "no-store" });
+        } catch (err) {
+          statusEl.textContent = "Network error: " + err.message;
+          return;
+        }
+
+        const ct = (r.headers.get("content-type") || "").toLowerCase();
+        const text = await r.text();
+
+        // Render cold start often returns HTML while waking up
+        if (!ct.includes("application/json")) {
+          if (retry) {
+            statusEl.textContent = "Waking up server… retrying";
+            setTimeout(() => load({ refresh, retry: false }), 4000);
+            return;
+          }
+          statusEl.textContent = `Server not ready — got ${ct || "unknown content-type"}`;
+          return;
+        }
+
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          statusEl.textContent = "Bad JSON from server";
+          return;
+        }
 
         if (data.error) {
-          statusEl.textContent = "Error: " + data.error;
+          statusEl.textContent = `Error: ${data.error} — ${data.details || ""}`;
           return;
         }
 
         allJobs = Array.isArray(data.jobs) ? data.jobs : [];
 
+        const where = `API: ${getApiBase()}`;
+
         subhead.textContent =
-          `${allJobs.length} jobs • ${new Date(data.scrapedAt).toLocaleString()} • ${data.cached ? "cache" : "fresh"}`;
+          `${allJobs.length} jobs • ${new Date(data.scrapedAt).toLocaleString()} • ${data.cached ? "cache" : "fresh"} • ${where}`;
 
         statusEl.textContent = "Ready";
         applyFilters();
