@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Faculty Jobs (CUNY + CT + CSU + UMass)</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; background: #fafafa; }
+      header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+      .muted { color: #666; font-size: 14px; }
+      .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+      input, select { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; min-width: 240px; background: white; }
+      select { min-width: 220px; }
+      button { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; background: white; cursor: pointer; }
+      button:hover { background: #f2f2f2; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+      .card { background: white; border: 1px solid #e8e8e8; border-radius: 14px; padding: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; }
+      .title { font-weight: 650; line-height: 1.2; }
+      .desc { color: #444; font-size: 14px; line-height: 1.35; }
+      .links { display: flex; gap: 10px; margin-top: 6px; }
+      a { color: #0b57d0; text-decoration: none; font-size: 14px; }
+      a:hover { text-decoration: underline; }
+      .pills { display: flex; gap: 6px; flex-wrap: wrap; }
+      .pill { display: inline-block; font-size: 12px; padding: 2px 8px; border: 1px solid #e2e2e2; border-radius: 999px; background: #fff; color: #555; width: fit-content; }
+      .status { margin: 10px 0 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      .count { font-weight: 600; color: #333; }
+      .meta { color: #666; font-size: 13px; line-height: 1.25; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <div style="font-size: 20px; font-weight: 700;">Faculty Jobs</div>
+        <div class="muted" id="subhead">Loading…</div>
+      </div>
+
+      <div class="controls">
+        <input id="q" placeholder="Search title / description / college / location…" />
+        <select id="source">
+        <option value="all">All sources</option>
+        <option value="CUNY">CUNY</option>
+        <option value="CT State">CT State</option>
+        <option value="CSU">CSU</option>
+        <option value="UMass">UMass</option>
+        </select>
+        <button id="refresh">Refresh</button>
+      </div>
+    </header>
+
+    <div class="status">
+      <span class="muted" id="status">—</span>
+      <span class="count" id="shown"></span>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <script>
+      const grid = document.getElementById("grid");
+      const statusEl = document.getElementById("status");
+      const subhead = document.getElementById("subhead");
+      const shownEl = document.getElementById("shown");
+      const q = document.getElementById("q");
+      const sourceSel = document.getElementById("source");
+      const refreshBtn = document.getElementById("refresh");
+
+      let allJobs = [];
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+        }[c]));
+      }
+
+      function truncate(s, n) {
+        s = String(s);
+        return s.length > n ? s.slice(0, n - 1) + "…" : s;
+      }
+
+      function addPill(pillsEl, text, seen) {
+        const t = (text || "").trim();
+        if (!t) return;
+        const key = t.toLowerCase();
+        if (seen.has(key)) return;
+        seen.add(key);
+
+        const p = document.createElement("span");
+        p.className = "pill";
+        p.textContent = t;
+        pillsEl.appendChild(p);
+      }
+
+      function render(jobs) {
+        grid.innerHTML = "";
+
+        for (const job of jobs) {
+          const card = document.createElement("div");
+          card.className = "card";
+
+          const title = document.createElement("div");
+          title.className = "title";
+          title.textContent = job.title || "(No title)";
+
+          const pills = document.createElement("div");
+          pills.className = "pills";
+          const seen = new Set();
+
+          // Hide source pill for CT (college pill already contains CT State <Campus>)
+          if (job.source && job.source !== "CT State") addPill(pills, job.source, seen);
+
+          if (job.category) addPill(pills, job.category, seen);
+
+          if (job.college && job.college !== job.source) addPill(pills, job.college, seen);
+
+          const meta = document.createElement("div");
+          meta.className = "meta";
+          const parts = [];
+          if (job.location) parts.push(job.location);
+          if (parts.length) meta.textContent = parts.join(" • ");
+
+          const desc = document.createElement("div");
+          desc.className = "desc";
+          desc.textContent = job.description ? truncate(job.description, 240) : "";
+
+          const links = document.createElement("div");
+          links.className = "links";
+          links.innerHTML = `<a href="${escapeHtml(job.url)}" target="_blank" rel="noreferrer">View job</a>`;
+
+          card.appendChild(title);
+          if (pills.childNodes.length) card.appendChild(pills);
+          if (parts.length) card.appendChild(meta);
+          if (job.description) card.appendChild(desc);
+          card.appendChild(links);
+
+          grid.appendChild(card);
+        }
+
+        shownEl.textContent = `${jobs.length} shown`;
+      }
+
+      function applyFilters() {
+        const term = q.value.trim().toLowerCase();
+        const src = sourceSel.value;
+
+        let filtered = allJobs;
+
+        if (src !== "all") filtered = filtered.filter(j => (j.source || "") === src);
+
+        if (term) {
+          filtered = filtered.filter(j => {
+            const hay = [
+              j.title, j.description, j.source, j.category, j.college, j.location
+            ].filter(Boolean).join(" ").toLowerCase();
+            return hay.includes(term);
+          });
+        }
+
+        render(filtered);
+      }
+
+      async function load({ refresh = false } = {}) {
+        statusEl.textContent = "Fetching jobs…";
+        shownEl.textContent = "";
+        grid.innerHTML = "";
+
+        const url = refresh ? "/api/jobs?refresh=1" : "/api/jobs";
+        const r = await fetch(url);
+        const data = await r.json();
+
+        if (data.error) {
+          statusEl.textContent = `Error: ${data.error} — ${data.details || ""}`;
+          return;
+        }
+
+        allJobs = Array.isArray(data.jobs) ? data.jobs : [];
+
+        subhead.textContent =
+          `${allJobs.length} jobs • ${new Date(data.scrapedAt).toLocaleString()} • ${data.cached ? "cache" : "fresh"}`;
+
+        statusEl.textContent = "Ready";
+        applyFilters();
+      }
+
+      q.addEventListener("input", applyFilters);
+      sourceSel.addEventListener("change", applyFilters);
+      refreshBtn.addEventListener("click", () => load({ refresh: true }));
+
+      load().catch(err => {
+        statusEl.textContent = "Failed to load: " + err.message;
+      });
+    </script>
+  </body>
+</html>
