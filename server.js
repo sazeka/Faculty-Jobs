@@ -82,7 +82,7 @@ app.get("/api/jobs", async (req, res) => {
       return res.json({ cached: true, ...cache.data });
     }
 
-    const data = await scrapeAllJobs();
+    const data = await scrapeAllJobsStandalone();
     cache = { at: Date.now(), data };
     res.json({ cached: false, ...data });
   } catch (err) {
@@ -103,8 +103,8 @@ app.listen(PORT, () => {
 /* ============================ SCRAPE ============================== */
 /* ================================================================= */
 
-async function scrapeAllJobs() {
-  const browser = await chromium.launch({ headless: true });
+export async function scrapeAllJobsStandalone() {
+    const browser = await chromium.launch({ headless: true });
 
   try {
     const context = await browser.newContext({
