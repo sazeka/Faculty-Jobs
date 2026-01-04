@@ -1,11 +1,13 @@
 {
-  "name": "cuny-faculty-scraper",
+  "name": "faculty-jobs",
   "version": "1.0.0",
-  "type": "module",
   "private": true,
+  "type": "module",
+  "description": "Faculty job scraper with static GitHub Pages frontend and automated daily updates",
   "scripts": {
     "start": "node server.js",
-    "install:browsers": "playwright install chromium"
+    "install:browsers": "playwright install chromium",
+    "scrape:json": "node scripts/scrape-to-json.js"
   },
   "dependencies": {
     "express": "^4.19.2",

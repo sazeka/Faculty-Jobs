@@ -1,0 +1,51 @@
+name: Daily scrape
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 08:15 America/Los_Angeles (winter) ≈ 16:15 UTC
+    - cron: "15 16 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-scrape
+  cancel-in-progress: true
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install Playwright Chromium (with deps)
+        run: npx playwright install --with-deps chromium
+
+      - name: Run scraper (write docs/jobs.json)
+        run: npm run scrape:json
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add docs/jobs.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Daily update jobs.json"
+          git push

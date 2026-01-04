@@ -26,7 +26,6 @@
       .count { font-weight: 600; color: #333; }
       .meta { color: #666; font-size: 13px; line-height: 1.25; }
       .hint { font-size: 12px; color: #777; margin-top: -6px; }
-      .smallbtn { padding: 8px 10px; border-radius: 10px; }
     </style>
   </head>
   <body>
@@ -34,7 +33,7 @@
       <div>
         <div style="font-size: 20px; font-weight: 700;">Faculty Jobs</div>
         <div class="muted" id="subhead">Loading…</div>
-        <div class="hint">Powered by faculty-jobs.onrender.com</div>
+        <div class="hint">Auto-updated daily via GitHub Actions</div>
       </div>
 
       <div class="controls">
@@ -48,9 +47,7 @@
           <option value="UC">UC</option>
           <option value="NJ">NJ</option>
         </select>
-
-        <button id="refresh">Refresh</button>
-        <button class="smallbtn" id="settings">API Settings</button>
+        <button id="reload">Reload</button>
       </div>
     </header>
 
@@ -68,34 +65,10 @@
       const shownEl = document.getElementById("shown");
       const q = document.getElementById("q");
       const sourceSel = document.getElementById("source");
-      const refreshBtn = document.getElementById("refresh");
-      const settingsBtn = document.getElementById("settings");
+      const reloadBtn = document.getElementById("reload");
 
       let allJobs = [];
 
-      // ---------------- API base ----------------
-      // Default points to your Render deployment, so this works on GitHub Pages too.
-      const DEFAULT_API_BASE = "https://faculty-jobs.onrender.com";
-
-      function getApiBase() {
-        return (localStorage.getItem("apiBase") || DEFAULT_API_BASE).trim().replace(/\/+$/, "");
-      }
-      function setApiBase(v) {
-        localStorage.setItem("apiBase", (v || "").trim().replace(/\/+$/, ""));
-      }
-      function apiUrl(path) {
-        return getApiBase() + path;
-      }
-
-      settingsBtn.addEventListener("click", () => {
-        const current = getApiBase();
-        const v = prompt("Enter API base URL (Render/Fly/etc):", current);
-        if (v === null) return;
-        setApiBase(v);
-        load({ refresh: false }).catch(err => (statusEl.textContent = "Failed to load: " + err.message));
-      });
-
-      // ---------------- helpers ----------------
       function escapeHtml(s) {
         return String(s).replace(/[&<>"']/g, c => ({
           "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
@@ -135,7 +108,6 @@
           pills.className = "pills";
           const seen = new Set();
 
-          // Hide source pill for CT (college pill already contains CT State <Campus>)
           if (job.source && job.source !== "CT State") addPill(pills, job.source, seen);
           if (job.category) addPill(pills, job.category, seen);
           if (job.college && job.college !== job.source) addPill(pills, job.college, seen);
@@ -169,14 +141,12 @@
         const src = sourceSel.value;
 
         let filtered = allJobs;
-
         if (src !== "all") filtered = filtered.filter(j => (j.source || "") === src);
 
         if (term) {
           filtered = filtered.filter(j => {
-            const hay = [
-              j.title, j.description, j.source, j.category, j.college, j.location
-            ].filter(Boolean).join(" ").toLowerCase();
+            const hay = [j.title, j.description, j.source, j.category, j.college, j.location]
+              .filter(Boolean).join(" ").toLowerCase();
             return hay.includes(term);
           });
         }
@@ -184,67 +154,41 @@
         render(filtered);
       }
 
-      // ---------------- fetch with cold-start retry + HTML guard ----------------
-      async function load({ refresh = false, retry = true } = {}) {
-        statusEl.textContent = "Fetching jobs…";
+      async function load() {
+        statusEl.textContent = "Loading jobs.json…";
         shownEl.textContent = "";
         grid.innerHTML = "";
 
-        const url = refresh ? apiUrl("/api/jobs?refresh=1") : apiUrl("/api/jobs");
-
-        let r;
-        try {
-          r = await fetch(url, { cache: "no-store" });
-        } catch (err) {
-          statusEl.textContent = "Network error: " + err.message;
-          return;
-        }
+        // cache-bust so you see fresh commits quickly
+        const r = await fetch(`./jobs.json?ts=${Date.now()}`, { cache: "no-store" });
 
         const ct = (r.headers.get("content-type") || "").toLowerCase();
         const text = await r.text();
 
-        // Render cold start often returns HTML while waking up
+        if (!r.ok) {
+          statusEl.textContent = `HTTP ${r.status} — ${text.slice(0, 140)}`;
+          return;
+        }
         if (!ct.includes("application/json")) {
-          if (retry) {
-            statusEl.textContent = "Waking up server… retrying";
-            setTimeout(() => load({ refresh, retry: false }), 4000);
-            return;
-          }
-          statusEl.textContent = `Server not ready — got ${ct || "unknown content-type"}`;
+          statusEl.textContent = `Expected JSON, got ${ct || "unknown"} — ${text.slice(0, 140)}`;
           return;
         }
 
         let data;
-        try {
-          data = JSON.parse(text);
-        } catch {
-          statusEl.textContent = "Bad JSON from server";
-          return;
-        }
-
-        if (data.error) {
-          statusEl.textContent = `Error: ${data.error} — ${data.details || ""}`;
-          return;
-        }
+        try { data = JSON.parse(text); }
+        catch { statusEl.textContent = "Bad jobs.json"; return; }
 
         allJobs = Array.isArray(data.jobs) ? data.jobs : [];
-
-        const where = `API: ${getApiBase()}`;
-
-        subhead.textContent =
-          `${allJobs.length} jobs • ${new Date(data.scrapedAt).toLocaleString()} • ${data.cached ? "cache" : "fresh"} • ${where}`;
-
+        subhead.textContent = `${allJobs.length} jobs • ${new Date(data.scrapedAt).toLocaleString()} • static JSON`;
         statusEl.textContent = "Ready";
         applyFilters();
       }
 
       q.addEventListener("input", applyFilters);
       sourceSel.addEventListener("change", applyFilters);
-      refreshBtn.addEventListener("click", () => load({ refresh: true }));
+      reloadBtn.addEventListener("click", load);
 
-      load().catch(err => {
-        statusEl.textContent = "Failed to load: " + err.message;
-      });
+      load().catch(err => (statusEl.textContent = "Failed to load: " + err.message));
     </script>
   </body>
 </html>
