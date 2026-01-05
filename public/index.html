@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Faculty Jobs</title>
+    <title>Faculty Jobs (Static)</title>
     <style>
       body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; background: #fafafa; }
       header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
       .muted { color: #666; font-size: 14px; }
       .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
       input, select { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; min-width: 240px; background: white; }
-      select { min-width: 180px; }
+      select { min-width: 200px; }
       button { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; background: white; cursor: pointer; }
       button:hover { background: #f2f2f2; }
       .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
@@ -25,7 +25,11 @@
       .status { margin: 10px 0 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
       .count { font-weight: 600; color: #333; }
       .meta { color: #666; font-size: 13px; line-height: 1.25; }
-      .hint { font-size: 12px; color: #777; margin-top: -6px; }
+
+      .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+      .smallBtn { padding: 10px 12px; min-width: auto; }
+
+      .warn { color: #8a5a00; }
     </style>
   </head>
   <body>
@@ -33,7 +37,6 @@
       <div>
         <div style="font-size: 20px; font-weight: 700;">Faculty Jobs</div>
         <div class="muted" id="subhead">Loading…</div>
-        <div class="hint">Auto-updated daily via GitHub Actions</div>
       </div>
 
       <div class="controls">
@@ -46,8 +49,9 @@
           <option value="UMass">UMass</option>
           <option value="UC">UC</option>
           <option value="NJ">NJ</option>
+          <option value="Claremont Colleges">Claremont Colleges</option>
         </select>
-        <button id="reload">Reload</button>
+        <button id="refresh" class="smallBtn" title="Reload jobs.json">Reload</button>
       </div>
     </header>
 
@@ -65,9 +69,10 @@
       const shownEl = document.getElementById("shown");
       const q = document.getElementById("q");
       const sourceSel = document.getElementById("source");
-      const reloadBtn = document.getElementById("reload");
+      const refreshBtn = document.getElementById("refresh");
 
       let allJobs = [];
+      let meta = { scrapedAt: null, count: 0 };
 
       function escapeHtml(s) {
         return String(s).replace(/[&<>"']/g, c => ({
@@ -80,6 +85,7 @@
         return s.length > n ? s.slice(0, n - 1) + "…" : s;
       }
 
+      // Dedup pills
       function addPill(pillsEl, text, seen) {
         const t = (text || "").trim();
         if (!t) return;
@@ -93,10 +99,24 @@
         pillsEl.appendChild(p);
       }
 
+      function normalizeJob(j) {
+        return {
+          title: j?.title ?? "(No title)",
+          description: j?.description ?? null,
+          url: j?.url ?? "#",
+          source: j?.source ?? null,
+          category: j?.category ?? null,
+          college: j?.college ?? null,
+          location: j?.location ?? null,
+        };
+      }
+
       function render(jobs) {
         grid.innerHTML = "";
 
-        for (const job of jobs) {
+        for (const raw of jobs) {
+          const job = normalizeJob(raw);
+
           const card = document.createElement("div");
           card.className = "card";
 
@@ -108,17 +128,25 @@
           pills.className = "pills";
           const seen = new Set();
 
+          // Hide source pill for CT (college pill already contains CT State <Campus>)
           if (job.source && job.source !== "CT State") addPill(pills, job.source, seen);
+
+          // Category pill
           if (job.category) addPill(pills, job.category, seen);
+
+          // College/campus chip
           if (job.college && job.college !== job.source) addPill(pills, job.college, seen);
 
-          const meta = document.createElement("div");
-          meta.className = "meta";
-          if (job.location) meta.textContent = job.location;
+          // Location meta line
+          const metaLine = document.createElement("div");
+          metaLine.className = "meta";
+          const parts = [];
+          if (job.location) parts.push(job.location);
+          if (parts.length) metaLine.textContent = parts.join(" • ");
 
           const desc = document.createElement("div");
           desc.className = "desc";
-          if (job.description) desc.textContent = truncate(job.description, 240);
+          desc.textContent = job.description ? truncate(job.description, 240) : "";
 
           const links = document.createElement("div");
           links.className = "links";
@@ -126,7 +154,7 @@
 
           card.appendChild(title);
           if (pills.childNodes.length) card.appendChild(pills);
-          if (job.location) card.appendChild(meta);
+          if (parts.length) card.appendChild(metaLine);
           if (job.description) card.appendChild(desc);
           card.appendChild(links);
 
@@ -141,12 +169,14 @@
         const src = sourceSel.value;
 
         let filtered = allJobs;
+
         if (src !== "all") filtered = filtered.filter(j => (j.source || "") === src);
 
         if (term) {
           filtered = filtered.filter(j => {
-            const hay = [j.title, j.description, j.source, j.category, j.college, j.location]
-              .filter(Boolean).join(" ").toLowerCase();
+            const hay = [
+              j.title, j.description, j.source, j.category, j.college, j.location
+            ].filter(Boolean).join(" ").toLowerCase();
             return hay.includes(term);
           });
         }
@@ -155,40 +185,47 @@
       }
 
       async function load() {
-        statusEl.textContent = "Loading jobs.json…";
+        statusEl.textContent = "Fetching jobs…";
+        statusEl.className = "muted";
         shownEl.textContent = "";
         grid.innerHTML = "";
 
-        // cache-bust so you see fresh commits quickly
-        const r = await fetch(`./jobs.json?ts=${Date.now()}`, { cache: "no-store" });
+        // Static site: jobs.json sits next to this HTML in /docs
+        // Cache-bust so Reload works immediately after Actions updates
+        const url = `./jobs.json?ts=${Date.now()}`;
 
-        const ct = (r.headers.get("content-type") || "").toLowerCase();
-        const text = await r.text();
-
+        const r = await fetch(url, { cache: "no-store" });
         if (!r.ok) {
-          statusEl.textContent = `HTTP ${r.status} — ${text.slice(0, 140)}`;
-          return;
-        }
-        if (!ct.includes("application/json")) {
-          statusEl.textContent = `Expected JSON, got ${ct || "unknown"} — ${text.slice(0, 140)}`;
+          const txt = await r.text().catch(() => "");
+          statusEl.textContent = `Failed to load jobs.json (${r.status}).`;
+          statusEl.className = "muted warn";
+          subhead.textContent = "No data loaded";
+          console.error("jobs.json fetch failed:", r.status, txt.slice(0, 200));
           return;
         }
 
-        let data;
-        try { data = JSON.parse(text); }
-        catch { statusEl.textContent = "Bad jobs.json"; return; }
+        const data = await r.json();
 
         allJobs = Array.isArray(data.jobs) ? data.jobs : [];
-        subhead.textContent = `${allJobs.length} jobs • ${new Date(data.scrapedAt).toLocaleString()} • static JSON`;
+        meta.scrapedAt = data.scrapedAt || null;
+        meta.count = data.count || allJobs.length;
+
+        const when = meta.scrapedAt ? new Date(meta.scrapedAt).toLocaleString() : "unknown time";
+        subhead.textContent = `${allJobs.length} jobs • ${when} • static JSON`;
+
         statusEl.textContent = "Ready";
+        statusEl.className = "muted";
         applyFilters();
       }
 
       q.addEventListener("input", applyFilters);
       sourceSel.addEventListener("change", applyFilters);
-      reloadBtn.addEventListener("click", load);
+      refreshBtn.addEventListener("click", load);
 
-      load().catch(err => (statusEl.textContent = "Failed to load: " + err.message));
+      load().catch(err => {
+        statusEl.textContent = "Failed to load: " + err.message;
+        statusEl.className = "muted warn";
+      });
     </script>
   </body>
 </html>
