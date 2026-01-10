@@ -1,7 +1,7 @@
 // server.js
 // One-file scraper + optional local API server.
-// Designed for GitHub Actions (Option B) by exporting scrapeAllJobsStandalone()
-// and ONLY starting Express when run directly: `node server.js`
+// Exports scrapeAllJobsStandalone() for GitHub Actions.
+// Starts Express only when run directly: `node server.js`
 
 import express from "express";
 import fs from "fs";
@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 const CUNY_URL = "https://cuny.jobs/job-category/faculty/jobs/";
 const CT_URL = "https://www.ct.edu/hr/jobs";
+
 const CSU_URL =
   "https://csucareers.calstate.edu/en-us/filter/?=&leftNavSearchFormQuery=&=&search=&search-keyword=&job-mail-subscribe-privacy=agree&work-type=instructional%20faculty%20%e2%80%93%20tenured%2ftenure-track&category=unit%203%20-%20cfa%20-%20california%20faculty%20association&job-mail-subscribe-privacy=agree";
 
@@ -53,25 +54,135 @@ const UC_CAMPUSES = [
 
 // NJ (multi-platform)
 const NJ_CAMPUSES = [
-  { campus: "The College of New Jersey", type: "taleo", url: "https://tcnj.taleo.net/careersection/00_ex_faculty/jobsearch.ftl?lang=en" },
-  { campus: "Kean University", type: "workday", url: "https://kean.wd503.myworkdayjobs.com/Kean?jobFamilyGroup=367abbb2b3b80136908699f7a90d56ac" },
-  { campus: "Montclair State University", type: "workday", url: "https://montclair.wd1.myworkdayjobs.com/JobOpportunities?jobFamilyGroup=0c89f3515631109bdddc974975dae955" },
-  { campus: "Rutgers, The State University of New Jersey", type: "rutgers", url: "https://jobs.rutgers.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&225=&query_position_type_id%5B%5D=6&2182%5B%5D=3&commit=Search" },
-  { campus: "New Jersey City University", type: "taleo", url: "https://phe.tbe.taleo.net/phe03/ats/careers/v2/searchResults?org=NJCU&cws=41" },
-  { campus: "New Jersey Institute of Technology", type: "csod", url: "https://njit.csod.com/ux/ats/careersite/1/home?c=njit&cfdd[0][id]=71&cfdd[0][options][0]=35" },
-  { campus: "Ramapo College of New Jersey", type: "schooljobs", url: "https://www.schooljobs.com/careers/ramapo?keywords=faculty" },
-  { campus: "Stockton University", type: "stockton", url: "https://employment.stockton.edu/jobs/search?page=1&employment_type_uids%5B%5D=fbab94e63ae2bac64f314b271869e32d&query=" },
-  { campus: "William Paterson University", type: "workday", url: "https://wpunj.wd1.myworkdayjobs.com/ext?jobFamilyGroup=beb7f5bb680310016e27a7df06100000" },
+  {
+    campus: "The College of New Jersey",
+    type: "taleo",
+    url: "https://tcnj.taleo.net/careersection/00_ex_faculty/jobsearch.ftl?lang=en",
+  },
+  {
+    campus: "Kean University",
+    type: "workday",
+    url: "https://kean.wd503.myworkdayjobs.com/Kean?jobFamilyGroup=367abbb2b3b80136908699f7a90d56ac",
+  },
+  {
+    campus: "Montclair State University",
+    type: "workday",
+    url: "https://montclair.wd1.myworkdayjobs.com/JobOpportunities?jobFamilyGroup=0c89f3515631109bdddc974975dae955",
+  },
+  {
+    campus: "Rutgers, The State University of New Jersey",
+    type: "rutgers",
+    url: "https://jobs.rutgers.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&225=&query_position_type_id%5B%5D=6&2182%5B%5D=3&commit=Search",
+  },
+  {
+    campus: "New Jersey City University",
+    type: "taleo",
+    url: "https://phe.tbe.taleo.net/phe03/ats/careers/v2/searchResults?org=NJCU&cws=41",
+  },
+  {
+    campus: "New Jersey Institute of Technology",
+    type: "csod",
+    url: "https://njit.csod.com/ux/ats/careersite/1/home?c=njit&cfdd[0][id]=71&cfdd[0][options][0]=35",
+  },
+  {
+    campus: "Ramapo College of New Jersey",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/ramapo?keywords=faculty",
+  },
+  {
+    campus: "Stockton University",
+    type: "stockton",
+    url: "https://employment.stockton.edu/jobs/search?page=1&employment_type_uids%5B%5D=fbab94e63ae2bac64f314b271869e32d&query=",
+  },
+  {
+    campus: "William Paterson University",
+    type: "workday",
+    url: "https://wpunj.wd1.myworkdayjobs.com/ext?jobFamilyGroup=beb7f5bb680310016e27a7df06100000",
+  },
 ];
 
 // Claremont Colleges
 const CLAREMONT_CAMPUSES = [
-  { campus: "Pomona College", type: "static", url: "https://www.pomona.edu/administration/academic-dean/general/faculty-jobs" },
-  { campus: "Claremont Graduate University", type: "static", url: "https://www.cgu.edu/employment-opportunities/faculty-jobs/" },
+  {
+    campus: "Pomona College",
+    type: "static",
+    url: "https://www.pomona.edu/administration/academic-dean/general/faculty-jobs",
+  },
+  {
+    campus: "Claremont Graduate University",
+    type: "static",
+    url: "https://www.cgu.edu/employment-opportunities/faculty-jobs/",
+  },
   { campus: "Scripps College", type: "static", url: "https://www.scrippscollege.edu/hr/faculty" },
-  { campus: "Claremont McKenna College", type: "cmc", url: "https://webapps.cmc.edu/jobs/faculty/faculty_opening.php" },
-  { campus: "Harvey Mudd College", type: "static", url: "https://www.hmc.edu/dean-of-faculty/available-faculty-positions/" },
-  { campus: "Keck Graduate Institute", type: "workday", url: "https://theclaremontcolleges.wd1.myworkdayjobs.com/en-US/KGI_Careers?jobFamilyGroup=c556221e536801fcd7010014ef742f7a&timeType=9df8dc300a421048ab2494d9bae91551" },
+  {
+    campus: "Claremont McKenna College",
+    type: "cmc",
+    url: "https://webapps.cmc.edu/jobs/faculty/faculty_opening.php",
+  },
+  {
+    campus: "Harvey Mudd College",
+    type: "static",
+    url: "https://www.hmc.edu/dean-of-faculty/available-faculty-positions/",
+  },
+  {
+    campus: "Keck Graduate Institute",
+    type: "workday",
+    url: "https://theclaremontcolleges.wd1.myworkdayjobs.com/en-US/KGI_Careers?jobFamilyGroup=c556221e536801fcd7010014ef742f7a&timeType=9df8dc300a421048ab2494d9bae91551",
+  },
+];
+
+// PA (multi-platform)
+const PA_CAMPUSES = [
+  {
+    campus: "Cheyney University",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/cheyneyedu?category[0]=Faculty&jobType[0]=Full-Time&sort=PositionTitle%7CAscending",
+  },
+  {
+    campus: "Commonwealth University",
+    type: "peopleadmin",
+    url: "https://commonwealthu.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1846%5B%5D=2&435=&commit=Search",
+  },
+  {
+    campus: "East Stroudsburg University",
+    type: "csod",
+    url: "https://esu.csod.com/ats/careersite/search.aspx?site=1&c=esu",
+  },
+  {
+    campus: "Kutztown University",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/kutztownedu/promotionaljobs?jobType[0]=Tenure%20Track&sort=PostingDate%7CDescending",
+  },
+  {
+    campus: "Millersville University",
+    type: "peopleadmin",
+    url: "https://jobs.millersville.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_organizational_tier_3_id=any&577=7&commit=Search",
+  },
+  {
+    campus: "PennWest",
+    type: "peopleadmin",
+    url: "https://pennwest.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&query_position_type_id%5B%5D=8&commit=Search",
+  },
+  {
+    campus: "Shippensburg University",
+    type: "peopleadmin",
+    url: "https://jobs.ship.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=2&commit=Search",
+  },
+  {
+    campus: "Slippery Rock University",
+    type: "peopleadmin",
+    url: "https://careers.sru.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&518=&query_organizational_tier_3_id%5B%5D=any&query_position_type_id%5B%5D=2&373=&commit=Search",
+  },
+  {
+    campus: "West Chester University",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/wcupa?keywords=faculty%20",
+  },
+  {
+    campus: "The Pennsylvania State University",
+    type: "workday",
+    url: "https://psu.wd1.myworkdayjobs.com/PSU_Academic?timeType=b9c7a8628206010c6cedcb3aa4474a00&jobFamily=57340197317201e0b53836bfde4ae85f",
+  },
 ];
 
 /* ============================== EXPRESS ============================== */
@@ -93,28 +204,23 @@ app.get("/api/jobs", async (req, res) => {
       return res.json({ cached: true, ...cache.data });
     }
 
-   const data = await scrapeAllJobsStandalone();
-cache = { at: Date.now(), data };
+    const data = await scrapeAllJobsStandalone();
+    cache = { at: Date.now(), data };
 
-// ✅ Write jobs.json for BOTH local (public) and GitHub Pages (docs)
-try {
-  const targets = ["public", "docs"];
-  for (const dir of targets) {
-    const outDir = path.join(__dirname, dir);
-    fs.mkdirSync(outDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(outDir, "jobs.json"),
-      JSON.stringify(data, null, 2),
-      "utf-8"
-    );
-  }
-  console.log("✅ Wrote jobs.json to /public and /docs");
-} catch (e) {
-  console.error("❌ Failed to write jobs.json:", e?.message || e);
-}
+    // Write jobs.json for BOTH local (public) and GitHub Pages (docs)
+    try {
+      const targets = ["public", "docs"];
+      for (const dir of targets) {
+        const outDir = path.join(__dirname, dir);
+        fs.mkdirSync(outDir, { recursive: true });
+        fs.writeFileSync(path.join(outDir, "jobs.json"), JSON.stringify(data, null, 2), "utf-8");
+      }
+      console.log("✅ Wrote jobs.json to /public and /docs");
+    } catch (e) {
+      console.error("❌ Failed to write jobs.json:", e?.message || e);
+    }
 
-res.json({ cached: false, ...data });
-
+    res.json({ cached: false, ...data });
   } catch (err) {
     console.error("❌ /api/jobs:", err);
     res.status(500).json({ error: "Scrape failed", details: String(err?.message || err) });
@@ -138,7 +244,7 @@ export async function scrapeAllJobsStandalone() {
   try {
     const context = await browser.newContext({
       userAgent:
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121 Safari/537.36",
       viewport: { width: 1280, height: 800 },
       locale: "en-US",
     });
@@ -150,6 +256,7 @@ export async function scrapeAllJobsStandalone() {
       { name: "UMass", fn: () => scrapeUmassAll(context) },
       { name: "UC", fn: () => scrapeUcAll(context) },
       { name: "NJ", fn: () => scrapeNjAll(context) },
+      { name: "PA", fn: () => scrapePaAll(context) },
       { name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
     ];
 
@@ -204,7 +311,6 @@ function omitUcFellowships(title) {
   return /\bfellow\b|\bfellowship\b/i.test(String(title || ""));
 }
 
-
 // Playwright occasionally throws "Execution context was destroyed" when a page
 // auto-navigates (redirects / SPA transitions) while we are evaluating.
 // This helper retries a few times and waits for the page to settle.
@@ -212,10 +318,8 @@ async function safeEvaluate(page, fn, { retries = 4, settleMs = 600 } = {}) {
   let lastErr;
   for (let i = 0; i < retries; i++) {
     try {
-      // If a navigation is in progress, wait a moment.
       await page.waitForLoadState("domcontentloaded", { timeout: 15_000 }).catch(() => {});
-      const v = await page.evaluate(fn);
-      return v;
+      return await page.evaluate(fn);
     } catch (e) {
       const msg = String(e?.message || e);
       lastErr = e;
@@ -223,15 +327,26 @@ async function safeEvaluate(page, fn, { retries = 4, settleMs = 600 } = {}) {
         msg.includes("Execution context was destroyed") ||
         msg.includes("Cannot find context with specified id") ||
         msg.includes("Target closed") ||
-        msg.includes("Navigation") ||
-        msg.includes("frame was detached");
+        msg.toLowerCase().includes("navigation") ||
+        msg.toLowerCase().includes("frame was detached");
       if (!likely) throw e;
-
-      // Let the page finish whatever it is doing (redirect, SPA transition, etc.)
       await page.waitForTimeout(settleMs);
     }
   }
   throw lastErr;
+}
+
+function looksFacultyish(title) {
+  const s = String(title || "").toLowerCase();
+  return (
+    s.includes("faculty") ||
+    s.includes("professor") ||
+    s.includes("lecturer") ||
+    s.includes("instructor") ||
+    s.includes("assistant professor") ||
+    s.includes("associate professor") ||
+    s.includes("chair")
+  );
 }
 
 /* ============================== CUNY ============================== */
@@ -393,7 +508,11 @@ async function scrapeCtFacultyTeaching(context) {
     await page.locator('label[for="Faculty"]').click({ force: true }).catch(() => {});
   }
 
-  await page.getByRole("button", { name: /apply|filter|search|submit|go|update/i }).first().click().catch(() => {});
+  await page
+    .getByRole("button", { name: /apply|filter|search|submit|go|update/i })
+    .first()
+    .click()
+    .catch(() => {});
   await waitForCtResultsUpdate(page, beforeSig).catch(() => {});
   await page.waitForTimeout(500);
 
@@ -469,9 +588,7 @@ async function waitForCtResultsUpdate(page, beforeSig) {
 async function scrapeCsuFaculty(context) {
   const page = await context.newPage();
   await page.goto(CSU_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
-
-  // Some CSU pages redirect to /search/; wait for either job links or listing container.
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(900);
 
   const jobs = await scrapeEnUsFilterSite(page, {
     source: "CSU",
@@ -481,7 +598,6 @@ async function scrapeCsuFaculty(context) {
 
   console.log(`CSU listing scraped: ${jobs.length}`);
 
-  // Enrich CSU jobs with college + location from detail pages (best-effort)
   const detailMap = await fetchCsuDetailsFromDetails(context, jobs.map((j) => j.url), 6);
   return jobs.map((j) => {
     const d = detailMap.get(j.url);
@@ -521,10 +637,7 @@ async function fetchCsuDetailsFromDetails(context, urls, concurrency = 6) {
           };
 
           const location =
-            getFromDtDd(["work location"]) ||
-            getFromDtDd(["location"]) ||
-            getFromDtDd(["city"]) ||
-            null;
+            getFromDtDd(["work location"]) || getFromDtDd(["location"]) || getFromDtDd(["city"]) || null;
 
           const college =
             getFromDtDd(["campus"]) ||
@@ -539,7 +652,7 @@ async function fetchCsuDetailsFromDetails(context, urls, concurrency = 6) {
             for (const s of scripts) {
               try {
                 const j = JSON.parse(s.textContent);
-                const nodes = Array.isArray(j) ? j : (j?.["@graph"] ? j["@graph"] : [j]);
+                const nodes = Array.isArray(j) ? j : j?.["@graph"] ? j["@graph"] : [j];
                 for (const n of nodes) {
                   if (!n || typeof n !== "object") continue;
                   const org = n.hiringOrganization;
@@ -578,7 +691,7 @@ async function scrapeUmassAll(context) {
       try {
         const page = await context.newPage();
         await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
-        await page.waitForTimeout(800);
+        await page.waitForTimeout(900);
 
         const jobs = await scrapeEnUsFilterSite(page, {
           source: "UMass",
@@ -604,13 +717,11 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
   const jobs = [];
   const seen = new Set();
 
-  // These sites often do a fast redirect or SPA route update after the initial HTML arrives.
   await page.waitForLoadState("domcontentloaded", { timeout: 60_000 }).catch(() => {});
   await page.waitForTimeout(900);
 
-  // Helper: pull all job links currently visible
   async function collectBatch() {
-    return await safeEvaluate(page, () => {
+    return safeEvaluate(page, () => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
       const abs = (href) => {
         try {
@@ -630,20 +741,15 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
         const url = abs(href);
         if (!url) continue;
 
-        // Require a "job-ish" URL (avoid pagination links, nav links, etc.)
         const u = new URL(url);
         const p = u.pathname || "";
         const isJob =
-          /\/job\//i.test(p) ||
-          /\/jobs\//i.test(p) ||
-          /\/job\/[A-Za-z0-9_-]+/i.test(p) ||
-          /job=\d+/i.test(u.search);
+          /\/job\//i.test(p) || /\/jobs\//i.test(p) || /\/job\/[A-Za-z0-9_-]+/i.test(p) || /job=\d+/i.test(u.search);
 
         if (!isJob) continue;
 
         let title = clean(a.textContent);
 
-        // Some sites render "View job" links; prefer nearby headings
         if (!title || title.length < 4 || /view job|apply/i.test(title)) {
           const container = a.closest("li, article, div, tr") || a.parentElement;
           const h = container?.querySelector?.("h1,h2,h3,h4,.job-title,.title,strong");
@@ -652,11 +758,9 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
         }
 
         if (!title || title.length < 4) continue;
-
         out.push({ title, url });
       }
 
-      // Dedup inside the page context
       const uniq = [];
       const s = new Set();
       for (const j of out) {
@@ -668,54 +772,33 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
     });
   }
 
-  // Helper: find next page URL ("More Jobs" on CSU / rel=next / Next)
   async function findNextUrl() {
-    // CSU: "More Jobs" link to next page
-    const more = page
-      .locator('a.more-link.button[title="More Jobs"], a[title*="More Jobs" i]')
-      .first();
+    const more = page.locator('a.more-link.button[title="More Jobs"], a[title*="More Jobs" i]').first();
     if ((await more.count().catch(() => 0)) > 0 && (await more.isVisible().catch(() => false))) {
       const href = await more.getAttribute("href").catch(() => null);
       if (href) return new URL(href, page.url()).toString();
     }
 
-    // Generic rel=next
     const relNext = page.locator('a[rel="next"]').first();
     if ((await relNext.count().catch(() => 0)) > 0 && (await relNext.isVisible().catch(() => false))) {
       const href = await relNext.getAttribute("href").catch(() => null);
       if (href) return new URL(href, page.url()).toString();
     }
 
-    // Text-based Next
-    const next = page.locator('a:has-text("Next"), button:has-text("Next")').first();
-    if ((await next.count().catch(() => 0)) > 0 && (await next.isVisible().catch(() => false))) {
-      const tag = await next.evaluate((el) => el.tagName).catch(() => "A");
-      if (tag === "A") {
-        const href = await next.getAttribute("href").catch(() => null);
-        if (href) return new URL(href, page.url()).toString();
-      }
-    }
-
-    // Some sites show explicit pagination like ?page=2
     const guess = await safeEvaluate(page, () => {
       const a =
         document.querySelector('a[aria-label*="Next" i]') ||
-        Array.from(document.querySelectorAll("a")).find((x) =>
-          (/^\s*next\s*$/i).test((x.textContent || "").trim())
-        );
+        Array.from(document.querySelectorAll("a")).find((x) => (/^\s*next\s*$/i).test((x.textContent || "").trim()));
       return a ? a.getAttribute("href") : null;
     }).catch(() => null);
 
     if (guess) return new URL(guess, page.url()).toString();
-
     return null;
   }
 
   let currentUrl = page.url();
-
   for (let safety = 0; safety < 200; safety++) {
     const batch = await collectBatch();
-
     for (const it of batch) {
       if (!it?.url || seen.has(it.url)) continue;
       seen.add(it.url);
@@ -724,10 +807,8 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
 
     const nextUrl = await findNextUrl();
     if (!nextUrl || nextUrl === currentUrl) break;
-
     currentUrl = nextUrl;
 
-    // Navigate using goto (avoids click handlers that sometimes trigger in-page rerenders)
     await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
   }
@@ -738,7 +819,7 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
       url: j.url,
       source,
       category,
-      college: campus, // chip for UMass; null for CSU
+      college: campus,
       location: null,
       description: null,
     }))
@@ -768,7 +849,6 @@ async function scrapeUcAll(context) {
     })
   );
 
-  // Remove fellow/fellowship (global UC requirement)
   return uniqByUrl(out).filter((j) => !omitUcFellowships(j.title));
 }
 
@@ -776,17 +856,18 @@ async function scrapeApRecruitCampus(page, campusName) {
   const jobs = [];
   const seen = new Set();
 
-  // AP Recruit often paginates; try to harvest links repeatedly while "Next" exists.
   for (let safety = 0; safety < 120; safety++) {
     const batch = await page.evaluate(() => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
       const abs = (href) => {
-        try { return new URL(href, location.href).toString(); }
-        catch { return null; }
+        try {
+          return new URL(href, location.href).toString();
+        } catch {
+          return null;
+        }
       };
 
       const out = [];
-      // Job pages are usually /apply/JPFxxxxx or similar
       const anchors = Array.from(document.querySelectorAll('a[href*="/apply/"], a[href*="JPF"], a[href*="/JPF"]'));
 
       for (const a of anchors) {
@@ -796,12 +877,9 @@ async function scrapeApRecruitCampus(page, campusName) {
 
         const container = a.closest("tr, li, article, div") || a.parentElement;
 
-        // Title can be polluted with apply-by text; prefer headings in container
         let title = clean(a.textContent);
 
-        const h =
-          container?.querySelector?.("h1,h2,h3,h4,.title,.job-title,strong") ||
-          null;
+        const h = container?.querySelector?.("h1,h2,h3,h4,.title,.job-title,strong") || null;
         const ht = clean(h?.textContent);
 
         const isBadTitle = (t) =>
@@ -812,7 +890,6 @@ async function scrapeApRecruitCampus(page, campusName) {
 
         if (isBadTitle(title) && ht && !isBadTitle(ht)) title = ht;
 
-        // If still bad, try the first strong/heading text in container that isn't apply-by
         if (isBadTitle(title) && container) {
           const candEls = Array.from(container.querySelectorAll("h1,h2,h3,h4,strong,a"));
           for (const el of candEls) {
@@ -825,11 +902,9 @@ async function scrapeApRecruitCampus(page, campusName) {
         }
 
         if (isBadTitle(title)) continue;
-
         out.push({ title, url });
       }
 
-      // Dedup inside evaluate
       const uniq = [];
       const s = new Set();
       for (const x of out) {
@@ -846,10 +921,8 @@ async function scrapeApRecruitCampus(page, campusName) {
       jobs.push(it);
     }
 
-    // Try click "Next" if exists
     const next = page.locator('a[rel="next"], a:has-text("Next"), button:has-text("Next")').first();
     if ((await next.count().catch(() => 0)) > 0 && (await next.isVisible().catch(() => false))) {
-      // Prefer href navigation if anchor
       const tag = await next.evaluate((el) => el.tagName).catch(() => "BUTTON");
       if (tag === "A") {
         const href = await next.getAttribute("href").catch(() => null);
@@ -865,12 +938,10 @@ async function scrapeApRecruitCampus(page, campusName) {
         const before = jobs.length;
         await next.click({ timeout: 8000 }).catch(() => {});
         await page.waitForTimeout(1200);
-        // stop if nothing new
         if (jobs.length === before) break;
         continue;
       }
     }
-
     break;
   }
 
@@ -879,7 +950,7 @@ async function scrapeApRecruitCampus(page, campusName) {
     url: j.url,
     source: "UC",
     category: "Faculty",
-    college: campusName, // chip
+    college: campusName,
     location: null,
     description: null,
   }));
@@ -914,19 +985,6 @@ function toNjJob(title, url, campusName, category = "Faculty") {
   return { title, url, source: "NJ", category, college: campusName, location: null, description: null };
 }
 
-function looksFacultyish(title) {
-  const s = String(title || "").toLowerCase();
-  return (
-    s.includes("faculty") ||
-    s.includes("professor") ||
-    s.includes("lecturer") ||
-    s.includes("instructor") ||
-    s.includes("assistant professor") ||
-    s.includes("associate professor") ||
-    s.includes("chair")
-  );
-}
-
 async function scrapeNjTaleo(context, startUrl, campusName) {
   const page = await context.newPage();
   try {
@@ -935,7 +993,13 @@ async function scrapeNjTaleo(context, startUrl, campusName) {
 
     const jobs = await page.evaluate(() => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-      const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+      const abs = (href) => {
+        try {
+          return new URL(href, location.href).toString();
+        } catch {
+          return null;
+        }
+      };
 
       const out = [];
       const seen = new Set();
@@ -985,7 +1049,13 @@ async function scrapeNjWorkday(context, startUrl, campusName) {
 
       const batch = await page.evaluate(() => {
         const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-        const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
 
         const out = [];
         const titleNodes = Array.from(document.querySelectorAll('[data-automation-id="jobTitle"]'));
@@ -1042,7 +1112,13 @@ async function scrapeNjRutgers(context, startUrl, campusName) {
 
       const batch = await page.evaluate(() => {
         const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-        const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
 
         const deptFromContainer = (container) => {
           if (!container) return null;
@@ -1050,7 +1126,10 @@ async function scrapeNjRutgers(context, startUrl, campusName) {
           const sels = [
             '[data-label*="Department" i]',
             '[aria-label*="Department" i]',
-            ".department", ".dept", ".org", ".organization",
+            ".department",
+            ".dept",
+            ".org",
+            ".organization",
           ];
           for (const sel of sels) {
             const el = container.querySelector(sel);
@@ -1123,7 +1202,13 @@ async function scrapeNjCsod(context, startUrl, campusName) {
 
     const jobs = await page.evaluate(() => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-      const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+      const abs = (href) => {
+        try {
+          return new URL(href, location.href).toString();
+        } catch {
+          return null;
+        }
+      };
 
       const out = [];
       const seen = new Set();
@@ -1151,20 +1236,27 @@ async function scrapeNjCsod(context, startUrl, campusName) {
   }
 }
 
+// SchoolJobs pagination sometimes uses javascript:void(0) for Next.
+// We click and wait for results signature to change.
 async function scrapeNjSchoolJobs(context, startUrl, campusName) {
   const page = await context.newPage();
   try {
     const jobs = [];
     const seen = new Set();
-    let currentUrl = startUrl;
 
-    for (let safety = 0; safety < 80; safety++) {
-      await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
-      await page.waitForTimeout(700);
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(900);
 
-      const batch = await page.evaluate(() => {
+    for (let safety = 0; safety < 120; safety++) {
+      const batch = await safeEvaluate(page, () => {
         const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-        const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
 
         const out = [];
         for (const a of Array.from(document.querySelectorAll('a[href*="/jobs/"]'))) {
@@ -1183,9 +1275,10 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName) {
         jobs.push(j);
       }
 
-      const nextUrl = await getSchoolJobsNextPageUrl(page, currentUrl);
-      if (!nextUrl || nextUrl === currentUrl) break;
-      currentUrl = nextUrl;
+      const moved = await schoolJobsGoNext(page);
+      if (!moved) break;
+
+      await page.waitForTimeout(900);
     }
 
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
@@ -1194,39 +1287,6 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName) {
   } finally {
     await page.close().catch(() => {});
   }
-}
-
-async function getSchoolJobsNextPageUrl(page, currentUrl) {
-  const nextA = page.locator('a[rel="next"], a[aria-label*="Next" i], a:has-text("Next")').first();
-  if ((await nextA.count().catch(() => 0)) > 0) {
-    const href = await nextA.getAttribute("href").catch(() => null);
-    if (href) return new URL(href, page.url()).toString();
-  }
-
-  const href = await page.evaluate(() => {
-    const cur =
-      document.querySelector('a[aria-current="page"]') ||
-      document.querySelector("li.active a") ||
-      document.querySelector("li.selected a");
-    let curN = 1;
-    if (cur) {
-      const t = (cur.textContent || "").trim();
-      const m = t.match(/^(\d+)$/);
-      if (m) curN = Number(m[1]);
-    }
-    const want = curN + 1;
-
-    const direct =
-      document.querySelector(`a[aria-label="Go to Page ${want}"]`) ||
-      document.querySelector(`a[aria-label="Go to page ${want}"]`);
-    return direct ? direct.getAttribute("href") : null;
-  });
-
-  if (href) {
-    const nextUrl = new URL(href, page.url()).toString();
-    if (nextUrl !== currentUrl) return nextUrl;
-  }
-  return null;
 }
 
 async function scrapeNjStockton(context, startUrl, campusName) {
@@ -1242,7 +1302,13 @@ async function scrapeNjStockton(context, startUrl, campusName) {
 
       const batch = await page.evaluate(() => {
         const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-        const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
 
         const out = [];
         for (const a of Array.from(document.querySelectorAll("a[href]"))) {
@@ -1276,6 +1342,125 @@ async function scrapeNjStockton(context, startUrl, campusName) {
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} NJ listings scraped: ${filtered.length}`);
     return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+/* ============================== PA ============================== */
+
+async function scrapePaAll(context) {
+  const tasks = PA_CAMPUSES.map(({ campus, type, url }) =>
+    (async () => {
+      try {
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "PA");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "PA");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "PA");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "PA");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} PA scrape failed:`, e?.message || e);
+        return [];
+      }
+    })()
+  );
+
+  const settled = await Promise.allSettled(tasks);
+  const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName) {
+  const items = await scrapeNjSchoolJobs(context, startUrl, campusName);
+  return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
+}
+
+async function scrapeCsodAs(context, startUrl, campusName, sourceName) {
+  const items = await scrapeNjCsod(context, startUrl, campusName);
+  return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
+}
+
+async function scrapeWorkdayAs(context, startUrl, campusName, sourceName) {
+  const items = await scrapeNjWorkday(context, startUrl, campusName);
+  return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
+}
+
+async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    const jobs = [];
+    const seen = new Set();
+    let currentUrl = startUrl;
+
+    for (let safety = 0; safety < 120; safety++) {
+      await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await page.waitForTimeout(700);
+
+      const batch = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
+
+        const out = [];
+        for (const a of Array.from(document.querySelectorAll('a[href*="/postings/"]'))) {
+          const url = abs(a.getAttribute("href"));
+          if (!url) continue;
+          if (!/\/postings\/\d+/i.test(url)) continue;
+
+          const title = clean(a.textContent);
+          if (!title || title.length < 4) continue;
+          if (/search|home|back|return|login|logout|help|privacy|accessibility/i.test(title)) continue;
+
+          out.push({ title, url });
+        }
+
+        const uniq = [];
+        const s = new Set();
+        for (const x of out) {
+          if (!x.url || s.has(x.url)) continue;
+          s.add(x.url);
+          uniq.push(x);
+        }
+        return uniq;
+      });
+
+      for (const j of batch) {
+        if (!j?.url || seen.has(j.url)) continue;
+        seen.add(j.url);
+        jobs.push(j);
+      }
+
+      const next = page.locator('a[rel="next"], a:has-text("Next")').first();
+      if ((await next.count().catch(() => 0)) === 0) break;
+      if (!(await next.isVisible().catch(() => false))) break;
+
+      const href = await next.getAttribute("href").catch(() => null);
+      if (!href) break;
+
+      const nextUrl = new URL(href, page.url()).toString();
+      if (nextUrl === currentUrl) break;
+      currentUrl = nextUrl;
+    }
+
+    const out = jobs
+      .map((j) => ({
+        title: clean(j.title),
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      }))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} PA listings scraped: ${out.length}`);
+    return out;
   } finally {
     await page.close().catch(() => {});
   }
@@ -1317,7 +1502,13 @@ async function scrapeClaremontStatic(context, startUrl, campusName) {
 
     const items = await page.evaluate(() => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-      const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+      const abs = (href) => {
+        try {
+          return new URL(href, location.href).toString();
+        } catch {
+          return null;
+        }
+      };
       const badText = (t) => !t || t.length < 4 || /search|filter|back|home|login|privacy|accessibility|contact/i.test(t);
 
       const out = [];
@@ -1382,7 +1573,13 @@ async function scrapeClaremontCmc(context, startUrl, campusName) {
 
     const items = await page.evaluate(() => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-      const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+      const abs = (href) => {
+        try {
+          return new URL(href, location.href).toString();
+        } catch {
+          return null;
+        }
+      };
 
       const out = [];
       const seen = new Set();
@@ -1425,7 +1622,6 @@ async function scrapeClaremontCmc(context, startUrl, campusName) {
 }
 
 async function scrapeClaremontWorkday(context, startUrl, campusName) {
-  // Same Workday pagination helpers as NJ
   const page = await context.newPage();
   try {
     await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -1440,7 +1636,13 @@ async function scrapeClaremontWorkday(context, startUrl, campusName) {
 
       const batch = await page.evaluate(() => {
         const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-        const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
 
         const out = [];
         const titleNodes = Array.from(document.querySelectorAll('[data-automation-id="jobTitle"]'));
@@ -1553,6 +1755,59 @@ async function goToNextWorkdayPage(page, visitedPages) {
   await target.locator.click({ timeout: 8000 }).catch(() => {});
   visitedPages.add(target.num);
   return true;
+}
+
+/* ======================= SchoolJobs Pagination Helpers ======================= */
+
+async function schoolJobsSignature(page) {
+  return safeEvaluate(page, () => {
+    const urls = Array.from(document.querySelectorAll('a[href*="/jobs/"]'))
+      .map((a) => a.getAttribute("href") || "")
+      .filter((h) => /\/jobs\/\d+/i.test(h))
+      .slice(0, 20)
+      .join("|");
+    return `${(document.title || "").slice(0, 120)}::${urls}`;
+  }).catch(() => "");
+}
+
+async function schoolJobsGoNext(page) {
+  const before = await schoolJobsSignature(page);
+
+  const locators = [
+    page.locator('a[rel="next"]').first(),
+    page.locator('a[aria-label*="Next" i]').first(),
+    page.locator('a:has-text("Next")').first(),
+    page.locator('button:has-text("Next")').first(),
+  ];
+
+  for (const loc of locators) {
+    if (!(await loc.count().catch(() => 0))) continue;
+    if (!(await loc.isVisible().catch(() => false))) continue;
+
+    const href = await loc.getAttribute("href").catch(() => null);
+    const bad = !href || href === "#" || /^javascript:/i.test(href);
+
+    if (!bad) {
+      const nextUrl = new URL(href, page.url()).toString();
+      await page.goto(nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      const after = await schoolJobsSignature(page);
+      return after && after !== before;
+    }
+
+    await loc.scrollIntoViewIfNeeded().catch(() => {});
+    await loc.click({ timeout: 8000 }).catch(() => {});
+    await page.waitForTimeout(900);
+
+    const start = Date.now();
+    while (Date.now() - start < 12_000) {
+      const after = await schoolJobsSignature(page);
+      if (after && after !== before) return true;
+      await page.waitForTimeout(300);
+    }
+    return false;
+  }
+
+  return false;
 }
 
 /* =================== SHARED: job detail fetch for CUNY =================== */
