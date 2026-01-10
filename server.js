@@ -4,6 +4,7 @@
 // and ONLY starting Express when run directly: `node server.js`
 
 import express from "express";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { chromium } from "playwright";
@@ -92,9 +93,28 @@ app.get("/api/jobs", async (req, res) => {
       return res.json({ cached: true, ...cache.data });
     }
 
-    const data = await scrapeAllJobsStandalone();
-    cache = { at: Date.now(), data };
-    res.json({ cached: false, ...data });
+   const data = await scrapeAllJobsStandalone();
+cache = { at: Date.now(), data };
+
+// ✅ Write jobs.json for BOTH local (public) and GitHub Pages (docs)
+try {
+  const targets = ["public", "docs"];
+  for (const dir of targets) {
+    const outDir = path.join(__dirname, dir);
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(outDir, "jobs.json"),
+      JSON.stringify(data, null, 2),
+      "utf-8"
+    );
+  }
+  console.log("✅ Wrote jobs.json to /public and /docs");
+} catch (e) {
+  console.error("❌ Failed to write jobs.json:", e?.message || e);
+}
+
+res.json({ cached: false, ...data });
+
   } catch (err) {
     console.error("❌ /api/jobs:", err);
     res.status(500).json({ error: "Scrape failed", details: String(err?.message || err) });
@@ -184,6 +204,36 @@ function omitUcFellowships(title) {
   return /\bfellow\b|\bfellowship\b/i.test(String(title || ""));
 }
 
+
+// Playwright occasionally throws "Execution context was destroyed" when a page
+// auto-navigates (redirects / SPA transitions) while we are evaluating.
+// This helper retries a few times and waits for the page to settle.
+async function safeEvaluate(page, fn, { retries = 4, settleMs = 600 } = {}) {
+  let lastErr;
+  for (let i = 0; i < retries; i++) {
+    try {
+      // If a navigation is in progress, wait a moment.
+      await page.waitForLoadState("domcontentloaded", { timeout: 15_000 }).catch(() => {});
+      const v = await page.evaluate(fn);
+      return v;
+    } catch (e) {
+      const msg = String(e?.message || e);
+      lastErr = e;
+      const likely =
+        msg.includes("Execution context was destroyed") ||
+        msg.includes("Cannot find context with specified id") ||
+        msg.includes("Target closed") ||
+        msg.includes("Navigation") ||
+        msg.includes("frame was detached");
+      if (!likely) throw e;
+
+      // Let the page finish whatever it is doing (redirect, SPA transition, etc.)
+      await page.waitForTimeout(settleMs);
+    }
+  }
+  throw lastErr;
+}
+
 /* ============================== CUNY ============================== */
 
 async function scrapeCunyFaculty(context) {
@@ -209,7 +259,9 @@ async function scrapeCunyFaculty(context) {
   console.log(`CUNY discovered links: ${links.length}`);
 
   const jobs = await fetchAllJobDetails(context, links, "CUNY", 6);
-  return jobs.filter((j) => j.title && j.title !== "(No title found)");
+  return jobs
+    .filter((j) => j.title && j.title !== "(No title found)")
+    .filter((j) => !omitAdjunct(j.title));
 }
 
 async function expandToAllCunyJobs(page) {
@@ -552,12 +604,13 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
   const jobs = [];
   const seen = new Set();
 
-  // Wait for some anchors to appear; not all sites use "/job/" but most do.
-  await page.waitForTimeout(600);
+  // These sites often do a fast redirect or SPA route update after the initial HTML arrives.
+  await page.waitForLoadState("domcontentloaded", { timeout: 60_000 }).catch(() => {});
+  await page.waitForTimeout(900);
 
-  for (let safety = 0; safety < 120; safety++) {
-    // Collect job links + titles on this page
-    const batch = await page.evaluate(() => {
+  // Helper: pull all job links currently visible
+  async function collectBatch() {
+    return await safeEvaluate(page, () => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
       const abs = (href) => {
         try {
@@ -568,33 +621,100 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
       };
 
       const out = [];
-      const anchors = Array.from(document.querySelectorAll('a[href*="/job/"], a[href*="/jobs/"]'));
+      const anchors = Array.from(
+        document.querySelectorAll('a[href*="/job/"], a[href*="/jobs/"], a[href*="job="]')
+      );
 
       for (const a of anchors) {
         const href = a.getAttribute("href");
         const url = abs(href);
         if (!url) continue;
 
-        // Require job-ish path
-        const p = new URL(url).pathname;
-        const isJob = /\/job\/\d+(\/|$)/i.test(p) || /\/jobs\/\d+(\/|$)/i.test(p) || /\/job\/[^/]+/i.test(p);
+        // Require a "job-ish" URL (avoid pagination links, nav links, etc.)
+        const u = new URL(url);
+        const p = u.pathname || "";
+        const isJob =
+          /\/job\//i.test(p) ||
+          /\/jobs\//i.test(p) ||
+          /\/job\/[A-Za-z0-9_-]+/i.test(p) ||
+          /job=\d+/i.test(u.search);
+
         if (!isJob) continue;
 
         let title = clean(a.textContent);
 
-        // Some sites put "View Job" in the link; try a nearby heading
+        // Some sites render "View job" links; prefer nearby headings
         if (!title || title.length < 4 || /view job|apply/i.test(title)) {
           const container = a.closest("li, article, div, tr") || a.parentElement;
-          const h = container?.querySelector?.("h1,h2,h3,h4,.job-title,.title");
+          const h = container?.querySelector?.("h1,h2,h3,h4,.job-title,.title,strong");
           const ht = clean(h?.textContent);
           if (ht && ht.length > 4) title = ht;
         }
 
         if (!title || title.length < 4) continue;
+
         out.push({ title, url });
       }
-      return out;
+
+      // Dedup inside the page context
+      const uniq = [];
+      const s = new Set();
+      for (const j of out) {
+        if (!j.url || s.has(j.url)) continue;
+        s.add(j.url);
+        uniq.push(j);
+      }
+      return uniq;
     });
+  }
+
+  // Helper: find next page URL ("More Jobs" on CSU / rel=next / Next)
+  async function findNextUrl() {
+    // CSU: "More Jobs" link to next page
+    const more = page
+      .locator('a.more-link.button[title="More Jobs"], a[title*="More Jobs" i]')
+      .first();
+    if ((await more.count().catch(() => 0)) > 0 && (await more.isVisible().catch(() => false))) {
+      const href = await more.getAttribute("href").catch(() => null);
+      if (href) return new URL(href, page.url()).toString();
+    }
+
+    // Generic rel=next
+    const relNext = page.locator('a[rel="next"]').first();
+    if ((await relNext.count().catch(() => 0)) > 0 && (await relNext.isVisible().catch(() => false))) {
+      const href = await relNext.getAttribute("href").catch(() => null);
+      if (href) return new URL(href, page.url()).toString();
+    }
+
+    // Text-based Next
+    const next = page.locator('a:has-text("Next"), button:has-text("Next")').first();
+    if ((await next.count().catch(() => 0)) > 0 && (await next.isVisible().catch(() => false))) {
+      const tag = await next.evaluate((el) => el.tagName).catch(() => "A");
+      if (tag === "A") {
+        const href = await next.getAttribute("href").catch(() => null);
+        if (href) return new URL(href, page.url()).toString();
+      }
+    }
+
+    // Some sites show explicit pagination like ?page=2
+    const guess = await safeEvaluate(page, () => {
+      const a =
+        document.querySelector('a[aria-label*="Next" i]') ||
+        Array.from(document.querySelectorAll("a")).find((x) =>
+          (/^\s*next\s*$/i).test((x.textContent || "").trim())
+        );
+      return a ? a.getAttribute("href") : null;
+    }).catch(() => null);
+
+    if (guess) return new URL(guess, page.url()).toString();
+
+    return null;
+  }
+
+  let currentUrl = page.url();
+
+  for (let safety = 0; safety < 200; safety++) {
+    const batch = await collectBatch();
 
     for (const it of batch) {
       if (!it?.url || seen.has(it.url)) continue;
@@ -602,46 +722,27 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
       jobs.push(it);
     }
 
-    // Find "More Jobs" paging link (CSU-style) OR next page
-    const more = page.locator('a.more-link.button[title="More Jobs"], a[title*="More Jobs" i]').first();
-    if ((await more.count().catch(() => 0)) > 0) {
-      const nextHref = await more.getAttribute("href").catch(() => null);
-      if (nextHref) {
-        const nextUrl = new URL(nextHref, page.url()).toString();
-        if (nextUrl !== page.url()) {
-          await page.goto(nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
-          await page.waitForTimeout(700);
-          continue;
-        }
-      }
-    }
+    const nextUrl = await findNextUrl();
+    if (!nextUrl || nextUrl === currentUrl) break;
 
-    // Try a generic "Next" link
-    const next = page.locator('a[rel="next"], a:has-text("Next")').first();
-    if ((await next.count().catch(() => 0)) > 0 && (await next.isVisible().catch(() => false))) {
-      const href = await next.getAttribute("href").catch(() => null);
-      if (href) {
-        const nextUrl = new URL(href, page.url()).toString();
-        if (nextUrl !== page.url()) {
-          await page.goto(nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
-          await page.waitForTimeout(700);
-          continue;
-        }
-      }
-    }
+    currentUrl = nextUrl;
 
-    break;
+    // Navigate using goto (avoids click handlers that sometimes trigger in-page rerenders)
+    await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(900);
   }
 
-  return jobs.map((j) => ({
-    title: clean(j.title),
-    url: j.url,
-    source,
-    category,
-    college: campus,      // chip for UMass; null for CSU
-    location: null,
-    description: null,
-  }));
+  return jobs
+    .map((j) => ({
+      title: clean(j.title),
+      url: j.url,
+      source,
+      category,
+      college: campus, // chip for UMass; null for CSU
+      location: null,
+      description: null,
+    }))
+    .filter((j) => !omitAdjunct(j.title));
 }
 
 /* ============================== UC (AP Recruit) ============================== */
