@@ -303,6 +303,15 @@ const RI_CAMPUSES = [
     url: "https://jobs.uri.edu/postings/search?&query=&query_v0_posted_at_date=&query_organizational_tier_3_id=any&803=&query_position_type_id=8&commit=Search",
   },
 ];
+
+// NY (State University of New York – SUNY)
+const NY_SUNY = {
+  campus: "State University of New York (SUNY)",
+  type: "suny",
+  url: "https://www.suny.edu/careers/employment/index.cfm?s=y",
+};
+
+
 /* ============================== EXPRESS ============================== */
 
 const app = express();
@@ -379,6 +388,8 @@ export async function scrapeAllJobsStandalone() {
       { name: "RI", fn: () => scrapeRiAll(context) },
 { name: "PA", fn: () => scrapePaAll(context) },
       { name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
+      { name: "NY (SUNY)", fn: () => scrapeNySuny(context) },
+
     ];
 
     const settled = await Promise.allSettled(tasks.map((t) => t.fn()));
@@ -2236,6 +2247,53 @@ async function scrapeJobDetail(context, url) {
     });
 
     return { title: job.title, description: job.description, college: job.college, url };
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+
+
+async function scrapeNySuny(context) {
+  const page = await context.newPage();
+  try {
+    await page.goto(NY_SUNY.url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(900);
+
+    const jobs = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); } catch { return null; }
+      };
+
+      const out = [];
+      const seen = new Set();
+
+      for (const a of Array.from(document.querySelectorAll("a[href]"))) {
+        const url = abs(a.getAttribute("href"));
+        if (!url) continue;
+        if (!/employment|jobs|postings|careers/i.test(url)) continue;
+
+        const title = clean(a.textContent);
+        if (!title || title.length < 6) continue;
+        if (seen.has(url)) continue;
+        seen.add(url);
+
+        out.push({
+          title,
+          url,
+          source: "NY",
+          category: "Faculty",
+          college: "SUNY",
+          location: null,
+          description: null,
+        });
+      }
+      return out;
+    });
+
+    console.log(`SUNY listings scraped: ${jobs.length}`);
+    return jobs;
   } finally {
     await page.close().catch(() => {});
   }
