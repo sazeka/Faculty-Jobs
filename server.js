@@ -14,6 +14,7 @@ import { chromium } from "playwright";
 const PORT = process.env.PORT || 3000;
 
 const MAX_PARALLEL_CAMPUSES = Number(process.env.MAX_PARALLEL_CAMPUSES || 4);
+const MAX_PARALLEL_SYSTEMS = Number(process.env.MAX_PARALLEL_SYSTEMS || 4);
 
 const CUNY_URL = "https://cuny.jobs/job-category/faculty/jobs/";
 const CT_URL = "https://www.ct.edu/hr/jobs";
@@ -304,6 +305,28 @@ const RI_CAMPUSES = [
   },
 ];
 
+
+
+// AZ (Arizona)
+const AZ_CAMPUSES = [
+  {
+    campus: "Arizona State University",
+    type: "asu-table",
+    url: "https://facultypositions.asu.edu/",
+  },
+  {
+    campus: "Northern Arizona University",
+    type: "nau-search",
+    url: "https://careers.nau.edu/jobs/search?page=1&category_uids%5B%5D=16877518cdbd46262a1b4a995c2a65c2&query=",
+  },
+  {
+    campus: "University of Arizona",
+    type: "csod",
+    url: "https://arizona.csod.com/ux/ats/careersite/4/home?c=arizona&cfdd[0][id]=228&cfdd[0][options][0]=288&cfdd[1][id]=161&cfdd[1][options][0]=118&country=us",
+  },
+];
+
+
 // NY (State University of New York – SUNY)
 const NY_SUNY = {
   campus: "State University of New York (SUNY)",
@@ -379,6 +402,7 @@ export async function scrapeAllJobsStandalone() {
     const tasks = [
       { name: "CUNY", fn: () => scrapeCunyFaculty(context) },
       { name: "CT State", fn: () => scrapeCtFacultyTeaching(context) },
+      { name: "AZ", fn: () => scrapeAzAll(context) },
       { name: "CSU", fn: () => scrapeCsuFaculty(context) },
       { name: "UMass", fn: () => scrapeUmassAll(context) },
       { name: "UC", fn: () => scrapeUcAll(context) },
@@ -392,17 +416,19 @@ export async function scrapeAllJobsStandalone() {
 
     ];
 
-    const settled = await Promise.allSettled(tasks.map((t) => t.fn()));
-    const jobs = [];
-
-    for (let i = 0; i < settled.length; i++) {
-      const r = settled[i];
-      const name = tasks[i].name;
-      if (r.status === "fulfilled") {
-        if (Array.isArray(r.value)) jobs.push(...r.value);
-      } else {
-        console.error(`❌ ${name} scrape failed:`, r.reason?.message || r.reason);
+    const results = await mapWithConcurrency(tasks, MAX_PARALLEL_SYSTEMS, async (t) => {
+      try {
+        return await t.fn();
+      } catch (e) {
+        console.error(`❌ ${t.name} scrape failed:`, e?.message || e);
+        return null;
       }
+    });
+
+    const jobs = [];
+    for (let i = 0; i < results.length; i++) {
+      const r = results[i];
+      if (Array.isArray(r)) jobs.push(...r);
     }
 
     const professorOnly = jobs.filter((j) => /professor/i.test(String(j.title || "")));
@@ -1347,13 +1373,28 @@ async function scrapeNjRutgers(context, startUrl, campusName) {
   }
 }
 
-async function scrapeNjCsod(context, startUrl, campusName) {
+async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
     await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1000);
 
-    const jobs = await page.evaluate(() => {
+    
+    // CSOD often lazy-loads results behind a "Load more" button.
+    // Click it a few times to surface more job cards/links.
+    for (let i = 0; i < 40; i++) {
+      const btn = page.locator('button:has-text("Load more"), button:has-text("Show more"), button[aria-label*="Load" i], button[aria-label*="More" i]').first();
+      if ((await btn.count().catch(() => 0)) === 0) break;
+      if (!(await btn.isVisible().catch(() => false))) break;
+      const before = await page.evaluate(() => document.querySelectorAll("a[href]").length).catch(() => 0);
+      await btn.scrollIntoViewIfNeeded().catch(() => {});
+      await btn.click({ timeout: 8000 }).catch(() => {});
+      await page.waitForTimeout(900);
+      const after = await page.evaluate(() => document.querySelectorAll("a[href]").length).catch(() => 0);
+      if (after <= before) break;
+    }
+
+const jobs = await page.evaluate(() => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
       const abs = (href) => {
         try {
@@ -1371,8 +1412,12 @@ async function scrapeNjCsod(context, startUrl, campusName) {
         const title = clean(a.textContent);
         if (!url || !title || title.length < 4) continue;
 
-        const ok = /\/job\//i.test(url) || /ats\/job/i.test(url) || (/career/i.test(url) && /job/i.test(url));
-        if (!ok) continue;
+        const ok =
+        /\/job\//i.test(url) ||
+        /ats\/job/i.test(url) ||
+        (/career/i.test(url) && /job/i.test(url)) ||
+        /\/requisition\/\d+/i.test(url) ||
+        (/ux\/ats\/careersite/i.test(url) && /requisition/i.test(url));if (!ok) continue;
 
         if (seen.has(url)) continue;
         seen.add(url);
@@ -1597,8 +1642,8 @@ async function scrapePaAll(context) {
 
 if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "PA");
 if (type === "csod") return await scrapeCsodAs(context, url, campus, "PA");
-if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "PA");
-if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "PA");
+if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "AZ");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "PA");
 
         return [];
       } catch (e) {
@@ -1618,7 +1663,7 @@ async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName) {
 }
 
 async function scrapeCsodAs(context, startUrl, campusName, sourceName) {
-  const items = await scrapeNjCsod(context, startUrl, campusName);
+  const items = await scrapeNjCsod(context, startUrl, campusName, sourceName);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
 
@@ -2254,6 +2299,92 @@ async function scrapeJobDetail(context, url) {
 
 
 
+
+async function scrapeAzAll(context) {
+  const tasks = AZ_CAMPUSES.map(({ campus, type, url }) =>
+    (async () => {
+      try {
+        if (type === "asu-table") return await scrapeAsuFacultyPositionsTable(context, campus, url);
+        if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "AZ");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "AZ");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} AZ scrape failed:`, e?.message || e);
+        return [];
+      }
+    })()
+  );
+
+  const settled = await Promise.allSettled(tasks);
+  const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+// ASU (Interfolio) via JSON endpoint; append department in title when present
+async function scrapeAsuInterfolio(context, campusName, apiUrl) {
+  try {
+    const res = await context.request.get(apiUrl, { timeout: 60_000 });
+    const json = await res.json().catch(() => null);
+
+    const rows = Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : [];
+    const out = [];
+
+    const pickDept = (p) => {
+      const keys = [
+        "department",
+        "position_department",
+        "department_name",
+        "org_name",
+        "organization",
+        "unit_name",
+        "school",
+        "college",
+        "discipline",
+      ];
+      for (const k of keys) {
+        const v = (p && typeof p === "object") ? p[k] : null;
+        if (typeof v === "string" && v.trim().length >= 2) return v.trim();
+      }
+      return null;
+    };
+
+    for (const p of rows) {
+      const rawTitle =
+        (p && (p.position_title || p.title || p.positionTitle || p.position)) || "";
+      const title0 = clean(rawTitle);
+      if (!title0) continue;
+
+      const dept = pickDept(p);
+      const title = dept && !title0.toLowerCase().includes(dept.toLowerCase())
+        ? `${title0} — ${dept}`
+        : title0;
+
+      const link =
+        (p && (p.position_url || p.apply_url || p.url || p.permalink)) || null;
+
+      const url = link ? String(link) : null;
+      if (!url) continue;
+
+      out.push({
+        title,
+        url,
+        source: "AZ",
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      });
+    }
+
+    console.log(`ASU Interfolio listings scraped: ${out.length}`);
+    return uniqByUrl(out);
+  } catch (e) {
+    console.error(`❌ ${campusName} ASU Interfolio scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+
 async function scrapeNySuny(context) {
   const page = await context.newPage();
   try {
@@ -2294,6 +2425,200 @@ async function scrapeNySuny(context) {
 
     console.log(`SUNY listings scraped: ${jobs.length}`);
     return jobs;
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+
+
+// ASU facultypositions.asu.edu table scraper (includes Unit/Department in title)
+async function scrapeAsuFacultyPositionsTable(context, campusName, startUrl) {
+  const page = await context.newPage();
+  try {
+    const jobs = [];
+    const seen = new Set();
+    let url = startUrl;
+
+    for (let safety = 0; safety < 80; safety++) {
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await page.waitForTimeout(800);
+
+      const batch = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try { return new URL(href, location.href).toString(); } catch { return null; }
+        };
+
+        // Try to find the main results table
+        const rows = Array.from(document.querySelectorAll("table tr"));
+        const out = [];
+
+        for (const r of rows) {
+          const a = r.querySelector("a[href]");
+          if (!a) continue;
+          const href = abs(a.getAttribute("href"));
+          if (!href) continue;
+
+          // Title column usually contains Position / Department
+          const t = clean(a.textContent);
+          if (!t || t.length < 4) continue;
+
+          const cells = Array.from(r.querySelectorAll("td"));
+          // From the public page snippet: columns include "Position / Department" then "Unit"
+          const unit = clean(cells[1]?.textContent || "");
+          const title = unit && !t.toLowerCase().includes(unit.toLowerCase()) ? `${t} — ${unit}` : t;
+
+          out.push({ title, url: href });
+        }
+        return out;
+      });
+
+      for (const j of batch) {
+        if (!j?.url || seen.has(j.url)) continue;
+        seen.add(j.url);
+        jobs.push({
+          title: j.title,
+          url: j.url,
+          source: "AZ",
+          category: "Faculty",
+          college: campusName,
+          location: null,
+          description: null,
+        });
+      }
+      // Pagination: navigate/click Next if available (ASU uses different patterns)
+      const beforeFirstHref = await safeEvaluate(page, () => {
+        const a = document.querySelector("table a[href]");
+        return a ? (a.getAttribute("href") || "") : "";
+      }).catch(() => "");
+
+      // Try a "real" next URL first
+      const nextLink = page.locator('a[rel="next"], a:has-text("Next"), a[aria-label*="Next" i]').first();
+      const nextBtn = page.locator('button:has-text("Next"), button[aria-label*="Next" i], [role="button"][aria-label*="Next" i]').first();
+
+      let moved = false;
+
+      if ((await nextLink.count().catch(() => 0)) > 0 && (await nextLink.isVisible().catch(() => false))) {
+        const href = await nextLink.getAttribute("href").catch(() => null);
+        if (href && href.trim() && !/^javascript:/i.test(href)) {
+          const nextUrl = new URL(href, page.url()).toString();
+          if (nextUrl && nextUrl !== url) {
+            url = nextUrl;
+            moved = true;
+            continue;
+          }
+        }
+
+        // If href is missing/JS, click
+        await nextLink.click({ timeout: 10_000 }).catch(() => {});
+        moved = true;
+      } else if ((await nextBtn.count().catch(() => 0)) > 0 && (await nextBtn.isVisible().catch(() => false))) {
+        await nextBtn.click({ timeout: 10_000 }).catch(() => {});
+        moved = true;
+      }
+
+      if (!moved) break;
+
+      // Wait for table to change (best-effort)
+      await page.waitForFunction(
+        (prev) => {
+          const a = document.querySelector("table a[href]");
+          const cur = a ? (a.getAttribute("href") || "") : "";
+          return cur && cur !== prev;
+        },
+        beforeFirstHref,
+        { timeout: 12_000 }
+      ).catch(() => {});
+
+      // If URL changed (common), capture it; if not, stay on current DOM (do NOT re-goto)
+      const newUrl = page.url();
+      if (newUrl && newUrl !== url) url = newUrl;
+
+      // Continue loop without reloading if we clicked a JS paginator
+      // (We keep the current page state; next iteration will collect from DOM as-is.)
+      continue;
+    }
+
+    console.log(`ASU facultypositions listings scraped: ${jobs.length}`);
+
+    return uniqByUrl(jobs);
+  } catch (e) {
+    console.error(`❌ ${campusName} AZ scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// NAU careers.nau.edu search scraper (NOT Workday)
+async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    const jobs = [];
+    const seen = new Set();
+
+    // paginate by ?page=N
+    const base = new URL(startUrl);
+    for (let pageNo = 1; pageNo <= 80; pageNo++) {
+      base.searchParams.set("page", String(pageNo));
+      const url = base.toString();
+
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await page.waitForTimeout(900);
+
+      const batch = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try { return new URL(href, location.href).toString(); } catch { return null; }
+        };
+
+        const out = [];
+        for (const a of Array.from(document.querySelectorAll('a[href]'))) {
+          const href = abs(a.getAttribute("href"));
+          if (!href) continue;
+          if (!/\/jobs\//i.test(href) || /\/jobs\/search/i.test(href)) continue;
+
+          let title = clean(a.textContent);
+          // Some cards have "Read more" links; try heading inside the card
+          if (!title || title.length < 6 || /read more/i.test(title)) {
+            const card = a.closest("article,li,div");
+            const h = card?.querySelector("h1,h2,h3");
+            const ht = clean(h?.textContent);
+            if (ht) title = ht;
+          }
+
+          if (!title || title.length < 6) continue;
+          out.push({ title, url: href });
+        }
+        return out;
+      });
+
+      let addedThisPage = 0;
+      for (const j of batch) {
+        if (!j?.url || seen.has(j.url)) continue;
+        seen.add(j.url);
+        jobs.push({
+          title: j.title,
+          url: j.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: null,
+          description: null,
+        });
+        addedThisPage++;
+      }
+
+      // stop if this page produced no new jobs
+      if (addedThisPage === 0) break;
+    }
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return uniqByUrl(jobs);
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
   } finally {
     await page.close().catch(() => {});
   }
