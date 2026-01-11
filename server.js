@@ -265,6 +265,27 @@ const NC_CAMPUSES = [
 ];
 
 
+
+
+// DE (Delaware)
+const DE_CAMPUSES = [
+  {
+    campus: "Delaware State University",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/desu",
+  },
+  {
+    campus: "University of Delaware",
+    type: "enusfilter",
+    url: "https://careers.udel.edu/cw/en-us/filter/?job-mail-subscribe-privacy=agree&search-keyword=&work-type=faculty",
+  },
+  {
+    campus: "Delaware Technical Community College",
+    type: "peopleadmin",
+    url: "https://dtcc.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&715%5B%5D=1&commit=Search",
+  },
+];
+
 /* ============================== EXPRESS ============================== */
 
 const app = express();
@@ -337,6 +358,7 @@ export async function scrapeAllJobsStandalone() {
       { name: "UC", fn: () => scrapeUcAll(context) },
       { name: "NJ", fn: () => scrapeNjAll(context) },
             { name: "NC", fn: () => scrapeNcAll(context) },
+      { name: "DE", fn: () => scrapeDeAll(context) },
 { name: "PA", fn: () => scrapePaAll(context) },
       { name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
     ];
@@ -1452,6 +1474,44 @@ async function scrapeNcAll(context) {
   const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
+
+
+async function scrapeDeAll(context) {
+  const tasks = DE_CAMPUSES.map(({ campus, type, url }) =>
+    (async () => {
+      try {
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "DE");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "DE");
+        if (type === "enusfilter") {
+          const page = await context.newPage();
+          try {
+            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await page.waitForTimeout(900);
+            const jobs = await scrapeEnUsFilterSite(page, {
+              source: "DE",
+              campus,
+              category: "Faculty",
+            });
+            return jobs;
+          } finally {
+            await page.close().catch(() => {});
+          }
+        }
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} DE scrape failed:`, e?.message || e);
+        return [];
+      }
+    })()
+  );
+
+  const settled = await Promise.allSettled(tasks);
+  const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+
+
 
 /* ============================== PA ============================== */
 
