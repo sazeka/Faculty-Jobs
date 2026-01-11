@@ -13,6 +13,8 @@ import { chromium } from "playwright";
 
 const PORT = process.env.PORT || 3000;
 
+const MAX_PARALLEL_CAMPUSES = Number(process.env.MAX_PARALLEL_CAMPUSES || 4);
+
 const CUNY_URL = "https://cuny.jobs/job-category/faculty/jobs/";
 const CT_URL = "https://www.ct.edu/hr/jobs";
 
@@ -286,6 +288,21 @@ const DE_CAMPUSES = [
   },
 ];
 
+
+
+// RI (Rhode Island)
+const RI_CAMPUSES = [
+  {
+    campus: "Rhode Island College",
+    type: "peopleadmin",
+    url: "https://employment.ric.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&435=&commit=Search",
+  },
+  {
+    campus: "University of Rhode Island",
+    type: "peopleadmin-dept",
+    url: "https://jobs.uri.edu/postings/search?&query=&query_v0_posted_at_date=&query_organizational_tier_3_id=any&803=&query_position_type_id=8&commit=Search",
+  },
+];
 /* ============================== EXPRESS ============================== */
 
 const app = express();
@@ -359,6 +376,7 @@ export async function scrapeAllJobsStandalone() {
       { name: "NJ", fn: () => scrapeNjAll(context) },
             { name: "NC", fn: () => scrapeNcAll(context) },
       { name: "DE", fn: () => scrapeDeAll(context) },
+      { name: "RI", fn: () => scrapeRiAll(context) },
 { name: "PA", fn: () => scrapePaAll(context) },
       { name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
     ];
@@ -414,6 +432,25 @@ function omitAdjunct(title) {
 
 function omitUcFellowships(title) {
   return /\bfellow\b|\bfellowship\b/i.test(String(title || ""));
+}
+
+
+// Simple concurrency limiter for arrays of async tasks.
+async function mapWithConcurrency(items, limit, fn) {
+  const out = new Array(items.length);
+  let idx = 0;
+  const workers = Array.from({ length: Math.max(1, limit) }, async () => {
+    while (idx < items.length) {
+      const i = idx++;
+      try {
+        out[i] = await fn(items[i], i);
+      } catch (e) {
+        out[i] = null;
+      }
+    }
+  });
+  await Promise.all(workers);
+  return out;
 }
 
 // Playwright occasionally throws "Execution context was destroyed" when a page
@@ -1456,57 +1493,81 @@ async function scrapeNjStockton(context, startUrl, campusName) {
 
 /* ============================== NC ============================== */
 
+
 async function scrapeNcAll(context) {
-  const tasks = NC_CAMPUSES.map(({ campus, type, url }) =>
-    (async () => {
+  const results = await mapWithConcurrency(
+    NC_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
       try {
-        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NC");
-        if (type === "peopleadmin-dept") return await scrapePeopleAdminWithDept(context, url, campus, "NC");
+
+if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NC");
+if (type === "peopleadmin-dept") return await scrapePeopleAdminWithDept(context, url, campus, "NC");
+
         return [];
       } catch (e) {
-        console.error(`❌ ${campus} NC scrape failed:`, e?.message || e);
+        console.error(`❌ ${campus} Nc scrape failed:`, e?.message || e);
         return [];
       }
-    })()
+    }
   );
 
-  const settled = await Promise.allSettled(tasks);
-  const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
 
+
 async function scrapeDeAll(context) {
-  const tasks = DE_CAMPUSES.map(({ campus, type, url }) =>
-    (async () => {
+  const results = await mapWithConcurrency(
+    DE_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
       try {
-        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "DE");
-        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "DE");
-        if (type === "enusfilter") {
-          const page = await context.newPage();
-          try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
-            await page.waitForTimeout(900);
-            const jobs = await scrapeEnUsFilterSite(page, {
-              source: "DE",
-              campus,
-              category: "Faculty",
-            });
-            return jobs;
-          } finally {
-            await page.close().catch(() => {});
-          }
-        }
+
+if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "DE");
+if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "DE");
+if (type === "enusfilter") {
+  const page = await context.newPage();
+  try {
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(900);
+    return await scrapeEnUsFilterSite(page, { source: "DE", campus, category: "Faculty" });
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
         return [];
       } catch (e) {
-        console.error(`❌ ${campus} DE scrape failed:`, e?.message || e);
+        console.error(`❌ ${campus} De scrape failed:`, e?.message || e);
         return [];
       }
-    })()
+    }
   );
 
-  const settled = await Promise.allSettled(tasks);
-  const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+
+async function scrapeRiAll(context) {
+  const results = await mapWithConcurrency(
+    RI_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "RI");
+        if (type === "peopleadmin-dept") return await scrapePeopleAdminWithDept(context, url, campus, "RI");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} RI scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
@@ -1515,24 +1576,28 @@ async function scrapeDeAll(context) {
 
 /* ============================== PA ============================== */
 
+
 async function scrapePaAll(context) {
-  const tasks = PA_CAMPUSES.map(({ campus, type, url }) =>
-    (async () => {
+  const results = await mapWithConcurrency(
+    PA_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
       try {
-        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "PA");
-        if (type === "csod") return await scrapeCsodAs(context, url, campus, "PA");
-        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "PA");
-        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "PA");
+
+if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "PA");
+if (type === "csod") return await scrapeCsodAs(context, url, campus, "PA");
+if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "PA");
+if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "PA");
+
         return [];
       } catch (e) {
-        console.error(`❌ ${campus} PA scrape failed:`, e?.message || e);
+        console.error(`❌ ${campus} Pa scrape failed:`, e?.message || e);
         return [];
       }
-    })()
+    }
   );
 
-  const settled = await Promise.allSettled(tasks);
-  const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
