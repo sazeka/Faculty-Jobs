@@ -377,6 +377,53 @@ const OR_CAMPUSES = [
 ];
 
 
+
+
+// WA (Washington)
+const WA_CAMPUSES = [
+  {
+    campus: "University of Washington",
+    type: "uw",
+    url: "https://ap.washington.edu/ahr/academic-jobs/",
+  },
+  {
+    campus: "Washington State University",
+    type: "workday",
+    url: "https://wsu.wd5.myworkdayjobs.com/WSU_Jobs?timeType=6b62c7b4591d0137a1e7b8ebd5055900&jobFamilyGroup=7a7d62448767019c28e399bff8053d45",
+  },
+  {
+    campus: "Western Washington University",
+    type: "wwu",
+    url: "https://hr.wwu.edu/careers-faculty",
+  },
+  {
+    campus: "Eastern Washington University",
+    type: "peopleadmin",
+    url: "https://jobs.hr.ewu.edu/postings/search",
+  },
+  {
+    campus: "Central Washington University",
+    type: "peoplesoft",
+    url: "https://cwuhrprdcg.peoplesoft.cwu.edu/psc/careers/EMPLOYEE/CAREERS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&&siteid=1&",
+  },
+  {
+    campus: "Evergreen State College",
+    type: "peopleadmin",
+    url: "https://evergreen.peopleadmin.com/postings/search",
+  },
+];
+
+
+// ME (Maine)
+const ME_CAMPUSES = [
+  {
+    campus: "University of Maine System",
+    type: "oracle-cx",
+    url: "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=CATEGORIES&selectedCategoriesFacet=300000014335735",
+  },
+];
+
+
 /* ============================== EXPRESS ============================== */
 
 const app = express();
@@ -456,6 +503,8 @@ export async function scrapeAllJobsStandalone() {
       { name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
       { name: "NY (SUNY)", fn: () => scrapeNySuny(context) },
       { name: "OR", fn: () => scrapeOrAll(context) },
+      { name: "WA", fn: () => scrapeWaAll(context) },
+      { name: "ME", fn: () => scrapeMeAll(context) },
 
     ];
 
@@ -474,14 +523,14 @@ export async function scrapeAllJobsStandalone() {
       if (Array.isArray(r)) jobs.push(...r);
     }
 
-    const professorOnly = jobs.filter((j) => /professor/i.test(String(j.title || "")));
+    const facultyOnly = jobs.filter((j) => looksFacultyish(j.title));
 
-    professorOnly.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+    facultyOnly.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
 
     return {
       scrapedAt: new Date().toISOString(),
-      count: professorOnly.length,
-      jobs: professorOnly,
+      count: facultyOnly.length,
+      jobs: facultyOnly,
     };
   } finally {
     await browser.close().catch(() => {});
@@ -1184,7 +1233,7 @@ async function scrapeNjAll(context) {
   const tasks = NJ_CAMPUSES.map(({ campus, type, url }) =>
     (async () => {
       try {
-        if (type === "taleo") return await scrapeNjTaleo(context, url, campus);
+        if (type === "taleo") return await scrapeNjTaleo(context, url, campus, "NJ");
         if (type === "workday") return await scrapeNjWorkday(context, url, campus);
         if (type === "rutgers") return await scrapeNjRutgers(context, url, campus);
         if (type === "csod") return await scrapeNjCsod(context, url, campus);
@@ -1207,7 +1256,7 @@ function toNjJob(title, url, campusName, category = "Faculty") {
   return { title, url, source: "NJ", category, college: campusName, location: null, description: null };
 }
 
-async function scrapeNjTaleo(context, startUrl, campusName) {
+async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
     await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -1249,14 +1298,14 @@ async function scrapeNjTaleo(context, startUrl, campusName) {
     });
 
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
-    console.log(`${campusName} NJ listings scraped: ${filtered.length}`);
+    console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
     return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
   } finally {
     await page.close().catch(() => {});
   }
 }
 
-async function scrapeNjWorkday(context, startUrl, campusName) {
+async function scrapeNjWorkday(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
     await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -1313,7 +1362,7 @@ async function scrapeNjWorkday(context, startUrl, campusName) {
     }
 
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
-    console.log(`${campusName} NJ listings scraped: ${filtered.length}`);
+    console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
     return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
   } finally {
     await page.close().catch(() => {});
@@ -1470,7 +1519,7 @@ const jobs = await page.evaluate(() => {
     });
 
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
-    console.log(`${campusName} NJ listings scraped: ${filtered.length}`);
+    console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
     return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
   } finally {
     await page.close().catch(() => {});
@@ -1479,7 +1528,7 @@ const jobs = await page.evaluate(() => {
 
 // SchoolJobs pagination sometimes uses javascript:void(0) for Next.
 // We click and wait for results signature to change.
-async function scrapeNjSchoolJobs(context, startUrl, campusName) {
+async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
     const jobs = [];
@@ -1701,7 +1750,7 @@ if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "A
 }
 
 async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName) {
-  const items = await scrapeNjSchoolJobs(context, startUrl, campusName);
+  const items = await scrapeNjSchoolJobs(context, startUrl, campusName, sourceName);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
 
@@ -1711,7 +1760,7 @@ async function scrapeCsodAs(context, startUrl, campusName, sourceName) {
 }
 
 async function scrapeWorkdayAs(context, startUrl, campusName, sourceName) {
-  const items = await scrapeNjWorkday(context, startUrl, campusName);
+  const items = await scrapeNjWorkday(context, startUrl, campusName, sourceName);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
 
@@ -1795,6 +1844,62 @@ async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
     await page.close().catch(() => {});
   }
 }
+
+
+async function scrapePeopleSoftAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1500);
+
+    // PeopleSoft pages vary; pull plausible job links.
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); } catch { return null; }
+      };
+
+      const out = [];
+      for (const a of Array.from(document.querySelectorAll("a[href]"))) {
+        const url = abs(a.getAttribute("href"));
+        if (!url) continue;
+
+        const title = clean(a.textContent);
+        if (!title || title.length < 6) continue;
+
+        // Heuristics: PeopleSoft often uses these parameters/pages
+        const okUrl =
+          /HRS_CG_SEARCH_FL|HRS_APP_SCHJOB|JobOpening|jobopening|postings|recruit/i.test(url) ||
+          /openings|job/i.test(url);
+
+        if (!okUrl) continue;
+
+        // Exclude obvious navigation
+        if (/sign in|log in|home|help|privacy|accessibility/i.test(title)) continue;
+
+        out.push({ title, url });
+      }
+
+      const seen = new Set();
+      return out.filter((x) => (seen.has(x.url) ? false : (seen.add(x.url), true)));
+    });
+
+    return items.map((x) => ({
+      title: normalizeUwTitle(x.title),
+      url: x.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+
+
 
 // PeopleAdmin variant: append department/organization to title when available (used for NCCU)
 async function scrapePeopleAdminWithDept(context, startUrl, campusName, sourceName) {
@@ -1905,7 +2010,7 @@ async function scrapeClaremontAll(context) {
   const tasks = CLAREMONT_CAMPUSES.map(({ campus, type, url }) =>
     (async () => {
       try {
-        if (type === "static") return await scrapeClaremontStatic(context, url, campus);
+        if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "OR");
         if (type === "cmc") return await scrapeClaremontCmc(context, url, campus);
         if (type === "workday") return await scrapeClaremontWorkday(context, url, campus);
         return [];
@@ -1922,6 +2027,70 @@ async function scrapeClaremontAll(context) {
   console.log(`Claremont Colleges listings scraped: ${out.length}`);
   return out;
 }
+
+
+function toStaticJob(title, url, campusName, sourceName) {
+  return {
+    title,
+    url,
+    source: sourceName,
+    category: "Faculty",
+    college: campusName,
+    location: null,
+    description: null,
+  };
+}
+
+async function scrapeStaticLinksAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(800);
+
+    const items = await page.evaluate(() => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try {
+          return new URL(href, location.href).toString();
+        } catch {
+          return null;
+        }
+      };
+
+      const out = [];
+      for (const a of Array.from(document.querySelectorAll("a[href]"))) {
+        const url = abs(a.getAttribute("href"));
+        if (!url) continue;
+
+        const title = clean(a.textContent);
+        if (!title || title.length < 6) continue;
+
+        // Avoid obvious nav/footer links
+        const bad =
+          /skip to/i.test(title) ||
+          /privacy|accessibility|equal opportunity|nondiscrimination/i.test(title) ||
+          /contact|about|directory|apply now/i.test(title);
+
+        if (bad) continue;
+
+        // prefer likely job links
+        const ok = /job|posting|position|faculty|academic|career|requisition/i.test(url) || /professor|faculty|lecturer|instructor/i.test(title);
+        if (!ok) continue;
+
+        out.push({ title, url });
+      }
+
+      // de-dupe by url
+      const seen = new Set();
+      return out.filter((x) => (seen.has(x.url) ? false : (seen.add(x.url), true)));
+    });
+
+    return items.map((x) => toStaticJob(x.title, x.url, campusName, sourceName));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 
 function toClaremontJob(title, url, campusName) {
   return { title, url, source: "Claremont Colleges", category: "Faculty", college: campusName, location: null, description: null };
@@ -2331,7 +2500,7 @@ async function scrapeJobDetail(context, url) {
         if (low === "cuny" || low === "the city university of new york") college = null;
       }
 
-      return { title: title || "(No title found)", description, college };
+      return { title: normalizeUwTitle(title || "(No title found)"), description, college };
     });
 
     return { title: job.title, description: job.description, college: job.college, url };
@@ -2658,6 +2827,13 @@ async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
     }
 
     console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    try {
+      const sample = (items || []).slice(0, 5);
+      for (const x of sample) {
+        console.log("UW sample titles (raw -> cleaned):", x.title, "=>", normalizeUwTitle(x.title));
+      }
+    } catch {}
+
     return uniqByUrl(jobs);
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
@@ -2702,3 +2878,643 @@ async function scrapeOrAll(context) {
     settled.flatMap((r) => (r.status === "fulfilled" ? r.value : []))
   );
 }
+
+
+
+async function scrapeWaAll(context) {
+  const tasks = WA_CAMPUSES.map(({ campus, type, url }) =>
+    (async () => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "WA");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "WA");
+        if (type === "uw") return await scrapeUwAcademicJobs(context, url, campus, "WA");
+        if (type === "wwu") return await scrapeWwuFacultyPage(context, url, campus, "WA");
+        if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "WA");
+        if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "WA");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} WA scrape failed:`, e?.message || e);
+        return [];
+      }
+    })()
+  );
+
+  const settled = await Promise.allSettled(tasks);
+  return uniqByUrl(
+    settled.flatMap((r) => (r.status === "fulfilled" ? r.value : []))
+  );
+}
+
+
+
+
+
+
+/* ============================== ME ============================== */
+
+async function scrapeMeAll(context) {
+  const results = await mapWithConcurrency(
+    ME_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "ME");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} ME scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+// Oracle HCM Candidate Experience (public jobs pages)
+async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    // Capture any XHR/Fetch calls the site makes to Oracle HCM REST endpoints.
+    const apiHits = [];
+    page.on("request", (req) => {
+      try {
+        const rt = req.resourceType();
+        if (rt !== "xhr" && rt !== "fetch") return;
+        const u = req.url();
+        if (!u) return;
+        if (u.includes("/hcmRestApi/") && /recruitingCEJobRequisitions/i.test(u)) {
+          apiHits.push(u);
+        }
+      } catch {}
+    });
+
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    // Let the SPA hydrate and fire its XHRs
+    await page.waitForTimeout(2500);
+
+    // 1) Best case: reuse the exact API URL the site itself called (most reliable).
+    let jobs = [];
+    if (apiHits.length) {
+      // Prefer URLs that already include finder= and onlyData=true
+      const picked =
+        apiHits.find((u) => /finder=/i.test(u) && /onlyData=true/i.test(u)) ||
+        apiHits.find((u) => /finder=/i.test(u)) ||
+        apiHits[0];
+
+      try {
+        const res = await context.request.get(picked, { timeout: 60_000 });
+        if (res.ok()) {
+          const json = await res.json().catch(() => null);
+          jobs = oracleCxJsonToJobs(json, campusName, sourceName, picked);
+        }
+      } catch {}
+    }
+
+    // 2) If the captured URL path is blocked/empty, try our REST query builder.
+    if (!jobs.length) {
+      jobs = await tryOracleCxRest(context, startUrl, campusName, sourceName);
+    }
+
+    // 3) As a last resort, fall back to DOM scraping (often 0 on Oracle CX SPAs).
+    if (!jobs.length) {
+      // Try to load more results: scroll + click any "Load more"/"Show more" style button
+      for (let i = 0; i < 40; i++) {
+        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)).catch(() => {});
+        await page.waitForTimeout(700);
+
+        const btn = page
+          .locator(
+            'button:has-text("Load more"), button:has-text("Show more"), button:has-text("More"), ' +
+              'button[aria-label*="Load" i], button[aria-label*="More" i]'
+          )
+          .first();
+
+        if ((await btn.count().catch(() => 0)) > 0 && (await btn.isVisible().catch(() => false))) {
+          const before = await page.evaluate(() => document.querySelectorAll("a[href]").length).catch(() => 0);
+          await btn.scrollIntoViewIfNeeded().catch(() => {});
+          await btn.click({ timeout: 8000 }).catch(() => {});
+          await page.waitForTimeout(900);
+          const after = await page.evaluate(() => document.querySelectorAll("a[href]").length).catch(() => 0);
+          if (after <= before) break;
+        }
+      }
+
+      const items = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
+
+        const anchors = Array.from(document.querySelectorAll("a[href]"));
+
+        const out = [];
+        const seen = new Set();
+
+        for (const a of anchors) {
+          const url = abs(a.getAttribute("href"));
+          if (!url) continue;
+
+          const u = url.toLowerCase();
+          const isJob =
+            u.includes("/job/") ||
+            u.includes("/jobs/") ||
+            u.includes("jobid=") ||
+            u.includes("job-id=") ||
+            u.includes("requisition") ||
+            u.includes("jobdetails");
+
+          if (!isJob) continue;
+
+          let title = clean(a.textContent);
+          if (!title || title.length < 4 || /view|apply|details/i.test(title)) {
+            const card = a.closest("li, article, div, tr, section") || a.parentElement;
+            const h =
+              card?.querySelector?.("h1,h2,h3,h4,strong,[role='heading']") ||
+              card?.querySelector?.("[data-automation-id*='title' i]");
+            const ht = clean(h?.textContent);
+            if (ht && ht.length >= 4) title = ht;
+          }
+
+          if (!title || title.length < 4) continue;
+          if (seen.has(url)) continue;
+          seen.add(url);
+
+          out.push({ title, url });
+        }
+
+        return out;
+      }).catch(() => []);
+
+      jobs = (items || [])
+        .map((x) => ({
+          title: clean(x.title),
+          url: x.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: null,
+          description: null,
+        }))
+        .filter((j) => !omitAdjunct(j.title));
+
+      console.log(`${campusName} ${sourceName} listings scraped (DOM): ${jobs.length}`);
+    } else {
+      console.log(`${campusName} ${sourceName} listings scraped (REST): ${jobs.length}`);
+    }
+
+    return uniqByUrl(jobs);
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Convert Oracle CX JSON payloads to our standard jobs objects.
+// Handles multiple payload shapes seen across tenants.
+function oracleCxJsonToJobs(json, campusName, sourceName, apiUrlForSiteHint = "") {
+  try {
+    const items =
+      (json && Array.isArray(json.items) && json.items) ||
+      (json && Array.isArray(json.requisitionList) && json.requisitionList) ||
+      (json && Array.isArray(json.RequisitionList) && json.RequisitionList) ||
+      (json && Array.isArray(json.data) && json.data) ||
+      [];
+
+    // Derive site from the API URL if possible, else default.
+    let site = "CX_1";
+    try {
+      const u = new URL(apiUrlForSiteHint || "");
+      const m = (u.searchParams.get("finder") || "").match(/siteNumber\s*=\s*([^,;]+)/i);
+      if (m && m[1]) site = m[1].trim();
+    } catch {}
+
+    const base = "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com";
+    const out = [];
+
+    for (const it of items) {
+      const title =
+        clean(it?.Title || it?.requisitionTitle || it?.RequisitionTitle || it?.title || it?.requisitionName || "");
+      if (!title) continue;
+
+      const id =
+        it?.Id ??
+        it?.id ??
+        it?.RequisitionId ??
+        it?.requisitionId ??
+        it?.JobRequisitionId ??
+        it?.jobRequisitionId ??
+        null;
+
+      const url =
+        (typeof it?.ExternalApplyUrl === "string" && it.ExternalApplyUrl) ||
+        (typeof it?.ApplyUrl === "string" && it.ApplyUrl) ||
+        (typeof it?.applyUrl === "string" && it.applyUrl) ||
+        (id != null ? `${base}/hcmUI/CandidateExperience/en/sites/${site}/job/${id}` : "");
+
+      if (!url) continue;
+
+      out.push({
+        title,
+        url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      });
+    }
+
+    return out.filter((j) => !omitAdjunct(j.title));
+  } catch {
+    return [];
+  }
+}
+
+
+// Oracle CX REST helper: tries multiple query patterns and paginates.
+// Returns job objects in our standard schema.
+async function tryOracleCxRest(context, startUrl, campusName, sourceName) {
+  try {
+    const u = new URL(startUrl);
+    const origin = u.origin;
+    const site = extractOracleCxSiteCode(u.pathname) || "CX_1";
+
+    // If the UI URL includes a selectedCategoriesFacet, try to pass it through to REST queries.
+    const facetId = u.searchParams.get("selectedCategoriesFacet");
+
+    // Candidate query strings to try (Oracle tenants vary on which fields are queryable)
+    const qCandidates = [];
+    if (facetId) {
+      qCandidates.push(`CategoriesFacet=${facetId}`);
+      qCandidates.push(`CategoryId=${facetId}`);
+      qCandidates.push(`JobCategoryId=${facetId}`);
+      qCandidates.push(`categoriesFacet=${facetId}`);
+    }
+    // Always include a no-filter attempt
+    qCandidates.push(null);
+
+    const basePathVariants = [
+      "/hcmRestApi/resources/latest/recruitingCEJobRequisitions",
+      "/hcmRestApi/resources/11.13.18.05/recruitingCEJobRequisitions",
+    ];
+
+    for (const basePath of basePathVariants) {
+      for (const q of qCandidates) {
+        const jobs = await fetchOracleCxRequisitions(context, origin + basePath, { q, site, origin, campusName, sourceName });
+        if (jobs && jobs.length) return jobs;
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return [];
+}
+
+// --- Oracle CX helpers (REST) ---
+
+function extractOracleCxSiteCode(pathname) {
+  // Example: /hcmUI/CandidateExperience/en/sites/CX_1/jobs
+  const m = String(pathname || "").match(/\/sites\/([^\/]+)/i);
+  return m ? m[1] : null;
+}
+
+function oracleCxBuildJobUrl(origin, site, reqId) {
+  if (!origin || !site || !reqId) return null;
+  return `${origin}/hcmUI/CandidateExperience/en/sites/${site}/job/${reqId}`;
+}
+
+function oracleCxPickFirst(obj, keys) {
+  for (const k of keys) {
+    const v = obj && obj[k];
+    if (typeof v === "string" && v.trim()) return v.trim();
+  }
+  return null;
+}
+
+function oracleCxExtractRequisitionList(json) {
+  // Oracle responses vary:
+  // - { items: [ { requisitionList: [...] , TotalJobsCount: N, ... } ] }
+  // - { items: [ ...requisitionListItems ] }
+  // - { requisitionList: [...] }
+  // - { items: [...] } where items already are requisitions
+  if (!json) return [];
+
+  const direct = Array.isArray(json.requisitionList) ? json.requisitionList : null;
+  if (direct && direct.length) return direct;
+
+  const items = Array.isArray(json.items) ? json.items : null;
+  if (items && items.length) {
+    const withList = items.find((x) => x && Array.isArray(x.requisitionList));
+    if (withList && Array.isArray(withList.requisitionList)) return withList.requisitionList;
+
+    // Some tenants return requisitions directly as items
+    const looksLikeReq = items.filter((x) => x && (x.RequisitionId || x.requisitionId || x.Id || x.Title || x.RequisitionTitle));
+    if (looksLikeReq.length) return looksLikeReq;
+  }
+
+  return [];
+}
+
+async function fetchOracleCxRequisitions(context, baseUrl, { q, site, origin, campusName, sourceName }) {
+  const limit = 100;
+  let offset = 0;
+  const out = [];
+
+  // Build a few q variants because tenants differ on query fields/format.
+  const qVariants = [];
+
+  // Always try with SiteNumber filter first (if we have it)
+  const siteClauses = site ? [`SiteNumber=${site}`, `siteNumber=${site}`] : [];
+  const q0 = q ? String(q) : null;
+
+  if (q0 && siteClauses.length) {
+    // Common Oracle REST "q" supports semicolon-separated clauses
+    for (const s of siteClauses) {
+      qVariants.push(`${q0};${s}`);
+      qVariants.push(`${s};${q0}`);
+      qVariants.push(`${q0},${s}`);
+      qVariants.push(`${s},${q0}`);
+    }
+  }
+  if (q0) qVariants.push(q0);
+  if (siteClauses.length) qVariants.push(...siteClauses);
+  qVariants.push(null);
+
+  for (const qTry of qVariants) {
+    offset = 0;
+    out.length = 0;
+
+    for (let safety = 0; safety < 80; safety++) {
+      const url = new URL(baseUrl);
+      url.searchParams.set("limit", String(limit));
+      url.searchParams.set("offset", String(offset));
+      if (qTry) url.searchParams.set("q", qTry);
+
+      const res = await context.request.get(url.toString(), {
+        timeout: 60_000,
+        headers: {
+          accept: "application/json",
+          // Oracle REST framework version header (safe to include)
+          "REST-Framework-Version": "4",
+        },
+      }).catch(() => null);
+
+      if (!res || !res.ok()) break;
+
+      const json = await res.json().catch(() => null);
+      const reqs = oracleCxExtractRequisitionList(json);
+
+      if (!reqs.length) break;
+
+      for (const r of reqs) {
+        const reqId = r?.RequisitionId || r?.requisitionId || r?.Id || r?.id || null;
+        const title =
+          oracleCxPickFirst(r, ["Title", "RequisitionTitle", "title", "requisitionTitle"]) ||
+          oracleCxPickFirst(r, ["RequisitionNumber", "requisitionNumber"]) ||
+          null;
+
+        const primaryLoc = oracleCxPickFirst(r, ["PrimaryLocation", "primaryLocation", "Location", "location"]) || null;
+        const org = oracleCxPickFirst(r, ["Organization", "organization", "Department", "department", "BusinessUnit", "businessUnit"]) || null;
+
+        // Prefer API-provided link if present
+        const href =
+          oracleCxPickFirst(r, ["href", "Href", "applyUrl", "ApplyUrl", "externalApplyUrl", "ExternalApplyUrl"]) ||
+          (Array.isArray(r?.links) ? oracleCxPickFirst(r.links.find((x) => x?.rel === "self") || {}, ["href"]) : null) ||
+          null;
+
+        const jobUrl = href || oracleCxBuildJobUrl(origin, site || "CX_1", reqId) || origin;
+
+        // For your app, "college" is the institution; keep org/location in fields
+        out.push({
+          title: clean(title || ""),
+          url: jobUrl,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: primaryLoc,
+          description: org, // lightweight: store org/department here if you want; can change later
+        });
+      }
+
+      // pagination
+      const hasMore = Boolean(json?.hasMore);
+      const count = Number(json?.count || 0);
+
+      offset += limit;
+      if (!hasMore && count < limit) break;
+      if (reqs.length < limit) break;
+    }
+
+    if (out.length) return out;
+  }
+
+  return [];
+}
+
+
+async function scrapeWwuFacultyPage(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); } catch { return null; }
+      };
+
+      const root = document.querySelector("main") || document.querySelector("#content") || document.body;
+
+      const out = [];
+      const candidates = Array.from(root.querySelectorAll("a[href]")).map((a) => {
+        const url = abs(a.getAttribute("href"));
+        const text = clean(a.textContent);
+        return { a, url, text };
+      }).filter((x) => x.url && x.text && x.text.length >= 6);
+
+      for (const { a, url, text } of candidates) {
+        if (/privacy|accessibility|contact|directory|undergraduate|graduate/i.test(text)) continue;
+
+        const container = a.closest("li, article, tr, .field-item, .views-row, .card") || a.parentElement;
+        let title = text;
+
+        if (container) {
+          const h = container.querySelector("h1,h2,h3,strong,b");
+          const ht = clean(h?.textContent);
+          if (ht && ht.length >= 6) title = ht;
+          else {
+            const t = clean(container.textContent);
+            const first = clean(t.split(/\n|\.|\|/)[0]);
+            if (first && first.length >= 6 && first.length <= 160) title = first;
+          }
+        }
+
+        const ok =
+          /job|posting|apply|interfolio|workday|careers|requisition/i.test(url) ||
+          /faculty|professor|assistant|associate|lecturer|instructor/i.test(title);
+
+        if (!ok) continue;
+        out.push({ title, url });
+      }
+
+      const seen = new Set();
+      return out.filter((x) => (seen.has(x.url) ? false : (seen.add(x.url), true)));
+    });
+
+    return items.map((x) => ({
+      title: x.title,
+      url: x.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+
+
+// ===== UW Academic Jobs (robust full-list scraper) =====
+
+function normalizeUwTitle(raw) {
+  // Normalize whitespace
+  let s = String(raw || "").replace(/\s+/g, " ").trim();
+
+  // Fix missing spaces between words like "CenterOpen" or "SurgeryUW"
+  s = s.replace(/([a-z])([A-Z])/g, "$1 $2");
+
+  // Normalize separators
+  s = s.replace(/\s*--\s*/g, " — ");
+  s = s.replace(/\s*-\s*/g, " - ");
+
+  // Trim at metadata that UW appends in the same text block
+  const cut = s.search(/\b(Open date:|Position open through:|More info\b|Apply now\b)\b/i);
+  if (cut !== -1) s = s.slice(0, cut).trim();
+
+  // Drop common UW facility/location tails (including full name variant)
+  s = s.replace(/\b(University of Washington Medical Center|UW Medical Center|UWMC|Harborview Medical Center|Seattle Children'?s)\b[\s\S]*$/i, "").trim();
+
+  // Trim trailing compass/location fragments
+  s = s.replace(/\s*[—-]\s*(NW|NE|SW|SE)\b.*$/i, "").trim();
+  s = s.replace(/\b(Seattle|Tacoma|Bothell)\b.*$/i, "").trim();
+
+  // Final tidy
+  s = s.replace(/\s+,/g, ",").trim();
+  return s;
+}
+
+
+
+
+async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+
+    // Warm up lazy-loaded parts by scrolling until the number of "More info" links stops increasing
+    try {
+      let last = 0;
+      for (let i = 0; i < 30; i++) {
+        const now = await page.locator('a:has-text("More info")').count().catch(() => 0);
+        if (now > last) last = now;
+        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)).catch(() => {});
+        await page.waitForTimeout(600);
+        const after = await page.locator('a:has-text("More info")').count().catch(() => 0);
+        if (after <= last) break;
+        last = after;
+      }
+      await page.evaluate(() => window.scrollTo(0, 0)).catch(() => {});
+      await page.waitForTimeout(300);
+    } catch {}
+
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); }
+        catch { return null; }
+      };
+
+      const heading = Array.from(document.querySelectorAll("h1,h2,h3")).find((h) =>
+        /Academic Jobs/i.test(clean(h.textContent))
+      );
+
+      let root = document.querySelector("main") || document.body;
+      if (heading) {
+        const section = heading.closest("section, article, main, div") || root;
+        root = section;
+      }
+
+      const ul =
+        root.querySelector("ul") ||
+        document.querySelector("main ul") ||
+        document.querySelector("ul");
+
+      if (!ul) return [];
+
+      // Walk UL children; postings are rendered as LI + sibling anchors ("More info", "Apply now")
+      const children = Array.from(ul.children);
+      const out = [];
+
+      let pendingTitle = null;
+
+      const flush = (url) => {
+        if (!pendingTitle || !url) return;
+        out.push({ title: pendingTitle, url });
+        pendingTitle = null;
+      };
+
+      for (const el of children) {
+        const tag = (el.tagName || "").toLowerCase();
+        const text = clean(el.textContent);
+
+        if (tag === "li" && /\bPosition\s+\d+\b/i.test(text)) {
+          pendingTitle = text;
+          continue;
+        }
+
+        if (pendingTitle && tag === "a") {
+          const label = clean(el.textContent).toLowerCase();
+          const href = abs(el.getAttribute("href"));
+          if (!href) continue;
+
+          if (label === "more info") {
+            flush(href);
+            continue;
+          }
+          if (label === "apply now" || /interfolio/i.test(href)) {
+            flush(href);
+            continue;
+          }
+        }
+      }
+
+      const seen = new Set();
+      return out.filter((x) => (seen.has(x.url) ? false : (seen.add(x.url), true)));
+    });
+
+    const jobs = (items || []).map((x) => ({
+      title: normalizeUwTitle(x.title),
+      url: x.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return jobs;
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
