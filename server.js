@@ -335,6 +335,48 @@ const NY_SUNY = {
 };
 
 
+
+// OR (Oregon)
+const OR_CAMPUSES = [
+  {
+    campus: "University of Oregon",
+    type: "enusfilter",
+    url: "https://careers.uoregon.edu/en-us/filter/?job-mail-subscribe-privacy=agree&search-keyword=&work-type=faculty%20-%20tenure%20track",
+  },
+  {
+    campus: "Southern Oregon University",
+    type: "workday",
+    url: "https://sou.wd1.myworkdayjobs.com/Southern_Oregon_University?timeType=78f8dc5ac5fe1025a7dd2813833b0003&jobFamilyGroup=edc27d4214f21000cad5ca246d830001",
+  },
+  {
+    campus: "Portland State University",
+    type: "peopleadmin",
+    url: "https://jobs.hrc.pdx.edu/postings/search",
+  },
+  {
+    campus: "Oregon State University",
+    type: "peopleadmin",
+    url: "https://jobs.oregonstate.edu/postings/search",
+  },
+  {
+    campus: "Oregon Institute of Technology",
+    type: "peopleadmin",
+    url: "https://jobs.oit.edu/postings/search",
+  },
+  {
+    campus: "Eastern Oregon University",
+    type: "peopleadmin",
+    url: "https://eou.peopleadmin.com/postings/search",
+  },
+  {
+    campus: "Western Oregon University",
+    type: "static",
+    url: "https://wou.edu/hr/employment/jobs/",
+  },
+
+];
+
+
 /* ============================== EXPRESS ============================== */
 
 const app = express();
@@ -413,6 +455,7 @@ export async function scrapeAllJobsStandalone() {
 { name: "PA", fn: () => scrapePaAll(context) },
       { name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
       { name: "NY (SUNY)", fn: () => scrapeNySuny(context) },
+      { name: "OR", fn: () => scrapeOrAll(context) },
 
     ];
 
@@ -2622,4 +2665,40 @@ async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
   } finally {
     await page.close().catch(() => {});
   }
+}
+
+
+
+async function scrapeOrAll(context) {
+  const tasks = OR_CAMPUSES.map(({ campus, type, url }) =>
+    (async () => {
+      try {
+        if (type === "enusfilter") {
+          const page = await context.newPage();
+          try {
+            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await page.waitForTimeout(900);
+            return await scrapeEnUsFilterSite(page, {
+              source: "OR",
+              campus,
+              category: "Faculty",
+            });
+          } finally {
+            await page.close().catch(() => {});
+          }
+        }
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OR");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OR");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} OR scrape failed:`, e?.message || e);
+        return [];
+      }
+    })()
+  );
+
+  const settled = await Promise.allSettled(tasks);
+  return uniqByUrl(
+    settled.flatMap((r) => (r.status === "fulfilled" ? r.value : []))
+  );
 }
