@@ -185,6 +185,86 @@ const PA_CAMPUSES = [
   },
 ];
 
+// NC (multi-platform; primarily PeopleAdmin)
+const NC_CAMPUSES = [
+  {
+    campus: "Appalachian State University",
+    type: "peopleadmin",
+    url: "https://appstate.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search",
+  },
+  {
+    campus: "East Carolina University",
+    type: "peopleadmin",
+    url: "https://ecu.peopleadmin.com//postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&435=&commit=Search",
+  },
+  {
+    campus: "Elizabeth City State University",
+    type: "peopleadmin",
+    url: "https://jobs.ecsu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&225=&436=&1613%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Fayetteville State University",
+    type: "peopleadmin",
+    url: "https://jobs.uncfsu.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search",
+  },
+  {
+    campus: "North Carolina A&T State University",
+    type: "peopleadmin",
+    url: "https://jobs.ncat.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&2000%5B%5D=2&1827=&440=&225=&commit=Search",
+  },
+  {
+    campus: "North Carolina Central University",
+    type: "peopleadmin-dept",
+    url: "https://jobs.nccu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1636%5B%5D=2&commit=Search",
+  },
+  {
+    campus: "NC State University",
+    type: "peopleadmin",
+    url: "https://jobs.ncsu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1196%5B%5D=4&commit=Search",
+  },
+  {
+    campus: "UNC Asheville",
+    type: "peopleadmin",
+    url: "https://jobs.unca.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&2414%5B%5D=2&commit=Search&_gl=1*1spg4dq*_gcl_au*MTU5NDAxNTk3Ny4xNzY4MTUzMzA3",
+  },
+  {
+    campus: "UNC-Chapel Hill",
+    type: "peopleadmin",
+    url: "https://unc.peopleadmin.com/postings/search?query=&query_v0_posted_at_date=&query_organizational_tier_2_id=any&609=&query_organizational_tier_3_id=any&526=Any&query_position_type_id=6&608=Any&commit=Search",
+  },
+  {
+    campus: "UNC Charlotte",
+    type: "peopleadmin",
+    url: "https://jobs.charlotte.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_organizational_tier_2_id%5B%5D=any&1976%5B%5D=1&1976%5B%5D=2&2074=&2075%5B%5D=2&commit=Search",
+  },
+  {
+    campus: "UNC Pembroke",
+    type: "peopleadmin",
+    url: "https://jobs.uncp.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&863%5B%5D=2&commit=Search",
+  },
+  {
+    campus: "UNC School of the Arts",
+    type: "peopleadmin",
+    url: "https://employment.uncsa.edu/postings/search?query_position_type_id=3",
+  },
+  {
+    campus: "UNC Wilmington",
+    type: "peopleadmin",
+    url: "https://jobs.uncw.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1594%5B%5D=2&742=&commit=Search",
+  },
+  {
+    campus: "Western Carolina University",
+    type: "peopleadmin",
+    url: "https://jobs.wcu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&2022=2&query_organizational_tier_3_id=any&commit=Search",
+  },
+  {
+    campus: "Winston-Salem State University",
+    type: "peopleadmin",
+    url: "https://jobs.wssu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&query_position_type_id%5B%5D=2&commit=Search",
+  },
+];
+
+
 /* ============================== EXPRESS ============================== */
 
 const app = express();
@@ -256,7 +336,8 @@ export async function scrapeAllJobsStandalone() {
       { name: "UMass", fn: () => scrapeUmassAll(context) },
       { name: "UC", fn: () => scrapeUcAll(context) },
       { name: "NJ", fn: () => scrapeNjAll(context) },
-      { name: "PA", fn: () => scrapePaAll(context) },
+            { name: "NC", fn: () => scrapeNcAll(context) },
+{ name: "PA", fn: () => scrapePaAll(context) },
       { name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
     ];
 
@@ -273,12 +354,14 @@ export async function scrapeAllJobsStandalone() {
       }
     }
 
-    jobs.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+    const professorOnly = jobs.filter((j) => /professor/i.test(String(j.title || "")));
+
+    professorOnly.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
 
     return {
       scrapedAt: new Date().toISOString(),
-      count: jobs.length,
-      jobs,
+      count: professorOnly.length,
+      jobs: professorOnly,
     };
   } finally {
     await browser.close().catch(() => {});
@@ -1347,6 +1430,29 @@ async function scrapeNjStockton(context, startUrl, campusName) {
   }
 }
 
+
+
+/* ============================== NC ============================== */
+
+async function scrapeNcAll(context) {
+  const tasks = NC_CAMPUSES.map(({ campus, type, url }) =>
+    (async () => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NC");
+        if (type === "peopleadmin-dept") return await scrapePeopleAdminWithDept(context, url, campus, "NC");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} NC scrape failed:`, e?.message || e);
+        return [];
+      }
+    })()
+  );
+
+  const settled = await Promise.allSettled(tasks);
+  const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
 /* ============================== PA ============================== */
 
 async function scrapePaAll(context) {
@@ -1465,6 +1571,109 @@ async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
     await page.close().catch(() => {});
   }
 }
+
+// PeopleAdmin variant: append department/organization to title when available (used for NCCU)
+async function scrapePeopleAdminWithDept(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    const jobs = [];
+    const seen = new Set();
+    let currentUrl = startUrl;
+
+    const deptFromContainer = (containerText) => {
+      const t = clean(containerText || "");
+      const m =
+        t.match(/Department\s*:\s*([^\n•|]{3,140})/i) ||
+        t.match(/Organization\s*:\s*([^\n•|]{3,140})/i) ||
+        t.match(/Unit\s*:\s*([^\n•|]{3,140})/i);
+      return m ? clean(m[1]) : null;
+    };
+
+    for (let safety = 0; safety < 120; safety++) {
+      await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await page.waitForTimeout(700);
+
+      const batch = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
+
+        const out = [];
+        for (const a of Array.from(document.querySelectorAll('a[href*="/postings/"]'))) {
+          const url = abs(a.getAttribute("href"));
+          if (!url) continue;
+          if (!/\/postings\/\d+/i.test(url)) continue;
+
+          const title = clean(a.textContent);
+          if (!title || title.length < 4) continue;
+          if (/search|home|back|return|login|logout|help|privacy|accessibility/i.test(title)) continue;
+
+          const container = a.closest("tr") || a.closest("li") || a.closest("div") || null;
+          const containerText = container ? clean(container.innerText || "") : "";
+
+          out.push({ title, url, containerText });
+        }
+
+        const uniq = [];
+        const s = new Set();
+        for (const x of out) {
+          if (!x.url || s.has(x.url)) continue;
+          s.add(x.url);
+          uniq.push(x);
+        }
+        return uniq;
+      });
+
+      for (const j of batch) {
+        if (!j?.url || seen.has(j.url)) continue;
+        seen.add(j.url);
+
+        const dept = deptFromContainer(j.containerText || "");
+        let title = clean(j.title);
+        if (dept && !title.toLowerCase().includes(dept.toLowerCase())) {
+          title = `${title} — ${dept}`;
+        }
+
+        jobs.push({ title, url: j.url });
+      }
+
+      const next = page.locator('a[rel="next"], a:has-text("Next"), a[aria-label*="Next" i]').first();
+      if ((await next.count().catch(() => 0)) === 0) break;
+      if (!(await next.isVisible().catch(() => false))) break;
+
+      const href = await next.getAttribute("href").catch(() => null);
+      if (!href) break;
+
+      const nextUrl = new URL(href, page.url()).toString();
+      if (nextUrl === currentUrl) break;
+      currentUrl = nextUrl;
+    }
+
+    const out = jobs
+      .map((j) => ({
+        title: clean(j.title),
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      }))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${out.length}`);
+    return out;
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+
 
 /* ============================== CLAREMONT COLLEGES ============================== */
 
