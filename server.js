@@ -423,6 +423,45 @@ const ME_CAMPUSES = [
   },
 ];
 
+// MI (Michigan)
+const MI_CAMPUSES = [
+  {
+    campus: "Central Michigan University",
+    type: "peopleadmin",
+    url: "https://www.jobs.cmich.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=2&372=&734=&commit=Search",
+  },
+  {
+    campus: "Eastern Michigan University",
+    type: "nau-search",
+    url: "https://careers.emich.edu/jobs/search?page=1&employment_type_uids%5B%5D=e287a25700cc5e02041e575342cc273a&query=",
+  },
+  {
+    campus: "Michigan State University",
+    type: "nau-search",
+    url: "https://careers.msu.edu/jobs/search?page=1&category_uids%5B%5D=91b3c13e4059d1ed2af62eae49722dd2&employment_type_uids%5B%5D=30c2d65e1bff7c02a39b78266368afee&query=",
+  },
+  {
+    campus: "Oakland University",
+    type: "peopleadmin",
+    url: "https://jobs.oakland.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&242=&243%5B%5D=1&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "University of Michigan",
+    type: "umich",
+    url: "https://careers.umich.edu/search-jobs?career_interest=All&department=&field_job_modes_of_work_target_id=All&job_id=&keyword=professor&position=F&regular_temporary=R&title=&work_location=All&page=0",
+  },
+  {
+    campus: "Wayne State University",
+    type: "csod",
+    url: "https://waynetalent.csod.com/ux/ats/careersite/2/home?c=waynetalent&cfdd[0][id]=73&cfdd[0][options][0]=86",
+  },
+  {
+    campus: "Western Michigan University",
+    type: "peopleadmin",
+    url: "https://www.wmujobs.org/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id[]=3&435=&commit=Search",
+  },
+];
+
 
 /* ============================== EXPRESS ============================== */
 
@@ -496,10 +535,11 @@ export async function scrapeAllJobsStandalone() {
       { name: "UMass", fn: () => scrapeUmassAll(context) },
       { name: "UC", fn: () => scrapeUcAll(context) },
       { name: "NJ", fn: () => scrapeNjAll(context) },
-            { name: "NC", fn: () => scrapeNcAll(context) },
+      { name: "NC", fn: () => scrapeNcAll(context) },
       { name: "DE", fn: () => scrapeDeAll(context) },
       { name: "RI", fn: () => scrapeRiAll(context) },
-{ name: "PA", fn: () => scrapePaAll(context) },
+      { name: "PA", fn: () => scrapePaAll(context) },
+      { name: "MI", fn: () => scrapeMiAll(context) },
       { name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
       { name: "NY (SUNY)", fn: () => scrapeNySuny(context) },
       { name: "OR", fn: () => scrapeOrAll(context) },
@@ -1731,15 +1771,48 @@ async function scrapePaAll(context) {
     MAX_PARALLEL_CAMPUSES,
     async ({ campus, type, url }) => {
       try {
-
-if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "PA");
-if (type === "csod") return await scrapeCsodAs(context, url, campus, "PA");
-if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "AZ");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "PA");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "PA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "PA");
 
         return [];
       } catch (e) {
         console.error(`❌ ${campus} Pa scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== MI ============================== */
+
+async function scrapeMiAll(context) {
+  const results = await mapWithConcurrency(
+    MI_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MI");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "MI");
+        if (type === "nau-search") {
+          // MSU's listing cards can surface short/variant titles (e.g., "Assistant Professor-FixedTerm").
+          // Enrich from the job detail page to recover the canonical title and college/department.
+          if (/michigan state university/i.test(campus) || /careers\.msu\.edu/i.test(url)) {
+            const base = await scrapeNauSearch(context, url, campus, "MI");
+            return await enrichEnUsJobCardsFromDetails(context, base, {
+              titleDeptSeparator: " - ",
+              preferDeptKeys: ["college", "department", "organization", "unit", "school"],
+            });
+          }
+          return await scrapeNauSearch(context, url, campus, "MI");
+        }
+        if (type === "umich") return await scrapeUmichCareers(context, url, campus, "MI");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} MI scrape failed:`, e?.message || e);
         return [];
       }
     }
@@ -2782,28 +2855,85 @@ async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
       const batch = await safeEvaluate(page, () => {
         const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
         const abs = (href) => {
-          try { return new URL(href, location.href).toString(); } catch { return null; }
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
+
+        const extractLocation = (card) => {
+          if (!card) return null;
+          // Try explicit labels first
+          const labeled = Array.from(card.querySelectorAll("*"))
+            .map((n) => clean(n.textContent))
+            .filter(Boolean)
+            .slice(0, 120);
+
+          for (let i = 0; i < labeled.length; i++) {
+            const t = labeled[i];
+            if (/^location\b/i.test(t) && labeled[i + 1]) return labeled[i + 1];
+            if (/^work location\b/i.test(t) && labeled[i + 1]) return labeled[i + 1];
+          }
+
+          // Fallback: regex in card text
+          const txt = clean(card.innerText || "");
+          const m =
+            txt.match(/\b(?:Work\s+Location|Location)\s*:?\s*([^\n•|]{2,80})/i) ||
+            txt.match(/\b([A-Za-z .'-]+,\s*[A-Z]{2})\b/);
+          return m ? clean(m[1]) : null;
+        };
+
+        const pickBestTitle = (card, url) => {
+          if (!card) return null;
+
+          // Prefer a heading if present
+          const h = card.querySelector("h1,h2,h3");
+          const ht = clean(h?.textContent);
+          if (ht && ht.length >= 6 && !/read more/i.test(ht)) return ht;
+
+          // Otherwise, prefer the anchor that points to the job URL (often the job title)
+          const anchors = Array.from(card.querySelectorAll('a[href]'))
+            .map((a) => ({
+              href: abs(a.getAttribute("href")),
+              text: clean(a.textContent),
+            }))
+            .filter((x) => x.href && x.text && x.text.length >= 6);
+
+          // Tight match: exact job URL anchor
+          const exact = anchors.find((x) => x.href === url);
+          if (exact && !/read more/i.test(exact.text)) return exact.text;
+
+          // Fallback: longest plausible title-like anchor text inside the card
+          const plausible = anchors
+            .filter((x) => !/apply|view job|read more|share/i.test(x.text))
+            .filter((x) => !/\b(full time|part time|fixed\s*term)\b/i.test(x.text));
+
+          plausible.sort((a, b) => b.text.length - a.text.length);
+          return plausible[0]?.text || null;
         };
 
         const out = [];
-        for (const a of Array.from(document.querySelectorAll('a[href]'))) {
-          const href = abs(a.getAttribute("href"));
-          if (!href) continue;
-          if (!/\/jobs\//i.test(href) || /\/jobs\/search/i.test(href)) continue;
+        const jobAnchors = Array.from(document.querySelectorAll('a[href]'))
+          .map((a) => abs(a.getAttribute("href")))
+          .filter((href) => href && /\/jobs\//i.test(href) && !/\/jobs\/search/i.test(href));
 
-          let title = clean(a.textContent);
-          // Some cards have "Read more" links; try heading inside the card
-          if (!title || title.length < 6 || /read more/i.test(title)) {
-            const card = a.closest("article,li,div");
-            const h = card?.querySelector("h1,h2,h3");
-            const ht = clean(h?.textContent);
-            if (ht) title = ht;
-          }
+        // De-dupe URLs on the page first to avoid grabbing secondary anchors within the same card.
+        const uniqUrls = Array.from(new Set(jobAnchors));
 
+        for (const href of uniqUrls) {
+          const a = Array.from(document.querySelectorAll('a[href]')).find((x) => abs(x.getAttribute('href')) === href);
+          const card = a ? (a.closest("article,li,div") || null) : null;
+
+          const title = pickBestTitle(card, href) || clean(a?.textContent);
           if (!title || title.length < 6) continue;
-          out.push({ title, url: href });
+
+          out.push({ title, url: href, location: extractLocation(card) });
         }
-        return out;
+
+        // de-dupe within page by url
+        const seen = new Set();
+        return out.filter((x) => (x.url && !seen.has(x.url) ? (seen.add(x.url), true) : false));
       });
 
       let addedThisPage = 0;
@@ -2816,7 +2946,7 @@ async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
           source: sourceName,
           category: "Faculty",
           college: campusName,
-          location: null,
+          location: j.location || null,
           description: null,
         });
         addedThisPage++;
@@ -2827,12 +2957,6 @@ async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
     }
 
     console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
-    try {
-      const sample = (items || []).slice(0, 5);
-      for (const x of sample) {
-        console.log("UW sample titles (raw -> cleaned):", x.title, "=>", normalizeUwTitle(x.title));
-      }
-    } catch {}
 
     return uniqByUrl(jobs);
   } catch (e) {
@@ -2841,6 +2965,368 @@ async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
   } finally {
     await page.close().catch(() => {});
   }
+}
+
+// Enrich "en-us" style job cards (NAU/EMU/MSU-style listings) by visiting job detail pages.
+// Used to recover canonical titles (e.g., "Assistant Professor-Tenure System") and to append
+// department/college when available.
+async function enrichEnUsJobCardsFromDetails(
+  context,
+  jobs,
+  {
+    concurrency = 6,
+    titleDeptSeparator = " — ",
+    preferDeptKeys = ["department", "college", "organization", "unit", "school"],
+  } = {}
+) {
+  const urls = jobs.map((j) => j?.url).filter(Boolean);
+  const details = await fetchEnUsJobDetails(context, urls, concurrency);
+
+  return jobs.map((j) => {
+    const d = details.get(j.url);
+    if (!d) return j;
+
+    let title = d.title || j.title;
+    const dept = d.dept || null;
+    const location = d.location || j.location || null;
+
+    if (dept && title && !title.toLowerCase().includes(dept.toLowerCase())) {
+      title = `${title}${titleDeptSeparator}${dept}`;
+    }
+
+    // Keep the campus name in `college`, but use dept/college info only for title enrichment.
+    return {
+      ...j,
+      title,
+      location,
+    };
+  });
+}
+
+async function fetchEnUsJobDetails(context, urls, concurrency = 6) {
+  const out = new Map();
+  let idx = 0;
+
+  async function worker() {
+    while (idx < urls.length) {
+      const url = urls[idx++];
+      const page = await context.newPage();
+      try {
+        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await page.waitForTimeout(600);
+
+        const details = await safeEvaluate(page, () => {
+          const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+
+          const fromMeta = (sel, attr) => clean(document.querySelector(sel)?.getAttribute(attr));
+          const fromText = (sel) => clean(document.querySelector(sel)?.textContent);
+
+          const getFromDtDd = (wantedKeys) => {
+            const dts = Array.from(document.querySelectorAll("dt"));
+            for (const dt of dts) {
+              const k = clean(dt.textContent).toLowerCase();
+              if (!wantedKeys.some((w) => k.includes(w))) continue;
+              const dd = dt.nextElementSibling;
+              const v = clean(dd?.textContent);
+              if (v) return v;
+            }
+            return null;
+          };
+
+          // Canonical title often appears in h1 / og:title / JSON-LD
+          let title =
+            fromText("h1") ||
+            fromMeta("meta[property='og:title']", "content") ||
+            fromMeta("meta[name='twitter:title']", "content") ||
+            null;
+
+          // Try JSON-LD JobPosting title
+          if (!title) {
+            const scripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));
+            for (const s of scripts) {
+              try {
+                const j = JSON.parse(s.textContent);
+                const nodes = Array.isArray(j) ? j : j?.["@graph"] ? j["@graph"] : [j];
+                for (const n of nodes) {
+                  const t = n?.["@type"];
+                  const isJob = t === "JobPosting" || (Array.isArray(t) && t.includes("JobPosting"));
+                  if (isJob && typeof n.title === "string") {
+                    title = clean(n.title);
+                    break;
+                  }
+                }
+              } catch {}
+              if (title) break;
+            }
+          }
+
+          const location =
+            getFromDtDd(["work location", "location", "city"]) ||
+            clean(
+              document
+                .querySelector('[data-automation-id="locations"], [data-automation-id="jobPostingLocation"]')
+                ?.textContent
+            ) ||
+            null;
+
+          // Department/College/Org labels vary; collect the best available
+          const dept =
+            getFromDtDd(["college"]) ||
+            getFromDtDd(["department"]) ||
+            getFromDtDd(["organization"]) ||
+            getFromDtDd(["unit"]) ||
+            getFromDtDd(["school"]) ||
+            getFromDtDd(["agency"]) ||
+            null;
+
+          return {
+            title: title ? clean(title) : null,
+            dept: dept ? clean(dept) : null,
+            location: location ? clean(location) : null,
+          };
+        }).catch(() => null);
+
+        if (details && (details.title || details.dept || details.location)) {
+          out.set(url, details);
+        }
+      } catch {
+        // ignore per-job failures
+      } finally {
+        await page.close().catch(() => {});
+      }
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.max(1, concurrency) }, () => worker()));
+  return out;
+}
+
+// University of Michigan (careers.umich.edu) search scraper
+// - Appends Department/Organization to title when available
+// - Captures campus/location when present in listing cards
+async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    const jobs = [];
+    const seen = new Set();
+    const urls = [];
+
+    const base = new URL(startUrl);
+    // careers.umich.edu uses 0-indexed pages in the querystring
+    for (let pageNo = 0; pageNo <= 80; pageNo++) {
+      base.searchParams.set("page", String(pageNo));
+      const url = base.toString();
+
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await page.waitForTimeout(900);
+
+      const batch = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
+
+        const pickField = (txt, keys) => {
+          const t = clean(txt || "");
+          for (const k of keys) {
+            const re = new RegExp(`\\b${k}\\b\\s*:?\\s*([^\\n•|]{3,160})`, "i");
+            const m = t.match(re);
+            if (m && m[1]) return clean(m[1]);
+          }
+          return null;
+        };
+
+        const extractFromCard = (card) => {
+          if (!card) return { dept: null, loc: null };
+          const txt = clean(card.innerText || "");
+          const dept = pickField(txt, ["Department", "Organization", "Unit", "Division", "School", "College"]);
+          const loc =
+            pickField(txt, ["Work Location", "Location", "Campus"]) ||
+            (txt.match(/\b([A-Za-z .'-]+,\s*[A-Z]{2})\b/) ? clean(txt.match(/\b([A-Za-z .'-]+,\s*[A-Z]{2})\b/)[1]) : null);
+          return { dept, loc };
+        };
+
+        const isJobUrl = (u) => {
+          if (!u) return false;
+          try {
+            const x = new URL(u);
+            const p = x.pathname || "";
+            return (
+              /job_detail|job-detail|job\b|jobs\b/i.test(p) ||
+              x.searchParams.has("job_id") ||
+              x.searchParams.has("position")
+            );
+          } catch {
+            return false;
+          }
+        };
+
+        const out = [];
+
+        // Prefer anchors inside common listing containers
+        const anchors = Array.from(document.querySelectorAll('a[href]'));
+        for (const a of anchors) {
+          const href = abs(a.getAttribute("href"));
+          if (!href || !isJobUrl(href)) continue;
+
+          const card = a.closest("article,.views-row,li,div") || a.parentElement;
+
+          let title = clean(a.textContent);
+          if (!title || title.length < 4 || /view|apply|learn more/i.test(title)) {
+            const h = card?.querySelector?.("h1,h2,h3,h4,.title,.job-title,strong");
+            const ht = clean(h?.textContent);
+            if (ht && ht.length >= 4) title = ht;
+          }
+          if (!title || title.length < 4) continue;
+
+          const { dept, loc } = extractFromCard(card);
+          out.push({ title, url: href, dept, location: loc });
+        }
+
+        // De-dupe within page by url
+        const seen = new Set();
+        return out.filter((x) => (x.url && !seen.has(x.url) ? (seen.add(x.url), true) : false));
+      });
+
+      let added = 0;
+      for (const j of batch) {
+        if (!j?.url || seen.has(j.url)) continue;
+        seen.add(j.url);
+
+        urls.push(j.url);
+
+        // Temporary placeholder; we'll enrich from detail pages below.
+        jobs.push({
+          title: clean(j.title),
+          url: j.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: j.location ? clean(j.location) : null,
+          description: null,
+        });
+        added++;
+      }
+
+      // Stop when a page yields nothing new (best-effort)
+      if (added === 0 && pageNo > 0) break;
+    }
+
+    // Enrich titles (Job Title + Department) + location from detail pages.
+    const detailMap = await fetchUmichDetails(context, urls, 6);
+    const enriched = jobs.map((j) => {
+      const d = detailMap.get(j.url);
+      const jobTitle = clean(d?.jobTitle || j.title);
+      const dept = clean(d?.department || "");
+      const location = clean(d?.location || j.location || "") || null;
+
+      let title = jobTitle;
+      if (dept && !title.toLowerCase().includes(dept.toLowerCase())) {
+        // UMich desired format: "JOB TITLE - Department"
+        title = `${title} - ${dept}`;
+      }
+
+      return { ...j, title, location };
+    });
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${enriched.length}`);
+    return uniqByUrl(enriched).filter((j) => !omitAdjunct(j.title));
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+async function fetchUmichDetails(context, urls, concurrency = 6) {
+  const out = new Map();
+  let idx = 0;
+
+  async function worker() {
+    while (idx < urls.length) {
+      const url = urls[idx++];
+      const page = await context.newPage();
+      try {
+        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await page.waitForTimeout(450);
+
+        const details = await safeEvaluate(page, () => {
+          const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+
+          const readLabeledValue = (wanted) => {
+            const want = wanted.toLowerCase();
+
+            // dt/dd pairs
+            for (const dt of Array.from(document.querySelectorAll("dt"))) {
+              const k = clean(dt.textContent).toLowerCase();
+              if (!k) continue;
+              if (k === want || k.includes(want)) {
+                const dd = dt.nextElementSibling;
+                const v = clean(dd?.textContent);
+                if (v) return v;
+              }
+            }
+
+            // table rows: th/td
+            for (const tr of Array.from(document.querySelectorAll("tr"))) {
+              const th = tr.querySelector("th");
+              const td = tr.querySelector("td");
+              const k = clean(th?.textContent).toLowerCase();
+              const v = clean(td?.textContent);
+              if (k && v && (k === want || k.includes(want))) return v;
+            }
+
+            // generic label/value blocks
+            const labels = Array.from(document.querySelectorAll(".field__label, .label, [data-label], [aria-label]"));
+            for (const el of labels) {
+              const k = clean(el.textContent || el.getAttribute("data-label") || el.getAttribute("aria-label"));
+              if (!k) continue;
+              const kl = k.toLowerCase();
+              if (!(kl === want || kl.includes(want))) continue;
+
+              // try nearby value
+              const v1 = clean(el.nextElementSibling?.textContent);
+              if (v1) return v1;
+              const parent = el.parentElement;
+              const v2 = clean(parent?.querySelector(".field__item,.value,.field__value")?.textContent);
+              if (v2) return v2;
+            }
+
+            // text fallback
+            const txt = clean(document.body?.innerText || "");
+            const re = new RegExp(`${wanted}\\s*:?\\s*([^\\n•|]{2,160})`, "i");
+            const m = txt.match(re);
+            return m && m[1] ? clean(m[1]) : null;
+          };
+
+          const jobTitle =
+            readLabeledValue("Job Title") ||
+            clean(document.querySelector("h1")?.textContent) ||
+            clean(document.querySelector("meta[property='og:title']")?.getAttribute("content")) ||
+            null;
+
+          const department = readLabeledValue("Department") || readLabeledValue("Organization") || null;
+          const location = readLabeledValue("Work Location") || readLabeledValue("Location") || readLabeledValue("Campus") || null;
+
+          return { jobTitle, department, location };
+        }).catch(() => null);
+
+        if (details) out.set(url, details);
+      } catch {
+        // ignore
+      } finally {
+        await page.close().catch(() => {});
+      }
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.max(1, concurrency) }, () => worker()));
+  return out;
 }
 
 
