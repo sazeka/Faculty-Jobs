@@ -1,3 +1,15 @@
+
+// Safe logging helper inserted at top to avoid scoping/syntax issues
+const logScrapeResult = ({ campus, source, count }) => {
+  try {
+    const who = campus || "UnknownCampus";
+    const src = source ? " " + source : "";
+    console.log(String(src || '') + ' listings scraped: ' + String(count));
+  } catch (e) {
+    console.log("listings scraped:", count);
+  }
+};
+
 // server.js
 // One-file scraper + optional local API server.
 // Exports scrapeAllJobsStandalone() for GitHub Actions.
@@ -22,12 +34,8 @@ const CT_URL = "https://www.ct.edu/hr/jobs";
 const CSU_URL =
   "https://csucareers.calstate.edu/en-us/filter/?=&leftNavSearchFormQuery=&=&search=&search-keyword=&job-mail-subscribe-privacy=agree&work-type=instructional%20faculty%20%e2%80%93%20tenured%2ftenure-track&category=unit%203%20-%20cfa%20-%20california%20faculty%20association&job-mail-subscribe-privacy=agree";
 
-// UMass (same “en-us/filter” platform style as CSU)
+// UMass (same "en-us/filter" platform style as CSU) - Note: Amherst moved to PageUp in Jan 2026
 const UMASS_CAMPUSES = [
-  {
-    campus: "UMass Amherst",
-    url: "https://careers.umass.edu/amherst/en-us/filter/?job-mail-subscribe-privacy=agree&search-keyword=&work-type=faculty%20full%20time",
-  },
   {
     campus: "UMass Boston",
     url: "https://employmentopportunities.umb.edu/boston/en-us/filter/?search-keyword=&work-type=faculty%20full%20time&job-mail-subscribe-privacy=agree",
@@ -41,6 +49,9 @@ const UMASS_CAMPUSES = [
     url: "https://explorejobs.uml.edu/lowell/en-us/filter/?job-mail-subscribe-privacy=agree&search-keyword=&work-type=faculty%20full%20time",
   },
 ];
+
+// UMass Amherst (new PageUp platform as of Jan 2026)
+const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type=Faculty";
 
 // UC (AP Recruit)
 const UC_CAMPUSES = [
@@ -419,7 +430,7 @@ const ME_CAMPUSES = [
   {
     campus: "University of Maine System",
     type: "oracle-cx",
-    url: "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=CATEGORIES&selectedCategoriesFacet=300000014335735",
+    url: "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
   },
 ];
 
@@ -461,6 +472,71 @@ const MI_CAMPUSES = [
     url: "https://www.wmujobs.org/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id[]=3&435=&commit=Search",
   },
 ];
+
+// IL (Illinois)
+const IL_CAMPUSES = [
+  {
+    campus: "Chicago State University",
+    type: "peopleadmin",
+    url: "https://chicagostate.peopleadmin.com/postings/search?query=&query_posted_at=&142=&query_organizational_tier_3_id=any&query_position_type_id=2&commit=Search",
+  },
+  {
+    campus: "Eastern Illinois University",
+    type: "eiu-static",
+    url: "https://www.eiu.edu/jobs/",
+  },
+  {
+    campus: "Governors State University",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/govst/",
+  },
+  {
+    campus: "Illinois State University",
+    type: "enusfilter",
+    url: "https://jobsearch.illinoisstate.edu/en-us/filter/?search-keyword=&category=faculty",
+  },
+  {
+    campus: "University of Illinois Chicago",
+    type: "csod",
+    url: "https://uic.csod.com/ux/ats/careersite/1/home/?c=uic&cfdd[0][id]=192&cfdd[0][options][0]=1161&cfdd[1][id]=250&cfdd[1][options][0]=1856",
+  },
+  {
+    campus: "University of Illinois Springfield",
+    type: "csod",
+    url: "https://uis.csod.com/ux/ats/careersite/1/home?c=uis",
+  },
+  {
+    campus: "University of Illinois Urbana-Champaign",
+    type: "csod",
+    url: "https://illinois.csod.com/ux/ats/careersite/1/home?c=illinois&cfdd[0][id]=276&cfdd[0][options][0]=849",
+  },
+  {
+    campus: "Northeastern Illinois University",
+    type: "static",
+    url: "https://www.neiu.edu/academics/colleges-departments/education/employment-opportunities",
+  },
+  {
+    campus: "Northern Illinois University",
+    type: "peopleadmin",
+    url: "https://employment.niu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Southern Illinois University Carbondale",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/siu",
+  },
+  {
+    campus: "Southern Illinois University Edwardsville",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/69563/positions",
+  },
+  {
+    campus: "Western Illinois University",
+    type: "interviewexchange",
+    url: "https://wiu.interviewexchange.com/static/clients/467WIM1/index.jsp?c=1098",
+  },
+];
+
 
 
 /* ============================== EXPRESS ============================== */
@@ -533,6 +609,7 @@ export async function scrapeAllJobsStandalone() {
       { name: "AZ", fn: () => scrapeAzAll(context) },
       { name: "CSU", fn: () => scrapeCsuFaculty(context) },
       { name: "UMass", fn: () => scrapeUmassAll(context) },
+      { name: "UMass Amherst", fn: () => scrapeUmassAmherst(context) },
       { name: "UC", fn: () => scrapeUcAll(context) },
       { name: "NJ", fn: () => scrapeNjAll(context) },
       { name: "NC", fn: () => scrapeNcAll(context) },
@@ -540,7 +617,8 @@ export async function scrapeAllJobsStandalone() {
       { name: "RI", fn: () => scrapeRiAll(context) },
       { name: "PA", fn: () => scrapePaAll(context) },
       { name: "MI", fn: () => scrapeMiAll(context) },
-      { name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
+            { name: "IL", fn: () => scrapeIlAll(context) },
+{ name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
       { name: "NY (SUNY)", fn: () => scrapeNySuny(context) },
       { name: "OR", fn: () => scrapeOrAll(context) },
       { name: "WA", fn: () => scrapeWaAll(context) },
@@ -656,7 +734,11 @@ function looksFacultyish(title) {
     s.includes("instructor") ||
     s.includes("assistant professor") ||
     s.includes("associate professor") ||
-    s.includes("chair")
+    s.includes("chair") ||
+    s.includes("open rank") ||
+    s.includes("tenure track") ||
+    s.includes("tenure-track") ||
+    s.includes("tenured")
   );
 }
 
@@ -1022,7 +1104,95 @@ async function scrapeUmassAll(context) {
   return uniqByUrl(out);
 }
 
-/* ===== Generic “en-us/filter” site scraper (CSU/UMass style) ===== */
+/* ===== UMass Amherst (PageUp platform - new as of Jan 2026) ===== */
+
+async function scrapeUmassAmherst(context) {
+  const jobs = [];
+  const page = await context.newPage();
+
+  try {
+    await page.goto(UMASS_AMHERST_URL, { waitUntil: "networkidle", timeout: 60_000 });
+    await page.waitForTimeout(2000);
+
+    // PageUp sites load jobs dynamically - wait for job cards
+    await page.waitForSelector('a[href*="/jobs/"], .job-card, .job-listing, [data-job-id]', { timeout: 15_000 }).catch(() => {});
+
+    let pageNum = 1;
+    const maxPages = 10;
+
+    while (pageNum <= maxPages) {
+      const batch = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const out = [];
+
+        // Try multiple selectors for PageUp job cards
+        const jobLinks = Array.from(document.querySelectorAll('a[href*="/jobs/"]'));
+
+        for (const a of jobLinks) {
+          const href = a.getAttribute("href");
+          if (!href || href.includes("/jobs/search")) continue;
+
+          let title = clean(a.textContent);
+          if (!title || title.length < 5) {
+            const container = a.closest("li, article, div, tr") || a.parentElement;
+            const h = container?.querySelector?.("h1,h2,h3,h4,.job-title,.title,strong");
+            title = clean(h?.textContent) || title;
+          }
+
+          if (title && title.length >= 5) {
+            const url = new URL(href, location.href).toString();
+            out.push({ title, url });
+          }
+        }
+
+        // Dedupe
+        const seen = new Set();
+        return out.filter((j) => {
+          if (seen.has(j.url)) return false;
+          seen.add(j.url);
+          return true;
+        });
+      });
+
+      for (const j of batch) {
+        if (!jobs.find((x) => x.url === j.url)) {
+          jobs.push({
+            ...j,
+            source: "UMass",
+            college: "UMass Amherst",
+            category: "Faculty",
+            location: null,
+            description: null,
+          });
+        }
+      }
+
+      console.log(`UMass Amherst page ${pageNum}: ${batch.length} jobs`);
+
+      // Try to find and click next page
+      const nextBtn = page.locator('a[aria-label*="Next" i], button[aria-label*="Next" i], a:has-text("Next"), .pagination a:last-child').first();
+      if ((await nextBtn.count().catch(() => 0)) > 0 && (await nextBtn.isVisible().catch(() => false))) {
+        const prevUrl = page.url();
+        await nextBtn.click().catch(() => {});
+        await page.waitForTimeout(2000);
+        if (page.url() === prevUrl) break;
+        pageNum++;
+      } else {
+        break;
+      }
+    }
+
+    console.log(`UMass Amherst total scraped: ${jobs.length}`);
+  } catch (e) {
+    console.error(`❌ UMass Amherst scrape failed:`, e?.message || e);
+  } finally {
+    await page.close().catch(() => {});
+  }
+
+  return jobs;
+}
+
+/* ===== Generic "en-us/filter" site scraper (CSU/UMass style) ===== */
 
 async function scrapeEnUsFilterSite(page, { source, campus, category }) {
   const jobs = [];
@@ -1302,7 +1472,7 @@ async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") 
     await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
 
-    const jobs = await page.evaluate(() => {
+        const jobs = await page.evaluate(() => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
       const abs = (href) => {
         try {
@@ -1310,6 +1480,44 @@ async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") 
         } catch {
           return null;
         }
+      };
+
+      const pickTitleFromContainer = (a) => {
+        const c = a.closest("li, article, div, tr") || a.parentElement;
+        if (!c) return null;
+
+        const candidates = [
+          c.querySelector("[data-testid*='jobTitle' i]"),
+          c.querySelector("[data-automation-id*='jobTitle' i]"),
+          c.querySelector("h1,h2,h3"),
+          c.querySelector("[role='heading']"),
+          c.querySelector(".job-title, .jobTitle, .title"),
+        ];
+
+        for (const el of candidates) {
+          const t = clean(el?.textContent);
+          if (t && t.length >= 6 && t.length <= 220) return t;
+        }
+
+        const aria = clean(a.getAttribute("aria-label"));
+        if (aria && aria.length >= 6 && aria.length <= 220) return aria;
+
+        return null;
+      };
+
+      const isBadTitle = (t) => {
+        const s = (t || "").toLowerCase();
+        return (
+          !t ||
+          t.length < 4 ||
+          s === "view job" ||
+          s === "apply" ||
+          s === "learn more" ||
+          s === "details" ||
+          s.includes("search") ||
+          s.includes("back to") ||
+          s.includes("home")
+        );
       };
 
       const out = [];
@@ -1320,23 +1528,30 @@ async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") 
         if (!url) continue;
 
         const ok =
-          /jobdetail\.ftl/i.test(url) ||
-          /\/ats\/careers\//i.test(url) ||
-          (/careersection/i.test(url) && /job/i.test(url));
+          /\/job\//i.test(url) ||
+          /ats\/job/i.test(url) ||
+          /\/requisition\//i.test(url) ||
+          /requisitionId=/i.test(url) ||
+          (/careersite/i.test(url) && (/requisition/i.test(url) || /job/i.test(url)));
+
         if (!ok) continue;
 
-        const title = clean(a.textContent);
-        if (!title || title.length < 4) continue;
-        if (/search|advanced|return|back|home|login|language|accessibility/i.test(title)) continue;
+        let title = clean(a.textContent);
+        if (isBadTitle(title)) {
+          const t2 = pickTitleFromContainer(a);
+          if (t2) title = t2;
+        }
+
+        if (isBadTitle(title)) continue;
 
         if (seen.has(url)) continue;
         seen.add(url);
+
         out.push({ title, url });
       }
 
       return out;
     });
-
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
     return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
@@ -1612,14 +1827,14 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "
     }
 
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
-    console.log(`${campusName} NJ listings scraped: ${filtered.length}`);
+    console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
     return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
   } finally {
     await page.close().catch(() => {});
   }
 }
 
-async function scrapeNjStockton(context, startUrl, campusName) {
+async function scrapeNjStockton(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
     const jobs = [];
@@ -1670,7 +1885,7 @@ async function scrapeNjStockton(context, startUrl, campusName) {
     }
 
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
-    console.log(`${campusName} NJ listings scraped: ${filtered.length}`);
+    console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
     return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
   } finally {
     await page.close().catch(() => {});
@@ -1911,7 +2126,7 @@ async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
       }))
       .filter((j) => !omitAdjunct(j.title));
 
-    console.log(`${campusName} PA listings scraped: ${out.length}`);
+    console.log(`${campusName} ${sourceName} listings scraped: ${out.length}`);
     return out;
   } finally {
     await page.close().catch(() => {});
@@ -2077,13 +2292,243 @@ async function scrapePeopleAdminWithDept(context, startUrl, campusName, sourceNa
 
 
 
+/* ============================== IL ============================== */
+
+async function scrapeIlAll(context) {
+  const results = await mapWithConcurrency(
+    IL_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IL");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "IL");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "IL");
+
+        if (type === "enusfilter") {
+          const page = await context.newPage();
+          try {
+            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await page.waitForTimeout(900);
+            return await scrapeEnUsFilterSite(page, { source: "IL", campus, category: "Faculty" });
+          } finally {
+            await page.close().catch(() => {});
+          }
+        }
+
+        if (type === "eiu-static") return await scrapeEiuJobs(context, url, campus);
+        if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "IL");
+        if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "IL");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "IL");
+
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} IL scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+// Eastern Illinois: only links under "Faculty & Academic Support Professionals" section (fallback to generic static)
+async function scrapeEiuJobs(context, startUrl, campusName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(900);
+
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); } catch { return null; }
+      };
+
+      const h = Array.from(document.querySelectorAll("h1,h2,h3,h4"))
+        .find((n) => /Faculty\s*&\s*Academic\s*Support\s*Professionals/i.test(clean(n.textContent)));
+      const container = h ? (h.closest("section, article, div") || h.parentElement) : null;
+
+      const root = container || document.body;
+      const anchors = Array.from(root.querySelectorAll("a[href]"));
+
+      const out = [];
+      const seen = new Set();
+
+      for (const a of anchors) {
+        const url = abs(a.getAttribute("href"));
+        const title = clean(a.textContent);
+        if (!url || !title || title.length < 6) continue;
+
+        const bad = /privacy|accessibility|contact|directory|apply now|student|staff/i.test(title);
+        if (bad) continue;
+
+        const ok =
+          /job|posting|position|faculty|academic|career|requisition/i.test(url) ||
+          /professor|faculty|lecturer|instructor|assistant|associate|chair|director|tenure/i.test(title);
+        if (!ok) continue;
+
+        if (seen.has(url)) continue;
+        seen.add(url);
+        out.push({ title, url });
+      }
+
+      return out;
+    }).catch(() => []);
+
+    if (!items || items.length < 2) {
+      return await scrapeStaticLinksAs(context, startUrl, campusName, "IL");
+    }
+
+    return items.map((x) => ({
+      title: (x.title || "").replace(/\s+/g, " ").trim(),
+      url: x.url,
+      source: "IL",
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Interfolio positions listing (e.g., SIUE)
+async function scrapeInterfolioPositionsAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(900);
+
+    const jobs = [];
+    const seen = new Set();
+
+    for (let safety = 0; safety < 40; safety++) {
+      const batch = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try { return new URL(href, location.href).toString(); } catch { return null; }
+        };
+
+        const out = [];
+        const links = Array.from(document.querySelectorAll('a[href*="/positions/"], a[href*="/position/"]'));
+        for (const a of links) {
+          const url = abs(a.getAttribute("href"));
+          if (!url) continue;
+
+          const title = clean(a.textContent);
+          if (!title || title.length < 6) continue;
+
+          if (/sign in|log in|privacy|accessibility|equal opportunity|nondiscrimination/i.test(title)) continue;
+          out.push({ title, url });
+        }
+
+        const seen = new Set();
+        return out.filter((x) => (x.url && !seen.has(x.url) && (seen.add(x.url), true)));
+      }).catch(() => []);
+
+      for (const j of batch) {
+        if (!j?.url || seen.has(j.url)) continue;
+        seen.add(j.url);
+        jobs.push(j);
+      }
+
+      const next = page.locator('a[rel="next"], a:has-text("Next"), button:has-text("Next")').first();
+      if ((await next.count().catch(() => 0)) === 0) break;
+      if (!(await next.isVisible().catch(() => false))) break;
+
+      const tag = await next.evaluate((el) => el.tagName).catch(() => "A");
+      if (tag === "A") {
+        const href = await next.getAttribute("href").catch(() => null);
+        if (!href) break;
+        const nextUrl = new URL(href, page.url()).toString();
+        if (nextUrl === page.url()) break;
+        await page.goto(nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await page.waitForTimeout(800);
+      } else {
+        await next.click({ timeout: 8000 }).catch(() => {});
+        await page.waitForTimeout(1000);
+      }
+    }
+
+    const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length}`);
+    return filtered.map((j) => ({
+      title: (j.title || "").replace(/\s+/g, " ").trim(),
+      url: j.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// InterviewExchange (e.g., WIU) – best-effort link scrape
+async function scrapeInterviewExchangeAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+
+      const out = [];
+      const seen = new Set();
+
+      const anchors = Array.from(document.querySelectorAll("a[href]"));
+      for (const a of anchors) {
+        const url = abs(a.getAttribute("href"));
+        if (!url) continue;
+
+        const title = clean(a.textContent);
+        if (!title || title.length < 6) continue;
+
+        const okUrl = /position|posting|requisition|job|opportunity|posting\.jsp/i.test(url);
+        const okTitle = /professor|faculty|lecturer|instructor|assistant|associate|chair|director|tenure/i.test(title);
+
+        if (!okUrl && !okTitle) continue;
+
+        if (/privacy|accessibility|login|sign in|home|contact/i.test(title)) continue;
+
+        if (seen.has(url)) continue;
+        seen.add(url);
+        out.push({ title, url });
+      }
+
+      return out;
+    }).catch(() => []);
+
+    const filtered = items.filter((x) => looksFacultyish(x.title)).filter((x) => !omitAdjunct(x.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length}`);
+    return filtered.map((x) => ({
+      title: (x.title || "").replace(/\s+/g, " ").trim(),
+      url: x.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+
 /* ============================== CLAREMONT COLLEGES ============================== */
 
 async function scrapeClaremontAll(context) {
   const tasks = CLAREMONT_CAMPUSES.map(({ campus, type, url }) =>
     (async () => {
       try {
-        if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "OR");
+        if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "Claremont");
         if (type === "cmc") return await scrapeClaremontCmc(context, url, campus);
         if (type === "workday") return await scrapeClaremontWorkday(context, url, campus);
         return [];
@@ -3070,7 +3515,8 @@ async function fetchEnUsJobDetails(context, urls, concurrency = 6) {
             null;
 
           // Department/College/Org labels vary; collect the best available
-          const dept =
+          // First try dt/dd structure
+          let dept =
             getFromDtDd(["college"]) ||
             getFromDtDd(["department"]) ||
             getFromDtDd(["organization"]) ||
@@ -3078,6 +3524,58 @@ async function fetchEnUsJobDetails(context, urls, concurrency = 6) {
             getFromDtDd(["school"]) ||
             getFromDtDd(["agency"]) ||
             null;
+
+          // Try labeled row patterns (MSU-style: label in one element, value in sibling/nearby)
+          if (!dept) {
+            const labelPatterns = [
+              { label: /college/i, selector: '.job-details, .job-info, .posting-details, [class*="detail"], [class*="info"]' },
+              { label: /department/i, selector: '.job-details, .job-info, .posting-details, [class*="detail"], [class*="info"]' },
+            ];
+            for (const { label, selector } of labelPatterns) {
+              const containers = Array.from(document.querySelectorAll(selector));
+              for (const c of containers) {
+                const text = c.innerText || "";
+                const match = text.match(new RegExp(`(?:${label.source})\\s*[:\\-]?\\s*([A-Za-z][A-Za-z0-9 &,\\-']{2,60})`, "i"));
+                if (match && match[1]) {
+                  dept = clean(match[1]);
+                  break;
+                }
+              }
+              if (dept) break;
+            }
+          }
+
+          // Try JSON-LD hiringOrganization.department
+          if (!dept) {
+            const scripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));
+            for (const s of scripts) {
+              try {
+                const j = JSON.parse(s.textContent);
+                const nodes = Array.isArray(j) ? j : j?.["@graph"] ? j["@graph"] : [j];
+                for (const n of nodes) {
+                  const t = n?.["@type"];
+                  const isJob = t === "JobPosting" || (Array.isArray(t) && t.includes("JobPosting"));
+                  if (isJob) {
+                    const ho = n.hiringOrganization;
+                    if (ho?.department?.name) { dept = clean(ho.department.name); break; }
+                    if (typeof ho?.department === "string") { dept = clean(ho.department); break; }
+                    // Some sites put dept in employmentUnit or similar
+                    if (n.employmentUnit?.name) { dept = clean(n.employmentUnit.name); break; }
+                  }
+                }
+              } catch {}
+              if (dept) break;
+            }
+          }
+
+          // Last resort: look for common row patterns in page text
+          if (!dept) {
+            const bodyText = document.body?.innerText || "";
+            const deptMatch = bodyText.match(/(?:College|Department|School)\s*[:\-]\s*([A-Z][A-Za-z0-9 &,\-']{3,50}?)(?:\n|$|Work Location|Location|Position|Category)/);
+            if (deptMatch && deptMatch[1]) {
+              dept = clean(deptMatch[1]);
+            }
+          }
 
           return {
             title: title ? clean(title) : null,
@@ -3109,7 +3607,6 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
   try {
     const jobs = [];
     const seen = new Set();
-    const urls = [];
 
     const base = new URL(startUrl);
     // careers.umich.edu uses 0-indexed pages in the querystring
@@ -3133,9 +3630,18 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
         const pickField = (txt, keys) => {
           const t = clean(txt || "");
           for (const k of keys) {
-            const re = new RegExp(`\\b${k}\\b\\s*:?\\s*([^\\n•|]{3,160})`, "i");
+            // More restrictive regex: stop at common delimiters and limit to 80 chars
+            const re = new RegExp(`\\b${k}\\b\\s*:?\\s*([^\\n•|—–\\-]{3,80})`, "i");
             const m = t.match(re);
-            if (m && m[1]) return clean(m[1]);
+            if (m && m[1]) {
+              const val = clean(m[1]);
+              // Skip if it looks like a list (repeated keywords, too many words, or garbage patterns)
+              if (/Nursing-\s*\w+\s+Nursing-/i.test(val)) continue;
+              if ((val.match(/\s/g) || []).length > 12) continue; // Too many words
+              if (/All Work Locations|Work Location/i.test(val)) continue;
+              if (/Graduate Nurse|Home Care|Telemetry|Medical Surgical/i.test(val)) continue;
+              return val;
+            }
           }
           return null;
         };
@@ -3197,16 +3703,32 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
         if (!j?.url || seen.has(j.url)) continue;
         seen.add(j.url);
 
-        urls.push(j.url);
+        let title = clean(j.title);
+        const dept = clean(j.dept || "");
+        // Only append dept if it looks like a real department name (not garbage)
+        const isValidDept = dept &&
+          dept.length >= 3 &&
+          dept.length <= 80 &&
+          !/Nursing-\s*\w+/i.test(dept) &&
+          !/All Work Locations|Graduate Nurse|Home Care|Telemetry/i.test(dept) &&
+          !title.toLowerCase().includes(dept.toLowerCase());
+        if (isValidDept) {
+          title = `${title} — ${dept}`;
+        }
 
-        // Temporary placeholder; we'll enrich from detail pages below.
+        // Clean up location - skip garbage location values
+        let location = j.location ? clean(j.location) : null;
+        if (location && (location.length > 100 || /All Work Locations/i.test(location))) {
+          location = null;
+        }
+
         jobs.push({
-          title: clean(j.title),
+          title,
           url: j.url,
           source: sourceName,
           category: "Faculty",
           college: campusName,
-          location: j.location ? clean(j.location) : null,
+          location,
           description: null,
         });
         added++;
@@ -3216,117 +3738,14 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
       if (added === 0 && pageNo > 0) break;
     }
 
-    // Enrich titles (Job Title + Department) + location from detail pages.
-    const detailMap = await fetchUmichDetails(context, urls, 6);
-    const enriched = jobs.map((j) => {
-      const d = detailMap.get(j.url);
-      const jobTitle = clean(d?.jobTitle || j.title);
-      const dept = clean(d?.department || "");
-      const location = clean(d?.location || j.location || "") || null;
-
-      let title = jobTitle;
-      if (dept && !title.toLowerCase().includes(dept.toLowerCase())) {
-        // UMich desired format: "JOB TITLE - Department"
-        title = `${title} - ${dept}`;
-      }
-
-      return { ...j, title, location };
-    });
-
-    console.log(`${campusName} ${sourceName} listings scraped: ${enriched.length}`);
-    return uniqByUrl(enriched).filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
     return [];
   } finally {
     await page.close().catch(() => {});
   }
-}
-
-async function fetchUmichDetails(context, urls, concurrency = 6) {
-  const out = new Map();
-  let idx = 0;
-
-  async function worker() {
-    while (idx < urls.length) {
-      const url = urls[idx++];
-      const page = await context.newPage();
-      try {
-        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
-        await page.waitForTimeout(450);
-
-        const details = await safeEvaluate(page, () => {
-          const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-
-          const readLabeledValue = (wanted) => {
-            const want = wanted.toLowerCase();
-
-            // dt/dd pairs
-            for (const dt of Array.from(document.querySelectorAll("dt"))) {
-              const k = clean(dt.textContent).toLowerCase();
-              if (!k) continue;
-              if (k === want || k.includes(want)) {
-                const dd = dt.nextElementSibling;
-                const v = clean(dd?.textContent);
-                if (v) return v;
-              }
-            }
-
-            // table rows: th/td
-            for (const tr of Array.from(document.querySelectorAll("tr"))) {
-              const th = tr.querySelector("th");
-              const td = tr.querySelector("td");
-              const k = clean(th?.textContent).toLowerCase();
-              const v = clean(td?.textContent);
-              if (k && v && (k === want || k.includes(want))) return v;
-            }
-
-            // generic label/value blocks
-            const labels = Array.from(document.querySelectorAll(".field__label, .label, [data-label], [aria-label]"));
-            for (const el of labels) {
-              const k = clean(el.textContent || el.getAttribute("data-label") || el.getAttribute("aria-label"));
-              if (!k) continue;
-              const kl = k.toLowerCase();
-              if (!(kl === want || kl.includes(want))) continue;
-
-              // try nearby value
-              const v1 = clean(el.nextElementSibling?.textContent);
-              if (v1) return v1;
-              const parent = el.parentElement;
-              const v2 = clean(parent?.querySelector(".field__item,.value,.field__value")?.textContent);
-              if (v2) return v2;
-            }
-
-            // text fallback
-            const txt = clean(document.body?.innerText || "");
-            const re = new RegExp(`${wanted}\\s*:?\\s*([^\\n•|]{2,160})`, "i");
-            const m = txt.match(re);
-            return m && m[1] ? clean(m[1]) : null;
-          };
-
-          const jobTitle =
-            readLabeledValue("Job Title") ||
-            clean(document.querySelector("h1")?.textContent) ||
-            clean(document.querySelector("meta[property='og:title']")?.getAttribute("content")) ||
-            null;
-
-          const department = readLabeledValue("Department") || readLabeledValue("Organization") || null;
-          const location = readLabeledValue("Work Location") || readLabeledValue("Location") || readLabeledValue("Campus") || null;
-
-          return { jobTitle, department, location };
-        }).catch(() => null);
-
-        if (details) out.set(url, details);
-      } catch {
-        // ignore
-      } finally {
-        await page.close().catch(() => {});
-      }
-    }
-  }
-
-  await Promise.all(Array.from({ length: Math.max(1, concurrency) }, () => worker()));
-  return out;
 }
 
 
@@ -3414,7 +3833,7 @@ async function scrapeMeAll(context) {
   );
 
   const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
-  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
 }
 
 // Oracle HCM Candidate Experience (public jobs pages)
@@ -3563,12 +3982,8 @@ async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
 // Handles multiple payload shapes seen across tenants.
 function oracleCxJsonToJobs(json, campusName, sourceName, apiUrlForSiteHint = "") {
   try {
-    const items =
-      (json && Array.isArray(json.items) && json.items) ||
-      (json && Array.isArray(json.requisitionList) && json.requisitionList) ||
-      (json && Array.isArray(json.RequisitionList) && json.RequisitionList) ||
-      (json && Array.isArray(json.data) && json.data) ||
-      [];
+    // Use the extraction helper to handle nested requisitionList structures
+    const items = oracleCxExtractRequisitionList(json);
 
     // Derive site from the API URL if possible, else default.
     let site = "CX_1";
@@ -3929,62 +4344,56 @@ async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
         catch { return null; }
       };
 
-      const heading = Array.from(document.querySelectorAll("h1,h2,h3")).find((h) =>
-        /Academic Jobs/i.test(clean(h.textContent))
-      );
-
-      let root = document.querySelector("main") || document.body;
-      if (heading) {
-        const section = heading.closest("section, article, main, div") || root;
-        root = section;
-      }
-
-      const ul =
-        root.querySelector("ul") ||
-        document.querySelector("main ul") ||
-        document.querySelector("ul");
-
-      if (!ul) return [];
-
-      // Walk UL children; postings are rendered as LI + sibling anchors ("More info", "Apply now")
-      const children = Array.from(ul.children);
       const out = [];
+      const seen = new Set();
 
-      let pendingTitle = null;
+      // Strategy 1: Find "More info" links with position-details or job_id
+      const moreInfoLinks = Array.from(document.querySelectorAll('a[href*="position-details"], a[href*="job_id"]'));
+      for (const a of moreInfoLinks) {
+        const href = abs(a.getAttribute("href"));
+        if (!href || seen.has(href)) continue;
 
-      const flush = (url) => {
-        if (!pendingTitle || !url) return;
-        out.push({ title: pendingTitle, url });
-        pendingTitle = null;
-      };
+        // Find the parent li or container
+        const container = a.closest("li") || a.parentElement?.closest("li") || a.parentElement;
+        if (!container) continue;
 
-      for (const el of children) {
-        const tag = (el.tagName || "").toLowerCase();
-        const text = clean(el.textContent);
+        // Extract title from container text
+        let text = clean(container.textContent || "");
+        // Remove common footer text like "More info", "Apply now", dates
+        text = text.replace(/More info|Apply now|Open date:.*|Position open through:.*/gi, "").trim();
+        // Extract title after "Position NNNNN" pattern
+        const match = text.match(/Position\s+\d+\s+(.+?)(?:\s+(?:Seattle|Tacoma|Bothell|WA|Open date|$))/i);
+        const title = match ? clean(match[1]) : clean(text.split(/\n/)[0]);
 
-        if (tag === "li" && /\bPosition\s+\d+\b/i.test(text)) {
-          pendingTitle = text;
-          continue;
-        }
-
-        if (pendingTitle && tag === "a") {
-          const label = clean(el.textContent).toLowerCase();
-          const href = abs(el.getAttribute("href"));
-          if (!href) continue;
-
-          if (label === "more info") {
-            flush(href);
-            continue;
-          }
-          if (label === "apply now" || /interfolio/i.test(href)) {
-            flush(href);
-            continue;
-          }
+        if (title && title.length > 5) {
+          seen.add(href);
+          out.push({ title, url: href });
         }
       }
 
-      const seen = new Set();
-      return out.filter((x) => (seen.has(x.url) ? false : (seen.add(x.url), true)));
+      // Strategy 2: Fallback - find li elements with Position pattern
+      if (out.length === 0) {
+        const lis = Array.from(document.querySelectorAll("li"));
+        for (const li of lis) {
+          const text = clean(li.textContent || "");
+          if (!/Position\s+\d+/i.test(text)) continue;
+
+          const link = li.querySelector('a[href*="position"], a[href*="job"]') ||
+                       li.nextElementSibling?.matches?.('a') ? li.nextElementSibling : null;
+          if (!link) continue;
+
+          const href = abs(link.getAttribute("href"));
+          if (!href || seen.has(href)) continue;
+
+          const match = text.match(/Position\s+\d+\s+(.+?)(?:\s+(?:Seattle|Tacoma|Bothell|WA|$))/i);
+          const title = match ? clean(match[1]) : text;
+
+          seen.add(href);
+          out.push({ title, url: href });
+        }
+      }
+
+      return out;
     });
 
     const jobs = (items || []).map((x) => ({
