@@ -525,6 +525,35 @@ const WI_CAMPUSES = [
   },
 ];
 
+// CO (Colorado)
+const CO_CAMPUSES = [
+  {
+    campus: "CU Boulder",
+    type: "cu-boulder",
+    url: "https://jobs.colorado.edu/jobs/SearchJobs?employmentType=Faculty",
+  },
+  {
+    campus: "CU Denver",
+    type: "taleo",
+    url: "https://cu.taleo.net/careersection/cu_ext_ucd/moresearch.ftl?lang=en",
+  },
+  {
+    campus: "CU Anschutz",
+    type: "taleo",
+    url: "https://cu.taleo.net/careersection/cu_ext_amc/moresearch.ftl?lang=en",
+  },
+  {
+    campus: "UCCS",
+    type: "taleo",
+    url: "https://cu.taleo.net/careersection/cu_ext_uccs/moresearch.ftl?lang=en",
+  },
+  {
+    campus: "Colorado State University",
+    type: "workday",
+    url: "https://csusystem.wd12.myworkdayjobs.com/fortcollins_careers",
+  },
+];
+
 // MI (Michigan)
 const MI_CAMPUSES = [
   {
@@ -718,6 +747,7 @@ export async function scrapeAllJobsStandalone() {
       { name: "WI", fn: () => scrapeWiAll(context) },
       { name: "MT", fn: () => scrapeMtAll(context) },
       { name: "Ivy League", fn: () => scrapeIvyLeagueAll(context) },
+      { name: "CO", fn: () => scrapeCoAll(context) },
 
     ];
 
@@ -4071,6 +4101,165 @@ async function scrapeMtAll(context) {
 
   const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
   return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== CO ============================== */
+
+async function scrapeCoAll(context) {
+  const results = await mapWithConcurrency(
+    CO_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CO");
+        if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "CO");
+        if (type === "cu-boulder") return await scrapeCuBoulder(context, url, campus, "CO");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} CO scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+// Generic Taleo scraper for CU system
+async function scrapeTaleoAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "networkidle", timeout: 60_000 });
+    await page.waitForTimeout(3000);
+
+    // Extract the career section from URL for building job detail links
+    const sectionMatch = startUrl.match(/careersection\/([^/]+)/);
+    const section = sectionMatch ? sectionMatch[1] : "2";
+
+    const jobs = await safeEvaluate(page, (section) => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const out = [];
+      const seen = new Set();
+
+      // CU Taleo shows jobs in rows with IDs like "requisitionListInterface.ID4597.row7"
+      // The text contains job title and "Requisition ID: XXXXX"
+      const rows = document.querySelectorAll('[id*="requisitionListInterface"]');
+      for (const row of rows) {
+        const text = row.textContent || "";
+        const reqMatch = text.match(/Requisition\s*(?:ID)?[:#]?\s*(\d+)/i);
+        if (!reqMatch) continue;
+
+        const reqId = reqMatch[1];
+        if (seen.has(reqId)) continue;
+        seen.add(reqId);
+
+        // Extract title - it's usually at the start of the text before "Requisition"
+        const titleMatch = text.match(/^([^R]+?)(?:Requisition|$)/i);
+        let title = titleMatch ? clean(titleMatch[1]) : "";
+        if (!title || title.length < 4) continue;
+
+        const url = `https://cu.taleo.net/careersection/${section}/jobdetail.ftl?job=${reqId}`;
+        out.push({ title, url });
+      }
+
+      // Fallback: also look for job titles in links with # href (Taleo uses JS)
+      if (out.length === 0) {
+        const links = document.querySelectorAll('a[href="#"]');
+        for (const a of links) {
+          const title = clean(a.textContent);
+          if (title && title.length > 10 && title.length < 200) {
+            // Try to find requisition ID nearby
+            const parent = a.closest("tr, div, li");
+            if (parent) {
+              const parentText = parent.textContent || "";
+              const reqMatch = parentText.match(/Requisition\s*(?:ID)?[:#]?\s*(\d+)/i);
+              if (reqMatch && !seen.has(reqMatch[1])) {
+                seen.add(reqMatch[1]);
+                const url = `https://cu.taleo.net/careersection/${section}/jobdetail.ftl?job=${reqMatch[1]}`;
+                out.push({ title, url });
+              }
+            }
+          }
+        }
+      }
+
+      return out;
+    }, section);
+
+    const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} Taleo listings scraped: ${filtered.length}`);
+    return filtered.map((j) => ({
+      title: clean(j.title),
+      url: j.url,
+      source: sourceName,
+      college: campusName,
+    }));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// CU Boulder jobs.colorado.edu scraper
+async function scrapeCuBoulder(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    // Go to faculty jobs page
+    await page.goto("https://jobs.colorado.edu/jobs/SearchJobs?employmentType=Faculty", { waitUntil: "networkidle", timeout: 60_000 });
+    await page.waitForTimeout(3000);
+
+    const jobs = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const out = [];
+      const seen = new Set();
+
+      // Get the page text and extract job info
+      // CU Boulder displays job titles followed by department and requisition info
+      const text = document.body.innerText;
+      const lines = text.split("\n").map((l) => l.trim()).filter((l) => l.length > 0);
+
+      let currentTitle = null;
+      for (const line of lines) {
+        // Look for lines that contain requisition numbers
+        const reqMatch = line.match(/Requisition Number:\s*(\d+)/i);
+        if (reqMatch) {
+          const reqNum = reqMatch[1];
+          // The title is usually on the previous non-empty line or at the start of a block
+          // Try to find a title above this line
+          if (currentTitle && !seen.has(reqNum)) {
+            seen.add(reqNum);
+            out.push({
+              title: currentTitle,
+              url: "https://jobs.colorado.edu/jobs/JobDetail/" + reqNum,
+            });
+          }
+          currentTitle = null;
+        } else if (
+          line.length > 10 &&
+          line.length < 200 &&
+          !line.includes("|") &&
+          !line.includes("Requisition") &&
+          !/^(Search|Home|Login|FAQ|Create|Join|Living|Benefits|Perks|Jobs|Menu|Skip|Select|Full-Time|Part-Time|Faculty|Research Faculty|Staff|Temporary Staff|On-Call|Area of Interest|Functional Area|Employment Type|Schedule Interest|Search by Keyword|Reset|Displaying|Next|Previous|\d+$)/i.test(line)
+        ) {
+          // This might be a job title
+          currentTitle = line;
+        }
+      }
+
+      return out;
+    });
+
+    const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length}`);
+    return filtered.map((j) => ({
+      title: clean(j.title),
+      url: j.url,
+      source: sourceName,
+      college: campusName,
+    }));
+  } finally {
+    await page.close().catch(() => {});
+  }
 }
 
 // Interfolio Institution-specific positions page scraper

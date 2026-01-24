@@ -3,85 +3,479 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Faculty Jobs (Static)</title>
+    <title>Faculty Jobs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; background: #fafafa; }
-      header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-      .muted { color: #666; font-size: 14px; }
-      .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-      input, select { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; min-width: 240px; background: white; }
-      select { min-width: 200px; }
-      button { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; background: white; cursor: pointer; }
-      button:hover { background: #f2f2f2; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-      .card { background: white; border: 1px solid #e8e8e8; border-radius: 14px; padding: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; }
-      .title { font-weight: 650; line-height: 1.2; }
-      .desc { color: #444; font-size: 14px; line-height: 1.35; }
-      .links { display: flex; gap: 10px; margin-top: 6px; }
-      a { color: #0b57d0; text-decoration: none; font-size: 14px; }
-      a:hover { text-decoration: underline; }
-      .pills { display: flex; gap: 6px; flex-wrap: wrap; }
-      .pill { display: inline-block; font-size: 12px; padding: 2px 8px; border: 1px solid #e2e2e2; border-radius: 999px; background: #fff; color: #555; width: fit-content; }
-      .status { margin: 10px 0 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-      .count { font-weight: 600; color: #333; }
-      .meta { color: #666; font-size: 13px; line-height: 1.25; }
+      * { box-sizing: border-box; }
 
-      .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-      .smallBtn { padding: 10px 12px; min-width: auto; }
+      body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
 
-      .warn { color: #8a5a00; }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 24px 40px;
+      }
+
+      header {
+        padding: 32px 24px;
+        color: white;
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      .logo {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+      }
+
+      .tagline {
+        font-size: 15px;
+        opacity: 0.9;
+        font-weight: 400;
+      }
+
+      .search-bar {
+        background: white;
+        border-radius: 16px;
+        padding: 20px 24px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        margin-bottom: 24px;
+      }
+
+      .search-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .search-input-wrapper {
+        flex: 1;
+        position: relative;
+      }
+
+      .search-input-wrapper input {
+        width: 100%;
+        padding: 14px 16px 14px 44px;
+        border: 2px solid #e8e8e8;
+        border-radius: 10px;
+        font-size: 15px;
+        font-family: inherit;
+        background: #fafafa;
+        transition: all 0.2s ease;
+      }
+
+      .search-input-wrapper::before {
+        content: "";
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E") no-repeat center;
+      }
+
+      .clear-search {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #ddd;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #666;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
+
+      .clear-search:hover { background: #ccc; }
+      .clear-search.visible { display: flex; }
+
+      .filters-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      select {
+        padding: 10px 14px;
+        border: 2px solid #e8e8e8;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        background: #fafafa;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 180px;
+      }
+
+      input:focus, select:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      }
+
+      button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      button.secondary {
+        background: #f0f0f0;
+        color: #666;
+      }
+
+      button.secondary:hover {
+        background: #e5e5e5;
+        box-shadow: none;
+        transform: none;
+      }
+
+      .active-filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #f0f0f0;
+      }
+
+      .active-filters:empty { display: none; }
+
+      .filter-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .filter-chip button {
+        background: rgba(255,255,255,0.3);
+        border: none;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        cursor: pointer;
+        font-size: 10px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .filter-chip button:hover {
+        background: rgba(255,255,255,0.5);
+        transform: none;
+        box-shadow: none;
+      }
+
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        background: white;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      }
+
+      .status {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .count {
+        font-weight: 600;
+        color: #667eea;
+        font-size: 14px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        transition: all 0.25s ease;
+        border: 1px solid transparent;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+        border-color: #667eea;
+      }
+
+      .title {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 1.4;
+        color: #1a1a2e;
+      }
+
+      .title mark {
+        background: #fff3cd;
+        color: inherit;
+        padding: 0 2px;
+        border-radius: 2px;
+      }
+
+      .pills {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .pill {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .pill.state {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 6px 12px;
+        font-size: 13px;
+      }
+
+      .info-label {
+        color: #999;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+      }
+
+      .info-value {
+        color: #333;
+        font-weight: 500;
+      }
+
+      .info-value mark {
+        background: #fff3cd;
+        color: inherit;
+        padding: 0 2px;
+        border-radius: 2px;
+      }
+
+      .desc {
+        color: #666;
+        font-size: 13px;
+        line-height: 1.5;
+        border-left: 3px solid #e8e8e8;
+        padding-left: 12px;
+        margin-top: 4px;
+      }
+
+      .links {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid #f0f0f0;
+      }
+
+      .links a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #667eea;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+      }
+
+      .links a:hover { color: #764ba2; }
+
+      .links a::after {
+        content: "\2192";
+        transition: transform 0.2s ease;
+      }
+
+      .links a:hover::after {
+        transform: translateX(3px);
+      }
+
+      .warn { color: #e74c3c; }
+
+      .loading {
+        text-align: center;
+        padding: 60px 20px;
+        color: #888;
+      }
+
+      .loading::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 16px;
+        border: 3px solid #e8e8e8;
+        border-top-color: #667eea;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 16px;
+        color: #888;
+      }
+
+      @media (max-width: 768px) {
+        header { padding: 24px 16px; }
+        .logo { font-size: 26px; }
+        .container { padding: 0 16px 32px; }
+        .search-bar { padding: 16px; }
+        .search-row { flex-direction: column; }
+        .search-input-wrapper { width: 100%; }
+        select { width: 100%; min-width: unset; }
+        .grid { grid-template-columns: 1fr; gap: 16px; }
+      }
     </style>
   </head>
   <body>
     <header>
-      <div>
-        <div style="font-size: 20px; font-weight: 700;">Faculty Jobs</div>
-        <div class="muted" id="subhead">Loading…</div>
-      </div>
-
-      <div class="controls">
-        <input id="q" placeholder="Search title / description / college / location…" />
-        <select id="source">
-          <option value="all">All sources</option>
-
-          <option value="AZ">AZ - Arizona Public Universities</option>
-          <option value="CA - CSU">CA - California State University</option>
-          <option value="UC">CA - University of California</option>
-          <option value="CT State">CT - Connecticut State Colleges & Universities</option>
-          <option value="IL">IL - Illinois Public Universities</option>
-          <option value="DE">DE - Delaware Public Universities</option>
-          <option value="UMass">MA - University of Massachusetts</option>
-          <option value="ME">ME - Maine Public Universities</option>
-          <option value="MI">MI - Michigan Public Universities</option>
-          <option value="MN">MN - Minnesota Public Universities</option>
-          <option value="MT">MT - Montana Public Universities</option>
-
-          <option value="NJ">NJ - New Jersey Public Universities</option>
-          <option value="NC">NC - North Carolina Public Universities</option>
-
-          <option value="NY (SUNY)">NY - State University of New York (SUNY)</option>
-          <option value="CUNY">NY - City University of New York</option>
-
-          <option value="OR">OR - Oregon Public Universities</option>
-          <option value="PA">PA - Pennsylvania State</option>
-          <option value="RI">RI - Rhode Island Public Universities</option>
-          <option value="WA">WA - Washington Public Universities</option>
-          <option value="WI">WI - Wisconsin Public Universities</option>
-
-          <option value="Ivy League">Ivy League</option>
-          <option value="Claremont Colleges">Claremont Colleges</option>
-</select>
-
-        <button id="refresh" class="smallBtn" title="Reload jobs.json">Reload</button>
-      </div>
+      <div class="logo">Faculty Jobs</div>
+      <div class="tagline" id="subhead">Loading...</div>
     </header>
 
-    <div class="status">
-      <span class="muted" id="status">—</span>
-      <span class="count" id="shown"></span>
-    </div>
+    <div class="container">
+      <div class="search-bar">
+        <div class="search-row">
+          <div class="search-input-wrapper">
+            <input id="q" placeholder="Search jobs... (e.g., biology professor, data science)" />
+            <button class="clear-search" id="clearSearch" title="Clear search">&times;</button>
+          </div>
+          <button id="refresh">Refresh</button>
+        </div>
 
-    <div class="grid" id="grid"></div>
+        <div class="filters-row">
+          <select id="source">
+            <option value="all">All States / Systems</option>
+            <option value="AZ">Arizona</option>
+            <option value="CA - CSU">California (CSU)</option>
+            <option value="UC">California (UC)</option>
+            <option value="CO">Colorado</option>
+            <option value="CT State">Connecticut</option>
+            <option value="DE">Delaware</option>
+            <option value="IL">Illinois</option>
+            <option value="UMass">Massachusetts</option>
+            <option value="ME">Maine</option>
+            <option value="MI">Michigan</option>
+            <option value="MN">Minnesota</option>
+            <option value="MT">Montana</option>
+            <option value="NJ">New Jersey</option>
+            <option value="NC">North Carolina</option>
+            <option value="NY (SUNY)">New York (SUNY)</option>
+            <option value="CUNY">New York (CUNY)</option>
+            <option value="OR">Oregon</option>
+            <option value="PA">Pennsylvania</option>
+            <option value="RI">Rhode Island</option>
+            <option value="WA">Washington</option>
+            <option value="WI">Wisconsin</option>
+            <option value="Ivy League">Ivy League</option>
+            <option value="Claremont Colleges">Claremont Colleges</option>
+          </select>
+
+          <select id="positionType">
+            <option value="all">All Position Types</option>
+            <option value="Assistant Professor">Assistant Professor</option>
+            <option value="Associate Professor">Associate Professor</option>
+            <option value="Professor">Professor</option>
+            <option value="Lecturer">Lecturer</option>
+            <option value="Instructor">Instructor</option>
+            <option value="Visiting Faculty">Visiting Faculty</option>
+            <option value="Research Faculty">Research Faculty</option>
+            <option value="Teaching Faculty">Teaching Faculty</option>
+            <option value="Clinical Faculty">Clinical Faculty</option>
+            <option value="Postdoctoral">Postdoctoral</option>
+          </select>
+
+          <select id="sortBy">
+            <option value="relevance">Sort: Relevance</option>
+            <option value="title-asc">Sort: Title A-Z</option>
+            <option value="title-desc">Sort: Title Z-A</option>
+            <option value="university">Sort: University</option>
+            <option value="state">Sort: State</option>
+          </select>
+
+          <button class="secondary" id="clearFilters">Clear All</button>
+        </div>
+
+        <div class="active-filters" id="activeFilters"></div>
+      </div>
+
+      <div class="status-bar">
+        <span class="status" id="status">Loading...</span>
+        <span class="count" id="shown"></span>
+      </div>
+
+      <div class="grid" id="grid"></div>
+    </div>
 
     <script>
       const grid = document.getElementById("grid");
@@ -90,10 +484,16 @@
       const shownEl = document.getElementById("shown");
       const q = document.getElementById("q");
       const sourceSel = document.getElementById("source");
+      const positionTypeSel = document.getElementById("positionType");
+      const sortBySel = document.getElementById("sortBy");
       const refreshBtn = document.getElementById("refresh");
+      const clearSearchBtn = document.getElementById("clearSearch");
+      const clearFiltersBtn = document.getElementById("clearFilters");
+      const activeFiltersEl = document.getElementById("activeFilters");
 
       let allJobs = [];
       let meta = { scrapedAt: null, count: 0 };
+      let debounceTimer = null;
 
       function escapeHtml(s) {
         return String(s).replace(/[&<>"']/g, c => ({
@@ -103,37 +503,131 @@
 
       function truncate(s, n) {
         s = String(s);
-        return s.length > n ? s.slice(0, n - 1) + "…" : s;
+        return s.length > n ? s.slice(0, n - 1) + "..." : s;
       }
 
-      // Dedup pills
-      function addPill(pillsEl, text, seen) {
-        const t = (text || "").trim();
-        if (!t) return;
-        const key = t.toLowerCase();
-        if (seen.has(key)) return;
-        seen.add(key);
+      // Highlight search terms in text
+      function highlight(text, searchTerms) {
+        if (!searchTerms || searchTerms.length === 0) return escapeHtml(text);
+        let result = escapeHtml(text);
+        for (const term of searchTerms) {
+          if (term.length < 2) continue;
+          const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+          result = result.replace(regex, '<mark>$1</mark>');
+        }
+        return result;
+      }
 
-        const p = document.createElement("span");
-        p.className = "pill";
-        p.textContent = t;
-        pillsEl.appendChild(p);
+      const stateMap = {
+        "AZ": "Arizona",
+        "CA - CSU": "California",
+        "UC": "California",
+        "CO": "Colorado",
+        "CT State": "Connecticut",
+        "DE": "Delaware",
+        "IL": "Illinois",
+        "UMass": "Massachusetts",
+        "ME": "Maine",
+        "MI": "Michigan",
+        "MN": "Minnesota",
+        "MT": "Montana",
+        "NJ": "New Jersey",
+        "NC": "North Carolina",
+        "NY (SUNY)": "New York",
+        "CUNY": "New York",
+        "OR": "Oregon",
+        "PA": "Pennsylvania",
+        "RI": "Rhode Island",
+        "WA": "Washington",
+        "WI": "Wisconsin",
+        "Ivy League": "Multiple States",
+        "Claremont Colleges": "California"
+      };
+
+      function getPositionType(title) {
+        const t = (title || "").toLowerCase();
+        if (t.includes("assistant professor")) return "Assistant Professor";
+        if (t.includes("associate professor")) return "Associate Professor";
+        if (t.includes("full professor") || /\bprofessor\b/.test(t) && !t.includes("assistant") && !t.includes("associate")) return "Professor";
+        if (t.includes("lecturer")) return "Lecturer";
+        if (t.includes("instructor")) return "Instructor";
+        if (t.includes("visiting")) return "Visiting Faculty";
+        if (t.includes("adjunct")) return "Adjunct";
+        if (t.includes("postdoc") || t.includes("post-doc")) return "Postdoctoral";
+        if (t.includes("research")) return "Research Faculty";
+        if (t.includes("teaching")) return "Teaching Faculty";
+        if (t.includes("clinical")) return "Clinical Faculty";
+        return "Faculty";
+      }
+
+      function getDepartment(title, description) {
+        const text = title || "";
+        let match = text.match(/(?:professor|lecturer|instructor|faculty)\s+(?:of|in|for)\s+([^,\-\(\)]+)/i);
+        if (match) return match[1].trim();
+        match = text.match(/([^,\-\(\)]+?)\s+(?:department|dept)/i);
+        if (match) return match[1].trim();
+        match = text.match(/department\s+of\s+([^,\-\(\)]+)/i);
+        if (match) return match[1].trim();
+        if (description) {
+          match = description.match(/department\s+of\s+([^,\.\-\(\)]+)/i);
+          if (match) return match[1].trim();
+        }
+        return null;
       }
 
       function normalizeJob(j) {
+        const title = j?.title ?? "(No title)";
+        const description = j?.description ?? null;
         return {
-          title: j?.title ?? "(No title)",
-          description: j?.description ?? null,
+          title,
+          description,
           url: j?.url ?? "#",
           source: j?.source ?? null,
           category: j?.category ?? null,
           college: j?.college ?? null,
           location: j?.location ?? null,
+          positionType: getPositionType(title),
+          department: getDepartment(title, description),
+          state: stateMap[j?.source] || j?.source || null
         };
       }
 
-      function render(jobs) {
+      function updateActiveFilters() {
+        activeFiltersEl.innerHTML = "";
+        const searchTerm = q.value.trim();
+        const source = sourceSel.value;
+        const posType = positionTypeSel.value;
+
+        if (searchTerm) {
+          const chip = document.createElement("span");
+          chip.className = "filter-chip";
+          chip.innerHTML = `Search: "${escapeHtml(truncate(searchTerm, 20))}" <button data-clear="search">&times;</button>`;
+          activeFiltersEl.appendChild(chip);
+        }
+
+        if (source !== "all") {
+          const chip = document.createElement("span");
+          chip.className = "filter-chip";
+          chip.innerHTML = `${escapeHtml(stateMap[source] || source)} <button data-clear="source">&times;</button>`;
+          activeFiltersEl.appendChild(chip);
+        }
+
+        if (posType !== "all") {
+          const chip = document.createElement("span");
+          chip.className = "filter-chip";
+          chip.innerHTML = `${escapeHtml(posType)} <button data-clear="positionType">&times;</button>`;
+          activeFiltersEl.appendChild(chip);
+        }
+      }
+
+      function render(jobs, searchTerms = []) {
         grid.innerHTML = "";
+
+        if (jobs.length === 0) {
+          grid.innerHTML = '<div class="empty-state">No jobs found matching your criteria. Try adjusting your filters.</div>';
+          shownEl.textContent = "0 jobs";
+          return;
+        }
 
         for (const raw of jobs) {
           const job = normalizeJob(raw);
@@ -143,110 +637,195 @@
 
           const title = document.createElement("div");
           title.className = "title";
-          title.textContent = job.title || "(No title)";
+          title.innerHTML = highlight(job.title || "(No title)", searchTerms);
 
           const pills = document.createElement("div");
           pills.className = "pills";
-          const seen = new Set();
 
-          // Hide source pill for CT (college pill already contains CT State <Campus>)
-          if (job.source && job.source !== "CT State") addPill(pills, job.source, seen);
+          if (job.positionType) {
+            const typePill = document.createElement("span");
+            typePill.className = "pill";
+            typePill.textContent = job.positionType;
+            pills.appendChild(typePill);
+          }
 
-          // Category pill
-          if (job.category) addPill(pills, job.category, seen);
+          if (job.state) {
+            const statePill = document.createElement("span");
+            statePill.className = "pill state";
+            statePill.textContent = job.state;
+            pills.appendChild(statePill);
+          }
 
-          // College/campus chip
-          if (job.college && job.college !== job.source) addPill(pills, job.college, seen);
+          const infoGrid = document.createElement("div");
+          infoGrid.className = "info-grid";
 
-          // Location meta line
-          const metaLine = document.createElement("div");
-          metaLine.className = "meta";
-          const parts = [];
-          if (job.location) parts.push(job.location);
-          if (parts.length) metaLine.textContent = parts.join(" • ");
+          if (job.college) {
+            infoGrid.innerHTML += `<span class="info-label">University</span><span class="info-value">${highlight(job.college, searchTerms)}</span>`;
+          }
+
+          if (job.department) {
+            infoGrid.innerHTML += `<span class="info-label">Department</span><span class="info-value">${highlight(job.department, searchTerms)}</span>`;
+          }
+
+          if (job.location) {
+            infoGrid.innerHTML += `<span class="info-label">Location</span><span class="info-value">${highlight(job.location, searchTerms)}</span>`;
+          }
 
           const desc = document.createElement("div");
           desc.className = "desc";
-          desc.textContent = job.description ? truncate(job.description, 240) : "";
+          desc.textContent = job.description ? truncate(job.description, 180) : "";
 
           const links = document.createElement("div");
           links.className = "links";
-          links.innerHTML = `<a href="${escapeHtml(job.url)}" target="_blank" rel="noreferrer">View job</a>`;
+          links.innerHTML = `<a href="${escapeHtml(job.url)}" target="_blank" rel="noreferrer">View Position</a>`;
 
           card.appendChild(title);
           if (pills.childNodes.length) card.appendChild(pills);
-          if (parts.length) card.appendChild(metaLine);
+          if (infoGrid.innerHTML) card.appendChild(infoGrid);
           if (job.description) card.appendChild(desc);
           card.appendChild(links);
 
           grid.appendChild(card);
         }
 
-        shownEl.textContent = `${jobs.length} shown`;
+        shownEl.textContent = `${jobs.length.toLocaleString()} jobs`;
       }
 
       function applyFilters() {
-        const term = q.value.trim().toLowerCase();
+        const searchText = q.value.trim().toLowerCase();
+        const searchTerms = searchText.split(/\s+/).filter(t => t.length >= 2);
         const src = sourceSel.value;
+        const posType = positionTypeSel.value;
+        const sortBy = sortBySel.value;
 
-        let filtered = allJobs;
+        // Update clear button visibility
+        clearSearchBtn.classList.toggle("visible", q.value.length > 0);
 
-        if (src !== "all") filtered = filtered.filter(j => (j.source || "") === src);
+        // Update active filters display
+        updateActiveFilters();
 
-        if (term) {
-          filtered = filtered.filter(j => {
-            const hay = [
-              j.title, j.description, j.source, j.category, j.college, j.location
-            ].filter(Boolean).join(" ").toLowerCase();
-            return hay.includes(term);
-          });
+        let filtered = allJobs.map(normalizeJob);
+
+        // Filter by source/state
+        if (src !== "all") {
+          filtered = filtered.filter(j => j.source === src);
         }
 
-        render(filtered);
+        // Filter by position type
+        if (posType !== "all") {
+          filtered = filtered.filter(j => j.positionType === posType);
+        }
+
+        // Filter by search terms (all terms must match)
+        if (searchTerms.length > 0) {
+          filtered = filtered.filter(j => {
+            const hay = [
+              j.title, j.description, j.source, j.category, j.college, j.location, j.department, j.state
+            ].filter(Boolean).join(" ").toLowerCase();
+            return searchTerms.every(term => hay.includes(term));
+          });
+
+          // Score by relevance (number of term matches in title)
+          if (sortBy === "relevance") {
+            filtered = filtered.map(j => {
+              const titleLower = (j.title || "").toLowerCase();
+              let score = 0;
+              for (const term of searchTerms) {
+                if (titleLower.includes(term)) score += 10;
+                if ((j.department || "").toLowerCase().includes(term)) score += 5;
+              }
+              return { ...j, _score: score };
+            }).sort((a, b) => b._score - a._score);
+          }
+        }
+
+        // Sort
+        if (sortBy === "title-asc") {
+          filtered.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+        } else if (sortBy === "title-desc") {
+          filtered.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
+        } else if (sortBy === "university") {
+          filtered.sort((a, b) => (a.college || "").localeCompare(b.college || ""));
+        } else if (sortBy === "state") {
+          filtered.sort((a, b) => (a.state || "").localeCompare(b.state || ""));
+        }
+
+        render(filtered, searchTerms);
+      }
+
+      // Debounced search
+      function debouncedApplyFilters() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(applyFilters, 150);
       }
 
       async function load() {
-        statusEl.textContent = "Fetching jobs…";
-        statusEl.className = "muted";
+        statusEl.textContent = "Fetching jobs...";
         shownEl.textContent = "";
-        grid.innerHTML = "";
+        grid.innerHTML = '<div class="loading">Loading positions...</div>';
 
-        // Static site: jobs.json sits next to this HTML in /docs
-        // Cache-bust so Reload works immediately after Actions updates
         const url = `./jobs.json?ts=${Date.now()}`;
 
-        const r = await fetch(url, { cache: "no-store" });
-        if (!r.ok) {
-          const txt = await r.text().catch(() => "");
-          statusEl.textContent = `Failed to load jobs.json (${r.status}).`;
-          statusEl.className = "muted warn";
-          subhead.textContent = "No data loaded";
-          console.error("jobs.json fetch failed:", r.status, txt.slice(0, 200));
-          return;
+        try {
+          const r = await fetch(url, { cache: "no-store" });
+          if (!r.ok) {
+            statusEl.textContent = `Failed to load (${r.status})`;
+            statusEl.className = "status warn";
+            subhead.textContent = "Unable to load data";
+            grid.innerHTML = '<div class="empty-state">Failed to load job listings. Please try again.</div>';
+            return;
+          }
+
+          const data = await r.json();
+
+          allJobs = Array.isArray(data.jobs) ? data.jobs : [];
+          meta.scrapedAt = data.scrapedAt || null;
+          meta.count = data.count || allJobs.length;
+
+          const when = meta.scrapedAt ? new Date(meta.scrapedAt).toLocaleString() : "unknown";
+          subhead.textContent = `${allJobs.length.toLocaleString()} positions · Updated ${when}`;
+
+          statusEl.textContent = "Ready";
+          applyFilters();
+        } catch (err) {
+          statusEl.textContent = "Error: " + err.message;
+          statusEl.className = "status warn";
+          grid.innerHTML = '<div class="empty-state">Failed to load job listings. Please try again.</div>';
         }
-
-        const data = await r.json();
-
-        allJobs = Array.isArray(data.jobs) ? data.jobs : [];
-        meta.scrapedAt = data.scrapedAt || null;
-        meta.count = data.count || allJobs.length;
-
-        const when = meta.scrapedAt ? new Date(meta.scrapedAt).toLocaleString() : "unknown time";
-        subhead.textContent = `${allJobs.length} jobs • ${when} • static JSON`;
-
-        statusEl.textContent = "Ready";
-        statusEl.className = "muted";
-        applyFilters();
       }
 
-      q.addEventListener("input", applyFilters);
+      // Event listeners
+      q.addEventListener("input", debouncedApplyFilters);
       sourceSel.addEventListener("change", applyFilters);
+      positionTypeSel.addEventListener("change", applyFilters);
+      sortBySel.addEventListener("change", applyFilters);
       refreshBtn.addEventListener("click", load);
 
-      load().catch(err => {
-        statusEl.textContent = "Failed to load: " + err.message;
-        statusEl.className = "muted warn";
+      clearSearchBtn.addEventListener("click", () => {
+        q.value = "";
+        applyFilters();
+        q.focus();
       });
+
+      clearFiltersBtn.addEventListener("click", () => {
+        q.value = "";
+        sourceSel.value = "all";
+        positionTypeSel.value = "all";
+        sortBySel.value = "relevance";
+        applyFilters();
+      });
+
+      activeFiltersEl.addEventListener("click", (e) => {
+        if (e.target.tagName === "BUTTON") {
+          const clear = e.target.dataset.clear;
+          if (clear === "search") q.value = "";
+          if (clear === "source") sourceSel.value = "all";
+          if (clear === "positionType") positionTypeSel.value = "all";
+          applyFilters();
+        }
+      });
+
+      load();
     </script>
   </body>
 </html>
