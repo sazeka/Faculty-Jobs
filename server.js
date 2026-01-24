@@ -434,6 +434,39 @@ const ME_CAMPUSES = [
   },
 ];
 
+// MN (Minnesota)
+const MN_CAMPUSES = [
+  {
+    campus: "University of Minnesota",
+    type: "umn",
+    url: "https://hr.myu.umn.edu/psc/hrprd/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=1",
+  },
+  {
+    campus: "Minnesota State System",
+    type: "workday",
+    url: "https://minnstate.wd1.myworkdayjobs.com/Minnesota_State_Careers",
+  },
+];
+
+// WI (Wisconsin)
+const WI_CAMPUSES = [
+  {
+    campus: "UW-Madison",
+    type: "workday",
+    url: "https://wisconsin.wd1.myworkdayjobs.com/UW_Madison",
+  },
+  {
+    campus: "UW-Milwaukee",
+    type: "workday",
+    url: "https://wisconsin.wd1.myworkdayjobs.com/UW_Milwaukee",
+  },
+  {
+    campus: "UW System Comprehensives",
+    type: "workday",
+    url: "https://wisconsin.wd1.myworkdayjobs.com/UW_Comprehensives",
+  },
+];
+
 // MI (Michigan)
 const MI_CAMPUSES = [
   {
@@ -623,6 +656,8 @@ export async function scrapeAllJobsStandalone() {
       { name: "OR", fn: () => scrapeOrAll(context) },
       { name: "WA", fn: () => scrapeWaAll(context) },
       { name: "ME", fn: () => scrapeMeAll(context) },
+      { name: "MN", fn: () => scrapeMnAll(context) },
+      { name: "WI", fn: () => scrapeWiAll(context) },
 
     ];
 
@@ -3827,6 +3862,126 @@ async function scrapeMeAll(context) {
         return [];
       } catch (e) {
         console.error(`❌ ${campus} ME scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== MN ============================== */
+
+async function scrapeMnAll(context) {
+  const results = await mapWithConcurrency(
+    MN_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "umn") return await scrapeUmnJobs(context, url, campus, "MN");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MN");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} MN scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+// University of Minnesota (PeopleSoft-based MyU portal)
+async function scrapeUmnJobs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(2000);
+
+    // Try to load more results by scrolling and clicking "Show More" if present
+    for (let i = 0; i < 20; i++) {
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)).catch(() => {});
+      await page.waitForTimeout(500);
+
+      const showMore = page.locator('button:has-text("Show More"), a:has-text("Show More"), button:has-text("Load More")').first();
+      if ((await showMore.count().catch(() => 0)) > 0 && (await showMore.isVisible().catch(() => false))) {
+        await showMore.click().catch(() => {});
+        await page.waitForTimeout(1000);
+      }
+    }
+
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); }
+        catch { return null; }
+      };
+
+      const out = [];
+      const seen = new Set();
+
+      // PeopleSoft job links often have patterns like HRS_CE_JOB_DTL or job posting IDs
+      const links = Array.from(document.querySelectorAll('a[href]'));
+      for (const a of links) {
+        const href = abs(a.getAttribute("href"));
+        if (!href) continue;
+
+        // Match PeopleSoft job detail patterns
+        const isJob =
+          /HRS_CE_JOB_DTL/i.test(href) ||
+          /jobid=/i.test(href) ||
+          /job_id=/i.test(href) ||
+          /posting/i.test(href) ||
+          (/HRS.*JOB/i.test(href));
+
+        if (!isJob) continue;
+        if (seen.has(href)) continue;
+
+        const title = clean(a.textContent);
+        if (!title || title.length < 5) continue;
+        if (/^(view|apply|details|more|back|home|search|login)$/i.test(title)) continue;
+
+        seen.add(href);
+        out.push({ title, url: href });
+      }
+
+      return out;
+    });
+
+    const jobs = (items || []).map((x) => ({
+      title: clean(x.title),
+      url: x.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+/* ============================== WI ============================== */
+
+async function scrapeWiAll(context) {
+  const results = await mapWithConcurrency(
+    WI_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "WI");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} WI scrape failed:`, e?.message || e);
         return [];
       }
     }
