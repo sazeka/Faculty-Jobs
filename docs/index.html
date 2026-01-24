@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Faculty Jobs</title>
+    <title>US Faculty Job Search</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
       * { box-sizing: border-box; }
 
@@ -25,23 +25,31 @@
       }
 
       header {
-        padding: 32px 24px;
+        padding: 48px 24px 32px;
         color: white;
         text-align: center;
         margin-bottom: 24px;
       }
 
       .logo {
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 8px;
-        letter-spacing: -0.5px;
+        font-size: 42px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        letter-spacing: -1px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      }
+
+      .logo-icon {
+        display: inline-block;
+        margin-right: 12px;
+        vertical-align: middle;
       }
 
       .tagline {
-        font-size: 15px;
-        opacity: 0.9;
-        font-weight: 400;
+        font-size: 17px;
+        opacity: 0.95;
+        font-weight: 500;
+        letter-spacing: 0.3px;
       }
 
       .search-bar {
@@ -399,7 +407,15 @@
   </head>
   <body>
     <header>
-      <div class="logo">Faculty Jobs</div>
+      <div class="logo">
+        <span class="logo-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3Z" fill="white"/>
+            <path d="M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" fill="white" opacity="0.8"/>
+          </svg>
+        </span>
+        US Faculty Job Search
+      </div>
       <div class="tagline" id="subhead">Loading...</div>
     </header>
 
@@ -428,13 +444,16 @@
             <option value="MI">Michigan</option>
             <option value="MN">Minnesota</option>
             <option value="MT">Montana</option>
+            <option value="NM">New Mexico</option>
             <option value="NJ">New Jersey</option>
             <option value="NC">North Carolina</option>
             <option value="NY (SUNY)">New York (SUNY)</option>
+            <option value="OH">Ohio</option>
             <option value="CUNY">New York (CUNY)</option>
             <option value="OR">Oregon</option>
             <option value="PA">Pennsylvania</option>
             <option value="RI">Rhode Island</option>
+            <option value="UT">Utah</option>
             <option value="WA">Washington</option>
             <option value="WI">Wisconsin</option>
             <option value="Ivy League">Ivy League</option>
@@ -531,13 +550,16 @@
         "MI": "Michigan",
         "MN": "Minnesota",
         "MT": "Montana",
+        "NM": "New Mexico",
         "NJ": "New Jersey",
         "NC": "North Carolina",
         "NY (SUNY)": "New York",
         "CUNY": "New York",
+        "OH": "Ohio",
         "OR": "Oregon",
         "PA": "Pennsylvania",
         "RI": "Rhode Island",
+        "UT": "Utah",
         "WA": "Washington",
         "WI": "Wisconsin",
         "Ivy League": "Multiple States",

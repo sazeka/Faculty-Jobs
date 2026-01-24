@@ -554,6 +554,78 @@ const CO_CAMPUSES = [
   },
 ];
 
+// OH (Ohio)
+const OH_CAMPUSES = [
+  {
+    campus: "Ohio State University",
+    type: "workday",
+    url: "https://osu.wd1.myworkdayjobs.com/OSUCareers",
+  },
+  {
+    campus: "University of Toledo",
+    type: "workday",
+    url: "https://utoledo.wd1.myworkdayjobs.com/UTJobs",
+  },
+  {
+    campus: "Ohio University",
+    type: "peopleadmin",
+    url: "https://www.ohiouniversityjobs.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Kent State University",
+    type: "peopleadmin",
+    url: "https://jobs.kent.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Cleveland State University",
+    type: "peopleadmin",
+    url: "https://hrjobs.csuohio.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Wright State University",
+    type: "peopleadmin",
+    url: "https://jobs.wright.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+];
+
+// NM (New Mexico)
+const NM_CAMPUSES = [
+  {
+    campus: "University of New Mexico",
+    type: "csod",
+    url: "https://unm.csod.com/ux/ats/careersite/18/home?c=unm",
+  },
+];
+
+// UT (Utah)
+const UT_CAMPUSES = [
+  {
+    campus: "University of Utah",
+    type: "peopleadmin",
+    url: "https://utah.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Weber State University",
+    type: "peopleadmin",
+    url: "https://jobs.weber.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Utah Valley University",
+    type: "peopleadmin",
+    url: "https://www.uvu.jobs/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Southern Utah University",
+    type: "workday",
+    url: "https://suu.wd1.myworkdayjobs.com/SUUJobs",
+  },
+  {
+    campus: "Utah Tech University",
+    type: "workday",
+    url: "https://utahtech.wd5.myworkdayjobs.com/DSUcareers",
+  },
+];
+
 // MI (Michigan)
 const MI_CAMPUSES = [
   {
@@ -748,6 +820,9 @@ export async function scrapeAllJobsStandalone() {
       { name: "MT", fn: () => scrapeMtAll(context) },
       { name: "Ivy League", fn: () => scrapeIvyLeagueAll(context) },
       { name: "CO", fn: () => scrapeCoAll(context) },
+      { name: "OH", fn: () => scrapeOhAll(context) },
+      { name: "NM", fn: () => scrapeNmAll(context) },
+      { name: "UT", fn: () => scrapeUtAll(context) },
 
     ];
 
@@ -1849,24 +1924,117 @@ async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
     await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
-    
+    // Try clicking on Faculty filter/category if present (UNM style)
+    const facultyFilter = page.locator('a:has-text("Faculty"), button:has-text("Faculty"), [role="button"]:has-text("Faculty"), label:has-text("Faculty")').first();
+    if ((await facultyFilter.count().catch(() => 0)) > 0 && (await facultyFilter.isVisible().catch(() => false))) {
+      await facultyFilter.click({ timeout: 5000 }).catch(() => {});
+      await page.waitForTimeout(2000);
+    }
+
+    // Scroll to trigger lazy loading (multiple scroll passes)
+    for (let scrollPass = 0; scrollPass < 5; scrollPass++) {
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(1500);
+    }
+
     // CSOD often lazy-loads results behind a "Load more" button.
     // Click it a few times to surface more job cards/links.
     for (let i = 0; i < 40; i++) {
-      const btn = page.locator('button:has-text("Load more"), button:has-text("Show more"), button[aria-label*="Load" i], button[aria-label*="More" i]').first();
+      const btn = page.locator('button:has-text("Load more"), button:has-text("Show more"), button[aria-label*="Load" i], button[aria-label*="More" i], a:has-text("Load more"), a:has-text("Show more")').first();
       if ((await btn.count().catch(() => 0)) === 0) break;
       if (!(await btn.isVisible().catch(() => false))) break;
       const before = await page.evaluate(() => document.querySelectorAll("a[href]").length).catch(() => 0);
       await btn.scrollIntoViewIfNeeded().catch(() => {});
       await btn.click({ timeout: 8000 }).catch(() => {});
-      await page.waitForTimeout(900);
+      await page.waitForTimeout(1200);
+      // Scroll down after loading more
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(800);
       const after = await page.evaluate(() => document.querySelectorAll("a[href]").length).catch(() => 0);
       if (after <= before) break;
     }
 
-const jobs = await page.evaluate(() => {
+    // Helper to extract jobs from current page
+    const extractJobs = async () => {
+      return await page.evaluate(() => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
+
+        const out = [];
+        const seen = new Set();
+
+        for (const a of Array.from(document.querySelectorAll("a[href]"))) {
+          const url = abs(a.getAttribute("href"));
+          const title = clean(a.textContent);
+          if (!url || !title || title.length < 4) continue;
+
+          const ok =
+            /\/job\//i.test(url) ||
+            /ats\/job/i.test(url) ||
+            (/career/i.test(url) && /job/i.test(url)) ||
+            /\/requisition\/\d+/i.test(url) ||
+            (/ux\/ats\/careersite/i.test(url) && /requisition/i.test(url));
+          if (!ok) continue;
+
+          if (seen.has(url)) continue;
+          seen.add(url);
+          out.push({ title, url });
+        }
+        return out;
+      });
+    };
+
+    // Collect all jobs including pagination (UNM style page numbers)
+    const allJobs = [];
+    const seenUrls = new Set();
+
+    // Get jobs from first page
+    const firstPageJobs = await extractJobs();
+    for (const j of firstPageJobs) {
+      if (!seenUrls.has(j.url)) {
+        seenUrls.add(j.url);
+        allJobs.push(j);
+      }
+    }
+
+    // Handle pagination - click through page numbers
+    let currentPage = 1;
+    for (let safety = 0; safety < 50; safety++) {
+      currentPage++;
+      // Look for next page number button
+      const nextPageBtn = page.locator(`button.page-number:has-text("${currentPage}")`).first();
+      if ((await nextPageBtn.count().catch(() => 0)) === 0) break;
+      if (!(await nextPageBtn.isVisible().catch(() => false))) break;
+
+      await nextPageBtn.scrollIntoViewIfNeeded().catch(() => {});
+      await nextPageBtn.click({ timeout: 8000 }).catch(() => {});
+      await page.waitForTimeout(2000);
+
+      // Scroll to load any lazy content
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(1000);
+
+      const pageJobs = await extractJobs();
+      let newCount = 0;
+      for (const j of pageJobs) {
+        if (!seenUrls.has(j.url)) {
+          seenUrls.add(j.url);
+          allJobs.push(j);
+          newCount++;
+        }
+      }
+      if (newCount === 0) break;
+    }
+
+const jobs = allJobs.length > 0 ? allJobs : await page.evaluate(() => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
       const abs = (href) => {
         try {
@@ -4117,6 +4285,73 @@ async function scrapeCoAll(context) {
         return [];
       } catch (e) {
         console.error(`❌ ${campus} CO scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== OH ============================== */
+
+async function scrapeOhAll(context) {
+  const results = await mapWithConcurrency(
+    OH_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OH");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OH");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} OH scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== NM ============================== */
+
+async function scrapeNmAll(context) {
+  const results = await mapWithConcurrency(
+    NM_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "NM");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NM");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NM");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} NM scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== UT ============================== */
+
+async function scrapeUtAll(context) {
+  const results = await mapWithConcurrency(
+    UT_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "UT");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "UT");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} UT scrape failed:`, e?.message || e);
         return [];
       }
     }
