@@ -145,6 +145,50 @@ const CLAREMONT_CAMPUSES = [
   },
 ];
 
+// Ivy League
+const IVY_LEAGUE_CAMPUSES = [
+  {
+    campus: "Harvard University",
+    type: "peopleadmin",
+    url: "https://academicpositions.harvard.edu/postings/search",
+  },
+  {
+    campus: "Yale University",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=Yale%20University&position_type=Faculty",
+  },
+  {
+    campus: "Princeton University",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=Princeton%20University&position_type=Faculty",
+  },
+  {
+    campus: "Columbia University",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=Columbia%20University&position_type=Faculty",
+  },
+  {
+    campus: "Cornell University",
+    type: "workday",
+    url: "https://cornell.wd1.myworkdayjobs.com/CornellCareerPage",
+  },
+  {
+    campus: "Brown University",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=Brown%20University&position_type=Faculty",
+  },
+  {
+    campus: "University of Pennsylvania",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=University%20of%20Pennsylvania&position_type=Faculty",
+  },
+  {
+    campus: "Dartmouth College",
+    type: "peopleadmin",
+    url: "https://searchjobs.dartmouth.edu/postings/search",
+  },
+];
+
 // PA (multi-platform)
 const PA_CAMPUSES = [
   {
@@ -448,6 +492,20 @@ const MN_CAMPUSES = [
   },
 ];
 
+// MT (Montana)
+const MT_CAMPUSES = [
+  {
+    campus: "Montana State University",
+    type: "peopleadmin",
+    url: "https://jobs.montana.edu/postings/search?query_position_type_id=2",
+  },
+  {
+    campus: "University of Montana",
+    type: "interfolio-inst",
+    url: "https://apply.interfolio.com/53871/positions",
+  },
+];
+
 // WI (Wisconsin)
 const WI_CAMPUSES = [
   {
@@ -658,6 +716,8 @@ export async function scrapeAllJobsStandalone() {
       { name: "ME", fn: () => scrapeMeAll(context) },
       { name: "MN", fn: () => scrapeMnAll(context) },
       { name: "WI", fn: () => scrapeWiAll(context) },
+      { name: "MT", fn: () => scrapeMtAll(context) },
+      { name: "Ivy League", fn: () => scrapeIvyLeagueAll(context) },
 
     ];
 
@@ -3989,6 +4049,190 @@ async function scrapeWiAll(context) {
 
   const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
   return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== MT ============================== */
+
+async function scrapeMtAll(context) {
+  const results = await mapWithConcurrency(
+    MT_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MT");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "MT");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} MT scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+// Interfolio Institution-specific positions page scraper
+async function scrapeInterfolioInstitution(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(3000);
+
+    // Wait for job listings to load
+    await page.waitForSelector('a[href*="/apply/"], .position, .job-listing', { timeout: 15_000 }).catch(() => {});
+
+    // Scroll to load more results
+    for (let i = 0; i < 10; i++) {
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)).catch(() => {});
+      await page.waitForTimeout(800);
+    }
+
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); }
+        catch { return null; }
+      };
+
+      const out = [];
+      const seen = new Set();
+
+      // Find job links - Interfolio uses /apply/NNNN pattern
+      const links = Array.from(document.querySelectorAll('a[href*="/apply/"]'));
+      for (const a of links) {
+        const href = abs(a.getAttribute("href"));
+        if (!href || seen.has(href)) continue;
+        if (!/\/apply\/\d+/i.test(href)) continue;
+
+        let title = clean(a.textContent);
+        if (!title || title.length < 5) {
+          const container = a.closest('tr, li, .position, .job-listing, article, div');
+          const h = container?.querySelector('h1, h2, h3, h4, .title, strong, td:first-child');
+          title = clean(h?.textContent) || title;
+        }
+
+        if (title && title.length >= 5 && !/^(apply|view|details)$/i.test(title)) {
+          seen.add(href);
+          out.push({ title, url: href });
+        }
+      }
+
+      return out;
+    });
+
+    const jobs = (items || []).map((x) => ({
+      title: clean(x.title),
+      url: x.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+/* ============================== Ivy League ============================== */
+
+async function scrapeIvyLeagueAll(context) {
+  const results = await mapWithConcurrency(
+    IVY_LEAGUE_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "Ivy League");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "Ivy League");
+        if (type === "interfolio") return await scrapeInterfolioAs(context, url, campus, "Ivy League");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} Ivy League scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+// Interfolio Faculty Search scraper
+async function scrapeInterfolioAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(3000);
+
+    // Wait for job listings to load
+    await page.waitForSelector('.position-card, .job-listing, a[href*="/apply/"]', { timeout: 15_000 }).catch(() => {});
+
+    // Scroll to load more results
+    for (let i = 0; i < 10; i++) {
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)).catch(() => {});
+      await page.waitForTimeout(800);
+    }
+
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); }
+        catch { return null; }
+      };
+
+      const out = [];
+      const seen = new Set();
+
+      // Find job links on Interfolio
+      const links = Array.from(document.querySelectorAll('a[href*="/apply/"], a[href*="interfolio.com"]'));
+      for (const a of links) {
+        const href = abs(a.getAttribute("href"));
+        if (!href || seen.has(href)) continue;
+        if (!/\/apply\/\d+/i.test(href) && !/position/i.test(href)) continue;
+
+        // Find the title from the link or parent container
+        let title = clean(a.textContent);
+        if (!title || title.length < 5) {
+          const container = a.closest('.position-card, .job-listing, li, article, div');
+          const h = container?.querySelector('h1, h2, h3, h4, .title, .position-title');
+          title = clean(h?.textContent) || title;
+        }
+
+        if (title && title.length >= 5) {
+          seen.add(href);
+          out.push({ title, url: href });
+        }
+      }
+
+      return out;
+    });
+
+    const jobs = (items || []).map((x) => ({
+      title: clean(x.title),
+      url: x.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
 }
 
 // Oracle HCM Candidate Experience (public jobs pages)
