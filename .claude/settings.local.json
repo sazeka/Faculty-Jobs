@@ -54,7 +54,19 @@
       "WebFetch(domain:www.cu.edu)",
       "Bash(node -e:*)",
       "Bash(copy \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\\\\public\\\\index.html\" \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\\\\docs\\\\index.html\")",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(tee:*)",
+      "Bash(powershell \"Stop-Process -Id 22100 -Force\")",
+      "Bash(powershell \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(npx kill-port:*)",
+      "WebFetch(domain:uidaho.peopleadmin.com)",
+      "WebFetch(domain:www.boisestate.edu)",
+      "WebFetch(domain:lcsc.applicantpro.com)",
+      "WebFetch(domain:www.isu.edu)",
+      "WebFetch(domain:bsu.peopleadmin.com)",
+      "WebFetch(domain:careers.purdue.edu)",
+      "WebFetch(domain:usi.peopleadmin.com)",
+      "WebFetch(domain:careers.usi.edu)"
     ]
   }
 }

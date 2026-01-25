@@ -438,7 +438,9 @@
             <option value="CO">Colorado</option>
             <option value="CT State">Connecticut</option>
             <option value="DE">Delaware</option>
+            <option value="ID">Idaho</option>
             <option value="IL">Illinois</option>
+            <option value="IN">Indiana</option>
             <option value="UMass">Massachusetts</option>
             <option value="ME">Maine</option>
             <option value="MI">Michigan</option>
@@ -447,16 +449,14 @@
             <option value="NM">New Mexico</option>
             <option value="NJ">New Jersey</option>
             <option value="NC">North Carolina</option>
-            <option value="NY (SUNY)">New York (SUNY)</option>
+            <option value="NY">New York</option>
             <option value="OH">Ohio</option>
-            <option value="CUNY">New York (CUNY)</option>
             <option value="OR">Oregon</option>
             <option value="PA">Pennsylvania</option>
             <option value="RI">Rhode Island</option>
             <option value="UT">Utah</option>
             <option value="WA">Washington</option>
             <option value="WI">Wisconsin</option>
-            <option value="Ivy League">Ivy League</option>
             <option value="Claremont Colleges">Claremont Colleges</option>
           </select>
 
@@ -472,6 +472,10 @@
             <option value="Teaching Faculty">Teaching Faculty</option>
             <option value="Clinical Faculty">Clinical Faculty</option>
             <option value="Postdoctoral">Postdoctoral</option>
+          </select>
+
+          <select id="college">
+            <option value="all">All Universities</option>
           </select>
 
           <select id="sortBy">
@@ -504,6 +508,7 @@
       const q = document.getElementById("q");
       const sourceSel = document.getElementById("source");
       const positionTypeSel = document.getElementById("positionType");
+      const collegeSel = document.getElementById("college");
       const sortBySel = document.getElementById("sortBy");
       const refreshBtn = document.getElementById("refresh");
       const clearSearchBtn = document.getElementById("clearSearch");
@@ -544,7 +549,9 @@
         "CO": "Colorado",
         "CT State": "Connecticut",
         "DE": "Delaware",
+        "ID": "Idaho",
         "IL": "Illinois",
+        "IN": "Indiana",
         "UMass": "Massachusetts",
         "ME": "Maine",
         "MI": "Michigan",
@@ -553,8 +560,7 @@
         "NM": "New Mexico",
         "NJ": "New Jersey",
         "NC": "North Carolina",
-        "NY (SUNY)": "New York",
-        "CUNY": "New York",
+        "NY": "New York",
         "OH": "Ohio",
         "OR": "Oregon",
         "PA": "Pennsylvania",
@@ -562,7 +568,6 @@
         "UT": "Utah",
         "WA": "Washington",
         "WI": "Wisconsin",
-        "Ivy League": "Multiple States",
         "Claremont Colleges": "California"
       };
 
@@ -619,6 +624,7 @@
         const searchTerm = q.value.trim();
         const source = sourceSel.value;
         const posType = positionTypeSel.value;
+        const college = collegeSel.value;
 
         if (searchTerm) {
           const chip = document.createElement("span");
@@ -638,6 +644,13 @@
           const chip = document.createElement("span");
           chip.className = "filter-chip";
           chip.innerHTML = `${escapeHtml(posType)} <button data-clear="positionType">&times;</button>`;
+          activeFiltersEl.appendChild(chip);
+        }
+
+        if (college !== "all") {
+          const chip = document.createElement("span");
+          chip.className = "filter-chip";
+          chip.innerHTML = `${escapeHtml(truncate(college, 25))} <button data-clear="college">&times;</button>`;
           activeFiltersEl.appendChild(chip);
         }
       }
@@ -718,6 +731,7 @@
         const searchTerms = searchText.split(/\s+/).filter(t => t.length >= 2);
         const src = sourceSel.value;
         const posType = positionTypeSel.value;
+        const college = collegeSel.value;
         const sortBy = sortBySel.value;
 
         // Update clear button visibility
@@ -761,6 +775,14 @@
           }
         }
 
+        // Update college dropdown with available colleges from current filter
+        updateCollegeDropdown(filtered, college);
+
+        // Filter by college (after updating dropdown)
+        if (college !== "all") {
+          filtered = filtered.filter(j => j.college === college);
+        }
+
         // Sort
         if (sortBy === "title-asc") {
           filtered.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
@@ -773,6 +795,30 @@
         }
 
         render(filtered, searchTerms);
+      }
+
+      function updateCollegeDropdown(jobs, currentCollege) {
+        // Get unique colleges from current results
+        const colleges = [...new Set(jobs.map(j => j.college).filter(Boolean))].sort();
+
+        // Preserve current selection if still valid
+        const prevValue = currentCollege;
+
+        // Clear and rebuild dropdown
+        collegeSel.innerHTML = '<option value="all">All Universities (' + colleges.length + ')</option>';
+
+        for (const c of colleges) {
+          const count = jobs.filter(j => j.college === c).length;
+          const option = document.createElement("option");
+          option.value = c;
+          option.textContent = `${c} (${count})`;
+          collegeSel.appendChild(option);
+        }
+
+        // Restore selection if still valid
+        if (prevValue !== "all" && colleges.includes(prevValue)) {
+          collegeSel.value = prevValue;
+        }
       }
 
       // Debounced search
@@ -818,8 +864,12 @@
 
       // Event listeners
       q.addEventListener("input", debouncedApplyFilters);
-      sourceSel.addEventListener("change", applyFilters);
+      sourceSel.addEventListener("change", () => {
+        collegeSel.value = "all"; // Reset college when state changes
+        applyFilters();
+      });
       positionTypeSel.addEventListener("change", applyFilters);
+      collegeSel.addEventListener("change", applyFilters);
       sortBySel.addEventListener("change", applyFilters);
       refreshBtn.addEventListener("click", load);
 
@@ -833,6 +883,7 @@
         q.value = "";
         sourceSel.value = "all";
         positionTypeSel.value = "all";
+        collegeSel.value = "all";
         sortBySel.value = "relevance";
         applyFilters();
       });
@@ -843,6 +894,7 @@
           if (clear === "search") q.value = "";
           if (clear === "source") sourceSel.value = "all";
           if (clear === "positionType") positionTypeSel.value = "all";
+          if (clear === "college") collegeSel.value = "all";
           applyFilters();
         }
       });
