@@ -316,6 +316,17 @@ const RI_CAMPUSES = [
   },
 ];
 
+// NH (New Hampshire) - public universities (University System of New Hampshire)
+const NH_PUBLIC_CAMPUSES = [
+  {
+    campus: "University of New Hampshire System",
+    // UNH and other USNH campuses surface jobs at jobs.usnh.edu
+    type: "workday",
+    url: "https://usnh.wd5.myworkdayjobs.com/Careers?timeType=1550a879b33f10037951f18fd1800000&workerSubType=b4f41dd8de101000c45c0d3fc2a10001",
+  },
+ 
+];
+
 
 
 // AZ (Arizona)
@@ -914,6 +925,7 @@ export async function scrapeAllJobsStandalone() {
       { name: "OR", fn: () => scrapeOrAll(context) },
       { name: "WA", fn: () => scrapeWaAll(context) },
       { name: "ME", fn: () => scrapeMeAll(context) },
+  { name: "NH", fn: () => scrapeNhAll(context) },
       { name: "MN", fn: () => scrapeMnAll(context) },
       { name: "WI", fn: () => scrapeWiAll(context) },
       { name: "MT", fn: () => scrapeMtAll(context) },
@@ -2520,6 +2532,37 @@ async function scrapeRiAll(context) {
         return [];
       } catch (e) {
         console.error(`❌ ${campus} RI scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+
+async function scrapeNhAll(context) {
+  const results = await mapWithConcurrency(
+    NH_PUBLIC_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        // Handle any explicit platform types if added later
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NH");
+        if (type === "workday") return await scrapeWorkdayApi(context, url, campus, "NH");
+
+        // Fallback: try en-us/filter-style extractor
+        const page = await context.newPage();
+        try {
+          await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+          await page.waitForTimeout(900);
+          return await scrapeEnUsFilterSite(page, { source: "NH", campus, category: "Faculty" });
+        } finally {
+          await page.close().catch(() => {});
+        }
+      } catch (e) {
+        console.error(`❌ ${campus} NH scrape failed:`, e?.message || e);
         return [];
       }
     }
