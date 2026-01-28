@@ -431,35 +431,46 @@
 
         <div class="filters-row">
           <select id="source">
-            <option value="all">All States / Systems</option>
-            <option value="AZ">Arizona</option>
-            <option value="CA - CSU">California (CSU)</option>
-            <option value="UC">California (UC)</option>
-            <option value="CO">Colorado</option>
-            <option value="CT State">Connecticut</option>
-            <option value="DE">Delaware</option>
-            <option value="ID">Idaho</option>
-            <option value="IL">Illinois</option>
-            <option value="IN">Indiana</option>
-            <option value="UMass">Massachusetts</option>
-            <option value="ME">Maine</option>
-            <option value="NH">New Hampshire</option>
-            <option value="MI">Michigan</option>
-            <option value="MN">Minnesota</option>
-            <option value="MT">Montana</option>
-            <option value="NM">New Mexico</option>
-            <option value="NJ">New Jersey</option>
-            <option value="NC">North Carolina</option>
-            <option value="NY">New York</option>
-            <option value="OH">Ohio</option>
-            <option value="OR">Oregon</option>
-            <option value="PA">Pennsylvania</option>
-            <option value="RI">Rhode Island</option>
-            <option value="UT">Utah</option>
-            <option value="WA">Washington</option>
-            <option value="WI">Wisconsin</option>
-            <option value="Claremont Colleges">Claremont Colleges</option>
-          </select>
+<option value="all">All States / Systems</option>
+<option value="AL">Alabama</option>
+<option value="AK">Alaska</option>
+<option value="AZ">Arizona</option>
+<option value="CA">California</option>
+            <option value="CA">California (CSU System)</option>
+<option value="CO">Colorado</option>
+<option value="CT State">Connecticut</option>
+<option value="DE">Delaware</option>
+<option value="FL">Florida</option>
+<option value="GA">Georgia</option>
+<option value="ID">Idaho</option>
+<option value="IL">Illinois</option>
+<option value="IN">Indiana</option>
+<option value="ME">Maine</option>
+<option value="UMass">Massachusetts</option>
+<option value="MI">Michigan</option>
+<option value="MN">Minnesota</option>
+<option value="MS">Mississippi</option>
+<option value="MO">Missouri</option>
+<option value="MT">Montana</option>
+<option value="NH">New Hampshire</option>
+<option value="NJ">New Jersey</option>
+<option value="NM">New Mexico</option>
+<option value="NY">New York</option>
+<option value="NC">North Carolina</option>
+<option value="ND">North Dakota</option>
+<option value="OH">Ohio</option>
+<option value="OR">Oregon</option>
+<option value="PA">Pennsylvania</option>
+<option value="RI">Rhode Island</option>
+<option value="SC">South Carolina</option>
+<option value="UT">Utah</option>
+<option value="VT">Vermont</option>
+<option value="VA">Virginia</option>
+<option value="WA">Washington</option>
+<option value="WV">West Virginia</option>
+<option value="WI">Wisconsin</option>
+<option value="WY">Wyoming</option>
+</select>
 
           <select id="positionType">
             <option value="all">All Position Types</option>
@@ -544,10 +555,19 @@
       }
 
       const stateMap = {
+        "VA": "Virginia",
+        "VT": "Vermont",
+        "SC": "South Carolina",
+        "ND": "North Dakota",
+        "MO": "Missouri",
+        "MS": "Mississippi",
+        "GA": "Georgia",
+        "FL": "Florida",
+        "AK": "Alaska",
+        "AL": "Alabama",
         "AZ": "Arizona",
-        "CA - CSU": "California",
-        "UC": "California",
-        "CO": "Colorado",
+                "CA": "California",
+"CO": "Colorado",
         "CT State": "Connecticut",
         "DE": "Delaware",
         "ID": "Idaho",
@@ -569,8 +589,10 @@
         "RI": "Rhode Island",
         "UT": "Utah",
         "WA": "Washington",
-        "WI": "Wisconsin",
-        "Claremont Colleges": "California"
+                "WV": "West Virginia",
+"WI": "Wisconsin",
+                "WY": "Wyoming",
+"Claremont Colleges": "California"
       };
 
       function getPositionType(title) {

@@ -53,6 +53,16 @@ const UMASS_CAMPUSES = [
 // UMass Amherst (new PageUp platform as of Jan 2026)
 const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type=Faculty";
 
+
+// Normalize California sources emitted by UC/CSU scrapers into a single "CA" source
+function normalizeCaliforniaSource(job) {
+  if (!job || !job.source) return job;
+  const s = String(job.source).trim();
+  if (s === "UC" || s === "CSU" || s === "CA - CSU" || s === "CA - UC") job.source = "CA";
+  return job;
+}
+
+
 // UC (AP Recruit)
 const UC_CAMPUSES = [
   { campus: "UC Berkeley", url: "https://aprecruit.berkeley.edu/apply" },
@@ -112,36 +122,6 @@ const NJ_CAMPUSES = [
     campus: "William Paterson University",
     type: "workday",
     url: "https://wpunj.wd1.myworkdayjobs.com/ext?jobFamilyGroup=beb7f5bb680310016e27a7df06100000",
-  },
-];
-
-// Claremont Colleges
-const CLAREMONT_CAMPUSES = [
-  {
-    campus: "Pomona College",
-    type: "static",
-    url: "https://www.pomona.edu/administration/academic-dean/general/faculty-jobs",
-  },
-  {
-    campus: "Claremont Graduate University",
-    type: "static",
-    url: "https://www.cgu.edu/employment-opportunities/faculty-jobs/",
-  },
-  { campus: "Scripps College", type: "static", url: "https://www.scrippscollege.edu/hr/faculty" },
-  {
-    campus: "Claremont McKenna College",
-    type: "cmc",
-    url: "https://webapps.cmc.edu/jobs/faculty/faculty_opening.php",
-  },
-  {
-    campus: "Harvey Mudd College",
-    type: "static",
-    url: "https://www.hmc.edu/dean-of-faculty/available-faculty-positions/",
-  },
-  {
-    campus: "Keck Graduate Institute",
-    type: "workday",
-    url: "https://theclaremontcolleges.wd1.myworkdayjobs.com/en-US/KGI_Careers?jobFamilyGroup=c556221e536801fcd7010014ef742f7a&timeType=9df8dc300a421048ab2494d9bae91551",
   },
 ];
 
@@ -842,6 +822,71 @@ const IN_CAMPUSES = [
   },
 ];
 
+
+// ============================== R1 PRIVATE (INTERFOLIO) ==============================
+const R1_PRIVATE_INTERFOLIO = [
+  { campus: "Harvard University", state: "MA", url: "https://apply.interfolio.com/search?institution=Harvard%20University" },
+  { campus: "Massachusetts Institute of Technology", state: "MA", url: "https://apply.interfolio.com/search?institution=Massachusetts%20Institute%20of%20Technology" },
+  { campus: "Princeton University", state: "NJ", url: "https://apply.interfolio.com/search?institution=Princeton%20University" },
+  { campus: "Duke University", state: "NC", url: "https://apply.interfolio.com/search?institution=Duke%20University" },
+  { campus: "University of Pennsylvania", state: "PA", url: "https://apply.interfolio.com/search?institution=University%20of%20Pennsylvania" },
+  { campus: "University of Chicago", state: "IL", url: "https://apply.interfolio.com/search?institution=University%20of%20Chicago" },
+  { campus: "Northwestern University", state: "IL", url: "https://apply.interfolio.com/search?institution=Northwestern%20University" },
+  { campus: "Washington University in St. Louis", state: "MO", url: "https://apply.interfolio.com/search?institution=Washington%20University%20in%20St.%20Louis" },
+  { campus: "Vanderbilt University", state: "TN", url: "https://apply.interfolio.com/search?institution=Vanderbilt%20University" },
+  { campus: "Rice University", state: "TX", url: "https://apply.interfolio.com/search?institution=Rice%20University" },
+  { campus: "University of Notre Dame", state: "IN", url: "https://apply.interfolio.com/search?institution=University%20of%20Notre%20Dame" },
+  { campus: "Georgetown University", state: "DC", url: "https://apply.interfolio.com/search?institution=Georgetown%20University" },
+  { campus: "California Institute of Technology", state: "CA", url: "https://apply.interfolio.com/search?institution=California%20Institute%20of%20Technology" },
+];
+
+async function scrapeR1PrivateInterfolio(context) {
+  const results = await mapWithConcurrency(
+    R1_PRIVATE_INTERFOLIO,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, state, url }) => {
+      try {
+        return await scrapeInterfolioAs(context, url, campus, state);
+      } catch (e) {
+        console.error(`❌ ${campus} ${state} R1 scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flat());
+}
+
+
+
+
+// ============================== R1 PRIVATE (WORKDAY) ==============================
+const R1_PRIVATE_WORKDAY = [
+  { campus: "Stanford University", state: "CA", url: "https://stanford.wd1.myworkdayjobs.com/Stanford_Careers" },
+  { campus: "University of Southern California", state: "CA", url: "https://wd5.myworkdayjobs.com/USC_Careers" },
+  { campus: "Johns Hopkins University", state: "MD", url: "https://jhu.wd1.myworkdayjobs.com/JHU_Careers" },
+  { campus: "Carnegie Mellon University", state: "PA", url: "https://cmu.wd1.myworkdayjobs.com/CMU_Careers" },
+  { campus: "Boston University", state: "MA", url: "https://bu.wd1.myworkdayjobs.com/External" },
+  { campus: "Northeastern University", state: "MA", url: "https://northeastern.wd1.myworkdayjobs.com/NEU_External" },
+  { campus: "University of Miami", state: "FL", url: "https://umiami.wd1.myworkdayjobs.com/UM_Careers" },
+];
+
+async function scrapeR1PrivateWorkday(context) {
+  const results = await mapWithConcurrency(
+    R1_PRIVATE_WORKDAY,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, state, url }) => {
+      try {
+        return await scrapeWorkdayAs(context, url, campus, state);
+      } catch (e) {
+        console.error(`❌ ${campus} ${state} R1 Workday scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flat());
+}
+
+
 /* ============================== EXPRESS ============================== */
 
 const app = express();
@@ -862,6 +907,7 @@ app.get("/api/jobs", async (req, res) => {
     }
 
     const data = await scrapeAllJobsStandalone();
+    if (data && Array.isArray(data.jobs)) data.jobs = data.jobs.map(normalizeCaliforniaSource);
     cache = { at: Date.now(), data };
 
     // Write jobs.json for BOTH local (public) and GitHub Pages (docs)
@@ -907,12 +953,20 @@ export async function scrapeAllJobsStandalone() {
     });
 
     const tasks = [
+      {
+        name: "CA",
+        fn: async () => [
+          ...(await scrapeCsuFaculty(context)),
+          ...(await scrapeUcAll(context)),
+        ],
+      },
+
+      { name: "R1 Private (Workday)", fn: () => scrapeR1PrivateWorkday(context) },
+      { name: "R1 Private (Interfolio)", fn: () => scrapeR1PrivateInterfolio(context) },
       { name: "CT State", fn: () => scrapeCtFacultyTeaching(context) },
       { name: "AZ", fn: () => scrapeAzAll(context) },
-      { name: "CSU", fn: () => scrapeCsuFaculty(context) },
       { name: "UMass", fn: () => scrapeUmassAll(context) },
       { name: "UMass Amherst", fn: () => scrapeUmassAmherst(context) },
-      { name: "UC", fn: () => scrapeUcAll(context) },
       { name: "NJ", fn: () => scrapeNjAll(context) },
       { name: "NC", fn: () => scrapeNcAll(context) },
       { name: "DE", fn: () => scrapeDeAll(context) },
@@ -920,8 +974,7 @@ export async function scrapeAllJobsStandalone() {
       { name: "PA", fn: () => scrapePaAll(context) },
       { name: "MI", fn: () => scrapeMiAll(context) },
             { name: "IL", fn: () => scrapeIlAll(context) },
-{ name: "Claremont Colleges", fn: () => scrapeClaremontAll(context) },
-      { name: "NY", fn: () => scrapeNyAll(context) },
+{ name: "NY", fn: () => scrapeNyAll(context) },
       { name: "OR", fn: () => scrapeOrAll(context) },
       { name: "WA", fn: () => scrapeWaAll(context) },
       { name: "ME", fn: () => scrapeMeAll(context) },
@@ -974,7 +1027,7 @@ export async function scrapeAllJobsStandalone() {
     return {
       scrapedAt: new Date().toISOString(),
       count: jobs.length,
-      jobs: jobs,
+      jobs: jobs.map(normalizeCaliforniaSource),
     };
   } finally {
     await browser.close().catch(() => {});
@@ -1765,7 +1818,8 @@ async function scrapeApRecruitCampus(page, campusName) {
           !t ||
           t.length < 4 ||
           /^apply by\b/i.test(t) ||
-          /open\s+\w{3}\s+\d{1,2},\s+\d{4}/i.test(t);
+          /open\s+\w{3}\s+\d{1,2},\s+\d{4}/i.test(t) ||
+          /^JPF\d+$/i.test(t);
 
         if (isBadTitle(title) && ht && !isBadTitle(ht)) title = ht;
 
@@ -1773,6 +1827,18 @@ async function scrapeApRecruitCampus(page, campusName) {
           const candEls = Array.from(container.querySelectorAll("h1,h2,h3,h4,strong,a"));
           for (const el of candEls) {
             const t = clean(el.textContent);
+            if (!isBadTitle(t) && t.length <= 220) {
+              title = t;
+              break;
+            }
+          }
+        }
+
+        // Fallback: check sibling <td> cells for a title (e.g. UCLA table layout)
+        if (isBadTitle(title) && container) {
+          const cells = Array.from(container.querySelectorAll("td"));
+          for (const td of cells) {
+            const t = clean(td.textContent);
             if (!isBadTitle(t) && t.length <= 220) {
               title = t;
               break;
@@ -3122,27 +3188,6 @@ async function scrapeInterviewExchangeAs(context, startUrl, campusName, sourceNa
 
 /* ============================== CLAREMONT COLLEGES ============================== */
 
-async function scrapeClaremontAll(context) {
-  const tasks = CLAREMONT_CAMPUSES.map(({ campus, type, url }) =>
-    (async () => {
-      try {
-        if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "Claremont");
-        if (type === "cmc") return await scrapeClaremontCmc(context, url, campus);
-        if (type === "workday") return await scrapeClaremontWorkday(context, url, campus);
-        return [];
-      } catch (e) {
-        console.error(`❌ ${campus} Claremont scrape failed:`, e?.message || e);
-        return [];
-      }
-    })()
-  );
-
-  const settled = await Promise.allSettled(tasks);
-  const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
-  const out = uniqByUrl(jobs);
-  console.log(`Claremont Colleges listings scraped: ${out.length}`);
-  return out;
-}
 
 
 function toStaticJob(title, url, campusName, sourceName) {
