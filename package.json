@@ -7,10 +7,16 @@
   "scripts": {
     "start": "node server.js",
     "install:browsers": "playwright install chromium",
-    "scrape:json": "node scripts/scrape-to-json.js"
+    "scrape:json": "node scripts/scrape-to-json.js",
+    "ollama": "ollama serve"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^4.19.2",
+    "node-fetch": "^2.7.0",
     "playwright": "^1.46.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
