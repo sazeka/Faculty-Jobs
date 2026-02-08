@@ -20,26 +20,219 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { chromium } from "playwright";
+import { createHash } from "crypto";
+// ===== Local summarizer client (Node -> FastAPI /summarize) =====
+const LOCAL_LLM_URL = process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize";
+const LOCAL_LLM_BATCH_SIZE = Math.max(1, Number(process.env.LOCAL_LLM_BATCH_SIZE || 20));
+const LOCAL_LLM_MAX_JOBS = Math.max(0, Number(process.env.LOCAL_LLM_MAX_JOBS || 0));
+const LOCAL_LLM_RETRIES = Math.max(1, Number(process.env.LOCAL_LLM_RETRIES || 3));
+const LOCAL_LLM_TIMEOUT = Math.max(30_000, Number(process.env.LOCAL_LLM_TIMEOUT || 600_000)); // ms
+const LOCAL_LLM_MAX_NEW_TOKENS = Math.max(60, Number(process.env.LOCAL_LLM_MAX_NEW_TOKENS || 220));
 
-/* ============================== CONFIG ============================== */
-// ===== Campus allowlist for testing =====
-const CAMPUS_ALLOWLIST = process.env.CAMPUS_ALLOWLIST
-  ? process.env.CAMPUS_ALLOWLIST.split(",").map(s => s.trim())
-  : null;
+function sha256Hex(str) {
+  return createHash("sha256").update(str).digest("hex");
+}
+// Must match summarizer_gpu.py key_for(): sha256(url|title|description[:2000])
+function jobCacheKey(job) {
+  const url = job?.url || "";
+  const title = job?.title || "";
+  const desc = (job?.description || "").slice(0, 2000);
+  return sha256Hex(`${url}|${title}|${desc}`);
+}
 
-function isCampusAllowed(name) {
-  if (!CAMPUS_ALLOWLIST) return true;
-  return CAMPUS_ALLOWLIST.some(x =>
-    String(name || "").toLowerCase().includes(x.toLowerCase())
-  );
+function loadCachedSummariesFromJobsJson(jobs) {
+  const cache = new Map();
+  for (const j of jobs || []) {
+    if (j && j.summary && String(j.summary).trim().length > 0) {
+      const k = jobCacheKey(j);
+      // store only enrichment fields we care about; keep original too if present
+      cache.set(k, {
+        summary: j.summary,
+        enrichedAt: j.enrichedAt || j.scrapedAt || null,
+        titleClean: j.titleClean || null,
+        specialization: j.specialization || null,
+        department: j.department || null,
+        fieldTags: j.fieldTags || null,
+        rank: j.rank || null,
+        isValid: typeof j.isValid === "boolean" ? j.isValid : true,
+        invalidReason: j.invalidReason || null,
+      });
+    }
+  }
+  return cache;
+}
+
+async function postWithRetry(url, body, attempts = LOCAL_LLM_RETRIES) {
+  const { request } = await import(url.startsWith("https:") ? "node:https" : "node:http");
+
+  const payload = JSON.stringify(body);
+  const u = new URL(url);
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const respText = await new Promise((resolve, reject) => {
+        const req = request(
+          {
+            protocol: u.protocol,
+            hostname: u.hostname,
+            port: u.port || (u.protocol === "https:" ? 443 : 80),
+            path: u.pathname + u.search,
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Content-Length": Buffer.byteLength(payload),
+            },
+          },
+          (res) => {
+            let data = "";
+            res.setEncoding("utf8");
+            res.on("data", (chunk) => (data += chunk));
+            res.on("end", () => {
+              if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+                resolve(data);
+              } else {
+                reject(new Error(`Local LLM HTTP ${res.statusCode}: ${data.slice(0, 300)}`));
+              }
+            });
+          }
+        );
+
+        req.on("error", reject);
+
+        // Hard timeout for entire request
+        req.setTimeout(LOCAL_LLM_TIMEOUT, () => {
+          req.destroy(new Error("Local LLM request timed out"));
+        });
+
+        req.write(payload);
+        req.end();
+      });
+
+      return JSON.parse(respText);
+    } catch (e) {
+      console.error(
+        `Local summarizer POST failed (attempt ${attempt}):`,
+        e?.name,
+        e?.message,
+        e?.cause?.code || e?.code || ""
+      );
+      if (attempt < attempts) await new Promise((r) => setTimeout(r, 1000 * attempt));
+      else throw e;
+    }
+  }
 }
 
 
+async function callLocalSummarizer(jobs) {
+  if (!Array.isArray(jobs) || jobs.length === 0) return jobs;
+
+  // Load cache from current jobs.json snapshot if available (already merged into `jobs` upstream)
+  const cache = loadCachedSummariesFromJobsJson(jobs);
+
+  const all = jobs.slice();
+  const maxJobs = LOCAL_LLM_MAX_JOBS > 0 ? Math.min(LOCAL_LLM_MAX_JOBS, all.length) : all.length;
+
+  // Only summarize items missing a summary
+  const need = [];
+  for (let i = 0; i < maxJobs; i++) {
+    const j = all[i];
+    const k = jobCacheKey(j);
+    if (cache.has(k)) continue;
+    if (j && j.summary && String(j.summary).trim().length > 0) continue;
+    need.push(j);
+  }
+
+  console.log(`📦 Using ${cache.size} cached summaries, ${need.length} jobs need AI processing`);
+
+  // Process in batches
+  let done = 0;
+  const total = need.length;
+
+  for (let b = 0; b < need.length; b += LOCAL_LLM_BATCH_SIZE) {
+    const batch = need.slice(b, b + LOCAL_LLM_BATCH_SIZE);
+
+    // progress log
+    const batchNo = Math.floor(b / LOCAL_LLM_BATCH_SIZE) + 1;
+    const batchCount = Math.ceil(need.length / LOCAL_LLM_BATCH_SIZE) || 0;
+    console.log(`🧠 Batch ${batchNo}/${batchCount} (${done}/${total})`);
+
+    const payload = {
+      jobs: batch.map(j => ({
+        url: j.url,
+        title: j.title || null,
+        description: j.description || null,
+        college: j.college || null,
+        location: j.location || null,
+        source: j.source || null,
+      })),
+      max_new_tokens: LOCAL_LLM_MAX_NEW_TOKENS,
+    };
+
+    const resp = await postWithRetry(LOCAL_LLM_URL, payload);
+    const enriched = Array.isArray(resp?.jobs) ? resp.jobs : [];
+
+    // Merge back into the original jobs array by URL+title match
+    for (let i = 0; i < batch.length; i++) {
+      const origJob = batch[i];
+      const e = enriched[i] || null;
+      if (e && typeof e === "object") {
+        Object.assign(origJob, e);
+        // Ensure a timestamp marker
+        if (!origJob.enrichedAt) origJob.enrichedAt = new Date().toISOString();
+      }
+      done += 1;
+    }
+  }
+
+  return all;
+}
+
+
+// ===== Campus/System allowlist for testing =====
+const CAMPUS_ALLOWLIST = process.env.CAMPUS_ALLOWLIST
+  ? process.env.CAMPUS_ALLOWLIST.split(",").map(s => s.trim()).filter(Boolean)
+  : null;
+
+function isAllowedSystem(name) {
+  if (!CAMPUS_ALLOWLIST || CAMPUS_ALLOWLIST.length === 0) return true;
+  const want = CAMPUS_ALLOWLIST.map(x => String(x).toUpperCase());
+  const n = String(name || "").toUpperCase();
+  // Support a few common aliases from the UI dropdown / prior runs
+  if (n === "CSU" && want.includes("CA - CSU")) return true;
+  if (n === "CT STATE" && want.includes("CT")) return true;
+  return want.includes(n);
+}
+
+
+/* ============================== CONFIG ============================== */
 
 const PORT = process.env.PORT || 3000;
 
 const MAX_PARALLEL_CAMPUSES = Number(process.env.MAX_PARALLEL_CAMPUSES || 4);
 const MAX_PARALLEL_SYSTEMS = Number(process.env.MAX_PARALLEL_SYSTEMS || 4);
+
+// ===== System Group Mapping =====
+// Groups related university systems together for filtering
+const SYSTEM_GROUP_MAP = {
+  // California Public Universities
+  "UC": "California Public",
+  "CA - CSU": "California Public",
+  "CSU": "California Public",
+  // New York Public Universities
+  "NY": "New York Public",
+  "CUNY": "New York Public",
+  "SUNY": "New York Public",
+  // Massachusetts Public Universities
+  "UMass": "Massachusetts Public",
+  // Connecticut State
+  "CT": "Connecticut State",
+  "CT State": "Connecticut State",
+};
+
+function getSystemGroup(source) {
+  if (!source) return null;
+  return SYSTEM_GROUP_MAP[source] || null;
+}
 
 const CUNY_URL = "https://cuny.jobs/job-category/faculty/jobs/";
 const CT_URL = "https://www.ct.edu/hr/jobs";
@@ -855,81 +1048,6 @@ const IN_CAMPUSES = [
   },
 ];
 
-
-// ============================== LOCAL LLM SUMMARIZER ==============================
-async function postWithRetry(url, body, attempts = Number(process.env.LOCAL_LLM_RETRIES || 3)) {
-  for (let attempt = 1; attempt <= attempts; attempt++) {
-    try {
-      const resp = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (!resp.ok) {
-        const txt = await resp.text().catch(() => "<no-body>");
-        throw new Error(`status ${resp.status}: ${txt}`);
-      }
-      return await resp.json();
-    } catch (e) {
-      console.error(`Local summarizer POST failed (attempt ${attempt}):`, e?.message || e);
-      if (attempt < attempts) await new Promise(r => setTimeout(r, 1000 * attempt));
-    }
-  }
-  throw new Error("Local summarizer POST failed after retries");
-}
-
-async function callLocalSummarizer(jobs) {
-  // TEMP_LIMIT_JOBS: limit number of jobs sent to local LLM for testing
-  const LIMIT = Number(process.env.LOCAL_LLM_LIMIT || 20);
-  if (Number.isFinite(LIMIT) && LIMIT > 0) jobs = jobs.slice(0, LIMIT);
-  const URL = "http://127.0.0.1:9000/summarize";
-  const BATCH_SIZE = Number(process.env.LOCAL_LLM_BATCH_SIZE || 50); // start small; raise later
-  const MAX_JOBS = Number(process.env.LOCAL_LLM_MAX_JOBS || 0); // 0 = no cap
-
-  const sliceJobs = (MAX_JOBS && MAX_JOBS > 0) ? jobs.slice(0, MAX_JOBS) : jobs;
-
-  // Keep payload small: send only fields the summarizer needs
-  const slim = (j) => ({
-    url: j.url,
-    title: j.title,
-    description: j.description || "",
-    college: j.college || "",
-    location: j.location || "",
-    source: j.source || ""
-  });
-
-  const enrichByUrl = new Map();
-
-  for (let i = 0; i < sliceJobs.length; i += BATCH_SIZE) {
-    const batch = sliceJobs.slice(i, i + BATCH_SIZE).map(slim);
-
-    try {
-      const body = await postWithRetry(URL, { jobs: batch, max_new_tokens: 120 });
-      const outJobs = Array.isArray(body.jobs) ? body.jobs : [];
-
-      for (const r of outJobs) {
-        if (r && r.url && r.summary) {
-          enrichByUrl.set(r.url, { summary: r.summary, enrichedAt: r.enrichedAt });
-        }
-      }
-
-      console.log(`🧠 Summarized batch ${i}–${Math.min(i + BATCH_SIZE, sliceJobs.length)} / ${sliceJobs.length}`);
-    } catch (e) {
-      console.error("❌ Local summarizer batch error:", e?.message || e);
-    }
-  }
-
-  const merged = jobs.map(j => {
-    const e = enrichByUrl.get(j.url);
-    return e ? { ...j, ...e } : j;
-  });
-
-  console.log(`🧠 Local LLM summarization complete: ${enrichByUrl.size}/${sliceJobs.length} enriched`);
-  return merged;
-}
-// ============================ END LOCAL LLM SUMMARIZER ============================
-
-
 /* ============================== EXPRESS ============================== */
 
 const app = express();
@@ -942,12 +1060,8 @@ app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.h
 const CACHE_TTL_MS = 10 * 60 * 1000;
 let cache = { at: 0, data: null };
 
-// Persisted-in-memory metadata for dashboard
-let lastSuccessfulScrapeAt = null;
-let lastSuccessfulJobCount = 0;
-
-
 app.get("/api/jobs", async (req, res) => {
+
   try {
     const refresh = req.query.refresh === "1";
     if (!refresh && cache.data && Date.now() - cache.at < CACHE_TTL_MS) {
@@ -955,14 +1069,19 @@ app.get("/api/jobs", async (req, res) => {
     }
 
     const data = await scrapeAllJobsStandalone();
+    
     // Local GPU LLM summarization (offline)
     if (data && Array.isArray(data.jobs)) {
+      console.log(`📡 Calling local summarizer for ${data.jobs.length} jobs`);
       data.jobs = await callLocalSummarizer(data.jobs);
-          // Re-normalize after enrichment so schema stays consistent
-      data.jobs = data.jobs.map(j => normalizeJobSchema({ ...j, scrapedAt: data.scrapedAt || null }));
-}
-
-    cache = { at: Date.now(), data };
+      // Add systemGroup field to each job
+      for (const job of data.jobs) {
+        job.systemGroup = getSystemGroup(job.source) || null;
+      }
+      // Recompute count after enrichment/normalization
+      data.count = data.jobs.length;
+    }
+cache = { at: Date.now(), data };
 
     // Write jobs.json for BOTH local (public) and GitHub Pages (docs)
     try {
@@ -996,7 +1115,6 @@ if (isDirectRun) startServer();
 /* ======================= EXPORTED ENTRYPOINT ======================= */
 
 export async function scrapeAllJobsStandalone() {
-  const startMs = Date.now();
   const browser = await chromium.launch({ headless: true });
 
   try {
@@ -1007,7 +1125,7 @@ export async function scrapeAllJobsStandalone() {
       locale: "en-US",
     });
 
-    const tasks = [
+    let tasks = [
       { name: "CT State", fn: () => scrapeCtFacultyTeaching(context) },
       { name: "AZ", fn: () => scrapeAzAll(context) },
       { name: "CSU", fn: () => scrapeCsuFaculty(context) },
@@ -1038,14 +1156,17 @@ export async function scrapeAllJobsStandalone() {
       { name: "IN", fn: () => scrapeInAll(context) },
 
     ];
+    // Apply CAMPUS_ALLOWLIST (e.g., set CAMPUS_ALLOWLIST=UC to only scrape UC)
+    tasks = tasks.filter(t => isAllowedSystem(t.name));
 
-    // Apply campus allowlist (if set)
-    const filteredTasks = tasks.filter(t => isCampusAllowed(t.name));
+    // Apply CAMPUS_ALLOWLIST (e.g., set CAMPUS_ALLOWLIST=UC to only scrape UC)
+    const tasksToRun = tasks.filter(t => isAllowedSystem(t.name));
+
 
     // Track failures globally
     const failures = [];
 
-    const results = await mapWithConcurrency(filteredTasks, MAX_PARALLEL_SYSTEMS, async (t) => {
+    const results = await mapWithConcurrency(tasks, MAX_PARALLEL_SYSTEMS, async (t) => {
       try {
         return await t.fn();
       } catch (e) {
@@ -1075,29 +1196,10 @@ export async function scrapeAllJobsStandalone() {
     // Sort by title (faculty filtering is done by individual scrapers)
     jobs.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
 
-    const scrapedAt = new Date().toISOString();
-    const durationMs = Date.now() - startMs;
-    const systems = {};
-    for (const j of jobs) { const k = j?.source || 'Unknown'; systems[k] = (systems[k] || 0) + 1; }
-
-    // Standardize schema for downstream UI/analytics
-    const normalizedJobs = jobs.map((j) => normalizeJobSchema({ ...j, scrapedAt }));
-
-    // Update "last successful" metrics when we have a non-trivial scrape
-    if (normalizedJobs.length > 0) {
-      lastSuccessfulScrapeAt = scrapedAt;
-      lastSuccessfulJobCount = normalizedJobs.length;
-    }
-
     return {
-      scrapedAt,
-      count: normalizedJobs.length,
-      durationMs,
-      systems,
-      failures,
-      lastSuccessfulScrapeAt,
-      lastSuccessfulJobCount,
-      jobs: normalizedJobs,
+      scrapedAt: new Date().toISOString(),
+      count: jobs.length,
+      jobs: jobs,
     };
   } finally {
     await browser.close().catch(() => {});
@@ -1105,197 +1207,6 @@ export async function scrapeAllJobsStandalone() {
 }
 
 /* ============================== HELPERS ============================== */
-
-/* ======================= SCHEMA NORMALIZATION ======================= */
-
-// Keep state labels in one place (mirrors index.html)
-const STATE_LABELS = {
-  "AZ": "Arizona",
-  "CSU": "California",
-  "UC": "California",
-  "Claremont Colleges": "California",
-  "CO": "Colorado",
-  "CT State": "Connecticut",
-  "DE": "Delaware",
-  "ID": "Idaho",
-  "IL": "Illinois",
-  "IN": "Indiana",
-  "UMass": "Massachusetts",
-  "ME": "Maine",
-  "NH": "New Hampshire",
-  "MI": "Michigan",
-  "MN": "Minnesota",
-  "MT": "Montana",
-  "NM": "New Mexico",
-  "NJ": "New Jersey",
-  "NC": "North Carolina",
-  "NY": "New York",
-  "OH": "Ohio",
-  "OR": "Oregon",
-  "PA": "Pennsylvania",
-  "RI": "Rhode Island",
-  "UT": "Utah",
-  "WA": "Washington",
-  "WI": "Wisconsin",
-};
-
-function getPositionTypeFromTitle(title) {
-  const t = String(title || "").toLowerCase();
-  if (t.includes("assistant professor")) return "Assistant Professor";
-  if (t.includes("associate professor")) return "Associate Professor";
-  if (t.includes("full professor") || /\bprofessor\b/.test(t)) return "Professor";
-  if (t.includes("lecturer")) return "Lecturer";
-  if (t.includes("instructor")) return "Instructor";
-  if (t.includes("visiting")) return "Visiting Faculty";
-  if (t.includes("research")) return "Research Faculty";
-  if (t.includes("teaching")) return "Teaching Faculty";
-  if (t.includes("clinical")) return "Clinical Faculty";
-  if (t.includes("postdoc") || t.includes("post-doc") || t.includes("post doctoral") || t.includes("postdoctoral")) return "Postdoctoral";
-  return "Other";
-}
-
-// If titles include " — Department" (you already do this for some sources), extract that
-function getDepartmentFromTitle(title) {
-  const s = String(title || "");
-  const m = s.match(/\s[—\-:]\s(.+)$/); // em dash / hyphen / colon suffix
-  if (m && m[1] && m[1].length >= 2 && m[1].length <= 120) return m[1].trim();
-  return null;
-}
-
-// Node-friendly tiny hash (no crypto import needed)
-function cryptoHash(s) {
-  // FNV-1a 32-bit
-  let h = 0x811c9dc5;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193);
-  }
-  // hex (repeat to make it longer)
-  const hx = (h >>> 0).toString(16).padStart(8, "0");
-  return hx + hx;
-}
-
-function makeJobId(url, title) {
-  try {
-    const u = new URL(String(url || ""));
-    // Prefer stable IDs if present
-    const known = [
-      u.searchParams.get("jobId"),
-      u.searchParams.get("job_id"),
-      u.searchParams.get("requisitionId"),
-      u.searchParams.get("requisition_id"),
-      u.searchParams.get("reqId"),
-      u.searchParams.get("rid"),
-    ].find(Boolean);
-    if (known) return known;
-
-    const m = u.pathname.match(/\b(\d{4,})\b/);
-    if (m) return m[1];
-
-    return cryptoHash(String(url || "") + "||" + String(title || "")).slice(0, 16);
-  } catch {
-    return cryptoHash(String(url || "") + "||" + String(title || "")).slice(0, 16);
-  }
-}
-
-function titleLooksLikeJunk(title) {
-  const t = String(title || "").trim();
-  if (!t) return { junk: true, reason: "empty title" };
-  const low = t.toLowerCase();
-
-  if (t.length > 140) return { junk: true, reason: "title too long" };
-
-  const badStarts = [
-    "a statement",
-    "please submit",
-    "submit a",
-    "upload",
-    "attach",
-    "cover letter",
-    "curriculum vitae",
-    "cv",
-    "diversity statement",
-    "teaching statement",
-    "research statement",
-    "statement of",
-    "letters of reference",
-    "references",
-  ];
-  if (badStarts.some(s => low.startsWith(s))) return { junk: true, reason: "instruction/document title" };
-
-  const badContains = [
-    "how you would mentor",
-    "statement explaining",
-    "required documents",
-    "supplemental question",
-    "application question",
-    "equal opportunity",
-    "eeo",
-    "privacy notice",
-    "terms and conditions",
-  ];
-  if (badContains.some(s => low.includes(s))) return { junk: true, reason: "instruction/non-job content" };
-
-  const jobish = ["professor", "faculty", "lecturer", "instructor", "postdoc", "post-doctor", "fellow", "chair", "director", "dean"];
-  const hasJobish = jobish.some(k => low.includes(k));
-  const looksLikeRole = /\b(assistant|associate|visiting|clinical)\b/i.test(t) && /\bprofessor\b/i.test(t);
-  if (!hasJobish && !looksLikeRole) return { junk: true, reason: "missing job keywords" };
-
-  return { junk: false, reason: null };
-}
-
-function normalizeJobSchema(job) {
-
-  const j = job && typeof job === "object" ? job : {};
-  const originalTitle = clean(j.title || "");
-      let title = originalTitle;
-      const aiTitleClean = (typeof j.titleClean === "string" && j.titleClean.trim()) ? j.titleClean.trim() : null;
-      if (aiTitleClean) title = aiTitleClean;
-      const url = typeof j.url === "string" ? j.url : "";
-
-      // Title sanity check (rule-based; can be overridden by AI signals if present)
-      const junkCheck = titleLooksLikeJunk(title);
-      const aiTitleOk = (typeof j.titleOk === "boolean") ? j.titleOk : null;
-      const aiReason = (typeof j.titleReason === "string" && j.titleReason.trim()) ? j.titleReason.trim() : null;
-      const isValid = (aiTitleOk === false) ? false : !junkCheck.junk;
-      const invalidReason = (aiTitleOk === false) ? (aiReason || "AI flagged title as non-job") : (junkCheck.junk ? junkCheck.reason : null);
-
-  const source = clean(j.source || "") || "Unknown";
-  const campus = clean(j.college || j.campus || "") || null;
-
-  const positionType = j.positionType || getPositionTypeFromTitle(title);
-  const department = j.department || getDepartmentFromTitle(title) || null;
-
-  const stateCode = j.stateCode || (STATE_LABELS[source] ? source : null);
-  const state = j.state || STATE_LABELS[source] || null;
-
-  const jobId = j.jobId || makeJobId(url, title);
-
-  return {
-    jobId,
-    title,
-    url,
-
-    // standardized app fields
-    source,           // system key (e.g., UT, NY, UC)
-    state,            // label (e.g., "Utah")
-    stateCode,        // best-effort (uses source as code)
-    campus,           // institution name
-    college: campus,  // backward compatible
-    location: j.location || null,
-
-    category: clean(j.category || "Faculty"),
-    positionType,
-    department,
-
-    description: j.description || null,
-    summary: j.summary || null,
-
-    scrapedAt: j.scrapedAt || null,
-    enrichedAt: j.enrichedAt || null,
-  };
-}
-
 
 function clean(s) {
   return String(s || "").replace(/\s+/g, " ").trim();
@@ -2078,34 +1989,10 @@ async function scrapeApRecruitCampus(page, campusName) {
         const isBadTitle = (t) =>
           !t ||
           t.length < 4 ||
-          /^JPF\d+$/i.test(t) ||
           /^apply by\b/i.test(t) ||
           /open\s+\w{3}\s+\d{1,2},\s+\d{4}/i.test(t);
 
         if (isBadTitle(title) && ht && !isBadTitle(ht)) title = ht;
-
-        // UC AP Recruit: title is often in next sibling/adjacent cell
-        if (isBadTitle(title)) {
-          // Check next sibling element
-          let sib = a.nextElementSibling;
-          while (sib && isBadTitle(clean(sib.textContent))) sib = sib.nextElementSibling;
-          if (sib) {
-            const sibText = clean(sib.textContent);
-            if (!isBadTitle(sibText) && sibText.length <= 220) title = sibText;
-          }
-        }
-
-        if (isBadTitle(title)) {
-          // Check next table cell if in a table
-          const td = a.closest("td");
-          if (td) {
-            const nextTd = td.nextElementSibling;
-            if (nextTd) {
-              const cellText = clean(nextTd.textContent);
-              if (!isBadTitle(cellText) && cellText.length <= 220) title = cellText;
-            }
-          }
-        }
 
         if (isBadTitle(title) && container) {
           const candEls = Array.from(container.querySelectorAll("h1,h2,h3,h4,strong,a"));
@@ -2317,13 +2204,7 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
     for (let page = 0; page < 50; page++) {
       const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json, text/plain, */*',
-          'Referer': startUrl,
-          'Origin': new URL(startUrl).origin,
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121 Safari/537.36'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           appliedFacets: {},
           limit,
@@ -2381,37 +2262,8 @@ async function scrapeNjWorkday(context, startUrl, campusName, sourceLabel = "NJ"
 async function scrapeNjWorkdayBrowser(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "networkidle", timeout: 60_000 });
-
-    const selectors = [
-      '[data-automation-id="jobTitle"]',
-      '[data-automation-id="jobResults"]',
-      '[data-automation-id="jobResultsContainer"]',
-      'a[href*="/job/"]',
-      'a[href*="/jobs/"]',
-      '.wd-search-result-list',
-    ];
-
-    let found = false;
-    for (const sel of selectors) {
-      try {
-        await page.waitForSelector(sel, { timeout: 25_000 });
-        found = true;
-        break;
-      } catch {}
-    }
-
-    if (!found) {
-      const t = Date.now();
-      try {
-        await page.screenshot({ path: `debug_workday_${encodeURIComponent(campusName)}_${t}.png`, fullPage: true });
-      } catch {}
-      try {
-        const html = await page.content();
-        fs.writeFileSync(`debug_workday_${encodeURIComponent(campusName)}_${t}.html`, html, "utf8");
-      } catch {}
-      throw new Error("Workday results did not render (no known selectors found).");
-    }
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 25_000 });
+    await page.waitForSelector('[data-automation-id="jobTitle"]', { timeout: 20_000 });
 
     const jobs = [];
     const seen = new Set();
@@ -4108,6 +3960,10 @@ async function scrapeNySuny(context) {
 
         const title = clean(a.textContent);
         if (!title || title.length < 6) continue;
+
+        // Only include faculty-related postings
+        if (!/professor|faculty|lecturer|instructor|dean|chair|director|teaching|research/i.test(title)) continue;
+
         if (seen.has(url)) continue;
         seen.add(url);
 
@@ -4200,7 +4056,7 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
 
         // Look for job-related keywords in title or URL
         const isJobRelated =
-          /professor|faculty|lecturer|instructor|dean|chair|director|teaching|research|academic/i.test(title) ||
+          /professor|faculty|lecturer|instructor|dean|chair|director|teaching|research/i.test(title) ||
           /job|position|career|posting|opening|vacancy/i.test(url);
 
         if (!isJobRelated) continue;
@@ -6346,4 +6202,3 @@ async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
     await page.close().catch(() => {});
   }
 }
-

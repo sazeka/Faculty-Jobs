@@ -116,6 +116,9 @@
       .clear-search:hover { background: #ccc; }
       .clear-search.visible { display: flex; }
 
+      .check{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:2px solid #e8e8e8;border-radius:8px;background:#fafafa;font-size:14px;color:#444;cursor:pointer;user-select:none}
+      .check input{width:16px;height:16px;}
+
       .filters-row {
         display: flex;
         gap: 12px;
@@ -297,6 +300,14 @@
         background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
       }
 
+      .pill.tenure {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .pill.non-tenure {
+        background: #999;
+      }
+
       .info-grid {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -404,47 +415,7 @@
         .grid { grid-template-columns: 1fr; gap: 16px; }
       }
     
-  .dashboard {
-    background: rgba(255,255,255,0.92);
-    border-radius: 14px;
-    padding: 14px 16px;
-    margin: 14px 0 18px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
-    font-size: 13px;
-    color: #222;
-  }
-  .dash-row { display:flex; flex-wrap:wrap; gap:12px 18px; align-items:center; }
-  .dash-kv { display:flex; gap:8px; align-items:baseline; }
-  .dash-k { color:#555; font-weight:600; letter-spacing:0.2px; }
-  .dash-v { font-weight:800; }
-  .dash-pill {
-    display:inline-flex; align-items:center; gap:8px;
-    padding: 6px 10px; border-radius: 999px;
-    background: #f3f4f6;
-    font-weight: 800;
-  }
-  .dash-pill.warn { background: #fff4e5; }
-  details.dash-details { margin-top: 10px; }
-  details.dash-details summary { cursor:pointer; font-weight:800; color:#333; }
-  .dash-list { margin: 10px 0 0; padding-left: 18px; }
-  .dash-list li { margin: 4px 0; color:#333; }
-
-      .meta-row { display:flex; gap:8px; flex-wrap:wrap; }
-      .tag-row { display:flex; gap:6px; flex-wrap:wrap; }
-      .tag-chip {
-        display:inline-flex;
-        align-items:center;
-        padding: 4px 10px;
-        border-radius: 999px;
-        background: #f3f4f6;
-        color: #333;
-        font-weight: 700;
-        font-size: 11px;
-        letter-spacing: 0.2px;
-      }
-      ul.key-bullets { margin: 0; padding-left: 18px; color:#444; }
-      ul.key-bullets li { margin: 4px 0; font-size: 13px; line-height: 1.35; }
-
+  .meta { margin-top: 6px; font-size: 12px; color: #666; font-weight: 600; }
 </style>
   </head>
   <body>
@@ -472,35 +443,33 @@
         </div>
 
         <div class="filters-row">
-          <select id="source">
-            <option value="all">All States / Systems</option>
-            <option value="AZ">Arizona</option>
-            <option value="CA - CSU">California (CSU)</option>
-            <option value="UC">California (UC)</option>
-            <option value="CO">Colorado</option>
-            <option value="CT State">Connecticut</option>
-            <option value="DE">Delaware</option>
-            <option value="ID">Idaho</option>
-            <option value="IL">Illinois</option>
-            <option value="IN">Indiana</option>
-            <option value="UMass">Massachusetts</option>
-            <option value="ME">Maine</option>
-            <option value="NH">New Hampshire</option>
-            <option value="MI">Michigan</option>
-            <option value="MN">Minnesota</option>
-            <option value="MT">Montana</option>
-            <option value="NM">New Mexico</option>
-            <option value="NJ">New Jersey</option>
-            <option value="NC">North Carolina</option>
-            <option value="NY">New York</option>
-            <option value="OH">Ohio</option>
-            <option value="OR">Oregon</option>
-            <option value="PA">Pennsylvania</option>
-            <option value="RI">Rhode Island</option>
-            <option value="UT">Utah</option>
-            <option value="WA">Washington</option>
-            <option value="WI">Wisconsin</option>
-            <option value="Claremont Colleges">Claremont Colleges</option>
+          <select id="stateFilter">
+            <option value="all">All States</option>
+            <option value="Arizona">Arizona</option>
+            <option value="California">California</option>
+            <option value="Colorado">Colorado</option>
+            <option value="Connecticut">Connecticut</option>
+            <option value="Delaware">Delaware</option>
+            <option value="Idaho">Idaho</option>
+            <option value="Illinois">Illinois</option>
+            <option value="Indiana">Indiana</option>
+            <option value="Maine">Maine</option>
+            <option value="Massachusetts">Massachusetts</option>
+            <option value="Michigan">Michigan</option>
+            <option value="Minnesota">Minnesota</option>
+            <option value="Montana">Montana</option>
+            <option value="New Hampshire">New Hampshire</option>
+            <option value="New Jersey">New Jersey</option>
+            <option value="New Mexico">New Mexico</option>
+            <option value="New York">New York</option>
+            <option value="North Carolina">North Carolina</option>
+            <option value="Ohio">Ohio</option>
+            <option value="Oregon">Oregon</option>
+            <option value="Pennsylvania">Pennsylvania</option>
+            <option value="Rhode Island">Rhode Island</option>
+            <option value="Utah">Utah</option>
+            <option value="Washington">Washington</option>
+            <option value="Wisconsin">Wisconsin</option>
           </select>
 
           <select id="positionType">
@@ -521,6 +490,11 @@
             <option value="all">All Universities</option>
           </select>
 
+          <label class="check">
+            <input type="checkbox" id="summarizedOnly" />
+            Summarized only
+          </label>
+
           <select id="sortBy">
             <option value="relevance">Sort: Relevance</option>
             <option value="title-asc">Sort: Title A-Z</option>
@@ -528,8 +502,6 @@
             <option value="university">Sort: University</option>
             <option value="state">Sort: State</option>
           </select>
-
-          <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#444; font-weight:600; margin-left:auto;"><input type="checkbox" id="showExcluded" /> Show excluded</label>
 
           <button class="secondary" id="clearFilters">Clear All</button>
         </div>
@@ -542,8 +514,6 @@
         <span class="count" id="shown"></span>
       </div>
 
-      <div class="dashboard" id="dashboard"></div>
-
       <div class="grid" id="grid"></div>
     </div>
 
@@ -553,7 +523,7 @@
       const subhead = document.getElementById("subhead");
       const shownEl = document.getElementById("shown");
       const q = document.getElementById("q");
-      const sourceSel = document.getElementById("source");
+      const stateFilterSel = document.getElementById("stateFilter");
       const positionTypeSel = document.getElementById("positionType");
       const collegeSel = document.getElementById("college");
       const sortBySel = document.getElementById("sortBy");
@@ -561,11 +531,10 @@
       const clearSearchBtn = document.getElementById("clearSearch");
       const clearFiltersBtn = document.getElementById("clearFilters");
       const activeFiltersEl = document.getElementById("activeFilters");
-      const dashboardEl = document.getElementById("dashboard");
-      const showExcludedEl = document.getElementById("showExcluded");
+      const summarizedOnlyCb = document.getElementById("summarizedOnly");
 
       let allJobs = [];
-      let meta = { scrapedAt: null, count: 0, durationMs: null, failures: [], systems: {}, lastSuccessfulScrapeAt: null, lastSuccessfulJobCount: 0 };
+      let meta = { scrapedAt: null, count: 0 };
       let debounceTimer = null;
 
       function escapeHtml(s) {
@@ -574,52 +543,12 @@
         }[c]));
       }
 
-      
-function truncate(s, n) {
-  s = String(s);
-  return s.length > n ? s.slice(0, n - 1) + "..." : s;
-}
+      function truncate(s, n) {
+        s = String(s);
+        return s.length > n ? s.slice(0, n - 1) + "..." : s;
+      }
 
-function renderDashboard() {
-  if (!dashboardEl) return;
-
-  const updated = meta.scrapedAt ? new Date(meta.scrapedAt).toLocaleString() : "unknown";
-  const lastOk = meta.lastSuccessfulScrapeAt ? new Date(meta.lastSuccessfulScrapeAt).toLocaleString() : "—";
-  const duration = (meta.durationMs != null) ? `${Math.round(meta.durationMs/1000)}s` : "—";
-  const failed = Array.isArray(meta.failures) ? meta.failures.length : 0;
-
-  const systems = meta.systems && typeof meta.systems === "object" ? meta.systems : {};
-  const topSystems = Object.entries(systems).sort((a,b)=>b[1]-a[1]).slice(0,6);
-
-  const pillHtml = failed > 0
-    ? `<span class="dash-pill warn">⚠️ ${failed} failed</span>`
-    : `<span class="dash-pill">✅ no failures</span>`;
-
-  const systemsHtml = topSystems.length
-    ? topSystems.map(([k,v]) => `${k}: ${Number(v).toLocaleString()}`).join(" · ")
-    : "—";
-
-  const failuresHtml = failed > 0
-    ? `<details class="dash-details"><summary>Failure details</summary><ul class="dash-list">${
-        meta.failures.map(f => `<li><b>${escapeHtml(f.name || "Unknown")}:</b> ${escapeHtml(f.error || "")}</li>`).join("")
-      }</ul></details>`
-    : "";
-
-  dashboardEl.innerHTML = `
-    <div class="dash-row">
-      <div class="dash-kv"><span class="dash-k">Updated</span><span class="dash-v">${escapeHtml(updated)}</span></div>
-      <div class="dash-kv"><span class="dash-k">Duration</span><span class="dash-v">${escapeHtml(duration)}</span></div>
-      <div class="dash-kv"><span class="dash-k">Last successful</span><span class="dash-v">${escapeHtml(lastOk)}</span></div>
-      ${pillHtml}
-    </div>
-    <div style="margin-top:8px; color:#444;">
-      <span style="font-weight:800;">Top systems:</span> ${escapeHtml(systemsHtml)}
-    </div>
-    ${failuresHtml}
-  `;
-}
-
-// Highlight search terms in text
+      // Highlight search terms in text
       function highlight(text, searchTerms) {
         if (!searchTerms || searchTerms.length === 0) return escapeHtml(text);
         let result = escapeHtml(text);
@@ -693,42 +622,57 @@ function renderDashboard() {
       }
 
       function normalizeJob(j) {
-        const title = j?.title ?? "(No title)";
+        const rawTitle = j?.title ?? "(No title)";
+        const titleClean = (j?.titleClean && String(j.titleClean).trim().length > 0) ? String(j.titleClean).trim() : null;
+        const title = titleClean || rawTitle;
         const description = j?.description ?? null;
+        const backendDept = (j?.department && String(j.department).trim().length > 0) ? String(j.department).trim() : null;
+        const backendRank = (j?.rank && String(j.rank).trim().length > 0) ? String(j.rank).trim() : null;
+
         return {
+          // Display + search fields
           title,
+          titleClean,
+          originalTitle: rawTitle,
           description,
+          summary: j?.summary ?? null,
+          skippedReason: j?.skippedReason ?? null,
+
+          // Linkage
           url: j?.url ?? "#",
+
+          // Source metadata
           source: j?.source ?? null,
+          systemGroup: j?.systemGroup ?? null,
           category: j?.category ?? null,
           college: j?.college ?? null,
           location: j?.location ?? null,
-          positionType: getPositionType(title),
-          department: getDepartment(title, description),
-          state: stateMap[j?.source] || j?.source || null,
-          rank: j?.rank ?? null,
-          track: j?.track ?? null,
-          fieldTags: Array.isArray(j?.fieldTags) ? j.fieldTags : [],
-          deadline: j?.deadline ?? null,
-          startTerm: j?.startTerm ?? null,
-          mode: j?.mode ?? null,
-          keyBullets: Array.isArray(j?.keyBullets) ? j.keyBullets : [],
-          redFlags: Array.isArray(j?.redFlags) ? j.redFlags : [],
-          isValid: j?.isValid ?? true,
-          invalidReason: j?.invalidReason ?? null,
-          originalTitle: j?.originalTitle ?? null,
-          titleClean: j?.titleClean ?? null,
-          titleOk: (typeof j?.titleOk === 'boolean') ? j.titleOk : null,
-          titleReason: j?.titleReason ?? null
+
+          // Structured classification
+          rank: backendRank || getPositionType(title),
+          positionType: backendRank || getPositionType(title),
+          department: backendDept || getDepartment(title, description),
+
+          // Track + deadline (from summarizer if present)
+          tenureTrack: (typeof j?.tenureTrack === "boolean") ? j.tenureTrack : null,
+          closeDate: j?.closeDate ?? null,
+          closeDateType: j?.closeDateType ?? null,
+          closeDateRaw: j?.closeDateRaw ?? null,
+          openUntilFilled: !!j?.openUntilFilled,
+
+          // State mapping
+          state: stateMap[j?.source] || j?.source || null
         };
       }
+
 
       function updateActiveFilters() {
         activeFiltersEl.innerHTML = "";
         const searchTerm = q.value.trim();
-        const source = sourceSel.value;
+        const stateVal = stateFilterSel.value;
         const posType = positionTypeSel.value;
         const college = collegeSel.value;
+        const summarizedOnly = summarizedOnlyCb.checked;
 
         if (searchTerm) {
           const chip = document.createElement("span");
@@ -737,10 +681,17 @@ function renderDashboard() {
           activeFiltersEl.appendChild(chip);
         }
 
-        if (source !== "all") {
+        if (stateVal !== "all") {
           const chip = document.createElement("span");
           chip.className = "filter-chip";
-          chip.innerHTML = `${escapeHtml(stateMap[source] || source)} <button data-clear="source">&times;</button>`;
+          chip.innerHTML = `${escapeHtml(stateVal)} <button data-clear="stateFilter">&times;</button>`;
+          activeFiltersEl.appendChild(chip);
+        }
+
+        if (summarizedOnly) {
+          const chip = document.createElement("span");
+          chip.className = "filter-chip";
+          chip.innerHTML = `AI Summarized <button data-clear="summarizedOnly">&times;</button>`;
           activeFiltersEl.appendChild(chip);
         }
 
@@ -774,101 +725,74 @@ function renderDashboard() {
           const card = document.createElement("div");
           card.className = "card";
 
-          // Title
           const title = document.createElement("div");
           title.className = "title";
-          title.innerHTML = highlight(job.title || "(No title)", searchTerms);
+          const displayTitle = (job.titleClean && job.titleClean.trim().length > 0) ? job.titleClean : job.title;
+          title.innerHTML = highlight(displayTitle || "(No title)", searchTerms);
 
-          const showExcluded = !!(showExcludedEl && showExcludedEl.checked);
-          let originalTitleLine = null;
-          if (showExcluded && job.originalTitle && job.originalTitle !== job.title) {
-            originalTitleLine = document.createElement("div");
-            originalTitleLine.style.fontSize = "12px";
-            originalTitleLine.style.fontWeight = "600";
-            originalTitleLine.style.color = "#666";
-            originalTitleLine.textContent = job.originalTitle;
+          const pills = document.createElement("div");
+          pills.className = "pills";
+
+          if (job.positionType) {
+            const typePill = document.createElement("span");
+            typePill.className = "pill";
+            typePill.textContent = job.positionType;
+            pills.appendChild(typePill);
           }
 
-          // University line
-          const uni = document.createElement("div");
-          uni.style.fontSize = "13px";
-          uni.style.fontWeight = "700";
-          uni.style.color = "#333";
-          const uniText = [job.college, job.location].filter(Boolean).join(" · ");
-          uni.innerHTML = highlight(uniText || "", searchTerms);
-
-          // Meta badge row (fixed order)
-          const meta = document.createElement("div");
-          meta.className = "meta-row";
-
-          function addPill(text, isState=false) {
-            if (!text) return;
-            const p = document.createElement("span");
-            p.className = "pill" + (isState ? " state" : "");
-            p.textContent = text;
-            meta.appendChild(p);
+          if (job.state) {
+            const statePill = document.createElement("span");
+            statePill.className = "pill state";
+            statePill.textContent = job.state;
+            pills.appendChild(statePill);
           }
 
-          // Always show state first for scanning
-          addPill(job.state, true);
-
-          const rank = job.rank || job.positionType || null;
-          addPill(rank);
-
-          if (job.track) addPill(job.track);
-
-          if (job.mode) addPill(job.mode);
-
-          if (job.deadline) {
-            // keep it short
-            const d = new Date(job.deadline);
-            const label = isNaN(d.getTime()) ? `Deadline: ${job.deadline}` : `Deadline: ${d.toLocaleDateString()}`;
-            addPill(label);
+          if (job.tenureTrack !== null && job.tenureTrack !== undefined) {
+            const trackPill = document.createElement("span");
+            trackPill.className = job.tenureTrack ? "pill tenure" : "pill non-tenure";
+            trackPill.textContent = job.tenureTrack ? "Tenure Track" : "Non-Tenure";
+            pills.appendChild(trackPill);
           }
 
-          if (job.startTerm) addPill(job.startTerm);
+          const infoGrid = document.createElement("div");
+          infoGrid.className = "info-grid";
 
-          // Tag row
-          const tagRow = document.createElement("div");
-          tagRow.className = "tag-row";
-          const tags = (job.fieldTags || []).slice(0, 5);
-          for (const t of tags) {
-            const chip = document.createElement("span");
-            chip.className = "tag-chip";
-            chip.textContent = t;
-            tagRow.appendChild(chip);
+          if (job.college) {
+            infoGrid.innerHTML += `<span class="info-label">University</span><span class="info-value">${highlight(job.college, searchTerms)}</span>`;
           }
 
-          // Key bullets (2 max on face)
-          const bullets = (job.keyBullets || []).filter(Boolean).slice(0, 2);
-          const ul = document.createElement("ul");
-          ul.className = "key-bullets";
-          for (const b of bullets) {
-            const li = document.createElement("li");
-            li.textContent = b;
-            ul.appendChild(li);
+          if (job.department) {
+            infoGrid.innerHTML += `<span class="info-label">Department</span><span class="info-value">${highlight(job.department, searchTerms)}</span>`;
           }
 
-          // Optional one-line summary (if no bullets)
-          const summaryLine = document.createElement("div");
-          summaryLine.className = "desc";
-          summaryLine.style.borderLeft = "3px solid #e8e8e8";
-          summaryLine.style.paddingLeft = "12px";
-          summaryLine.style.marginTop = "4px";
-          summaryLine.textContent = (!bullets.length && job.summary) ? truncate(job.summary, 180) : "";
+          if (job.location) {
+            infoGrid.innerHTML += `<span class="info-label">Location</span><span class="info-value">${highlight(job.location, searchTerms)}</span>`;
+          }
 
-          // Footer links
+          if (job.closeDate || job.closeDateRaw || job.openUntilFilled) {
+            let dateDisplay = "";
+            if (job.openUntilFilled) {
+              dateDisplay = "Open until filled";
+            } else if (job.closeDateRaw) {
+              dateDisplay = job.closeDateRaw;
+            } else if (job.closeDate) {
+              dateDisplay = new Date(job.closeDate).toLocaleDateString();
+            }
+            infoGrid.innerHTML += `<span class="info-label">Deadline</span><span class="info-value">${escapeHtml(dateDisplay)}</span>`;
+          }
+
+          const desc = document.createElement("div");
+          desc.className = "desc";
+          desc.textContent = job.description ? truncate(job.description, 180) : "";
+
           const links = document.createElement("div");
           links.className = "links";
-          links.innerHTML = `<a href="${escapeHtml(job.url)}" target="_blank" rel="noreferrer">Apply</a>`;
+          links.innerHTML = `<a href="${escapeHtml(job.url)}" target="_blank" rel="noreferrer">View Position</a>`;
 
           card.appendChild(title);
-          if (originalTitleLine) card.appendChild(originalTitleLine);
-          if (uniText) card.appendChild(uni);
-          if (meta.childNodes.length) card.appendChild(meta);
-          if (tagRow.childNodes.length) card.appendChild(tagRow);
-          if (ul.childNodes.length) card.appendChild(ul);
-          else if (summaryLine.textContent) card.appendChild(summaryLine);
+          if (pills.childNodes.length) card.appendChild(pills);
+          if (infoGrid.innerHTML) card.appendChild(infoGrid);
+          if (job.description) card.appendChild(desc);
           card.appendChild(links);
 
           grid.appendChild(card);
@@ -880,10 +804,11 @@ function renderDashboard() {
       function applyFilters() {
         const searchText = q.value.trim().toLowerCase();
         const searchTerms = searchText.split(/\s+/).filter(t => t.length >= 2);
-        const src = sourceSel.value;
+        const stateVal = stateFilterSel.value;
         const posType = positionTypeSel.value;
         const college = collegeSel.value;
         const sortBy = sortBySel.value;
+        const summarizedOnly = summarizedOnlyCb.checked;
 
         // Update clear button visibility
         clearSearchBtn.classList.toggle("visible", q.value.length > 0);
@@ -893,13 +818,14 @@ function renderDashboard() {
 
         let filtered = allJobs.map(normalizeJob);
 
-        // Hide excluded (invalid) postings by default
-        const showExcluded = !!(showExcludedEl && showExcludedEl.checked);
-        if (!showExcluded) filtered = filtered.filter(j => j.isValid !== false);
+        // Filter by state
+        if (stateVal !== "all") {
+          filtered = filtered.filter(j => j.state === stateVal);
+        }
 
-        // Filter by source/state
-        if (src !== "all") {
-          filtered = filtered.filter(j => j.source === src);
+        // Filter to only AI-summarized jobs
+        if (summarizedOnly) {
+          filtered = filtered.filter(j => j.summary && j.summary.trim().length > 0);
         }
 
         // Filter by position type
@@ -1004,17 +930,11 @@ function renderDashboard() {
           allJobs = Array.isArray(data.jobs) ? data.jobs : [];
           meta.scrapedAt = data.scrapedAt || null;
           meta.count = data.count || allJobs.length;
-          meta.durationMs = data.durationMs ?? null;
-          meta.failures = Array.isArray(data.failures) ? data.failures : [];
-          meta.systems = (data.systems && typeof data.systems === 'object') ? data.systems : {};
-          meta.lastSuccessfulScrapeAt = data.lastSuccessfulScrapeAt || null;
-          meta.lastSuccessfulJobCount = data.lastSuccessfulJobCount || 0;
 
           const when = meta.scrapedAt ? new Date(meta.scrapedAt).toLocaleString() : "unknown";
           subhead.textContent = `${allJobs.length.toLocaleString()} positions · Updated ${when}`;
 
           statusEl.textContent = "Ready";
-          renderDashboard();
           applyFilters();
         } catch (err) {
           statusEl.textContent = "Error: " + err.message;
@@ -1025,13 +945,14 @@ function renderDashboard() {
 
       // Event listeners
       q.addEventListener("input", debouncedApplyFilters);
-      sourceSel.addEventListener("change", () => {
-        collegeSel.value = "all"; // Reset college when state changes
+      stateFilterSel.addEventListener("change", () => {
+        collegeSel.value = "all";
         applyFilters();
       });
       positionTypeSel.addEventListener("change", applyFilters);
       collegeSel.addEventListener("change", applyFilters);
       sortBySel.addEventListener("change", applyFilters);
+      summarizedOnlyCb.addEventListener("change", applyFilters);
       refreshBtn.addEventListener("click", load);
 
       clearSearchBtn.addEventListener("click", () => {
@@ -1040,15 +961,12 @@ function renderDashboard() {
         q.focus();
       });
 
-      if (showExcludedEl) {
-        showExcludedEl.addEventListener("change", applyFilters);
-      }
-
       clearFiltersBtn.addEventListener("click", () => {
         q.value = "";
-        sourceSel.value = "all";
+        stateFilterSel.value = "all";
         positionTypeSel.value = "all";
         collegeSel.value = "all";
+        summarizedOnlyCb.checked = false;
         sortBySel.value = "relevance";
         applyFilters();
       });
@@ -1057,7 +975,8 @@ function renderDashboard() {
         if (e.target.tagName === "BUTTON") {
           const clear = e.target.dataset.clear;
           if (clear === "search") q.value = "";
-          if (clear === "source") sourceSel.value = "all";
+          if (clear === "stateFilter") stateFilterSel.value = "all";
+          if (clear === "summarizedOnly") summarizedOnlyCb.checked = false;
           if (clear === "positionType") positionTypeSel.value = "all";
           if (clear === "college") collegeSel.value = "all";
           applyFilters();
