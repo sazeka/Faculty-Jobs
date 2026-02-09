@@ -1,12 +1,13 @@
 
-# Local GPU LLM summarization using Transformers + bitsandbytes (no OpenAI)
+# Local GPU LLM summarization using Transformers (no OpenAI)
+# Optimized for Apple Silicon (MPS) with fallback to CPU
 import os, json, time, hashlib, re
 from typing import List, Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 import httpx
 from bs4 import BeautifulSoup
@@ -186,7 +187,22 @@ def extract_specialization(title: Optional[str], page_text: Optional[str]) -> Op
             return spec
 
     # Pattern 3: Look in page text for "position in X" or "specializing in X"
+    # But be careful to avoid boilerplate text
     if page_text:
+        # Blacklist of boilerplate phrases that should not be extracted
+        boilerplate = [
+            "context of the home",
+            "the context of",
+            "home department",
+            "this position",
+            "the department",
+            "our department",
+            "the school",
+            "the college",
+            "the university",
+            "the faculty",
+        ]
+
         for pattern in [
             r"position\s+in\s+([A-Za-z&/,\s\-]{3,60}?)(?:\.|,|\s+with|\s+at|\s+and|\s+in\s+the)",
             r"specializ(?:ing|ation)\s+in\s+([A-Za-z&/,\s\-]{3,60}?)(?:\.|,|\s+with|\s+at|\s+and)",
@@ -197,6 +213,10 @@ def extract_specialization(title: Optional[str], page_text: Optional[str]) -> Op
             if m:
                 spec = m.group(1).strip()
                 spec = re.sub(r"[\s,\-–]+$", "", spec).strip()
+                # Skip if it matches boilerplate text
+                spec_lower = spec.lower()
+                if any(bp in spec_lower for bp in boilerplate):
+                    continue
                 if spec and len(spec) > 3:
                     return spec
 
@@ -393,6 +413,193 @@ def extract_uc_recruit_title_dept(html: str):
     return clean_title_jobcode(title), dept
 
 
+def clean_field_name(field: Optional[str]) -> Optional[str]:
+    """Remove rank-related words and junk from department/specialization names."""
+    if not field:
+        return None
+
+    f = field.strip()
+
+    # Patterns to fully reject (field is just these words or rank combinations)
+    reject_patterns = [
+        r"^Assistant\s+or\s+Associate$",
+        r"^Assistant,?\s+Associate,?\s+(or\s+)?Full$",
+        r"^Associate\s+(or\s+)?Full$",
+        r"^Assistant$",
+        r"^Associate$",
+        r"^Professor$",
+        r"^Lecturer$",
+        r"^Instructor$",
+        r"^Full$",
+        r"^Clinical\s+Assistant$",
+        r"^Medical\s+Director.*$",
+        r"^Program\s+Director.*$",
+        r"^Tenure\s+Track.*$",
+    ]
+
+    for pattern in reject_patterns:
+        if re.match(pattern, f, re.I):
+            return None
+
+    # Prefixes to strip
+    prefix_patterns = [
+        r"^the\s+Department\s+of\s+",
+        r"^Department\s+of\s+",
+        r"^the\s+",
+    ]
+
+    for pattern in prefix_patterns:
+        f = re.sub(pattern, "", f, flags=re.I)
+
+    # Remove location suffixes (NYC boroughs, etc.)
+    f = re.sub(r'\s*(New\s*York|Brooklyn|Staten\s*Island|Bronx|Queens|Manhattan|NY|CUNY|SUNY|HUNTER|BARUCH|COLLEGE|NYCITY).*$', '', f, flags=re.I)
+
+    # Remove rank-related suffixes like " - Associate" or ", Assistant"
+    f = re.sub(r'\s*[-,]\s*(Assistant|Associate|Professor|Lecturer|Instructor)\s*$', '', f, flags=re.I)
+
+    # Remove "Tenure Track" suffix
+    f = re.sub(r'\s+Tenure\s+Track\s+(Assistant|Associate|Full)?\s*$', '', f, flags=re.I)
+
+    # Strip trailing punctuation
+    f = f.strip().rstrip('.,;:')
+    f = f.strip()
+
+    # Reject if too short or still contains only rank words
+    if len(f) < 3:
+        return None
+
+    # Reject location-only values (city names without context)
+    location_only = ["syracuse", "buffalo", "albany", "binghamton", "stony brook",
+                     "new york", "brooklyn", "manhattan", "queens", "bronx"]
+    if f.lower() in location_only:
+        return None
+
+    rank_words = ["assistant", "associate", "professor", "lecturer", "instructor", "doctoral", "full"]
+    if f.lower() in rank_words:
+        return None
+
+    # Reject boilerplate words/phrases that are not real departments
+    boilerplate_exact = ["chair", "of the", "in the", "error", "cnse", "cehc",
+                         "admissions", "alumni", "syracuse", "extended learning",
+                         "job opportunities", "employment opportunities", "careers"]
+    boilerplate_contains = ["context", "home department", "the department",
+                            "this position", "our department", "the school",
+                            "the college", "the university", ".img-responsive",
+                            "width:", "max-width:", "padding:", "margin:",
+                            "{", "}", "inner", "outer", "residence life",
+                            "facilities", "it &", "housing", "dining",
+                            "parking", "athletics", "recreation",
+                            "javascript", "careers at", "job opportunities",
+                            "employment opportunities", "header-inner",
+                            "alumni relations", "budget director", "curriculum development",
+                            "print and mail", "clinic suite", "vpsl",
+                            "environmental services", "linen", "ntp-",
+                            "rf - step", "region:", "open until filled",
+                            "wf2", "(wf"]
+    boilerplate_startswith = ["of ", "in ", "the ", "and ", "or ", ".", "it ", "at "]
+    f_lower = f.lower()
+    if f_lower in boilerplate_exact:
+        return None
+    if any(bp in f_lower for bp in boilerplate_contains):
+        return None
+    if any(f_lower.startswith(bp) for bp in boilerplate_startswith):
+        return None
+
+    # Reject if it's mostly rank words (e.g., "Associate Professor or Full")
+    words = f.lower().split()
+    rank_word_count = sum(1 for w in words if w in rank_words or w in ['or', 'and', ','])
+    if len(words) > 0 and rank_word_count / len(words) > 0.5:
+        return None
+
+    return f
+
+
+def extract_field_from_title(original_title: Optional[str]) -> Optional[str]:
+    """
+    Try to extract specialization/department from original title.
+    Handles formats like:
+    - "Assistant Professor - Human Resources"
+    - "Professor of Chemistry"
+    - "Lecturer in Mathematics"
+    """
+    if not original_title:
+        return None
+
+    # Normalize dashes (en-dash, em-dash) to hyphen
+    title = original_title.replace('–', '-').replace('—', '-')
+
+    # Try to find field after separator (hyphen with optional spaces)
+    # Matches: " - ", "- ", " -", "-"
+    match = re.search(r'\s*-\s*(.+?)(?:\s*New\s*York|Brooklyn|Staten|Bronx|Queens|$)', title, re.I)
+    if match:
+        field = clean_field_name(match.group(1).strip())
+        if field:
+            return field
+
+    # Try "of X" or "in X" pattern
+    match = re.search(r'\b(?:of|in)\s+(.+?)(?:\s*[-,]|New\s*York|Brooklyn|$)', title, re.I)
+    if match:
+        field = clean_field_name(match.group(1).strip())
+        if field:
+            return field
+
+    return None
+
+
+def to_title_case(text: str) -> str:
+    """
+    Convert text to proper title case, preserving acronyms and handling special cases.
+    """
+    if not text:
+        return text
+
+    # Words that should stay lowercase (unless first word)
+    lowercase_words = {'a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on', 'at',
+                       'to', 'by', 'of', 'in', 'with', 'as', 'is', 'vs'}
+
+    # Words/acronyms that should stay uppercase
+    uppercase_words = {'PhD', 'Ph.D.', 'MBA', 'MD', 'JD', 'EdD', 'DNP', 'RN', 'MSW',
+                       'STEM', 'ESL', 'ELL', 'IT', 'AI', 'HR', 'NY', 'NYC', 'US', 'USA',
+                       'II', 'III', 'IV', 'CUNY', 'SUNY', 'CSU', 'UC'}
+
+    words = text.split()
+    result = []
+
+    for i, word in enumerate(words):
+        # Check if it's an acronym we should preserve
+        word_upper = word.upper().rstrip('.,;:')
+        if word_upper in uppercase_words or word.upper() in uppercase_words:
+            result.append(word.upper() if word.isupper() else word)
+        # Check if word is already properly cased (like "PhD" or a name)
+        elif word[0].isupper() and not word.isupper():
+            result.append(word)
+        # First word or after punctuation - always capitalize
+        elif i == 0 or (result and result[-1].endswith((':','-'))):
+            result.append(word.capitalize())
+        # Lowercase words
+        elif word.lower() in lowercase_words:
+            result.append(word.lower())
+        # Regular words - capitalize
+        else:
+            result.append(word.capitalize())
+
+    return ' '.join(result)
+
+
+def is_valid_title(title: Optional[str]) -> bool:
+    """Check if a title is valid (not junk/boilerplate)."""
+    if not title:
+        return False
+    t = title.lower()
+    bad_patterns = [
+        "careers at", "job opportunities", "employment opportunities",
+        "javascript", ".img-responsive", "header-inner", "{", "}",
+        "width:", "padding:", "region:", "open until filled",
+        "page not found", "error", "404"
+    ]
+    return not any(bp in t for bp in bad_patterns)
+
+
 def make_concise_title(rank: Optional[str], dept: Optional[str], specialization: Optional[str], original_title: Optional[str]) -> str:
     """
     Create a concise title in format: Rank - Specialization
@@ -401,30 +608,165 @@ def make_concise_title(rank: Optional[str], dept: Optional[str], specialization:
     Specialization is more specific (e.g., "Mathematics Education")
     Department is broader (e.g., "Education")
     """
+    # Clean the field names to remove rank-related junk
+    clean_spec = clean_field_name(specialization)
+    clean_dept = clean_field_name(dept)
+
     # Prefer specialization over department since it's more specific
-    field = specialization or dept
+    field = clean_spec or clean_dept
 
-    if rank and field:
-        return f"{rank} - {field}"
-    if rank:
-        return rank
+    # Fallback: try to extract from original title if LLM gave bad values
+    if not field:
+        field = extract_field_from_title(original_title)
+
+    # Apply proper title case to the field
     if field:
-        return field
-    return original_title or "(No title)"
+        field = to_title_case(field)
+
+    # Build the title
+    if rank and field:
+        result = f"{rank} - {field}"
+    elif rank:
+        result = rank
+    elif field:
+        result = field
+    else:
+        result = original_title or "(No title)"
+
+    # Final validation - if result looks like junk, fall back to original or rank
+    if not is_valid_title(result):
+        if rank and original_title and is_valid_title(original_title):
+            # Try to extract field from original title
+            extracted = extract_field_from_title(original_title)
+            if extracted:
+                return f"{rank} - {to_title_case(extracted)}"
+            return rank
+        elif rank:
+            return rank
+        elif original_title and is_valid_title(original_title):
+            return original_title
+        return "(No title)"
+
+    return result
 
 # =========================
-# Fetch helpers
+# Fetch helpers with rate limiting
 # =========================
 
-def fetch_job_page_html(url: str, timeout: float = 20.0) -> Optional[str]:
+from urllib.parse import urlparse
+import threading
+
+# Domain-based rate limiting to avoid 429 errors
+_domain_last_request: dict = {}
+_domain_lock = threading.Lock()
+
+# Domains that need aggressive rate limiting (in seconds between requests)
+# Domains that need aggressive rate limiting (in seconds between requests)
+# Note: interviewexchange.com shares rate limits across all subdomains
+RATE_LIMIT_DOMAINS = {
+    "interviewexchange.com": 10.0,  # 10 seconds - they're very strict
+    "default": 0.5,  # 0.5 seconds for other domains
+}
+
+# Domains where we should normalize subdomains to parent domain for rate limiting
+# e.g., binghamton.interviewexchange.com -> interviewexchange.com
+SHARED_RATE_LIMIT_DOMAINS = ["interviewexchange.com"]
+
+# Domains to skip fetching entirely - too aggressive with rate limiting
+# We'll extract info from the title instead
+SKIP_FETCH_DOMAINS = ["interviewexchange.com", "jobs.liu.edu", "cortland.edu"]
+
+def should_skip_fetch(url: str) -> bool:
+    """Check if we should skip fetching this URL due to rate limiting or JS-only content."""
     try:
-        with httpx.Client(timeout=timeout, follow_redirects=True) as client:
-            r = client.get(url, headers={"User-Agent": "Mozilla/5.0"})
-            r.raise_for_status()
-            return r.text
-    except Exception as e:
-        print(f"[WARN] fetch failed {url}: {e}")
-        return None
+        parsed = urlparse(url)
+        domain = parsed.netloc.lower()
+
+        # Skip domains known to have issues
+        for skip_domain in SKIP_FETCH_DOMAINS:
+            if skip_domain in domain:
+                return True
+
+        # Skip hash-based URLs (require JavaScript to load content)
+        if parsed.fragment and ('job' in parsed.fragment.lower() or 'detail' in parsed.fragment.lower()):
+            return True
+
+    except:
+        pass
+    return False
+
+def normalize_domain_for_rate_limit(domain: str) -> str:
+    """Normalize domain for rate limiting - some sites share limits across subdomains."""
+    for shared in SHARED_RATE_LIMIT_DOMAINS:
+        if shared in domain:
+            return shared
+    return domain
+
+def get_rate_limit_delay(domain: str) -> float:
+    """Get the rate limit delay for a domain."""
+    normalized = normalize_domain_for_rate_limit(domain)
+    for key, delay in RATE_LIMIT_DOMAINS.items():
+        if key in normalized:
+            return delay
+    return RATE_LIMIT_DOMAINS["default"]
+
+def wait_for_rate_limit(url: str):
+    """Wait if needed to respect rate limits for the domain."""
+    try:
+        parsed = urlparse(url)
+        domain = parsed.netloc.lower()
+    except:
+        return
+
+    # Normalize domain for shared rate limiting
+    rate_limit_key = normalize_domain_for_rate_limit(domain)
+    delay = get_rate_limit_delay(domain)
+
+    with _domain_lock:
+        now = time.time()
+        last = _domain_last_request.get(rate_limit_key, 0)
+        wait_time = delay - (now - last)
+        if wait_time > 0:
+            time.sleep(wait_time)
+        _domain_last_request[rate_limit_key] = time.time()
+
+def fetch_job_page_html(url: str, timeout: float = 20.0, max_retries: int = 3) -> Optional[str]:
+    # Apply rate limiting before fetching
+    wait_for_rate_limit(url)
+
+    for attempt in range(max_retries):
+        try:
+            with httpx.Client(timeout=timeout, follow_redirects=True) as client:
+                r = client.get(url, headers={
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                    "Accept-Language": "en-US,en;q=0.5",
+                })
+
+                # Handle rate limiting (429)
+                if r.status_code == 429:
+                    retry_after = int(r.headers.get("Retry-After", 5))
+                    wait_time = min(retry_after, 30) * (attempt + 1)
+                    print(f"[WARN] Rate limited (429) for {url}, waiting {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                    continue
+
+                r.raise_for_status()
+                return r.text
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 429 and attempt < max_retries - 1:
+                wait_time = 5 * (attempt + 1)
+                print(f"[WARN] Rate limited for {url}, waiting {wait_time}s (attempt {attempt + 1}/{max_retries})")
+                time.sleep(wait_time)
+                continue
+            print(f"[WARN] fetch failed {url}: {e}")
+            return None
+        except Exception as e:
+            print(f"[WARN] fetch failed {url}: {e}")
+            return None
+
+    print(f"[WARN] fetch failed after {max_retries} retries: {url}")
+    return None
 
 def extract_visible_text(html: str) -> str:
     soup = BeautifulSoup(html, "html.parser")
@@ -436,7 +778,7 @@ def extract_visible_text(html: str) -> str:
 # FastAPI + model
 # =========================
 
-HF_MODEL = os.environ.get("HF_MODEL", "Qwen/Qwen2.5-3B-Instruct")
+HF_MODEL = os.environ.get("HF_MODEL", "Qwen/Qwen2.5-7B-Instruct")
 PORT = int(os.environ.get("SUMMARIZER_PORT", "9000"))
 CACHE_PATH = os.path.join(".cache", "summaries.json")
 
@@ -465,23 +807,32 @@ def key_for(job: Job) -> str:
     payload = (job.url + "|" + (job.title or "") + "|" + (job.description or "")[:2000]).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
 
-# 4-bit quantization config for faster inference and lower VRAM usage
-bnb_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_compute_dtype=torch.float16,
-    bnb_4bit_use_double_quant=True,
-)
+# Detect best available device
+def get_device():
+    if torch.backends.mps.is_available():
+        return "mps"  # Apple Silicon GPU
+    elif torch.cuda.is_available():
+        return "cuda"
+    return "cpu"
+
+DEVICE = get_device()
 
 tokenizer = AutoTokenizer.from_pretrained(HF_MODEL, use_fast=True)
 tokenizer.pad_token = tokenizer.eos_token
 
-# Load model with 4-bit quantization (requires GPU with CUDA)
-if torch.cuda.is_available():
-    print(f"[INFO] Loading {HF_MODEL} with 4-bit quantization on GPU: {torch.cuda.get_device_name(0)}")
+# Load model optimized for available hardware
+if DEVICE == "mps":
+    print(f"[INFO] Loading {HF_MODEL} on Apple Silicon (MPS) with float16")
     model = AutoModelForCausalLM.from_pretrained(
         HF_MODEL,
-        quantization_config=bnb_config,
+        torch_dtype=torch.float16,
+        low_cpu_mem_usage=True,
+    ).to("mps")
+elif DEVICE == "cuda":
+    print(f"[INFO] Loading {HF_MODEL} on GPU: {torch.cuda.get_device_name(0)}")
+    model = AutoModelForCausalLM.from_pretrained(
+        HF_MODEL,
+        torch_dtype=torch.float16,
         device_map="auto",
     )
 else:
@@ -491,12 +842,177 @@ else:
 model.config.pad_token_id = tokenizer.eos_token_id
 
 # =========================
+# Text Cleaning
+# =========================
+
+def clean_page_text_for_llm(text: str) -> str:
+    """Remove application form noise, navigation, and other junk from page text."""
+    if not text:
+        return ""
+
+    # Remove common form field patterns
+    patterns_to_remove = [
+        r"Do you have a valid[^.?]*\??\s*(Yes|No)?",
+        r"Please (indicate|provide|select|enter|specify)[^.]*\.",
+        r"If (yes|no),?\s*please[^.]*\.",
+        r"\* Required",
+        r"Are you (currently|willing|authorized|a citizen)[^.?]*\??",
+        r"How did you (hear|learn) about[^.?]*\??",
+        r"Upload (your )?(resume|CV|cover letter|document)[^.]*",
+        r"Drag and drop[^.]*",
+        r"Browse files?",
+        r"Maximum file size[^.]*",
+        r"Accepted file types[^.]*",
+        r"(LinkedIn|Indeed|Facebook|Twitter|Instagram|Google)[^.]*",
+        r"Career\s*(Services|Site|Portal)[^.]*",
+        r"Employee Referral[^.]*",
+        r"Word of Mouth[^.]*",
+        r"Other Social Media[^.]*",
+        r"Sign in|Log in|Create account|Apply now|Submit application",
+        r"Cookie\s*(policy|preferences|settings)[^.]*",
+        r"Privacy\s*(policy|statement|notice)[^.]*",
+    ]
+
+    cleaned = text
+    for pattern in patterns_to_remove:
+        cleaned = re.sub(pattern, " ", cleaned, flags=re.I)
+
+    # Remove repeated words (like "Networked Academics Networked Academics...")
+    cleaned = re.sub(r'\b(\w+(?:\s+\w+)?)\s+(?:\1\s*){3,}', r'\1 ', cleaned)
+
+    # Collapse multiple spaces
+    cleaned = re.sub(r'\s{2,}', ' ', cleaned).strip()
+
+    return cleaned
+
+
+def validate_summary(summary: str) -> tuple[bool, Optional[str]]:
+    """Check if summary is valid. Returns (is_valid, reason_if_invalid)."""
+    if not summary or len(summary.strip()) < 20:
+        return False, "too_short"
+
+    s = summary.strip()
+
+    # Check for prompt leakage
+    if "Human:" in s or "Assistant:" in s:
+        return False, "prompt_leakage"
+
+    # Check for meta-commentary
+    meta_patterns = [
+        r"\(Note:",
+        r"\(Word count:",
+        r"This summary",
+        r"The summary has been",
+        r"Please let me know",
+        r"Can you provide",
+        r"I hope this helps",
+    ]
+    for pattern in meta_patterns:
+        if re.search(pattern, s, re.I):
+            return False, "meta_commentary"
+
+    # Check for excessive repetition
+    words = s.split()
+    if len(words) > 10:
+        word_counts = {}
+        for w in words:
+            w_lower = w.lower()
+            word_counts[w_lower] = word_counts.get(w_lower, 0) + 1
+        max_count = max(word_counts.values())
+        if max_count > len(words) * 0.3:  # Same word > 30% of text
+            return False, "excessive_repetition"
+
+    # Check for form field content
+    form_indicators = [
+        "Yes No",
+        "please provide",
+        "please indicate",
+        "please select",
+        "If yes,",
+        "If no,",
+        "Do you have a valid",
+        "Are you willing",
+    ]
+    form_count = sum(1 for ind in form_indicators if ind.lower() in s.lower())
+    if form_count >= 2:
+        return False, "form_content"
+
+    return True, None
+
+
+def clean_summary_output(summary: str) -> str:
+    """Post-process the summary to remove artifacts."""
+    if not summary:
+        return summary
+
+    s = summary.strip()
+
+    # Remove everything after "Human:" if present
+    if "Human:" in s:
+        s = s.split("Human:")[0].strip()
+
+    # Remove meta-commentary sentences
+    sentences = re.split(r'(?<=[.!?])\s+', s)
+    clean_sentences = []
+    for sent in sentences:
+        sent_lower = sent.lower()
+        skip = any(x in sent_lower for x in [
+            "note:", "word count", "this summary", "please let me know",
+            "can you provide", "i hope this", "let me know if"
+        ])
+        if not skip:
+            clean_sentences.append(sent)
+
+    s = " ".join(clean_sentences).strip()
+
+    # Ensure it ends with proper punctuation
+    if s and s[-1] not in ".!?":
+        # Find last complete sentence
+        last_period = max(s.rfind('.'), s.rfind('!'), s.rfind('?'))
+        if last_period > len(s) * 0.5:  # At least half the content
+            s = s[:last_period + 1]
+
+    return s.strip()
+
+
+# =========================
 # Summarization
 # =========================
 
+SYSTEM_PROMPT = """You are a helpful assistant that summarizes academic job postings.
+Output ONLY the summary, nothing else. No commentary, no questions, no meta-text.
+Keep it factual and concise: 2-3 sentences covering the position, department, and key requirements."""
+
+def build_prompt(page_text: str, title: Optional[str] = None) -> str:
+    """Build a clear, structured prompt for the LLM."""
+    title_hint = f"Position: {title}\n" if title else ""
+    return f"""<|im_start|>system
+{SYSTEM_PROMPT}<|im_end|>
+<|im_start|>user
+{title_hint}Summarize this academic job posting in 2-3 sentences:
+
+{page_text[:3000]}<|im_end|>
+<|im_start|>assistant
+"""
+
+
 def summarize_one(job: Job, max_new_tokens: int) -> dict:
-    html = fetch_job_page_html(job.url)
-    page_text = extract_visible_text(html or "")
+    # Use description from scraper if available (for JS-rendered sites like CUNY)
+    # Skip fetching for domains with aggressive rate limiting
+    # Otherwise fetch the page directly
+    if job.description and len(job.description) > 200:
+        html = None
+        raw_text = job.description
+        page_text = clean_page_text_for_llm(raw_text)
+    elif should_skip_fetch(job.url):
+        # Skip fetching - extract info from title only
+        html = None
+        raw_text = job.title or ""
+        page_text = raw_text
+    else:
+        html = fetch_job_page_html(job.url)
+        raw_text = extract_visible_text(html or "")
+        page_text = clean_page_text_for_llm(raw_text)
 
     title_from_page, dept = extract_uc_recruit_title_dept(html or "")
     original_title = title_from_page or clean_title_jobcode(job.title)
@@ -521,6 +1037,15 @@ def summarize_one(job: Job, max_new_tokens: int) -> dict:
     tenure_track = detect_tenure_track(page_text)
     deadline_info = extract_close_date(page_text)
 
+    # Clean department and specialization fields to remove rank-related junk
+    dept = clean_field_name(dept)
+    specialization = clean_field_name(specialization)
+    # Apply proper title case
+    if dept:
+        dept = to_title_case(dept)
+    if specialization:
+        specialization = to_title_case(specialization)
+
     if not rank:
         return {
             "summary": None,
@@ -537,8 +1062,9 @@ def summarize_one(job: Job, max_new_tokens: int) -> dict:
             "enrichedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
         }
 
-    prompt = f"Summarize the following academic job posting in 2–3 sentences:\n\n{page_text[:3500]}"
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    # Build structured prompt
+    prompt = build_prompt(page_text, cleaned_title)
+    inputs = tokenizer(prompt, return_tensors="pt").to(DEVICE)
 
     with torch.no_grad():
         out = model.generate(
@@ -546,10 +1072,31 @@ def summarize_one(job: Job, max_new_tokens: int) -> dict:
             max_new_tokens=max_new_tokens,
             do_sample=False,
             eos_token_id=tokenizer.eos_token_id,
+            pad_token_id=tokenizer.eos_token_id,
         )
 
     # Slice off input tokens so we only decode the newly generated summary
-    summary = tokenizer.decode(out[0][inputs["input_ids"].shape[-1]:], skip_special_tokens=True).strip()
+    raw_summary = tokenizer.decode(out[0][inputs["input_ids"].shape[-1]:], skip_special_tokens=True).strip()
+
+    # Clean and validate
+    summary = clean_summary_output(raw_summary)
+    is_valid, invalid_reason = validate_summary(summary)
+
+    if not is_valid:
+        return {
+            "summary": None,
+            "titleClean": title_clean,
+            "department": dept,
+            "specialization": specialization,
+            "rank": rank,
+            "tenureTrack": tenure_track,
+            "closeDate": deadline_info.get("closeDate"),
+            "closeDateType": deadline_info.get("closeDateType"),
+            "closeDateRaw": deadline_info.get("closeDateRaw"),
+            "openUntilFilled": deadline_info.get("openUntilFilled"),
+            "skippedReason": f"invalid_summary_{invalid_reason}",
+            "enrichedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        }
 
     return {
         "summary": summary,

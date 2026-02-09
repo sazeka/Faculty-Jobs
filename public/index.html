@@ -495,6 +495,11 @@
             Summarized only
           </label>
 
+          <label class="check">
+            <input type="checkbox" id="tenureTrackOnly" />
+            Tenure track only
+          </label>
+
           <select id="sortBy">
             <option value="relevance">Sort: Relevance</option>
             <option value="title-asc">Sort: Title A-Z</option>
@@ -532,6 +537,7 @@
       const clearFiltersBtn = document.getElementById("clearFilters");
       const activeFiltersEl = document.getElementById("activeFilters");
       const summarizedOnlyCb = document.getElementById("summarizedOnly");
+      const tenureTrackOnlyCb = document.getElementById("tenureTrackOnly");
 
       let allJobs = [];
       let meta = { scrapedAt: null, count: 0 };
@@ -546,6 +552,74 @@
       function truncate(s, n) {
         s = String(s);
         return s.length > n ? s.slice(0, n - 1) + "..." : s;
+      }
+
+      // Format title with proper capitalization
+      function formatTitle(title) {
+        if (!title) return title;
+
+        // Words that should stay lowercase (unless first word)
+        const lowerWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on', 'at', 'to', 'by', 'of', 'in', 'with', 'as', 'is', 'vs']);
+
+        // Words/acronyms that should stay uppercase
+        const upperWords = new Set(['PhD', 'Ph.D.', 'MBA', 'MD', 'JD', 'EdD', 'DNP', 'RN', 'MSW', 'STEM', 'ESL', 'ELL', 'IT', 'AI', 'HR', 'NY', 'NYC', 'US', 'USA', 'II', 'III', 'IV', 'CUNY', 'SUNY', 'CSU', 'UC']);
+
+        // Split but preserve the rank - separator structure
+        const parts = title.split(' - ');
+        if (parts.length === 2) {
+          // Keep rank as-is, format the specialization
+          const rank = parts[0];
+          const spec = parts[1];
+          const formattedSpec = spec.split(' ').map((word, i) => {
+            const cleanWord = word.replace(/[.,;:]/g, '');
+            if (upperWords.has(cleanWord) || upperWords.has(cleanWord.toUpperCase())) return word;
+            if (i === 0) return word.charAt(0).toUpperCase() + word.slice(1);
+            if (lowerWords.has(word.toLowerCase())) return word.toLowerCase();
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+          }).join(' ');
+          return rank + ' - ' + formattedSpec;
+        }
+        return title;
+      }
+
+      // Format college/university names with proper capitalization
+      function formatCollegeName(name) {
+        if (!name) return name;
+
+        // Known acronyms and proper names to preserve
+        const preserveUpper = ['CUNY', 'SUNY', 'CSU', 'UC', 'UCLA', 'USC', 'MIT', 'NYU', 'CCNY'];
+        const knownNames = {
+          'BARUCH': 'Baruch College',
+          'HUNTER': 'Hunter College',
+          'BROOKLYN': 'Brooklyn College',
+          'QUEENS': 'Queens College',
+          'CITY COLLEGE': 'City College',
+          'COLLEGE OF STATEN ISLAND': 'College of Staten Island',
+          'JOHN JAY': 'John Jay College',
+          'GRADUATE CENTER': 'Graduate Center',
+          'CUNY SCHOOL': 'CUNY School of Professional Studies',
+          'CUNY Advanced': 'CUNY Advanced Science Research Center',
+          'Bronx': 'Bronx Community College'
+        };
+
+        // Check if it's a known name first
+        const upper = name.toUpperCase();
+        if (knownNames[name] || knownNames[upper]) {
+          return knownNames[name] || knownNames[upper];
+        }
+
+        // Check if it's an acronym to preserve
+        if (preserveUpper.includes(upper)) {
+          return upper;
+        }
+
+        // Otherwise, apply title case
+        return name.split(' ').map((word, i) => {
+          const wordUpper = word.toUpperCase();
+          if (preserveUpper.includes(wordUpper)) return wordUpper;
+          if (word.length <= 2 && /^[A-Z]+$/.test(word)) return word; // Keep short acronyms
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }).join(' ');
       }
 
       // Highlight search terms in text
@@ -623,7 +697,9 @@
 
       function normalizeJob(j) {
         const rawTitle = j?.title ?? "(No title)";
-        const titleClean = (j?.titleClean && String(j.titleClean).trim().length > 0) ? String(j.titleClean).trim() : null;
+        let titleClean = (j?.titleClean && String(j.titleClean).trim().length > 0) ? String(j.titleClean).trim() : null;
+        // Apply title formatting for consistent capitalization
+        if (titleClean) titleClean = formatTitle(titleClean);
         const title = titleClean || rawTitle;
         const description = j?.description ?? null;
         const backendDept = (j?.department && String(j.department).trim().length > 0) ? String(j.department).trim() : null;
@@ -645,7 +721,7 @@
           source: j?.source ?? null,
           systemGroup: j?.systemGroup ?? null,
           category: j?.category ?? null,
-          college: j?.college ?? null,
+          college: formatCollegeName(j?.college) ?? null,
           location: j?.location ?? null,
 
           // Structured classification
@@ -692,6 +768,13 @@
           const chip = document.createElement("span");
           chip.className = "filter-chip";
           chip.innerHTML = `AI Summarized <button data-clear="summarizedOnly">&times;</button>`;
+          activeFiltersEl.appendChild(chip);
+        }
+
+        if (tenureTrackOnlyCb.checked) {
+          const chip = document.createElement("span");
+          chip.className = "filter-chip";
+          chip.innerHTML = `Tenure Track <button data-clear="tenureTrackOnly">&times;</button>`;
           activeFiltersEl.appendChild(chip);
         }
 
@@ -828,6 +911,11 @@
           filtered = filtered.filter(j => j.summary && j.summary.trim().length > 0);
         }
 
+        // Filter to only tenure track jobs
+        if (tenureTrackOnlyCb.checked) {
+          filtered = filtered.filter(j => j.tenureTrack === true);
+        }
+
         // Filter by position type
         if (posType !== "all") {
           filtered = filtered.filter(j => j.positionType === posType);
@@ -953,6 +1041,7 @@
       collegeSel.addEventListener("change", applyFilters);
       sortBySel.addEventListener("change", applyFilters);
       summarizedOnlyCb.addEventListener("change", applyFilters);
+      tenureTrackOnlyCb.addEventListener("change", applyFilters);
       refreshBtn.addEventListener("click", load);
 
       clearSearchBtn.addEventListener("click", () => {
@@ -967,6 +1056,7 @@
         positionTypeSel.value = "all";
         collegeSel.value = "all";
         summarizedOnlyCb.checked = false;
+        tenureTrackOnlyCb.checked = false;
         sortBySel.value = "relevance";
         applyFilters();
       });
@@ -977,6 +1067,7 @@
           if (clear === "search") q.value = "";
           if (clear === "stateFilter") stateFilterSel.value = "all";
           if (clear === "summarizedOnly") summarizedOnlyCb.checked = false;
+          if (clear === "tenureTrackOnly") tenureTrackOnlyCb.checked = false;
           if (clear === "positionType") positionTypeSel.value = "all";
           if (clear === "college") collegeSel.value = "all";
           applyFilters();

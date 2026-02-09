@@ -15,6 +15,55 @@ const logScrapeResult = ({ campus, source, count }) => {
 // Exports scrapeAllJobsStandalone() for GitHub Actions.
 // Starts Express only when run directly: `node server.js`
 
+// Normalize college names to consistent title case
+function normalizeCollegeName(name) {
+  if (!name) return name;
+
+  // Known mappings for CUNY and other colleges
+  const knownNames = {
+    'BARUCH': 'Baruch College',
+    'HUNTER': 'Hunter College',
+    'Hunter': 'Hunter College',
+    'BROOKLYN': 'Brooklyn College',
+    'Brooklyn': 'Brooklyn College',
+    'QUEENS': 'Queens College',
+    'Queens': 'Queens College',
+    'CITY COLLEGE': 'City College',
+    'COLLEGE OF STATEN ISLAND': 'College of Staten Island',
+    'JOHN JAY': 'John Jay College',
+    'GRADUATE CENTER': 'Graduate Center',
+    'CUNY SCHOOL': 'CUNY School of Professional Studies',
+    'CUNY Advanced': 'CUNY Advanced Science Research Center',
+    'Bronx': 'Bronx Community College',
+    'BRONX': 'Bronx Community College',
+    'BMCC': 'Borough of Manhattan Community College',
+    'HOSTOS': 'Hostos Community College',
+    'KINGSBOROUGH': 'Kingsborough Community College',
+    'LAGUARDIA': 'LaGuardia Community College',
+    'LEHMAN': 'Lehman College',
+    'MEDGAR EVERS': 'Medgar Evers College',
+    'YORK COLLEGE': 'York College',
+    'QUEENSBOROUGH': 'Queensborough Community College',
+  };
+
+  const upper = name.toUpperCase().trim();
+
+  // Check known names first
+  if (knownNames[name]) return knownNames[name];
+  if (knownNames[upper]) return knownNames[upper];
+
+  // Preserve certain acronyms
+  const preserveUpper = ['CUNY', 'SUNY', 'CSU', 'UC', 'UCLA', 'USC', 'MIT', 'NYU'];
+
+  // Apply title case
+  return name.split(' ').map((word, i) => {
+    const wordUpper = word.toUpperCase();
+    if (preserveUpper.includes(wordUpper)) return wordUpper;
+    if (word.length <= 2 && /^[A-Z]+$/.test(word)) return word; // Keep short acronyms
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  }).join(' ');
+}
+
 import express from "express";
 import fs from "fs";
 import path from "path";
@@ -555,12 +604,34 @@ const AZ_CAMPUSES = [
 ];
 
 
-// NY (State University of New York – SUNY)
-const NY_SUNY = {
-  campus: "State University of New York (SUNY)",
-  type: "suny",
+// NY (State University of New York – SUNY) - Main page + individual campus scrapers
+const NY_SUNY_MAIN = {
+  campus: "SUNY System",
   url: "https://www.suny.edu/careers/employment/index.cfm?s=y",
 };
+
+const NY_SUNY_CAMPUSES = [
+  {
+    campus: "Stony Brook University (SUNY)",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=Stony%20Brook%20University&position_type=Faculty",
+  },
+  {
+    campus: "University at Buffalo (SUNY)",
+    type: "peopleadmin",
+    url: "https://www.ubjobs.buffalo.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "University at Albany (SUNY)",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=University%20at%20Albany&position_type=Faculty",
+  },
+  {
+    campus: "Binghamton University (SUNY)",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=Binghamton%20University&position_type=Faculty",
+  },
+];
 
 // NY Private Universities
 const NY_PRIVATE_CAMPUSES = [
@@ -577,8 +648,8 @@ const NY_PRIVATE_CAMPUSES = [
   },
   {
     campus: "Cornell University",
-    type: "workday",
-    url: "https://cornell.wd1.myworkdayjobs.com/CornellCareerPage",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=Cornell%20University&position_type=Faculty",
   },
   {
     campus: "Syracuse University",
@@ -602,13 +673,13 @@ const NY_PRIVATE_CAMPUSES = [
   },
   {
     campus: "Pace University",
-    type: "generic",
-    url: "https://secure6.saashr.com/ta/6000630.careers?CareersSearch=&lang=en-US",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=Pace%20University&position_type=Faculty",
   },
   {
     campus: "Adelphi University",
-    type: "taleo",
-    url: "https://phf.tbe.taleo.net/phf02/ats/careers/v2/searchResults?org=ADELPHI&cws=43",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=Adelphi%20University&position_type=Faculty",
   },
   {
     campus: "Long Island University",
@@ -637,8 +708,8 @@ const NY_PRIVATE_CAMPUSES = [
   },
   {
     campus: "The New School",
-    type: "peopleadmin",
-    url: "https://careers.newschool.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1051%5B%5D=1&642%5B%5D=7&646=&commit=Search",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=The%20New%20School&position_type=Faculty",
   },
   {
     campus: "Pratt Institute",
@@ -647,8 +718,8 @@ const NY_PRIVATE_CAMPUSES = [
   },
   {
     campus: "New York Institute of Technology",
-    type: "icims",
-    url: "https://careers-nyit.icims.com/jobs/search?ss=1&searchPositionType=24510",
+    type: "interfolio",
+    url: "https://apply.interfolio.com/search#q=&institution_name=New%20York%20Institute%20of%20Technology&position_type=Faculty",
   },
   {
     campus: "Marist College",
@@ -1291,41 +1362,110 @@ async function safeEvaluate(page, fn, { retries = 4, settleMs = 600 } = {}) {
 
 function looksFacultyish(title) {
   const s = String(title || "").toLowerCase();
+  // Strict filter: only true faculty positions
+  // Must contain professor, lecturer, instructor, or faculty
   return (
-    s.includes("faculty") ||
     s.includes("professor") ||
     s.includes("lecturer") ||
     s.includes("instructor") ||
-    s.includes("assistant professor") ||
-    s.includes("associate professor") ||
-    s.includes("chair") ||
-    s.includes("open rank") ||
-    s.includes("tenure track") ||
-    s.includes("tenure-track") ||
-    s.includes("tenured") ||
-    s.includes("teaching") ||
-    s.includes("clinical") ||
-    s.includes("research scientist") ||
-    s.includes("postdoc") ||
-    s.includes("post-doc") ||
-    s.includes("visiting") ||
-    s.includes("scholar") ||
-    s.includes("fellow") ||
-    s.includes("dean") ||
-    s.includes("provost") ||
-    s.includes("academic")
+    /\bfaculty\b/.test(s)
   );
 }
 
 /* ============================== CUNY ============================== */
 
+// Fetch job description from CUNY detail page (requires JS rendering)
+async function fetchCunyJobDescription(context, url, maxRetries = 2) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const page = await context.newPage();
+    try {
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30_000 });
+      // Wait for JS to render content
+      await page.waitForTimeout(2000);
+
+      // Try to wait for job content to appear
+      await page.waitForSelector('[class*="description"], [class*="job-detail"], [class*="content"], article', { timeout: 5000 }).catch(() => {});
+
+      const description = await page.evaluate(() => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+
+        // Try multiple selectors for job description
+        const selectors = [
+          '[class*="job-description"]',
+          '[class*="description"]',
+          '[class*="job-detail"]',
+          '[class*="job-content"]',
+          'article',
+          '[class*="content"]',
+          'main',
+        ];
+
+        for (const sel of selectors) {
+          const el = document.querySelector(sel);
+          if (el) {
+            const text = clean(el.innerText);
+            // Skip if too short or looks like navigation
+            if (text.length > 200 && !text.startsWith("Jobs |")) {
+              return text.slice(0, 5000); // Limit size
+            }
+          }
+        }
+
+        // Fallback: get visible text from body
+        const body = document.body?.innerText || "";
+        return clean(body).slice(0, 5000);
+      });
+
+      return description;
+    } catch (e) {
+      console.log(`CUNY detail fetch attempt ${attempt} failed for ${url}: ${e?.message}`);
+      if (attempt === maxRetries) return null;
+    } finally {
+      await page.close().catch(() => {});
+    }
+  }
+  return null;
+}
+
+// Fetch descriptions for multiple CUNY jobs in parallel
+async function fetchCunyJobDescriptions(context, jobs, concurrency = 4) {
+  const results = [...jobs];
+
+  for (let i = 0; i < jobs.length; i += concurrency) {
+    const batch = jobs.slice(i, i + concurrency);
+    const batchNum = Math.floor(i / concurrency) + 1;
+    const totalBatches = Math.ceil(jobs.length / concurrency);
+    console.log(`  Fetching CUNY descriptions batch ${batchNum}/${totalBatches}...`);
+
+    const descriptions = await Promise.all(
+      batch.map((job, idx) => fetchCunyJobDescription(context, job.url).then(desc => ({ idx: i + idx, desc })))
+    );
+
+    for (const { idx, desc } of descriptions) {
+      if (desc) results[idx].description = desc;
+    }
+  }
+
+  return results;
+}
+
 async function scrapeCunyFaculty(context) {
   const page = await context.newPage();
   try {
     await page.goto(CUNY_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
-    await page.waitForTimeout(1500);
 
-    await expandToAllCunyJobs(page);
+    // Wait for job links to appear (JS-rendered page)
+    console.log("Waiting for CUNY jobs to load...");
+    await page.waitForSelector('a[href*="/job/"]', { timeout: 15_000 }).catch(() => {});
+    await page.waitForTimeout(2000);
+
+    // Check if we have any jobs before trying to expand
+    const initialCount = await countCunyJobLinks(page);
+    console.log(`CUNY initial job count: ${initialCount}`);
+
+    if (initialCount > 0) {
+      await expandToAllCunyJobs(page);
+    }
 
     // Extract jobs directly from the listing page instead of fetching each one
     const jobs = await page.evaluate(() => {
@@ -1383,15 +1523,26 @@ async function scrapeCunyFaculty(context) {
         url: j.url,
         source: "NY",
         category: "Faculty",
-        college: j.college || "City University of New York (CUNY)",
+        college: normalizeCollegeName(j.college) || "City University of New York (CUNY)",
         location: null,
         description: null,
       }));
 
     console.log(`CUNY jobs after filtering: ${filtered.length}`);
-    return filtered;
-  } finally {
+
+    // Close listing page before fetching details
     await page.close().catch(() => {});
+
+    // Fetch descriptions from detail pages (CUNY requires JS rendering)
+    console.log(`Fetching CUNY job descriptions (JS-rendered pages)...`);
+    const withDescriptions = await fetchCunyJobDescriptions(context, filtered, 4);
+
+    const withDesc = withDescriptions.filter(j => j.description && j.description.length > 100).length;
+    console.log(`CUNY jobs with descriptions: ${withDesc}/${filtered.length}`);
+
+    return withDescriptions;
+  } finally {
+    // Page already closed above
   }
 }
 
@@ -3188,7 +3339,7 @@ async function scrapeEiuJobs(context, startUrl, campusName) {
 
         const ok =
           /job|posting|position|faculty|academic|career|requisition/i.test(url) ||
-          /professor|faculty|lecturer|instructor|assistant|associate|chair|director|tenure/i.test(title);
+          /professor|lecturer|instructor|\bfaculty\b/i.test(title);
         if (!ok) continue;
 
         if (seen.has(url)) continue;
@@ -3314,7 +3465,7 @@ async function scrapeInterviewExchangeAs(context, startUrl, campusName, sourceNa
         if (!title || title.length < 6) continue;
 
         const okUrl = /position|posting|requisition|job|opportunity|posting\.jsp/i.test(url);
-        const okTitle = /professor|faculty|lecturer|instructor|assistant|associate|chair|director|tenure/i.test(title);
+        const okTitle = /professor|lecturer|instructor|\bfaculty\b/i.test(title);
 
         if (!okUrl && !okTitle) continue;
 
@@ -3466,7 +3617,7 @@ async function scrapeClaremontStatic(context, startUrl, campusName) {
         const t = x.title.toLowerCase();
         const ok =
           u.endsWith(".pdf") ||
-          /job|faculty|professor|lecturer|instructor|assistant|associate|chair|director|tenure/i.test(t) ||
+          /professor|lecturer|instructor/i.test(t) || /\bfaculty\b/i.test(t) ||
           /job|faculty|opening|position|postings/i.test(u);
 
         if (!ok) continue;
@@ -3479,7 +3630,7 @@ async function scrapeClaremontStatic(context, startUrl, campusName) {
         const titleish = Array.from(document.querySelectorAll("h2, h3, h4, li, p"))
           .map((n) => clean(n.textContent))
           .filter((t) => t.length >= 8 && t.length <= 180)
-          .filter((t) => /faculty|professor|lecturer|instructor|assistant|associate|chair|director|tenure/i.test(t));
+          .filter((t) => /professor|lecturer|instructor/i.test(t) || /\bfaculty\b/i.test(t));
 
         const uniq = [];
         const s2 = new Set();
@@ -3938,11 +4089,13 @@ async function scrapeAsuInterfolio(context, campusName, apiUrl) {
 }
 
 
-async function scrapeNySuny(context) {
+async function scrapeNySunyMain(context) {
+  // Scrape main SUNY careers page (Cloudflare protected, needs browser)
   const page = await context.newPage();
   try {
-    await page.goto(NY_SUNY.url, { waitUntil: "domcontentloaded", timeout: 60_000 });
-    await page.waitForTimeout(900);
+    await page.goto(NY_SUNY_MAIN.url, { waitUntil: "networkidle", timeout: 60_000 });
+    // Wait for Cloudflare challenge to complete
+    await page.waitForTimeout(5000);
 
     const jobs = await safeEvaluate(page, () => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
@@ -3953,39 +4106,72 @@ async function scrapeNySuny(context) {
       const out = [];
       const seen = new Set();
 
+      // Look for job links on the SUNY careers page
       for (const a of Array.from(document.querySelectorAll("a[href]"))) {
         const url = abs(a.getAttribute("href"));
         if (!url) continue;
-        if (!/employment|jobs|postings|careers/i.test(url)) continue;
 
         const title = clean(a.textContent);
         if (!title || title.length < 6) continue;
 
-        // Only include faculty-related postings
-        if (!/professor|faculty|lecturer|instructor|dean|chair|director|teaching|research/i.test(title)) continue;
+        // Only include true faculty positions - be strict for SUNY main page
+        // Must have professor, lecturer, instructor, or faculty in title
+        if (!/professor|lecturer|instructor|\bfaculty\b/i.test(title)) continue;
+
+        // Skip navigation and placeholder links
+        if (/search|home|back|return|login|logout|help|privacy|contact/i.test(title)) continue;
+        if (/positions?\s+available\s+(on\s+)?campus|available\s+on\s+campus\s+web/i.test(title)) continue;
 
         if (seen.has(url)) continue;
         seen.add(url);
 
-        out.push({
-          title,
-          url,
-          source: "NY",
-          category: "Faculty",
-          college: "State University of New York (SUNY)",
-          location: null,
-          description: null,
-        });
+        out.push({ title, url });
       }
       return out;
     });
 
-    const filtered = jobs.filter((j) => !omitAdjunct(j.title));
-    console.log(`SUNY listings scraped: ${filtered.length} (filtered from ${jobs.length})`);
+    const filtered = jobs
+      .filter((j) => !omitAdjunct(j.title))
+      .map((j) => ({
+        title: j.title,
+        url: j.url,
+        source: "NY",
+        category: "Faculty",
+        college: "SUNY System",
+        location: null,
+        description: null,
+      }));
+
+    console.log(`SUNY System main page listings scraped: ${filtered.length}`);
     return filtered;
+  } catch (e) {
+    console.error(`❌ SUNY main page scrape failed:`, e?.message || e);
+    return [];
   } finally {
     await page.close().catch(() => {});
   }
+}
+
+async function scrapeNySuny(context) {
+  // Scrape main SUNY page + individual campuses in parallel
+  const [mainJobs, ...campusResults] = await Promise.all([
+    scrapeNySunyMain(context),
+    ...NY_SUNY_CAMPUSES.map(async ({ campus, type, url }) => {
+      try {
+        if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "NY");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NY");
+        if (type === "interfolio") return await scrapeInterfolioAs(context, url, campus, "NY");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} SUNY scrape failed:`, e?.message || e);
+        return [];
+      }
+    }),
+  ]);
+
+  const allJobs = [...mainJobs, ...campusResults.flat()];
+  console.log(`SUNY total listings scraped: ${allJobs.length}`);
+  return allJobs;
 }
 
 // Scrape private NY universities
@@ -4054,12 +4240,11 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
         // Skip navigation elements
         if (/^(menu|search|login|home|back|next|previous|submit|apply|click|more|view)$/i.test(title)) continue;
 
-        // Look for job-related keywords in title or URL
-        const isJobRelated =
-          /professor|faculty|lecturer|instructor|dean|chair|director|teaching|research/i.test(title) ||
-          /job|position|career|posting|opening|vacancy/i.test(url);
+        // Look for faculty-related keywords in title - be strict
+        const isFacultyRelated =
+          /professor|lecturer|instructor|\bfaculty\b/i.test(title);
 
-        if (!isJobRelated) continue;
+        if (!isFacultyRelated) continue;
 
         if (seen.has(url)) continue;
         seen.add(url);
@@ -4298,7 +4483,6 @@ async function scrapeNyAll(context) {
     scrapeCunyFaculty(context),
     scrapeNyPrivate(context),
   ]);
-
   return uniqByUrl([...sunyJobs, ...cunyJobs, ...privateJobs]);
 }
 
