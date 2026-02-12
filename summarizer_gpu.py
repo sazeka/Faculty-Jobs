@@ -1207,4 +1207,4 @@ def summarize(req: SummarizeRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("summarizer_gpu:app", host="127.0.0.1", port=PORT, workers=1)
+    uvicorn.run("summarizer_gpu:app", host="0.0.0.0", port=PORT, workers=1)

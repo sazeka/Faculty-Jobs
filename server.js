@@ -71,7 +71,8 @@ import { fileURLToPath, pathToFileURL } from "url";
 import { chromium } from "playwright";
 import { createHash } from "crypto";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
-const LOCAL_LLM_URL = process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize";
+const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
+  .split(",").map(s => s.trim()).filter(Boolean);
 const LOCAL_LLM_BATCH_SIZE = Math.max(1, Number(process.env.LOCAL_LLM_BATCH_SIZE || 20));
 const LOCAL_LLM_MAX_JOBS = Math.max(0, Number(process.env.LOCAL_LLM_MAX_JOBS || 0));
 const LOCAL_LLM_RETRIES = Math.max(1, Number(process.env.LOCAL_LLM_RETRIES || 3));
@@ -111,7 +112,7 @@ function loadCachedSummariesFromJobsJson(jobs) {
   return cache;
 }
 
-async function postWithRetry(url, body, attempts = LOCAL_LLM_RETRIES) {
+async function postWithRetry(url, body, attempts = LOCAL_LLM_RETRIES, softFail = false) {
   const { request } = await import(url.startsWith("https:") ? "node:https" : "node:http");
 
   const payload = JSON.stringify(body);
@@ -166,11 +167,60 @@ async function postWithRetry(url, body, attempts = LOCAL_LLM_RETRIES) {
         e?.cause?.code || e?.code || ""
       );
       if (attempt < attempts) await new Promise((r) => setTimeout(r, 1000 * attempt));
+      else if (softFail) return null;
       else throw e;
     }
   }
 }
 
+
+async function checkEndpointHealth(url) {
+  try {
+    await postWithRetry(url, { jobs: [], max_new_tokens: 1 }, 1);
+    return true;
+  } catch { return false; }
+}
+
+function buildBatchPayload(batch) {
+  return {
+    jobs: batch.map(j => {
+      let loc = j.location || null;
+      if (loc && typeof loc === 'object') loc = [loc.city, loc.state, loc.zip, loc.country].filter(Boolean).join(', ');
+      return {
+        url: j.url,
+        title: j.title || null,
+        description: j.description || null,
+        college: j.college || null,
+        location: loc,
+        source: j.source || null,
+      };
+    }),
+    max_new_tokens: LOCAL_LLM_MAX_NEW_TOKENS,
+  };
+}
+
+function mergeBatchResults(batch, enriched) {
+  for (let i = 0; i < batch.length; i++) {
+    const origJob = batch[i];
+    const e = enriched[i] || null;
+    if (e && typeof e === "object") {
+      Object.assign(origJob, e);
+      // Safety net: discard bad titleClean values
+      if (origJob.titleClean) {
+        const tc = origJob.titleClean;
+        const isBad =
+          /&#x[\da-f]+;|&amp;|&lt;|&gt;/i.test(tc) ||           // HTML entities
+          /Search\s*#/i.test(tc) ||                                // nav text contamination
+          (origJob.college && tc.trim() === origJob.college.trim()); // just the college name
+        if (isBad) {
+          origJob.titleClean = origJob.title || tc;
+        }
+      }
+      // Ensure a timestamp marker
+      if (!origJob.enrichedAt) origJob.enrichedAt = new Date().toISOString();
+    }
+  }
+}
 
 async function callLocalSummarizer(jobs) {
   if (!Array.isArray(jobs) || jobs.length === 0) return jobs;
@@ -192,59 +242,66 @@ async function callLocalSummarizer(jobs) {
   }
 
   console.log(`📦 Using ${cache.size} cached summaries, ${need.length} jobs need AI processing`);
+  if (need.length === 0) return all;
 
-  // Process in batches
+  // --- Health check all endpoints ---
+  console.log(`📡 Checking ${LOCAL_LLM_URLS.length} summarizer endpoint(s)...`);
+  const healthResults = await Promise.all(LOCAL_LLM_URLS.map(u => checkEndpointHealth(u)));
+  const activeUrls = LOCAL_LLM_URLS.filter((_, i) => healthResults[i]);
+  const unreachable = LOCAL_LLM_URLS.length - activeUrls.length;
+  console.log(`📡 Summarizer endpoints: ${activeUrls.length} active, ${unreachable} unreachable`);
+  if (unreachable > 0) {
+    LOCAL_LLM_URLS.forEach((u, i) => {
+      if (!healthResults[i]) console.warn(`   ⚠️  Unreachable: ${u}`);
+    });
+  }
+  if (activeUrls.length === 0) {
+    console.error("❌ No summarizer endpoints reachable — skipping AI enrichment");
+    return all;
+  }
+
+  // --- Split work into batches ---
+  const batches = [];
+  for (let b = 0; b < need.length; b += LOCAL_LLM_BATCH_SIZE) {
+    batches.push(need.slice(b, b + LOCAL_LLM_BATCH_SIZE));
+  }
+  const totalBatches = batches.length;
+  const numEndpoints = activeUrls.length;
+
   let done = 0;
   const total = need.length;
 
-  for (let b = 0; b < need.length; b += LOCAL_LLM_BATCH_SIZE) {
-    const batch = need.slice(b, b + LOCAL_LLM_BATCH_SIZE);
+  // --- Process batches in rounds, one batch per endpoint per round ---
+  for (let roundStart = 0; roundStart < totalBatches; roundStart += numEndpoints) {
+    const roundBatches = batches.slice(roundStart, roundStart + numEndpoints);
 
-    // progress log
-    const batchNo = Math.floor(b / LOCAL_LLM_BATCH_SIZE) + 1;
-    const batchCount = Math.ceil(need.length / LOCAL_LLM_BATCH_SIZE) || 0;
-    console.log(`🧠 Batch ${batchNo}/${batchCount} (${done}/${total})`);
+    // Log and fire off concurrent requests
+    const promises = roundBatches.map((batch, idx) => {
+      const endpointUrl = activeUrls[idx];
+      const batchNo = roundStart + idx + 1;
+      const epLabel = numEndpoints > 1 ? ` → endpoint ${idx + 1}` : "";
+      console.log(`🧠 Batch ${batchNo}/${totalBatches} (${done}/${total})${epLabel}`);
 
-    const payload = {
-      jobs: batch.map(j => {
-        let loc = j.location || null;
-        if (loc && typeof loc === 'object') loc = [loc.city, loc.state, loc.zip, loc.country].filter(Boolean).join(', ');
-        return {
-          url: j.url,
-          title: j.title || null,
-          description: j.description || null,
-          college: j.college || null,
-          location: loc,
-          source: j.source || null,
-        };
-      }),
-      max_new_tokens: LOCAL_LLM_MAX_NEW_TOKENS,
-    };
+      const payload = buildBatchPayload(batch);
+      return postWithRetry(endpointUrl, payload, LOCAL_LLM_RETRIES, true);
+    });
 
-    const resp = await postWithRetry(LOCAL_LLM_URL, payload);
-    const enriched = Array.isArray(resp?.jobs) ? resp.jobs : [];
+    const results = await Promise.allSettled(promises);
 
-    // Merge back into the original jobs array by URL+title match
-    for (let i = 0; i < batch.length; i++) {
-      const origJob = batch[i];
-      const e = enriched[i] || null;
-      if (e && typeof e === "object") {
-        Object.assign(origJob, e);
-        // Safety net: discard bad titleClean values
-        if (origJob.titleClean) {
-          const tc = origJob.titleClean;
-          const isBad =
-            /&#x[\da-f]+;|&amp;|&lt;|&gt;/i.test(tc) ||           // HTML entities
-            /Search\s*#/i.test(tc) ||                                // nav text contamination
-            (origJob.college && tc.trim() === origJob.college.trim()); // just the college name
-          if (isBad) {
-            origJob.titleClean = origJob.title || tc;
-          }
-        }
-        // Ensure a timestamp marker
-        if (!origJob.enrichedAt) origJob.enrichedAt = new Date().toISOString();
+    // Merge results back
+    for (let idx = 0; idx < roundBatches.length; idx++) {
+      const batch = roundBatches[idx];
+      const result = results[idx];
+      const resp = result.status === "fulfilled" ? result.value : null;
+
+      if (resp === null) {
+        const batchNo = roundStart + idx + 1;
+        console.warn(`⚠️  Batch ${batchNo} failed on endpoint ${idx + 1} — jobs left unenriched`);
+      } else {
+        const enriched = Array.isArray(resp?.jobs) ? resp.jobs : [];
+        mergeBatchResults(batch, enriched);
       }
-      done += 1;
+      done += batch.length;
     }
   }
 
