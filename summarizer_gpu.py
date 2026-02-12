@@ -1,7 +1,7 @@
 
 # Local GPU LLM summarization using Transformers (no OpenAI)
 # Optimized for Apple Silicon (MPS) with fallback to CPU
-import os, json, time, hashlib, re
+import os, json, time, hashlib, re, html
 from typing import List, Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -62,8 +62,8 @@ def strip_extraneous_title_info(title: Optional[str]) -> Optional[str]:
     if not title:
         return title
     t = title.strip()
-    # Decode HTML entities
-    t = t.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&#39;", "'").replace("&quot;", '"')
+    # Decode HTML entities (handles &#x20;, &#x27;, &amp;, etc.)
+    t = html.unescape(t)
     # Remove "(Anticipated)" and similar parenthetical notes
     t = re.sub(r"\s*\(Anticipated\)", "", t, flags=re.I)
     t = re.sub(r"\s*\(Temporary\)", "", t, flags=re.I)
@@ -78,6 +78,18 @@ def strip_extraneous_title_info(title: Optional[str]) -> Optional[str]:
     t = re.sub(r",?\s*(Summer|Fall|Spring|Winter)\s+\d{4}", "", t, flags=re.I)
     # Remove "Pool" suffix (common in lecturer positions)
     t = re.sub(r"\s+Pool\s*$", "", t, flags=re.I)
+    # Remove "EOC " prefix (Educational Opportunity Center - organizational prefix, not a dept)
+    t = re.sub(r"^EOC\s+", "", t, flags=re.I)
+    # Remove "NTTA" (Non-Tenure-Track Appointment) suffix/prefix
+    t = re.sub(r"[-\s]+NTTA\b", "", t, flags=re.I)
+    t = re.sub(r"\bNTTA[-\s]+", "", t, flags=re.I)
+    # Remove SUNY "Region: X Open until filled" suffix
+    t = re.sub(r"\s+Region:\s+.*$", "", t, flags=re.I)
+    # Remove " - Career Page", " - Job Page", " | Careers" etc. suffixes from page titles
+    t = re.sub(r"\s*[-|]\s*Career\s*Page\s*$", "", t, flags=re.I)
+    t = re.sub(r"\s*[-|]\s*Job\s*Page\s*$", "", t, flags=re.I)
+    # Remove trailing college name after " - " (common in page titles like "Title - University Name")
+    t = re.sub(r"\s+-\s+(?:Connecticut State|CT State|University of|College of).*$", "", t, flags=re.I)
     # Remove trailing colons, dashes, commas
     t = re.sub(r"[\s:,\-–—]+$", "", t)
     t = re.sub(r"\s{2,}", " ", t).strip()
@@ -109,6 +121,13 @@ def extract_department_from_compound_title(title: Optional[str]) -> Optional[str
 def infer_department_from_title(title: Optional[str]) -> Optional[str]:
     if not title:
         return None
+
+    # Pattern: "Rank/PC of X" or "Rank/CC of X" (CT State Program Coordinator/Clinical Coordinator)
+    # Handles /PC, /CC, /PC/CC, /Program Coordinator, /Clinical Coordinator
+    # Must come before "Department Rank" pattern which would incorrectly match "Assistant" as dept
+    m = re.search(r"(?:professor|lecturer|instructor)(?:\s*/\s*(?:PC|CC|Program Coordinator|Clinical Coordinator))+\s+(?:of\s+|in\s+)?([A-Za-z&/ ,]{2,60}?)(?:\s+-\s|$)", title, flags=re.I)
+    if m:
+        return m.group(1).strip()
 
     # Pattern: "Department Rank" e.g. "Sociology Lecturer Pool"
     m = re.match(
@@ -228,7 +247,11 @@ def extract_department_from_text(text: str) -> Optional[str]:
     for label in ["Discipline", "Department", "Program", "School"]:
         m = re.search(rf"{label}\s*:\s*([A-Za-z&/ ,\-]{{2,80}})", text, flags=re.I)
         if m:
-            return m.group(1).strip()
+            val = m.group(1).strip()
+            # Reject nav-text contamination (page numbers, Search #, etc.)
+            if re.search(r"Search\s*#|^\d+$|^page\s+\d", val, re.I):
+                continue
+            return val
     return None
 
 
@@ -424,17 +447,28 @@ def clean_field_name(field: Optional[str]) -> Optional[str]:
     reject_patterns = [
         r"^Assistant\s+or\s+Associate$",
         r"^Assistant,?\s+Associate,?\s+(or\s+)?Full$",
+        r"^Assistant/Associate(/Full)?$",
+        r"^(Assistant|Associate|Full)\s+Professor/(Assistant|Associate|Full).*$",
         r"^Associate\s+(or\s+)?Full$",
+        r"^Assistant/Associate/?\s*/?\s*Full$",
+        r"^Assistant/Associate\s+Tenure\s+Track$",
         r"^Assistant$",
         r"^Associate$",
         r"^Professor$",
         r"^Lecturer$",
         r"^Instructor$",
         r"^Full$",
+        r"^Clinical$",
         r"^Clinical\s+Assistant$",
+        r"^Eoc$",
+        r"^Ntta$",
+        r".*Ntta$",
         r"^Medical\s+Director.*$",
         r"^Program\s+Director.*$",
         r"^Tenure\s+Track.*$",
+        r"^Open\s+Rank.*$",
+        r".*Search\s*#.*",
+        r"^Search$",
     ]
 
     for pattern in reject_patterns:
@@ -459,6 +493,9 @@ def clean_field_name(field: Optional[str]) -> Optional[str]:
 
     # Remove "Tenure Track" suffix
     f = re.sub(r'\s+Tenure\s+Track\s+(Assistant|Associate|Full)?\s*$', '', f, flags=re.I)
+
+    # Remove "Region" suffix (SUNY titles include "Region: X")
+    f = re.sub(r'\s+Region\b.*$', '', f, flags=re.I)
 
     # Strip trailing punctuation
     f = f.strip().rstrip('.,;:')
@@ -495,7 +532,7 @@ def clean_field_name(field: Optional[str]) -> Optional[str]:
                             "print and mail", "clinic suite", "vpsl",
                             "environmental services", "linen", "ntp-",
                             "rf - step", "region:", "open until filled",
-                            "wf2", "(wf"]
+                            "wf2", "(wf", "search #"]
     boilerplate_startswith = ["of ", "in ", "the ", "and ", "or ", ".", "it ", "at "]
     f_lower = f.lower()
     if f_lower in boilerplate_exact:
@@ -538,6 +575,17 @@ def extract_field_from_title(original_title: Optional[str]) -> Optional[str]:
 
     # Try "of X" or "in X" pattern
     match = re.search(r'\b(?:of|in)\s+(.+?)(?:\s*[-,]|New\s*York|Brooklyn|$)', title, re.I)
+    if match:
+        field = clean_field_name(match.group(1).strip())
+        if field:
+            return field
+
+    # Try comma-separated: "Rank, Field" (e.g., "Assistant Professor, Cellular Neuroscience")
+    match = re.match(
+        r'^(?:(?:Assistant|Associate|Full|Clinical|Visiting|Adjunct|Research|Senior)\s+)?'
+        r'(?:Professor|Lecturer|Instructor|Fellow),\s*(.+?)$',
+        title, re.I
+    )
     if match:
         field = clean_field_name(match.group(1).strip())
         if field:
@@ -600,6 +648,13 @@ def is_valid_title(title: Optional[str]) -> bool:
     return not any(bp in t for bp in bad_patterns)
 
 
+def _decode_html_entities(text: str) -> str:
+    """Decode HTML entities in text (handles all numeric/named entities)."""
+    if not text:
+        return text
+    return html.unescape(text)
+
+
 def make_concise_title(rank: Optional[str], dept: Optional[str], specialization: Optional[str], original_title: Optional[str]) -> str:
     """
     Create a concise title in format: Rank - Specialization
@@ -623,6 +678,10 @@ def make_concise_title(rank: Optional[str], dept: Optional[str], specialization:
     if field:
         field = to_title_case(field)
 
+    # If rank is missing, try to infer it from the original title
+    if not rank and original_title:
+        rank = guess_rank(original_title)
+
     # Build the title
     if rank and field:
         result = f"{rank} - {field}"
@@ -630,8 +689,10 @@ def make_concise_title(rank: Optional[str], dept: Optional[str], specialization:
         result = rank
     elif field:
         result = field
+    elif original_title and is_valid_title(original_title):
+        result = original_title
     else:
-        result = original_title or "(No title)"
+        return "(No title)"
 
     # Final validation - if result looks like junk, fall back to original or rank
     if not is_valid_title(result):
@@ -639,15 +700,15 @@ def make_concise_title(rank: Optional[str], dept: Optional[str], specialization:
             # Try to extract field from original title
             extracted = extract_field_from_title(original_title)
             if extracted:
-                return f"{rank} - {to_title_case(extracted)}"
+                return _decode_html_entities(f"{rank} - {to_title_case(extracted)}")
             return rank
         elif rank:
             return rank
         elif original_title and is_valid_title(original_title):
-            return original_title
+            return _decode_html_entities(original_title)
         return "(No title)"
 
-    return result
+    return _decode_html_entities(result)
 
 # =========================
 # Fetch helpers with rate limiting
@@ -825,14 +886,14 @@ if DEVICE == "mps":
     print(f"[INFO] Loading {HF_MODEL} on Apple Silicon (MPS) with float16")
     model = AutoModelForCausalLM.from_pretrained(
         HF_MODEL,
-        torch_dtype=torch.float16,
+        dtype=torch.float16,
         low_cpu_mem_usage=True,
     ).to("mps")
 elif DEVICE == "cuda":
     print(f"[INFO] Loading {HF_MODEL} on GPU: {torch.cuda.get_device_name(0)}")
     model = AutoModelForCausalLM.from_pretrained(
         HF_MODEL,
-        torch_dtype=torch.float16,
+        dtype=torch.float16,
         device_map="auto",
     )
 else:
@@ -1015,6 +1076,9 @@ def summarize_one(job: Job, max_new_tokens: int) -> dict:
         page_text = clean_page_text_for_llm(raw_text)
 
     title_from_page, dept = extract_uc_recruit_title_dept(html or "")
+    # Validate page-extracted title: prefer scraper title if page title looks bad
+    if title_from_page and not is_valid_title(title_from_page):
+        title_from_page = None
     original_title = title_from_page or clean_title_jobcode(job.title)
     # Strip extraneous info (academic years, semesters, etc.)
     cleaned_title = strip_extraneous_title_info(original_title)
@@ -1033,6 +1097,20 @@ def summarize_one(job: Job, max_new_tokens: int) -> dict:
 
     # Create concise title: "Rank - Specialization" (or "Rank - Department" if no specialization)
     title_clean = make_concise_title(rank, dept, specialization, cleaned_title)
+
+    # Safety net: if titleClean is still bad, recompute from scraper title
+    if title_clean == "(No title)" and job.title:
+        scraper_title = strip_extraneous_title_info(clean_title_jobcode(job.title))
+        fallback_rank = guess_rank(scraper_title or "")
+        fallback_dept = infer_department_from_title(scraper_title) or extract_department_from_compound_title(scraper_title)
+        fallback_spec = extract_specialization(scraper_title, None)
+        title_clean = make_concise_title(fallback_rank, fallback_dept, fallback_spec, scraper_title)
+        if not rank and fallback_rank:
+            rank = fallback_rank
+        if not dept and fallback_dept:
+            dept = clean_field_name(fallback_dept)
+        if not specialization and fallback_spec:
+            specialization = clean_field_name(fallback_spec)
 
     tenure_track = detect_tenure_track(page_text)
     deadline_info = extract_close_date(page_text)

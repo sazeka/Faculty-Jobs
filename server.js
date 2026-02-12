@@ -230,6 +230,17 @@ async function callLocalSummarizer(jobs) {
       const e = enriched[i] || null;
       if (e && typeof e === "object") {
         Object.assign(origJob, e);
+        // Safety net: discard bad titleClean values
+        if (origJob.titleClean) {
+          const tc = origJob.titleClean;
+          const isBad =
+            /&#x[\da-f]+;|&amp;|&lt;|&gt;/i.test(tc) ||           // HTML entities
+            /Search\s*#/i.test(tc) ||                                // nav text contamination
+            (origJob.college && tc.trim() === origJob.college.trim()); // just the college name
+          if (isBad) {
+            origJob.titleClean = origJob.title || tc;
+          }
+        }
         // Ensure a timestamp marker
         if (!origJob.enrichedAt) origJob.enrichedAt = new Date().toISOString();
       }
@@ -293,8 +304,8 @@ const CT_URL = "https://www.ct.edu/hr/jobs";
 const CT_PRIVATE_CAMPUSES = [
   {
     campus: "Yale University",
-    type: "generic",
-    url: "https://academicpositions.yale.edu/",
+    type: "yale",
+    url: "https://academicpositions.yale.edu/job-posting",
   },
   {
     campus: "University of Connecticut",
@@ -1821,6 +1832,105 @@ async function waitForCtResultsUpdate(page, beforeSig) {
   throw new Error("CT results did not update in time");
 }
 
+// Scrape Yale Academic Positions (Drupal paginated table)
+async function scrapeYaleAcademicPositions(context, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    const jobs = [];
+    const seen = new Set();
+    const baseUrl = "https://academicpositions.yale.edu/job-posting";
+    let consecutiveEmpty = 0;
+
+    for (let pageNo = 0; pageNo <= 25; pageNo++) {
+      const url = pageNo === 0 ? baseUrl : `${baseUrl}?page=${pageNo}`;
+
+      // Retry page navigation up to 2 times (handles transient failures under load)
+      let batch = [];
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90_000 });
+          await page.waitForTimeout(1200);
+
+          batch = await safeEvaluate(page, () => {
+            const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+            const abs = (href) => {
+              try { return new URL(href, location.href).toString(); } catch { return null; }
+            };
+
+            const out = [];
+            // Yale uses table rows with links to job postings
+            const rows = document.querySelectorAll("table tbody tr, .view-content .views-row, .views-table tbody tr");
+            for (const row of rows) {
+              const a = row.querySelector("a[href]");
+              if (!a) continue;
+              const href = abs(a.getAttribute("href"));
+              const title = clean(a.textContent);
+              if (!href || !title || title.length < 6) continue;
+              out.push({ title, url: href });
+            }
+
+            // Fallback: if no table rows, try all links that look like job postings
+            if (out.length === 0) {
+              const links = document.querySelectorAll('a[href*="/job-posting/"], a[href*="/node/"]');
+              for (const a of links) {
+                const href = abs(a.getAttribute("href"));
+                const title = clean(a.textContent);
+                if (!href || !title || title.length < 6) continue;
+                // Skip pagination/nav links
+                if (/^(next|previous|first|last|\d+|›|‹|»|«)$/i.test(title)) continue;
+                out.push({ title, url: href });
+              }
+            }
+
+            // de-dupe within page
+            const s = new Set();
+            return out.filter((x) => (x.url && !s.has(x.url) ? (s.add(x.url), true) : false));
+          });
+
+          if (batch.length > 0 || attempt >= 2) break;
+          // Empty result on first attempts — wait longer and retry (page may not have loaded fully)
+          await page.waitForTimeout(2000);
+        } catch (navErr) {
+          if (attempt >= 2) throw navErr;
+          await page.waitForTimeout(3000);
+        }
+      }
+
+      let addedThisPage = 0;
+      for (const j of batch) {
+        if (!j?.url || seen.has(j.url)) continue;
+        seen.add(j.url);
+        jobs.push({
+          title: j.title,
+          url: j.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: "New Haven, CT",
+          description: null,
+        });
+        addedThisPage++;
+      }
+
+      // Require 2 consecutive empty pages to stop (handles transient empty results under load)
+      if (addedThisPage === 0) {
+        consecutiveEmpty++;
+        if (consecutiveEmpty >= 2) break;
+      } else {
+        consecutiveEmpty = 0;
+      }
+    }
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return uniqByUrl(jobs);
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 // Scrape private CT universities + UConn
 async function scrapeCtPrivate(context) {
   const results = await mapWithConcurrency(
@@ -1833,6 +1943,7 @@ async function scrapeCtPrivate(context) {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "CT");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CT");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "CT");
+        if (type === "yale") return await scrapeYaleAcademicPositions(context, campus, "CT");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} CT scrape failed:`, e?.message || e);
