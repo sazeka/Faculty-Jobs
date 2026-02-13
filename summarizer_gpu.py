@@ -894,8 +894,8 @@ elif DEVICE == "cuda":
     model = AutoModelForCausalLM.from_pretrained(
         HF_MODEL,
         dtype=torch.float16,
-        device_map="auto",
-    )
+        low_cpu_mem_usage=True,
+    ).to("cuda")
 else:
     print(f"[WARN] No GPU detected, loading {HF_MODEL} on CPU (will be slower)")
     model = AutoModelForCausalLM.from_pretrained(HF_MODEL)
