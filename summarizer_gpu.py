@@ -843,14 +843,19 @@ HF_MODEL = os.environ.get("HF_MODEL", "Qwen/Qwen2.5-7B-Instruct")
 PORT = int(os.environ.get("SUMMARIZER_PORT", "9000"))
 CACHE_PATH = os.path.join(".cache", "summaries.json")
 
-os.makedirs(".cache", exist_ok=True)
-try:
-    with open(CACHE_PATH, "r", encoding="utf-8") as f:
-        CACHE = json.load(f)
-except Exception:
-    CACHE = {}
+# When imported by ray_summarizer, skip heavy init (model loading, cache, FastAPI).
+# Ray Serve handles all of that in its own deployment class.
+_STANDALONE = not os.environ.get("SUMMARIZER_RAY_MODE")
 
-app = FastAPI()
+if _STANDALONE:
+    os.makedirs(".cache", exist_ok=True)
+    try:
+        with open(CACHE_PATH, "r", encoding="utf-8") as f:
+            CACHE = json.load(f)
+    except Exception:
+        CACHE = {}
+
+app = FastAPI() if _STANDALONE else None
 
 class Job(BaseModel):
     url: str
@@ -876,31 +881,32 @@ def get_device():
         return "cuda"
     return "cpu"
 
-DEVICE = get_device()
+if _STANDALONE:
+    DEVICE = get_device()
 
-tokenizer = AutoTokenizer.from_pretrained(HF_MODEL, use_fast=True)
-tokenizer.pad_token = tokenizer.eos_token
+    tokenizer = AutoTokenizer.from_pretrained(HF_MODEL, use_fast=True)
+    tokenizer.pad_token = tokenizer.eos_token
 
-# Load model optimized for available hardware
-if DEVICE == "mps":
-    print(f"[INFO] Loading {HF_MODEL} on Apple Silicon (MPS) with float16")
-    model = AutoModelForCausalLM.from_pretrained(
-        HF_MODEL,
-        dtype=torch.float16,
-        low_cpu_mem_usage=True,
-    ).to("mps")
-elif DEVICE == "cuda":
-    print(f"[INFO] Loading {HF_MODEL} on GPU: {torch.cuda.get_device_name(0)}")
-    model = AutoModelForCausalLM.from_pretrained(
-        HF_MODEL,
-        dtype=torch.float16,
-        device_map="auto",
-    )
-else:
-    print(f"[WARN] No GPU detected, loading {HF_MODEL} on CPU (will be slower)")
-    model = AutoModelForCausalLM.from_pretrained(HF_MODEL)
+    # Load model optimized for available hardware
+    if DEVICE == "mps":
+        print(f"[INFO] Loading {HF_MODEL} on Apple Silicon (MPS) with float16")
+        model = AutoModelForCausalLM.from_pretrained(
+            HF_MODEL,
+            dtype=torch.float16,
+            low_cpu_mem_usage=True,
+        ).to("mps")
+    elif DEVICE == "cuda":
+        print(f"[INFO] Loading {HF_MODEL} on GPU: {torch.cuda.get_device_name(0)}")
+        model = AutoModelForCausalLM.from_pretrained(
+            HF_MODEL,
+            dtype=torch.float16,
+            device_map="auto",
+        )
+    else:
+        print(f"[WARN] No GPU detected, loading {HF_MODEL} on CPU (will be slower)")
+        model = AutoModelForCausalLM.from_pretrained(HF_MODEL)
 
-model.config.pad_token_id = tokenizer.eos_token_id
+    model.config.pad_token_id = tokenizer.eos_token_id
 
 # =========================
 # Text Cleaning
@@ -1057,7 +1063,11 @@ def build_prompt(page_text: str, title: Optional[str] = None) -> str:
 """
 
 
-def summarize_one(job: Job, max_new_tokens: int) -> dict:
+def summarize_one(job: Job, max_new_tokens: int, model=None, tokenizer=None, device=None) -> dict:
+    model = model or globals().get('model')
+    tokenizer = tokenizer or globals().get('tokenizer')
+    device = device or globals().get('DEVICE', 'cpu')
+
     # Use description from scraper if available (for JS-rendered sites like CUNY)
     # Skip fetching for domains with aggressive rate limiting
     # Otherwise fetch the page directly
@@ -1142,7 +1152,7 @@ def summarize_one(job: Job, max_new_tokens: int) -> dict:
 
     # Build structured prompt
     prompt = build_prompt(page_text, cleaned_title)
-    inputs = tokenizer(prompt, return_tensors="pt").to(DEVICE)
+    inputs = tokenizer(prompt, return_tensors="pt").to(device)
 
     with torch.no_grad():
         out = model.generate(
@@ -1190,20 +1200,21 @@ def summarize_one(job: Job, max_new_tokens: int) -> dict:
         "enrichedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
 
-@app.post("/summarize")
-def summarize(req: SummarizeRequest):
-    out = []
-    for job in req.jobs:
-        k = key_for(job)
-        if k in CACHE:
-            out.append({**job.dict(), **CACHE[k]})
-            continue
-        enriched = summarize_one(job, req.max_new_tokens or 220)
-        CACHE[k] = enriched
-        out.append({**job.dict(), **enriched})
-    with open(CACHE_PATH, "w", encoding="utf-8") as f:
-        json.dump(CACHE, f, indent=2)
-    return {"jobs": out}
+if _STANDALONE:
+    @app.post("/summarize")
+    def summarize(req: SummarizeRequest):
+        out = []
+        for job in req.jobs:
+            k = key_for(job)
+            if k in CACHE:
+                out.append({**job.dict(), **CACHE[k]})
+                continue
+            enriched = summarize_one(job, req.max_new_tokens or 220)
+            CACHE[k] = enriched
+            out.append({**job.dict(), **enriched})
+        with open(CACHE_PATH, "w", encoding="utf-8") as f:
+            json.dump(CACHE, f, indent=2)
+        return {"jobs": out}
 
 if __name__ == "__main__":
     import uvicorn

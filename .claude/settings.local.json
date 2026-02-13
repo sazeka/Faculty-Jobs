@@ -222,7 +222,16 @@
       "Bash(CAMPUS_ALLOWLIST=ct LOCAL_LLM_BATCH_SIZE=5 npm start:*)",
       "Bash(git status:*)",
       "Bash(CAMPUS_ALLOWLIST=ct,ny LOCAL_LLM_BATCH_SIZE=5 npm start:*)",
-      "Bash(ps:*)"
+      "Bash(ps:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.ray.io)",
+      "WebFetch(domain:www.doppler.com)",
+      "Bash(ray stop:*)",
+      "Bash(ray start:*)",
+      "Bash(ray status:*)",
+      "Bash(serve run:*)",
+      "Bash(serve status:*)",
+      "Bash(serve shutdown:*)"
     ]
   }
 }
