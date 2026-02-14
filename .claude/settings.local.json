@@ -242,7 +242,11 @@
       "WebFetch(domain:jobs.monmouth.edu)",
       "WebFetch(domain:recruiting.ultipro.com)",
       "WebFetch(domain:www.saintpeters.edu)",
-      "Bash(CAMPUS_ALLOWLIST=NJ npm run scrape:json:*)"
+      "Bash(CAMPUS_ALLOWLIST=NJ npm run scrape:json:*)",
+      "Bash(pip:*)",
+      "Bash(where:*)",
+      "Bash(py --list:*)",
+      "Bash(.venvScriptspip show ray)"
     ]
   }
 }
