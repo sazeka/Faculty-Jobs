@@ -222,7 +222,7 @@ function mergeBatchResults(batch, enriched) {
   }
 }
 
-async function callLocalSummarizer(jobs) {
+export async function callLocalSummarizer(jobs) {
   if (!Array.isArray(jobs) || jobs.length === 0) return jobs;
 
   // Load cache from current jobs.json snapshot if available (already merged into `jobs` upstream)
@@ -350,7 +350,7 @@ const SYSTEM_GROUP_MAP = {
   "CT State": "Connecticut",
 };
 
-function getSystemGroup(source) {
+export function getSystemGroup(source) {
   if (!source) return null;
   return SYSTEM_GROUP_MAP[source] || null;
 }
