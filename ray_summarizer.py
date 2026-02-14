@@ -33,7 +33,7 @@ fast_app = FastAPI()
 
 
 @serve.deployment(
-    num_replicas=2,
+    num_replicas=1,
     ray_actor_options={"resources": {"summarizer_node": 1}},
 )
 @serve.ingress(fast_app)
