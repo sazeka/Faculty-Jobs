@@ -490,6 +490,17 @@ const NJ_CAMPUSES = [
   },
 ];
 
+const NJ_PRIVATE_CAMPUSES = [
+  { campus: "Princeton University", type: "princeton", url: "https://puwebp.princeton.edu/AcadHire/apply/" },
+  { campus: "Seton Hall University", type: "pageup", url: "https://jobs.shu.edu/cw/en-us/listing" },
+  { campus: "Stevens Institute of Technology", type: "workday", url: "https://stevens.wd5.myworkdayjobs.com/External" },
+  { campus: "Fairleigh Dickinson University", type: "peopleadmin", url: "https://jobs.fdu.edu/postings/search" },
+  { campus: "Rider University", type: "schooljobs", url: "https://www.schooljobs.com/careers/rideru?keywords=faculty" },
+  { campus: "Saint Peter's University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=055E28882001FE667534B0880CFCD275" },
+  { campus: "Monmouth University", type: "generic", url: "https://recruiting.ultipro.com/MON1000MON/JobBoard/d4da5ea7-24db-4f02-a484-7497ffffb76d/?q=&o=postedDateDesc" },
+  { campus: "Rowan University", type: "pageup", url: "https://jobs.rowan.edu/" },
+];
+
 // Claremont Colleges
 const CLAREMONT_CAMPUSES = [
   {
@@ -2484,7 +2495,7 @@ async function scrapeApRecruitCampus(page, campusName) {
 
 /* ============================== NJ ============================== */
 
-async function scrapeNjAll(context) {
+async function scrapeNjPublic(context) {
   const tasks = NJ_CAMPUSES.map(({ campus, type, url }) =>
     (async () => {
       try {
@@ -2505,6 +2516,161 @@ async function scrapeNjAll(context) {
   const settled = await Promise.allSettled(tasks);
   const jobs = settled.flatMap((r) => (r.status === "fulfilled" && Array.isArray(r.value) ? r.value : []));
   return uniqByUrl(jobs);
+}
+
+async function scrapePrincetonFaculty(context, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    const jobs = [];
+    const seen = new Set();
+    const baseUrl = "https://puwebp.princeton.edu/AcadHire/apply/";
+
+    // Load the page once — Princeton AHIRE is a JSF app, session-based pagination
+    await page.goto(baseUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(2500);
+
+    // Select "Faculty" category filter if available to reduce noise
+    await page.evaluate(() => {
+      const selects = document.querySelectorAll("select");
+      for (const sel of selects) {
+        const opts = [...sel.options];
+        const facultyOpt = opts.find((o) => /faculty/i.test(o.text));
+        if (facultyOpt) {
+          sel.value = facultyOpt.value;
+          sel.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      }
+    });
+    await page.waitForTimeout(1500);
+
+    for (let pageNo = 1; pageNo <= 15; pageNo++) {
+      const batch = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try { return new URL(href, location.href).toString(); } catch { return null; }
+        };
+
+        const out = [];
+
+        // Princeton AHIRE lists jobs with links containing "listingId"
+        const links = document.querySelectorAll('a[href*="listingId"]');
+        for (const a of links) {
+          const href = abs(a.getAttribute("href"));
+          const title = clean(a.textContent);
+          if (!href || !title || title.length < 6) continue;
+          if (/^(apply|more|details|view)$/i.test(title)) continue;
+          out.push({ title, url: href });
+        }
+
+        // Fallback: look for job-like links with application.xhtml
+        if (out.length === 0) {
+          const allLinks = document.querySelectorAll('a[href*="application.xhtml"]');
+          for (const a of allLinks) {
+            const href = abs(a.getAttribute("href"));
+            const row = a.closest("tr, div, li, article");
+            const titleEl = row?.querySelector("h2, h3, h4, strong, b, .title, td:first-child");
+            const title = clean(titleEl?.textContent || a.textContent);
+            if (!href || !title || title.length < 6) continue;
+            out.push({ title, url: href });
+          }
+        }
+
+        // Broader fallback: any link that looks like a job posting
+        if (out.length === 0) {
+          const allA = document.querySelectorAll("a[href]");
+          for (const a of allA) {
+            const href = abs(a.getAttribute("href"));
+            if (!href) continue;
+            const title = clean(a.textContent);
+            if (!title || title.length < 10) continue;
+            if (/professor|lecturer|instructor|faculty|postdoc|researcher/i.test(title)) {
+              if (/^(search|home|back|login|logout|help|privacy)$/i.test(title)) continue;
+              out.push({ title, url: href });
+            }
+          }
+        }
+
+        const s = new Set();
+        return out.filter((x) => (x.url && !s.has(x.url) ? (s.add(x.url), true) : false));
+      });
+
+      let newCount = 0;
+      for (const j of batch) {
+        if (!seen.has(j.url)) {
+          seen.add(j.url);
+          if (looksFacultyish(j.title) && !omitAdjunct(j.title)) {
+            jobs.push({
+              title: clean(j.title),
+              url: j.url,
+              source: sourceName,
+              category: "Faculty",
+              college: campusName,
+              location: null,
+              description: null,
+            });
+          }
+          newCount++;
+        }
+      }
+
+      if (newCount === 0 && pageNo > 1) break;
+
+      // Click "Next" (labeled "N") to go to the next page within the JSF session
+      const hasNext = await page.evaluate(() => {
+        const links = [...document.querySelectorAll("a, span, button")];
+        const next = links.find((el) => el.textContent.trim() === "N");
+        if (next) {
+          next.click();
+          return true;
+        }
+        return false;
+      });
+
+      if (!hasNext) break;
+      await page.waitForTimeout(2000);
+    }
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+async function scrapeNjPrivate(context) {
+  const results = await mapWithConcurrency(
+    NJ_PRIVATE_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "princeton") return await scrapePrincetonFaculty(context, campus, "NJ");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NJ");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NJ");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "NJ");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NJ");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "NJ");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NJ");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} NJ private scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeNjAll(context) {
+  const [publicJobs, privateJobs] = await Promise.all([
+    scrapeNjPublic(context),
+    scrapeNjPrivate(context),
+  ]);
+  return uniqByUrl([...publicJobs, ...privateJobs]);
 }
 
 function toNjJob(title, url, campusName, category = "Faculty") {
