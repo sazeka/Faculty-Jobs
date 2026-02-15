@@ -324,6 +324,13 @@ function isAllowedSystem(name) {
   return want.includes(n);
 }
 
+function isNyOnlyRun() {
+  if (!CAMPUS_ALLOWLIST || CAMPUS_ALLOWLIST.length === 0) return false;
+  const allow = CAMPUS_ALLOWLIST.map(x => String(x).toUpperCase());
+  const nyAliases = ["NY", "NEW YORK", "CUNY", "SUNY"];
+  return allow.some(x => nyAliases.includes(x));
+}
+
 
 /* ============================== CONFIG ============================== */
 
@@ -1390,7 +1397,7 @@ export async function scrapeAllJobsStandalone() {
 
     // Global faculty filter: remove non-faculty jobs that slipped through individual scrapers
     const preFilterCount = jobs.length;
-    const facultyJobs = jobs.filter(j => {
+    let facultyJobs = jobs.filter(j => {
       const t = String(j.title || "").toLowerCase();
       // Keep if title contains faculty-related keywords
       if (looksFacultyish(t)) return true;
@@ -1403,6 +1410,24 @@ export async function scrapeAllJobsStandalone() {
       if (/^view\s+details?$/i.test(t)) return false;
       return false;
     });
+
+    // Safety fallback: if the global filter is too aggressive (especially NY feeds),
+    // keep non-junk titles so summarization can still run.
+    const filteredRatio = preFilterCount > 0 ? (facultyJobs.length / preFilterCount) : 1;
+    if (preFilterCount > 0 && (facultyJobs.length === 0 || filteredRatio < 0.05)) {
+      const fallbackJobs = jobs.filter(j => {
+        const t = String(j?.title || "").trim();
+        if (!t) return false;
+        if (t.length < 8) return false;
+        if (/^view\s+details?$/i.test(t)) return false;
+        if (/^(job|position)\s*#?\d*$/i.test(t)) return false;
+        return true;
+      });
+      if (fallbackJobs.length > 0 && (isNyOnlyRun() || facultyJobs.length === 0)) {
+        console.warn(`⚠️  Global faculty filter looked over-aggressive (${preFilterCount} → ${facultyJobs.length}); using fallback set (${fallbackJobs.length})`);
+        facultyJobs = fallbackJobs;
+      }
+    }
     if (preFilterCount !== facultyJobs.length) {
       console.log(`🔍 Global faculty filter: ${preFilterCount} → ${facultyJobs.length} (removed ${preFilterCount - facultyJobs.length} non-faculty jobs)`);
     }
