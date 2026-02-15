@@ -3,68 +3,125 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>US Faculty Job Search</title>
+    <title>Faculty Atlas</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/logos/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+      :root {
+        --bg: #f4f1ea;
+        --ink: #1d2a2b;
+        --muted: #5f6d6f;
+        --surface: #fbf9f5;
+        --surface-strong: #ffffff;
+        --border: #d8d1c5;
+        --accent: #c45c38;
+        --accent-ink: #fff9f3;
+        --success: #0f766e;
+        --warn: #b42318;
+        --chip: #e7ddd0;
+        --shadow: 0 16px 40px rgba(35, 29, 19, 0.12);
+      }
+
       * { box-sizing: border-box; }
 
       body {
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: var(--ink);
         min-height: 100vh;
+        background:
+          radial-gradient(circle at 12% 14%, #e7d4bc 0, rgba(231, 212, 188, 0.3) 30%, transparent 56%),
+          radial-gradient(circle at 88% 18%, #d7e6df 0, rgba(215, 230, 223, 0.3) 30%, transparent 58%),
+          linear-gradient(180deg, #f8f4ec 0%, #f1ece3 100%);
       }
 
       .container {
         max-width: 1400px;
         margin: 0 auto;
-        padding: 0 24px 40px;
+        padding: 0 24px 42px;
       }
 
       header {
-        padding: 48px 24px 32px;
-        color: white;
-        text-align: center;
+        position: relative;
+        padding: 52px 24px 34px;
         margin-bottom: 24px;
       }
 
       .logo {
-        font-size: 42px;
-        font-weight: 800;
-        margin-bottom: 12px;
-        letter-spacing: -1px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 8px;
       }
 
       .logo-icon {
-        display: inline-block;
-        margin-right: 12px;
-        vertical-align: middle;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        height: auto;
+        line-height: 0;
+        flex-shrink: 0;
+      }
+
+      .logo-icon img {
+        width: clamp(72px, 9vw, 108px);
+        height: clamp(72px, 9vw, 108px);
+        object-fit: contain;
+        height: auto;
+        display: block;
+      }
+
+      .logo-wordmark {
+        display: flex;
+        flex-direction: column;
+        line-height: 0.95;
+      }
+
+      .logo-faculty {
+        font-family: "Fraunces", Georgia, serif;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        letter-spacing: -0.03em;
+        color: #1d2a2b;
+      }
+
+      .logo-atlas {
+        margin-top: 4px;
+        font-family: "Manrope", Arial, sans-serif;
+        font-size: clamp(1.2rem, 2vw, 1.8rem);
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: #4e5b5d;
+        text-transform: uppercase;
       }
 
       .tagline {
-        font-size: 17px;
-        opacity: 0.95;
-        font-weight: 500;
-        letter-spacing: 0.3px;
+        font-size: 1rem;
+        color: var(--muted);
+        font-weight: 600;
+        letter-spacing: 0.01em;
       }
 
       .search-bar {
-        background: white;
-        border-radius: 16px;
-        padding: 20px 24px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        margin-bottom: 24px;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(216, 209, 197, 0.9);
+        border-radius: 18px;
+        padding: 20px 22px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(7px);
+        margin-bottom: 18px;
+        animation: rise 360ms ease-out;
       }
 
       .search-row {
         display: flex;
         gap: 12px;
         align-items: center;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
       }
 
       .search-input-wrapper {
@@ -74,102 +131,119 @@
 
       .search-input-wrapper input {
         width: 100%;
-        padding: 14px 16px 14px 44px;
-        border: 2px solid #e8e8e8;
-        border-radius: 10px;
+        padding: 13px 42px 13px 42px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
         font-size: 15px;
         font-family: inherit;
-        background: #fafafa;
-        transition: all 0.2s ease;
+        background: #fffdfa;
+        color: var(--ink);
+        transition: 180ms ease;
       }
 
       .search-input-wrapper::before {
         content: "";
         position: absolute;
-        left: 16px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
-        width: 18px;
-        height: 18px;
-        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E") no-repeat center;
+        width: 17px;
+        height: 17px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%235f6d6f'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E") no-repeat center;
       }
 
       .clear-search {
         position: absolute;
-        right: 12px;
+        right: 10px;
         top: 50%;
         transform: translateY(-50%);
-        background: #ddd;
-        border: none;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
+        background: #ebe4d8;
+        border: 1px solid #d8d0c1;
+        border-radius: 999px;
+        width: 22px;
+        height: 22px;
         cursor: pointer;
         font-size: 12px;
-        color: #666;
+        color: #64584b;
         display: none;
         align-items: center;
         justify-content: center;
         line-height: 1;
+        transition: 160ms ease;
       }
 
-      .clear-search:hover { background: #ccc; }
+      .clear-search:hover { background: #e2d7c7; }
       .clear-search.visible { display: flex; }
 
-      .check{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:2px solid #e8e8e8;border-radius:8px;background:#fafafa;font-size:14px;color:#444;cursor:pointer;user-select:none}
-      .check input{width:16px;height:16px;}
+      .check {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fffdfa;
+        font-size: 14px;
+        color: var(--ink);
+        cursor: pointer;
+        user-select: none;
+        font-weight: 600;
+      }
+
+      .check input { width: 16px; height: 16px; accent-color: var(--accent); }
 
       .filters-row {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         flex-wrap: wrap;
         align-items: center;
       }
 
       select {
-        padding: 10px 14px;
-        border: 2px solid #e8e8e8;
-        border-radius: 8px;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
         font-size: 14px;
         font-family: inherit;
-        background: #fafafa;
+        background: #fffdfa;
+        color: var(--ink);
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: 180ms ease;
         min-width: 180px;
       }
 
       input:focus, select:focus {
         outline: none;
-        border-color: #667eea;
-        background: white;
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(196, 92, 56, 0.16);
       }
 
       button {
-        padding: 10px 16px;
-        border: none;
-        border-radius: 8px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        font-weight: 600;
+        padding: 10px 14px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        background: linear-gradient(140deg, #cc6843, #a14f36);
+        color: var(--accent-ink);
+        font-weight: 700;
         font-size: 14px;
         font-family: inherit;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: 200ms ease;
       }
 
       button:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 8px 16px rgba(150, 75, 51, 0.22);
       }
 
       button.secondary {
-        background: #f0f0f0;
-        color: #666;
+        background: #f2ebe0;
+        color: #5f5447;
+        border-color: #d8cfc1;
       }
 
       button.secondary:hover {
-        background: #e5e5e5;
+        background: #e9dfd1;
         box-shadow: none;
         transform: none;
       }
@@ -180,7 +254,7 @@
         flex-wrap: wrap;
         margin-top: 12px;
         padding-top: 12px;
-        border-top: 1px solid #f0f0f0;
+        border-top: 1px solid #e7dfd2;
       }
 
       .active-filters:empty { display: none; }
@@ -190,92 +264,175 @@
         align-items: center;
         gap: 6px;
         padding: 6px 10px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 20px;
+        background: var(--chip);
+        color: #4b4036;
+        border: 1px solid #d4c8b7;
+        border-radius: 999px;
         font-size: 12px;
-        font-weight: 500;
+        font-weight: 700;
       }
 
       .filter-chip button {
-        background: rgba(255,255,255,0.3);
-        border: none;
+        background: #d8c8b4;
+        color: #3f372f;
+        border: 0;
         border-radius: 50%;
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
         padding: 0;
-        cursor: pointer;
         font-size: 10px;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        box-shadow: none;
       }
 
       .filter-chip button:hover {
-        background: rgba(255,255,255,0.5);
+        background: #cdbca4;
         transform: none;
-        box-shadow: none;
       }
 
       .status-bar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 16px 20px;
-        background: white;
-        border-radius: 12px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.84);
+        border: 1px solid rgba(216, 209, 197, 0.9);
+        border-radius: 14px;
+        margin-bottom: 18px;
       }
 
       .status {
-        color: #666;
+        color: var(--muted);
         font-size: 14px;
+        font-weight: 600;
       }
 
       .count {
-        font-weight: 600;
-        color: #667eea;
-        font-size: 14px;
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #7f3f2d;
+      }
+
+      .app-shell {
+        display: grid;
+        grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .rail {
+        position: sticky;
+        top: 14px;
+        max-height: calc(100vh - 28px);
+        overflow: auto;
+        scrollbar-width: thin;
+      }
+
+      .rail .search-bar {
+        margin-bottom: 0;
+        position: relative;
+      }
+
+      .rail-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .rail-title {
+        margin: 0;
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 1.08rem;
+        color: #293a3b;
+      }
+
+      .icon-btn {
+        display: none;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .rail-block {
+        margin-top: 10px;
+        border: 1px solid #e4d8ca;
+        border-radius: 12px;
+        background: #fffdf9;
+      }
+
+      .rail-block summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 10px 12px;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #5a685c;
+        border-bottom: 1px solid #efe5d8;
+      }
+
+      .rail-block summary::-webkit-details-marker { display: none; }
+
+      .rail-block[open] summary::after {
+        content: "−";
+        float: right;
+        color: #8a7c69;
+      }
+
+      .rail-block summary::after {
+        content: "+";
+        float: right;
+        color: #8a7c69;
+      }
+
+      .rail-inner {
+        padding: 10px;
+      }
+
+      .results-pane {
+        min-width: 0;
       }
 
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 20px;
+        gap: 16px;
       }
 
       .card {
-        background: white;
+        background: var(--surface-strong);
+        border: 1px solid #ddd2c4;
         border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        padding: 18px;
+        box-shadow: 0 6px 18px rgba(34, 26, 16, 0.06);
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        transition: all 0.25s ease;
-        border: 1px solid transparent;
+        gap: 11px;
+        transition: 220ms ease;
+        animation: rise 280ms ease-out;
       }
 
       .card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(0,0,0,0.12);
-        border-color: #667eea;
+        transform: translateY(-2px);
+        border-color: #c3977e;
+        box-shadow: 0 14px 28px rgba(58, 43, 30, 0.12);
       }
 
       .title {
+        font-family: "Fraunces", Georgia, serif;
         font-weight: 600;
-        font-size: 16px;
-        line-height: 1.4;
-        color: #1a1a2e;
+        font-size: 1.1rem;
+        line-height: 1.35;
+        color: #213234;
       }
 
-      .title mark {
-        background: #fff3cd;
+      .title mark,
+      .info-value mark {
+        background: #f8e49f;
         color: inherit;
         padding: 0 2px;
-        border-radius: 2px;
+        border-radius: 3px;
       }
 
       .pills {
@@ -287,239 +444,429 @@
       .pill {
         display: inline-block;
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 800;
         padding: 4px 10px;
-        border-radius: 6px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
+        border-radius: 999px;
+        background: #eadbca;
+        border: 1px solid #dcc8b2;
+        color: #4f4133;
+        letter-spacing: 0.02em;
       }
 
       .pill.state {
-        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        background: #dcece6;
+        border-color: #bfd7cf;
+        color: #20574d;
       }
 
       .pill.tenure {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: #e8f3d8;
+        border-color: #c8e0a9;
+        color: #396326;
       }
 
       .pill.non-tenure {
-        background: #999;
+        background: #efebe4;
+        border-color: #dfd7cb;
+        color: #675b4b;
       }
 
       .info-grid {
         display: grid;
         grid-template-columns: auto 1fr;
-        gap: 6px 12px;
+        gap: 6px 10px;
         font-size: 13px;
       }
 
       .info-label {
-        color: #999;
-        font-weight: 500;
+        color: #857566;
+        font-weight: 700;
         text-transform: uppercase;
         font-size: 10px;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.05em;
       }
 
       .info-value {
-        color: #333;
-        font-weight: 500;
-      }
-
-      .info-value mark {
-        background: #fff3cd;
-        color: inherit;
-        padding: 0 2px;
-        border-radius: 2px;
+        color: #243133;
+        font-weight: 600;
       }
 
       .desc {
-        color: #666;
+        color: #576769;
         font-size: 13px;
         line-height: 1.5;
-        border-left: 3px solid #e8e8e8;
-        padding-left: 12px;
-        margin-top: 4px;
+        border-left: 2px solid #dfd3c4;
+        padding-left: 10px;
+        margin-top: 2px;
+      }
+
+      .summary-box {
+        background: #f6f2eb;
+        border: 1px solid #e6ddcf;
+        border-radius: 10px;
+      }
+
+      .summary-box summary {
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 800;
+        color: #5f6d6f;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 8px 10px;
+      }
+
+      .summary-box p {
+        margin: 0;
+        padding: 0 10px 10px;
+        font-size: 13px;
+        color: #304446;
+        line-height: 1.5;
       }
 
       .links {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
         margin-top: auto;
-        padding-top: 12px;
-        border-top: 1px solid #f0f0f0;
+        padding-top: 10px;
+        border-top: 1px solid #ebdfd2;
       }
 
       .links a {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        color: #667eea;
+        color: #8d412c;
         text-decoration: none;
         font-size: 14px;
-        font-weight: 500;
-        transition: all 0.2s ease;
+        font-weight: 800;
+        transition: color 160ms ease;
       }
 
-      .links a:hover { color: #764ba2; }
+      .links a:hover { color: #a95a40; }
 
       .links a::after {
         content: "\2192";
-        transition: transform 0.2s ease;
+        transition: transform 160ms ease;
       }
 
-      .links a:hover::after {
-        transform: translateX(3px);
+      .links a:hover::after { transform: translateX(3px); }
+
+      .save-btn {
+        background: #f4e8d8;
+        color: #614934;
+        border: 1px solid #dfccb3;
+        box-shadow: none;
+        padding: 7px 10px;
+        font-size: 12px;
       }
 
-      .warn { color: #e74c3c; }
+      .save-btn:hover {
+        transform: none;
+        box-shadow: none;
+        background: #ecdcc8;
+      }
 
-      .loading {
+      .save-btn.saved {
+        background: #daeadd;
+        color: #1f5f4e;
+        border-color: #b9d9c1;
+      }
+
+      .recent-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .preset {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border: 1px solid #dbcdb9;
+        border-radius: 999px;
+        background: #f4ecdf;
+        padding: 6px 8px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #554838;
+      }
+
+      .preset button {
+        all: unset;
+        cursor: pointer;
+        background: #e2d3bf;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
         text-align: center;
-        padding: 60px 20px;
-        color: #888;
+        line-height: 16px;
+        font-size: 10px;
+      }
+
+      .preset button:hover { background: #d9c7ad; }
+
+      .preset .preset-apply {
+        all: unset;
+        cursor: pointer;
+        font-weight: 700;
+        padding: 0 2px;
+      }
+
+      .preset .preset-apply:hover {
+        text-decoration: underline;
+      }
+
+      .empty-note {
+        margin: 0;
+        color: #7b7062;
+        font-size: 12px;
+      }
+
+      .mobile-toolbar {
+        display: none;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        margin-bottom: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid #dfd3c2;
+        background: rgba(255, 252, 247, 0.95);
+        backdrop-filter: blur(8px);
+      }
+
+      .mobile-toolbar-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .mobile-count {
+        font-weight: 700;
+        color: #5d4d3e;
+        font-size: 13px;
+      }
+
+      .warn { color: var(--warn); }
+
+      .loading,
+      .empty-state {
+        text-align: center;
+        padding: 58px 20px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px dashed #d8cfc3;
+        border-radius: 14px;
       }
 
       .loading::before {
         content: "";
         display: block;
-        width: 40px;
-        height: 40px;
-        margin: 0 auto 16px;
-        border: 3px solid #e8e8e8;
-        border-top-color: #667eea;
+        width: 34px;
+        height: 34px;
+        margin: 0 auto 14px;
+        border: 3px solid #e2d8cb;
+        border-top-color: var(--accent);
         border-radius: 50%;
-        animation: spin 0.8s linear infinite;
+        animation: spin 0.9s linear infinite;
       }
 
-      @keyframes spin {
-        to { transform: rotate(360deg); }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
       }
 
-      .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        background: white;
-        border-radius: 16px;
-        color: #888;
-      }
-
-      @media (max-width: 768px) {
-        header { padding: 24px 16px; }
-        .logo { font-size: 26px; }
-        .container { padding: 0 16px 32px; }
-        .search-bar { padding: 16px; }
-        .search-row { flex-direction: column; }
+      @media (max-width: 960px) {
+        header { padding: 30px 16px 22px; }
+        .logo { gap: 10px; }
+        .logo-icon img {
+          width: 68px;
+          height: 68px;
+        }
+        .logo-atlas { letter-spacing: 0.06em; }
+        .container { padding: 0 14px 28px; }
+        .app-shell { grid-template-columns: 1fr; }
+        .mobile-toolbar { display: block; }
+        .rail {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 30;
+          padding: 12px;
+          max-height: none;
+          background: rgba(25, 20, 14, 0.42);
+          transform: translateX(-102%);
+          transition: transform 220ms ease;
+          overflow: hidden;
+        }
+        body.filters-open .rail { transform: translateX(0); }
+        .rail .search-bar {
+          height: 100%;
+          overflow: auto;
+          padding: 14px;
+        }
+        .icon-btn { display: inline-flex; }
+        .search-row { flex-direction: column; align-items: stretch; }
         .search-input-wrapper { width: 100%; }
-        select { width: 100%; min-width: unset; }
-        .grid { grid-template-columns: 1fr; gap: 16px; }
+        select, .check, button { width: 100%; min-width: unset; }
+        .filters-row { gap: 8px; }
+        .status-bar { flex-direction: column; align-items: flex-start; gap: 6px; }
+        .grid { grid-template-columns: 1fr; gap: 14px; }
       }
-    
-  .meta { margin-top: 6px; font-size: 12px; color: #666; font-weight: 600; }
 </style>
   </head>
   <body>
     <header>
       <div class="logo">
         <span class="logo-icon">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3Z" fill="white"/>
-            <path d="M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" fill="white" opacity="0.8"/>
-          </svg>
+          <img src="./assets/logos/favicon.svg" alt="Faculty Atlas icon" />
         </span>
-        US Faculty Job Search
+        <div class="logo-wordmark" aria-label="Faculty Atlas">
+          <span class="logo-faculty">Faculty</span>
+          <span class="logo-atlas">Atlas</span>
+        </div>
       </div>
       <div class="tagline" id="subhead">Loading...</div>
     </header>
 
     <div class="container">
-      <div class="search-bar">
-        <div class="search-row">
-          <div class="search-input-wrapper">
-            <input id="q" placeholder="Search jobs... (e.g., biology professor, data science)" />
-            <button class="clear-search" id="clearSearch" title="Clear search">&times;</button>
+      <div class="mobile-toolbar">
+        <div class="mobile-toolbar-row">
+          <button id="openFilters">Filters</button>
+          <span class="mobile-count" id="mobileCount">0 jobs</span>
+        </div>
+      </div>
+
+      <div class="app-shell">
+        <aside class="rail" id="filterRail" aria-label="Filter controls">
+          <div class="search-bar">
+            <div class="rail-head">
+              <h2 class="rail-title">Filter Jobs</h2>
+              <button class="secondary icon-btn" id="closeFilters">Close</button>
+            </div>
+
+            <div class="search-row">
+              <div class="search-input-wrapper">
+                <input id="q" placeholder="Search jobs... (e.g., biology professor, data science)" />
+                <button class="clear-search" id="clearSearch" title="Clear search">&times;</button>
+              </div>
+              <button id="refresh">Refresh</button>
+            </div>
+
+            <details class="rail-block" open>
+              <summary>Filter Controls</summary>
+              <div class="rail-inner">
+                <div class="filters-row">
+                  <select id="stateFilter">
+                    <option value="all">All States</option>
+                    <option value="Arizona">Arizona</option>
+                    <option value="California">California</option>
+                    <option value="Colorado">Colorado</option>
+                    <option value="Connecticut">Connecticut</option>
+                    <option value="Delaware">Delaware</option>
+                    <option value="Idaho">Idaho</option>
+                    <option value="Illinois">Illinois</option>
+                    <option value="Indiana">Indiana</option>
+                    <option value="Maine">Maine</option>
+                    <option value="Massachusetts">Massachusetts</option>
+                    <option value="Michigan">Michigan</option>
+                    <option value="Minnesota">Minnesota</option>
+                    <option value="Montana">Montana</option>
+                    <option value="New Hampshire">New Hampshire</option>
+                    <option value="New Jersey">New Jersey</option>
+                    <option value="New Mexico">New Mexico</option>
+                    <option value="New York">New York</option>
+                    <option value="North Carolina">North Carolina</option>
+                    <option value="Ohio">Ohio</option>
+                    <option value="Oregon">Oregon</option>
+                    <option value="Pennsylvania">Pennsylvania</option>
+                    <option value="Rhode Island">Rhode Island</option>
+                    <option value="Utah">Utah</option>
+                    <option value="Washington">Washington</option>
+                    <option value="Wisconsin">Wisconsin</option>
+                  </select>
+
+                  <select id="positionType">
+                    <option value="all">All Position Types</option>
+                    <option value="Assistant Professor">Assistant Professor</option>
+                    <option value="Associate Professor">Associate Professor</option>
+                    <option value="Professor">Professor</option>
+                    <option value="Lecturer">Lecturer</option>
+                    <option value="Instructor">Instructor</option>
+                    <option value="Visiting Faculty">Visiting Faculty</option>
+                    <option value="Research Faculty">Research Faculty</option>
+                    <option value="Teaching Faculty">Teaching Faculty</option>
+                    <option value="Clinical Faculty">Clinical Faculty</option>
+                    <option value="Postdoctoral">Postdoctoral</option>
+                  </select>
+
+                  <select id="college">
+                    <option value="all">All Universities</option>
+                  </select>
+
+                  <label class="check">
+                    <input type="checkbox" id="summarizedOnly" />
+                    Summarized only
+                  </label>
+
+                  <label class="check">
+                    <input type="checkbox" id="tenureTrackOnly" />
+                    Tenure track only
+                  </label>
+
+                  <label class="check">
+                    <input type="checkbox" id="savedOnly" />
+                    Saved only
+                  </label>
+
+                  <select id="sortBy">
+                    <option value="relevance">Sort: Relevance</option>
+                    <option value="title-asc">Sort: Title A-Z</option>
+                    <option value="title-desc">Sort: Title Z-A</option>
+                    <option value="university">Sort: University</option>
+                    <option value="state">Sort: State</option>
+                  </select>
+
+                  <button class="secondary" id="clearFilters">Clear All</button>
+                </div>
+              </div>
+            </details>
+
+            <details class="rail-block" open>
+              <summary>Active Filters</summary>
+              <div class="rail-inner">
+                <div class="active-filters" id="activeFilters"></div>
+              </div>
+            </details>
+
+            <details class="rail-block" open>
+              <summary>Recent Presets</summary>
+              <div class="rail-inner">
+                <div class="filters-row">
+                  <button class="secondary" id="savePreset">Save Current Preset</button>
+                </div>
+                <div class="recent-filters" id="recentFilters"></div>
+              </div>
+            </details>
           </div>
-          <button id="refresh">Refresh</button>
-        </div>
+        </aside>
 
-        <div class="filters-row">
-          <select id="stateFilter">
-            <option value="all">All States</option>
-            <option value="Arizona">Arizona</option>
-            <option value="California">California</option>
-            <option value="Colorado">Colorado</option>
-            <option value="Connecticut">Connecticut</option>
-            <option value="Delaware">Delaware</option>
-            <option value="Idaho">Idaho</option>
-            <option value="Illinois">Illinois</option>
-            <option value="Indiana">Indiana</option>
-            <option value="Maine">Maine</option>
-            <option value="Massachusetts">Massachusetts</option>
-            <option value="Michigan">Michigan</option>
-            <option value="Minnesota">Minnesota</option>
-            <option value="Montana">Montana</option>
-            <option value="New Hampshire">New Hampshire</option>
-            <option value="New Jersey">New Jersey</option>
-            <option value="New Mexico">New Mexico</option>
-            <option value="New York">New York</option>
-            <option value="North Carolina">North Carolina</option>
-            <option value="Ohio">Ohio</option>
-            <option value="Oregon">Oregon</option>
-            <option value="Pennsylvania">Pennsylvania</option>
-            <option value="Rhode Island">Rhode Island</option>
-            <option value="Utah">Utah</option>
-            <option value="Washington">Washington</option>
-            <option value="Wisconsin">Wisconsin</option>
-          </select>
-
-          <select id="positionType">
-            <option value="all">All Position Types</option>
-            <option value="Assistant Professor">Assistant Professor</option>
-            <option value="Associate Professor">Associate Professor</option>
-            <option value="Professor">Professor</option>
-            <option value="Lecturer">Lecturer</option>
-            <option value="Instructor">Instructor</option>
-            <option value="Visiting Faculty">Visiting Faculty</option>
-            <option value="Research Faculty">Research Faculty</option>
-            <option value="Teaching Faculty">Teaching Faculty</option>
-            <option value="Clinical Faculty">Clinical Faculty</option>
-            <option value="Postdoctoral">Postdoctoral</option>
-          </select>
-
-          <select id="college">
-            <option value="all">All Universities</option>
-          </select>
-
-          <label class="check">
-            <input type="checkbox" id="summarizedOnly" />
-            Summarized only
-          </label>
-
-          <label class="check">
-            <input type="checkbox" id="tenureTrackOnly" />
-            Tenure track only
-          </label>
-
-          <select id="sortBy">
-            <option value="relevance">Sort: Relevance</option>
-            <option value="title-asc">Sort: Title A-Z</option>
-            <option value="title-desc">Sort: Title Z-A</option>
-            <option value="university">Sort: University</option>
-            <option value="state">Sort: State</option>
-          </select>
-
-          <button class="secondary" id="clearFilters">Clear All</button>
-        </div>
-
-        <div class="active-filters" id="activeFilters"></div>
+        <main class="results-pane">
+          <div class="status-bar">
+            <span class="status" id="status">Loading...</span>
+            <span class="count" id="shown"></span>
+          </div>
+          <div class="grid" id="grid"></div>
+        </main>
       </div>
-
-      <div class="status-bar">
-        <span class="status" id="status">Loading...</span>
-        <span class="count" id="shown"></span>
-      </div>
-
-      <div class="grid" id="grid"></div>
     </div>
 
     <script>
@@ -538,10 +885,30 @@
       const activeFiltersEl = document.getElementById("activeFilters");
       const summarizedOnlyCb = document.getElementById("summarizedOnly");
       const tenureTrackOnlyCb = document.getElementById("tenureTrackOnly");
+      const savedOnlyCb = document.getElementById("savedOnly");
+      const savePresetBtn = document.getElementById("savePreset");
+      const recentFiltersEl = document.getElementById("recentFilters");
+      const openFiltersBtn = document.getElementById("openFilters");
+      const closeFiltersBtn = document.getElementById("closeFilters");
+      const mobileCountEl = document.getElementById("mobileCount");
+      const filterRail = document.getElementById("filterRail");
 
       let allJobs = [];
       let meta = { scrapedAt: null, count: 0 };
       let debounceTimer = null;
+      const SAVED_JOBS_KEY = "facultyJobs.saved.v1";
+      const RECENT_PRESETS_KEY = "facultyJobs.recentPresets.v1";
+      const MAX_PRESETS = 5;
+      const parseStoredArray = (key) => {
+        try {
+          const data = JSON.parse(localStorage.getItem(key) || "[]");
+          return Array.isArray(data) ? data : [];
+        } catch {
+          return [];
+        }
+      };
+      const savedJobs = new Set(parseStoredArray(SAVED_JOBS_KEY));
+      let recentPresets = parseStoredArray(RECENT_PRESETS_KEY);
 
       function escapeHtml(s) {
         return String(s).replace(/[&<>"']/g, c => ({
@@ -552,6 +919,88 @@
       function truncate(s, n) {
         s = String(s);
         return s.length > n ? s.slice(0, n - 1) + "..." : s;
+      }
+
+      function persistSavedJobs() {
+        localStorage.setItem(SAVED_JOBS_KEY, JSON.stringify([...savedJobs]));
+      }
+
+      function persistRecentPresets() {
+        localStorage.setItem(RECENT_PRESETS_KEY, JSON.stringify(recentPresets.slice(0, MAX_PRESETS)));
+      }
+
+      function getPresetSnapshot() {
+        return {
+          q: q.value.trim(),
+          state: stateFilterSel.value,
+          positionType: positionTypeSel.value,
+          college: collegeSel.value,
+          summarizedOnly: summarizedOnlyCb.checked,
+          tenureTrackOnly: tenureTrackOnlyCb.checked,
+          savedOnly: savedOnlyCb.checked,
+          sortBy: sortBySel.value,
+        };
+      }
+
+      function presetHasFilters(preset) {
+        if (!preset) return false;
+        return Boolean(
+          preset.q ||
+          preset.state !== "all" ||
+          preset.positionType !== "all" ||
+          preset.college !== "all" ||
+          preset.summarizedOnly ||
+          preset.tenureTrackOnly ||
+          preset.savedOnly ||
+          preset.sortBy !== "relevance"
+        );
+      }
+
+      function presetLabel(preset) {
+        const parts = [];
+        if (preset.q) parts.push(`"${truncate(preset.q, 16)}"`);
+        if (preset.state && preset.state !== "all") parts.push(preset.state);
+        if (preset.positionType && preset.positionType !== "all") parts.push(preset.positionType);
+        if (preset.savedOnly) parts.push("Saved");
+        if (preset.tenureTrackOnly) parts.push("Tenure");
+        if (preset.summarizedOnly) parts.push("AI");
+        return parts.length ? parts.join(" · ") : "Default filters";
+      }
+
+      function renderRecentPresets() {
+        recentFiltersEl.innerHTML = "";
+        if (!recentPresets.length) {
+          recentFiltersEl.innerHTML = '<p class="empty-note">No saved presets yet.</p>';
+          return;
+        }
+
+        recentPresets.forEach((preset, idx) => {
+          const wrap = document.createElement("span");
+          wrap.className = "preset";
+
+          const apply = document.createElement("button");
+          apply.type = "button";
+          apply.className = "preset-apply";
+          apply.dataset.action = "apply";
+          apply.dataset.idx = String(idx);
+          apply.textContent = presetLabel(preset);
+          apply.title = "Apply preset";
+
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.dataset.action = "remove";
+          remove.dataset.idx = String(idx);
+          remove.textContent = "×";
+          remove.title = "Remove preset";
+
+          wrap.appendChild(apply);
+          wrap.appendChild(remove);
+          recentFiltersEl.appendChild(wrap);
+        });
+      }
+
+      function closeMobileFilters() {
+        document.body.classList.remove("filters-open");
       }
 
       // Format title with proper capitalization
@@ -750,6 +1199,7 @@
         const posType = positionTypeSel.value;
         const college = collegeSel.value;
         const summarizedOnly = summarizedOnlyCb.checked;
+        const savedOnly = savedOnlyCb.checked;
 
         if (searchTerm) {
           const chip = document.createElement("span");
@@ -779,6 +1229,13 @@
           activeFiltersEl.appendChild(chip);
         }
 
+        if (savedOnly) {
+          const chip = document.createElement("span");
+          chip.className = "filter-chip";
+          chip.innerHTML = `Saved Jobs <button data-clear="savedOnly">&times;</button>`;
+          activeFiltersEl.appendChild(chip);
+        }
+
         if (posType !== "all") {
           const chip = document.createElement("span");
           chip.className = "filter-chip";
@@ -800,6 +1257,7 @@
         if (jobs.length === 0) {
           grid.innerHTML = '<div class="empty-state">No jobs found matching your criteria. Try adjusting your filters.</div>';
           shownEl.textContent = "0 jobs";
+          mobileCountEl.textContent = shownEl.textContent;
           return;
         }
 
@@ -869,20 +1327,56 @@
           desc.className = "desc";
           desc.textContent = job.description ? truncate(job.description, 180) : "";
 
+          let summaryBox = null;
+          if (job.summary && String(job.summary).trim().length > 0) {
+            summaryBox = document.createElement("details");
+            summaryBox.className = "summary-box";
+            const summaryTitle = document.createElement("summary");
+            summaryTitle.textContent = "AI Summary";
+            const summaryBody = document.createElement("p");
+            summaryBody.textContent = String(job.summary).trim();
+            summaryBox.appendChild(summaryTitle);
+            summaryBox.appendChild(summaryBody);
+          }
+
           const links = document.createElement("div");
           links.className = "links";
-          links.innerHTML = `<a href="${escapeHtml(job.url)}" target="_blank" rel="noreferrer">View Position</a>`;
+
+          const viewLink = document.createElement("a");
+          viewLink.href = job.url || "#";
+          viewLink.target = "_blank";
+          viewLink.rel = "noreferrer";
+          viewLink.textContent = "View Position";
+
+          const saveBtn = document.createElement("button");
+          saveBtn.type = "button";
+          saveBtn.className = "save-btn";
+          const isSaved = savedJobs.has(job.url);
+          if (isSaved) saveBtn.classList.add("saved");
+          saveBtn.textContent = isSaved ? "Saved" : "Save";
+          saveBtn.addEventListener("click", () => {
+            if (!job.url || job.url === "#") return;
+            if (savedJobs.has(job.url)) savedJobs.delete(job.url);
+            else savedJobs.add(job.url);
+            persistSavedJobs();
+            applyFilters();
+          });
+
+          links.appendChild(viewLink);
+          links.appendChild(saveBtn);
 
           card.appendChild(title);
           if (pills.childNodes.length) card.appendChild(pills);
           if (infoGrid.innerHTML) card.appendChild(infoGrid);
           if (job.description) card.appendChild(desc);
+          if (summaryBox) card.appendChild(summaryBox);
           card.appendChild(links);
 
           grid.appendChild(card);
         }
 
         shownEl.textContent = `${jobs.length.toLocaleString()} jobs`;
+        mobileCountEl.textContent = shownEl.textContent;
       }
 
       function applyFilters() {
@@ -893,6 +1387,7 @@
         const college = collegeSel.value;
         const sortBy = sortBySel.value;
         const summarizedOnly = summarizedOnlyCb.checked;
+        const savedOnly = savedOnlyCb.checked;
 
         // Update clear button visibility
         clearSearchBtn.classList.toggle("visible", q.value.length > 0);
@@ -915,6 +1410,11 @@
         // Filter to only tenure track jobs
         if (tenureTrackOnlyCb.checked) {
           filtered = filtered.filter(j => j.tenureTrack === true);
+        }
+
+        // Filter to saved jobs only
+        if (savedOnly) {
+          filtered = filtered.filter(j => savedJobs.has(j.url));
         }
 
         // Filter by position type
@@ -997,9 +1497,39 @@
         debounceTimer = setTimeout(applyFilters, 150);
       }
 
+      function applyPreset(preset) {
+        if (!preset) return;
+        q.value = preset.q || "";
+        stateFilterSel.value = preset.state || "all";
+        positionTypeSel.value = preset.positionType || "all";
+        summarizedOnlyCb.checked = !!preset.summarizedOnly;
+        tenureTrackOnlyCb.checked = !!preset.tenureTrackOnly;
+        savedOnlyCb.checked = !!preset.savedOnly;
+        sortBySel.value = preset.sortBy || "relevance";
+        applyFilters();
+        if (preset.college && Array.from(collegeSel.options).some(o => o.value === preset.college)) {
+          collegeSel.value = preset.college;
+          applyFilters();
+        }
+      }
+
+      function saveCurrentPreset() {
+        const preset = getPresetSnapshot();
+        if (!presetHasFilters(preset)) return;
+        recentPresets = [
+          preset,
+          ...recentPresets.filter(p =>
+            JSON.stringify(p) !== JSON.stringify(preset)
+          ),
+        ].slice(0, MAX_PRESETS);
+        persistRecentPresets();
+        renderRecentPresets();
+      }
+
       async function load() {
         statusEl.textContent = "Fetching jobs...";
         shownEl.textContent = "";
+        mobileCountEl.textContent = "Loading...";
         grid.innerHTML = '<div class="loading">Loading positions...</div>';
 
         const url = `./jobs.json?ts=${Date.now()}`;
@@ -1011,6 +1541,7 @@
             statusEl.className = "status warn";
             subhead.textContent = "Unable to load data";
             grid.innerHTML = '<div class="empty-state">Failed to load job listings. Please try again.</div>';
+            mobileCountEl.textContent = "0 jobs";
             return;
           }
 
@@ -1029,6 +1560,7 @@
           statusEl.textContent = "Error: " + err.message;
           statusEl.className = "status warn";
           grid.innerHTML = '<div class="empty-state">Failed to load job listings. Please try again.</div>';
+          mobileCountEl.textContent = "0 jobs";
         }
       }
 
@@ -1043,7 +1575,13 @@
       sortBySel.addEventListener("change", applyFilters);
       summarizedOnlyCb.addEventListener("change", applyFilters);
       tenureTrackOnlyCb.addEventListener("change", applyFilters);
+      savedOnlyCb.addEventListener("change", applyFilters);
       refreshBtn.addEventListener("click", load);
+      openFiltersBtn.addEventListener("click", () => {
+        document.body.classList.add("filters-open");
+      });
+      closeFiltersBtn.addEventListener("click", closeMobileFilters);
+      savePresetBtn.addEventListener("click", saveCurrentPreset);
 
       clearSearchBtn.addEventListener("click", () => {
         q.value = "";
@@ -1058,6 +1596,7 @@
         collegeSel.value = "all";
         summarizedOnlyCb.checked = false;
         tenureTrackOnlyCb.checked = false;
+        savedOnlyCb.checked = false;
         sortBySel.value = "relevance";
         applyFilters();
       });
@@ -1069,12 +1608,39 @@
           if (clear === "stateFilter") stateFilterSel.value = "all";
           if (clear === "summarizedOnly") summarizedOnlyCb.checked = false;
           if (clear === "tenureTrackOnly") tenureTrackOnlyCb.checked = false;
+          if (clear === "savedOnly") savedOnlyCb.checked = false;
           if (clear === "positionType") positionTypeSel.value = "all";
           if (clear === "college") collegeSel.value = "all";
           applyFilters();
         }
       });
 
+      recentFiltersEl.addEventListener("click", (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLElement)) return;
+        const idx = Number(target.dataset.idx);
+        if (!Number.isInteger(idx) || idx < 0 || idx >= recentPresets.length) return;
+
+        if (target.dataset.action === "apply") {
+          applyPreset(recentPresets[idx]);
+          closeMobileFilters();
+        }
+        if (target.dataset.action === "remove") {
+          recentPresets.splice(idx, 1);
+          persistRecentPresets();
+          renderRecentPresets();
+        }
+      });
+
+      filterRail.addEventListener("click", (e) => {
+        if (e.target === filterRail) closeMobileFilters();
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeMobileFilters();
+      });
+
+      renderRecentPresets();
       load();
     </script>
   </body>
