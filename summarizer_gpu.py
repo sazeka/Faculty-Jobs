@@ -91,6 +91,9 @@ def strip_extraneous_title_info(title: Optional[str]) -> Optional[str]:
     # Remove trailing college name after " - " (common in page titles like "Title - University Name")
     t = re.sub(r"\s+-\s+(?:Connecticut State|CT State|University of|College of).*$", "", t, flags=re.I)
     # Remove trailing colons, dashes, commas
+    # Remove non-credit qualifiers that are not meaningful specializations
+    t = re.sub(r"\s*[-:]\s*Non[-\s]?Credit\b", "", t, flags=re.I)
+    t = re.sub(r"\bNon[-\s]?Credit\b", "", t, flags=re.I)
     t = re.sub(r"[\s:,\-–—]+$", "", t)
     t = re.sub(r"\s{2,}", " ", t).strip()
     return t or title
@@ -217,6 +220,8 @@ def extract_specialization(title: Optional[str], page_text: Optional[str]) -> Op
             "the department",
             "our department",
             "the school",
+            "school of nursing serves a total of",
+            "serves a total of",
             "the college",
             "the university",
             "the faculty",
@@ -469,6 +474,13 @@ def clean_field_name(field: Optional[str]) -> Optional[str]:
         r"^Open\s+Rank.*$",
         r".*Search\s*#.*",
         r"^Search$",
+        r"^Hiring$",
+        r"^Now\s+Hiring$",
+        r"^Hiring\s+Now$",
+        r"^Openings?$",
+        r"^Job\s+Openings?$",
+        r"^Non[-\s]?Credit$",
+        r"^For\s+Non[-\s]?Credit$",
     ]
 
     for pattern in reject_patterns:
@@ -487,6 +499,9 @@ def clean_field_name(field: Optional[str]) -> Optional[str]:
 
     # Remove location suffixes (NYC boroughs, etc.)
     f = re.sub(r'\s*(New\s*York|Brooklyn|Staten\s*Island|Bronx|Queens|Manhattan|NY|CUNY|SUNY|HUNTER|BARUCH|COLLEGE|NYCITY).*$', '', f, flags=re.I)
+
+    # Remove non-credit qualifier suffixes (common in CT lecturer titles)
+    f = re.sub(r'\s*[-:,]?\s*Non[-\s]?Credit\b$', '', f, flags=re.I)
 
     # Remove rank-related suffixes like " - Associate" or ", Assistant"
     f = re.sub(r'\s*[-,]\s*(Assistant|Associate|Professor|Lecturer|Instructor)\s*$', '', f, flags=re.I)
@@ -518,7 +533,9 @@ def clean_field_name(field: Optional[str]) -> Optional[str]:
     # Reject boilerplate words/phrases that are not real departments
     boilerplate_exact = ["chair", "of the", "in the", "error", "cnse", "cehc",
                          "admissions", "alumni", "syracuse", "extended learning",
-                         "job opportunities", "employment opportunities", "careers"]
+                         "job opportunities", "employment opportunities", "careers",
+                         "hiring", "now hiring", "hiring now", "openings", "job opening",
+                         "job openings", "students", "student"]
     boilerplate_contains = ["context", "home department", "the department",
                             "this position", "our department", "the school",
                             "the college", "the university", ".img-responsive",
@@ -532,7 +549,8 @@ def clean_field_name(field: Optional[str]) -> Optional[str]:
                             "print and mail", "clinic suite", "vpsl",
                             "environmental services", "linen", "ntp-",
                             "rf - step", "region:", "open until filled",
-                            "wf2", "(wf", "search #"]
+                            "wf2", "(wf", "search #", "serves a total of",
+                            "school of nursing serves a total of"]
     boilerplate_startswith = ["of ", "in ", "the ", "and ", "or ", ".", "it ", "at "]
     f_lower = f.lower()
     if f_lower in boilerplate_exact:
@@ -688,7 +706,11 @@ def make_concise_title(rank: Optional[str], dept: Optional[str], specialization:
     elif rank:
         result = rank
     elif field:
-        result = field
+        # If rank is missing and extracted field is very generic, keep original title.
+        if original_title and is_valid_title(original_title) and len(field.split()) <= 1:
+            result = original_title
+        else:
+            result = field
     elif original_title and is_valid_title(original_title):
         result = original_title
     else:

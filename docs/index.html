@@ -106,6 +106,17 @@
         letter-spacing: 0.01em;
       }
 
+      .subtitle {
+        margin: 0;
+        font-size: 1rem;
+        color: #2d3f41;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        font-family: "Manrope", Arial, sans-serif;
+        line-height: 1.2;
+        align-self: center;
+      }
+
       .search-bar {
         background: rgba(255, 255, 255, 0.86);
         border: 1px solid rgba(216, 209, 197, 0.9);
@@ -290,7 +301,7 @@
       }
 
       .status-bar {
-        display: flex;
+        display: none;
         justify-content: space-between;
         align-items: center;
         padding: 14px 18px;
@@ -394,6 +405,213 @@
         min-width: 0;
       }
 
+      .map-panel {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(216, 209, 197, 0.9);
+        border-radius: 16px;
+        padding: 12px;
+        margin-bottom: 14px;
+        box-shadow: 0 10px 22px rgba(34, 26, 16, 0.08);
+      }
+
+      .map-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .map-title {
+        margin: 0;
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 1.02rem;
+        color: #293a3b;
+      }
+
+      .map-note {
+        margin: 2px 0 0;
+        color: #677678;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .map-view {
+        user-select: none;
+        position: relative;
+        border-radius: 12px;
+        min-height: 260px;
+        overflow: hidden;
+        border: 1px solid #d9d1c3;
+        background:
+          radial-gradient(circle at 76% 70%, rgba(223, 232, 232, 0.92), rgba(223, 232, 232, 0.3) 28%, transparent 60%),
+          radial-gradient(circle at 18% 16%, rgba(231, 212, 188, 0.6), rgba(231, 212, 188, 0.2) 26%, transparent 52%),
+          linear-gradient(180deg, #f7f2e8 0%, #f2ebe0 100%);
+      }
+
+      .map-view::before {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        inset: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(201, 192, 178, 0.6);
+      }
+
+      .map-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+
+      .map-canvas {
+        position: absolute;
+        inset: 10px;
+        z-index: 1;
+        transform-origin: center center;
+        transition: transform 160ms ease;
+      }
+
+      .map-view.dragging .map-canvas {
+        transition: none;
+      }
+
+      .map-view.can-pan {
+        cursor: grab;
+      }
+
+      .map-view.dragging {
+        cursor: grabbing;
+      }
+
+      .us-map-host {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+      }
+
+      .us-map-host svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .us-map-host g.state path {
+        fill: rgba(233, 225, 210, 0.82);
+      }
+
+      .us-map-host g.borders path {
+        stroke: rgba(179, 167, 148, 0.6);
+        stroke-width: 1.1;
+      }
+
+      .map-empty {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border: 1px dashed #cdbfae;
+        border-radius: 12px;
+        background: rgba(255, 252, 247, 0.9);
+        padding: 10px 12px;
+        color: #63584b;
+        font-size: 12px;
+        font-weight: 700;
+        z-index: 2;
+      }
+
+      .map-empty.hidden { display: none; }
+
+      .map-marker {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        border: 2px solid #fffaf3;
+        border-radius: 999px;
+        min-width: 24px;
+        min-height: 24px;
+        padding: 0 6px;
+        font-size: 11px;
+        font-weight: 800;
+        color: #fffaf3;
+        cursor: pointer;
+        box-shadow: 0 0 0 10px var(--map-ring), 0 6px 16px rgba(39, 30, 20, 0.2);
+        transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+        z-index: 1;
+      }
+
+      .map-marker:hover,
+      .map-marker.active {
+        transform: translate(-50%, -50%) scale(1.12);
+        filter: saturate(1.04);
+        box-shadow: 0 0 0 12px var(--map-ring), 0 10px 18px rgba(39, 30, 20, 0.28);
+        z-index: 3;
+      }
+
+      .map-marker.default {
+        background: #c45c38;
+        --map-ring: rgba(196, 92, 56, 0.24);
+      }
+
+      .map-marker.tenure {
+        background: #396326;
+        --map-ring: rgba(57, 99, 38, 0.22);
+      }
+
+      .map-marker.non-tenure {
+        background: #5f6d6f;
+        --map-ring: rgba(95, 109, 111, 0.2);
+      }
+
+      .map-legend {
+        position: absolute;
+        left: 12px;
+        bottom: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid #d8d1c5;
+        background: rgba(255, 253, 249, 0.92);
+        font-size: 11px;
+        font-weight: 700;
+        color: #4e5c5d;
+        z-index: 2;
+      }
+
+      .map-zoom {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 4;
+        display: flex;
+        gap: 6px;
+      }
+
+      .map-zoom button {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border-radius: 9px;
+        border: 1px solid #d7cdbf;
+        background: rgba(255, 252, 247, 0.94);
+        color: #516062;
+        box-shadow: 0 4px 10px rgba(46, 34, 22, 0.11);
+        font-size: 17px;
+        line-height: 1;
+      }
+
+      .map-legend .dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        margin-right: 4px;
+        vertical-align: middle;
+      }
+
+      .map-hidden { display: none; }
+
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -417,6 +635,16 @@
         transform: translateY(-2px);
         border-color: #c3977e;
         box-shadow: 0 14px 28px rgba(58, 43, 30, 0.12);
+      }
+
+      .card.state-focus {
+        border-color: #af7a62;
+        box-shadow: 0 12px 24px rgba(58, 43, 30, 0.14);
+      }
+
+      .card.issue-flagged {
+        border-color: #c26555;
+        box-shadow: 0 12px 24px rgba(97, 45, 34, 0.16);
       }
 
       .title {
@@ -575,6 +803,27 @@
         border-color: #b9d9c1;
       }
 
+      .issue-btn {
+        background: #f6ece3;
+        color: #6a4630;
+        border: 1px solid #dfc8b5;
+        box-shadow: none;
+        padding: 7px 10px;
+        font-size: 12px;
+      }
+
+      .issue-btn:hover {
+        transform: none;
+        box-shadow: none;
+        background: #efdfd1;
+      }
+
+      .issue-btn.flagged {
+        background: #f2d8d2;
+        color: #7b3027;
+        border-color: #d6a7a0;
+      }
+
       .recent-filters {
         display: flex;
         flex-wrap: wrap;
@@ -685,6 +934,9 @@
       @media (max-width: 960px) {
         header { padding: 30px 16px 22px; }
         .logo { gap: 10px; }
+        .subtitle {
+          font-size: 0.92rem;
+        }
         .logo-icon img {
           width: 68px;
           height: 68px;
@@ -719,6 +971,13 @@
         select, .check, button { width: 100%; min-width: unset; }
         .filters-row { gap: 8px; }
         .status-bar { flex-direction: column; align-items: flex-start; gap: 6px; }
+        .map-panel { padding: 10px; }
+        .map-view { min-height: 220px; }
+        .map-head {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
         .grid { grid-template-columns: 1fr; gap: 14px; }
       }
 </style>
@@ -733,6 +992,7 @@
           <span class="logo-faculty">Faculty</span>
           <span class="logo-atlas">Atlas</span>
         </div>
+        <div class="subtitle">Find your future college or university faculty job.</div>
       </div>
       <div class="tagline" id="subhead">Loading...</div>
     </header>
@@ -827,6 +1087,11 @@
                     Saved only
                   </label>
 
+                  <label class="check">
+                    <input type="checkbox" id="flaggedOnly" />
+                    Flagged only
+                  </label>
+
                   <select id="sortBy">
                     <option value="relevance">Sort: Relevance</option>
                     <option value="title-asc">Sort: Title A-Z</option>
@@ -864,6 +1129,32 @@
             <span class="status" id="status">Loading...</span>
             <span class="count" id="shown"></span>
           </div>
+          <section class="map-panel" aria-label="Job map">
+            <div class="map-head">
+              <div>
+                <h3 class="map-title">Job Density Map</h3>
+                <p class="map-note" id="mapNote">Markers show jobs by university location. Click a marker to filter.</p>
+              </div>
+              <button class="secondary map-hidden" id="clearMapState" type="button">Clear College Filter</button>
+            </div>
+            <div class="map-view" id="mapView">
+              <div class="map-zoom" aria-label="Map zoom controls">
+                <button type="button" id="zoomOutMap" title="Zoom out" aria-label="Zoom out">−</button>
+                <button type="button" id="zoomInMap" title="Zoom in" aria-label="Zoom in">+</button>
+                <button type="button" id="zoomResetMap" title="Reset zoom" aria-label="Reset zoom">•</button>
+              </div>
+              <div class="map-canvas" id="mapCanvas">
+                <div class="us-map-host" id="usMapHost" aria-hidden="true"></div>
+                <div class="map-overlay" id="mapMarkers"></div>
+              </div>
+              <div class="map-empty hidden" id="mapEmpty">No mappable state data in these results.</div>
+              <div class="map-legend">
+                <span><span class="dot" style="background:#396326"></span>Tenure</span>
+                <span><span class="dot" style="background:#5f6d6f"></span>Non-Tenure</span>
+                <span><span class="dot" style="background:#c45c38"></span>Mixed</span>
+              </div>
+            </div>
+          </section>
           <div class="grid" id="grid"></div>
         </main>
       </div>
@@ -886,17 +1177,48 @@
       const summarizedOnlyCb = document.getElementById("summarizedOnly");
       const tenureTrackOnlyCb = document.getElementById("tenureTrackOnly");
       const savedOnlyCb = document.getElementById("savedOnly");
+      const flaggedOnlyCb = document.getElementById("flaggedOnly");
       const savePresetBtn = document.getElementById("savePreset");
       const recentFiltersEl = document.getElementById("recentFilters");
       const openFiltersBtn = document.getElementById("openFilters");
       const closeFiltersBtn = document.getElementById("closeFilters");
       const mobileCountEl = document.getElementById("mobileCount");
       const filterRail = document.getElementById("filterRail");
+      const mapMarkersEl = document.getElementById("mapMarkers");
+      const mapEmptyEl = document.getElementById("mapEmpty");
+      const clearMapStateBtn = document.getElementById("clearMapState");
+      const mapNoteEl = document.getElementById("mapNote");
+      const usMapHost = document.getElementById("usMapHost");
+      const mapView = document.getElementById("mapView");
+      const mapCanvas = document.getElementById("mapCanvas");
+      const zoomInMapBtn = document.getElementById("zoomInMap");
+      const zoomOutMapBtn = document.getElementById("zoomOutMap");
+      const zoomResetMapBtn = document.getElementById("zoomResetMap");
 
       let allJobs = [];
       let meta = { scrapedAt: null, count: 0 };
       let debounceTimer = null;
+      let markerNodes = new Map();
+      let latestRenderedJobs = [];
+      const stateCenters = {};
+      let usMapReady = false;
+      const collegeCoords = {};
+      let collegeCoordsReady = false;
+      let projectionModel = null;
+      let mapZoom = 1;
+      let panX = 0;
+      let panY = 0;
+      let isDraggingMap = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let dragOriginX = 0;
+      let dragOriginY = 0;
+      let dragPointerId = null;
+      let usMapRawWidth = 959;
+      let usMapRawHeight = 593;
       const SAVED_JOBS_KEY = "facultyJobs.saved.v1";
+      const ISSUE_JOBS_KEY = "facultyJobs.issues.v1";
+      const GITHUB_ISSUE_BASE = "https://github.com/steveazeka/Faculty-Jobs/issues/new";
       const RECENT_PRESETS_KEY = "facultyJobs.recentPresets.v1";
       const MAX_PRESETS = 5;
       const parseStoredArray = (key) => {
@@ -908,6 +1230,7 @@
         }
       };
       const savedJobs = new Set(parseStoredArray(SAVED_JOBS_KEY));
+      const issueJobs = new Set(parseStoredArray(ISSUE_JOBS_KEY));
       let recentPresets = parseStoredArray(RECENT_PRESETS_KEY);
 
       function escapeHtml(s) {
@@ -925,6 +1248,46 @@
         localStorage.setItem(SAVED_JOBS_KEY, JSON.stringify([...savedJobs]));
       }
 
+      function persistIssueJobs() {
+        localStorage.setItem(ISSUE_JOBS_KEY, JSON.stringify([...issueJobs]));
+      }
+
+      function getIssueKey(job) {
+        if (job?.url && job.url !== "#") return `url:${job.url}`;
+        return `fallback:${job?.title || ""}|${job?.college || ""}|${job?.location || ""}`;
+      }
+
+      function buildIssueDraft(job) {
+        const title = `[Flagged posting] ${job?.title || "Untitled role"}${job?.college ? ` - ${job.college}` : ""}`;
+        const body = [
+          "A posting was flagged from the Faculty Jobs board.",
+          "",
+          `- Title: ${job?.title || "Unknown"}`,
+          `- College: ${job?.college || "Unknown"}`,
+          `- Location: ${job?.location || "Unknown"}`,
+          `- Position type: ${job?.positionType || "Unknown"}`,
+          `- Posting URL: ${job?.url || "Missing URL"}`,
+          `- Board page: ${window.location.href}`,
+          "",
+          "### What looks wrong?",
+          "- Describe the issue with this posting (wrong title, duplicate, broken description, stale link, etc.).",
+          "",
+          "### Expected behavior",
+          "- Describe what should be shown instead.",
+        ].join("\n");
+        const query = new URLSearchParams({
+          title,
+          body,
+          labels: "bug,data-quality",
+        });
+        return `${GITHUB_ISSUE_BASE}?${query.toString()}`;
+      }
+
+      function openIssueDraft(job) {
+        const draftUrl = buildIssueDraft(job);
+        window.open(draftUrl, "_blank", "noopener,noreferrer");
+      }
+
       function persistRecentPresets() {
         localStorage.setItem(RECENT_PRESETS_KEY, JSON.stringify(recentPresets.slice(0, MAX_PRESETS)));
       }
@@ -938,6 +1301,7 @@
           summarizedOnly: summarizedOnlyCb.checked,
           tenureTrackOnly: tenureTrackOnlyCb.checked,
           savedOnly: savedOnlyCb.checked,
+          flaggedOnly: flaggedOnlyCb.checked,
           sortBy: sortBySel.value,
         };
       }
@@ -952,6 +1316,7 @@
           preset.summarizedOnly ||
           preset.tenureTrackOnly ||
           preset.savedOnly ||
+          preset.flaggedOnly ||
           preset.sortBy !== "relevance"
         );
       }
@@ -961,6 +1326,7 @@
         if (preset.q) parts.push(`"${truncate(preset.q, 16)}"`);
         if (preset.state && preset.state !== "all") parts.push(preset.state);
         if (preset.positionType && preset.positionType !== "all") parts.push(preset.positionType);
+        if (preset.flaggedOnly) parts.push("Flagged");
         if (preset.savedOnly) parts.push("Saved");
         if (preset.tenureTrackOnly) parts.push("Tenure");
         if (preset.summarizedOnly) parts.push("AI");
@@ -1085,8 +1451,10 @@
 
       const stateMap = {
         "AZ": "Arizona",
+        "CSU": "California",
         "CA - CSU": "California",
         "UC": "California",
+        "CA Private": "California",
         "CO": "Colorado",
         "CT": "Connecticut",
         "CT State": "Connecticut",
@@ -1094,7 +1462,9 @@
         "ID": "Idaho",
         "IL": "Illinois",
         "IN": "Indiana",
+        "MA": "Massachusetts",
         "UMass": "Massachusetts",
+        "MD": "Maryland",
   "ME": "Maine",
   "NH": "New Hampshire",
         "MI": "Michigan",
@@ -1108,11 +1478,423 @@
         "OR": "Oregon",
         "PA": "Pennsylvania",
         "RI": "Rhode Island",
+        "VT": "Vermont",
         "UT": "Utah",
         "WA": "Washington",
         "WI": "Wisconsin",
-        "Claremont Colleges": "California"
+        "Claremont Colleges": "California",
+        "Claremont": "California"
       };
+
+      const stateCoords = {
+        "Alabama": [32.806671, -86.79113],
+        "Alaska": [61.370716, -152.404419],
+        "Arizona": [33.729759, -111.431221],
+        "Arkansas": [34.969704, -92.373123],
+        "California": [36.116203, -119.681564],
+        "Colorado": [39.059811, -105.311104],
+        "Connecticut": [41.597782, -72.755371],
+        "Delaware": [39.318523, -75.507141],
+        "Florida": [27.766279, -81.686783],
+        "Georgia": [33.040619, -83.643074],
+        "Hawaii": [21.094318, -157.498337],
+        "Idaho": [44.240459, -114.478828],
+        "Illinois": [40.349457, -88.986137],
+        "Indiana": [39.849426, -86.258278],
+        "Iowa": [42.011539, -93.210526],
+        "Kansas": [38.5266, -96.726486],
+        "Kentucky": [37.66814, -84.670067],
+        "Louisiana": [31.169546, -91.867805],
+        "Maine": [44.693947, -69.381927],
+        "Maryland": [39.063946, -76.802101],
+        "Massachusetts": [42.230171, -71.530106],
+        "Michigan": [43.326618, -84.536095],
+        "Minnesota": [45.694454, -93.900192],
+        "Mississippi": [32.741646, -89.678696],
+        "Missouri": [38.456085, -92.288368],
+        "Montana": [46.921925, -110.454353],
+        "Nebraska": [41.12537, -98.268082],
+        "Nevada": [38.313515, -117.055374],
+        "New Hampshire": [43.452492, -71.563896],
+        "New Jersey": [40.298904, -74.521011],
+        "New Mexico": [34.840515, -106.248482],
+        "New York": [42.165726, -74.948051],
+        "North Carolina": [35.630066, -79.806419],
+        "North Dakota": [47.528912, -99.784012],
+        "Ohio": [40.388783, -82.764915],
+        "Oklahoma": [35.565342, -96.928917],
+        "Oregon": [44.572021, -122.070938],
+        "Pennsylvania": [40.590752, -77.209755],
+        "Rhode Island": [41.680893, -71.51178],
+        "South Carolina": [33.856892, -80.945007],
+        "South Dakota": [44.299782, -99.438828],
+        "Tennessee": [35.747845, -86.692345],
+        "Texas": [31.054487, -97.563461],
+        "Utah": [40.150032, -111.862434],
+        "Vermont": [44.045876, -72.710686],
+        "Virginia": [37.769337, -78.169968],
+        "Washington": [47.400902, -121.490494],
+        "West Virginia": [38.491226, -80.954453],
+        "Wisconsin": [44.268543, -89.616508],
+        "Wyoming": [42.755966, -107.30249]
+      };
+
+      const stateAbbr = {
+        "Alabama": "al", "Alaska": "ak", "Arizona": "az", "Arkansas": "ar",
+        "California": "ca", "Colorado": "co", "Connecticut": "ct", "Delaware": "de",
+        "Florida": "fl", "Georgia": "ga", "Hawaii": "hi", "Idaho": "id",
+        "Illinois": "il", "Indiana": "in", "Iowa": "ia", "Kansas": "ks",
+        "Kentucky": "ky", "Louisiana": "la", "Maine": "me", "Maryland": "md",
+        "Massachusetts": "ma", "Michigan": "mi", "Minnesota": "mn", "Mississippi": "ms",
+        "Missouri": "mo", "Montana": "mt", "Nebraska": "ne", "Nevada": "nv",
+        "New Hampshire": "nh", "New Jersey": "nj", "New Mexico": "nm", "New York": "ny",
+        "North Carolina": "nc", "North Dakota": "nd", "Ohio": "oh", "Oklahoma": "ok",
+        "Oregon": "or", "Pennsylvania": "pa", "Rhode Island": "ri", "South Carolina": "sc",
+        "South Dakota": "sd", "Tennessee": "tn", "Texas": "tx", "Utah": "ut",
+        "Vermont": "vt", "Virginia": "va", "Washington": "wa", "West Virginia": "wv",
+        "Wisconsin": "wi", "Wyoming": "wy", "District of Columbia": "dc"
+      };
+
+      const stateNudge = {
+        "Massachusetts": [0.8, -0.8],
+        "Rhode Island": [2.0, 0.8],
+        "Connecticut": [0.9, 0.4],
+        "New Jersey": [1.0, 0.4],
+        "Delaware": [1.6, 1.0],
+        "Maryland": [1.1, 0.8],
+        "New Hampshire": [0.6, -0.9],
+        "Vermont": [0.3, -0.8],
+        "Maine": [0.9, -1.0]
+      };
+
+      function solve3x3(matrix, vector) {
+        const m = matrix.map((row, i) => [...row, vector[i]]);
+        for (let col = 0; col < 3; col++) {
+          let pivot = col;
+          for (let row = col + 1; row < 3; row++) {
+            if (Math.abs(m[row][col]) > Math.abs(m[pivot][col])) pivot = row;
+          }
+          if (Math.abs(m[pivot][col]) < 1e-9) return null;
+          if (pivot !== col) [m[col], m[pivot]] = [m[pivot], m[col]];
+          const div = m[col][col];
+          for (let c = col; c < 4; c++) m[col][c] /= div;
+          for (let row = 0; row < 3; row++) {
+            if (row === col) continue;
+            const factor = m[row][col];
+            for (let c = col; c < 4; c++) m[row][c] -= factor * m[col][c];
+          }
+        }
+        return [m[0][3], m[1][3], m[2][3]];
+      }
+
+      function fitProjectionModel() {
+        const rows = [];
+        const xs = [];
+        const ys = [];
+        for (const [state, center] of Object.entries(stateCenters)) {
+          if (state === "Alaska" || state === "Hawaii") continue;
+          const coord = stateCoords[state];
+          if (!coord) continue;
+          const [lat, lon] = coord;
+          rows.push([lon, lat, 1]);
+          xs.push(center.x);
+          ys.push(center.y);
+        }
+        if (rows.length < 8) return;
+
+        const ata = [
+          [0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]
+        ];
+        const atx = [0, 0, 0];
+        const aty = [0, 0, 0];
+
+        for (let i = 0; i < rows.length; i++) {
+          const r = rows[i];
+          for (let a = 0; a < 3; a++) {
+            for (let b = 0; b < 3; b++) ata[a][b] += r[a] * r[b];
+            atx[a] += r[a] * xs[i];
+            aty[a] += r[a] * ys[i];
+          }
+        }
+
+        const xCoef = solve3x3(ata, atx);
+        const yCoef = solve3x3(ata, aty);
+        if (!xCoef || !yCoef) return;
+        projectionModel = {
+          ax: xCoef[0], bx: xCoef[1], cx: xCoef[2],
+          ay: yCoef[0], by: yCoef[1], cy: yCoef[2]
+        };
+      }
+
+      async function loadUSMapSvg() {
+        try {
+          const resp = await fetch("./assets/us-states.svg", { cache: "force-cache" });
+          if (!resp.ok) return;
+          const svgText = await resp.text();
+          usMapHost.innerHTML = svgText;
+          const svg = usMapHost.querySelector("svg");
+          if (!svg) return;
+
+          const rawW = Number(svg.getAttribute("width")) || 959;
+          const rawH = Number(svg.getAttribute("height")) || 593;
+          usMapRawWidth = rawW;
+          usMapRawHeight = rawH;
+          svg.setAttribute("viewBox", `0 0 ${rawW} ${rawH}`);
+          svg.removeAttribute("width");
+          svg.removeAttribute("height");
+          svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+          for (const [stateName, abbr] of Object.entries(stateAbbr)) {
+            const node = svg.querySelector(`g.state path.${abbr}`);
+            if (!node || typeof node.getBBox !== "function") continue;
+            const box = node.getBBox();
+            if (!box || !Number.isFinite(box.width) || !Number.isFinite(box.height)) continue;
+            stateCenters[stateName] = {
+              x: ((box.x + box.width / 2) / rawW) * 100,
+              y: ((box.y + box.height / 2) / rawH) * 100
+            };
+          }
+
+          fitProjectionModel();
+          usMapReady = true;
+          if (latestRenderedJobs.length) renderMap(latestRenderedJobs);
+        } catch {
+          // Keep fallback projection if SVG cannot be loaded.
+          usMapReady = false;
+        }
+      }
+
+      function projectStateToMap(state) {
+        if (usMapReady && stateCenters[state]) {
+          return stateCenters[state];
+        }
+        const coord = stateCoords[state];
+        if (!coord) return null;
+        const [lat, lon] = coord;
+        // Contiguous-US projection calibrated for this custom SVG silhouette.
+        const minLat = 24;
+        const maxLat = 50;
+        const minLon = -125;
+        const maxLon = -66;
+        const lonNorm = (lon - minLon) / (maxLon - minLon);
+        const latNorm = (lat - minLat) / (maxLat - minLat);
+
+        // Scale to visible map body and gently curve latitude for better coastline fit.
+        let xPct = 7 + lonNorm * 86;
+        let yPct = 12 + (1 - Math.pow(latNorm, 0.9)) * 70;
+
+        const nudge = stateNudge[state];
+        if (nudge) {
+          xPct += nudge[0];
+          yPct += nudge[1];
+        }
+        return {
+          x: Math.min(94, Math.max(6, xPct)),
+          y: Math.min(90, Math.max(10, yPct))
+        };
+      }
+
+      function getMarkerTone(group) {
+        if (group.tenure > 0 && group.nonTenure === 0) return "tenure";
+        if (group.nonTenure > 0 && group.tenure === 0) return "non-tenure";
+        return "default";
+      }
+
+      function projectLatLonToMap(lat, lon) {
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+        if (projectionModel) {
+          const xPct = projectionModel.ax * lon + projectionModel.bx * lat + projectionModel.cx;
+          const yPct = projectionModel.ay * lon + projectionModel.by * lat + projectionModel.cy;
+          if (Number.isFinite(xPct) && Number.isFinite(yPct)) {
+            return {
+              x: Math.min(98, Math.max(2, xPct)),
+              y: Math.min(98, Math.max(2, yPct))
+            };
+          }
+        }
+        const minLat = 24;
+        const maxLat = 50;
+        const minLon = -125;
+        const maxLon = -66;
+        const lonNorm = (lon - minLon) / (maxLon - minLon);
+        const latNorm = (lat - minLat) / (maxLat - minLat);
+        let xPct = 7 + lonNorm * 86;
+        let yPct = 12 + (1 - Math.pow(latNorm, 0.9)) * 70;
+        xPct = Math.min(94, Math.max(6, xPct));
+        yPct = Math.min(90, Math.max(10, yPct));
+        return { x: xPct, y: yPct };
+      }
+
+      function svgPercentToCanvasPercent(xPct, yPct) {
+        const w = mapCanvas.clientWidth || 1;
+        const h = mapCanvas.clientHeight || 1;
+        const svgRatio = usMapRawWidth / usMapRawHeight;
+        const canvasRatio = w / h;
+        let renderW = w;
+        let renderH = h;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        if (canvasRatio > svgRatio) {
+          renderH = h;
+          renderW = h * svgRatio;
+          offsetX = (w - renderW) / 2;
+        } else {
+          renderW = w;
+          renderH = w / svgRatio;
+          offsetY = (h - renderH) / 2;
+        }
+
+        const px = offsetX + (xPct / 100) * renderW;
+        const py = offsetY + (yPct / 100) * renderH;
+        return {
+          x: (px / w) * 100,
+          y: (py / h) * 100
+        };
+      }
+
+      function clampPan() {
+        const w = mapView.clientWidth - 20;
+        const h = mapView.clientHeight - 20;
+        const maxX = Math.max(0, ((w * mapZoom) - w) / 2);
+        const maxY = Math.max(0, ((h * mapZoom) - h) / 2);
+        panX = Math.max(-maxX, Math.min(maxX, panX));
+        panY = Math.max(-maxY, Math.min(maxY, panY));
+      }
+
+      function applyMapZoom() {
+        clampPan();
+        mapCanvas.style.transform = `translate(${panX}px, ${panY}px) scale(${mapZoom})`;
+        zoomOutMapBtn.disabled = mapZoom <= 1;
+        zoomInMapBtn.disabled = mapZoom >= 3.6;
+        mapView.classList.toggle("can-pan", mapZoom > 1);
+        if (mapZoom <= 1) mapView.classList.remove("dragging");
+      }
+
+      function setMarkerActiveState(activeState) {
+        markerNodes.forEach((node, state) => {
+          node.classList.toggle("active", state === activeState);
+        });
+      }
+
+      function highlightCardsByCollege(college) {
+        const cards = grid.querySelectorAll(".card");
+        cards.forEach((card) => {
+          const cardCollege = card.dataset.college || "";
+          card.classList.toggle("state-focus", Boolean(college) && cardCollege === college);
+        });
+      }
+
+      async function loadCollegeCoords() {
+        try {
+          const resp = await fetch("./college-coords.json", { cache: "no-store" });
+          if (!resp.ok) return;
+          const data = await resp.json();
+          const entries = data?.colleges && typeof data.colleges === "object" ? data.colleges : {};
+          for (const [college, info] of Object.entries(entries)) {
+            const lat = Number(info?.lat);
+            const lon = Number(info?.lon);
+            if (Number.isFinite(lat) && Number.isFinite(lon)) {
+              collegeCoords[college] = { lat, lon };
+            }
+          }
+          collegeCoordsReady = true;
+          if (latestRenderedJobs.length) renderMap(latestRenderedJobs);
+        } catch {
+          collegeCoordsReady = false;
+        }
+      }
+
+      function renderMap(jobs) {
+        latestRenderedJobs = jobs;
+        markerNodes = new Map();
+        mapMarkersEl.innerHTML = "";
+        const groupedByCollege = new Map();
+        let mappedCount = 0;
+
+        for (const job of jobs) {
+          if (!job.college) continue;
+          const key = job.college;
+          if (!groupedByCollege.has(key)) {
+            groupedByCollege.set(key, {
+              count: 0,
+              tenure: 0,
+              nonTenure: 0,
+              state: job.state || null
+            });
+          }
+          const entry = groupedByCollege.get(key);
+          entry.count += 1;
+          if (job.tenureTrack === true) entry.tenure += 1;
+          else if (job.tenureTrack === false) entry.nonTenure += 1;
+        }
+
+        const grouped = [];
+        for (const [college, entry] of groupedByCollege.entries()) {
+          let point = null;
+          const coord = collegeCoords[college];
+          if (coord) point = projectLatLonToMap(coord.lat, coord.lon);
+          if (!point && entry.state) point = projectStateToMap(entry.state);
+          if (!point) continue;
+          mappedCount += entry.count;
+          grouped.push({ college, point, ...entry });
+        }
+
+        if (grouped.length === 0) {
+          mapEmptyEl.classList.remove("hidden");
+          mapNoteEl.textContent = "No university coordinates available for current results.";
+          clearMapStateBtn.classList.add("map-hidden");
+          return;
+        }
+
+        mapEmptyEl.classList.add("hidden");
+        mapNoteEl.textContent = `Mapped ${mappedCount} of ${jobs.length} jobs to campus points${collegeCoordsReady ? "" : " (loading coordinates...)"}.`;
+
+        const maxCount = Math.max(...grouped.map((g) => g.count));
+        const activeCollege = collegeSel.value !== "all" ? collegeSel.value : null;
+        clearMapStateBtn.classList.toggle("map-hidden", !activeCollege);
+
+        grouped
+          .sort((a, b) => b.count - a.count)
+          .forEach((entry) => {
+            const marker = document.createElement("button");
+            marker.type = "button";
+            marker.className = `map-marker ${getMarkerTone(entry)}`;
+            const markerPos = svgPercentToCanvasPercent(entry.point.x, entry.point.y);
+            marker.style.left = `${markerPos.x}%`;
+            marker.style.top = `${markerPos.y}%`;
+            const size = Math.min(40, 24 + Math.round((entry.count / maxCount) * 16));
+            marker.style.width = `${size}px`;
+            marker.style.height = `${size}px`;
+            marker.textContent = entry.count.toLocaleString();
+            marker.title = `${entry.college}: ${entry.count.toLocaleString()} jobs`;
+            marker.setAttribute("aria-label", `${entry.college}, ${entry.count} jobs`);
+
+            marker.addEventListener("click", () => {
+              if (Array.from(collegeSel.options).some((o) => o.value === entry.college)) {
+                collegeSel.value = entry.college;
+              }
+              applyFilters();
+            });
+
+            marker.addEventListener("mouseenter", () => {
+              setMarkerActiveState(entry.college);
+              highlightCardsByCollege(entry.college);
+            });
+
+            marker.addEventListener("mouseleave", () => {
+              setMarkerActiveState(collegeSel.value !== "all" ? collegeSel.value : null);
+              highlightCardsByCollege(null);
+            });
+
+            mapMarkersEl.appendChild(marker);
+            markerNodes.set(entry.college, marker);
+          });
+
+        setMarkerActiveState(activeCollege);
+      }
 
       function getPositionType(title) {
         const t = (title || "").toLowerCase();
@@ -1154,6 +1936,12 @@
         const description = j?.description ?? null;
         const backendDept = (j?.department && String(j.department).trim().length > 0) ? String(j.department).trim() : null;
         const backendRank = (j?.rank && String(j.rank).trim().length > 0) ? String(j.rank).trim() : null;
+        const normalizedCollege = formatCollegeName(j?.college);
+        const csuLocationFallback = (j?.source === "CSU" && j?.location) ? `California State University (${j.location})` : null;
+        const fallbackCollegeBySource = {
+          UC: "University of California (UC)",
+          "CA Private": "California Private Universities"
+        };
 
         return {
           // Display + search fields
@@ -1171,7 +1959,7 @@
           source: j?.source ?? null,
           systemGroup: j?.systemGroup ?? null,
           category: j?.category ?? null,
-          college: formatCollegeName(j?.college) ?? null,
+          college: normalizedCollege || csuLocationFallback || fallbackCollegeBySource[j?.source] || null,
           location: j?.location ?? null,
 
           // Structured classification
@@ -1200,6 +1988,7 @@
         const college = collegeSel.value;
         const summarizedOnly = summarizedOnlyCb.checked;
         const savedOnly = savedOnlyCb.checked;
+        const flaggedOnly = flaggedOnlyCb.checked;
 
         if (searchTerm) {
           const chip = document.createElement("span");
@@ -1236,6 +2025,13 @@
           activeFiltersEl.appendChild(chip);
         }
 
+        if (flaggedOnly) {
+          const chip = document.createElement("span");
+          chip.className = "filter-chip";
+          chip.innerHTML = `Flagged Jobs <button data-clear="flaggedOnly">&times;</button>`;
+          activeFiltersEl.appendChild(chip);
+        }
+
         if (posType !== "all") {
           const chip = document.createElement("span");
           chip.className = "filter-chip";
@@ -1253,6 +2049,7 @@
 
       function render(jobs, searchTerms = []) {
         grid.innerHTML = "";
+        renderMap(jobs);
 
         if (jobs.length === 0) {
           grid.innerHTML = '<div class="empty-state">No jobs found matching your criteria. Try adjusting your filters.</div>';
@@ -1261,11 +2058,12 @@
           return;
         }
 
-        for (const raw of jobs) {
-          const job = normalizeJob(raw);
+        for (const job of jobs) {
 
           const card = document.createElement("div");
           card.className = "card";
+          card.dataset.state = job.state || "";
+          card.dataset.college = job.college || "";
 
           const title = document.createElement("div");
           title.className = "title";
@@ -1362,7 +2160,27 @@
             applyFilters();
           });
 
+          const issueBtn = document.createElement("button");
+          issueBtn.type = "button";
+          issueBtn.className = "issue-btn";
+          const issueKey = getIssueKey(job);
+          const hasIssue = issueJobs.has(issueKey);
+          if (hasIssue) {
+            issueBtn.classList.add("flagged");
+            card.classList.add("issue-flagged");
+          }
+          issueBtn.textContent = hasIssue ? "Resolve Issue" : "Flag Issue";
+          issueBtn.addEventListener("click", () => {
+            const shouldFlag = !issueJobs.has(issueKey);
+            if (shouldFlag) issueJobs.add(issueKey);
+            else issueJobs.delete(issueKey);
+            persistIssueJobs();
+            if (shouldFlag) openIssueDraft(job);
+            applyFilters();
+          });
+
           links.appendChild(viewLink);
+          links.appendChild(issueBtn);
           links.appendChild(saveBtn);
 
           card.appendChild(title);
@@ -1371,6 +2189,17 @@
           if (job.description) card.appendChild(desc);
           if (summaryBox) card.appendChild(summaryBox);
           card.appendChild(links);
+
+          card.addEventListener("mouseenter", () => {
+            if (job.college) {
+              setMarkerActiveState(job.college);
+              highlightCardsByCollege(job.college);
+            }
+          });
+          card.addEventListener("mouseleave", () => {
+            setMarkerActiveState(collegeSel.value !== "all" ? collegeSel.value : null);
+            highlightCardsByCollege(null);
+          });
 
           grid.appendChild(card);
         }
@@ -1388,6 +2217,7 @@
         const sortBy = sortBySel.value;
         const summarizedOnly = summarizedOnlyCb.checked;
         const savedOnly = savedOnlyCb.checked;
+        const flaggedOnly = flaggedOnlyCb.checked;
 
         // Update clear button visibility
         clearSearchBtn.classList.toggle("visible", q.value.length > 0);
@@ -1415,6 +2245,10 @@
         // Filter to saved jobs only
         if (savedOnly) {
           filtered = filtered.filter(j => savedJobs.has(j.url));
+        }
+
+        if (flaggedOnly) {
+          filtered = filtered.filter(j => issueJobs.has(getIssueKey(j)));
         }
 
         // Filter by position type
@@ -1491,6 +2325,30 @@
         }
       }
 
+      function updateStateDropdown(jobs, currentState) {
+        const stateCounts = new Map();
+        for (const job of jobs) {
+          if (!job.state) continue;
+          stateCounts.set(job.state, (stateCounts.get(job.state) || 0) + 1);
+        }
+        const states = [...stateCounts.keys()].sort();
+        const prevValue = currentState || "all";
+
+        stateFilterSel.innerHTML = `<option value="all">All States (${states.length})</option>`;
+        for (const state of states) {
+          const option = document.createElement("option");
+          option.value = state;
+          option.textContent = `${state} (${stateCounts.get(state)})`;
+          stateFilterSel.appendChild(option);
+        }
+
+        if (prevValue !== "all" && states.includes(prevValue)) {
+          stateFilterSel.value = prevValue;
+        } else {
+          stateFilterSel.value = "all";
+        }
+      }
+
       // Debounced search
       function debouncedApplyFilters() {
         clearTimeout(debounceTimer);
@@ -1505,6 +2363,7 @@
         summarizedOnlyCb.checked = !!preset.summarizedOnly;
         tenureTrackOnlyCb.checked = !!preset.tenureTrackOnly;
         savedOnlyCb.checked = !!preset.savedOnly;
+        flaggedOnlyCb.checked = !!preset.flaggedOnly;
         sortBySel.value = preset.sortBy || "relevance";
         applyFilters();
         if (preset.college && Array.from(collegeSel.options).some(o => o.value === preset.college)) {
@@ -1550,6 +2409,7 @@
           allJobs = Array.isArray(data.jobs) ? data.jobs : [];
           meta.scrapedAt = data.scrapedAt || null;
           meta.count = data.count || allJobs.length;
+          updateStateDropdown(allJobs.map(normalizeJob), stateFilterSel.value);
 
           const when = meta.scrapedAt ? new Date(meta.scrapedAt).toLocaleString() : "unknown";
           subhead.textContent = `${allJobs.length.toLocaleString()} positions · Updated ${when}`;
@@ -1576,6 +2436,7 @@
       summarizedOnlyCb.addEventListener("change", applyFilters);
       tenureTrackOnlyCb.addEventListener("change", applyFilters);
       savedOnlyCb.addEventListener("change", applyFilters);
+      flaggedOnlyCb.addEventListener("change", applyFilters);
       refreshBtn.addEventListener("click", load);
       openFiltersBtn.addEventListener("click", () => {
         document.body.classList.add("filters-open");
@@ -1597,8 +2458,69 @@
         summarizedOnlyCb.checked = false;
         tenureTrackOnlyCb.checked = false;
         savedOnlyCb.checked = false;
+        flaggedOnlyCb.checked = false;
         sortBySel.value = "relevance";
         applyFilters();
+      });
+
+      clearMapStateBtn.addEventListener("click", () => {
+        collegeSel.value = "all";
+        applyFilters();
+      });
+
+      zoomInMapBtn.addEventListener("click", () => {
+        mapZoom = Math.min(3.6, Number((mapZoom + 0.3).toFixed(2)));
+        applyMapZoom();
+      });
+
+      zoomOutMapBtn.addEventListener("click", () => {
+        mapZoom = Math.max(1, Number((mapZoom - 0.3).toFixed(2)));
+        applyMapZoom();
+      });
+
+      zoomResetMapBtn.addEventListener("click", () => {
+        mapZoom = 1;
+        panX = 0;
+        panY = 0;
+        applyMapZoom();
+      });
+
+      mapView.addEventListener("pointerdown", (e) => {
+        if (mapZoom <= 1 || e.button !== 0) return;
+        if (e.target instanceof HTMLElement && e.target.closest(".map-zoom")) return;
+        isDraggingMap = true;
+        dragPointerId = e.pointerId;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        dragOriginX = panX;
+        dragOriginY = panY;
+        mapView.classList.add("dragging");
+        mapView.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      });
+
+      mapView.addEventListener("pointermove", (e) => {
+        if (!isDraggingMap || dragPointerId !== e.pointerId) return;
+        panX = dragOriginX + (e.clientX - dragStartX);
+        panY = dragOriginY + (e.clientY - dragStartY);
+        applyMapZoom();
+      });
+
+      const endMapDrag = (e) => {
+        if (!isDraggingMap || (e && dragPointerId !== null && e.pointerId !== dragPointerId)) return;
+        isDraggingMap = false;
+        if (dragPointerId !== null) {
+          try { mapView.releasePointerCapture(dragPointerId); } catch {}
+        }
+        dragPointerId = null;
+        mapView.classList.remove("dragging");
+      };
+      mapView.addEventListener("pointerup", endMapDrag);
+      mapView.addEventListener("pointercancel", endMapDrag);
+
+      window.addEventListener("resize", () => {
+        applyMapZoom();
+        if (latestRenderedJobs.length) renderMap(latestRenderedJobs);
       });
 
       activeFiltersEl.addEventListener("click", (e) => {
@@ -1609,6 +2531,7 @@
           if (clear === "summarizedOnly") summarizedOnlyCb.checked = false;
           if (clear === "tenureTrackOnly") tenureTrackOnlyCb.checked = false;
           if (clear === "savedOnly") savedOnlyCb.checked = false;
+          if (clear === "flaggedOnly") flaggedOnlyCb.checked = false;
           if (clear === "positionType") positionTypeSel.value = "all";
           if (clear === "college") collegeSel.value = "all";
           applyFilters();
@@ -1641,6 +2564,9 @@
       });
 
       renderRecentPresets();
+      applyMapZoom();
+      loadUSMapSvg();
+      loadCollegeCoords();
       load();
     </script>
   </body>

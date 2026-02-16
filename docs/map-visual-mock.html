@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Faculty Atlas Map Mock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #f4f1ea;
+        --ink: #1d2a2b;
+        --muted: #5f6d6f;
+        --surface: #fbf9f5;
+        --surface-strong: #ffffff;
+        --border: #d8d1c5;
+        --accent: #c45c38;
+        --chip: #e7ddd0;
+        --shadow: 0 16px 40px rgba(35, 29, 19, 0.12);
+
+        --map-water: #dfe8e8;
+        --map-land: #f6f1e8;
+        --map-road: #d8d1c5;
+        --map-boundary: #c9c0b2;
+        --map-marker-default: #c45c38;
+        --map-marker-default-ring: rgba(196, 92, 56, 0.22);
+        --map-marker-tenure: #396326;
+        --map-marker-tenure-ring: rgba(57, 99, 38, 0.22);
+        --map-marker-nontenure: #5f6d6f;
+        --map-marker-nontenure-ring: rgba(95, 109, 111, 0.2);
+        --map-marker-postdoc: #20574d;
+        --map-marker-postdoc-ring: rgba(32, 87, 77, 0.22);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at 12% 14%, #e7d4bc 0, rgba(231, 212, 188, 0.3) 30%, transparent 56%),
+          radial-gradient(circle at 88% 18%, #d7e6df 0, rgba(215, 230, 223, 0.3) 30%, transparent 58%),
+          linear-gradient(180deg, #f8f4ec 0%, #f1ece3 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1420px;
+        margin: 0 auto;
+        padding: 0 24px 30px;
+      }
+
+      header {
+        padding: 34px 24px 20px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .logo-icon {
+        width: 74px;
+        height: 74px;
+        border-radius: 22px;
+        background: linear-gradient(150deg, #ebe1d2, #d4dfd9);
+        border: 1px solid #d7ccbc;
+        display: grid;
+        place-items: center;
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 30px;
+        color: #314546;
+      }
+
+      .logo-faculty {
+        display: block;
+        font-family: "Fraunces", Georgia, serif;
+        font-size: clamp(2rem, 4vw, 3rem);
+        letter-spacing: -0.03em;
+        line-height: 0.95;
+      }
+
+      .logo-atlas {
+        display: block;
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 800;
+        font-size: clamp(1rem, 1.8vw, 1.45rem);
+        color: #4e5b5d;
+      }
+
+      .tagline {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 0.96rem;
+        font-weight: 600;
+      }
+
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.84);
+        border: 1px solid rgba(216, 209, 197, 0.9);
+        border-radius: 14px;
+      }
+
+      .status-bar strong {
+        font-family: "Fraunces", Georgia, serif;
+        color: #7f3f2d;
+        font-size: 1.03rem;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 360px minmax(0, 1fr);
+        gap: 18px;
+      }
+
+      .panel {
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(216, 209, 197, 0.9);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+      }
+
+      .filters {
+        padding: 14px;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .chip {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid #d4c8b7;
+        background: var(--chip);
+        color: #4b4036;
+      }
+
+      .job-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .job {
+        padding: 12px;
+        border: 1px solid #ddd2c4;
+        border-radius: 13px;
+        background: #fff;
+      }
+
+      .job h4 {
+        margin: 0 0 6px;
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 1rem;
+        line-height: 1.28;
+      }
+
+      .meta {
+        margin: 0;
+        font-size: 12px;
+        color: #576769;
+        font-weight: 600;
+      }
+
+      .pill {
+        display: inline-flex;
+        margin-top: 8px;
+        font-size: 11px;
+        font-weight: 800;
+        border-radius: 999px;
+        padding: 4px 9px;
+        border: 1px solid;
+      }
+
+      .pill.tenure { background: #e8f3d8; color: #396326; border-color: #c8e0a9; }
+      .pill.ntt { background: #efebe4; color: #675b4b; border-color: #dfd7cb; }
+      .pill.postdoc { background: #dcece6; color: #20574d; border-color: #bfd7cf; }
+
+      .map-wrap {
+        min-height: 700px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .map {
+        height: 100%;
+        position: relative;
+        border-radius: 16px;
+        background:
+          radial-gradient(circle at 79% 68%, rgba(223, 232, 232, 0.88), rgba(223, 232, 232, 0.28) 28%, transparent 62%),
+          linear-gradient(115deg, rgba(216, 209, 197, 0.2) 0 24%, transparent 24% 100%),
+          linear-gradient(25deg, rgba(216, 209, 197, 0.14) 0 19%, transparent 19% 100%),
+          var(--map-land);
+      }
+
+      .map::before {
+        content: "";
+        position: absolute;
+        inset: 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(201, 192, 178, 0.6);
+        pointer-events: none;
+      }
+
+      .roads,
+      .boundaries {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .roads span,
+      .boundaries span {
+        position: absolute;
+        border-radius: 999px;
+      }
+
+      .roads span { background: rgba(216, 209, 197, 0.75); height: 2px; }
+      .boundaries span { background: rgba(201, 192, 178, 0.48); width: 1px; }
+
+      .controls {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .ctrl {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        border: 1px solid #d8d1c5;
+        background: rgba(255, 253, 249, 0.94);
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        color: #526062;
+      }
+
+      .marker {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        border: 2px solid #fffdf9;
+        box-shadow: 0 0 0 10px var(--ring);
+      }
+
+      .marker.active {
+        transform: scale(1.18);
+        outline: 1px solid #fff9f3;
+        outline-offset: 4px;
+      }
+
+      .m-default { background: var(--map-marker-default); --ring: var(--map-marker-default-ring); }
+      .m-tenure { background: var(--map-marker-tenure); --ring: var(--map-marker-tenure-ring); }
+      .m-ntt { background: var(--map-marker-nontenure); --ring: var(--map-marker-nontenure-ring); }
+      .m-postdoc { background: var(--map-marker-postdoc); --ring: var(--map-marker-postdoc-ring); }
+
+      .cluster {
+        position: absolute;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #213234;
+        color: #fff9f3;
+        font-size: 12px;
+        font-weight: 800;
+        border: 2px solid rgba(255, 249, 243, 0.72);
+      }
+
+      .tooltip {
+        position: absolute;
+        left: 54%;
+        top: 32%;
+        width: 288px;
+        padding: 12px 12px 10px;
+        border-radius: 14px;
+        border: 1px solid #d8d1c5;
+        background: rgba(255, 253, 249, 0.94);
+        box-shadow: 0 14px 30px rgba(35, 29, 19, 0.16);
+        backdrop-filter: blur(8px);
+      }
+
+      .tooltip h5 {
+        margin: 0 0 4px;
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 1rem;
+      }
+
+      .tooltip p {
+        margin: 0;
+        color: #58686a;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .tooltip .actions {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .action {
+        font-size: 12px;
+        font-weight: 800;
+        color: #8d412c;
+      }
+
+      .map-legend {
+        position: absolute;
+        left: 18px;
+        bottom: 18px;
+        padding: 10px;
+        border-radius: 12px;
+        background: rgba(255, 253, 249, 0.92);
+        border: 1px solid #d8d1c5;
+        font-size: 11px;
+        font-weight: 700;
+        color: #49585a;
+        display: grid;
+        gap: 7px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+      }
+
+      @media (max-width: 960px) {
+        .container { padding: 0 14px 22px; }
+        header { padding: 20px 14px 12px; }
+        .app { grid-template-columns: 1fr; }
+        .map-wrap { min-height: 520px; }
+        .tooltip { left: 8px; right: 8px; width: auto; top: auto; bottom: 74px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <div class="logo-icon">A</div>
+        <div>
+          <span class="logo-faculty">Faculty</span>
+          <span class="logo-atlas">Atlas</span>
+          <div class="tagline">Map-enhanced job discovery across institutions</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="status-bar panel">
+        <span>Showing location-aware results for your filters</span>
+        <strong>2,184 roles across 34 states</strong>
+      </div>
+
+      <section class="app">
+        <aside class="panel filters">
+          <div class="chip-row">
+            <span class="chip">State: New York</span>
+            <span class="chip">Tenure Track</span>
+            <span class="chip">AI Summarized</span>
+          </div>
+
+          <div class="job-list">
+            <article class="job" style="border-color:#c3977e; box-shadow:0 8px 18px rgba(58, 43, 30, 0.1)">
+              <h4>Assistant Professor of Data Science</h4>
+              <p class="meta">Columbia University • New York, NY</p>
+              <span class="pill tenure">Tenure Track</span>
+            </article>
+
+            <article class="job">
+              <h4>Lecturer in Computer Science</h4>
+              <p class="meta">CUNY Baruch College • New York, NY</p>
+              <span class="pill ntt">Non-Tenure Track</span>
+            </article>
+
+            <article class="job">
+              <h4>Postdoctoral Scholar in AI + Society</h4>
+              <p class="meta">NYU • New York, NY</p>
+              <span class="pill postdoc">Postdoctoral</span>
+            </article>
+
+            <article class="job">
+              <h4>Associate Professor of Statistics</h4>
+              <p class="meta">Princeton University • Princeton, NJ</p>
+              <span class="pill tenure">Tenure Track</span>
+            </article>
+          </div>
+        </aside>
+
+        <div class="panel map-wrap">
+          <div class="map">
+            <div class="roads">
+              <span style="left:7%; top:28%; width:56%; transform:rotate(10deg);"></span>
+              <span style="left:18%; top:44%; width:47%; transform:rotate(-16deg);"></span>
+              <span style="left:30%; top:66%; width:42%; transform:rotate(7deg);"></span>
+              <span style="left:58%; top:30%; width:26%; transform:rotate(-22deg);"></span>
+            </div>
+            <div class="boundaries">
+              <span style="left:19%; top:19%; height:61%;"></span>
+              <span style="left:37%; top:14%; height:68%;"></span>
+              <span style="left:54%; top:16%; height:62%;"></span>
+              <span style="left:73%; top:20%; height:60%;"></span>
+            </div>
+
+            <div class="controls">
+              <div class="ctrl">+</div>
+              <div class="ctrl">−</div>
+              <div class="ctrl">◎</div>
+            </div>
+
+            <div class="cluster" style="left:19%; top:52%;">34</div>
+            <div class="cluster" style="left:26%; top:40%;">12</div>
+            <div class="cluster" style="left:60%; top:56%;">9</div>
+
+            <div class="marker m-tenure active" style="left:66%; top:34%;"></div>
+            <div class="marker m-default" style="left:63%; top:37%;"></div>
+            <div class="marker m-ntt" style="left:68%; top:39%;"></div>
+            <div class="marker m-postdoc" style="left:70%; top:35%;"></div>
+            <div class="marker m-tenure" style="left:71%; top:44%;"></div>
+            <div class="marker m-default" style="left:73%; top:42%;"></div>
+
+            <aside class="tooltip">
+              <h5>Assistant Professor of Data Science</h5>
+              <p>Columbia University • New York, NY</p>
+              <span class="pill tenure">Tenure Track</span>
+              <div class="actions">
+                <span class="action">View Job →</span>
+                <span class="action" style="color:#5f5447;">Save</span>
+              </div>
+            </aside>
+
+            <div class="map-legend">
+              <div class="legend-item"><span class="dot" style="background:#396326"></span> Tenure Track</div>
+              <div class="legend-item"><span class="dot" style="background:#5f6d6f"></span> Non-Tenure</div>
+              <div class="legend-item"><span class="dot" style="background:#20574d"></span> Postdoc</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

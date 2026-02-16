@@ -6,6 +6,7 @@ A Node.js + Playwright application that aggregates faculty job listings from:
 - CT State Colleges & Universities
 - California State University (CSU)
 - University of Massachusetts (UMass)
+- Selected Massachusetts private universities and liberal arts colleges
 
 ## Features
 - Unified UI with filtering and search

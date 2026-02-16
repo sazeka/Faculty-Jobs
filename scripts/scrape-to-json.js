@@ -20,7 +20,13 @@ const __dirname = path.dirname(__filename);
     data.count = data.jobs.length;
   }
 
-  const outPath = path.join(__dirname, "..", "docs", "jobs.json");
-  fs.writeFileSync(outPath, JSON.stringify(data, null, 2));
-  console.log(`✅ Wrote ${outPath} (${data.count} jobs)`);
+  const targets = [
+    path.join(__dirname, "..", "docs", "jobs.json"),
+    path.join(__dirname, "..", "public", "jobs.json"),
+  ];
+
+  for (const outPath of targets) {
+    fs.writeFileSync(outPath, JSON.stringify(data, null, 2));
+    console.log(`✅ Wrote ${outPath} (${data.count} jobs)`);
+  }
 })();

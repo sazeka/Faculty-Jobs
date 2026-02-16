@@ -222,6 +222,15 @@ function mergeBatchResults(batch, enriched) {
   }
 }
 
+function formatDuration(ms) {
+  if (!Number.isFinite(ms) || ms <= 0) return "0s";
+  const totalSeconds = Math.ceil(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  if (minutes <= 0) return `${seconds}s`;
+  return `${minutes}m ${seconds}s`;
+}
+
 export async function callLocalSummarizer(jobs) {
   if (!Array.isArray(jobs) || jobs.length === 0) return jobs;
 
@@ -270,6 +279,7 @@ export async function callLocalSummarizer(jobs) {
 
   let done = 0;
   const total = need.length;
+  const startedAt = Date.now();
 
   // --- Process batches in rounds, one batch per endpoint per round ---
   for (let roundStart = 0; roundStart < totalBatches; roundStart += numEndpoints) {
@@ -303,6 +313,16 @@ export async function callLocalSummarizer(jobs) {
       }
       done += batch.length;
     }
+
+    const elapsed = Date.now() - startedAt;
+    const remaining = Math.max(0, total - done);
+    const throughput = done > 0 ? elapsed / done : null; // ms per job
+    const etaMs = throughput ? remaining * throughput : null;
+    if (remaining > 0 && etaMs) {
+      console.log(`⏳ Summarizer progress: ${done}/${total} complete · ETA ~${formatDuration(etaMs)}`);
+    } else {
+      console.log(`✅ Summarizer progress: ${done}/${total} complete`);
+    }
   }
 
   return all;
@@ -320,6 +340,12 @@ function isAllowedSystem(name) {
   const n = String(name || "").toUpperCase();
   // Support a few common aliases from the UI dropdown / prior runs
   if (n === "CSU" && want.includes("CA - CSU")) return true;
+  if ((n === "CSU" || n === "UC" || n === "CLAREMONT COLLEGES" || n === "CA PRIVATE") && (want.includes("CA") || want.includes("CALIFORNIA"))) return true;
+  if ((n === "UMASS" || n === "UMASS AMHERST" || n === "MA PRIVATE") && (want.includes("MA") || want.includes("MASSACHUSETTS"))) return true;
+  if (n === "MD" && (want.includes("MARYLAND") || want.includes("MD"))) return true;
+  if (n === "ME" && (want.includes("MAINE") || want.includes("ME"))) return true;
+  if (n === "NH" && (want.includes("NEW HAMPSHIRE") || want.includes("NH"))) return true;
+  if (n === "VT" && (want.includes("VERMONT") || want.includes("VT"))) return true;
   if (n === "CT STATE" && want.includes("CT")) return true;
   return want.includes(n);
 }
@@ -346,15 +372,28 @@ const SYSTEM_GROUP_MAP = {
   "UC": "California Public",
   "CA - CSU": "California Public",
   "CSU": "California Public",
+  // California Private Universities
+  "CA Private": "California Private",
   // New York Public Universities
   "NY": "New York Public",
   "CUNY": "New York Public",
   "SUNY": "New York Public",
   // Massachusetts Public Universities
   "UMass": "Massachusetts Public",
+  // Massachusetts Private Universities
+  "MA": "Massachusetts Private",
+  // Maryland
+  "MD": "Maryland",
+  // Northern New England
+  "ME": "Maine",
+  "NH": "New Hampshire",
+  "VT": "Vermont",
   // Connecticut
   "CT": "Connecticut",
   "CT State": "Connecticut",
+  // Oregon and Washington
+  "OR": "Oregon",
+  "WA": "Washington",
 };
 
 export function getSystemGroup(source) {
@@ -435,17 +474,116 @@ const UMASS_CAMPUSES = [
 // UMass Amherst (new PageUp platform as of Jan 2026)
 const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type=Faculty";
 
+// Massachusetts private universities + liberal arts colleges
+const MA_PRIVATE_CAMPUSES = [
+  {
+    campus: "Harvard University",
+    type: "peopleadmin-dept",
+    url: "https://academicpositions.harvard.edu/postings/search?utf8=%E2%9C%93&query=",
+  },
+  {
+    campus: "Massachusetts Institute of Technology",
+    type: "generic",
+    url: "https://academicjobsonline.org/ajo/jobs?institution=Massachusetts+Institute+of+Technology",
+  },
+  {
+    campus: "Tufts University",
+    type: "jibe-api",
+    url: "https://jobs.tufts.edu/",
+  },
+  {
+    campus: "Brandeis University",
+    type: "workday",
+    url: "https://brandeis.wd5.myworkdayjobs.com/Jobs",
+  },
+  {
+    campus: "Amherst College",
+    type: "workday",
+    url: "https://amherst.wd5.myworkdayjobs.com/en-US/Amherst_Jobs",
+  },
+  {
+    campus: "Mount Holyoke College",
+    type: "workday",
+    url: "https://mtholyoke.wd5.myworkdayjobs.com/en-US/External",
+  },
+  {
+    campus: "Boston University",
+    type: "generic",
+    url: "https://www.bu.edu/hr/careers/faculty/",
+  },
+  {
+    campus: "Boston College",
+    type: "generic",
+    url: "https://www.bc.edu/bc-web/offices/human-resources.html",
+  },
+  {
+    campus: "Northeastern University",
+    type: "workday",
+    url: "https://northeastern.wd1.myworkdayjobs.com/careers",
+  },
+  {
+    campus: "Wellesley College",
+    type: "workday",
+    url: "https://wd1.myworkdaysite.com/recruiting/wellesley/wellesley-faculty",
+  },
+  {
+    campus: "Williams College",
+    type: "generic",
+    url: "https://www.williams.edu/admin/human-resources/employment/",
+  },
+  {
+    campus: "Smith College",
+    type: "smith-interfolio",
+    url: "https://www.smith.edu/academics/provostdean-faculty/employment",
+  },
+  {
+    campus: "Babson College",
+    type: "peopleadmin",
+    url: "https://babson.peopleadmin.com/postings/search?query=&query_posted_at=&query_position_type_id=2&query_organizational_tier_3_id=any&commit=Search",
+  },
+  {
+    campus: "Bentley University",
+    type: "workday",
+    url: "https://bentley.wd503.myworkdayjobs.com/faculty",
+  },
+  {
+    campus: "College of the Holy Cross",
+    type: "jobvite",
+    url: "https://jobs.jobvite.com/holycross/jobs",
+  },
+];
+
 // UC (AP Recruit)
 const UC_CAMPUSES = [
   { campus: "UC Berkeley", url: "https://aprecruit.berkeley.edu/apply" },
   { campus: "UCLA", url: "https://recruit.apo.ucla.edu/apply" },
   { campus: "UC San Diego", url: "https://apol-recruit.ucsd.edu/apply" },
+  { campus: "UC San Francisco", url: "https://aprecruit.ucsf.edu/apply" },
   { campus: "UC Santa Barbara", url: "https://recruit.ap.ucsb.edu/apply" },
   { campus: "UC Davis", url: "https://recruit.ucdavis.edu/apply" },
   { campus: "UC Irvine", url: "https://recruit.ap.uci.edu/apply" },
   { campus: "UC Riverside", url: "https://aprecruit.ucr.edu/apply" },
   { campus: "UC Santa Cruz", url: "https://recruit.ucsc.edu/apply" },
   { campus: "UC Merced", url: "https://aprecruit.ucmerced.edu/apply" },
+];
+
+// California major private research universities
+const CA_PRIVATE_CAMPUSES = [
+  {
+    campus: "Stanford University",
+    type: "pageup",
+    url: "https://facultypositions.stanford.edu/en-us/listing/",
+  },
+  {
+    campus: "University of Southern California",
+    type: "usc-jobs",
+    url: "https://usccareers.usc.edu/search-jobs/?category=Faculty",
+  },
+  {
+    campus: "California Institute of Technology",
+    type: "taleo",
+    url: "https://phf.tbe.taleo.net/phf03/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=37&org=CALTECH",
+  },
 ];
 
 // NJ (multi-platform)
@@ -592,6 +730,64 @@ const PA_CAMPUSES = [
   },
 ];
 
+const PA_PRIVATE_CAMPUSES = [
+  {
+    campus: "University of Pennsylvania",
+    type: "workday-search",
+    url: "https://wd1.myworkdaysite.com/recruiting/upenn/careers-at-penn",
+  },
+  {
+    campus: "Carnegie Mellon University",
+    type: "workday",
+    url: "https://cmu.wd5.myworkdayjobs.com/CMU",
+  },
+  {
+    campus: "Drexel University",
+    type: "pageup",
+    url: "https://careers.pageuppeople.com/820/cw/en-us/listing/",
+  },
+  {
+    campus: "Lehigh University",
+    type: "static",
+    url: "https://facultyjobs.lehigh.edu/faculty",
+  },
+  {
+    campus: "Villanova University",
+    type: "peopleadmin",
+    url: "https://jobs.villanova.edu/postings/search",
+  },
+  {
+    campus: "Bucknell University",
+    type: "workday",
+    url: "https://bucknell.wd1.myworkdayjobs.com/External?jobFamilyGroup=3ce5feabe53e01fb2262242fcb6e5c06",
+  },
+  {
+    campus: "Swarthmore College",
+    type: "pageup",
+    url: "https://careers.pageuppeople.com/819/cw/en-us/listing/",
+  },
+  {
+    campus: "Gettysburg College",
+    type: "peopleadmin",
+    url: "https://gettysburg.peopleadmin.com/postings/search",
+  },
+  {
+    campus: "Dickinson College",
+    type: "workday",
+    url: "https://dickinson.wd108.myworkdayjobs.com/Jobs",
+  },
+  {
+    campus: "Lafayette College",
+    type: "lafayette-faculty",
+    url: "https://provost.lafayette.edu/faculty-positions-available/",
+  },
+  {
+    campus: "Franklin & Marshall College",
+    type: "interfolio-links",
+    url: "https://www.fandm.edu/campus-services/human-resources/",
+  },
+];
+
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
   {
@@ -691,6 +887,55 @@ const DE_CAMPUSES = [
     type: "peopleadmin",
     url: "https://dtcc.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&715%5B%5D=1&commit=Search",
   },
+  {
+    campus: "Wilmington University",
+    type: "taleo",
+    url: "https://phh.tbe.taleo.net/phh02/ats/careers/v2/searchResults?org=WILMU&cws=51",
+  },
+];
+
+// MD (Maryland) - major research universities + liberal arts colleges
+const MD_CAMPUSES = [
+  {
+    campus: "University of Maryland, Baltimore",
+    type: "taleo",
+    url: "https://umb.taleo.net/careersection/umb_faculty+and+post+docs/jobsearch.ftl?lang=en&portal=8100108441",
+  },
+  {
+    campus: "University of Maryland, Baltimore County",
+    type: "pageup",
+    url: "https://facultyjobs.umbc.edu/en-us/listing/",
+  },
+  {
+    campus: "University of Maryland, College Park",
+    type: "workday",
+    url: "https://umd.wd1.myworkdayjobs.com/UMCP",
+  },
+  {
+    campus: "Johns Hopkins University",
+    type: "generic",
+    url: "https://jobs.jhu.edu/search-jobs?acm=ALL",
+  },
+  {
+    campus: "Morgan State University",
+    type: "peopleadmin",
+    url: "https://morgan.peopleadmin.com/postings/search",
+  },
+  {
+    campus: "Towson University",
+    type: "taleo",
+    url: "https://towson.taleo.net/careersection/ex/jobsearch.ftl",
+  },
+  {
+    campus: "St. Mary's College of Maryland",
+    type: "generic",
+    url: "https://www.smcm.edu/hr/",
+  },
+  {
+    campus: "Goucher College",
+    type: "interviewexchange",
+    url: "https://goucher.interviewexchange.com/static/clients/436GCM1/index.jsp",
+  },
 ];
 
 
@@ -709,15 +954,52 @@ const RI_CAMPUSES = [
   },
 ];
 
-// NH (New Hampshire) - public universities (University System of New Hampshire)
-const NH_PUBLIC_CAMPUSES = [
+const RI_PRIVATE_CAMPUSES = [
+  {
+    campus: "Brown University",
+    type: "generic",
+    url: "https://academicjobsonline.org/ajo/jobs?institution=Brown+University",
+  },
+  {
+    campus: "Providence College",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/providencecollege",
+  },
+  {
+    campus: "Bryant University",
+    type: "peopleadmin",
+    url: "https://employment.bryant.edu/postings/search?query=&query_v0_posted_at_date=&225=&query_position_type_id%5B%5D=3&commit=Search",
+  },
+  {
+    campus: "Rhode Island School of Design",
+    type: "peopleadmin",
+    url: "https://careers.risd.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id=3&435=&query_organizational_tier_3_id=any&commit=Search",
+  },
+  {
+    campus: "Salve Regina University",
+    type: "interviewexchange",
+    url: "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp",
+  },
+];
+
+// NH (New Hampshire)
+const NH_CAMPUSES = [
   {
     campus: "University of New Hampshire System",
     // UNH and other USNH campuses surface jobs at jobs.usnh.edu
     type: "workday",
     url: "https://usnh.wd5.myworkdayjobs.com/Careers?timeType=1550a879b33f10037951f18fd1800000&workerSubType=b4f41dd8de101000c45c0d3fc2a10001",
   },
- 
+  {
+    campus: "Dartmouth College",
+    type: "peopleadmin",
+    url: "https://searchjobs.dartmouth.edu/postings/search",
+  },
+  {
+    campus: "Saint Anselm College",
+    type: "generic",
+    url: "https://www.anselm.edu/human-resources/employment-opportunities",
+  },
 ];
 
 
@@ -770,6 +1052,105 @@ const NY_SUNY_CAMPUSES = [
     url: "https://apply.interfolio.com/search#q=&institution_name=Binghamton%20University&position_type=Faculty",
   },
 ];
+
+const SUNY_CAMPUS_HINTS = [
+  { campus: "University at Albany (SUNY)", patterns: [/albany/i, /albany\.edu/i] },
+  { campus: "Binghamton University (SUNY)", patterns: [/binghamton/i, /binghamton\.edu/i] },
+  { campus: "University at Buffalo (SUNY)", patterns: [/\bbuffalo\b/i, /buffalo\.edu/i] },
+  { campus: "Stony Brook University (SUNY)", patterns: [/stony\s*brook/i, /stonybrook\.edu/i] },
+  { campus: "SUNY Buffalo State University", patterns: [/buffalo\s*state/i, /buffalostate\.edu/i] },
+  { campus: "SUNY Cobleskill", patterns: [/cobleskill/i] },
+  { campus: "SUNY Alfred State College", patterns: [/alfred\s*state/i, /alfredstate/i] },
+  { campus: "SUNY Genesee Community College", patterns: [/genesee/i, /genesee\.interviewexchange/i] },
+  { campus: "SUNY Niagara", patterns: [/niagara\s*cc|niagaracc/i] },
+  { campus: "SUNY Old Westbury", patterns: [/old\s*westbury|oldwestbury/i] },
+  { campus: "SUNY Broome Community College", patterns: [/suny\s*broome|sunybroome/i] },
+  { campus: "SUNY Maritime College", patterns: [/maritime/i] },
+  { campus: "SUNY Morrisville", patterns: [/morrisville/i] },
+  { campus: "SUNY Polytechnic Institute", patterns: [/suny\s*poly|sunypoly|polytechnic/i] },
+  { campus: "SUNY Polytechnic Institute", patterns: [/sunyit\.edu/i] },
+  { campus: "SUNY College of Optometry", patterns: [/sunyopt/i, /optometry/i] },
+  { campus: "SUNY Jamestown Community College", patterns: [/sunyjcc/i, /jamestown/i] },
+  { campus: "SUNY Finger Lakes Community College", patterns: [/\bflcc\b/, /finger\s*lakes/i] },
+  { campus: "SUNY Erie Community College", patterns: [/ecc\.wd\d+\.myworkdayjobs\.com/i, /erie\s+community\s+college/i] },
+  { campus: "SUNY Canton", patterns: [/canton/i, /employment\.canton\.edu/i] },
+  { campus: "SUNY Ulster", patterns: [/suny\s*ulster|sunyulster/i] },
+  { campus: "SUNY Jefferson Community College", patterns: [/suny\s*jefferson|sunyjefferson/i] },
+  { campus: "SUNY Schenectady County Community College", patterns: [/\bsccc\b/] },
+  { campus: "SUNY Downstate Health Sciences University", patterns: [/careers\.pageuppeople\.com\/977/i, /downstate/i] },
+  { campus: "SUNY New Paltz", patterns: [/new\s*paltz/i, /newpaltz\.edu/i] },
+  { campus: "SUNY Oswego", patterns: [/\boswego\b/i, /oswego\.edu/i] },
+  { campus: "SUNY Geneseo", patterns: [/\bgeneseo\b/i, /geneseo\.edu/i] },
+  { campus: "SUNY Cortland", patterns: [/\bcortland\b/i, /cortland\.edu/i] },
+  { campus: "SUNY Potsdam", patterns: [/\bpotsdam\b/i, /potsdam\.edu/i] },
+  { campus: "SUNY Purchase", patterns: [/\bpurchase\b/i, /purchase\.edu/i] },
+  { campus: "SUNY Oneonta", patterns: [/\boneonta\b/i, /oneonta\.edu/i] },
+  { campus: "SUNY Plattsburgh", patterns: [/\bplattsburgh\b/i, /plattsburgh\.edu/i] },
+  { campus: "SUNY Fredonia", patterns: [/\bfredonia\b/i, /fredonia\.edu/i] },
+  { campus: "SUNY Brockport", patterns: [/\bbrockport\b/i, /brockport\.edu/i] },
+  { campus: "SUNY Polytechnic Institute", patterns: [/polytechnic/i, /sunypoly\.edu/i] },
+  { campus: "SUNY Downstate Health Sciences University", patterns: [/downstate/i, /downstate\.edu/i] },
+  { campus: "SUNY Upstate Medical University", patterns: [/upstate/i, /upstate\.edu/i] },
+  { campus: "SUNY College of Environmental Science and Forestry", patterns: [/\besf\b/i, /esf\.edu/i] },
+];
+
+function titleCaseWords(s) {
+  return clean(s)
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function inferSunyCampusFromText(title, url) {
+  const txt = `${title || ""} ${url || ""}`;
+  for (const hint of SUNY_CAMPUS_HINTS) {
+    if (hint.patterns.some((rx) => rx.test(txt))) return hint.campus;
+  }
+
+  // Host-based mapping for SUNY feeds where title text omits campus.
+  try {
+    const host = new URL(url || "").hostname.toLowerCase();
+    const hostMap = {
+      "www.ubjobs.buffalo.edu": "University at Buffalo (SUNY)",
+      "ubjobs.buffalo.edu": "University at Buffalo (SUNY)",
+      "careers.upstate.edu": "SUNY Upstate Medical University",
+      "jobs.buffalostate.edu": "SUNY Buffalo State University",
+      "jobs.cortland.edu": "SUNY Cortland",
+      "jobs.newpaltz.edu": "SUNY New Paltz",
+      "jobs.geneseo.edu": "SUNY Geneseo",
+      "niagaracc-suny.peopleadmin.com": "SUNY Niagara",
+      "fitnyc.interviewexchange.com": "SUNY Fashion Institute of Technology",
+      "farmingdale.interviewexchange.com": "Farmingdale State College (SUNY)",
+      "morrisville.interviewexchange.com": "SUNY Morrisville",
+      "sunypoly.interviewexchange.com": "SUNY Polytechnic Institute",
+      "sunydutchess.interviewexchange.com": "SUNY Dutchess Community College",
+      "sccc.interviewexchange.com": "SUNY Schenectady County Community College",
+      "oneonta.interviewexchange.com": "SUNY Oneonta",
+      "oswego.interviewexchange.com": "SUNY Oswego",
+      "binghamton.interviewexchange.com": "Binghamton University (SUNY)",
+      "albany.interviewexchange.com": "University at Albany (SUNY)",
+    };
+    if (hostMap[host]) return hostMap[host];
+  } catch {}
+
+  // Generic SUNY host fallbacks for system-wide aggregated feeds.
+  try {
+    const host = new URL(url || "").hostname.toLowerCase();
+    const interfolio = host.match(/^([a-z0-9-]+)\.interviewexchange\.com$/i);
+    if (interfolio && interfolio[1]) {
+      const raw = interfolio[1].replace(/[-_]+/g, " ").trim();
+      if (raw && raw !== "www") return `SUNY ${titleCaseWords(raw.replace(/^suny\s*/i, ""))}`;
+    }
+    const applytojob = host.match(/^([a-z0-9-]+)\.applytojob\.com$/i);
+    if (applytojob && applytojob[1]) {
+      const raw = applytojob[1].replace(/[-_]+/g, " ").trim();
+      if (raw && raw !== "www") return `SUNY ${titleCaseWords(raw.replace(/^suny\s*/i, ""))}`;
+    }
+  } catch {}
+
+  return "SUNY System";
+}
 
 // NY Private Universities
 const NY_PRIVATE_CAMPUSES = [
@@ -910,6 +1291,41 @@ const OR_CAMPUSES = [
     type: "static",
     url: "https://wou.edu/hr/employment/jobs/",
   },
+  {
+    campus: "Reed College",
+    type: "generic",
+    url: "https://www.reed.edu/human_resources/employment/",
+  },
+  {
+    campus: "Lewis & Clark College",
+    type: "generic",
+    url: "https://www.lclark.edu/about/hr/employment/",
+  },
+  {
+    campus: "Willamette University",
+    type: "generic",
+    url: "https://willamette.edu/offices/hr/jobs/",
+  },
+  {
+    campus: "University of Portland",
+    type: "generic",
+    url: "https://www.up.edu/hr/jobs/index.html",
+  },
+  {
+    campus: "Linfield University",
+    type: "generic",
+    url: "https://careers.linfield.edu/",
+  },
+  {
+    campus: "Pacific University",
+    type: "generic",
+    url: "https://www.pacificu.edu/about/jobs",
+  },
+  {
+    campus: "George Fox University",
+    type: "generic",
+    url: "https://www.georgefox.edu/offices/hr/employment/index.html",
+  },
 
 ];
 
@@ -948,6 +1364,46 @@ const WA_CAMPUSES = [
     type: "peopleadmin",
     url: "https://evergreen.peopleadmin.com/postings/search",
   },
+  {
+    campus: "Seattle University",
+    type: "generic",
+    url: "https://www.seattleu.edu/careers/",
+  },
+  {
+    campus: "Gonzaga University",
+    type: "generic",
+    url: "https://www.gonzaga.edu/about/offices-services/human-resources/careers",
+  },
+  {
+    campus: "University of Puget Sound",
+    type: "generic",
+    url: "https://www.pugetsound.edu/about/offices-services/human-resources/employment-opportunities",
+  },
+  {
+    campus: "Whitman College",
+    type: "generic",
+    url: "https://www.whitman.edu/human-resources/employment-opportunities",
+  },
+  {
+    campus: "Whitworth University",
+    type: "generic",
+    url: "https://www.whitworth.edu/cms/administration/human-resource-services/employment-opportunities/",
+  },
+  {
+    campus: "Pacific Lutheran University",
+    type: "generic",
+    url: "https://www.plu.edu/human-resources/employment/",
+  },
+  {
+    campus: "Seattle Pacific University",
+    type: "generic",
+    url: "https://spu.edu/about/spu-jobs",
+  },
+  {
+    campus: "Saint Martin's University",
+    type: "generic",
+    url: "https://www.stmartin.edu/about/careers",
+  },
 ];
 
 
@@ -957,6 +1413,45 @@ const ME_CAMPUSES = [
     campus: "University of Maine System",
     type: "oracle-cx",
     url: "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+  },
+  {
+    campus: "Bates College",
+    type: "generic",
+    url: "https://www.bates.edu/employment/",
+  },
+  {
+    campus: "Bowdoin College",
+    type: "peopleadmin",
+    url: "https://careers.bowdoin.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&query_position_type_id%5B%5D=2&commit=Search",
+  },
+  {
+    campus: "Colby College",
+    type: "generic",
+    url: "https://www.colby.edu/human-resources/employment/",
+  },
+];
+
+// VT (Vermont)
+const VT_CAMPUSES = [
+  {
+    campus: "University of Vermont",
+    type: "peopleadmin",
+    url: "https://www.uvmjobs.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Middlebury College",
+    type: "interfolio-inst",
+    url: "https://apply.interfolio.com/36079/positions",
+  },
+  {
+    campus: "Bennington College",
+    type: "generic",
+    url: "https://www.bennington.edu/employment-opportunities",
+  },
+  {
+    campus: "Saint Michael's College",
+    type: "oracle-cx",
+    url: "https://stmichaels-ibukjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2",
   },
 ];
 
@@ -1315,7 +1810,7 @@ function startServer() {
     console.log(`   Refresh scrape: http://localhost:${PORT}/api/jobs?refresh=1`);
   });
 }
-const isDirectRun = import.meta.url === pathToFileURL(process.argv[1]).href;
+const isDirectRun = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isDirectRun) startServer();
 
 /* ======================= EXPORTED ENTRYPOINT ======================= */
@@ -1337,10 +1832,13 @@ export async function scrapeAllJobsStandalone() {
       { name: "CSU", fn: () => scrapeCsuFaculty(context) },
       { name: "UMass", fn: () => scrapeUmassAll(context) },
       { name: "UMass Amherst", fn: () => scrapeUmassAmherst(context) },
+      { name: "MA Private", fn: () => scrapeMaPrivate(context) },
       { name: "UC", fn: () => scrapeUcAll(context) },
+      { name: "CA Private", fn: () => scrapeCaPrivate(context) },
       { name: "NJ", fn: () => scrapeNjAll(context) },
       { name: "NC", fn: () => scrapeNcAll(context) },
       { name: "DE", fn: () => scrapeDeAll(context) },
+      { name: "MD", fn: () => scrapeMdAll(context) },
       { name: "RI", fn: () => scrapeRiAll(context) },
       { name: "PA", fn: () => scrapePaAll(context) },
       { name: "MI", fn: () => scrapeMiAll(context) },
@@ -1350,7 +1848,8 @@ export async function scrapeAllJobsStandalone() {
       { name: "OR", fn: () => scrapeOrAll(context) },
       { name: "WA", fn: () => scrapeWaAll(context) },
       { name: "ME", fn: () => scrapeMeAll(context) },
-  { name: "NH", fn: () => scrapeNhAll(context) },
+      { name: "NH", fn: () => scrapeNhAll(context) },
+      { name: "VT", fn: () => scrapeVtAll(context) },
       { name: "MN", fn: () => scrapeMnAll(context) },
       { name: "WI", fn: () => scrapeWiAll(context) },
       { name: "MT", fn: () => scrapeMtAll(context) },
@@ -1386,6 +1885,9 @@ export async function scrapeAllJobsStandalone() {
       if (Array.isArray(r)) jobs.push(...r);
     }
 
+    // Normalize known noisy locations (e.g., building names) to campus city/state.
+    const normalizedJobs = jobs.map(normalizeLocationByCollege);
+
     // Print failure summary
     if (failures.length > 0) {
       console.log("\n" + "=".repeat(60));
@@ -1396,8 +1898,8 @@ export async function scrapeAllJobsStandalone() {
     }
 
     // Global faculty filter: remove non-faculty jobs that slipped through individual scrapers
-    const preFilterCount = jobs.length;
-    let facultyJobs = jobs.filter(j => {
+    const preFilterCount = normalizedJobs.length;
+    let facultyJobs = normalizedJobs.filter(j => {
       const t = String(j.title || "").toLowerCase();
       // Keep if title contains faculty-related keywords
       if (looksFacultyish(t)) return true;
@@ -1405,6 +1907,7 @@ export async function scrapeAllJobsStandalone() {
       if (/\bdean\b/.test(t)) return true;
       if (/\bchair\b/.test(t) && /department|program/i.test(t)) return true;
       if (/\bfellow\b/.test(t) && !/\bfellow\s*(ship)?\b.*\bnon/i.test(t)) return true;
+      if (/\bpost[\s-]?doc(?:toral)?\b/.test(t)) return true;
       // Remove junk titles like "View Details" or empty-ish titles
       if (t.length < 10) return false;
       if (/^view\s+details?$/i.test(t)) return false;
@@ -1415,7 +1918,7 @@ export async function scrapeAllJobsStandalone() {
     // keep non-junk titles so summarization can still run.
     const filteredRatio = preFilterCount > 0 ? (facultyJobs.length / preFilterCount) : 1;
     if (preFilterCount > 0 && (facultyJobs.length === 0 || filteredRatio < 0.05)) {
-      const fallbackJobs = jobs.filter(j => {
+      const fallbackJobs = normalizedJobs.filter(j => {
         const t = String(j?.title || "").trim();
         if (!t) return false;
         if (t.length < 8) return false;
@@ -1451,6 +1954,131 @@ function clean(s) {
   return String(s || "").replace(/\s+/g, " ").trim();
 }
 
+function inferAcademicFieldsFromTitle(title) {
+  const t = clean(title);
+  if (!t) return { department: null, specialization: null };
+
+  let dept = null;
+  let spec = null;
+
+  // Pattern: "Assistant Professor of X", "Lecturer in Y", "Chair of Z"
+  let m = t.match(/\b(?:Professor|Lecturer|Instructor|Chair)\s+(?:of|in)\s+(.+)$/i);
+
+  // Pattern: "Postdoctoral ... in X"
+  if (!m) m = t.match(/\bPost(?:doc|doctoral)\b.*?\bin\s+(.+)$/i);
+
+  // Pattern: title previously enriched as "Title — Department Name"
+  if (!m) {
+    const parts = t.split(/\s+[—-]\s+/);
+    if (parts.length >= 2) m = [parts[0], parts.slice(1).join(" — ")];
+  }
+
+  if (m && m[1]) {
+    const value = clean(String(m[1]).replace(/[.;,:)\]]+\s*$/g, ""));
+    if (value && value.length <= 120) {
+      dept = value;
+      spec = value;
+    }
+  }
+
+  return { department: dept || null, specialization: spec || null };
+}
+
+const COLLEGE_LOCATION_DEFAULTS = {
+  "University of Pennsylvania": "Philadelphia, PA",
+  "Carnegie Mellon University": "Pittsburgh, PA",
+  "Drexel University": "Philadelphia, PA",
+  "Lehigh University": "Bethlehem, PA",
+  "Villanova University": "Villanova, PA",
+  "Bucknell University": "Lewisburg, PA",
+  "Swarthmore College": "Swarthmore, PA",
+  "Gettysburg College": "Gettysburg, PA",
+  "Dickinson College": "Carlisle, PA",
+  "Lafayette College": "Easton, PA",
+  "Franklin & Marshall College": "Lancaster, PA",
+  "Brown University": "Providence, RI",
+  "Bryant University": "Smithfield, RI",
+  "Providence College": "Providence, RI",
+  "Rhode Island School of Design": "Providence, RI",
+  "Salve Regina University": "Newport, RI",
+  "Rhode Island College": "Providence, RI",
+  "University of Rhode Island": "Kingston, RI",
+  "University of Delaware": "Newark, DE",
+  "Delaware State University": "Dover, DE",
+  "Delaware Technical Community College": "Dover, DE",
+  "Wilmington University": "New Castle, DE",
+  "University of Maryland, Baltimore": "Baltimore, MD",
+  "University of Maryland, Baltimore County": "Catonsville, MD",
+  "University of Maryland, College Park": "College Park, MD",
+  "Johns Hopkins University": "Baltimore, MD",
+  "Morgan State University": "Baltimore, MD",
+  "Towson University": "Towson, MD",
+  "St. Mary's College of Maryland": "St. Mary's City, MD",
+  "Goucher College": "Towson, MD",
+  "University of Maine System": "Orono, ME",
+  "Bates College": "Lewiston, ME",
+  "Bowdoin College": "Brunswick, ME",
+  "University of New Hampshire System": "Durham, NH",
+  "Dartmouth College": "Hanover, NH",
+  "Saint Anselm College": "Manchester, NH",
+  "Colby College": "Waterville, ME",
+  "University of Vermont": "Burlington, VT",
+  "Middlebury College": "Middlebury, VT",
+  "Bennington College": "Bennington, VT",
+  "Saint Michael's College": "Colchester, VT",
+  "University of Oregon": "Eugene, OR",
+  "Southern Oregon University": "Ashland, OR",
+  "Portland State University": "Portland, OR",
+  "Oregon State University": "Corvallis, OR",
+  "Oregon Institute of Technology": "Klamath Falls, OR",
+  "Eastern Oregon University": "La Grande, OR",
+  "Western Oregon University": "Monmouth, OR",
+  "Reed College": "Portland, OR",
+  "Lewis & Clark College": "Portland, OR",
+  "Willamette University": "Salem, OR",
+  "University of Portland": "Portland, OR",
+  "Linfield University": "McMinnville, OR",
+  "Pacific University": "Forest Grove, OR",
+  "George Fox University": "Newberg, OR",
+  "University of Washington": "Seattle, WA",
+  "Washington State University": "Pullman, WA",
+  "Western Washington University": "Bellingham, WA",
+  "Eastern Washington University": "Cheney, WA",
+  "Central Washington University": "Ellensburg, WA",
+  "Evergreen State College": "Olympia, WA",
+  "Seattle University": "Seattle, WA",
+  "Gonzaga University": "Spokane, WA",
+  "University of Puget Sound": "Tacoma, WA",
+  "Whitman College": "Walla Walla, WA",
+  "Whitworth University": "Spokane, WA",
+  "Pacific Lutheran University": "Tacoma, WA",
+  "Seattle Pacific University": "Seattle, WA",
+  "Saint Martin's University": "Lacey, WA",
+};
+
+function isLikelyGeographicLocation(location) {
+  const t = clean(location);
+  if (!t) return false;
+  // Typical US city/state pattern.
+  if (/, [A-Z]{2}\b/.test(t)) return true;
+  // Accept obvious Pennsylvania city shorthand.
+  if (/\b(Philadelphia|Pittsburgh|Villanova|Lewisburg|Swarthmore|Gettysburg|Carlisle|Easton|Lancaster|Bethlehem),?\s*PA\b/i.test(t)) return true;
+  return false;
+}
+
+function normalizeLocationByCollege(job) {
+  if (!job || !["PA", "RI", "DE", "MD", "ME", "NH", "VT", "OR", "WA"].includes(job.source)) return job;
+  const fallback = COLLEGE_LOCATION_DEFAULTS[job.college] || null;
+  if (!fallback) return job;
+
+  const loc = clean(job.location || "");
+  // Replace null or building-level locations with canonical campus city/state.
+  if (!loc || !isLikelyGeographicLocation(loc)) {
+    return { ...job, location: fallback };
+  }
+  return job;
+}
+
 function uniqByUrl(items) {
   const seen = new Set();
   const out = [];
@@ -1474,9 +2102,7 @@ function omitAdjunct(title) {
     /\btemp\b/i.test(t) ||
     /\badministrator\b/i.test(t) ||
     /\badministrative\b/i.test(t) ||
-    /\badmin\b/i.test(t) ||
-    /postdoc/i.test(t) ||
-    /post[\s-]?doc/i.test(t)
+    /\badmin\b/i.test(t)
   );
 }
 
@@ -2014,14 +2640,83 @@ async function scrapeYaleAcademicPositions(context, campusName, sourceName) {
       }
     }
 
-    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
-    return uniqByUrl(jobs);
+    // Yale pages often keep department/specialization in detail content.
+    // Enrich each listing with metadata so summarizer has better signals.
+    const enriched = await enrichYaleJobsWithDetails(context, jobs, campusName, sourceName);
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${enriched.length}`);
+    return uniqByUrl(enriched);
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
     return [];
   } finally {
     await page.close().catch(() => {});
   }
+}
+
+function stripHtmlToText(html) {
+  if (!html) return "";
+  return String(html)
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractYaleDeptFromText(text) {
+  if (!text) return null;
+  const patterns = [
+    /(?:Department|Program|Division)\s*:\s*([A-Za-z&/,\- ]{3,100})/i,
+    /School\s+of\s+([A-Za-z&/,\- ]{3,100})/i,
+    /in\s+the\s+Department\s+of\s+([A-Za-z&/,\- ]{3,100})/i,
+  ];
+  for (const rx of patterns) {
+    const m = text.match(rx);
+    if (m && m[1]) {
+      const v = clean(m[1]).replace(/[|;,:]+$/, "").trim();
+      if (v.length >= 3 && v.length <= 100) return v;
+    }
+  }
+  return null;
+}
+
+async function enrichYaleJobsWithDetails(context, jobs, campusName, sourceName) {
+  const concurrency = Math.max(2, Number(process.env.YALE_DETAIL_CONCURRENCY || 6));
+  return await mapWithConcurrency(jobs, concurrency, async (j) => {
+    try {
+      const res = await context.request.get(j.url, { timeout: 45_000 });
+      if (!res.ok()) return j;
+      const html = await res.text();
+      const text = stripHtmlToText(html);
+
+      // Prefer meta description for concise summary seed; fallback to visible text slice.
+      const metaDescMatch = html.match(/<meta[^>]+(?:name|property)=["'](?:description|og:description)["'][^>]+content=["']([^"']{20,2000})["']/i);
+      const description = clean(metaDescMatch?.[1] || text.slice(0, 2500)) || null;
+
+      const dept = extractYaleDeptFromText(text);
+      let title = clean(j.title);
+      if (dept && !title.toLowerCase().includes(dept.toLowerCase())) {
+        title = `${title} — ${dept}`;
+      }
+
+      return {
+        title,
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: j.location || "New Haven, CT",
+        description,
+      };
+    } catch {
+      return j;
+    }
+  });
 }
 
 // Scrape private CT universities + UConn
@@ -2075,12 +2770,68 @@ async function scrapeCsuFaculty(context) {
   const detailMap = await fetchCsuDetailsFromDetails(context, jobs.map((j) => j.url), 6);
   return jobs.map((j) => {
     const d = detailMap.get(j.url);
+    const inferredCollege =
+      j.college ||
+      d?.college ||
+      mapCsuLocationToCampus(d?.location) ||
+      inferCsuCampusFromText(d?.aboutText) ||
+      null;
     return {
       ...j,
-      college: j.college || d?.college || null,
+      college: inferredCollege,
       location: j.location || d?.location || null,
     };
   });
+}
+
+function mapCsuLocationToCampus(location) {
+  if (!location) return null;
+  const key = clean(String(location));
+  const byLocation = {
+    "Bakersfield": "California State University, Bakersfield",
+    "Channel Islands": "California State University Channel Islands",
+    "Chico": "California State University, Chico",
+    "Dominguez Hills": "California State University, Dominguez Hills",
+    "East Bay": "California State University, East Bay",
+    "Fresno": "California State University, Fresno",
+    "Fullerton": "California State University, Fullerton",
+    "Humboldt": "Cal Poly Humboldt",
+    "Long Beach": "California State University, Long Beach",
+    "Los Angeles": "California State University, Los Angeles",
+    "Maritime Academy": "California State University Maritime Academy",
+    "Monterey Bay": "California State University, Monterey Bay",
+    "Northridge": "California State University, Northridge",
+    "Pomona": "California State Polytechnic University, Pomona",
+    "Sacramento": "California State University, Sacramento",
+    "San Bernardino": "California State University, San Bernardino",
+    "San Diego": "San Diego State University",
+    "San Francisco": "San Francisco State University",
+    "San Jose": "San Jose State University",
+    "San José": "San Jose State University",
+    "San Luis Obispo": "California Polytechnic State University, San Luis Obispo",
+    "San Marcos": "California State University San Marcos",
+    "Sonoma": "Sonoma State University",
+    "Stanislaus": "California State University, Stanislaus",
+  };
+  return byLocation[key] || null;
+}
+
+function inferCsuCampusFromText(text) {
+  if (!text) return null;
+  const cleaned = clean(String(text));
+  const patterns = [
+    /\b(California State University Channel Islands)\b/i,
+    /\b(California State University,\s*[A-Za-z .'-]+)\b/i,
+    /\b(California State University San Marcos)\b/i,
+    /\b(California State Polytechnic University,\s*[A-Za-z .'-]+)\b/i,
+    /\b(California Polytechnic State University,\s*San Luis Obispo)\b/i,
+    /\b(San Diego State University|San Francisco State University|San Jose State University|Sonoma State University|Cal Poly Humboldt)\b/i,
+  ];
+  for (const re of patterns) {
+    const m = cleaned.match(re);
+    if (m && m[1]) return clean(m[1]);
+  }
+  return null;
 }
 
 async function fetchCsuDetailsFromDetails(context, urls, concurrency = 6) {
@@ -2111,12 +2862,15 @@ async function fetchCsuDetailsFromDetails(context, urls, concurrency = 6) {
           };
 
           const location =
-            getFromDtDd(["work location"]) || getFromDtDd(["location"]) || getFromDtDd(["city"]) || null;
+            getFromDtDd(["work location"]) ||
+            getFromDtDd(["location"]) ||
+            getFromDtDd(["city"]) ||
+            clean(document.querySelector('#job-content span.location')?.textContent) ||
+            null;
 
           const college =
             getFromDtDd(["campus"]) ||
             getFromDtDd(["organization"]) ||
-            getFromDtDd(["department"]) ||
             getFromDtDd(["agency"]) ||
             null;
 
@@ -2139,7 +2893,8 @@ async function fetchCsuDetailsFromDetails(context, urls, concurrency = 6) {
             }
           }
 
-          return { location, college: college || orgFromLd || null };
+          const aboutText = clean(document.querySelector('#job-details')?.innerText || "");
+          return { location, college: college || orgFromLd || null, aboutText };
         });
 
         out.set(url, details);
@@ -2271,6 +3026,472 @@ async function scrapeUmassAmherst(context) {
   }
 
   return jobs;
+}
+
+async function scrapeJibeApiAs(startUrl, campusName, sourceName) {
+  try {
+    const origin = new URL(startUrl).origin;
+    const jobs = [];
+    const seen = new Set();
+    const limit = 50;
+    const searches = ["", "professor", "faculty", "lecturer", "instructor", "postdoc", "fellow"];
+
+    for (const term of searches) {
+      let page = 1;
+      let totalCount = Infinity;
+      while (page <= 25) {
+        const apiUrl = `${origin}/api/jobs?search=${encodeURIComponent(term)}&page=${page}&limit=${limit}`;
+        const resp = await fetch(apiUrl, {
+          headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+        });
+        if (!resp.ok) break;
+        const data = await resp.json().catch(() => null);
+        if (!data || !Array.isArray(data.jobs) || data.jobs.length === 0) break;
+
+        totalCount = Number(data.totalCount || data.count || totalCount);
+        for (const row of data.jobs) {
+          const d = row?.data || {};
+          const title = clean(d.title || "");
+          const slug = clean(d.slug || "");
+          if (!title || !slug) continue;
+          const url = `${origin}/jobs/${slug}`;
+          if (seen.has(url)) continue;
+          seen.add(url);
+          jobs.push({
+            title,
+            url,
+            source: sourceName,
+            category: "Faculty",
+            college: campusName,
+            location: [d.city, d.state].filter(Boolean).join(", ") || null,
+            description: d.description ? String(d.description).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 2000) : null,
+          });
+        }
+
+        if (page * limit >= totalCount) break;
+        page += 1;
+      }
+    }
+
+    const filtered = jobs
+      .filter((j) => looksFacultyish(j.title) || /\bpost[\s-]?doc(?:toral)?\b|\bfellow\b/i.test(j.title || ""))
+      .filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (Jibe API)`);
+    return filtered;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Jibe API scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+async function scrapeJobviteAs(startUrl, campusName, sourceName) {
+  try {
+    const resp = await fetch(startUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const html = await resp.text();
+
+    const origin = new URL(startUrl).origin;
+    const companyMatch = startUrl.match(/jobvite\.com\/([^/]+)\/jobs/i);
+    const company = companyMatch ? companyMatch[1] : null;
+    const out = [];
+    const seen = new Set();
+    const re = /<a[^>]+href="([^"]*\/job\/[A-Za-z0-9]+[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi;
+
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      const href = m[1];
+      const raw = m[2] || "";
+      const title = clean(raw.replace(/<[^>]+>/g, " "));
+      if (!title || title.length < 5) continue;
+
+      let url = href;
+      if (!/^https?:\/\//i.test(url)) {
+        if (url.startsWith("/")) url = origin + url;
+        else if (company) url = `${origin}/${company}/${url}`;
+        else url = new URL(url, startUrl).toString();
+      }
+      if (seen.has(url)) continue;
+      seen.add(url);
+      out.push({
+        title,
+        url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      });
+    }
+
+    const filtered = out.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (Jobvite)`);
+    return filtered;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Jobvite scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+async function scrapeSmithInterfolioPage(startUrl, campusName, sourceName) {
+  try {
+    const resp = await fetch(startUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const html = await resp.text();
+
+    const out = [];
+    const seen = new Set();
+    const re = /<a[^>]+href="([^"]*apply\.interfolio\.com\/\d+[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi;
+
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      const rawUrl = m[1] || "";
+      const title = clean((m[2] || "").replace(/<[^>]+>/g, " "));
+      if (!rawUrl || !title || title.length < 6) continue;
+
+      let url = rawUrl;
+      if (!/^https?:\/\//i.test(url)) {
+        try {
+          url = new URL(url, startUrl).toString();
+        } catch {
+          continue;
+        }
+      }
+
+      if (seen.has(url)) continue;
+      seen.add(url);
+
+      const inferred = inferAcademicFieldsFromTitle(title);
+      out.push({
+        title,
+        url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      });
+    }
+
+    const filtered = out
+      .filter((j) => looksFacultyish(j.title) || /\bpost[\s-]?doc(?:toral)?\b/i.test(j.title || ""))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (Smith Interfolio page)`);
+    return filtered;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Smith Interfolio scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+async function scrapeInterfolioLinksFromPageAs(startUrl, campusName, sourceName) {
+  try {
+    const resp = await fetch(startUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const html = await resp.text();
+
+    const out = [];
+    const seen = new Set();
+    const re = /<a[^>]+href="([^"]*apply\.interfolio\.com\/\d+[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi;
+
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      const rawUrl = m[1] || "";
+      const title = clean((m[2] || "").replace(/<[^>]+>/g, " "));
+      if (!rawUrl || !title || title.length < 6) continue;
+
+      let url = rawUrl;
+      if (!/^https?:\/\//i.test(url)) {
+        try {
+          url = new URL(url, startUrl).toString();
+        } catch {
+          continue;
+        }
+      }
+
+      if (seen.has(url)) continue;
+      seen.add(url);
+
+      const inferred = inferAcademicFieldsFromTitle(title);
+      out.push({
+        title,
+        url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      });
+    }
+
+    const filtered = out
+      .filter((j) => looksFacultyish(j.title) || /\bpost[\s-]?doc(?:toral)?\b/i.test(j.title || ""))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (Interfolio links page)`);
+    return filtered;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Interfolio-links scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+async function scrapeMaPrivate(context) {
+  const results = await mapWithConcurrency(
+    MA_PRIVATE_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MA");
+        if (type === "icims") return await scrapeIcimsAs(context, url, campus, "MA");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MA");
+        if (type === "peopleadmin-dept") return await scrapePeopleAdminWithDept(context, url, campus, "MA");
+        if (type === "jibe-api") return await scrapeJibeApiAs(url, campus, "MA");
+        if (type === "jobvite") return await scrapeJobviteAs(url, campus, "MA");
+        if (type === "smith-interfolio") return await scrapeSmithInterfolioPage(url, campus, "MA");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MA");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} MA private scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeUscJobsAs(startUrl, campusName, sourceName) {
+  try {
+    const jobs = [];
+    const seen = new Set();
+
+    for (let page = 1; page <= 15; page++) {
+      const urlObj = new URL(startUrl);
+      urlObj.searchParams.set("category", "Faculty");
+      urlObj.searchParams.set("p", String(page));
+      const pageUrl = urlObj.toString();
+
+      const resp = await fetch(pageUrl, {
+        headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+      });
+      if (!resp.ok) break;
+      const html = await resp.text();
+
+      const re = /<a[^>]+href="([^"]*\/job\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+      let added = 0;
+      let m;
+      while ((m = re.exec(html)) !== null) {
+        const rawHref = m[1] || "";
+        const title = clean((m[2] || "").replace(/<[^>]+>/g, " "));
+        if (!rawHref || !title || title.length < 6) continue;
+
+        let jobUrl = rawHref;
+        if (!/^https?:\/\//i.test(jobUrl)) {
+          try {
+            jobUrl = new URL(jobUrl, startUrl).toString();
+          } catch {
+            continue;
+          }
+        }
+
+        if (seen.has(jobUrl)) continue;
+        seen.add(jobUrl);
+        jobs.push({
+          title,
+          url: jobUrl,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: null,
+          description: null,
+        });
+        added++;
+      }
+
+      if (added === 0) break;
+    }
+
+    const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (USC listing)`);
+    return filtered;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} USC scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+async function scrapeWorkdaySearchApiAs(startUrl, campusName, sourceName, searchTerms = ["professor", "faculty", "lecturer", "instructor", "postdoc", "fellow"]) {
+  try {
+    let apiUrl = null;
+    const jobsMatch = startUrl.match(/https:\/\/([^.]+)\.wd\d+\.myworkdayjobs\.com(?:\/en-US)?\/([^?/]+)/);
+    if (jobsMatch) {
+      const host = jobsMatch[0].split("/")[2];
+      const company = jobsMatch[1];
+      const site = jobsMatch[2];
+      apiUrl = `https://${host}/wday/cxs/${company}/${site}/jobs`;
+    } else {
+      const u = new URL(startUrl);
+      if (/^wd\d+\.myworkdaysite\.com$/i.test(u.host)) {
+        const parts = u.pathname.split("/").filter(Boolean);
+        if (parts[0] === "recruiting" && parts[1] && parts[2]) {
+          apiUrl = `https://${u.host}/wday/cxs/${parts[1]}/${parts[2]}/jobs`;
+        }
+      }
+    }
+
+    if (!apiUrl) return [];
+
+    const out = [];
+    const seen = new Set();
+    const limit = 20;
+
+    for (const term of searchTerms) {
+      let offset = 0;
+      let total = Infinity;
+      for (let page = 0; page < 25; page++) {
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            appliedFacets: {},
+            limit,
+            offset,
+            searchText: term,
+          }),
+        });
+        if (!response.ok) break;
+
+        const data = await response.json();
+        total = Number(data?.total || 0);
+        const rows = Array.isArray(data?.jobPostings) ? data.jobPostings : [];
+        if (rows.length === 0) break;
+
+        const baseUrl = startUrl.split("?")[0].replace(/\/en-US/, "");
+        for (const row of rows) {
+          const url = baseUrl + (row.externalPath || "");
+          if (!url || seen.has(url)) continue;
+          seen.add(url);
+          out.push({
+            title: clean(row.title || ""),
+            url,
+            source: sourceName,
+            category: "Faculty",
+            college: campusName,
+            location: row.locationsText || null,
+            description: null,
+          });
+        }
+
+        offset += limit;
+        if (offset >= total) break;
+      }
+    }
+
+    const filtered = out
+      .filter((j) => looksFacultyish(j.title) || /\bpost[\s-]?doc(?:toral)?\b|\bfellow\b/i.test(j.title || ""))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (Workday search API)`);
+    return filtered;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Workday search API failed:`, e?.message || e);
+    return [];
+  }
+}
+
+async function scrapeLafayetteFacultyPageAs(startUrl, campusName, sourceName) {
+  try {
+    const resp = await fetch(startUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const html = await resp.text();
+
+    const out = [];
+    const seen = new Set();
+    const re = /<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      const href = m[1] || "";
+      let title = clean((m[2] || "").replace(/<[^>]+>/g, " "));
+      if (!href || !title || title.length < 8) continue;
+
+      const lower = title.toLowerCase();
+      // Keep only concrete faculty openings on this page.
+      const looksOpening =
+        /assistant professor|associate professor|visiting assistant professor|visiting professor|openings?|positions? available/i.test(title);
+      if (!looksOpening) continue;
+      if (/faculty handbook|our faculty|students,\s*faculty|search lafayette/i.test(lower)) continue;
+
+      let url = href;
+      if (!/^https?:\/\//i.test(url)) {
+        try {
+          url = new URL(url, startUrl).toString();
+        } catch {
+          continue;
+        }
+      }
+      if (seen.has(url)) continue;
+      seen.add(url);
+
+      // Skip the page self-link banner title.
+      if (url.replace(/\/+$/, "") === startUrl.replace(/\/+$/, "") && /positions? available/i.test(title)) continue;
+
+      out.push({
+        title,
+        url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      });
+    }
+
+    const filtered = out.filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (Lafayette faculty page)`);
+    return filtered;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Lafayette scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+async function scrapeCaPrivate(context) {
+  const results = await mapWithConcurrency(
+    CA_PRIVATE_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "CA Private");
+        if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "CA Private");
+        if (type === "usc-jobs") return await scrapeUscJobsAs(url, campus, "CA Private");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CA Private");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CA Private");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CA Private");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} CA private scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
 /* ===== Generic "en-us/filter" site scraper (CSU/UMass style) ===== */
@@ -2440,17 +3661,27 @@ async function scrapeApRecruitCampus(page, campusName) {
         const container = a.closest("tr, li, article, div") || a.parentElement;
 
         let title = clean(a.textContent);
+        const ariaTitleRaw = clean(a.getAttribute("aria-label"));
+        const ariaTitle = ariaTitleRaw.replace(/^more information about\s*JPF\d+\s*:\s*/i, "").trim();
+        const ds = clean(container?.getAttribute?.("data-search"));
+        const dsTitle = ds ? clean(ds.split("|")[0]) : "";
 
-        const h = container?.querySelector?.("h1,h2,h3,h4,.title,.job-title,strong") || null;
+        const h =
+          container?.querySelector?.(
+            "h1,h2,h3,h4,.title,.job-title,strong,td.name,.name,[class*='job-title' i]"
+          ) || null;
         const ht = clean(h?.textContent);
 
         const isBadTitle = (t) =>
           !t ||
           t.length < 4 ||
+          /^JPF\d+$/i.test(t) ||
           /^apply by\b/i.test(t) ||
           /open\s+\w{3}\s+\d{1,2},\s+\d{4}/i.test(t);
 
         if (isBadTitle(title) && ht && !isBadTitle(ht)) title = ht;
+        if (isBadTitle(title) && ariaTitle && !isBadTitle(ariaTitle)) title = ariaTitle;
+        if (isBadTitle(title) && dsTitle && !isBadTitle(dsTitle)) title = dsTitle;
 
         if (isBadTitle(title) && container) {
           const candEls = Array.from(container.querySelectorAll("h1,h2,h3,h4,strong,a"));
@@ -2799,16 +4030,31 @@ async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") 
 // Fast API-based Workday scraper (replaces slow browser scraping)
 async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ") {
   try {
-    // Parse the Workday URL to extract company and site
-    // URL format: https://company.wdN.myworkdayjobs.com/site or /en-US/site
-    const urlMatch = startUrl.match(/https:\/\/([^.]+)\.wd\d+\.myworkdayjobs\.com(?:\/en-US)?\/([^?/]+)/);
-    if (!urlMatch) {
+    let apiUrl = null;
+    // Parse Workday URLs to extract company+site:
+    // 1) https://company.wdN.myworkdayjobs.com/site or /en-US/site
+    // 2) https://wdN.myworkdaysite.com/recruiting/company/site
+    const jobsMatch = startUrl.match(/https:\/\/([^.]+)\.wd\d+\.myworkdayjobs\.com(?:\/en-US)?\/([^?/]+)/);
+    if (jobsMatch) {
+      const [, company, site] = jobsMatch;
+      const host = jobsMatch[0].split("/")[2];
+      apiUrl = `https://${host}/wday/cxs/${company}/${site}/jobs`;
+    } else {
+      try {
+        const u = new URL(startUrl);
+        if (/^wd\d+\.myworkdaysite\.com$/i.test(u.host)) {
+          const parts = u.pathname.split("/").filter(Boolean);
+          if (parts[0] === "recruiting" && parts[1] && parts[2]) {
+            apiUrl = `https://${u.host}/wday/cxs/${parts[1]}/${parts[2]}/jobs`;
+          }
+        }
+      } catch {}
+    }
+
+    if (!apiUrl) {
       console.log(`${campusName} ${sourceLabel}: Could not parse Workday URL, falling back to browser`);
       return await scrapeNjWorkdayBrowser(context, startUrl, campusName, sourceLabel);
     }
-
-    const [, company, site] = urlMatch;
-    const apiUrl = `https://${urlMatch[0].split('/')[2]}/wday/cxs/${company}/${site}/jobs`;
 
     // Parse facets from URL query parameters (e.g. ?jobFamilyGroup=abc&timeType=xyz)
     const appliedFacets = {};
@@ -2865,7 +4111,7 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
     }
 
     const filtered = allJobs
-      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => looksFacultyish(j.title) || /\bpost[\s-]?doc(?:toral)?\b|\bfellow\b/i.test(j.title || ""))
       .filter((j) => !omitAdjunct(j.title));
 
     console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length} (API)`);
@@ -2938,7 +4184,9 @@ async function scrapeNjWorkdayBrowser(context, startUrl, campusName, sourceLabel
       await page.waitForSelector('[data-automation-id="jobTitle"]', { timeout: 15_000 }).catch(() => {});
     }
 
-    const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+    const filtered = jobs
+      .filter((j) => looksFacultyish(j.title) || /\bpost[\s-]?doc(?:toral)?\b|\bfellow\b/i.test(j.title || ""))
+      .filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
     return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
   } finally {
@@ -3345,6 +4593,7 @@ async function scrapeDeAll(context) {
 
 if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "DE");
 if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "DE");
+if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "DE");
 if (type === "enusfilter") {
   const page = await context.newPage();
   try {
@@ -3368,15 +4617,43 @@ if (type === "enusfilter") {
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
+async function scrapeMdAll(context) {
+  const results = await mapWithConcurrency(
+    MD_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MD");
+        if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "MD");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "MD");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MD");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "MD");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MD");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} MD scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
 
 async function scrapeRiAll(context) {
   const results = await mapWithConcurrency(
-    RI_CAMPUSES,
+    [...RI_CAMPUSES, ...RI_PRIVATE_CAMPUSES],
     MAX_PARALLEL_CAMPUSES,
     async ({ campus, type, url }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "RI");
         if (type === "peopleadmin-dept") return await scrapePeopleAdminWithDept(context, url, campus, "RI");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "RI");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "RI");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "RI");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "RI");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} RI scrape failed:`, e?.message || e);
@@ -3392,13 +4669,15 @@ async function scrapeRiAll(context) {
 
 async function scrapeNhAll(context) {
   const results = await mapWithConcurrency(
-    NH_PUBLIC_CAMPUSES,
+    NH_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
     async ({ campus, type, url }) => {
       try {
         // Handle any explicit platform types if added later
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NH");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "NH");
         if (type === "workday") return await scrapeWorkdayApi(context, url, campus, "NH");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NH");
 
         // Fallback: try en-us/filter-style extractor
         const page = await context.newPage();
@@ -3427,14 +4706,32 @@ async function scrapeNhAll(context) {
 
 
 async function scrapePaAll(context) {
+  const campuses = [...PA_CAMPUSES, ...PA_PRIVATE_CAMPUSES];
   const results = await mapWithConcurrency(
-    PA_CAMPUSES,
+    campuses,
     MAX_PARALLEL_CAMPUSES,
     async ({ campus, type, url }) => {
       try {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "PA");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "PA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "PA");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "PA");
+        if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "PA");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "PA");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "PA");
+        if (type === "interfolio-links") return await scrapeInterfolioLinksFromPageAs(url, campus, "PA");
+        if (type === "lafayette-faculty") return await scrapeLafayetteFacultyPageAs(url, campus, "PA");
+        if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "PA");
+        if (type === "enusfilter") {
+          const page = await context.newPage();
+          try {
+            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await page.waitForTimeout(900);
+            return await scrapeEnUsFilterSite(page, { source: "PA", campus, category: "Faculty" });
+          } finally {
+            await page.close().catch(() => {});
+          }
+        }
 
         return [];
       } catch (e) {
@@ -3561,15 +4858,21 @@ async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
     }
 
     const out = jobs
-      .map((j) => ({
-        title: clean(j.title),
-        url: j.url,
-        source: sourceName,
-        category: "Faculty",
-        college: campusName,
-        location: null,
-        description: null,
-      }))
+      .map((j) => {
+        const title = clean(j.title);
+        const inferred = inferAcademicFieldsFromTitle(title);
+        return {
+          title,
+          url: j.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: null,
+          description: null,
+          department: inferred.department,
+          specialization: inferred.specialization,
+        };
+      })
       .filter((j) => !omitAdjunct(j.title));
 
     console.log(`${campusName} ${sourceName} listings scraped: ${out.length}`);
@@ -3718,15 +5021,21 @@ async function scrapePeopleAdminWithDept(context, startUrl, campusName, sourceNa
     }
 
     const out = jobs
-      .map((j) => ({
-        title: clean(j.title),
-        url: j.url,
-        source: sourceName,
-        category: "Faculty",
-        college: campusName,
-        location: null,
-        description: null,
-      }))
+      .map((j) => {
+        const title = clean(j.title);
+        const inferred = inferAcademicFieldsFromTitle(title);
+        return {
+          title,
+          url: j.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: null,
+          description: null,
+          department: inferred.department,
+          specialization: inferred.specialization,
+        };
+      })
       .filter((j) => !omitAdjunct(j.title));
 
     console.log(`${campusName} ${sourceName} listings scraped: ${out.length}`);
@@ -4609,7 +5918,7 @@ async function scrapeNySunyMain(context) {
         url: j.url,
         source: "NY",
         category: "Faculty",
-        college: "SUNY System",
+        college: inferSunyCampusFromText(j.title, j.url),
         location: null,
         description: null,
       }));
@@ -4643,8 +5952,12 @@ async function scrapeNySuny(context) {
   ]);
 
   const allJobs = [...mainJobs, ...campusResults.flat()];
-  console.log(`SUNY total listings scraped: ${allJobs.length}`);
-  return allJobs;
+  const remappedJobs = allJobs.map((j) => {
+    if (j?.college && j.college !== "SUNY System") return j;
+    return { ...j, college: inferSunyCampusFromText(j?.title, j?.url) };
+  });
+  console.log(`SUNY total listings scraped: ${remappedJobs.length}`);
+  return remappedJobs;
 }
 
 // Scrape private NY universities
@@ -4873,12 +6186,14 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
 
         // Skip navigation and common non-job links
         if (/login|logout|search|home|about|contact|privacy|terms|faq|help/i.test(url)) continue;
+        if (/\/directory\b|\/faculty-staff\b|\/our-faculty\b|\/faculty-profiles\b|\/people\b/i.test(url)) continue;
 
         let title = clean(a.textContent);
         if (!title || title.length < 10) continue;
 
         // Skip navigation elements
         if (/^(menu|search|login|home|back|next|previous|submit|apply|click|more|view)$/i.test(title)) continue;
+        if (/faculty\s+(and|&)\s+staff\s+directory|faculty\s+directory|our\s+faculty|meet\s+the\s+faculty|faculty\s+profiles?/i.test(title)) continue;
 
         // Look for faculty-related keywords in title - be strict
         const isFacultyRelated =
@@ -4910,15 +6225,21 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
     const filtered = jobs.filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length}`);
 
-    return filtered.map((j) => ({
-      title: j.title.replace(/\s*\(\d{4,}\)\s*[A-Z]{1,4}\s*$/, "").trim(),
-      url: j.url,
-      source: sourceName,
-      category: "Faculty",
-      college: campusName,
-      location: null,
-      description: null,
-    }));
+    return filtered.map((j) => {
+      const title = j.title.replace(/\s*\(\d{4,}\)\s*[A-Z]{1,4}\s*$/, "").trim();
+      const inferred = inferAcademicFieldsFromTitle(title);
+      return {
+        title,
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
     return [];
@@ -5748,6 +7069,7 @@ async function scrapeOrAll(context) {
         }
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OR");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OR");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OR");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} OR scrape failed:`, e?.message || e);
@@ -5774,6 +7096,7 @@ async function scrapeWaAll(context) {
         if (type === "wwu") return await scrapeWwuFacultyPage(context, url, campus, "WA");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "WA");
         if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "WA");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "WA");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} WA scrape failed:`, e?.message || e);
@@ -5802,6 +7125,10 @@ async function scrapeMeAll(context) {
     async ({ campus, type, url }) => {
       try {
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "ME");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "ME");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "ME");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "ME");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "ME");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} ME scrape failed:`, e?.message || e);
@@ -5811,7 +7138,33 @@ async function scrapeMeAll(context) {
   );
 
   const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
-  return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+  // Keep broader ME set here; global faculty filter will finalize faculty-only output.
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== VT ============================== */
+
+async function scrapeVtAll(context) {
+  const results = await mapWithConcurrency(
+    VT_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "VT");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "VT");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "VT");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "VT");
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "VT");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} VT scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
 /* ============================== MN ============================== */
