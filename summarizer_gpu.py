@@ -861,7 +861,7 @@ def extract_visible_text(html: str) -> str:
 # FastAPI + model
 # =========================
 
-HF_MODEL = os.environ.get("HF_MODEL", "Qwen/Qwen2.5-7B-Instruct")
+HF_MODEL = os.environ.get("HF_MODEL", "Qwen/Qwen2.5-3B-Instruct")
 PORT = int(os.environ.get("SUMMARIZER_PORT", "9000"))
 CACHE_PATH = os.path.join(".cache", "summaries.json")
 
@@ -919,11 +919,11 @@ if _STANDALONE:
         ).to("mps")
     elif DEVICE == "cuda":
         print(f"[INFO] Loading {HF_MODEL} on GPU: {torch.cuda.get_device_name(0)}")
-        model = AutoModelForCausalLM.from_pretrained(
-            HF_MODEL,
-            dtype=torch.float16,
-            device_map="auto",
-        )
+        with torch.device("cuda"):
+            model = AutoModelForCausalLM.from_pretrained(
+                HF_MODEL,
+                torch_dtype=torch.float16,
+            )
     else:
         print(f"[WARN] No GPU detected, loading {HF_MODEL} on CPU (will be slower)")
         model = AutoModelForCausalLM.from_pretrained(HF_MODEL)
@@ -1080,7 +1080,7 @@ def build_prompt(page_text: str, title: Optional[str] = None) -> str:
 <|im_start|>user
 {title_hint}Summarize this academic job posting in 2-3 sentences:
 
-{page_text[:3000]}<|im_end|>
+{page_text[:1500]}<|im_end|>
 <|im_start|>assistant
 """
 
@@ -1222,22 +1222,166 @@ def summarize_one(job: Job, max_new_tokens: int, model=None, tokenizer=None, dev
         "enrichedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
     }
 
+def _prefetch_job(job: Job):
+    """Fetch HTML + prepare text for a single job (runs in thread pool)."""
+    if job.description and len(job.description) > 200:
+        return None, job.description, clean_page_text_for_llm(job.description)
+    elif should_skip_fetch(job.url):
+        return None, job.title or "", job.title or ""
+    else:
+        h = fetch_job_page_html(job.url)
+        raw = extract_visible_text(h or "")
+        return h, raw, clean_page_text_for_llm(raw)
+
+def _enrich_from_prefetch(job: Job, html, raw_text, page_text, max_new_tokens, model_ref, tokenizer_ref, device_ref):
+    """Run all the extraction + LLM generation for one job using pre-fetched data."""
+    title_from_page, dept = extract_uc_recruit_title_dept(html or "")
+    if title_from_page and not is_valid_title(title_from_page):
+        title_from_page = None
+    original_title = title_from_page or clean_title_jobcode(job.title)
+    cleaned_title = strip_extraneous_title_info(original_title)
+    dept = (
+        dept
+        or extract_department_from_compound_title(cleaned_title)
+        or infer_department_from_title(cleaned_title)
+        or extract_department_from_text(page_text)
+    )
+    rank = guess_rank(page_text) or guess_rank(cleaned_title or "")
+    specialization = extract_specialization(cleaned_title, page_text)
+    title_clean = make_concise_title(rank, dept, specialization, cleaned_title)
+    if title_clean == "(No title)" and job.title:
+        scraper_title = strip_extraneous_title_info(clean_title_jobcode(job.title))
+        fallback_rank = guess_rank(scraper_title or "")
+        fallback_dept = infer_department_from_title(scraper_title) or extract_department_from_compound_title(scraper_title)
+        fallback_spec = extract_specialization(scraper_title, None)
+        title_clean = make_concise_title(fallback_rank, fallback_dept, fallback_spec, scraper_title)
+        if not rank and fallback_rank: rank = fallback_rank
+        if not dept and fallback_dept: dept = clean_field_name(fallback_dept)
+        if not specialization and fallback_spec: specialization = clean_field_name(fallback_spec)
+    tenure_track = detect_tenure_track(page_text)
+    deadline_info = extract_close_date(page_text)
+    dept = clean_field_name(dept)
+    specialization = clean_field_name(specialization)
+    if dept: dept = to_title_case(dept)
+    if specialization: specialization = to_title_case(specialization)
+
+    base = {
+        "titleClean": title_clean, "department": dept, "specialization": specialization,
+        "rank": rank, "tenureTrack": tenure_track,
+        "closeDate": deadline_info.get("closeDate"), "closeDateType": deadline_info.get("closeDateType"),
+        "closeDateRaw": deadline_info.get("closeDateRaw"), "openUntilFilled": deadline_info.get("openUntilFilled"),
+        "enrichedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+    if not rank:
+        base["summary"] = None
+        base["skippedReason"] = "rank_not_identified"
+        return base, None  # no prompt needed
+
+    prompt = build_prompt(page_text, cleaned_title)
+    return base, prompt
+
 if _STANDALONE:
+    from concurrent.futures import ThreadPoolExecutor
+    _fetch_pool = ThreadPoolExecutor(max_workers=8)
+    _cache_state = {"batch_count": 0}
+
     @app.post("/summarize")
     def summarize(req: SummarizeRequest):
-        out = []
-        for job in req.jobs:
+        _cache_state["batch_count"] += 1
+        t0 = time.time()
+        out = [None] * len(req.jobs)
+        to_process = []  # (index, job, cache_key)
+
+        # 1. Check cache
+        for i, job in enumerate(req.jobs):
             k = key_for(job)
             if k in CACHE:
-                out.append({**job.dict(), **CACHE[k]})
-                continue
-            enriched = summarize_one(job, req.max_new_tokens or 220)
-            CACHE[k] = enriched
-            out.append({**job.dict(), **enriched})
+                out[i] = {**job.model_dump(), **CACHE[k]}
+            else:
+                to_process.append((i, job, k))
+
+        if not to_process:
+            return {"jobs": out}
+
+        # 2. Parallel URL fetching
+        fetch_futures = {i: _fetch_pool.submit(_prefetch_job, job) for i, job, k in to_process}
+        prefetched = {}
+        for i, job, k in to_process:
+            try:
+                prefetched[i] = fetch_futures[i].result(timeout=60)
+            except Exception as e:
+                print(f"[WARN] prefetch failed for {job.url}: {e}")
+                prefetched[i] = (None, job.title or "", job.title or "")
+
+        fetch_time = time.time() - t0
+
+        # 3. Extract metadata + collect prompts for GPU batch
+        gpu_jobs = []  # (index, job, cache_key, base_enriched, prompt)
+        for i, job, k in to_process:
+            try:
+                h, raw, page = prefetched[i]
+                base, prompt = _enrich_from_prefetch(job, h, raw, page, req.max_new_tokens or 220, model, tokenizer, DEVICE)
+                if prompt is None:
+                    # No LLM needed (rank not found)
+                    CACHE[k] = base
+                    out[i] = {**job.model_dump(), **base}
+                else:
+                    gpu_jobs.append((i, job, k, base, prompt))
+            except Exception as e:
+                print(f"[ERROR] enrich failed for job {i} ({job.url}): {type(e).__name__}: {e}")
+                enriched = {"summary": None, "skippedReason": f"error_{type(e).__name__}", "enrichedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
+                CACHE[k] = enriched
+                out[i] = {**job.model_dump(), **enriched}
+
+        # 4. Batched GPU inference
+        if gpu_jobs:
+            prompts = [p for _, _, _, _, p in gpu_jobs]
+            max_nt = req.max_new_tokens or 220
+            # Tokenize all prompts with padding for batch inference
+            inputs = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=2048).to(DEVICE)
+            with torch.no_grad():
+                outputs = model.generate(
+                    **inputs,
+                    max_new_tokens=max_nt,
+                    do_sample=False,
+                    eos_token_id=tokenizer.eos_token_id,
+                    pad_token_id=tokenizer.eos_token_id,
+                )
+            # Decode each output
+            input_len = inputs["input_ids"].shape[-1]
+            for idx, (i, job, k, base, _) in enumerate(gpu_jobs):
+                try:
+                    raw_summary = tokenizer.decode(outputs[idx][input_len:], skip_special_tokens=True).strip()
+                    summary = clean_summary_output(raw_summary)
+                    is_valid, invalid_reason = validate_summary(summary)
+                    if is_valid:
+                        base["summary"] = summary
+                    else:
+                        base["summary"] = None
+                        base["skippedReason"] = f"invalid_summary_{invalid_reason}"
+                except Exception as e:
+                    print(f"[ERROR] decode failed for job {i}: {e}")
+                    base["summary"] = None
+                    base["skippedReason"] = f"error_{type(e).__name__}"
+                CACHE[k] = base
+                out[i] = {**job.model_dump(), **base}
+
+        gpu_time = time.time() - t0 - fetch_time
+        print(f"[PERF] batch={len(req.jobs)} fetch={fetch_time:.1f}s gpu={gpu_time:.1f}s total={time.time()-t0:.1f}s")
+
+        # Save cache every 10 batches to avoid slow writes each time
+        if _cache_state["batch_count"] % 10 == 0:
+            with open(CACHE_PATH, "w", encoding="utf-8") as f:
+                json.dump(CACHE, f, indent=2)
+            print(f"[CACHE] saved ({len(CACHE)} entries)")
+        return {"jobs": out}
+
+    @app.on_event("shutdown")
+    def save_cache_on_exit():
         with open(CACHE_PATH, "w", encoding="utf-8") as f:
             json.dump(CACHE, f, indent=2)
-        return {"jobs": out}
+        print(f"[CACHE] saved on shutdown ({len(CACHE)} entries)")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("summarizer_gpu:app", host="0.0.0.0", port=PORT, workers=1)
+    uvicorn.run(app, host="0.0.0.0", port=PORT, workers=1)
