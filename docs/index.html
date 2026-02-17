@@ -10,6 +10,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
     <style>
       :root {
         --bg: #f4f1ea;
@@ -437,16 +443,12 @@
       }
 
       .map-view {
-        user-select: none;
         position: relative;
         border-radius: 12px;
         min-height: 260px;
         overflow: hidden;
         border: 1px solid #d9d1c3;
-        background:
-          radial-gradient(circle at 76% 70%, rgba(223, 232, 232, 0.92), rgba(223, 232, 232, 0.3) 28%, transparent 60%),
-          radial-gradient(circle at 18% 16%, rgba(231, 212, 188, 0.6), rgba(231, 212, 188, 0.2) 26%, transparent 52%),
-          linear-gradient(180deg, #f7f2e8 0%, #f2ebe0 100%);
+        background: #f5efe4;
       }
 
       .map-view::before {
@@ -458,51 +460,20 @@
         border: 1px solid rgba(201, 192, 178, 0.6);
       }
 
-      .map-overlay {
-        position: absolute;
-        inset: 0;
-        z-index: 2;
-      }
-
-      .map-canvas {
+      .leaflet-map {
         position: absolute;
         inset: 10px;
         z-index: 1;
-        transform-origin: center center;
-        transition: transform 160ms ease;
+        border-radius: 10px;
       }
 
-      .map-view.dragging .map-canvas {
-        transition: none;
+      .leaflet-map .leaflet-control-attribution {
+        font-size: 10px;
       }
 
-      .map-view.can-pan {
-        cursor: grab;
-      }
-
-      .map-view.dragging {
-        cursor: grabbing;
-      }
-
-      .us-map-host {
-        position: absolute;
-        inset: 0;
-        z-index: 1;
-      }
-
-      .us-map-host svg {
-        width: 100%;
-        height: 100%;
-        display: block;
-      }
-
-      .us-map-host g.state path {
-        fill: rgba(233, 225, 210, 0.82);
-      }
-
-      .us-map-host g.borders path {
-        stroke: rgba(179, 167, 148, 0.6);
-        stroke-width: 1.1;
+      .leaflet-job-icon {
+        background: transparent;
+        border: 0;
       }
 
       .map-empty {
@@ -522,46 +493,45 @@
 
       .map-empty.hidden { display: none; }
 
-      .map-marker {
-        position: absolute;
-        transform: translate(-50%, -50%);
+      .leaflet-job-marker {
+        --marker-zoom-scale: 1;
+        width: var(--marker-size, 18px);
+        height: var(--marker-size, 18px);
         display: flex;
         align-items: center;
         justify-content: center;
         border: 2px solid #fffaf3;
         border-radius: 999px;
-        min-width: 24px;
-        min-height: 24px;
         padding: 0 4px;
         font-size: 9px;
         line-height: 1;
         font-weight: 800;
         color: #fffaf3;
         cursor: pointer;
-        box-shadow: 0 0 0 10px var(--map-ring), 0 6px 16px rgba(39, 30, 20, 0.2);
+        box-shadow: none;
+        transform-origin: center center;
+        transform: scale(var(--marker-zoom-scale));
         transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
-        z-index: 1;
       }
 
-      .map-marker:hover,
-      .map-marker.active {
-        transform: translate(-50%, -50%) scale(1.12);
+      .leaflet-job-marker:hover,
+      .leaflet-job-marker.active {
+        transform: scale(calc(var(--marker-zoom-scale) * 1.12));
         filter: saturate(1.04);
-        box-shadow: 0 0 0 12px var(--map-ring), 0 10px 18px rgba(39, 30, 20, 0.28);
-        z-index: 3;
+        box-shadow: none;
       }
 
-      .map-marker.default {
+      .leaflet-job-marker.default {
         background: #c45c38;
         --map-ring: rgba(196, 92, 56, 0.24);
       }
 
-      .map-marker.tenure {
+      .leaflet-job-marker.tenure {
         background: #396326;
         --map-ring: rgba(57, 99, 38, 0.22);
       }
 
-      .map-marker.non-tenure {
+      .leaflet-job-marker.non-tenure {
         background: #5f6d6f;
         --map-ring: rgba(95, 109, 111, 0.2);
       }
@@ -1157,10 +1127,7 @@
                 <button type="button" id="zoomInMap" title="Zoom in" aria-label="Zoom in">+</button>
                 <button type="button" id="zoomResetMap" title="Reset zoom" aria-label="Reset zoom">•</button>
               </div>
-              <div class="map-canvas" id="mapCanvas">
-                <div class="us-map-host" id="usMapHost" aria-hidden="true"></div>
-                <div class="map-overlay" id="mapMarkers"></div>
-              </div>
+              <div class="leaflet-map" id="leafletMap" aria-label="United States map of job locations"></div>
               <div class="map-empty hidden" id="mapEmpty">No mappable state data in these results.</div>
               <div class="map-legend">
                 <span><span class="dot" style="background:#396326"></span>Tenure</span>
@@ -1174,6 +1141,11 @@
       </div>
     </div>
 
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
     <script>
       const grid = document.getElementById("grid");
       const statusEl = document.getElementById("status");
@@ -1197,13 +1169,10 @@
       const closeFiltersBtn = document.getElementById("closeFilters");
       const mobileCountEl = document.getElementById("mobileCount");
       const filterRail = document.getElementById("filterRail");
-      const mapMarkersEl = document.getElementById("mapMarkers");
       const mapEmptyEl = document.getElementById("mapEmpty");
       const clearMapStateBtn = document.getElementById("clearMapState");
       const mapNoteEl = document.getElementById("mapNote");
-      const usMapHost = document.getElementById("usMapHost");
-      const mapView = document.getElementById("mapView");
-      const mapCanvas = document.getElementById("mapCanvas");
+      const leafletMapEl = document.getElementById("leafletMap");
       const zoomInMapBtn = document.getElementById("zoomInMap");
       const zoomOutMapBtn = document.getElementById("zoomOutMap");
       const zoomResetMapBtn = document.getElementById("zoomResetMap");
@@ -1213,22 +1182,15 @@
       let debounceTimer = null;
       let markerNodes = new Map();
       let latestRenderedJobs = [];
-      const stateCenters = {};
-      let usMapReady = false;
       const collegeCoords = {};
       let collegeCoordsReady = false;
-      let projectionModel = null;
-      let mapZoom = 1;
-      let panX = 0;
-      let panY = 0;
-      let isDraggingMap = false;
-      let dragStartX = 0;
-      let dragStartY = 0;
-      let dragOriginX = 0;
-      let dragOriginY = 0;
-      let dragPointerId = null;
-      let usMapRawWidth = 959;
-      let usMapRawHeight = 593;
+      let mapInstance = null;
+      let hasInitialMapFit = false;
+      let initialMapView = null;
+      const MAP_DEFAULT_CENTER = [39.5, -98.35];
+      const MAP_DEFAULT_ZOOM = 4.6;
+      const MAX_MAP_ZOOM = 15;
+      const MAP_ZOOM_STEP = 1;
       const SAVED_JOBS_KEY = "facultyJobs.saved.v1";
       const RECENT_PRESETS_KEY = "facultyJobs.recentPresets.v1";
       const MAX_PRESETS = 5;
@@ -1367,6 +1329,32 @@
       // Format college/university names with proper capitalization
       function formatCollegeName(name) {
         if (!name) return name;
+        const raw = String(name).replace(/\s+/g, " ").trim();
+        const upper = raw.toUpperCase();
+        const californiaCanonicalNames = {
+          "UNIVERSITY OF SOUTHERN CALIFORNIA": "University of Southern California",
+          "UNIVERSITY OF CALIFORNIA, BERKELEY": "UC Berkeley",
+          "UNIVERSITY OF CALIFORNIA, DAVIS": "UC Davis",
+          "UNIVERSITY OF CALIFORNIA, IRVINE": "UC Irvine",
+          "UNIVERSITY OF CALIFORNIA, MERCED": "UC Merced",
+          "UNIVERSITY OF CALIFORNIA, RIVERSIDE": "UC Riverside",
+          "UNIVERSITY OF CALIFORNIA, SAN DIEGO": "UC San Diego",
+          "UNIVERSITY OF CALIFORNIA, SAN FRANCISCO": "UC San Francisco",
+          "UNIVERSITY OF CALIFORNIA, SANTA BARBARA": "UC Santa Barbara",
+          "UNIVERSITY OF CALIFORNIA, SANTA CRUZ": "UC Santa Cruz",
+          "UNIVERSITY OF CALIFORNIA, LOS ANGELES": "UCLA"
+        };
+        if (californiaCanonicalNames[upper]) return californiaCanonicalNames[upper];
+
+        if (/california state university,\s*stanislaus\b/i.test(raw)) {
+          return "California State University, Stanislaus";
+        }
+        if (/cal poly - san luis obispo campus/i.test(raw)) {
+          return "California Polytechnic State University, San Luis Obispo";
+        }
+        if (/maritime academy/i.test(raw) || /solano campus \(vallejo\)/i.test(raw)) {
+          return "California State University Maritime Academy";
+        }
 
         // Known acronyms and proper names to preserve
         const preserveUpper = ['CUNY', 'SUNY', 'CSU', 'UC', 'UCLA', 'USC', 'MIT', 'NYU', 'CCNY'];
@@ -1385,9 +1373,8 @@
         };
 
         // Check if it's a known name first
-        const upper = name.toUpperCase();
-        if (knownNames[name] || knownNames[upper]) {
-          return knownNames[name] || knownNames[upper];
+        if (knownNames[raw] || knownNames[upper]) {
+          return knownNames[raw] || knownNames[upper];
         }
 
         // Check if it's an acronym to preserve
@@ -1396,7 +1383,7 @@
         }
 
         // Otherwise, apply title case
-        return name.split(' ').map((word, i) => {
+        return raw.split(' ').map((word, i) => {
           const wordUpper = word.toUpperCase();
           if (preserveUpper.includes(wordUpper)) return wordUpper;
           if (word.length <= 2 && /^[A-Z]+$/.test(word)) return word; // Keep short acronyms
@@ -1507,162 +1494,32 @@
         "Wyoming": [42.755966, -107.30249]
       };
 
-      const stateAbbr = {
-        "Alabama": "al", "Alaska": "ak", "Arizona": "az", "Arkansas": "ar",
-        "California": "ca", "Colorado": "co", "Connecticut": "ct", "Delaware": "de",
-        "Florida": "fl", "Georgia": "ga", "Hawaii": "hi", "Idaho": "id",
-        "Illinois": "il", "Indiana": "in", "Iowa": "ia", "Kansas": "ks",
-        "Kentucky": "ky", "Louisiana": "la", "Maine": "me", "Maryland": "md",
-        "Massachusetts": "ma", "Michigan": "mi", "Minnesota": "mn", "Mississippi": "ms",
-        "Missouri": "mo", "Montana": "mt", "Nebraska": "ne", "Nevada": "nv",
-        "New Hampshire": "nh", "New Jersey": "nj", "New Mexico": "nm", "New York": "ny",
-        "North Carolina": "nc", "North Dakota": "nd", "Ohio": "oh", "Oklahoma": "ok",
-        "Oregon": "or", "Pennsylvania": "pa", "Rhode Island": "ri", "South Carolina": "sc",
-        "South Dakota": "sd", "Tennessee": "tn", "Texas": "tx", "Utah": "ut",
-        "Vermont": "vt", "Virginia": "va", "Washington": "wa", "West Virginia": "wv",
-        "Wisconsin": "wi", "Wyoming": "wy", "District of Columbia": "dc"
+      const csuLocationToCampus = {
+        "Bakersfield": "California State University, Bakersfield",
+        "Channel Islands": "California State University Channel Islands",
+        "Chico": "California State University, Chico",
+        "Dominguez Hills": "California State University, Dominguez Hills",
+        "East Bay": "California State University, East Bay",
+        "Fresno": "California State University, Fresno",
+        "Fullerton": "California State University, Fullerton",
+        "Humboldt": "Cal Poly Humboldt",
+        "Long Beach": "California State University, Long Beach",
+        "Los Angeles": "California State University, Los Angeles",
+        "Maritime Academy": "California State University Maritime Academy",
+        "Monterey Bay": "California State University, Monterey Bay",
+        "Northridge": "California State University, Northridge",
+        "Pomona": "California State Polytechnic University, Pomona",
+        "Sacramento": "California State University, Sacramento",
+        "San Bernardino": "California State University, San Bernardino",
+        "San Diego": "San Diego State University",
+        "San Francisco": "San Francisco State University",
+        "San Jose": "San Jose State University",
+        "San José": "San Jose State University",
+        "San Luis Obispo": "California Polytechnic State University, San Luis Obispo",
+        "Cal Poly - San Luis Obispo Campus": "California Polytechnic State University, San Luis Obispo",
+        "Sonoma": "Sonoma State University",
+        "Stanislaus": "California State University, Stanislaus"
       };
-
-      const stateNudge = {
-        "Massachusetts": [0.8, -0.8],
-        "Rhode Island": [2.0, 0.8],
-        "Connecticut": [0.9, 0.4],
-        "New Jersey": [1.0, 0.4],
-        "Delaware": [1.6, 1.0],
-        "Maryland": [1.1, 0.8],
-        "New Hampshire": [0.6, -0.9],
-        "Vermont": [0.3, -0.8],
-        "Maine": [0.9, -1.0]
-      };
-
-      function solve3x3(matrix, vector) {
-        const m = matrix.map((row, i) => [...row, vector[i]]);
-        for (let col = 0; col < 3; col++) {
-          let pivot = col;
-          for (let row = col + 1; row < 3; row++) {
-            if (Math.abs(m[row][col]) > Math.abs(m[pivot][col])) pivot = row;
-          }
-          if (Math.abs(m[pivot][col]) < 1e-9) return null;
-          if (pivot !== col) [m[col], m[pivot]] = [m[pivot], m[col]];
-          const div = m[col][col];
-          for (let c = col; c < 4; c++) m[col][c] /= div;
-          for (let row = 0; row < 3; row++) {
-            if (row === col) continue;
-            const factor = m[row][col];
-            for (let c = col; c < 4; c++) m[row][c] -= factor * m[col][c];
-          }
-        }
-        return [m[0][3], m[1][3], m[2][3]];
-      }
-
-      function fitProjectionModel() {
-        const rows = [];
-        const xs = [];
-        const ys = [];
-        for (const [state, center] of Object.entries(stateCenters)) {
-          if (state === "Alaska" || state === "Hawaii") continue;
-          const coord = stateCoords[state];
-          if (!coord) continue;
-          const [lat, lon] = coord;
-          rows.push([lon, lat, 1]);
-          xs.push(center.x);
-          ys.push(center.y);
-        }
-        if (rows.length < 8) return;
-
-        const ata = [
-          [0, 0, 0],
-          [0, 0, 0],
-          [0, 0, 0]
-        ];
-        const atx = [0, 0, 0];
-        const aty = [0, 0, 0];
-
-        for (let i = 0; i < rows.length; i++) {
-          const r = rows[i];
-          for (let a = 0; a < 3; a++) {
-            for (let b = 0; b < 3; b++) ata[a][b] += r[a] * r[b];
-            atx[a] += r[a] * xs[i];
-            aty[a] += r[a] * ys[i];
-          }
-        }
-
-        const xCoef = solve3x3(ata, atx);
-        const yCoef = solve3x3(ata, aty);
-        if (!xCoef || !yCoef) return;
-        projectionModel = {
-          ax: xCoef[0], bx: xCoef[1], cx: xCoef[2],
-          ay: yCoef[0], by: yCoef[1], cy: yCoef[2]
-        };
-      }
-
-      async function loadUSMapSvg() {
-        try {
-          const resp = await fetch("./assets/us-states.svg", { cache: "force-cache" });
-          if (!resp.ok) return;
-          const svgText = await resp.text();
-          usMapHost.innerHTML = svgText;
-          const svg = usMapHost.querySelector("svg");
-          if (!svg) return;
-
-          const rawW = Number(svg.getAttribute("width")) || 959;
-          const rawH = Number(svg.getAttribute("height")) || 593;
-          usMapRawWidth = rawW;
-          usMapRawHeight = rawH;
-          svg.setAttribute("viewBox", `0 0 ${rawW} ${rawH}`);
-          svg.removeAttribute("width");
-          svg.removeAttribute("height");
-          svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-
-          for (const [stateName, abbr] of Object.entries(stateAbbr)) {
-            const node = svg.querySelector(`g.state path.${abbr}`);
-            if (!node || typeof node.getBBox !== "function") continue;
-            const box = node.getBBox();
-            if (!box || !Number.isFinite(box.width) || !Number.isFinite(box.height)) continue;
-            stateCenters[stateName] = {
-              x: ((box.x + box.width / 2) / rawW) * 100,
-              y: ((box.y + box.height / 2) / rawH) * 100
-            };
-          }
-
-          fitProjectionModel();
-          usMapReady = true;
-          if (latestRenderedJobs.length) renderMap(latestRenderedJobs);
-        } catch {
-          // Keep fallback projection if SVG cannot be loaded.
-          usMapReady = false;
-        }
-      }
-
-      function projectStateToMap(state) {
-        if (usMapReady && stateCenters[state]) {
-          return stateCenters[state];
-        }
-        const coord = stateCoords[state];
-        if (!coord) return null;
-        const [lat, lon] = coord;
-        // Contiguous-US projection calibrated for this custom SVG silhouette.
-        const minLat = 24;
-        const maxLat = 50;
-        const minLon = -125;
-        const maxLon = -66;
-        const lonNorm = (lon - minLon) / (maxLon - minLon);
-        const latNorm = (lat - minLat) / (maxLat - minLat);
-
-        // Scale to visible map body and gently curve latitude for better coastline fit.
-        let xPct = 7 + lonNorm * 86;
-        let yPct = 12 + (1 - Math.pow(latNorm, 0.9)) * 70;
-
-        const nudge = stateNudge[state];
-        if (nudge) {
-          xPct += nudge[0];
-          yPct += nudge[1];
-        }
-        return {
-          x: Math.min(94, Math.max(6, xPct)),
-          y: Math.min(90, Math.max(10, yPct))
-        };
-      }
 
       function getMarkerTone(group) {
         if (group.tenure > 0 && group.nonTenure === 0) return "tenure";
@@ -1670,80 +1527,70 @@
         return "default";
       }
 
-      function projectLatLonToMap(lat, lon) {
-        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
-        if (projectionModel) {
-          const xPct = projectionModel.ax * lon + projectionModel.bx * lat + projectionModel.cx;
-          const yPct = projectionModel.ay * lon + projectionModel.by * lat + projectionModel.cy;
-          if (Number.isFinite(xPct) && Number.isFinite(yPct)) {
-            return {
-              x: Math.min(98, Math.max(2, xPct)),
-              y: Math.min(98, Math.max(2, yPct))
-            };
-          }
+      function getMapPointForEntry(college, state) {
+        const coord = collegeCoords[college];
+        if (coord && Number.isFinite(coord.lat) && Number.isFinite(coord.lon)) {
+          return [coord.lat, coord.lon];
         }
-        const minLat = 24;
-        const maxLat = 50;
-        const minLon = -125;
-        const maxLon = -66;
-        const lonNorm = (lon - minLon) / (maxLon - minLon);
-        const latNorm = (lat - minLat) / (maxLat - minLat);
-        let xPct = 7 + lonNorm * 86;
-        let yPct = 12 + (1 - Math.pow(latNorm, 0.9)) * 70;
-        xPct = Math.min(94, Math.max(6, xPct));
-        yPct = Math.min(90, Math.max(10, yPct));
-        return { x: xPct, y: yPct };
+        const fallback = state ? stateCoords[state] : null;
+        if (fallback && Number.isFinite(fallback[0]) && Number.isFinite(fallback[1])) {
+          return fallback;
+        }
+        return null;
       }
 
-      function svgPercentToCanvasPercent(xPct, yPct) {
-        const w = mapCanvas.clientWidth || 1;
-        const h = mapCanvas.clientHeight || 1;
-        const svgRatio = usMapRawWidth / usMapRawHeight;
-        const canvasRatio = w / h;
-        let renderW = w;
-        let renderH = h;
-        let offsetX = 0;
-        let offsetY = 0;
-
-        if (canvasRatio > svgRatio) {
-          renderH = h;
-          renderW = h * svgRatio;
-          offsetX = (w - renderW) / 2;
-        } else {
-          renderW = w;
-          renderH = w / svgRatio;
-          offsetY = (h - renderH) / 2;
-        }
-
-        const px = offsetX + (xPct / 100) * renderW;
-        const py = offsetY + (yPct / 100) * renderH;
-        return {
-          x: (px / w) * 100,
-          y: (py / h) * 100
-        };
+      function createLeafletMarkerIcon(entry, size) {
+        const tone = getMarkerTone(entry);
+        const count = entry.count.toLocaleString();
+        const html = `<div class="leaflet-job-marker ${tone}" style="--marker-size:${size}px">${count}</div>`;
+        return L.divIcon({
+          className: "leaflet-job-icon",
+          html,
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size / 2]
+        });
       }
 
-      function clampPan() {
-        const w = mapView.clientWidth - 20;
-        const h = mapView.clientHeight - 20;
-        const maxX = Math.max(0, ((w * mapZoom) - w) / 2);
-        const maxY = Math.max(0, ((h * mapZoom) - h) / 2);
-        panX = Math.max(-maxX, Math.min(maxX, panX));
-        panY = Math.max(-maxY, Math.min(maxY, panY));
+      function ensureMap() {
+        if (mapInstance || !leafletMapEl || typeof L === "undefined") return;
+        mapInstance = L.map(leafletMapEl, {
+          zoomControl: false,
+          minZoom: 3,
+          maxZoom: MAX_MAP_ZOOM,
+          doubleClickZoom: true
+        }).setView(MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: MAX_MAP_ZOOM,
+          attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(mapInstance);
+
+        mapInstance.on("zoomend", () => {
+          applyMapZoom();
+        });
+
+        applyMapZoom();
       }
 
       function applyMapZoom() {
-        clampPan();
-        mapCanvas.style.transform = `translate(${panX}px, ${panY}px) scale(${mapZoom})`;
-        zoomOutMapBtn.disabled = mapZoom <= 1;
-        zoomInMapBtn.disabled = mapZoom >= 3.6;
-        mapView.classList.toggle("can-pan", mapZoom > 1);
-        if (mapZoom <= 1) mapView.classList.remove("dragging");
+        if (!mapInstance) return;
+        const zoom = mapInstance.getZoom();
+        const markerScale = Math.max(0.25, Math.min(1.2, Math.pow(2, (MAP_DEFAULT_ZOOM - zoom) * 0.28)));
+        const markerScaleValue = markerScale.toFixed(3);
+        markerNodes.forEach((entry) => {
+          const markerEl = entry.marker.getElement();
+          const pin = markerEl ? markerEl.querySelector(".leaflet-job-marker") : null;
+          if (pin) pin.style.setProperty("--marker-zoom-scale", markerScaleValue);
+        });
+        zoomOutMapBtn.disabled = zoom <= mapInstance.getMinZoom();
+        zoomInMapBtn.disabled = zoom >= mapInstance.getMaxZoom();
       }
 
       function setMarkerActiveState(activeState) {
-        markerNodes.forEach((node, state) => {
-          node.classList.toggle("active", state === activeState);
+        markerNodes.forEach((entry, state) => {
+          const markerEl = entry.marker.getElement();
+          const pin = markerEl ? markerEl.querySelector(".leaflet-job-marker") : null;
+          if (pin) pin.classList.toggle("active", state === activeState);
         });
       }
 
@@ -1776,9 +1623,10 @@
       }
 
       function renderMap(jobs) {
+        ensureMap();
         latestRenderedJobs = jobs;
+        markerNodes.forEach((entry) => entry.marker.remove());
         markerNodes = new Map();
-        mapMarkersEl.innerHTML = "";
         const groupedByCollege = new Map();
         let mappedCount = 0;
 
@@ -1801,16 +1649,13 @@
 
         const grouped = [];
         for (const [college, entry] of groupedByCollege.entries()) {
-          let point = null;
-          const coord = collegeCoords[college];
-          if (coord) point = projectLatLonToMap(coord.lat, coord.lon);
-          if (!point && entry.state) point = projectStateToMap(entry.state);
+          const point = getMapPointForEntry(college, entry.state);
           if (!point) continue;
           mappedCount += entry.count;
           grouped.push({ college, point, ...entry });
         }
 
-        if (grouped.length === 0) {
+        if (grouped.length === 0 || !mapInstance) {
           mapEmptyEl.classList.remove("hidden");
           mapNoteEl.textContent = "No university coordinates available for current results.";
           clearMapStateBtn.classList.add("map-hidden");
@@ -1827,40 +1672,45 @@
         grouped
           .sort((a, b) => b.count - a.count)
           .forEach((entry) => {
-            const marker = document.createElement("button");
-            marker.type = "button";
-            marker.className = `map-marker ${getMarkerTone(entry)}`;
-            const markerPos = svgPercentToCanvasPercent(entry.point.x, entry.point.y);
-            marker.style.left = `${markerPos.x}%`;
-            marker.style.top = `${markerPos.y}%`;
             const size = Math.min(30, 16 + Math.round((entry.count / maxCount) * 14));
-            marker.style.width = `${size}px`;
-            marker.style.height = `${size}px`;
-            marker.textContent = entry.count.toLocaleString();
-            marker.title = `${entry.college}: ${entry.count.toLocaleString()} jobs`;
-            marker.setAttribute("aria-label", `${entry.college}, ${entry.count} jobs`);
+            const marker = L.marker(entry.point, {
+              icon: createLeafletMarkerIcon(entry, size),
+              keyboard: true,
+              title: `${entry.college}: ${entry.count.toLocaleString()} jobs`,
+              riseOnHover: true
+            }).addTo(mapInstance);
 
-            marker.addEventListener("click", () => {
+            marker.on("click", () => {
               if (Array.from(collegeSel.options).some((o) => o.value === entry.college)) {
                 collegeSel.value = entry.college;
               }
               applyFilters();
             });
 
-            marker.addEventListener("mouseenter", () => {
+            marker.on("mouseover", () => {
               setMarkerActiveState(entry.college);
               highlightCardsByCollege(entry.college);
             });
 
-            marker.addEventListener("mouseleave", () => {
+            marker.on("mouseout", () => {
               setMarkerActiveState(collegeSel.value !== "all" ? collegeSel.value : null);
               highlightCardsByCollege(null);
             });
 
-            mapMarkersEl.appendChild(marker);
-            markerNodes.set(entry.college, marker);
+            markerNodes.set(entry.college, { marker, size });
           });
 
+        if (!hasInitialMapFit && grouped.length > 0) {
+          const bounds = L.latLngBounds(grouped.map((g) => g.point));
+          if (bounds.isValid()) {
+            mapInstance.fitBounds(bounds, { padding: [28, 28], maxZoom: 8 });
+            hasInitialMapFit = true;
+            const center = mapInstance.getCenter();
+            initialMapView = { center: [center.lat, center.lng], zoom: mapInstance.getZoom() };
+          }
+        }
+
+        applyMapZoom();
         setMarkerActiveState(activeCollege);
       }
 
@@ -1934,7 +1784,10 @@
         const backendDept = (j?.department && String(j.department).trim().length > 0) ? String(j.department).trim() : null;
         const backendRank = (j?.rank && String(j.rank).trim().length > 0) ? String(j.rank).trim() : null;
         const normalizedCollege = formatCollegeName(j?.college);
-        const csuLocationFallback = (j?.source === "CSU" && j?.location) ? `California State University (${j.location})` : null;
+        const csuLocationFallbackRaw = (j?.source === "CSU" && j?.location)
+          ? (csuLocationToCampus[j.location] || `California State University (${j.location})`)
+          : null;
+        const csuLocationFallback = formatCollegeName(csuLocationFallbackRaw);
         const fallbackCollegeBySource = {
           UC: "University of California (UC)",
           "CA Private": "California Private Universities"
@@ -2451,58 +2304,44 @@
       });
 
       zoomInMapBtn.addEventListener("click", () => {
-        mapZoom = Math.min(3.6, Number((mapZoom + 0.3).toFixed(2)));
-        applyMapZoom();
+        ensureMap();
+        if (!mapInstance) return;
+        mapInstance.setZoom(Math.min(mapInstance.getMaxZoom(), mapInstance.getZoom() + MAP_ZOOM_STEP));
       });
 
       zoomOutMapBtn.addEventListener("click", () => {
-        mapZoom = Math.max(1, Number((mapZoom - 0.3).toFixed(2)));
-        applyMapZoom();
+        ensureMap();
+        if (!mapInstance) return;
+        mapInstance.setZoom(Math.max(mapInstance.getMinZoom(), mapInstance.getZoom() - MAP_ZOOM_STEP));
       });
 
       zoomResetMapBtn.addEventListener("click", () => {
-        mapZoom = 1;
-        panX = 0;
-        panY = 0;
-        applyMapZoom();
-      });
-
-      mapView.addEventListener("pointerdown", (e) => {
-        if (mapZoom <= 1 || e.button !== 0) return;
-        if (e.target instanceof HTMLElement && e.target.closest(".map-zoom")) return;
-        isDraggingMap = true;
-        dragPointerId = e.pointerId;
-        dragStartX = e.clientX;
-        dragStartY = e.clientY;
-        dragOriginX = panX;
-        dragOriginY = panY;
-        mapView.classList.add("dragging");
-        mapView.setPointerCapture(e.pointerId);
-        e.preventDefault();
-      });
-
-      mapView.addEventListener("pointermove", (e) => {
-        if (!isDraggingMap || dragPointerId !== e.pointerId) return;
-        panX = dragOriginX + (e.clientX - dragStartX);
-        panY = dragOriginY + (e.clientY - dragStartY);
-        applyMapZoom();
-      });
-
-      const endMapDrag = (e) => {
-        if (!isDraggingMap || (e && dragPointerId !== null && e.pointerId !== dragPointerId)) return;
-        isDraggingMap = false;
-        if (dragPointerId !== null) {
-          try { mapView.releasePointerCapture(dragPointerId); } catch {}
+        ensureMap();
+        if (!mapInstance) return;
+        if (markerNodes.size > 0) {
+          const points = [];
+          markerNodes.forEach((entry) => {
+            const latLng = entry.marker.getLatLng();
+            if (latLng) points.push(latLng);
+          });
+          if (points.length > 0) {
+            const bounds = L.latLngBounds(points);
+            if (bounds.isValid()) {
+              mapInstance.fitBounds(bounds, { padding: [28, 28], maxZoom: 8, animate: true });
+              return;
+            }
+          }
         }
-        dragPointerId = null;
-        mapView.classList.remove("dragging");
-      };
-      mapView.addEventListener("pointerup", endMapDrag);
-      mapView.addEventListener("pointercancel", endMapDrag);
+        if (initialMapView) {
+          mapInstance.setView(initialMapView.center, initialMapView.zoom, { animate: true });
+          return;
+        }
+        mapInstance.setView(MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM, { animate: true });
+      });
 
       window.addEventListener("resize", () => {
         applyMapZoom();
-        if (latestRenderedJobs.length) renderMap(latestRenderedJobs);
+        if (mapInstance) mapInstance.invalidateSize();
       });
 
       activeFiltersEl.addEventListener("click", (e) => {
@@ -2545,8 +2384,8 @@
       });
 
       renderRecentPresets();
+      ensureMap();
       applyMapZoom();
-      loadUSMapSvg();
       loadCollegeCoords();
       load();
     </script>
