@@ -1,7 +1,10 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const JOBS_PATH = new URL("../public/jobs.json", import.meta.url);
-const OUT_PATH = new URL("../public/college-coords.json", import.meta.url);
+const OUT_PATHS = [
+  new URL("../public/college-coords.json", import.meta.url),
+  new URL("../docs/college-coords.json", import.meta.url),
+];
 
 const USER_AGENT = "FacultyAtlas/1.0 (local geocode utility)";
 const PAUSE_MS = 1100;
@@ -27,6 +30,7 @@ const stateMap = {
   "MN": "Minnesota",
   "MT": "Montana",
   "NM": "New Mexico",
+  "NV": "Nevada",
   "NJ": "New Jersey",
   "NC": "North Carolina",
   "NY": "New York",
@@ -106,6 +110,96 @@ const manualOverrides = {
     lat: 40.7210,
     lon: -73.7950,
     displayName: "St. John's University, Queens, New York, United States"
+  },
+  "Minnesota State System": {
+    lat: 44.9537,
+    lon: -93.0900,
+    displayName: "Minnesota State Colleges and Universities System Office, Saint Paul, Minnesota, United States"
+  },
+  "SUNY Finger Lakes Community College": {
+    lat: 42.9284,
+    lon: -77.2946,
+    displayName: "Finger Lakes Community College, Canandaigua, New York, United States"
+  },
+  "SUNY Westchester Community College": {
+    lat: 41.0330,
+    lon: -73.7629,
+    displayName: "SUNY Westchester Community College, White Plains, New York, United States"
+  },
+  "SUNY Orange County Community College": {
+    lat: 41.4544,
+    lon: -74.4185,
+    displayName: "SUNY Orange County Community College, Middletown, New York, United States"
+  },
+  "SUNY Erie Community College": {
+    lat: 42.9642,
+    lon: -78.7354,
+    displayName: "SUNY Erie Community College, Williamsville, New York, United States"
+  },
+  "SUNY Downstate Health Sciences University": {
+    lat: 40.6553,
+    lon: -73.9442,
+    displayName: "SUNY Downstate Health Sciences University, Brooklyn, New York, United States"
+  },
+  "SUNY Empire State College": {
+    lat: 43.0831,
+    lon: -73.7846,
+    displayName: "SUNY Empire State College, Saratoga Springs, New York, United States"
+  },
+  "SUNY Cayuga": {
+    lat: 42.9317,
+    lon: -76.5660,
+    displayName: "SUNY Cayuga, Auburn, New York, United States"
+  },
+  "SUNY Jefferson Community College": {
+    lat: 43.9695,
+    lon: -75.9191,
+    displayName: "SUNY Jefferson Community College, Watertown, New York, United States"
+  },
+  "SUNY Broome Community College": {
+    lat: 42.0987,
+    lon: -75.9179,
+    displayName: "SUNY Broome Community College, Broome County, New York, United States"
+  },
+  "SUNY Genesee Community College": {
+    lat: 43.0009,
+    lon: -78.1910,
+    displayName: "SUNY Genesee Community College, Batavia, New York, United States"
+  },
+  "SUNY Onondaga Community College": {
+    lat: 43.0017,
+    lon: -76.1963,
+    displayName: "SUNY Onondaga Community College, Onondaga, New York, United States"
+  },
+  "SUNY Niagara": {
+    lat: 43.1337,
+    lon: -78.8838,
+    displayName: "SUNY Niagara, Sanborn, New York, United States"
+  },
+  "SUNY Dutchess Community College": {
+    lat: 41.7643,
+    lon: -73.7466,
+    displayName: "SUNY Dutchess Community College, Dutchess County, New York, United States"
+  },
+  "University of New Mexico": {
+    lat: 35.0866,
+    lon: -106.6202,
+    displayName: "University of New Mexico, Albuquerque, New Mexico, United States"
+  },
+  "New Mexico State University": {
+    lat: 32.2834,
+    lon: -106.7410,
+    displayName: "New Mexico State University, Las Cruces, New Mexico, United States"
+  },
+  "St. John's College (Santa Fe)": {
+    lat: 35.6645,
+    lon: -105.9407,
+    displayName: "St. John's College, Santa Fe, New Mexico, United States"
+  },
+  "Nevada State University": {
+    lat: 36.0094,
+    lon: -114.9553,
+    displayName: "Nevada State University, Henderson, Nevada, United States"
   }
 };
 
@@ -190,7 +284,7 @@ async function main() {
   const jobsData = await readJson(JOBS_PATH, { jobs: [] });
   const jobs = Array.isArray(jobsData.jobs) ? jobsData.jobs : [];
   const colleges = buildCollegeIndex(jobs);
-  const existing = await readJson(OUT_PATH, { generatedAt: null, colleges: {} });
+  const existing = await readJson(OUT_PATHS[0], { generatedAt: null, colleges: {} });
   const cached = existing && typeof existing.colleges === "object" ? existing.colleges : {};
 
   const records = {};
@@ -263,18 +357,18 @@ async function main() {
     }
 
     await sleep(PAUSE_MS);
-    await writeFile(OUT_PATH, JSON.stringify({
+    await writeOutputs({
       generatedAt: new Date().toISOString(),
       sourceJobsCount: jobs.length,
       colleges: records
-    }, null, 2));
+    });
   }
 
-  await writeFile(OUT_PATH, JSON.stringify({
+  await writeOutputs({
     generatedAt: new Date().toISOString(),
     sourceJobsCount: jobs.length,
     colleges: records
-  }, null, 2));
+  });
 
   console.log(`Done. cached=${cachedCount}, new=${success}, total=${names.length}`);
 }
@@ -283,3 +377,6 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
+  async function writeOutputs(payload) {
+    await Promise.all(OUT_PATHS.map((outPath) => writeFile(outPath, JSON.stringify(payload, null, 2))));
+  }

@@ -525,12 +525,16 @@
       .map-marker {
         position: absolute;
         transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border: 2px solid #fffaf3;
         border-radius: 999px;
         min-width: 24px;
         min-height: 24px;
-        padding: 0 6px;
-        font-size: 11px;
+        padding: 0 4px;
+        font-size: 9px;
+        line-height: 1;
         font-weight: 800;
         color: #fffaf3;
         cursor: pointer;
@@ -642,11 +646,6 @@
         box-shadow: 0 12px 24px rgba(58, 43, 30, 0.14);
       }
 
-      .card.issue-flagged {
-        border-color: #c26555;
-        box-shadow: 0 12px 24px rgba(97, 45, 34, 0.16);
-      }
-
       .title {
         font-family: "Fraunces", Georgia, serif;
         font-weight: 600;
@@ -661,6 +660,47 @@
         color: inherit;
         padding: 0 2px;
         border-radius: 3px;
+      }
+
+      .quick-facts {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+      }
+
+      .quick-fact {
+        background: #f7f2ea;
+        border: 1px solid #e4d9ca;
+        border-radius: 10px;
+        padding: 6px 8px;
+      }
+
+      .quick-fact .k {
+        display: block;
+        color: #7d6e5f;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .quick-fact .v {
+        display: block;
+        margin-top: 2px;
+        color: #2b3a3c;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .quick-fact.positive {
+        background: #eaf4de;
+        border-color: #cadebb;
+      }
+
+      .quick-fact.neutral {
+        background: #f0ece5;
+        border-color: #ddd4c8;
       }
 
       .pills {
@@ -801,27 +841,6 @@
         background: #daeadd;
         color: #1f5f4e;
         border-color: #b9d9c1;
-      }
-
-      .issue-btn {
-        background: #f6ece3;
-        color: #6a4630;
-        border: 1px solid #dfc8b5;
-        box-shadow: none;
-        padding: 7px 10px;
-        font-size: 12px;
-      }
-
-      .issue-btn:hover {
-        transform: none;
-        box-shadow: none;
-        background: #efdfd1;
-      }
-
-      .issue-btn.flagged {
-        background: #f2d8d2;
-        color: #7b3027;
-        border-color: #d6a7a0;
       }
 
       .recent-filters {
@@ -992,7 +1011,7 @@
           <span class="logo-faculty">Faculty</span>
           <span class="logo-atlas">Atlas</span>
         </div>
-        <div class="subtitle">Find your future college or university faculty job.</div>
+        <div class="subtitle">Find your future faculty job.</div>
       </div>
       <div class="tagline" id="subhead">Loading...</div>
     </header>
@@ -1087,11 +1106,6 @@
                     Saved only
                   </label>
 
-                  <label class="check">
-                    <input type="checkbox" id="flaggedOnly" />
-                    Flagged only
-                  </label>
-
                   <select id="sortBy">
                     <option value="relevance">Sort: Relevance</option>
                     <option value="title-asc">Sort: Title A-Z</option>
@@ -1177,7 +1191,6 @@
       const summarizedOnlyCb = document.getElementById("summarizedOnly");
       const tenureTrackOnlyCb = document.getElementById("tenureTrackOnly");
       const savedOnlyCb = document.getElementById("savedOnly");
-      const flaggedOnlyCb = document.getElementById("flaggedOnly");
       const savePresetBtn = document.getElementById("savePreset");
       const recentFiltersEl = document.getElementById("recentFilters");
       const openFiltersBtn = document.getElementById("openFilters");
@@ -1217,8 +1230,6 @@
       let usMapRawWidth = 959;
       let usMapRawHeight = 593;
       const SAVED_JOBS_KEY = "facultyJobs.saved.v1";
-      const ISSUE_JOBS_KEY = "facultyJobs.issues.v1";
-      const GITHUB_ISSUE_BASE = "https://github.com/steveazeka/Faculty-Jobs/issues/new";
       const RECENT_PRESETS_KEY = "facultyJobs.recentPresets.v1";
       const MAX_PRESETS = 5;
       const parseStoredArray = (key) => {
@@ -1230,7 +1241,6 @@
         }
       };
       const savedJobs = new Set(parseStoredArray(SAVED_JOBS_KEY));
-      const issueJobs = new Set(parseStoredArray(ISSUE_JOBS_KEY));
       let recentPresets = parseStoredArray(RECENT_PRESETS_KEY);
 
       function escapeHtml(s) {
@@ -1248,46 +1258,6 @@
         localStorage.setItem(SAVED_JOBS_KEY, JSON.stringify([...savedJobs]));
       }
 
-      function persistIssueJobs() {
-        localStorage.setItem(ISSUE_JOBS_KEY, JSON.stringify([...issueJobs]));
-      }
-
-      function getIssueKey(job) {
-        if (job?.url && job.url !== "#") return `url:${job.url}`;
-        return `fallback:${job?.title || ""}|${job?.college || ""}|${job?.location || ""}`;
-      }
-
-      function buildIssueDraft(job) {
-        const title = `[Flagged posting] ${job?.title || "Untitled role"}${job?.college ? ` - ${job.college}` : ""}`;
-        const body = [
-          "A posting was flagged from the Faculty Jobs board.",
-          "",
-          `- Title: ${job?.title || "Unknown"}`,
-          `- College: ${job?.college || "Unknown"}`,
-          `- Location: ${job?.location || "Unknown"}`,
-          `- Position type: ${job?.positionType || "Unknown"}`,
-          `- Posting URL: ${job?.url || "Missing URL"}`,
-          `- Board page: ${window.location.href}`,
-          "",
-          "### What looks wrong?",
-          "- Describe the issue with this posting (wrong title, duplicate, broken description, stale link, etc.).",
-          "",
-          "### Expected behavior",
-          "- Describe what should be shown instead.",
-        ].join("\n");
-        const query = new URLSearchParams({
-          title,
-          body,
-          labels: "bug,data-quality",
-        });
-        return `${GITHUB_ISSUE_BASE}?${query.toString()}`;
-      }
-
-      function openIssueDraft(job) {
-        const draftUrl = buildIssueDraft(job);
-        window.open(draftUrl, "_blank", "noopener,noreferrer");
-      }
-
       function persistRecentPresets() {
         localStorage.setItem(RECENT_PRESETS_KEY, JSON.stringify(recentPresets.slice(0, MAX_PRESETS)));
       }
@@ -1301,7 +1271,6 @@
           summarizedOnly: summarizedOnlyCb.checked,
           tenureTrackOnly: tenureTrackOnlyCb.checked,
           savedOnly: savedOnlyCb.checked,
-          flaggedOnly: flaggedOnlyCb.checked,
           sortBy: sortBySel.value,
         };
       }
@@ -1316,7 +1285,6 @@
           preset.summarizedOnly ||
           preset.tenureTrackOnly ||
           preset.savedOnly ||
-          preset.flaggedOnly ||
           preset.sortBy !== "relevance"
         );
       }
@@ -1326,7 +1294,6 @@
         if (preset.q) parts.push(`"${truncate(preset.q, 16)}"`);
         if (preset.state && preset.state !== "all") parts.push(preset.state);
         if (preset.positionType && preset.positionType !== "all") parts.push(preset.positionType);
-        if (preset.flaggedOnly) parts.push("Flagged");
         if (preset.savedOnly) parts.push("Saved");
         if (preset.tenureTrackOnly) parts.push("Tenure");
         if (preset.summarizedOnly) parts.push("AI");
@@ -1471,6 +1438,7 @@
         "MN": "Minnesota",
         "MT": "Montana",
         "NM": "New Mexico",
+        "NV": "Nevada",
         "NJ": "New Jersey",
         "NC": "North Carolina",
         "NY": "New York",
@@ -1865,7 +1833,7 @@
             const markerPos = svgPercentToCanvasPercent(entry.point.x, entry.point.y);
             marker.style.left = `${markerPos.x}%`;
             marker.style.top = `${markerPos.y}%`;
-            const size = Math.min(40, 24 + Math.round((entry.count / maxCount) * 16));
+            const size = Math.min(30, 16 + Math.round((entry.count / maxCount) * 14));
             marker.style.width = `${size}px`;
             marker.style.height = `${size}px`;
             marker.textContent = entry.count.toLocaleString();
@@ -1925,6 +1893,35 @@
           if (match) return match[1].trim();
         }
         return null;
+      }
+
+      function getCityName(location, stateName) {
+        if (!location) return null;
+        const raw = String(location).trim();
+        if (!raw) return null;
+        const lower = raw.toLowerCase();
+        if (lower.includes("remote")) return "Remote";
+
+        let city = raw;
+        if (raw.includes(",")) {
+          city = raw.split(",")[0].trim();
+        } else if (raw.includes(" - ")) {
+          city = raw.split(" - ")[0].trim();
+        } else if (raw.includes("-")) {
+          const parts = raw.split("-").map((p) => p.trim()).filter(Boolean);
+          if (parts.length >= 2 && /^[A-Z]{2}$/.test(parts[1])) city = parts[0];
+        }
+
+        city = city
+          .replace(/\b(main campus|campus)\b/gi, "")
+          .replace(/\s*\(.*?\)\s*/g, " ")
+          .replace(/\s{2,}/g, " ")
+          .trim();
+
+        if (!city) return null;
+        if (stateName && city.toLowerCase() === String(stateName).toLowerCase()) return null;
+        if (/^[A-Z]{2}$/.test(city)) return null;
+        return city;
       }
 
       function normalizeJob(j) {
@@ -1988,7 +1985,6 @@
         const college = collegeSel.value;
         const summarizedOnly = summarizedOnlyCb.checked;
         const savedOnly = savedOnlyCb.checked;
-        const flaggedOnly = flaggedOnlyCb.checked;
 
         if (searchTerm) {
           const chip = document.createElement("span");
@@ -2022,13 +2018,6 @@
           const chip = document.createElement("span");
           chip.className = "filter-chip";
           chip.innerHTML = `Saved Jobs <button data-clear="savedOnly">&times;</button>`;
-          activeFiltersEl.appendChild(chip);
-        }
-
-        if (flaggedOnly) {
-          const chip = document.createElement("span");
-          chip.className = "filter-chip";
-          chip.innerHTML = `Flagged Jobs <button data-clear="flaggedOnly">&times;</button>`;
           activeFiltersEl.appendChild(chip);
         }
 
@@ -2070,6 +2059,34 @@
           const displayTitle = (job.titleClean && job.titleClean.trim().length > 0) ? job.titleClean : job.title;
           title.innerHTML = highlight(displayTitle || "(No title)", searchTerms);
 
+          let dateDisplay = null;
+          if (job.openUntilFilled) {
+            dateDisplay = "Open until filled";
+          } else if (job.closeDateRaw) {
+            dateDisplay = job.closeDateRaw;
+          } else if (job.closeDate) {
+            dateDisplay = new Date(job.closeDate).toLocaleDateString();
+          }
+          const cityLocation = getCityName(job.location, job.state);
+
+          const quickFacts = document.createElement("div");
+          quickFacts.className = "quick-facts";
+          const addQuickFact = (label, value, tone = "") => {
+            if (!value) return;
+            const item = document.createElement("div");
+            item.className = `quick-fact${tone ? ` ${tone}` : ""}`;
+            item.innerHTML = `<span class="k">${escapeHtml(label)}</span><span class="v">${escapeHtml(truncate(value, 44))}</span>`;
+            quickFacts.appendChild(item);
+          };
+          addQuickFact("Rank", job.positionType || null);
+          addQuickFact(
+            "Track",
+            job.tenureTrack === true ? "Tenure Track" : job.tenureTrack === false ? "Non-Tenure" : null,
+            job.tenureTrack === true ? "positive" : job.tenureTrack === false ? "neutral" : ""
+          );
+          addQuickFact("Location", cityLocation || null);
+          addQuickFact("Deadline", dateDisplay);
+
           const pills = document.createElement("div");
           pills.className = "pills";
 
@@ -2105,19 +2122,11 @@
             infoGrid.innerHTML += `<span class="info-label">Department</span><span class="info-value">${highlight(job.department, searchTerms)}</span>`;
           }
 
-          if (job.location) {
-            infoGrid.innerHTML += `<span class="info-label">Location</span><span class="info-value">${highlight(job.location, searchTerms)}</span>`;
+          if (cityLocation) {
+            infoGrid.innerHTML += `<span class="info-label">Location</span><span class="info-value">${highlight(cityLocation, searchTerms)}</span>`;
           }
 
-          if (job.closeDate || job.closeDateRaw || job.openUntilFilled) {
-            let dateDisplay = "";
-            if (job.openUntilFilled) {
-              dateDisplay = "Open until filled";
-            } else if (job.closeDateRaw) {
-              dateDisplay = job.closeDateRaw;
-            } else if (job.closeDate) {
-              dateDisplay = new Date(job.closeDate).toLocaleDateString();
-            }
+          if (dateDisplay) {
             infoGrid.innerHTML += `<span class="info-label">Deadline</span><span class="info-value">${escapeHtml(dateDisplay)}</span>`;
           }
 
@@ -2160,30 +2169,11 @@
             applyFilters();
           });
 
-          const issueBtn = document.createElement("button");
-          issueBtn.type = "button";
-          issueBtn.className = "issue-btn";
-          const issueKey = getIssueKey(job);
-          const hasIssue = issueJobs.has(issueKey);
-          if (hasIssue) {
-            issueBtn.classList.add("flagged");
-            card.classList.add("issue-flagged");
-          }
-          issueBtn.textContent = hasIssue ? "Resolve Issue" : "Flag Issue";
-          issueBtn.addEventListener("click", () => {
-            const shouldFlag = !issueJobs.has(issueKey);
-            if (shouldFlag) issueJobs.add(issueKey);
-            else issueJobs.delete(issueKey);
-            persistIssueJobs();
-            if (shouldFlag) openIssueDraft(job);
-            applyFilters();
-          });
-
           links.appendChild(viewLink);
-          links.appendChild(issueBtn);
           links.appendChild(saveBtn);
 
           card.appendChild(title);
+          if (quickFacts.childNodes.length) card.appendChild(quickFacts);
           if (pills.childNodes.length) card.appendChild(pills);
           if (infoGrid.innerHTML) card.appendChild(infoGrid);
           if (job.description) card.appendChild(desc);
@@ -2217,7 +2207,6 @@
         const sortBy = sortBySel.value;
         const summarizedOnly = summarizedOnlyCb.checked;
         const savedOnly = savedOnlyCb.checked;
-        const flaggedOnly = flaggedOnlyCb.checked;
 
         // Update clear button visibility
         clearSearchBtn.classList.toggle("visible", q.value.length > 0);
@@ -2245,10 +2234,6 @@
         // Filter to saved jobs only
         if (savedOnly) {
           filtered = filtered.filter(j => savedJobs.has(j.url));
-        }
-
-        if (flaggedOnly) {
-          filtered = filtered.filter(j => issueJobs.has(getIssueKey(j)));
         }
 
         // Filter by position type
@@ -2363,7 +2348,6 @@
         summarizedOnlyCb.checked = !!preset.summarizedOnly;
         tenureTrackOnlyCb.checked = !!preset.tenureTrackOnly;
         savedOnlyCb.checked = !!preset.savedOnly;
-        flaggedOnlyCb.checked = !!preset.flaggedOnly;
         sortBySel.value = preset.sortBy || "relevance";
         applyFilters();
         if (preset.college && Array.from(collegeSel.options).some(o => o.value === preset.college)) {
@@ -2436,7 +2420,6 @@
       summarizedOnlyCb.addEventListener("change", applyFilters);
       tenureTrackOnlyCb.addEventListener("change", applyFilters);
       savedOnlyCb.addEventListener("change", applyFilters);
-      flaggedOnlyCb.addEventListener("change", applyFilters);
       refreshBtn.addEventListener("click", load);
       openFiltersBtn.addEventListener("click", () => {
         document.body.classList.add("filters-open");
@@ -2458,7 +2441,6 @@
         summarizedOnlyCb.checked = false;
         tenureTrackOnlyCb.checked = false;
         savedOnlyCb.checked = false;
-        flaggedOnlyCb.checked = false;
         sortBySel.value = "relevance";
         applyFilters();
       });
@@ -2531,7 +2513,6 @@
           if (clear === "summarizedOnly") summarizedOnlyCb.checked = false;
           if (clear === "tenureTrackOnly") tenureTrackOnlyCb.checked = false;
           if (clear === "savedOnly") savedOnlyCb.checked = false;
-          if (clear === "flaggedOnly") flaggedOnlyCb.checked = false;
           if (clear === "positionType") positionTypeSel.value = "all";
           if (clear === "college") collegeSel.value = "all";
           applyFilters();

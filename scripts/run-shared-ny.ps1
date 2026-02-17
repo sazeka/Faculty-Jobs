@@ -2,7 +2,7 @@
 param(
   [string]$MacSummarizerUrl = "http://192.168.1.118:8000/summarize",
   [string]$PcSummarizerUrl = "http://192.168.1.137:9000/summarize",
-  [string]$CampusAllowlist = "NY"
+  [string]$CampusAllowlist = "NY,IL,MN,MI"
 )
 
 $ErrorActionPreference = "Stop"
@@ -36,7 +36,7 @@ if (-not $pcOk) {
   Write-Error "PC summarizer is unreachable: $PcSummarizerUrl"
 }
 
-Write-Host "Both summarizer endpoints reachable. Starting shared NY scrape..."
+Write-Host "Both summarizer endpoints reachable. Starting shared scrape..."
 
 $env:CAMPUS_ALLOWLIST = $CampusAllowlist
 $env:LOCAL_LLM_URLS = "$MacSummarizerUrl,$PcSummarizerUrl"
