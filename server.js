@@ -1023,6 +1023,11 @@ const AZ_CAMPUSES = [
     type: "csod",
     url: "https://arizona.csod.com/ux/ats/careersite/4/home?c=arizona&cfdd[0][id]=228&cfdd[0][options][0]=288&cfdd[1][id]=161&cfdd[1][options][0]=118&country=us",
   },
+  {
+    campus: "Prescott College",
+    type: "generic",
+    url: "https://prescott.edu/employment/",
+  },
 ];
 
 
@@ -1682,18 +1687,33 @@ const UT_CAMPUSES = [
   },
   {
     campus: "Utah Valley University",
-    type: "peopleadmin",
-    url: "https://www.uvu.jobs/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/uvu",
   },
   {
     campus: "Southern Utah University",
-    type: "workday",
-    url: "https://suu.wd1.myworkdayjobs.com/SUUJobs",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/suu",
   },
   {
     campus: "Utah Tech University",
-    type: "workday",
-    url: "https://utahtech.wd5.myworkdayjobs.com/DSUcareers",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/utahtech",
+  },
+  {
+    campus: "Utah State University",
+    type: "icims",
+    url: "https://careers-usu.icims.com/jobs/search?ss=1",
+  },
+  {
+    campus: "Brigham Young University",
+    type: "generic",
+    url: "https://yjobs.byu.edu/",
+  },
+  {
+    campus: "Westminster University (Utah)",
+    type: "generic",
+    url: "https://westminsteru.edu/about/offices/human-resources/open-positions/index.html",
   },
 ];
 
@@ -1841,6 +1861,21 @@ const ID_CAMPUSES = [
     campus: "Idaho State University",
     type: "csod",
     url: "https://isu.csod.com/ux/ats/careersite/5/home?c=isu",
+  },
+  {
+    campus: "Lewis-Clark State College",
+    type: "generic",
+    url: "https://www.lcsc.edu/human-resource-services/employment-opportunities",
+  },
+  {
+    campus: "The College of Idaho",
+    type: "generic",
+    url: "https://collegeofidaho.edu/careers/",
+  },
+  {
+    campus: "Northwest Nazarene University",
+    type: "generic",
+    url: "https://www.nnu.edu/about/employment",
   },
 ];
 
@@ -2202,6 +2237,10 @@ const COLLEGE_LOCATION_DEFAULTS = {
   "Colorado School of Mines": "Golden, CO",
   "University of Denver": "Denver, CO",
   "Colorado College": "Colorado Springs, CO",
+  "Arizona State University": "Tempe, AZ",
+  "Northern Arizona University": "Flagstaff, AZ",
+  "University of Arizona": "Tucson, AZ",
+  "Prescott College": "Prescott, AZ",
   "CU Boulder": "Boulder, CO",
   "CU Denver": "Denver, CO",
   "CU Anschutz": "Aurora, CO",
@@ -2210,6 +2249,20 @@ const COLLEGE_LOCATION_DEFAULTS = {
   "University of Nevada, Reno": "Reno, NV",
   "University of Nevada, Las Vegas": "Las Vegas, NV",
   "Nevada State University": "Henderson, NV",
+  "University of Utah": "Salt Lake City, UT",
+  "Weber State University": "Ogden, UT",
+  "Utah Valley University": "Orem, UT",
+  "Southern Utah University": "Cedar City, UT",
+  "Utah Tech University": "St. George, UT",
+  "Utah State University": "Logan, UT",
+  "Brigham Young University": "Provo, UT",
+  "Westminster University (Utah)": "Salt Lake City, UT",
+  "University of Idaho": "Moscow, ID",
+  "Boise State University": "Boise, ID",
+  "Idaho State University": "Pocatello, ID",
+  "Lewis-Clark State College": "Lewiston, ID",
+  "The College of Idaho": "Caldwell, ID",
+  "Northwest Nazarene University": "Nampa, ID",
   "SUNY Onondaga Community College": "Onondaga, NY",
   "University of Minnesota": "Minneapolis, MN",
   "Minnesota State System": "St. Paul, MN",
@@ -2298,6 +2351,7 @@ function normalizeLocationByCollege(job) {
     NY: "NY", CT: "CT", NJ: "NJ",
     PA: "PA", RI: "RI", DE: "DE", MD: "MD", ME: "ME", NH: "NH", VT: "VT",
     OR: "OR", WA: "WA",
+    AZ: "AZ", UT: "UT", ID: "ID",
     MA: "MA", "UMass": "MA", "MA Private": "MA",
     "CA - CSU": "CA", CSU: "CA", UC: "CA", "CA Private": "CA", "Claremont Colleges": "CA",
     CO: "CO", NM: "NM", NV: "NV", IL: "IL", MI: "MI", MN: "MN", WI: "WI", MT: "MT",
@@ -2305,6 +2359,8 @@ function normalizeLocationByCollege(job) {
   if (!job) return job;
 
   const fallback = COLLEGE_LOCATION_DEFAULTS[job.college] || null;
+  const looksLikeInstitutionName = (text) =>
+    /\b(university|college|institute|school|campus|polytechnic|academy|system)\b/i.test(String(text || ""));
 
   const normalized = normalizeUsLocation(job.location);
   if (normalized) {
@@ -2316,6 +2372,9 @@ function normalizeLocationByCollege(job) {
   const state = sourceToState[job.source] || null;
   const rawNoCampus = clean(raw.replace(/\s*\([^)]*campus[^)]*\)\s*$/i, ""));
   if (rawNoCampus && state && /^[\p{L}][\p{L} .'-]{1,80}$/u.test(rawNoCampus)) {
+    if (fallback && looksLikeInstitutionName(rawNoCampus)) {
+      return { ...job, location: fallback };
+    }
     return { ...job, location: `${rawNoCampus}, ${state}` };
   }
 
@@ -2324,11 +2383,11 @@ function normalizeLocationByCollege(job) {
     return { ...job, location: fallback };
   }
   if (state && raw && !isLikelyGeographicLocation(raw)) {
-    return { ...job, location: `${clean(job.college || "Campus")}, ${state}` };
+    return { ...job, location: fallback || `${clean(job.college || "Campus")}, ${state}` };
   }
   // Last resort: keep the record mappable as a campus-scoped location.
   if ((!raw || (state && raw.toUpperCase() === state)) && state) {
-    return { ...job, location: `${clean(job.college || "Campus")}, ${state}` };
+    return { ...job, location: fallback || `${clean(job.college || "Campus")}, ${state}` };
   }
   return job;
 }
@@ -6259,6 +6318,21 @@ async function scrapeAzAll(context) {
         if (type === "asu-table") return await scrapeAsuFacultyPositionsTable(context, campus, url);
         if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "AZ");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "AZ");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "AZ");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "AZ");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "AZ");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "AZ");
+        if (type === "enusfilter") {
+          const page = await context.newPage();
+          try {
+            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await page.waitForTimeout(900);
+            return await scrapeEnUsFilterSite(page, { source: "AZ", campus, category: "Faculty" });
+          } finally {
+            await page.close().catch(() => {});
+          }
+        }
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "AZ");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} AZ scrape failed:`, e?.message || e);
@@ -8054,6 +8128,21 @@ async function scrapeUtAll(context) {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "UT");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "UT");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "UT");
+        if (type === "icims") return await scrapeIcimsAs(context, url, campus, "UT");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "UT");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "UT");
+        if (type === "enusfilter") {
+          const page = await context.newPage();
+          try {
+            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await page.waitForTimeout(900);
+            return await scrapeEnUsFilterSite(page, { source: "UT", campus, category: "Faculty" });
+          } finally {
+            await page.close().catch(() => {});
+          }
+        }
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "UT");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} UT scrape failed:`, e?.message || e);
@@ -8076,6 +8165,9 @@ async function scrapeIdAll(context) {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "ID");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "ID");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "ID");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "ID");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "ID");
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -8086,6 +8178,7 @@ async function scrapeIdAll(context) {
             await page.close().catch(() => {});
           }
         }
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "ID");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} ID scrape failed:`, e?.message || e);
