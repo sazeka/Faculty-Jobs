@@ -1080,7 +1080,7 @@ def build_prompt(page_text: str, title: Optional[str] = None) -> str:
 <|im_start|>user
 {title_hint}Summarize this academic job posting in 2-3 sentences:
 
-{page_text[:1500]}<|im_end|>
+{page_text[:4000]}<|im_end|>
 <|im_start|>assistant
 """
 
@@ -1338,7 +1338,7 @@ if _STANDALONE:
             prompts = [p for _, _, _, _, p in gpu_jobs]
             max_nt = req.max_new_tokens or 220
             # Tokenize all prompts with padding for batch inference
-            inputs = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=2048).to(DEVICE)
+            inputs = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=4096).to(DEVICE)
             with torch.no_grad():
                 outputs = model.generate(
                     **inputs,
