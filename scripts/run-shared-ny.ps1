@@ -2,7 +2,7 @@
 param(
   [string]$MacSummarizerUrl = "http://192.168.1.118:8000/summarize",
   [string]$PcSummarizerUrl = "http://192.168.1.137:9000/summarize",
-  [string]$CampusAllowlist = "NY,IL,MN,MI,TX,FL"
+  [string]$CampusAllowlist = "NY,IL,MN,MI,TX,FL,GA,AL,MS,LA,AR,KS,OK,MO,KY,TN"
 )
 
 $ErrorActionPreference = "Stop"

@@ -351,9 +351,26 @@ function isAllowedSystem(name) {
   if (n === "MT" && (want.includes("MONTANA") || want.includes("MT"))) return true;
   if (n === "TX" && (want.includes("TEXAS") || want.includes("TX"))) return true;
   if (n === "FL" && (want.includes("FLORIDA") || want.includes("FL"))) return true;
+  if (n === "GA" && (want.includes("GEORGIA") || want.includes("GA"))) return true;
+  if (n === "AL" && (want.includes("ALABAMA") || want.includes("AL"))) return true;
+  if (n === "MS" && (want.includes("MISSISSIPPI") || want.includes("MS"))) return true;
+  if (n === "LA" && (want.includes("LOUISIANA") || want.includes("LOUISEANA") || want.includes("LA"))) return true;
+  if (n === "AR" && (want.includes("ARKANSAS") || want.includes("ARKINSAS") || want.includes("AR"))) return true;
+  if (n === "KS" && (want.includes("KANSAS") || want.includes("KANSUS") || want.includes("KS"))) return true;
+  if (n === "OK" && (want.includes("OKLAHOMA") || want.includes("OK"))) return true;
+  if (n === "MO" && (want.includes("MISSOURI") || want.includes("MO"))) return true;
+  if (n === "KY" && (want.includes("KENTUCKY") || want.includes("KENTUCI") || want.includes("KY"))) return true;
+  if (n === "TN" && (want.includes("TENNESSEE") || want.includes("TENNISSE") || want.includes("TN"))) return true;
+  if (n === "AK" && (want.includes("ALASKA") || want.includes("AK"))) return true;
+  if (n === "HI" && (want.includes("HAWAII") || want.includes("HI"))) return true;
   if (n === "OH" && (want.includes("OHIO") || want.includes("OH"))) return true;
   if (n === "IN" && (want.includes("INDIANA") || want.includes("IN"))) return true;
   if (n === "WV" && (want.includes("WEST VIRGINIA") || want.includes("WV"))) return true;
+  if (n === "ND" && (want.includes("NORTH DAKOTA") || want.includes("NORTH DOKOTA") || want.includes("ND"))) return true;
+  if (n === "SD" && (want.includes("SOUTH DAKOTA") || want.includes("SOUTH DOKOTA") || want.includes("SD"))) return true;
+  if (n === "NE" && (want.includes("NEBRASKA") || want.includes("NEGRASKA") || want.includes("NE"))) return true;
+  if (n === "IA" && (want.includes("IOWA") || want.includes("IA"))) return true;
+  if (n === "WY" && (want.includes("WYOMING") || want.includes("WY"))) return true;
   if (n === "CT STATE" && want.includes("CT")) return true;
   return want.includes(n);
 }
@@ -405,10 +422,29 @@ const SYSTEM_GROUP_MAP = {
   // Texas and Florida
   "TX": "Texas",
   "FL": "Florida",
+  // Southeast / South-Central
+  "GA": "Georgia",
+  "AL": "Alabama",
+  "MS": "Mississippi",
+  "LA": "Louisiana",
+  "AR": "Arkansas",
+  "KS": "Kansas",
+  "OK": "Oklahoma",
+  "MO": "Missouri",
+  "KY": "Kentucky",
+  "TN": "Tennessee",
+  "AK": "Alaska",
+  "HI": "Hawaii",
   // Ohio, Indiana, West Virginia
   "OH": "Ohio",
   "IN": "Indiana",
   "WV": "West Virginia",
+  // Northern Plains and Iowa
+  "ND": "North Dakota",
+  "SD": "South Dakota",
+  "NE": "Nebraska",
+  "IA": "Iowa",
+  "WY": "Wyoming",
 };
 
 export function getSystemGroup(source) {
@@ -1636,6 +1672,131 @@ const MN_CAMPUSES = [
   },
 ];
 
+// ND (North Dakota)
+const ND_CAMPUSES = [
+  {
+    campus: "University of North Dakota",
+    type: "generic",
+    url: "https://careers.und.edu/jobs/search",
+  },
+  {
+    campus: "North Dakota State University",
+    type: "ndsu-joblist",
+    url: "https://www.ndsu.edu/employment/joblist",
+  },
+  {
+    campus: "University of Mary",
+    type: "generic",
+    url: "https://universityofmary.applytojob.com/apply",
+  },
+  {
+    campus: "University of Jamestown",
+    type: "generic",
+    url: "https://www.uj.edu/about/employment/",
+  },
+];
+
+// SD (South Dakota)
+const SD_CAMPUSES = [
+  {
+    campus: "South Dakota Board of Regents",
+    type: "peopleadmin",
+    url: "https://yourfuture.sdbor.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search",
+  },
+  {
+    campus: "Augustana University",
+    type: "workday-search",
+    url: "https://wd1.myworkdaysite.com/recruiting/augie/augie",
+  },
+  {
+    campus: "University of Sioux Falls",
+    type: "generic",
+    url: "https://www.usiouxfalls.edu/about/employment",
+  },
+];
+
+// NE (Nebraska)
+const NE_CAMPUSES = [
+  {
+    campus: "University of Nebraska-Lincoln",
+    type: "peopleadmin",
+    url: "https://employment.unl.edu/postings/search",
+  },
+  {
+    campus: "University of Nebraska Omaha",
+    type: "peopleadmin",
+    url: "https://unomaha.peopleadmin.com/postings/search?query_position_type_id%5B%5D=3",
+  },
+  {
+    campus: "University of Nebraska Medical Center",
+    type: "peopleadmin",
+    url: "https://unmc.peopleadmin.com/postings/search?query_position_type_id%5B%5D=14",
+  },
+  {
+    campus: "Creighton University",
+    type: "oracle-cx",
+    url: "https://hcps.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+  },
+  {
+    campus: "Nebraska Wesleyan University",
+    type: "generic",
+    url: "https://www.nebrwesleyan.edu/about-nwu/employment",
+  },
+  {
+    campus: "Doane University",
+    type: "generic",
+    url: "https://www.doane.edu/offices-services/human-resources/careers",
+  },
+];
+
+// IA (Iowa)
+const IA_CAMPUSES = [
+  {
+    campus: "University of Iowa",
+    type: "generic",
+    url: "https://jobs.uiowa.edu/jobSearch/faculty/searchResults.php?submit=Search+For+Openings&searchType=FACULTY&org=11",
+  },
+  {
+    campus: "Iowa State University",
+    type: "workday",
+    url: "https://isu.wd1.myworkdayjobs.com/IowaStateJobs",
+  },
+  {
+    campus: "University of Northern Iowa",
+    type: "workday",
+    url: "https://uni.wd5.myworkdayjobs.com/UNI",
+  },
+  {
+    campus: "Drake University",
+    type: "nau-search",
+    url: "https://jobs.drake.edu/jobs/search?page=1&employment_type_uids%5B%5D=f54f0d72d35cecc2f21099a585732daa&employment_type_uids%5B%5D=b66d76f56d2c3e184a9b92f96a742e9d&employment_type_uids%5B%5D=bdd91c0b76d14e0e44f1d8dc3e2b4342&query=",
+  },
+  {
+    campus: "Grinnell College",
+    type: "interfolio-inst",
+    url: "https://apply.interfolio.com/11893/positions",
+  },
+  {
+    campus: "Luther College",
+    type: "generic",
+    url: "https://www.luther.edu/offices/hr/careers",
+  },
+];
+
+// WY (Wyoming)
+const WY_CAMPUSES = [
+  {
+    campus: "University of Wyoming",
+    type: "oracle-cx",
+    url: "https://eeik.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=TITLES&selectedTitlesFacet=Faculty%2FAcademic%3BTemporary+Lecturer",
+  },
+  {
+    campus: "Wyoming Catholic College",
+    type: "generic",
+    url: "https://wyomingcatholic.edu/employment/",
+  },
+];
+
 // MT (Montana)
 const MT_CAMPUSES = [
   {
@@ -2287,6 +2448,88 @@ const FL_CAMPUSES = [
   },
 ];
 
+// GA (Georgia)
+const GA_CAMPUSES = [
+  { campus: "University of Georgia", type: "peopleadmin", url: "https://www.ugajobsearch.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&225=&436=&query_position_type_id%5B%5D=7&query_position_type_id%5B%5D=8&commit=Search" },
+  { campus: "Georgia State University", type: "peopleadmin", url: "https://facultycareers.gsu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&435=&commit=Search" },
+  { campus: "Kennesaw State University", type: "peopleadmin", url: "https://kennesaw.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search" },
+  { campus: "University of North Georgia", type: "generic", url: "https://www.ung.edu/human-resources/employment-opportunities/faculty.php" },
+  { campus: "Spelman College", type: "peopleadmin", url: "https://spelman.peopleadmin.com/postings/search?commit=Search&query_position_type_id%5B%5D=3&sort=225+asc&utf8=%E2%9C%93" },
+];
+
+// AL (Alabama)
+const AL_CAMPUSES = [
+  { campus: "University of Alabama", type: "generic", url: "https://careers.ua.edu/jobs/search/facultyjobs?page=1&category_uids%5B%5D=64c4c56c13267cdcd83c99e7dbd37544&category_uids%5B%5D=184576ee68eaea946117d720edf7df0f&query=" },
+  { campus: "Auburn University", type: "peopleadmin", url: "https://www.auemployment.com/postings/search?query=&query_position_type_id%5B%5D=2&commit=Search" },
+  { campus: "University of Alabama at Birmingham", type: "peopleadmin", url: "https://uab.peopleadmin.com/postings/search" },
+  { campus: "University of South Alabama", type: "generic", url: "https://www.southalabama.edu/departments/academicaffairs/facultyposition.html" },
+  { campus: "Spring Hill College", type: "generic", url: "https://www.shc.edu/about-spring-hill-jesuit-college/spring-hill-college-jobs/" },
+];
+
+// MS (Mississippi)
+const MS_CAMPUSES = [
+  { campus: "University of Mississippi", type: "workday", url: "https://olemiss.wd12.myworkdayjobs.com/External__Faculty" },
+  { campus: "Mississippi University for Women", type: "peopleadmin", url: "https://muw.peopleadmin.com/postings/search" },
+  { campus: "Delta State University", type: "peopleadmin", url: "https://deltastate.peopleadmin.com/postings/search" },
+  { campus: "Millsaps College", type: "generic", url: "https://millsaps.edu/offices/human-resources/employment-opportunities/" },
+];
+
+// LA (Louisiana)
+const LA_CAMPUSES = [
+  { campus: "Louisiana State University", type: "workday", url: "https://lsu.wd1.myworkdayjobs.com/LSU?Job_Profiles=7a9995fc77aa101fe03ed2adb83abd3b&Job_Profiles=7a9995fc77aa101fe03fb0edd613be1b&Job_Profiles=7a9995fc77aa101fe03ea5230b41bd10&Job_Profiles=7a9995fc77aa101fe03c558ab5c0bac4&Job_Profiles=7a9995fc77aa101fe03fb8c46670be23&Job_Profiles=7a9995fc77aa101fe03fa8fe7ecdbe13&Job_Profiles=48b1ff5a2bae01637b1270c77c372403" },
+  { campus: "Louisiana Tech University", type: "generic", url: "https://www.latech.edu/business/about/employment-opportunities.php" },
+  { campus: "Dillard University", type: "generic", url: "https://www.dillard.edu/human-resources/" },
+];
+
+// AR (Arkansas)
+const AR_CAMPUSES = [
+  { campus: "University of Arkansas", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site?timeType=8676082fcc890179341a6d2e71495800&jobFamilyGroup=eaddfab9343f0113688d32d525e70000" },
+  { campus: "University of Central Arkansas", type: "peopleadmin", url: "https://jobs.uca.edu/postings/search" },
+];
+
+// KS (Kansas)
+const KS_CAMPUSES = [
+  { campus: "University of Kansas", type: "generic", url: "https://employment.ku.edu/jobs/faculty" },
+  { campus: "Kansas State University", type: "generic", url: "https://careers.k-state.edu/jobs/search?query=faculty" },
+  { campus: "Baker University", type: "generic", url: "https://www.bakeru.edu/university-employment/" },
+  { campus: "Southwestern College (KS)", type: "generic", url: "https://www.sckans.edu/about/employment/#faculty" },
+];
+
+// OK (Oklahoma)
+const OK_CAMPUSES = [
+  { campus: "Oklahoma State University", type: "nau-search", url: "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=" },
+];
+
+// MO (Missouri)
+const MO_CAMPUSES = [
+  { campus: "Missouri State University", type: "peopleadmin", url: "https://jobs.missouristate.edu/postings/search?query=&query_position_type_id%5B%5D=3" },
+  { campus: "Washington University in St. Louis", type: "workday", url: "https://wustl.wd1.myworkdayjobs.com/External" },
+  { campus: "Missouri University of Science and Technology", type: "generic", url: "https://jobs.mst.edu/postings/search?query_position_type_id%5B%5D=3" },
+];
+
+// KY (Kentucky)
+const KY_CAMPUSES = [
+  { campus: "Northern Kentucky University", type: "peopleadmin", url: "https://jobs.nku.edu/postings/search" },
+  { campus: "Murray State University", type: "peopleadmin", url: "https://www.murraystatejobs.com/postings/search" },
+  { campus: "Morehead State University", type: "peopleadmin", url: "https://moreheadstate.peopleadmin.com/postings/search" },
+];
+
+// TN (Tennessee)
+const TN_CAMPUSES = [
+  { campus: "Middle Tennessee State University", type: "pageup", url: "https://careers.mtsu.edu/en-us/listing/" },
+];
+
+// AK (Alaska)
+const AK_CAMPUSES = [
+  { campus: "University of Alaska System", type: "generic", url: "https://careers.alaska.edu/jobs/search/faculty-jobs" },
+];
+
+// HI (Hawaii)
+const HI_CAMPUSES = [
+  { campus: "University of Hawaii System", type: "generic", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=faculty" },
+  { campus: "Chaminade University of Honolulu", type: "generic", url: "https://chaminade.edu/employment-opportunities/" },
+];
+
 /* ============================== EXPRESS ============================== */
 
 const app = express();
@@ -2391,6 +2634,11 @@ export async function scrapeAllJobsStandalone() {
       { name: "NH", fn: () => scrapeNhAll(context) },
       { name: "VT", fn: () => scrapeVtAll(context) },
       { name: "MN", fn: () => scrapeMnAll(context) },
+      { name: "ND", fn: () => scrapeNdAll(context) },
+      { name: "SD", fn: () => scrapeSdAll(context) },
+      { name: "NE", fn: () => scrapeNeAll(context) },
+      { name: "IA", fn: () => scrapeIaAll(context) },
+      { name: "WY", fn: () => scrapeWyAll(context) },
       { name: "WI", fn: () => scrapeWiAll(context) },
       { name: "MT", fn: () => scrapeMtAll(context) },
       { name: "CO", fn: () => scrapeCoAll(context) },
@@ -2401,6 +2649,18 @@ export async function scrapeAllJobsStandalone() {
       { name: "ID", fn: () => scrapeIdAll(context) },
       { name: "IN", fn: () => scrapeInAll(context) },
       { name: "WV", fn: () => scrapeWvAll(context) },
+      { name: "GA", fn: () => scrapeGaAll(context) },
+      { name: "AL", fn: () => scrapeAlAll(context) },
+      { name: "MS", fn: () => scrapeMsAll(context) },
+      { name: "LA", fn: () => scrapeLaAll(context) },
+      { name: "AR", fn: () => scrapeArAll(context) },
+      { name: "KS", fn: () => scrapeKsAll(context) },
+      { name: "OK", fn: () => scrapeOkAll(context) },
+      { name: "MO", fn: () => scrapeMoAll(context) },
+      { name: "KY", fn: () => scrapeKyAll(context) },
+      { name: "TN", fn: () => scrapeTnAll(context) },
+      { name: "AK", fn: () => scrapeAkAll(context) },
+      { name: "HI", fn: () => scrapeHiAll(context) },
       { name: "TX", fn: () => scrapeTxAll(context) },
       { name: "FL", fn: () => scrapeFlAll(context) },
 
@@ -2760,6 +3020,27 @@ const COLLEGE_LOCATION_DEFAULTS = {
   "Minnesota State System": "St. Paul, MN",
   "Carleton College": "Northfield, MN",
   "Macalester College": "Saint Paul, MN",
+  "University of North Dakota": "Grand Forks, ND",
+  "North Dakota State University": "Fargo, ND",
+  "University of Mary": "Bismarck, ND",
+  "University of Jamestown": "Jamestown, ND",
+  "South Dakota Board of Regents": "Pierre, SD",
+  "Augustana University": "Sioux Falls, SD",
+  "University of Sioux Falls": "Sioux Falls, SD",
+  "University of Nebraska-Lincoln": "Lincoln, NE",
+  "University of Nebraska Omaha": "Omaha, NE",
+  "University of Nebraska Medical Center": "Omaha, NE",
+  "Creighton University": "Omaha, NE",
+  "Nebraska Wesleyan University": "Lincoln, NE",
+  "Doane University": "Crete, NE",
+  "University of Iowa": "Iowa City, IA",
+  "Iowa State University": "Ames, IA",
+  "University of Northern Iowa": "Cedar Falls, IA",
+  "Drake University": "Des Moines, IA",
+  "Grinnell College": "Grinnell, IA",
+  "Luther College": "Decorah, IA",
+  "University of Wyoming": "Laramie, WY",
+  "Wyoming Catholic College": "Lander, WY",
   "UW-Madison": "Madison, WI",
   "UW-Milwaukee": "Milwaukee, WI",
   "UW System Comprehensives": "Madison, WI",
@@ -2823,7 +3104,218 @@ const COLLEGE_LOCATION_DEFAULTS = {
   "Stetson University": "DeLand, FL",
   "New College of Florida": "Sarasota, FL",
   "Florida Southern College": "Lakeland, FL",
+  "University of Georgia": "Athens, GA",
+  "Georgia Institute of Technology": "Atlanta, GA",
+  "Georgia State University": "Atlanta, GA",
+  "Kennesaw State University": "Kennesaw, GA",
+  "University of North Georgia": "Dahlonega, GA",
+  "Emory University": "Atlanta, GA",
+  "Mercer University": "Macon, GA",
+  "Spelman College": "Atlanta, GA",
+  "Morehouse College": "Atlanta, GA",
+  "Agnes Scott College": "Decatur, GA",
+  "Berry College": "Mount Berry, GA",
+  "University of Alabama": "Tuscaloosa, AL",
+  "Auburn University": "Auburn, AL",
+  "University of Alabama at Birmingham": "Birmingham, AL",
+  "University of South Alabama": "Mobile, AL",
+  "Troy University": "Troy, AL",
+  "Samford University": "Birmingham, AL",
+  "Tuskegee University": "Tuskegee, AL",
+  "Spring Hill College": "Mobile, AL",
+  "University of Montevallo": "Montevallo, AL",
+  "Huntingdon College": "Montgomery, AL",
+  "University of Mississippi": "Oxford, MS",
+  "Mississippi State University": "Starkville, MS",
+  "University of Southern Mississippi": "Hattiesburg, MS",
+  "Jackson State University": "Jackson, MS",
+  "Mississippi University for Women": "Columbus, MS",
+  "Delta State University": "Cleveland, MS",
+  "Millsaps College": "Jackson, MS",
+  "Belhaven University": "Jackson, MS",
+  "Tougaloo College": "Tougaloo, MS",
+  "Louisiana State University": "Baton Rouge, LA",
+  "University of Louisiana at Lafayette": "Lafayette, LA",
+  "University of New Orleans": "New Orleans, LA",
+  "Louisiana Tech University": "Ruston, LA",
+  "Tulane University": "New Orleans, LA",
+  "Loyola University New Orleans": "New Orleans, LA",
+  "Xavier University of Louisiana": "New Orleans, LA",
+  "Dillard University": "New Orleans, LA",
+  "Centenary College of Louisiana": "Shreveport, LA",
+  "University of Arkansas": "Fayetteville, AR",
+  "University of Arkansas at Little Rock": "Little Rock, AR",
+  "Arkansas State University": "Jonesboro, AR",
+  "University of Central Arkansas": "Conway, AR",
+  "Arkansas Tech University": "Russellville, AR",
+  "Harding University": "Searcy, AR",
+  "Ouachita Baptist University": "Arkadelphia, AR",
+  "Hendrix College": "Conway, AR",
+  "Lyon College": "Batesville, AR",
+  "University of Kansas": "Lawrence, KS",
+  "Kansas State University": "Manhattan, KS",
+  "Wichita State University": "Wichita, KS",
+  "Emporia State University": "Emporia, KS",
+  "Fort Hays State University": "Hays, KS",
+  "Washburn University": "Topeka, KS",
+  "Baker University": "Baldwin City, KS",
+  "Bethany College (KS)": "Lindsborg, KS",
+  "Southwestern College (KS)": "Winfield, KS",
+  "University of Oklahoma": "Norman, OK",
+  "Oklahoma State University": "Stillwater, OK",
+  "University of Tulsa": "Tulsa, OK",
+  "University of Central Oklahoma": "Edmond, OK",
+  "Northeastern State University": "Tahlequah, OK",
+  "Oral Roberts University": "Tulsa, OK",
+  "Oklahoma City University": "Oklahoma City, OK",
+  "University of Science and Arts of Oklahoma": "Chickasha, OK",
+  "University of Missouri": "Columbia, MO",
+  "University of Missouri-Kansas City": "Kansas City, MO",
+  "Missouri State University": "Springfield, MO",
+  "Washington University in St. Louis": "St. Louis, MO",
+  "Saint Louis University": "St. Louis, MO",
+  "University of Missouri-St. Louis": "St. Louis, MO",
+  "Missouri University of Science and Technology": "Rolla, MO",
+  "Truman State University": "Kirksville, MO",
+  "Lindenwood University": "St. Charles, MO",
+  "Westminster College (MO)": "Fulton, MO",
+  "Drury University": "Springfield, MO",
+  "University of Kentucky": "Lexington, KY",
+  "University of Louisville": "Louisville, KY",
+  "Western Kentucky University": "Bowling Green, KY",
+  "Northern Kentucky University": "Highland Heights, KY",
+  "Eastern Kentucky University": "Richmond, KY",
+  "Murray State University": "Murray, KY",
+  "Morehead State University": "Morehead, KY",
+  "Berea College": "Berea, KY",
+  "Centre College": "Danville, KY",
+  "Transylvania University": "Lexington, KY",
+  "University of Tennessee, Knoxville": "Knoxville, TN",
+  "University of Memphis": "Memphis, TN",
+  "Tennessee Tech University": "Cookeville, TN",
+  "Middle Tennessee State University": "Murfreesboro, TN",
+  "East Tennessee State University": "Johnson City, TN",
+  "Vanderbilt University": "Nashville, TN",
+  "Belmont University": "Nashville, TN",
+  "Rhodes College": "Memphis, TN",
+  "Sewanee: The University of the South": "Sewanee, TN",
+  "Fisk University": "Nashville, TN",
+  "Lipscomb University": "Nashville, TN",
+  "University of Alaska System": "Anchorage, AK",
+  "Chaminade University of Honolulu": "Honolulu, HI",
+  "University of Hawaii System": "Honolulu, HI",
+  "UC Berkeley": "Berkeley, CA",
+  "UCLA": "Los Angeles, CA",
+  "UC San Diego": "San Diego, CA",
+  "UC San Francisco": "San Francisco, CA",
+  "UC Santa Barbara": "Santa Barbara, CA",
+  "UC Davis": "Davis, CA",
+  "UC Irvine": "Irvine, CA",
+  "UC Riverside": "Riverside, CA",
+  "UC Santa Cruz": "Santa Cruz, CA",
+  "UC Merced": "Merced, CA",
+  "The College of New Jersey": "Ewing, NJ",
+  "Kean University": "Union, NJ",
+  "Montclair State University": "Montclair, NJ",
+  "Rutgers, The State University of New Jersey": "New Brunswick, NJ",
+  "New Jersey City University": "Jersey City, NJ",
+  "New Jersey Institute of Technology": "Newark, NJ",
+  "Ramapo College of New Jersey": "Mahwah, NJ",
+  "Stockton University": "Galloway, NJ",
+  "William Paterson University": "Wayne, NJ",
+  "Cheyney University": "Cheyney, PA",
+  "Commonwealth University": "Bloomsburg, PA",
+  "East Stroudsburg University": "East Stroudsburg, PA",
+  "Kutztown University": "Kutztown, PA",
+  "Millersville University": "Millersville, PA",
+  "PennWest": "California, PA",
+  "Shippensburg University": "Shippensburg, PA",
+  "Slippery Rock University": "Slippery Rock, PA",
+  "West Chester University": "West Chester, PA",
+  "The Pennsylvania State University": "University Park, PA",
+  "Appalachian State University": "Boone, NC",
+  "East Carolina University": "Greenville, NC",
+  "Elizabeth City State University": "Elizabeth City, NC",
+  "Fayetteville State University": "Fayetteville, NC",
+  "North Carolina A&T State University": "Greensboro, NC",
+  "North Carolina Central University": "Durham, NC",
+  "NC State University": "Raleigh, NC",
+  "UNC Asheville": "Asheville, NC",
+  "UNC-Chapel Hill": "Chapel Hill, NC",
+  "UNC Charlotte": "Charlotte, NC",
+  "UNC Pembroke": "Pembroke, NC",
+  "UNC School of the Arts": "Winston-Salem, NC",
+  "UNC Wilmington": "Wilmington, NC",
+  "Western Carolina University": "Cullowhee, NC",
+  "Winston-Salem State University": "Winston-Salem, NC",
+  "Duke University": "Durham, NC",
+  "Wake Forest University": "Winston-Salem, NC",
+  "Davidson College": "Davidson, NC",
+  "Elon University": "Elon, NC",
+  "UNC Greensboro": "Greensboro, NC",
+  "University of Virginia": "Charlottesville, VA",
+  "Virginia Tech": "Blacksburg, VA",
+  "William & Mary": "Williamsburg, VA",
+  "George Mason University": "Fairfax, VA",
+  "Virginia Commonwealth University": "Richmond, VA",
+  "Old Dominion University": "Norfolk, VA",
+  "James Madison University": "Harrisonburg, VA",
+  "University of Richmond": "Richmond, VA",
+  "Washington and Lee University": "Lexington, VA",
+  "Hollins University": "Roanoke, VA",
+  "University of South Carolina": "Columbia, SC",
+  "Clemson University": "Clemson, SC",
+  "College of Charleston": "Charleston, SC",
+  "Coastal Carolina University": "Conway, SC",
+  "Winthrop University": "Rock Hill, SC",
+  "The Citadel": "Charleston, SC",
+  "Furman University": "Greenville, SC",
+  "Wofford College": "Spartanburg, SC",
+  "Presbyterian College": "Clinton, SC",
 };
+
+function toCollegeLocationKey(name) {
+  let s = clean(normalizeCollegeName(String(name || ""))).toLowerCase();
+  if (!s) return "";
+  s = s.replace(/&/g, " and ");
+  s = s.replace(/[’']/g, "");
+  s = s.replace(/\([^)]*\)/g, " ");
+  s = s.replace(/\bthe\s+/g, "");
+  s = s.replace(/\buniv(?:ersity)?\b/g, "university");
+  s = s.replace(/\binst(?:itute)?\b/g, "institute");
+  s = s.replace(/\s+/g, " ").trim();
+  return s;
+}
+
+const COLLEGE_LOCATION_DEFAULTS_BY_KEY = new Map(
+  Object.entries(COLLEGE_LOCATION_DEFAULTS).map(([college, location]) => [toCollegeLocationKey(college), location])
+);
+
+function getCollegeLocationFallback(collegeName) {
+  const exact = COLLEGE_LOCATION_DEFAULTS[collegeName];
+  if (exact) return exact;
+
+  const key = toCollegeLocationKey(collegeName);
+  if (!key) return null;
+
+  const direct = COLLEGE_LOCATION_DEFAULTS_BY_KEY.get(key);
+  if (direct) return direct;
+
+  // Last-resort fuzzy match for minor token drift in scraper college labels.
+  let best = null;
+  let bestLen = 0;
+  for (const [k, loc] of COLLEGE_LOCATION_DEFAULTS_BY_KEY.entries()) {
+    if (k === key) return loc;
+    if (k.includes(key) || key.includes(k)) {
+      const l = Math.min(k.length, key.length);
+      if (l > bestLen) {
+        best = loc;
+        bestLen = l;
+      }
+    }
+  }
+  return best || null;
+}
 
 function isLikelyGeographicLocation(location) {
   return !!normalizeUsLocation(location);
@@ -2875,11 +3367,12 @@ function normalizeLocationByCollege(job) {
     AZ: "AZ", UT: "UT", ID: "ID",
     MA: "MA", "UMass": "MA", "MA Private": "MA",
     "CA - CSU": "CA", CSU: "CA", UC: "CA", "CA Private": "CA", "Claremont Colleges": "CA",
-    CO: "CO", NM: "NM", NV: "NV", IL: "IL", MI: "MI", MN: "MN", WI: "WI", MT: "MT", OH: "OH", IN: "IN", WV: "WV", TX: "TX", FL: "FL",
+    CO: "CO", NM: "NM", NV: "NV", IL: "IL", MI: "MI", MN: "MN", ND: "ND", SD: "SD", NE: "NE", IA: "IA", WY: "WY", WI: "WI", MT: "MT", OH: "OH", IN: "IN", WV: "WV", TX: "TX", FL: "FL",
+    GA: "GA", AL: "AL", MS: "MS", LA: "LA", AR: "AR", KS: "KS", OK: "OK", MO: "MO", KY: "KY", TN: "TN", AK: "AK", HI: "HI",
   };
   if (!job) return job;
 
-  const fallback = COLLEGE_LOCATION_DEFAULTS[job.college] || null;
+  const fallback = getCollegeLocationFallback(job.college);
   const looksLikeInstitutionName = (text) =>
     /\b(university|college|institute|school|campus|polytechnic|academy|system)\b/i.test(String(text || ""));
 
@@ -8807,6 +9300,132 @@ async function scrapeMnAll(context) {
   return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
 }
 
+/* ============================== ND ============================== */
+
+async function scrapeNdAll(context) {
+  const results = await mapWithConcurrency(
+    ND_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "ND");
+        if (type === "ndsu-joblist") return await scrapeNdsuJoblistAs(url, campus, "ND");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "ND");
+        if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "ND");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "ND");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} ND scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== SD ============================== */
+
+async function scrapeSdAll(context) {
+  const results = await mapWithConcurrency(
+    SD_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "SD");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "SD");
+        if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "SD");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "SD");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} SD scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== NE ============================== */
+
+async function scrapeNeAll(context) {
+  const results = await mapWithConcurrency(
+    NE_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NE");
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "NE");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NE");
+        if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "NE");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NE");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} NE scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== IA ============================== */
+
+async function scrapeIaAll(context) {
+  const results = await mapWithConcurrency(
+    IA_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IA");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "IA");
+        if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "IA");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "IA");
+        if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "IA");
+        if (type === "adp-career-center") return await scrapeAdpCareerCenterAs(context, url, campus, "IA");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IA");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} IA scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+/* ============================== WY ============================== */
+
+async function scrapeWyAll(context) {
+  const results = await mapWithConcurrency(
+    WY_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "WY");
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "WY");
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "WY");
+        if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "WY");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "WY");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} WY scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+
+  const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
 function splitMinnStateSystemCollege(job) {
   if (!job || job.college !== "Minnesota State System") return job;
 
@@ -9241,6 +9860,55 @@ async function scrapeAdpCareerCenterAs(context, startUrl, campusName, sourceName
   }
 }
 
+async function scrapeNdsuJoblistAs(startUrl, campusName, sourceName) {
+  try {
+    const res = await fetch(startUrl);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const html = await res.text();
+
+    const cleanText = (s) => clean(String(s || "").replace(/<[^>]+>/g, " "));
+    const out = [];
+    const seen = new Set();
+
+    const linkRe = /<a[^>]+href=\"([^\"]*JobOpeningId=\d+[^\"]*)\"[^>]*>([\s\S]*?)<\/a>/gi;
+    let m;
+    while ((m = linkRe.exec(html)) !== null) {
+      const hrefRaw = m[1] || "";
+      let title = cleanText(m[2] || "");
+      if (!title || /^view details$/i.test(title)) continue;
+
+      let url = null;
+      try {
+        const decoded = hrefRaw.replace(/&amp;/g, "&");
+        url = new URL(decoded, startUrl).toString();
+      } catch {
+        continue;
+      }
+
+      title = normalizeJobTitle(title);
+      if (!title || !looksFacultyish(title) || omitAdjunct(title)) continue;
+      if (seen.has(url)) continue;
+      seen.add(url);
+
+      out.push({
+        title,
+        url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      });
+    }
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${out.length}`);
+    return out;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 async function scrapeWvAll(context) {
   const results = await mapWithConcurrency(
     WV_CAMPUSES,
@@ -9261,6 +9929,238 @@ async function scrapeWvAll(context) {
 
   const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeGaAll(context) {
+  const results = await mapWithConcurrency(
+    GA_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "GA");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "GA");
+        if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "GA");
+        if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "GA");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "GA");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} GA scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeAlAll(context) {
+  const results = await mapWithConcurrency(
+    AL_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "AL");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "AL");
+        if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "AL");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "AL");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} AL scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeMsAll(context) {
+  const results = await mapWithConcurrency(
+    MS_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MS");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MS");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MS");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} MS scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeLaAll(context) {
+  const results = await mapWithConcurrency(
+    LA_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "LA");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "LA");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "LA");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} LA scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeArAll(context) {
+  const results = await mapWithConcurrency(
+    AR_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "AR");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "AR");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "AR");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} AR scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeKsAll(context) {
+  const results = await mapWithConcurrency(
+    KS_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "KS");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "KS");
+        if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "KS");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "KS");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} KS scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeOkAll(context) {
+  const results = await mapWithConcurrency(
+    OK_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OK");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OK");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OK");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} OK scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeMoAll(context) {
+  const results = await mapWithConcurrency(
+    MO_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MO");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MO");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MO");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} MO scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeKyAll(context) {
+  const results = await mapWithConcurrency(
+    KY_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "KY");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "KY");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "KY");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "KY");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} KY scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeTnAll(context) {
+  const results = await mapWithConcurrency(
+    TN_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "TN");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "TN");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "TN");
+        if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "TN");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "TN");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} TN scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeAkAll(context) {
+  const results = await mapWithConcurrency(
+    AK_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "AK");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} AK scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeHiAll(context) {
+  const results = await mapWithConcurrency(
+    HI_CAMPUSES,
+    MAX_PARALLEL_CAMPUSES,
+    async ({ campus, type, url }) => {
+      try {
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "HI");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "HI");
+        return [];
+      } catch (e) {
+        console.error(`❌ ${campus} HI scrape failed:`, e?.message || e);
+        return [];
+      }
+    }
+  );
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
 }
 
 async function scrapeFloridaSouthernPortal(context, startUrl, campusName, sourceName) {
