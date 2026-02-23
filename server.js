@@ -382,6 +382,57 @@ function isNyOnlyRun() {
   return allow.some(x => nyAliases.includes(x));
 }
 
+function normalizeCollegeKey(name) {
+  return String(name || "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function loadPolicyExcludedCollegeKeys() {
+  try {
+    const rootDir = path.dirname(fileURLToPath(import.meta.url));
+    const policyPath = path.join(rootDir, "generated", "policy-excluded-colleges.json");
+    const payload = JSON.parse(fs.readFileSync(policyPath, "utf8"));
+    const names = Array.isArray(payload?.colleges) ? payload.colleges : [];
+    const keys = new Set(names.map(normalizeCollegeKey).filter(Boolean));
+    console.log(`🧾 Loaded policy exclusions: ${keys.size} institutions`);
+    return keys;
+  } catch (e) {
+    console.warn(`⚠️  Failed to load generated policy exclusions: ${e?.message || e}`);
+    return new Set();
+  }
+}
+
+const POLICY_EXCLUDED_COLLEGE_KEYS = loadPolicyExcludedCollegeKeys();
+
+function isPolicyExcludedCollege(name) {
+  return POLICY_EXCLUDED_COLLEGE_KEYS.has(normalizeCollegeKey(name));
+}
+
+function loadForProfitCollegeKeys() {
+  try {
+    const rootDir = path.dirname(fileURLToPath(import.meta.url));
+    const masterPath = path.join(rootDir, "data", "institutions-master.json");
+    const payload = JSON.parse(fs.readFileSync(masterPath, "utf8"));
+    const rows = Array.isArray(payload?.institutions) ? payload.institutions : [];
+    const keys = new Set();
+    for (const r of rows) {
+      if (String(r?.control || "").toLowerCase() !== "private for-profit") continue;
+      const k = normalizeCollegeKey(r?.name);
+      if (k) keys.add(k);
+    }
+    console.log(`🏷️  Loaded private for-profit exclusions: ${keys.size} institutions`);
+    return keys;
+  } catch (e) {
+    console.warn(`⚠️  Failed to load private for-profit exclusions: ${e?.message || e}`);
+    return new Set();
+  }
+}
+
+const PRIVATE_FOR_PROFIT_COLLEGE_KEYS = loadForProfitCollegeKeys();
+
+function isPrivateForProfitCollege(name) {
+  return PRIVATE_FOR_PROFIT_COLLEGE_KEYS.has(normalizeCollegeKey(name));
+}
+
 
 /* ============================== CONFIG ============================== */
 
@@ -458,8 +509,8 @@ const CT_URL = "https://www.ct.edu/hr/jobs";
 const CT_PRIVATE_CAMPUSES = [
   {
     campus: "Yale University",
-    type: "yale",
-    url: "https://academicpositions.yale.edu/job-posting",
+    type: "generic",
+    url: "https://www.clevelandclinic.org/sodi",
   },
   {
     campus: "University of Connecticut",
@@ -534,8 +585,8 @@ const MA_PRIVATE_CAMPUSES = [
   },
   {
     campus: "Massachusetts Institute of Technology",
-    type: "generic",
-    url: "https://academicjobsonline.org/ajo/jobs?institution=Massachusetts+Institute+of+Technology",
+    type: "peopleclick",
+    url: "https://careers.peopleclick.com/careerscp/client_mit/external/results/searchResult.html",
   },
   {
     campus: "Tufts University",
@@ -602,6 +653,7 @@ const MA_PRIVATE_CAMPUSES = [
     type: "jobvite",
     url: "https://jobs.jobvite.com/holycross/jobs",
   },
+  { campus: "Springfield College-Regional, Online, and Continuing Education", type: "generic", url: "https://springfield.edu/academics/online-programs" },
 ];
 
 // UC (AP Recruit)
@@ -695,6 +747,9 @@ const NJ_PRIVATE_CAMPUSES = [
   { campus: "Saint Peter's University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=055E28882001FE667534B0880CFCD275" },
   { campus: "Monmouth University", type: "generic", url: "https://recruiting.ultipro.com/MON1000MON/JobBoard/d4da5ea7-24db-4f02-a484-7497ffffb76d/?q=&o=postedDateDesc" },
   { campus: "Rowan University", type: "pageup", url: "https://jobs.rowan.edu/" },
+  { campus: "Capital Health School of Nursing", type: "generic", url: "https://www.capitalhealth.org/professionals/school-of-nursing" },
+  { campus: "Capital Health School of Radiologic Technology", type: "generic", url: "https://www.capitalhealth.org/professionals/school-of-radiologic-technology" },
+  { campus: "Hackensack Meridian School of Medicine", type: "generic", url: "https://www.hmsom.edu/en" },
 ];
 
 // Claremont Colleges
@@ -837,6 +892,14 @@ const PA_PRIVATE_CAMPUSES = [
     type: "interfolio-links",
     url: "https://www.fandm.edu/campus-services/human-resources/",
   },
+  { campus: "Albright College", type: "generic", url: "https://www.albright.edu/home/" },
+  { campus: "Citizens School of Nursing", type: "generic", url: "https://www.ahn.org/education/citizens-school-nursing" },
+  { campus: "Commonwealth Technical Institute", type: "generic", url: "https://www.dli.pa.gov/Individuals/Disability-Services/CTI-HGAC/Pages/Home.aspx" },
+  { campus: "Eastern University", type: "generic", url: "https://www.eastern.edu/about/student-consumer-information" },
+  { campus: "Geisinger Commonwealth School of Medicine", type: "generic", url: "https://www.geisinger.edu/education" },
+  { campus: "Harcum College", type: "generic", url: "https://www.harcum.edu/s/1044/edu/start.aspx" },
+  { campus: "Saint Joseph's University - Lancaster", type: "generic", url: "https://www.sju.edu/lancaster" },
+  { campus: "University of Pittsburgh-Titusville", type: "generic", url: "https://www.titusville.pitt.edu/home" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -942,6 +1005,7 @@ const NC_CAMPUSES = [
     type: "peopleadmin",
     url: "https://spartantalent.uncg.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=2&commit=Search",
   },
+  { campus: "Johnson & Wales University-Charlotte", type: "generic", url: "https://www.jwu.edu/campuses/charlotte/" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -996,6 +1060,8 @@ const VA_CAMPUSES = [
     type: "generic",
     url: "https://www.hollins.edu/about/human-resources/employment-opportunities/",
   },
+  { campus: "Centra College", type: "generic", url: "https://www.centrahealth.com/college" },
+  { campus: "Riverside College of Health Careers", type: "generic", url: "https://www.riversideonline.com/careers/college-of-health-careers" },
 ];
 
 // SC (South Carolina) - major public research + private liberal arts
@@ -1045,6 +1111,10 @@ const SC_CAMPUSES = [
     type: "generic",
     url: "https://www.presby.edu/about/offices-and-services/human-resources/",
   },
+  { campus: "University of South Carolina-Lancaster", type: "generic", url: "https://www.sc.edu/about/system_and_campuses/lancaster/index.php" },
+  { campus: "University of South Carolina-Salkehatchie", type: "generic", url: "https://sc.edu/about/system_and_campuses/salkehatchie/index.php" },
+  { campus: "University of South Carolina-Sumter", type: "generic", url: "https://www.sc.edu/about/system_and_campuses/sumter/index.php" },
+  { campus: "University of South Carolina-Union", type: "generic", url: "https://www.sc.edu/about/system_and_campuses/union/index.php" },
 ];
 
 
@@ -1116,6 +1186,7 @@ const MD_CAMPUSES = [
     type: "interviewexchange",
     url: "https://goucher.interviewexchange.com/static/clients/436GCM1/index.jsp",
   },
+  { campus: "Garrett College", type: "generic", url: "https://www.garrettcollege.edu/index.php" },
 ];
 
 
@@ -1160,6 +1231,7 @@ const RI_PRIVATE_CAMPUSES = [
     type: "interviewexchange",
     url: "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp",
   },
+  { campus: "Johnson & Wales University-Providence", type: "generic", url: "https://www.jwu.edu/campuses/providence/" },
 ];
 
 // NH (New Hampshire)
@@ -1206,6 +1278,8 @@ const AZ_CAMPUSES = [
     type: "generic",
     url: "https://info.prescott.edu/job-openings/",
   },
+  { campus: "Ottawa University-Surprise", type: "generic", url: "https://www.ottawa.edu/ouaz/home" },
+  { campus: "Western Maricopa Education Center", type: "generic", url: "https://www.west-mec.edu/adult-students" },
 ];
 
 
@@ -1236,6 +1310,8 @@ const NY_SUNY_CAMPUSES = [
     type: "interfolio",
     url: "https://apply.interfolio.com/search#q=&institution_name=Binghamton%20University&position_type=Faculty",
   },
+  { campus: "Binghamton University (SUNY)", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=Binghamton%20University&position_type=Faculty" },
+  { campus: "University at Albany (SUNY)", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=University%20at%20Albany&position_type=Faculty" },
 ];
 
 const SUNY_CAMPUS_HINTS = [
@@ -1445,6 +1521,11 @@ const NY_PRIVATE_CAMPUSES = [
     type: "schooljobs",
     url: "https://www.schooljobs.com/careers/manhattanedu/FTFaculty",
   },
+  { campus: "Associated Beth Rivkah Schools", type: "generic", url: "https://www.bethrivkah.edu/dhl" },
+  { campus: "Belanger School of Nursing", type: "generic", url: "https://www.ellismedicine.org/school-of-nursing/" },
+  { campus: "Elmezzi Graduate School of Molecular Medicine", type: "generic", url: "https://www.northwell.edu/education-and-resources/elmezzi-graduate-school-of-molecular-medicine" },
+  { campus: "Samaritan Hospital School of Nursing", type: "generic", url: "https://www.sphp.com/careers/schools-of-nursing/samaritan-hospital-school-of-nursing" },
+  { campus: "St. Peter's Hospital College of Nursing", type: "generic", url: "https://www.sphp.com/careers/schools-of-nursing/" },
 ];
 
 // OR (Oregon)
@@ -1520,6 +1601,7 @@ const OR_CAMPUSES = [
     url: "https://georgefoxfaculty.applicantpool.com/jobs/",
   },
 
+  { campus: "Pacific Northwest College of Art", type: "generic", url: "https://willamette.edu/pnca/index.html" },
 ];
 
 
@@ -1597,6 +1679,7 @@ const WA_CAMPUSES = [
     type: "generic",
     url: "https://www.stmartin.edu/about/careers",
   },
+  { campus: "Whitworth University-Adult Degree Programs", type: "generic", url: "https://www.whitworth.edu/cms/" },
 ];
 
 
@@ -1622,6 +1705,7 @@ const ME_CAMPUSES = [
     type: "generic",
     url: "https://www.colby.edu/human-resources/employment/",
   },
+  { campus: "Maine Media College", type: "generic", url: "https://www.mainemedia.edu/college/" },
 ];
 
 // VT (Vermont)
@@ -1747,6 +1831,8 @@ const NE_CAMPUSES = [
     type: "generic",
     url: "https://www.doane.edu/offices-services/human-resources/careers",
   },
+  { campus: "Bryan College of Health Sciences", type: "generic", url: "https://www.bryanhealthcollege.edu/bcohs/" },
+  { campus: "CHI Health School of Radiologic Technology", type: "generic", url: "https://www.chihealth.com/school-of-radiologic-technology" },
 ];
 
 // IA (Iowa)
@@ -1781,6 +1867,8 @@ const IA_CAMPUSES = [
     type: "generic",
     url: "https://www.luther.edu/offices/hr/careers",
   },
+  { campus: "Mercy-St Luke's School of Radiologic Technology", type: "generic", url: "https://www.mercycare.org/employment/students/school-of-radiologic-technology/" },
+  { campus: "UnityPoint Health-Des Moines School of Radiologic Technology", type: "generic", url: "https://www.unitypoint.org/join-our-team/medical-education-and-career-growth/school-of-radiologic-technology---des-moines-area-hospitals" },
 ];
 
 // WY (Wyoming)
@@ -1966,6 +2054,22 @@ const OH_CAMPUSES = [
     type: "peopleadmin",
     url: "https://employment.denison.edu/postings/search",
   },
+  { campus: "Cleveland Clinic Health System-School of Diagnostic Imaging", type: "generic", url: "https://www.clevelandclinic.org/sodi" },
+  { campus: "Kent State University at Ashtabula", type: "generic", url: "https://www.kent.edu/ashtabula" },
+  { campus: "Kent State University at East Liverpool", type: "generic", url: "https://www.kent.edu/columbiana" },
+  { campus: "Kent State University at Geauga", type: "generic", url: "https://www.kent.edu/geauga" },
+  { campus: "Kent State University at Salem", type: "generic", url: "https://www.kent.edu/columbiana" },
+  { campus: "Kent State University at Stark", type: "generic", url: "https://www.kent.edu/stark" },
+  { campus: "Kent State University at Trumbull", type: "generic", url: "https://www.kent.edu/trumbull" },
+  { campus: "Kent State University at Tuscarawas", type: "generic", url: "https://www.kent.edu/tusc" },
+  { campus: "Miami University-Hamilton", type: "generic", url: "https://miamioh.edu/regionals/" },
+  { campus: "Miami University-Middletown", type: "generic", url: "https://miamioh.edu/regionals/" },
+  { campus: "Ohio University-Chillicothe Campus", type: "generic", url: "https://www.ohio.edu/chillicothe/" },
+  { campus: "Ohio University-Eastern Campus", type: "generic", url: "https://www.ohio.edu/eastern/" },
+  { campus: "Ohio University-Lancaster Campus", type: "generic", url: "https://www.ohio.edu/lancaster/" },
+  { campus: "Ohio University-Southern Campus", type: "generic", url: "https://www.ohio.edu/southern/" },
+  { campus: "Ohio University-Zanesville Campus", type: "generic", url: "https://www.ohio.edu/zanesville/" },
+  { campus: "Remington College-Cleveland Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/cleveland/" },
 ];
 
 // NM (New Mexico)
@@ -2176,6 +2280,18 @@ const IL_CAMPUSES = [
     type: "interviewexchange",
     url: "https://wiu.interviewexchange.com/static/clients/467WIM1/index.jsp?c=1098",
   },
+  { campus: "City Colleges of Chicago-Harold Washington College", type: "generic", url: "https://www.ccc.edu/colleges/washington/Pages/default.aspx" },
+  { campus: "City Colleges of Chicago-Harry S Truman College", type: "generic", url: "https://www.ccc.edu/colleges/truman/Pages/default.aspx" },
+  { campus: "City Colleges of Chicago-Kennedy-King College", type: "generic", url: "https://www.ccc.edu/colleges/kennedy/pages/default.aspx" },
+  { campus: "City Colleges of Chicago-Malcolm X College", type: "generic", url: "https://www.ccc.edu/colleges/malcolm-x/pages/default.aspx" },
+  { campus: "City Colleges of Chicago-Olive-Harvey College", type: "generic", url: "https://www.ccc.edu/colleges/olive-harvey/Pages/default.aspx" },
+  { campus: "City Colleges of Chicago-Richard J Daley College", type: "generic", url: "https://www.ccc.edu/colleges/daley/pages/default.aspx" },
+  { campus: "City Colleges of Chicago-Wilbur Wright College", type: "generic", url: "https://www.ccc.edu/colleges/wright/pages/default.aspx" },
+  { campus: "Frontier Community College", type: "generic", url: "https://www.iecc.edu/fcc" },
+  { campus: "Lincoln Trail College", type: "generic", url: "https://www.iecc.edu/ltc" },
+  { campus: "The Chicago School at Chicago", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/locations/" },
+  { campus: "Wabash Valley College", type: "generic", url: "https://www.iecc.edu/wvc" },
+  { campus: "William Rainey Harper College", type: "generic", url: "https://www.harpercollege.edu/index.php" },
 ];
 
 // ID (Idaho)
@@ -2264,6 +2380,8 @@ const IN_CAMPUSES = [
     type: "adp-career-center",
     url: "https://hr.earlham.edu/careers",
   },
+  { campus: "Marian University-Ancilla", type: "generic", url: "https://www.marian.edu/ancilla-college" },
+  { campus: "Trine University-Regional/Non-Traditional Campuses", type: "generic", url: "https://trine.edu/online/index.aspx" },
 ];
 
 // WV (West Virginia)
@@ -2372,6 +2490,23 @@ const TX_CAMPUSES = [
     type: "generic",
     url: "https://www.southwestern.edu/human-resources/career-opportunities/",
   },
+  { campus: "Abilene Christian University-Undergraduate Online", type: "generic", url: "https://www.acu.edu/academics/online/undergraduate" },
+  { campus: "Alamo Community College District Central Office", type: "generic", url: "https://alamo.edu/district/" },
+  { campus: "Dallas College", type: "generic", url: "https://www.dallascollege.edu/pages/default.aspx" },
+  { campus: "Laredo College", type: "generic", url: "https://www.laredo.edu/index.html" },
+  { campus: "Northeast Lakeview College", type: "generic", url: "https://www.alamo.edu/nlc" },
+  { campus: "Northwest Vista College", type: "generic", url: "https://alamo.edu/nvc/" },
+  { campus: "Palo Alto College", type: "generic", url: "https://alamo.edu/pac/" },
+  { campus: "Remington College-Dallas Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/dallas/" },
+  { campus: "Remington College-Fort Worth Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/fort-worth/" },
+  { campus: "Remington College-Houston Southeast Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/houston/webster/" },
+  { campus: "Remington College-North Houston Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/houston/greenspoint/" },
+  { campus: "Remington College-Online Dallas", type: "generic", url: "https://www.remingtoncollege.edu/locations/online/" },
+  { campus: "San Antonio College", type: "generic", url: "https://www.alamo.edu/sac" },
+  { campus: "Southwest College for the Deaf", type: "generic", url: "https://howardcollege.edu/swcd/" },
+  { campus: "St Philip's College", type: "generic", url: "https://www.alamo.edu/spc/" },
+  { campus: "The Chicago School at Dallas", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/locations/" },
+  { campus: "The Chicago School-College of Nursing", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/locations/" },
 ];
 
 // FL (Florida)
@@ -2446,6 +2581,9 @@ const FL_CAMPUSES = [
     type: "flsouthern-portal",
     url: "https://portal.flsouthern.edu/ICS/Employment_App/",
   },
+  { campus: "Jacksonville University", type: "generic", url: "https://www.ju.edu/index.php" },
+  { campus: "Polytechnic University of Puerto Rico-Miami", type: "generic", url: "https://www.pupr.edu/miami/" },
+  { campus: "Polytechnic University of Puerto Rico-Orlando", type: "generic", url: "https://www.pupr.edu/orlando" },
 ];
 
 // GA (Georgia)
@@ -2464,6 +2602,7 @@ const AL_CAMPUSES = [
   { campus: "University of Alabama at Birmingham", type: "peopleadmin", url: "https://uab.peopleadmin.com/postings/search" },
   { campus: "University of South Alabama", type: "generic", url: "https://www.southalabama.edu/departments/academicaffairs/facultyposition.html" },
   { campus: "Spring Hill College", type: "generic", url: "https://www.shc.edu/about-spring-hill-jesuit-college/spring-hill-college-jobs/" },
+  { campus: "Remington College-Mobile Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/mobile/" },
 ];
 
 // MS (Mississippi)
@@ -2479,12 +2618,20 @@ const LA_CAMPUSES = [
   { campus: "Louisiana State University", type: "workday", url: "https://lsu.wd1.myworkdayjobs.com/LSU?Job_Profiles=7a9995fc77aa101fe03ed2adb83abd3b&Job_Profiles=7a9995fc77aa101fe03fb0edd613be1b&Job_Profiles=7a9995fc77aa101fe03ea5230b41bd10&Job_Profiles=7a9995fc77aa101fe03c558ab5c0bac4&Job_Profiles=7a9995fc77aa101fe03fb8c46670be23&Job_Profiles=7a9995fc77aa101fe03fa8fe7ecdbe13&Job_Profiles=48b1ff5a2bae01637b1270c77c372403" },
   { campus: "Louisiana Tech University", type: "generic", url: "https://www.latech.edu/business/about/employment-opportunities.php" },
   { campus: "Dillard University", type: "generic", url: "https://www.dillard.edu/human-resources/" },
+  { campus: "Baton Rouge General Medical Center School of Nursing & School of Radiologic Technology", type: "generic", url: "https://www.brgeneral.org/medical-education/school-of-nursing/%20OR%20school%20of%20radiologic%20technology" },
+  { campus: "Remington College-Baton Rouge Campus", type: "generic", url: "https://www.remingtoncollege.edu/baton-rouge-career-college" },
+  { campus: "Remington College-Lafayette Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/lafayette/" },
+  { campus: "Remington College-Shreveport Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/shreveport/" },
+  { campus: "The Chicago School at Xavier University of Louisiana", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/locations/" },
 ];
 
 // AR (Arkansas)
 const AR_CAMPUSES = [
   { campus: "University of Arkansas", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site?timeType=8676082fcc890179341a6d2e71495800&jobFamilyGroup=eaddfab9343f0113688d32d525e70000" },
   { campus: "University of Central Arkansas", type: "peopleadmin", url: "https://jobs.uca.edu/postings/search" },
+  { campus: "Cossatot Community College of the University of Arkansas", type: "generic", url: "https://www.cccua.edu/index.html" },
+  { campus: "University of Arkansas at Little Rock", type: "generic", url: "https://ualr.edu/www/" },
+  { campus: "University of Arkansas Hope-Texarkana", type: "generic", url: "https://www.uaht.edu/index.php" },
 ];
 
 // KS (Kansas)
@@ -2505,6 +2652,8 @@ const MO_CAMPUSES = [
   { campus: "Missouri State University", type: "peopleadmin", url: "https://jobs.missouristate.edu/postings/search?query=&query_position_type_id%5B%5D=3" },
   { campus: "Washington University in St. Louis", type: "workday", url: "https://wustl.wd1.myworkdayjobs.com/External" },
   { campus: "Missouri University of Science and Technology", type: "generic", url: "https://jobs.mst.edu/postings/search?query_position_type_id%5B%5D=3" },
+  { campus: "Drury University-College of Continuing Professional Studies", type: "generic", url: "https://www.drury.edu/go/" },
+  { campus: "Urshan Graduate School of Theology", type: "generic", url: "https://urshan.edu/ugst" },
 ];
 
 // KY (Kentucky)
@@ -2512,11 +2661,15 @@ const KY_CAMPUSES = [
   { campus: "Northern Kentucky University", type: "peopleadmin", url: "https://jobs.nku.edu/postings/search" },
   { campus: "Murray State University", type: "peopleadmin", url: "https://www.murraystatejobs.com/postings/search" },
   { campus: "Morehead State University", type: "peopleadmin", url: "https://moreheadstate.peopleadmin.com/postings/search" },
+  { campus: "Gateway Community and Technical College", type: "generic", url: "https://gateway.kctcs.edu/index.aspx" },
+  { campus: "Hopkinsville Community College", type: "generic", url: "https://hopkinsville.kctcs.edu/index.aspx" },
 ];
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
   { campus: "Middle Tennessee State University", type: "pageup", url: "https://careers.mtsu.edu/en-us/listing/" },
+  { campus: "Remington College-Memphis Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/memphis/" },
+  { campus: "Remington College-Nashville Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/nashville/" },
 ];
 
 // AK (Alaska)
@@ -2538,6 +2691,17 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+
+const vueDistDir = path.join(__dirname, "web-vue", "dist");
+if (fs.existsSync(vueDistDir)) {
+  app.use("/vue", express.static(vueDistDir));
+  app.get("/vue", (_req, res) => res.sendFile(path.join(vueDistDir, "index.html")));
+  app.get("/vue/*", (_req, res) => res.sendFile(path.join(vueDistDir, "index.html")));
+} else {
+  app.get("/vue", (_req, res) => {
+    res.status(503).send("Vue preview is not built yet. Run: cd web-vue && npm run build");
+  });
+}
 
 const CACHE_TTL_MS = 10 * 60 * 1000;
 let cache = { at: 0, data: null };
@@ -2737,6 +2901,23 @@ export async function scrapeAllJobsStandalone() {
     }
     if (preFilterCount !== facultyJobs.length) {
       console.log(`🔍 Global faculty filter: ${preFilterCount} → ${facultyJobs.length} (removed ${preFilterCount - facultyJobs.length} non-faculty jobs)`);
+    }
+
+    // Policy exclusion filter: remove campuses on the high-confidence restricted list.
+    const beforePolicyExclusion = facultyJobs.length;
+    facultyJobs = facultyJobs.filter((j) => !isPolicyExcludedCollege(j?.college));
+    if (beforePolicyExclusion !== facultyJobs.length) {
+      console.log(
+        `🧾 Policy exclusions: ${beforePolicyExclusion} → ${facultyJobs.length} (removed ${beforePolicyExclusion - facultyJobs.length} jobs)`
+      );
+    }
+
+    const beforeControlExclusion = facultyJobs.length;
+    facultyJobs = facultyJobs.filter((j) => !isPrivateForProfitCollege(j?.college));
+    if (beforeControlExclusion !== facultyJobs.length) {
+      console.log(
+        `🏷️  Control exclusions (private for-profit): ${beforeControlExclusion} → ${facultyJobs.length} (removed ${beforeControlExclusion - facultyJobs.length} jobs)`
+      );
     }
 
     // Sort by title
@@ -3025,6 +3206,12 @@ const COLLEGE_LOCATION_DEFAULTS = {
   "University of Mary": "Bismarck, ND",
   "University of Jamestown": "Jamestown, ND",
   "South Dakota Board of Regents": "Pierre, SD",
+  "South Dakota State University": "Brookings, SD",
+  "University of South Dakota": "Vermillion, SD",
+  "South Dakota School of Mines and Technology": "Rapid City, SD",
+  "Black Hills State University": "Spearfish, SD",
+  "Northern State University": "Aberdeen, SD",
+  "Dakota State University": "Madison, SD",
   "Augustana University": "Sioux Falls, SD",
   "University of Sioux Falls": "Sioux Falls, SD",
   "University of Nebraska-Lincoln": "Lincoln, NE",
@@ -4587,6 +4774,8 @@ async function scrapeMaPrivate(context) {
         if (type === "jibe-api") return await scrapeJibeApiAs(url, campus, "MA");
         if (type === "jobvite") return await scrapeJobviteAs(url, campus, "MA");
         if (type === "smith-interfolio") return await scrapeSmithInterfolioPage(url, campus, "MA");
+        if (type === "academicjobsonline") return await scrapeAcademicJobsOnlineAs(context, url, campus, "MA");
+        if (type === "peopleclick") return await scrapePeopleClickAs(context, url, campus, "MA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MA");
         return [];
       } catch (e) {
@@ -6243,6 +6432,36 @@ async function scrapeWorkdayAs(context, startUrl, campusName, sourceName) {
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
 
+function inferSdborCampusFromDetail(html, title = "") {
+  const text = clean(`${stripHtmlToText(html || "")} ${title || ""}`).toLowerCase();
+
+  if (
+    /south dakota state university|\bsdsu\b|brookings/.test(text)
+  ) return "South Dakota State University";
+
+  if (
+    /university of south dakota|\busd\b|vermillion|school of law|knudson/.test(text)
+  ) return "University of South Dakota";
+
+  if (
+    /south dakota school of mines|south dakota mines|\bsdsmt\b|rapid city/.test(text)
+  ) return "South Dakota School of Mines and Technology";
+
+  if (
+    /black hills state university|\bbhsu\b|spearfish/.test(text)
+  ) return "Black Hills State University";
+
+  if (
+    /northern state university|\bnsu\b|aberdeen/.test(text)
+  ) return "Northern State University";
+
+  if (
+    /dakota state university|\bdsu\b|madison,\s*south dakota|madison,\s*sd/.test(text)
+  ) return "Dakota State University";
+
+  return null;
+}
+
 async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
@@ -6305,16 +6524,34 @@ async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
       currentUrl = nextUrl;
     }
 
+    let sdborByUrl = new Map();
+    if (campusName === "South Dakota Board of Regents" && jobs.length > 0) {
+      const inferred = await mapWithConcurrency(jobs, 4, async (j) => {
+        try {
+          const res = await context.request.get(j.url, { timeout: 45_000 });
+          if (!res.ok()) return { url: j.url, college: null };
+          const html = await res.text();
+          return { url: j.url, college: inferSdborCampusFromDetail(html, j.title) };
+        } catch {
+          return { url: j.url, college: null };
+        }
+      });
+      for (const row of inferred) {
+        if (row?.url && row.college) sdborByUrl.set(row.url, row.college);
+      }
+    }
+
     const out = jobs
       .map((j) => {
         const title = normalizeJobTitle(j.title);
         const inferred = inferAcademicFieldsFromTitle(title);
+        const inferredCollege = sdborByUrl.get(j.url) || null;
         return {
           title,
           url: j.url,
           source: sourceName,
           category: "Faculty",
-          college: campusName,
+          college: inferredCollege || campusName,
           location: null,
           description: null,
           department: inferred.department,
@@ -7979,6 +8216,189 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
     });
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// AcademicJobsOnline (AJO) scraper: uses aria-labelledby/adjacent span text
+// because listing link text is often an internal code (e.g., "APO").
+async function scrapeAcademicJobsOnlineAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+
+    const jobs = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try {
+          return new URL(href, location.href).toString();
+        } catch {
+          return null;
+        }
+      };
+
+      const out = [];
+      const seen = new Set();
+
+      for (const a of Array.from(document.querySelectorAll("a[href*='/ajo/jobs/']"))) {
+        const href = a.getAttribute("href") || "";
+        if (/\/apply(?:$|[/?#])/i.test(href)) continue;
+        const url = abs(href);
+        if (!url || seen.has(url)) continue;
+
+        let title = "";
+        const labels = String(a.getAttribute("aria-labelledby") || "")
+          .split(/\s+/)
+          .filter(Boolean)
+          .filter((id) => id !== a.id);
+        for (const id of labels) {
+          const el = document.getElementById(id);
+          const text = clean(el?.textContent || "");
+          if (text && text.length >= 4) {
+            title = text;
+            break;
+          }
+        }
+
+        if (!title) {
+          const m = href.match(/\/ajo\/jobs\/(\d+)/i);
+          if (m) {
+            const alt = clean(document.getElementById(`j${m[1]}`)?.textContent || "");
+            if (alt && alt.length >= 4) title = alt;
+          }
+        }
+
+        if (!title) title = clean(a.textContent);
+        if (!title || title.length < 4) continue;
+
+        seen.add(url);
+        out.push({ title, url });
+      }
+      return out;
+    });
+
+    const filtered = jobs
+      .map((j) => ({ ...j, title: normalizeJobTitle(j.title) }))
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (AcademicJobsOnline)`);
+
+    return filtered.map((j) => {
+      const inferred = inferAcademicFieldsFromTitle(j.title);
+      return {
+        title: j.title,
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} AcademicJobsOnline scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+async function scrapePeopleClickAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 90_000 });
+    await page.waitForTimeout(3000);
+
+    let jobs = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try {
+          return new URL(href, location.href).toString();
+        } catch {
+          return null;
+        }
+      };
+
+      const out = [];
+      const seen = new Set();
+      const anchors = Array.from(document.querySelectorAll("a[href]"));
+      for (const a of anchors) {
+        const href = a.getAttribute("href") || "";
+        const url = abs(href);
+        if (!url) continue;
+        if (!/(jobPostId=|jobdetail|jobdetails|viewfromlink|jobid=|\/job\/)/i.test(url)) continue;
+        if (/savedjobs|jobcart|login|logout|privacy|terms|help/i.test(url)) continue;
+
+        let title = clean(a.textContent) || clean(a.getAttribute("title")) || clean(a.getAttribute("aria-label"));
+        if (!title || title.length < 4) {
+          const container = a.closest("li, tr, article, .row, .result, [class*='job'], [class*='posting']");
+          if (container) {
+            const h = container.querySelector("h1,h2,h3,h4,strong,b,[class*='title'],[class*='jobTitle']");
+            title = clean(h?.textContent || "");
+          }
+        }
+        if (!title || title.length < 4) continue;
+        if (/^(apply|details?|view|learn more|more)$/i.test(title)) continue;
+
+        if (seen.has(url)) continue;
+        seen.add(url);
+        out.push({ title, url });
+      }
+      return out;
+    });
+
+    if (!Array.isArray(jobs) || jobs.length === 0) {
+      const html = await page.content();
+      const cleanText = (s) => clean(String(s || "").replace(/<[^>]+>/g, " "));
+      const re = /<a[^>]+href=["']([^"']*(?:jobPostId=|jobdetail|jobdetails|viewFromLink|jobId=)[^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi;
+      const seen = new Set();
+      const fallback = [];
+      let m;
+      while ((m = re.exec(html)) !== null) {
+        let url = null;
+        try {
+          url = new URL(m[1], startUrl).toString();
+        } catch {
+          continue;
+        }
+        if (/savedjobs|jobcart|login|logout|privacy|terms|help/i.test(url)) continue;
+        if (seen.has(url)) continue;
+        const title = cleanText(m[2]);
+        if (!title || title.length < 4) continue;
+        seen.add(url);
+        fallback.push({ title, url });
+      }
+      jobs = fallback;
+    }
+
+    const filtered = (jobs || [])
+      .map((j) => ({ ...j, title: normalizeJobTitle(j.title) }))
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (PeopleClick)`);
+    return filtered.map((j) => {
+      const inferred = inferAcademicFieldsFromTitle(j.title);
+      return {
+        title: j.title,
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} PeopleClick scrape failed:`, e?.message || e);
     return [];
   } finally {
     await page.close().catch(() => {});

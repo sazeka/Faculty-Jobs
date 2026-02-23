@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Data Policy Exclusions | Faculty Atlas</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/logos/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    <style>
+      :root {
+        --bg: #f8f4ec;
+        --card: #fffdf9;
+        --ink: #263233;
+        --muted: #5a6769;
+        --line: #ddd4c7;
+        --accent: #2d4f86;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Manrope", Arial, sans-serif;
+        color: var(--ink);
+        background: linear-gradient(180deg, #fbf8f2 0%, var(--bg) 100%);
+      }
+
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 28px 18px 44px;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+      }
+
+      .lead {
+        margin: 0 0 18px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .back {
+        display: inline-block;
+        margin-bottom: 14px;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 14px;
+      }
+
+      .card h2 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .title-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: baseline;
+      }
+
+      .title-row h2 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .reason {
+        margin: 8px 0 10px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .stats {
+        font-size: 0.92rem;
+        color: #354244;
+        background: #f2ece2;
+        border-radius: 10px;
+        padding: 8px 10px;
+        display: inline-block;
+      }
+
+      ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        columns: 2;
+      }
+
+      li { margin: 0 0 4px; }
+
+      li a {
+        color: #1f5fbf;
+        text-decoration: underline;
+        text-decoration-color: rgba(31, 95, 191, 0.5);
+        text-underline-offset: 2px;
+      }
+
+      li a:hover {
+        color: #174a95;
+        text-decoration-color: rgba(23, 74, 149, 0.7);
+      }
+
+      .sources {
+        margin-top: 14px;
+        font-size: 0.94rem;
+      }
+
+      .sources a { color: var(--accent); }
+      .reason a { color: #1f5fbf; }
+
+      @media (max-width: 720px) {
+        ul { columns: 1; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <a class="back" href="./index.html">← Back to jobs</a>
+      <h1>Data Policy Exclusions</h1>
+      <p class="lead">
+        This page lists universities excluded from scraping under the current policy-safe standard.
+        The list combines all high-confidence vendor-policy exclusions into one set.
+        Last reviewed: February 22, 2026.
+      </p>
+
+      <div id="platformCards"></div>
+
+      <div class="sources">
+        Sources:
+        <a href="https://www.workday.com/en-us/legal/end-user-agreement.html" target="_blank" rel="noreferrer">Workday End User Agreement</a>
+        ·
+        <a href="https://www.oracle.com/legal/terms.html" target="_blank" rel="noreferrer">Oracle Website Terms</a>
+        ·
+        <a href="https://www.oracle.com/human-capital-management/taleo/" target="_blank" rel="noreferrer">Oracle Taleo</a>
+      </div>
+    </div>
+
+    <script>
+      async function getJobCountsByCollege() {
+        try {
+          const r = await fetch(`./jobs.json?ts=${Date.now()}`, { cache: "no-store" });
+          if (!r.ok) return { total: 0, counts: new Map() };
+          const data = await r.json();
+          const jobs = Array.isArray(data.jobs) ? data.jobs : [];
+          const counts = new Map();
+          for (const job of jobs) {
+            const college = job && job.college ? String(job.college) : "";
+            if (!college) continue;
+            counts.set(college, (counts.get(college) || 0) + 1);
+          }
+          return { total: jobs.length, counts };
+        } catch {
+          return { total: 0, counts: new Map() };
+        }
+      }
+
+      function dedupeSources(items) {
+        const all = [];
+        for (const item of items) {
+          for (const src of item.sources || []) {
+            if (src && !all.includes(src)) all.push(src);
+          }
+        }
+        return all;
+      }
+
+      function renderCards(totalJobs, counts, exclusionsPayload) {
+        const host = document.getElementById("platformCards");
+        host.innerHTML = "";
+        const hasItems = Array.isArray(exclusionsPayload?.items) && exclusionsPayload.items.length > 0;
+        const hasColleges = Array.isArray(exclusionsPayload?.colleges) && exclusionsPayload.colleges.length > 0;
+        const items = hasItems
+          ? exclusionsPayload.items
+              .map((x) => ({
+                college: x?.college || null,
+                career_url: x?.career_url || null,
+                sources: Array.isArray(x?.sources) ? x.sources : [],
+              }))
+              .filter((x) => x.college)
+          : hasColleges
+          ? exclusionsPayload.colleges.map((c) => ({ college: c, career_url: null, sources: [] }))
+          : [];
+
+        const combined = items
+          .map((x) => String(x.college || ""))
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b));
+        const totalExcludedUniversities = combined.length;
+        const collegesInData = combined.filter((c) => (counts.get(c) || 0) > 0);
+        const excludedJobs = collegesInData.reduce((sum, c) => sum + (counts.get(c) || 0), 0);
+        const pct = totalJobs > 0 ? ((excludedJobs / totalJobs) * 100).toFixed(2) : "0.00";
+
+        const card = document.createElement("section");
+        card.className = "card";
+
+        const titleRow = document.createElement("div");
+        titleRow.className = "title-row";
+        titleRow.innerHTML = `<h2>Excluded Universities (Combined)</h2><div class="stats">${totalExcludedUniversities} policy-excluded universities total · ${collegesInData.length} appear in current jobs snapshot · ${excludedJobs.toLocaleString()} jobs (${pct}% of total)</div>`;
+
+        const reason = document.createElement("p");
+        reason.className = "reason";
+        const sources = dedupeSources(items);
+        if (sources.length > 0) {
+          reason.innerHTML =
+            `These universities are excluded because their recruiting platforms publish terms that disallow automated extraction. ` +
+            `Policy sources: ` +
+            sources.map((src) => `<a href=\"${src}\" target=\"_blank\" rel=\"noreferrer\">${src}</a>`).join(\" · \");
+        } else {
+          reason.textContent =
+            "These universities are excluded because their recruiting platforms publish terms that disallow automated extraction.";
+        }
+
+        const list = document.createElement("ul");
+        for (const item of items.sort((a, b) => String(a.college || "").localeCompare(String(b.college || "")))) {
+          const college = item.college;
+          const li = document.createElement("li");
+          const n = counts.get(college) || 0;
+          const label = n > 0 ? `${college} (${n})` : college;
+          const url = item.career_url;
+          if (url) {
+            const a = document.createElement("a");
+            a.href = url;
+            a.target = "_blank";
+            a.rel = "noreferrer";
+            a.textContent = label;
+            li.appendChild(a);
+          } else {
+            li.textContent = label;
+          }
+          list.appendChild(li);
+        }
+
+        card.appendChild(titleRow);
+        card.appendChild(reason);
+        card.appendChild(list);
+        host.appendChild(card);
+      }
+
+      (async function init() {
+        try {
+          const [{ total, counts }, exclusionsResp] = await Promise.all([
+            getJobCountsByCollege(),
+            fetch(`./policy-excluded-colleges.json?ts=${Date.now()}`, { cache: "no-store" }),
+          ]);
+
+          if (!exclusionsResp.ok) {
+            throw new Error(`Failed to load exclusions (${exclusionsResp.status})`);
+          }
+          const exclusionsPayload = await exclusionsResp.json();
+          renderCards(total, counts, exclusionsPayload);
+        } catch (err) {
+          const host = document.getElementById("platformCards");
+          host.innerHTML = `<section class=\"card\"><p class=\"reason\">Unable to load generated exclusions data: ${String(
+            err?.message || err
+          )}</p></section>`;
+        }
+      })();
+    </script>
+  </body>
+</html>

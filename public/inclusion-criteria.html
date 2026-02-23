@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inclusion Criteria | Faculty Atlas</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/logos/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    <style>
+      :root {
+        --bg: #f8f4ec;
+        --card: #fffdf9;
+        --ink: #263233;
+        --muted: #5a6769;
+        --line: #ddd4c7;
+        --accent: #1f5fbf;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Manrope", Arial, sans-serif;
+        color: var(--ink);
+        background: linear-gradient(180deg, #fbf8f2 0%, var(--bg) 100%);
+      }
+
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 28px 18px 44px;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+      }
+
+      .lead {
+        margin: 0 0 16px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .back {
+        display: inline-block;
+        margin-bottom: 14px;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 14px;
+      }
+
+      h2 {
+        margin: 0 0 8px;
+        font-size: 1.1rem;
+      }
+
+      ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+
+      li { margin: 0 0 6px; }
+
+      p { margin: 0; line-height: 1.45; }
+
+      .meta {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <a class="back" href="./index.html">← Back to jobs</a>
+      <h1>Inclusion Criteria</h1>
+      <p class="lead">
+        Faculty Atlas targets U.S. postsecondary institutions using a policy-safe, transparent inclusion standard.
+        Last reviewed: February 22, 2026.
+      </p>
+
+      <section class="card">
+        <h2>Core Eligibility (Required)</h2>
+        <ul>
+          <li>Institution is in the United States.</li>
+          <li>Institution is postsecondary and classified as <strong>2-year</strong> or <strong>4-year</strong>.</li>
+          <li>Institution is degree-granting (associate level or higher).</li>
+          <li>Institution publishes faculty hiring information through a reachable public-facing jobs or faculty search page.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Institution Categories Tracked</h2>
+        <ul>
+          <li>Control: public and private nonprofit institutions are included.</li>
+          <li>Private for-profit institutions are excluded from coverage.</li>
+          <li>Mission/type overlays where available: doctoral, master's, baccalaureate, associate-focused.</li>
+          <li>Special-focus and mission-designated schools where applicable (for example, HBCU, HSI, tribal, religiously affiliated).</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Operational Criteria</h2>
+        <ul>
+          <li>Faculty-relevant postings only (tenure-track, tenured, lecturer/instructor, postdoc, fellow, and related academic roles).</li>
+          <li>Non-faculty roles are excluded by title and content filters.</li>
+          <li>Private for-profit institutions are excluded by scope policy before scraping output is published.</li>
+          <li>Institutions are excluded when platform terms indicate automated extraction is disallowed.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Reference Universe</h2>
+        <p>
+          Target universe is based on federal postsecondary framing (IPEDS/NCES): U.S. 2-year and 4-year institutions,
+          with a practical emphasis on degree-granting schools and policy-compliant data access.
+        </p>
+        <p class="meta" style="margin-top:10px;">
+          See also: <a href="./policy-exclusions.html">Data policy exclusions</a>
+        </p>
+      </section>
+    </div>
+  </body>
+</html>

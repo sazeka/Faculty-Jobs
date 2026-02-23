@@ -116,6 +116,51 @@ const manualOverrides = {
     lon: -93.0900,
     displayName: "Minnesota State Colleges and Universities System Office, Saint Paul, Minnesota, United States"
   },
+  "Minnesota State (2 Locations)": {
+    lat: 44.9537,
+    lon: -93.0900,
+    displayName: "Minnesota State Colleges and Universities System Office, Saint Paul, Minnesota, United States"
+  },
+  "Minnesota State (Brooklyn Park)": {
+    lat: 45.0941,
+    lon: -93.3563,
+    displayName: "Brooklyn Park, Hennepin County, Minnesota, United States"
+  },
+  "Minnesota State (Rosemount)": {
+    lat: 44.7394,
+    lon: -93.1258,
+    displayName: "Rosemount, Dakota County, Minnesota, United States"
+  },
+  "South Dakota Board of Regents": {
+    lat: 44.3683,
+    lon: -100.3510,
+    displayName: "Pierre, Hughes County, South Dakota, United States"
+  },
+  "UNC Pembroke": {
+    lat: 34.6874,
+    lon: -79.2023,
+    displayName: "University of North Carolina at Pembroke, Pembroke, North Carolina, United States"
+  },
+  "California State University, East Bay": {
+    lat: 37.6571,
+    lon: -122.0569,
+    displayName: "California State University, East Bay, Hayward, California, United States"
+  },
+  "California State University, Stanislaus One University Circle Turlock": {
+    lat: 37.5255828,
+    lon: -120.8557784,
+    displayName: "California State University, Stanislaus, 1 University Circle, Turlock, California, United States"
+  },
+  "California State University, Stanislaus invites applications for a full-time": {
+    lat: 37.5255828,
+    lon: -120.8557784,
+    displayName: "California State University, Stanislaus, 1 University Circle, Turlock, California, United States"
+  },
+  "California State University, Stanislaus invites applications for a tenure-track Assistant Professor specializing in Writing Studies. We seek a committed teacher-scholar who is excited to contribute to a department that values innovation": {
+    lat: 37.5255828,
+    lon: -120.8557784,
+    displayName: "California State University, Stanislaus, 1 University Circle, Turlock, California, United States"
+  },
   "SUNY Finger Lakes Community College": {
     lat: 42.9284,
     lon: -77.2946,
@@ -200,6 +245,101 @@ const manualOverrides = {
     lat: 36.0094,
     lon: -114.9553,
     displayName: "Nevada State University, Henderson, Nevada, United States"
+  },
+  "Stanford University": {
+    lat: 37.4275,
+    lon: -122.1697,
+    displayName: "Stanford University, Stanford, California, United States"
+  },
+  "University of Hawaii at Manoa": {
+    lat: 21.2969,
+    lon: -157.8170,
+    displayName: "University of Hawaii at Manoa, Honolulu, Hawaii, United States"
+  },
+  "University of Hawaii at Hilo": {
+    lat: 19.7011,
+    lon: -155.0818,
+    displayName: "University of Hawaii at Hilo, Hilo, Hawaii, United States"
+  },
+  "University of Hawaii-West Oahu": {
+    lat: 21.3556,
+    lon: -158.0580,
+    displayName: "University of Hawaii-West Oahu, Kapolei, Hawaii, United States"
+  },
+  "University of Hawaii Maui College": {
+    lat: 20.8927,
+    lon: -156.4744,
+    displayName: "University of Hawaii Maui College, Kahului, Hawaii, United States"
+  },
+  "University of Maine": {
+    lat: 44.8994,
+    lon: -68.6710,
+    displayName: "University of Maine, Orono, Maine, United States"
+  },
+  "University of New Hampshire": {
+    lat: 43.1387,
+    lon: -70.9370,
+    displayName: "University of New Hampshire, Durham, New Hampshire, United States"
+  },
+  "South Dakota State University": {
+    lat: 44.3114,
+    lon: -96.7984,
+    displayName: "South Dakota State University, Brookings, South Dakota, United States"
+  },
+  "University of South Dakota": {
+    lat: 42.7863,
+    lon: -96.9283,
+    displayName: "University of South Dakota, Vermillion, South Dakota, United States"
+  },
+  "South Dakota School of Mines and Technology": {
+    lat: 44.0739,
+    lon: -103.2066,
+    displayName: "South Dakota School of Mines and Technology, Rapid City, South Dakota, United States"
+  },
+  "Black Hills State University": {
+    lat: 44.4961,
+    lon: -103.8719,
+    displayName: "Black Hills State University, Spearfish, South Dakota, United States"
+  },
+  "Northern State University": {
+    lat: 45.4464,
+    lon: -98.4865,
+    displayName: "Northern State University, Aberdeen, South Dakota, United States"
+  },
+  "Dakota State University": {
+    lat: 44.0099,
+    lon: -97.1151,
+    displayName: "Dakota State University, Madison, South Dakota, United States"
+  },
+  "University at Albany (SUNY)": {
+    lat: 42.6869,
+    lon: -73.8238,
+    displayName: "University at Albany, SUNY, Albany, New York, United States"
+  },
+  "University at Buffalo (SUNY)": {
+    lat: 43.0018,
+    lon: -78.7890,
+    displayName: "University at Buffalo, SUNY, Buffalo, New York, United States"
+  },
+  "SUNY College of Environmental Science and Forestry": {
+    lat: 43.0387,
+    lon: -76.1331,
+    displayName: "SUNY College of Environmental Science and Forestry, Syracuse, New York, United States"
+  },
+  "SUNY Fashion Institute of Technology": {
+    lat: 40.7474,
+    lon: -73.9954,
+    displayName: "Fashion Institute of Technology (SUNY), New York, New York, United States"
+  },
+  "North Carolina A&T State University": {
+    lat: 36.0760,
+    lon: -79.7738,
+    displayName: "North Carolina A&T State University, Greensboro, North Carolina, United States"
+  },
+  "California State University, Monterey Bay": {
+    lat: 36.6533,
+    lon: -121.7978,
+    displayName: "California State University, Monterey Bay, Seaside, California, United States"
   }
 };
 

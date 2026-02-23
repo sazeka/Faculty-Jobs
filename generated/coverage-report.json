@@ -1,0 +1,503 @@
+{
+  "generatedAt": "2026-02-23T01:11:28.641Z",
+  "inputs": {
+    "institutions": "data/institutions-master.json",
+    "rules": "data/policy-rules.json",
+    "exclusions": "generated/policy-excluded-colleges.json"
+  },
+  "scope": {
+    "country": "US",
+    "levelsIncluded": [
+      "2-year",
+      "4-year"
+    ],
+    "excludeLevels": [
+      "less-than-2-year"
+    ],
+    "excludeControls": [
+      "private for-profit"
+    ],
+    "target": "degree-granting"
+  },
+  "totals": {
+    "eligible_universe": 3707,
+    "covered": 299,
+    "missing": 3300,
+    "excluded_policy": 108,
+    "pending_review": 0
+  },
+  "percentages": {
+    "covered": 8.07,
+    "missing": 89.02,
+    "excluded_policy": 2.91,
+    "pending_review": 0
+  },
+  "byState": {
+    "MO": {
+      "total": 79,
+      "covered": 1,
+      "missing": 78,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "MT": {
+      "total": 23,
+      "covered": 1,
+      "missing": 22,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "TX": {
+      "total": 181,
+      "covered": 2,
+      "missing": 175,
+      "excluded_policy": 4,
+      "pending_review": 0
+    },
+    "GA": {
+      "total": 91,
+      "covered": 4,
+      "missing": 87,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "FL": {
+      "total": 127,
+      "covered": 3,
+      "missing": 119,
+      "excluded_policy": 5,
+      "pending_review": 0
+    },
+    "NY": {
+      "total": 288,
+      "covered": 7,
+      "missing": 276,
+      "excluded_policy": 5,
+      "pending_review": 0
+    },
+    "CA": {
+      "total": 337,
+      "covered": 14,
+      "missing": 314,
+      "excluded_policy": 9,
+      "pending_review": 0
+    },
+    "LA": {
+      "total": 53,
+      "covered": 2,
+      "missing": 51,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "PA": {
+      "total": 185,
+      "covered": 6,
+      "missing": 171,
+      "excluded_policy": 8,
+      "pending_review": 0
+    },
+    "CO": {
+      "total": 43,
+      "covered": 0,
+      "missing": 42,
+      "excluded_policy": 1,
+      "pending_review": 0
+    },
+    "MN": {
+      "total": 74,
+      "covered": 0,
+      "missing": 72,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "IL": {
+      "total": 144,
+      "covered": 8,
+      "missing": 134,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "MI": {
+      "total": 86,
+      "covered": 8,
+      "missing": 78,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "VA": {
+      "total": 83,
+      "covered": 1,
+      "missing": 80,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "SC": {
+      "total": 56,
+      "covered": 4,
+      "missing": 50,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "OH": {
+      "total": 138,
+      "covered": 1,
+      "missing": 135,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "AL": {
+      "total": 59,
+      "covered": 3,
+      "missing": 54,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "NC": {
+      "total": 125,
+      "covered": 9,
+      "missing": 115,
+      "excluded_policy": 1,
+      "pending_review": 0
+    },
+    "AK": {
+      "total": 8,
+      "covered": 0,
+      "missing": 8,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "CT": {
+      "total": 29,
+      "covered": 5,
+      "missing": 21,
+      "excluded_policy": 3,
+      "pending_review": 0
+    },
+    "PR": {
+      "total": 69,
+      "covered": 0,
+      "missing": 68,
+      "excluded_policy": 1,
+      "pending_review": 0
+    },
+    "MS": {
+      "total": 34,
+      "covered": 3,
+      "missing": 30,
+      "excluded_policy": 1,
+      "pending_review": 0
+    },
+    "KY": {
+      "total": 51,
+      "covered": 3,
+      "missing": 48,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "MD": {
+      "total": 49,
+      "covered": 1,
+      "missing": 46,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "IA": {
+      "total": 50,
+      "covered": 2,
+      "missing": 46,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "KS": {
+      "total": 55,
+      "covered": 2,
+      "missing": 53,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "WI": {
+      "total": 64,
+      "covered": 1,
+      "missing": 63,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "TN": {
+      "total": 92,
+      "covered": 0,
+      "missing": 92,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "MA": {
+      "total": 107,
+      "covered": 5,
+      "missing": 96,
+      "excluded_policy": 6,
+      "pending_review": 0
+    },
+    "AS": {
+      "total": 1,
+      "covered": 0,
+      "missing": 1,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "DC": {
+      "total": 15,
+      "covered": 0,
+      "missing": 15,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "IN": {
+      "total": 59,
+      "covered": 3,
+      "missing": 51,
+      "excluded_policy": 5,
+      "pending_review": 0
+    },
+    "NH": {
+      "total": 26,
+      "covered": 1,
+      "missing": 24,
+      "excluded_policy": 1,
+      "pending_review": 0
+    },
+    "WA": {
+      "total": 68,
+      "covered": 4,
+      "missing": 62,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "WV": {
+      "total": 36,
+      "covered": 2,
+      "missing": 33,
+      "excluded_policy": 1,
+      "pending_review": 0
+    },
+    "AZ": {
+      "total": 43,
+      "covered": 2,
+      "missing": 38,
+      "excluded_policy": 3,
+      "pending_review": 0
+    },
+    "Unknown": {
+      "total": 197,
+      "covered": 151,
+      "missing": 27,
+      "excluded_policy": 19,
+      "pending_review": 0
+    },
+    "AR": {
+      "total": 54,
+      "covered": 1,
+      "missing": 52,
+      "excluded_policy": 1,
+      "pending_review": 0
+    },
+    "NJ": {
+      "total": 82,
+      "covered": 7,
+      "missing": 69,
+      "excluded_policy": 6,
+      "pending_review": 0
+    },
+    "SD": {
+      "total": 26,
+      "covered": 10,
+      "missing": 14,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "OK": {
+      "total": 54,
+      "covered": 0,
+      "missing": 54,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "ME": {
+      "total": 29,
+      "covered": 2,
+      "missing": 27,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "NE": {
+      "total": 32,
+      "covered": 1,
+      "missing": 31,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "VT": {
+      "total": 15,
+      "covered": 2,
+      "missing": 12,
+      "excluded_policy": 1,
+      "pending_review": 0
+    },
+    "ND": {
+      "total": 19,
+      "covered": 1,
+      "missing": 18,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "OR": {
+      "total": 48,
+      "covered": 5,
+      "missing": 41,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "ID": {
+      "total": 13,
+      "covered": 2,
+      "missing": 11,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "UT": {
+      "total": 13,
+      "covered": 1,
+      "missing": 12,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "HI": {
+      "total": 16,
+      "covered": 1,
+      "missing": 15,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "RI": {
+      "total": 15,
+      "covered": 4,
+      "missing": 11,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "WY": {
+      "total": 8,
+      "covered": 1,
+      "missing": 7,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "NM": {
+      "total": 30,
+      "covered": 0,
+      "missing": 30,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "FM": {
+      "total": 1,
+      "covered": 0,
+      "missing": 1,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "NV": {
+      "total": 12,
+      "covered": 0,
+      "missing": 10,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "MH": {
+      "total": 1,
+      "covered": 0,
+      "missing": 1,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "DE": {
+      "total": 8,
+      "covered": 2,
+      "missing": 3,
+      "excluded_policy": 3,
+      "pending_review": 0
+    },
+    "GU": {
+      "total": 3,
+      "covered": 0,
+      "missing": 3,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "MP": {
+      "total": 1,
+      "covered": 0,
+      "missing": 1,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "PW": {
+      "total": 1,
+      "covered": 0,
+      "missing": 1,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
+    "VI": {
+      "total": 1,
+      "covered": 0,
+      "missing": 1,
+      "excluded_policy": 0,
+      "pending_review": 0
+    }
+  },
+  "byControl": {
+    "private nonprofit": {
+      "total": 1740,
+      "covered": 61,
+      "missing": 1630,
+      "excluded_policy": 49,
+      "pending_review": 0
+    },
+    "public": {
+      "total": 1748,
+      "covered": 87,
+      "missing": 1642,
+      "excluded_policy": 19,
+      "pending_review": 0
+    },
+    "Unknown": {
+      "total": 219,
+      "covered": 151,
+      "missing": 28,
+      "excluded_policy": 40,
+      "pending_review": 0
+    }
+  },
+  "byLevel": {
+    "4-year": {
+      "total": 2508,
+      "covered": 148,
+      "missing": 2294,
+      "excluded_policy": 66,
+      "pending_review": 0
+    },
+    "2-year": {
+      "total": 980,
+      "covered": 0,
+      "missing": 978,
+      "excluded_policy": 2,
+      "pending_review": 0
+    },
+    "Unknown": {
+      "total": 219,
+      "covered": 151,
+      "missing": 28,
+      "excluded_policy": 40,
+      "pending_review": 0
+    }
+  }
+}

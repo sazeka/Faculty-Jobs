@@ -1,0 +1,351 @@
+{
+  "version": 1,
+  "lastReviewed": "2026-02-22",
+  "scope": {
+    "country": "US",
+    "levelsIncluded": [
+      "2-year",
+      "4-year"
+    ],
+    "excludeLevels": [
+      "less-than-2-year"
+    ],
+    "excludeControls": [
+      "private for-profit"
+    ],
+    "target": "degree-granting"
+  },
+  "platformRules": [
+    {
+      "platformType": "workday",
+      "action": "exclude",
+      "reason": "Vendor terms prohibit automated scripts/scraping.",
+      "sources": [
+        "https://www.workday.com/en-us/legal/end-user-agreement.html"
+      ]
+    },
+    {
+      "platformType": "workday-search",
+      "action": "exclude",
+      "reason": "Vendor terms prohibit automated scripts/scraping.",
+      "sources": [
+        "https://www.workday.com/en-us/legal/end-user-agreement.html"
+      ]
+    },
+    {
+      "platformType": "taleo",
+      "action": "exclude",
+      "reason": "Oracle terms prohibit robots/spiders/scrapers for site access.",
+      "sources": [
+        "https://www.oracle.com/legal/terms.html",
+        "https://www.oracle.com/human-capital-management/taleo/"
+      ]
+    }
+  ],
+  "institutionOverrides": {
+    "American University of Puerto Rico": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Arizona State University - ASU California Center - Broadway": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Arizona State University - ASU California Center - Grand": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Avera Sacred Heart Hospital": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Bluefield University - Edward Via College - Auburn": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Cabrini University": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Clarks Summit University": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Delaware College of Art and Design": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Goddard College": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Illinois Eastern Community Colleges - Olney Central College": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Indiana University - Purdue University Indianapolis - Columbus Ctr": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Indiana University - Purdue University Indianapolis - IU Fort Wayne": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Jersey College - Dothan": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Jersey College - Mesa": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Johnson University Florida": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Lincoln Christian University": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Magdalen College": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Multnomah University": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Northland Community and Technical College - Aerospace": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Notre Dame College": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Pardee RAND Graduate School - Virginia": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Pittsburgh Technical College": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Pro Beauty Academy (The) - Kenilworth": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Purdue University - Indianapolis": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Pure Aesthetics Natural Skincare School - Arizona Holistic Institute": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Rensselaer at Hartford": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Trinity International University-Florida": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Unitek College - Bakersfield": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Unitek College - Concord": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Unitek College - Reno": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Unitek College - Sacramento": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "University of Saint Katherine": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "University of the Arts": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Urban Barber College - Modesto": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Washington State University - Global Campus": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Wells College": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Wesley College": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Western Maricopa Education Center - Northwest Campus": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    }
+  }
+}
