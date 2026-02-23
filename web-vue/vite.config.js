@@ -37,5 +37,6 @@ function sharedJobsJsonPlugin() {
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/Faculty-Jobs/',
   plugins: [vue(), sharedJobsJsonPlugin()],
 })

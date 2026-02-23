@@ -5,6 +5,7 @@ const MAP_DEFAULT_CENTER = [39.5, -98.35]
 const MAP_DEFAULT_ZOOM = 4.6
 const MAX_MAP_ZOOM = 15
 const MAP_ZOOM_STEP = 1
+const BASE_URL = import.meta.env.BASE_URL || '/'
 
 const stateCoords = {
   Alabama: [32.806671, -86.79113],
@@ -273,7 +274,7 @@ export function useLeafletMap({ jobsRef, selectedCollegeRef, hoveredCollegeRef, 
 
   async function loadCollegeCoords() {
     try {
-      const response = await fetch('/college-coords.json', { cache: 'no-store' })
+      const response = await fetch(`${BASE_URL}college-coords.json`, { cache: 'no-store' })
       if (!response.ok) return
       const data = await response.json()
       const entries = data?.colleges && typeof data.colleges === 'object' ? data.colleges : {}

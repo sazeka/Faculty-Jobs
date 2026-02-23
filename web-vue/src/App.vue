@@ -12,6 +12,10 @@ import { useJobsData } from './composables/useJobsData'
 import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 
 const DENSITY_STORAGE_KEY = 'facultyJobs.cardDensity.v1'
+const baseUrl = import.meta.env.BASE_URL || '/'
+const logoSrc = `${baseUrl}assets/logos/favicon.svg`
+const policyExclusionsHref = `${baseUrl}policy-exclusions.html`
+const inclusionCriteriaHref = `${baseUrl}inclusion-criteria.html`
 const { jobs, status, scrapedAt, loadError, loadJobs } = useJobsData()
 const hoveredCollege = ref(null)
 const density = ref('comfortable')
@@ -65,7 +69,7 @@ onMounted(() => {
       <div class="brand-block">
         <div class="logo">
           <span class="logo-icon">
-            <img src="/assets/logos/favicon.svg" alt="Faculty Atlas icon" />
+            <img :src="logoSrc" alt="Faculty Atlas icon" />
           </span>
           <div class="logo-wordmark" aria-label="Faculty Atlas">
             <span class="logo-faculty">Faculty</span>
@@ -75,9 +79,9 @@ onMounted(() => {
         </div>
         <p class="tagline">A focused search experience designed for professional academic hiring workflows.</p>
         <p class="meta-links">
-          <a href="/policy-exclusions.html">Data policy exclusions</a>
+          <a :href="policyExclusionsHref">Data policy exclusions</a>
           <span aria-hidden="true"> · </span>
-          <a href="/inclusion-criteria.html">Inclusion criteria</a>
+          <a :href="inclusionCriteriaHref">Inclusion criteria</a>
         </p>
       </div>
       <div class="hero-metrics">

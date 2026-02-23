@@ -5,12 +5,13 @@ export function useJobsData() {
   const status = ref('Loading jobs...')
   const scrapedAt = ref(null)
   const loadError = ref('')
+  const baseUrl = import.meta.env.BASE_URL || '/'
 
   async function loadJobs() {
     loadError.value = ''
     status.value = 'Loading jobs...'
     try {
-      const response = await fetch('/jobs.json', { cache: 'no-store' })
+      const response = await fetch(`${baseUrl}jobs.json`, { cache: 'no-store' })
       if (!response.ok) throw new Error(`jobs.json returned ${response.status}`)
       const payload = await response.json()
       jobs.value = Array.isArray(payload?.jobs) ? payload.jobs : []
