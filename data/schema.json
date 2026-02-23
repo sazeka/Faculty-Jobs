@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/faculty-jobs/schema.json",
+  "title": "Faculty Jobs Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scrapedAt",
+    "count",
+    "jobs"
+  ],
+  "properties": {
+    "scrapedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/job"
+      }
+    }
+  },
+  "$defs": {
+    "nullableString": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "url",
+        "source",
+        "category",
+        "college",
+        "location",
+        "description",
+        "department",
+        "specialization",
+        "systemGroup"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "college": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "location": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "description": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "department": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "specialization": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "systemGroup": {
+          "$ref": "#/$defs/nullableString"
+        }
+      }
+    }
+  }
+}

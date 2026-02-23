@@ -276,7 +276,14 @@ export function useLeafletMap({ jobsRef, selectedCollegeRef, hoveredCollegeRef, 
     try {
       const response = await fetch(`${BASE_URL}college-coords.json`, { cache: 'no-store' })
       if (!response.ok) return
-      const data = await response.json()
+      const text = await response.text()
+      let data = null
+      try {
+        data = JSON.parse(text)
+      } catch {
+        // Dev fallback can serve index.html for missing files; treat as unavailable.
+        return
+      }
       const entries = data?.colleges && typeof data.colleges === 'object' ? data.colleges : {}
       for (const [college, info] of Object.entries(entries)) {
         const lat = Number(info?.lat)

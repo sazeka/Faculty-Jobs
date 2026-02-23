@@ -6,7 +6,7 @@
   "description": "Faculty job scraper with static GitHub Pages frontend and automated daily updates",
   "scripts": {
     "start": "node server.js",
-    "dev:frontend": "cd web-vue && npm run dev",
+    "dev:frontend": "npm run sync:web-data && cd web-vue && npm run dev",
     "build:frontend": "npm run build:coverage && npm run sync:policy-exclusions && cd web-vue && npm run build && cd .. && cp -R web-vue/dist/. public/ && cp -R web-vue/dist/. docs/",
     "build:institutions": "node scripts/build-institutions-master.js",
     "build:policy-exclusions": "node scripts/generate-policy-exclusions.js",
@@ -14,6 +14,7 @@
     "verify:policy": "node scripts/verify-policy-integrity.js",
     "verify:policy:pre": "node scripts/verify-policy-integrity.js --skip-jobs-check",
     "sync:policy-exclusions": "node scripts/sync-policy-exclusions-web.js",
+    "sync:web-data": "node scripts/sync-web-data-files.js",
     "import:ipeds": "node scripts/import-ipeds-csv.js",
     "seed:ipeds:webaddr": "node scripts/seed-missing-from-ipeds-webaddr.js --limit 25",
     "exclude:remaining-missing": "node scripts/exclude-unresolved-missing.js",
@@ -30,6 +31,7 @@
     "build:coverage": "npm run build:institutions && npm run build:policy-exclusions && npm run sync:policy-exclusions && npm run build:coverage-report",
     "install:browsers": "playwright install chromium",
     "scrape:json": "node scripts/scrape-to-json.js",
+    "release:dataset": "node scripts/release-dataset.js",
     "ollama": "ollama serve"
   },
   "dependencies": {

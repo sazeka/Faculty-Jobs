@@ -14,7 +14,7 @@ const OUT_PATH = path.join(ROOT, "generated", "promotion-candidates-next-batch.j
 
 const MAPPED_STATES = new Set([
   "AL", "CT", "DE", "FL", "GA", "IL", "IN", "MA", "MD", "MN", "NC", "NE", "NJ", "NY", "OH", "RI", "SC", "TX", "UT", "VA", "WI",
-  "AZ", "PA", "OR", "WA", "ME", "VT", "ND", "SD", "IA", "WY", "MT", "CO", "NM", "NV", "ID", "WV", "MS", "LA", "AR", "KS", "OK", "MO", "KY", "TN", "AK", "HI", "MI",
+  "AZ", "CA", "PA", "OR", "WA", "ME", "VT", "ND", "SD", "IA", "WY", "MT", "CO", "NM", "NV", "ID", "WV", "MS", "LA", "AR", "KS", "OK", "MO", "KY", "TN", "AK", "HI", "MI",
 ]);
 
 function clean(v) {
@@ -73,7 +73,6 @@ function main() {
     .filter((r) => clean(r.career_url))
     .filter((r) => !existingCampuses.has(norm(r.name)))
     .filter((r) => !excludedByOverride.has(norm(r.name)))
-    .filter((r) => MAPPED_STATES.has(clean(r.state)))
     .map((r) => ({
       unitid: r.unitid || null,
       name: clean(r.name),
@@ -82,7 +81,7 @@ function main() {
       control: clean(r.control) || "Unknown",
       platform_type: "generic",
       career_url: clean(r.career_url),
-      score: scoreGenericUrl(r.career_url),
+      score: scoreGenericUrl(r.career_url) + (MAPPED_STATES.has(clean(r.state)) ? 0.1 : 0),
       source: "institutions-master generic promotion scoring",
     }))
     .filter((r) => r.score >= opts.minScore)
@@ -106,4 +105,3 @@ function main() {
 }
 
 main();
-

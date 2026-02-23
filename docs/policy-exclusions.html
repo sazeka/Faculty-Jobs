@@ -197,29 +197,29 @@
           .filter(Boolean)
           .sort((a, b) => a.localeCompare(b));
         const totalExcludedUniversities = combined.length;
-        const collegesInData = combined.filter((c) => (counts.get(c) || 0) > 0);
-        const excludedJobs = collegesInData.reduce((sum, c) => sum + (counts.get(c) || 0), 0);
-        const pct = totalJobs > 0 ? ((excludedJobs / totalJobs) * 100).toFixed(2) : "0.00";
+        const policySourceLinks = [
+          { label: "Oracle Terms", href: "https://www.oracle.com/legal/terms.html" },
+          { label: "Oracle Taleo", href: "https://www.oracle.com/human-capital-management/taleo/" },
+          { label: "IPEDS Data Files (NCES)", href: "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD" },
+          { label: "IPEDS Use The Data (NCES)", href: "https://nces.ed.gov/ipeds/use-the-data" },
+          { label: "Workday End User Agreement", href: "https://www.workday.com/en-us/legal/end-user-agreement.html" },
+        ];
 
         const card = document.createElement("section");
         card.className = "card";
 
         const titleRow = document.createElement("div");
         titleRow.className = "title-row";
-        titleRow.innerHTML = `<h2>Excluded Universities (Combined)</h2><div class="stats">${totalExcludedUniversities} policy-excluded universities total · ${collegesInData.length} appear in current jobs snapshot · ${excludedJobs.toLocaleString()} jobs (${pct}% of total)</div>`;
+        titleRow.innerHTML = `<h2>Excluded Universities (Combined)</h2><div class="stats">${totalExcludedUniversities} policy-excluded universities total</div>`;
 
         const reason = document.createElement("p");
         reason.className = "reason";
-        const sources = dedupeSources(items);
-        if (sources.length > 0) {
-          reason.innerHTML =
-            `These universities are excluded because their recruiting platforms publish terms that disallow automated extraction. ` +
-            `Policy sources: ` +
-            sources.map((src) => `<a href=\"${src}\" target=\"_blank\" rel=\"noreferrer\">${src}</a>`).join(\" · \");
-        } else {
-          reason.textContent =
-            "These universities are excluded because their recruiting platforms publish terms that disallow automated extraction.";
-        }
+        reason.innerHTML =
+          `These universities are excluded because their recruiting platforms publish terms that disallow automated extraction. ` +
+          `Policy sources: ` +
+          policySourceLinks
+            .map((src) => `<a href="${src.href}" target="_blank" rel="noreferrer">${src.label}</a>`)
+            .join(" · ");
 
         const list = document.createElement("ul");
         for (const item of items.sort((a, b) => String(a.college || "").localeCompare(String(b.college || "")))) {
@@ -247,21 +247,40 @@
         host.appendChild(card);
       }
 
+      async function loadExclusionsJson() {
+        const candidates = [
+          `./policy-excluded-colleges.json?ts=${Date.now()}`,
+          `/policy-excluded-colleges.json?ts=${Date.now()}`,
+        ];
+
+        let lastError = null;
+        for (const url of candidates) {
+          try {
+            const resp = await fetch(url, { cache: "no-store" });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${url}`);
+            const text = await resp.text();
+            const data = JSON.parse(text);
+            if (!data || (typeof data !== "object")) {
+              throw new Error(`Invalid JSON object from ${url}`);
+            }
+            return data;
+          } catch (e) {
+            lastError = e;
+          }
+        }
+        throw lastError || new Error("Unable to load exclusions JSON");
+      }
+
       (async function init() {
         try {
-          const [{ total, counts }, exclusionsResp] = await Promise.all([
+          const [{ total, counts }, exclusionsPayload] = await Promise.all([
             getJobCountsByCollege(),
-            fetch(`./policy-excluded-colleges.json?ts=${Date.now()}`, { cache: "no-store" }),
+            loadExclusionsJson(),
           ]);
-
-          if (!exclusionsResp.ok) {
-            throw new Error(`Failed to load exclusions (${exclusionsResp.status})`);
-          }
-          const exclusionsPayload = await exclusionsResp.json();
           renderCards(total, counts, exclusionsPayload);
         } catch (err) {
           const host = document.getElementById("platformCards");
-          host.innerHTML = `<section class=\"card\"><p class=\"reason\">Unable to load generated exclusions data: ${String(
+          host.innerHTML = `<section class="card"><p class="reason">Unable to load generated exclusions data: ${String(
             err?.message || err
           )}</p></section>`;
         }
