@@ -3821,6 +3821,10 @@ function clean(s) {
 function normalizeJobTitle(rawTitle) {
   let t = clean(rawTitle);
   if (!t) return t;
+  // Some feeds leak HTML/media markup directly into title fields.
+  t = stripHtmlToText(t);
+  t = t.replace(/^\s*(?:image|photo)\s+(?=[A-Z0-9])/i, "");
+  t = t.replace(/\bimage[-\w]*\.(?:png|jpe?g|gif|svg|webp)\b/gi, " ");
   const dateToken =
     "(?:\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?\\s+\\d{1,2},?\\s+\\d{4}|\\d{4}\\s*[-/]\\s*\\d{2,4}|\\d{2}\\s*[-/]\\s*\\d{2})";
   // Drop leading bracket tags like "[INTERNAL]" / "[RE-POST]".
