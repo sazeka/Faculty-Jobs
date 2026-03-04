@@ -17,6 +17,18 @@ function getPositionType(title) {
   return 'Faculty'
 }
 
+function stripDateTextFromTitle(value) {
+  let t = String(value || '')
+  if (!t) return t
+  t = t.replace(/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2},?\s+\d{4}\b/gi, '')
+  t = t.replace(/\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g, '')
+  t = t.replace(/\b(?:AY\s*)?'?\d{2,4}\s*[-/]\s*'?\d{2,4}\b/gi, '')
+  t = t.replace(/\(\s*initial\s+review\s+date[^)]*\)/gi, '')
+  t = t.replace(/\s*[—-]\s*$/g, '')
+  t = t.replace(/\s{2,}/g, ' ').trim()
+  return t
+}
+
 function inferState(job) {
   if (job?.state) return job.state
   const source = String(job?.source || '').trim()
@@ -60,8 +72,9 @@ function normalizeSystemCollege(job) {
 }
 
 function normalizeJob(job) {
+  const normalizedTitle = stripDateTextFromTitle(job?.titleClean || job?.title || '(No title)')
   return {
-    title: job?.titleClean || job?.title || '(No title)',
+    title: normalizedTitle || '(No title)',
     url: job?.url || '#',
     source: job?.source || null,
     college: normalizeSystemCollege(job),

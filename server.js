@@ -1317,7 +1317,11 @@ const VA_CAMPUSES = [
   { campus: "Bridgewater College", type: "generic", url: "https://www.bridgewater.edu/" },
   { campus: "Brightpoint Community College", type: "generic", url: "https://www.brightpoint.edu/" },
   { campus: "Bryant & Stratton College-Virginia Beach", type: "generic", url: "https://www.bryantstratton.edu/" },
-  { campus: "Central Virginia Community College", type: "generic", url: "https://www.centralvirginia.edu/" },
+  {
+    campus: "Central Virginia Community College",
+    type: "peopleadmin",
+    url: "https://jobs.vccs.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=9&435=&1577%5B%5D=1&commit=Search",
+  },
   { campus: "Christopher Newport University", type: "generic", url: "https://cnu.edu/" },
   { campus: "Danville Community College", type: "generic", url: "https://www.danville.edu/" },
   { campus: "Divine Mercy University", type: "generic", url: "https://www.divinemercy.edu/" },
@@ -1862,7 +1866,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Be'er Yaakov Talmudic Seminary", type: "generic", url: "https://www.byts.edu/" },
   { campus: "Beth Hamedrash Shaarei Yosher Institute", type: "generic", url: "https://bhsy.edu/" },
   { campus: "Binghamton University", type: "generic", url: "https://www.binghamton.edu/" },
-  { campus: "Boricua College", type: "generic", url: "https://www.boricuacollege.edu/" },
+  { campus: "Boricua College", type: "generic", url: "https://www.boricuacollege.edu/careers" },
   { campus: "Brooklyn Law School", type: "generic", url: "https://www.brooklaw.edu/" },
   { campus: "Bryant & Stratton College-Albany", type: "generic", url: "https://www.bryantstratton.edu/" },
   { campus: "Bryant & Stratton College-Buffalo", type: "generic", url: "https://www.bryantstratton.edu/" },
@@ -2280,7 +2284,7 @@ const NE_CAMPUSES = [
   { campus: "Chadron State College", type: "generic", url: "https://www.csc.edu/" },
   { campus: "Clarkson College", type: "generic", url: "https://www.clarksoncollege.edu/" },
   { campus: "College of Saint Mary", type: "generic", url: "https://www.csm.edu/" },
-  { campus: "Concordia University-Nebraska", type: "generic", url: "https://www.cune.edu/" },
+  { campus: "Concordia University-Nebraska", type: "generic", url: "https://www.cune.edu/employment/jobs-and-openings" },
 ];
 
 // IA (Iowa)
@@ -3447,7 +3451,11 @@ const OK_CAMPUSES = [
   { campus: "Oklahoma State University", type: "nau-search", url: "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=" },
   { campus: "Autry Technology Center", type: "generic", url: "https://autrytech.edu/" },
   { campus: "Bacone College", type: "generic", url: "https://www.bacone.edu/" },
-  { campus: "Cameron University", type: "generic", url: "https://www.cameron.edu/" },
+  {
+    campus: "Cameron University",
+    type: "generic",
+    url: "https://jobs.silkroad.com/Cameron/Careers?StartDate=&EndDate=&SearchString=&SelectedCategory=36314&SelectedPositionType=FullTimeRegular",
+  },
   { campus: "Canadian Valley Technology Center", type: "generic", url: "https://www.cvtech.edu/" },
   { campus: "Carl Albert State College", type: "generic", url: "https://www.carlalbert.edu/" },
   { campus: "College of the Muscogee Nation", type: "generic", url: "https://cmn.edu/" },
@@ -3813,10 +3821,15 @@ function clean(s) {
 function normalizeJobTitle(rawTitle) {
   let t = clean(rawTitle);
   if (!t) return t;
+  const dateToken =
+    "(?:\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?\\s+\\d{1,2},?\\s+\\d{4}|\\d{4}\\s*[-/]\\s*\\d{2,4}|\\d{2}\\s*[-/]\\s*\\d{2})";
   // Drop leading bracket tags like "[INTERNAL]" / "[RE-POST]".
   while (/^\[[^\]]{1,40}\]\s*/.test(t)) t = t.replace(/^\[[^\]]{1,40}\]\s*/, "");
   // Unwrap full-title brackets.
   t = t.replace(/^\[([^\]]+)\]$/, "$1");
+  // Strip leading date stamps and academic-year prefixes.
+  t = t.replace(/^\s*\d{1,2}[/-]\d{1,2}[/-]\d{2,4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?\s*(?:AM|PM)?)?\s*/i, "");
+  t = t.replace(/^\s*(?:AY\s*)?'?\d{2,4}\s*(?:-|\/)\s*'?\d{2,4}\s*/i, "");
   // Remove trailing requisition/position ids that pollute title text.
   t = t.replace(/\s*[—-]\s*#\d[\dA-Za-z/& -]*$/g, "");
   t = t.replace(/\s*-\s*#\d[\dA-Za-z/& ,.-]*(?=\s*[—-]\s*[A-Za-z])/g, "");
@@ -3824,6 +3837,10 @@ function normalizeJobTitle(rawTitle) {
   t = t.replace(/\s+#\d[\dA-Za-z/& -]*$/g, "");
   t = t.replace(/\s*-\s*\d{4,7}(?=\s*[—-]\s*[A-Za-z])/g, "");
   t = t.replace(/\s*\(\s*#?\d[\dA-Za-z/& -]*\)\s*$/g, "");
+  // Remove trailing dates and academic-year tails.
+  t = t.replace(new RegExp(`\\s*(?:[—-]\\s*)?${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?\\s*$`, "i"), "");
+  t = t.replace(new RegExp(`\\s*\\((?:\\s*${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?)\\)\\s*$`, "i"), "");
+  t = t.replace(/\s*[—-]?\s*(?:AY\s*)?'?\d{2,4}\s*(?:-|\/)\s*'?\d{2,4}\s*$/i, "");
   // Repair concatenated all-caps titles seen on some feeds (e.g., Duke AJO).
   t = t.replace(/\bTENURETRACK\b/gi, "TENURE TRACK");
   t = t.replace(/\bASSISTANTPROFESSOR\b/gi, "ASSISTANT PROFESSOR");
@@ -9045,6 +9062,8 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
 
         // Skip navigation and common non-job links
         if (/login|logout|search|home|about|contact|privacy|terms|faq|help/i.test(url)) continue;
+        if (/twitter\.com|x\.com|facebook\.com|instagram\.com|linkedin\.com|youtube\.com|tiktok\.com/i.test(url)) continue;
+        if (/\/events?\b|\/news\b|\/stories?\b|\/blog\b|\/calendar\b|\/alumni\b/i.test(url)) continue;
         if (/\/directory\b|\/faculty-staff\b|\/our-faculty\b|\/faculty-profiles\b|\/people\b/i.test(url)) continue;
 
         let title = clean(a.textContent) || clean(a.getAttribute("aria-label")) || clean(a.getAttribute("title"));
@@ -9055,10 +9074,14 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
         if (/faculty\s+(and|&)\s+staff\s+directory|faculty\s+directory|our\s+faculty|meet\s+the\s+faculty|faculty\s+profiles?/i.test(title)) continue;
         if (/^faculty\s*&\s*staff$/i.test(title)) continue;
         if (/faculty\s+association|faculty\s+senate|faculty\s+development|info\s+for\s+faculty\s+and\s+staff/i.test(title)) continue;
+        if (/^["'“].+["'”]$/.test(title)) continue;
+        if (/thank\s+a\s+professor|faculty\s+spotlight|student\s+spotlight|alumni\s+spotlight|testimonial/i.test(title)) continue;
 
-        // Look for faculty-related keywords in title - be strict
+        // Look for faculty-related keywords in title.
+        // "faculty" alone is too noisy on generic pages, so require hiring context.
         const isFacultyRelated =
-          /professor|lecturer|instructor|\bfaculty\b/i.test(title);
+          /\b(professor|lecturer|instructor|post[\s-]?doc(?:toral)?|dean|department\s+chair|chairperson)\b/i.test(title) ||
+          /\bfaculty\b/i.test(title) && /\b(position|positions|opening|openings|job|jobs|hiring|appointment|search)\b/i.test(title);
 
         if (!isFacultyRelated) continue;
 
