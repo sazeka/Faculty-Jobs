@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Post Quality Dashboard</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif; margin: 24px; color: #1b2430; }
+    h1 { margin: 0 0 8px; }
+    .meta { color: #536174; margin-bottom: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .card { border: 1px solid #d9e0ea; border-radius: 10px; padding: 10px; background: #f8fafc; }
+    .card .k { font-size: 12px; color: #5e6c7f; text-transform: uppercase; }
+    .card .v { font-size: 20px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #d9e0ea; padding: 6px 8px; font-size: 13px; text-align: left; }
+    th { background: #eef3f8; }
+    .fail { color: #8b1c1c; }
+  </style>
+</head>
+<body>
+  <h1>Post Quality Dashboard</h1>
+  <p class="meta">Generated: 2026-03-09T01:13:32.338Z</p>
+  <div class="grid">
+    <div class="card"><div class="k">Jobs</div><div class="v">6882</div></div>
+    <div class="card"><div class="k">Non-job</div><div class="v">18</div></div>
+    <div class="card"><div class="k">Non-HTTPS</div><div class="v">290 (4.21%)</div></div>
+    <div class="card"><div class="k">Missing Desc</div><div class="v">6168 (89.63%)</div></div>
+  </div>
+  <h2>Failures</h2>
+  <ul class="fail"><li>overall nonJob 18 > 0</li>
+<li>overall nonHttpsPct 4.21% > 1%</li>
+<li>overall placeholderTitles 7 > 0</li>
+<li>NY: nonJob 1 > 0</li>
+<li>NY: nonHttpsPct 18.14% > 8%</li>
+<li>FL: nonJob 1 > 0</li>
+<li>FL: placeholderTitles 1 > 0</li>
+<li>MA: nonJob 1 > 0</li>
+<li>PA: nonJob 1 > 0</li>
+<li>AL: placeholderTitles 1 > 0</li>
+<li>VT: placeholderTitles 1 > 0</li>
+<li>MD: placeholderTitles 1 > 0</li>
+<li>Claremont: nonJob 14 > 0</li>
+<li>Claremont: placeholderTitles 3 > 0</li>
+<li>CA Private: nonHttpsPct 3.03% > 1%</li>
+<li>CA Private: missingDescPct 100% > 98%</li>
+<li>WY: nonHttpsPct 100% > 1%</li></ul>
+  <h2>By Source (Top 40 by count)</h2>
+  <table>
+    <thead><tr><th>Source</th><th>Jobs</th><th>Non-job</th><th>Non-HTTPS</th><th>Missing Desc</th><th>Placeholder Titles</th></tr></thead>
+    <tbody><tr><td>NY</td><td>1582</td><td>1</td><td>18.14%</td><td>57.52%</td><td>0</td></tr>
+<tr><td>UC</td><td>1007</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>NC</td><td>409</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>WA</td><td>364</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>FL</td><td>311</td><td>1</td><td>0%</td><td>100%</td><td>1</td></tr>
+<tr><td>NJ</td><td>286</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>CSU</td><td>244</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>TX</td><td>240</td><td>0</td><td>0%</td><td>95%</td><td>0</td></tr>
+<tr><td>GA</td><td>175</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>MA</td><td>174</td><td>1</td><td>0.57%</td><td>95.4%</td><td>0</td></tr>
+<tr><td>IN</td><td>163</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>PA</td><td>152</td><td>1</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>MI</td><td>151</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>OR</td><td>149</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>AL</td><td>133</td><td>0</td><td>0%</td><td>100%</td><td>1</td></tr>
+<tr><td>IL</td><td>119</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>MT</td><td>110</td><td>0</td><td>0%</td><td>89.09%</td><td>0</td></tr>
+<tr><td>NM</td><td>94</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>UMass</td><td>72</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>OH</td><td>58</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>SD</td><td>58</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>VT</td><td>54</td><td>0</td><td>0%</td><td>100%</td><td>1</td></tr>
+<tr><td>ID</td><td>49</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>RI</td><td>48</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>AZ</td><td>47</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>CT</td><td>46</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>WV</td><td>46</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>CT State</td><td>41</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>KY</td><td>40</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>DE</td><td>39</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>MD</td><td>35</td><td>0</td><td>0%</td><td>100%</td><td>1</td></tr>
+<tr><td>Claremont</td><td>34</td><td>14</td><td>0%</td><td>100%</td><td>3</td></tr>
+<tr><td>CA Private</td><td>33</td><td>0</td><td>3.03%</td><td>100%</td><td>0</td></tr>
+<tr><td>VA</td><td>30</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>NE</td><td>30</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>KS</td><td>29</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>ND</td><td>28</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>AK</td><td>27</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>SC</td><td>25</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr>
+<tr><td>WI</td><td>24</td><td>0</td><td>0%</td><td>100%</td><td>0</td></tr></tbody>
+  </table>
+</body>
+</html>

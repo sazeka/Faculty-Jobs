@@ -95,6 +95,81 @@ function addCanonicalIds(data) {
   };
 }
 
+function isPlaceholderTitle(title) {
+  const t = clean(title).toLowerCase();
+  if (!t) return true;
+  return (
+    /^(faculty|staff|faculty jobs|employment|careers?)$/.test(t) ||
+    /^(view details|learn more|read more|click here)$/.test(t) ||
+    /^1[-\s]?\d{3}[-\s]?[a-z0-9-]+$/i.test(clean(title))
+  );
+}
+
+function isLikelyJobUrl(url) {
+  const u = String(url || "");
+  if (!/^https?:\/\//i.test(u)) return false;
+  if (/^(?:tel|mailto|sms):/i.test(u)) return false;
+  if (/\/faculty(?:\/|$|\?)/i.test(u) && !/\/(job|jobs|career|careers|employment|positions?|openings?|vacanc(y|ies))\b/i.test(u)) {
+    return false;
+  }
+  if (/\/(directory|people|our-faculty|faculty-profiles?|faculty-staff)\b/i.test(u)) return false;
+  return true;
+}
+
+function applyPostQualityGates(data) {
+  if (!data || !Array.isArray(data.jobs)) {
+    return { data, report: { dropped: 0, reasons: {} } };
+  }
+
+  const kept = [];
+  const drops = [];
+  const reasons = {
+    invalid_url: 0,
+    non_job_url: 0,
+    placeholder_title: 0,
+    very_short_title: 0,
+  };
+
+  for (const job of data.jobs) {
+    const title = clean(job?.title);
+    const url = clean(job?.url);
+    let reason = null;
+    if (!url || !/^https?:\/\//i.test(url)) reason = "invalid_url";
+    else if (!isLikelyJobUrl(url)) reason = "non_job_url";
+    else if (isPlaceholderTitle(title)) reason = "placeholder_title";
+    else if (title.length < 8) reason = "very_short_title";
+
+    if (reason) {
+      reasons[reason] += 1;
+      if (drops.length < 200) {
+        drops.push({
+          reason,
+          title,
+          url,
+          college: clean(job?.college) || null,
+          source: clean(job?.source) || null,
+        });
+      }
+      continue;
+    }
+    kept.push(job);
+  }
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    beforeCount: data.jobs.length,
+    afterCount: kept.length,
+    dropped: data.jobs.length - kept.length,
+    reasons,
+    sampleDropped: drops,
+  };
+
+  return {
+    data: { ...data, jobs: kept, count: kept.length },
+    report,
+  };
+}
+
 function canonicalizeJobUrls(data) {
   if (!data || !Array.isArray(data.jobs)) return { data, changed: 0, removedInvalid: 0 };
 
@@ -149,6 +224,16 @@ function canonicalizeJobUrls(data) {
   if (canonicalIds.assigned > 0) {
     console.log(`🧬 Assigned canonical IDs for ${canonicalIds.assigned} jobs`);
   }
+
+  const quality = applyPostQualityGates(data);
+  data = quality.data;
+  const qualityReportPath = path.join(__dirname, "..", "generated", "post-quality-report.json");
+  fs.mkdirSync(path.dirname(qualityReportPath), { recursive: true });
+  fs.writeFileSync(qualityReportPath, `${JSON.stringify(quality.report, null, 2)}\n`, "utf8");
+  if (quality.report.dropped > 0) {
+    console.log(`🧹 Quality gates dropped ${quality.report.dropped} listings`);
+  }
+  console.log(`📄 Wrote ${qualityReportPath}`);
 
   const targets = [
     path.join(__dirname, "..", "docs", "jobs.json"),

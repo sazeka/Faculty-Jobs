@@ -9087,6 +9087,9 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
       const abs = (href) => {
         try { return new URL(href, location.href).toString(); } catch { return null; }
       };
+      const isLikelyJobPath = (u) =>
+        /\/(job|jobs|career|careers|employment|positions?|vacanc(y|ies)|opening|openings|requisitions?)\b/i.test(u) ||
+        /job(id|_id|openingid|req|requisition|posting)/i.test(u);
 
       const out = [];
       const seen = new Set();
@@ -9095,12 +9098,15 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
       for (const a of Array.from(document.querySelectorAll("a[href]"))) {
         const url = abs(a.getAttribute("href"));
         if (!url) continue;
+        if (!/^https?:\/\//i.test(url)) continue;
+        if (/^(?:tel|mailto|sms):/i.test(url)) continue;
 
         // Skip navigation and common non-job links
         if (/login|logout|search|home|about|contact|privacy|terms|faq|help/i.test(url)) continue;
         if (/twitter\.com|x\.com|facebook\.com|instagram\.com|linkedin\.com|youtube\.com|tiktok\.com/i.test(url)) continue;
         if (/\/events?\b|\/news\b|\/stories?\b|\/blog\b|\/calendar\b|\/alumni\b/i.test(url)) continue;
         if (/\/directory\b|\/faculty-staff\b|\/our-faculty\b|\/faculty-profiles\b|\/people\b/i.test(url)) continue;
+        if (/\/faculty(?:\/|$|\?)/i.test(url) && !isLikelyJobPath(url)) continue;
 
         let title = clean(a.textContent) || clean(a.getAttribute("aria-label")) || clean(a.getAttribute("title"));
         if (!title || title.length < 10) continue;
@@ -9112,6 +9118,8 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
         if (/faculty\s+association|faculty\s+senate|faculty\s+development|info\s+for\s+faculty\s+and\s+staff/i.test(title)) continue;
         if (/^["'“].+["'”]$/.test(title)) continue;
         if (/thank\s+a\s+professor|faculty\s+spotlight|student\s+spotlight|alumni\s+spotlight|testimonial/i.test(title)) continue;
+        if (/^(faculty|staff|faculty jobs|employment|careers?)$/i.test(title)) continue;
+        if (/^(view details|learn more|read more|click here)$/i.test(title)) continue;
 
         // Look for faculty-related keywords in title.
         // "faculty" alone is too noisy on generic pages, so require hiring context.
