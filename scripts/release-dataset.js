@@ -36,6 +36,14 @@ function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
 
+function readJsonOrNull(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
 function csvEscape(value) {
   if (value === null || value === undefined) return "";
   const str = String(value);
@@ -55,6 +63,22 @@ function toCsv(rows, headers) {
 
 function isoDateOnly(d) {
   return d.toISOString().slice(0, 10);
+}
+
+function isValidHttpUrl(value) {
+  try {
+    const u = new URL(String(value || ""));
+    return /^https?:$/i.test(u.protocol);
+  } catch {
+    return false;
+  }
+}
+
+function topCounts(map, limit = 10) {
+  return [...map.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([key, count]) => ({ key, count }));
 }
 
 function main() {
@@ -102,6 +126,29 @@ function main() {
   const latestMetaPath = path.join(outDir, "latest.metadata.json");
   const indexPath = path.join(outDir, "index.json");
 
+  const invalidByCollege = new Map();
+  const invalidBySource = new Map();
+  let invalidUrlCount = 0;
+  const urlSeen = new Set();
+  let duplicateUrlCount = 0;
+  for (const job of jobs) {
+    const url = String(job?.url || "");
+    if (!isValidHttpUrl(url)) {
+      invalidUrlCount += 1;
+      const college = String(job?.college || "Unknown").trim() || "Unknown";
+      const source = String(job?.source || "Unknown").trim() || "Unknown";
+      invalidByCollege.set(college, (invalidByCollege.get(college) || 0) + 1);
+      invalidBySource.set(source, (invalidBySource.get(source) || 0) + 1);
+      continue;
+    }
+    if (urlSeen.has(url)) duplicateUrlCount += 1;
+    else urlSeen.add(url);
+  }
+
+  const linkHealthPath = path.join(ROOT, "generated", "career-link-verification.json");
+  const linkHealth = readJsonOrNull(linkHealthPath);
+  const linkHealthCounts = linkHealth?.counts || null;
+
   const metadata = {
     generatedAt: new Date().toISOString(),
     date: dateTag,
@@ -113,6 +160,25 @@ function main() {
       json: path.join(releasesRel, releaseJsonName).replace(/\\/g, "/"),
       csv: path.join(releasesRel, releaseCsvName).replace(/\\/g, "/"),
       metadata: path.join(releasesRel, releaseMetaName).replace(/\\/g, "/"),
+    },
+    diagnostics: {
+      invalidJobUrls: {
+        count: invalidUrlCount,
+        byCollegeTop10: topCounts(invalidByCollege, 10),
+        bySourceTop10: topCounts(invalidBySource, 10),
+      },
+      duplicateJobUrls: {
+        count: duplicateUrlCount,
+      },
+      institutionCareerLinkHealth: linkHealthCounts
+        ? {
+            checked: Number(linkHealthCounts.checked || 0),
+            healthy: Number(linkHealthCounts.healthy || 0),
+            broken: Number(linkHealthCounts.broken || 0),
+            quarantined: Number(linkHealthCounts.quarantined || 0),
+            source: path.relative(ROOT, linkHealthPath).replace(/\\/g, "/"),
+          }
+        : null,
     },
   };
 

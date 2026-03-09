@@ -9,20 +9,23 @@ import { useSavedJobs } from './composables/useSavedJobs'
 import { usePresets } from './composables/usePresets'
 import { useJobFilters } from './composables/useJobFilters'
 import { useJobsData } from './composables/useJobsData'
+import { useAlerts } from './composables/useAlerts'
 import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 
 const DENSITY_STORAGE_KEY = 'facultyJobs.cardDensity.v1'
+const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || ''
 const baseUrl = import.meta.env.BASE_URL || '/'
 const logoSrc = `${baseUrl}assets/logos/favicon.svg`
 const policyExclusionsHref = `${baseUrl}policy-exclusions.html`
 const inclusionCriteriaHref = `${baseUrl}inclusion-criteria.html`
-const { jobs, status, scrapedAt, loadError, loadJobs } = useJobsData()
+const { jobs, status, scrapedAt, loadError, loadJobs, qualitySummary, newJobsCount, transport, lastVisitAt } = useJobsData()
 const hoveredCollege = ref(null)
 const density = ref('comfortable')
+const reportStatus = ref('')
 
 const filters = ref(createDefaultFilters())
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
-const { stateOptions, positionTypeOptions, collegeOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters } =
+const { stateOptions, positionTypeOptions, collegeOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
   useJobFilters({
     jobsRef: jobs,
     filtersRef: filters,
@@ -31,6 +34,10 @@ const { stateOptions, positionTypeOptions, collegeOptions, filteredJobs, activeF
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({
   filtersRef: filters,
   updateFilters,
+})
+const { alertsWithCounts, addAlert, removeAlert } = useAlerts({
+  filtersRef: filters,
+  countMatches,
 })
 
 function handleMapCollegeSelect(college) {
@@ -49,6 +56,70 @@ function setDensity(nextDensity) {
   } catch (_err) {
     // Ignore storage errors in restricted browser modes.
   }
+}
+
+function buildReportPayload(job) {
+  return {
+    reportedAt: new Date().toISOString(),
+    reason: 'Broken/outdated listing',
+    job: {
+      canonicalJobId: job?.canonicalJobId || null,
+      canonicalGroupId: job?.canonicalGroupId || null,
+      title: job?.title || null,
+      url: job?.url || null,
+      college: job?.college || null,
+      source: job?.source || null,
+      state: job?.state || null,
+      department: job?.department || null,
+    },
+    appContext: {
+      scrapedAt: scrapedAt.value || null,
+      pageUrl: typeof window !== 'undefined' ? window.location.href : null,
+    },
+  }
+}
+
+async function copyToClipboard(text) {
+  if (typeof navigator === 'undefined' || !navigator.clipboard?.writeText) return false
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch {
+    return false
+  }
+}
+
+function downloadReportFile(fileName, content) {
+  if (typeof document === 'undefined') return
+  const blob = new Blob([content], { type: 'application/json;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = fileName
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+async function reportBadListing(job) {
+  const payload = buildReportPayload(job)
+  const serialized = JSON.stringify(payload, null, 2)
+  const copied = await copyToClipboard(serialized)
+
+  if (REPORT_ISSUE_URL) {
+    const title = encodeURIComponent(`[Bad listing] ${job?.title || 'Faculty listing'}`)
+    const body = encodeURIComponent(
+      `Please review this listing report payload:\\n\\n\`\`\`json\\n${serialized}\\n\`\`\``,
+    )
+    const separator = REPORT_ISSUE_URL.includes('?') ? '&' : '?'
+    window.open(`${REPORT_ISSUE_URL}${separator}title=${title}&body=${body}`, '_blank', 'noopener,noreferrer')
+  } else {
+    const id = String(job?.canonicalJobId || 'listing').replace(/[^a-zA-Z0-9_-]+/g, '_')
+    downloadReportFile(`bad-listing-${id}.json`, serialized)
+  }
+
+  reportStatus.value = copied
+    ? 'Report payload copied to clipboard and issue flow opened.'
+    : 'Report payload prepared. A JSON file was downloaded.'
 }
 
 onMounted(() => {
@@ -83,10 +154,36 @@ onMounted(() => {
           <span aria-hidden="true"> · </span>
           <a :href="inclusionCriteriaHref">Inclusion criteria</a>
         </p>
+        <section class="trust-panel">
+          <article class="trust-card">
+            <span>Freshness</span>
+            <strong>{{ qualitySummary.freshness }}</strong>
+          </article>
+          <article class="trust-card">
+            <span>URL Integrity</span>
+            <strong>{{ qualitySummary.secureUrlPct }}% HTTPS</strong>
+          </article>
+          <article class="trust-card">
+            <span>Metadata Coverage</span>
+            <strong>{{ qualitySummary.withDescriptionPct }}% described · {{ qualitySummary.withDepartmentPct }}% tagged</strong>
+          </article>
+          <article class="trust-card">
+            <span>Coverage</span>
+            <strong>{{ qualitySummary.uniqueColleges.toLocaleString() }} schools · {{ qualitySummary.total.toLocaleString() }} grouped roles</strong>
+          </article>
+        </section>
+        <p v-if="qualitySummary.topSources.length" class="muted">
+          Top sources:
+          <span v-for="entry in qualitySummary.topSources" :key="entry.source">
+            {{ entry.source }} ({{ entry.count.toLocaleString() }})&nbsp;
+          </span>
+        </p>
       </div>
       <div class="hero-metrics">
         <p class="status-pill">{{ status }}</p>
         <p v-if="scrapedAt" class="muted">Last scrape: {{ new Date(scrapedAt).toLocaleString() }}</p>
+        <p class="muted">Last visit: {{ lastVisitAt ? new Date(lastVisitAt).toLocaleString() : 'First visit' }}</p>
+        <p class="muted">Data transport: {{ transport }}</p>
         <div class="metrics-row">
           <article class="metric-card">
             <span>Visible Jobs</span>
@@ -96,9 +193,14 @@ onMounted(() => {
             <span>Saved Jobs</span>
             <strong>{{ savedJobs.size }}</strong>
           </article>
+          <article class="metric-card">
+            <span>New Since Visit</span>
+            <strong>{{ newJobsCount.toLocaleString() }}</strong>
+          </article>
         </div>
       </div>
       <p v-if="loadError" class="error">{{ loadError }}</p>
+      <p v-if="reportStatus" class="muted">{{ reportStatus }}</p>
     </header>
 
     <section class="search-map-layout">
@@ -113,6 +215,7 @@ onMounted(() => {
             @update:filters="updateFilters"
             @reset-filters="resetFilters"
             @refresh-data="loadJobs"
+            @save-alert="addAlert"
           />
         </section>
         <PresetBar
@@ -123,6 +226,17 @@ onMounted(() => {
           @remove-preset="removePreset"
         />
         <ActiveChips :chips="activeFilterChips" @clear-chip="clearFilterChip" />
+        <section class="alert-panel">
+          <h3>Saved Alerts</h3>
+          <p v-if="alertsWithCounts.length === 0" class="muted">No alerts yet.</p>
+          <div v-else class="alert-list">
+            <article v-for="item in alertsWithCounts" :key="item.id" class="alert-item">
+              <strong>{{ item.label }}</strong>
+              <span>{{ item.matchCount.toLocaleString() }} matches</span>
+              <button type="button" @click="removeAlert(item.id)">Remove</button>
+            </article>
+          </div>
+        </section>
       </aside>
 
       <MapPanel
@@ -138,12 +252,13 @@ onMounted(() => {
     <section class="grid">
       <JobCard
         v-for="job in filteredJobs"
-        :key="`${job.url}-${job.title}`"
+        :key="job.canonicalGroupId || job.canonicalJobId || `${job.url}-${job.title}`"
         :job="job"
         :saved="isSavedJob(job.url)"
         :emphasized="Boolean(hoveredCollege) && job.college === hoveredCollege"
         @toggle-save="toggleSavedJob"
         @hover-college="handleHoverCollege"
+        @report-bad-listing="reportBadListing"
       />
     </section>
   </main>

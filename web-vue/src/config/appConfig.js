@@ -17,5 +17,6 @@ export function createDefaultFilters() {
     sortBy: DEFAULT_SORT,
     tenureTrackOnly: false,
     savedOnly: false,
+    newOnly: false,
   }
 }

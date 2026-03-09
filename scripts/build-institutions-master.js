@@ -2,87 +2,18 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { loadCampusConfigs } from "./lib/campus-config.js";
+import { canonicalizeUrl, clean, normalizeNameKey, inferPlatformFromUrl } from "./lib/url-normalization.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, "..");
 
-const SERVER_PATH = path.join(ROOT, "server.js");
 const JOBS_PATH = path.join(ROOT, "public", "jobs.json");
 const OUT_PATH = path.join(ROOT, "data", "institutions-master.json");
-
-function clean(value) {
-  return String(value || "").replace(/\s+/g, " ").trim();
-}
-
-function normalizeKey(value) {
-  return clean(value).toLowerCase();
-}
-
-function inferPlatformFromUrl(url) {
-  const u = String(url || "").toLowerCase();
-  if (!u) return null;
-  if (u.includes("myworkdayjobs.com") || u.includes("myworkdaysite.com")) return "workday";
-  if (u.includes("pageuppeople.com")) return "pageup";
-  if (u.includes("taleo.net")) return "taleo";
-  if (u.includes("peopleadmin.com")) return "peopleadmin";
-  if (u.includes("schooljobs.com")) return "schooljobs";
-  if (u.includes("csod.com")) return "csod";
-  if (u.includes("paycomonline.net")) return "paycom";
-  if (u.includes("interviewexchange.com")) return "interviewexchange";
-  if (u.includes("jobvite.com")) return "jobvite";
-  if (u.includes("interfolio.com")) return "interfolio";
-  if (u.includes("aprecruit") || u.includes("apol-recruit") || u.includes("recruit.ap.")) return "ap-recruit";
-  if (u.includes("/en-us/filter")) return "enusfilter";
-  return "generic";
-}
-
-function parseCampusConfigs(serverText) {
-  const rows = [];
-  const lines = serverText.split(/\r?\n/);
-  let cur = null;
-
-  const flush = () => {
-    if (cur && cur.campus && cur.url) {
-      rows.push({
-        name: clean(cur.campus),
-        career_url: clean(cur.url),
-        platform_type: clean(cur.type) || inferPlatformFromUrl(cur.url),
-      });
-    }
-    cur = null;
-  };
-
-  for (const rawLine of lines) {
-    const line = rawLine.trim();
-    const campusMatch = line.match(/campus:\s*"([^"]+)"/);
-    const typeMatch = line.match(/type:\s*"([^"]+)"/);
-    const urlMatch = line.match(/url:\s*"([^"]+)"/);
-
-    if (line.startsWith("{")) {
-      // New object start; flush any incomplete previous object.
-      if (cur && (cur.campus || cur.url || cur.type)) flush();
-      cur = {};
-    }
-
-    if (!cur) continue;
-    if (campusMatch) cur.campus = campusMatch[1];
-    if (typeMatch) cur.type = typeMatch[1];
-    if (urlMatch) cur.url = urlMatch[1];
-
-    if (line.startsWith("},") || line === "}") {
-      flush();
-    }
-  }
-  flush();
-
-  const dedup = new Map();
-  for (const r of rows) {
-    const k = normalizeKey(r.name);
-    if (!dedup.has(k)) dedup.set(k, r);
-  }
-  return [...dedup.values()].sort((a, b) => a.name.localeCompare(b.name));
-}
+const OVERRIDES_PATH = path.join(ROOT, "data", "career-url-overrides.json");
+const LINK_STATUS_PATH = path.join(ROOT, "generated", "institution-link-status.json");
+const QUARANTINE_PATH = path.join(ROOT, "generated", "career-link-quarantine.json");
 
 function readJsonOrNull(p) {
   try {
@@ -92,9 +23,43 @@ function readJsonOrNull(p) {
   }
 }
 
+function buildOverridesMap() {
+  const data = readJsonOrNull(OVERRIDES_PATH);
+  const rows = Array.isArray(data?.overrides) ? data.overrides : [];
+  const map = new Map();
+  for (const row of rows) {
+    const name = clean(row?.name);
+    if (!name) continue;
+    map.set(normalizeNameKey(name), {
+      homepage_url: canonicalizeUrl(row?.homepage_url),
+      career_url: canonicalizeUrl(row?.career_url),
+      platform_type: clean(row?.platform_type) || null,
+      notes: clean(row?.notes) || null,
+    });
+  }
+  return map;
+}
+
+function buildLinkStatusMap() {
+  const data = readJsonOrNull(LINK_STATUS_PATH);
+  const rows = Array.isArray(data?.institutions) ? data.institutions : [];
+  const map = new Map();
+  for (const row of rows) {
+    const name = clean(row?.name);
+    if (!name) continue;
+    map.set(normalizeNameKey(name), row);
+  }
+  return map;
+}
+
+function buildQuarantineSet() {
+  const data = readJsonOrNull(QUARANTINE_PATH);
+  const rows = Array.isArray(data?.institutions) ? data.institutions : [];
+  return new Set(rows.map((r) => normalizeNameKey(r?.name)).filter(Boolean));
+}
+
 function main() {
-  const serverText = fs.readFileSync(SERVER_PATH, "utf8");
-  const configured = parseCampusConfigs(serverText);
+  const configured = loadCampusConfigs();
 
   const jobsData = readJsonOrNull(JOBS_PATH) || {};
   const jobs = Array.isArray(jobsData.jobs) ? jobsData.jobs : [];
@@ -108,95 +73,163 @@ function main() {
   const existing = readJsonOrNull(OUT_PATH);
   const existingMap = new Map();
   for (const row of Array.isArray(existing?.institutions) ? existing.institutions : []) {
-    existingMap.set(normalizeKey(row?.name), row);
+    existingMap.set(normalizeNameKey(row?.name), row);
   }
+
+  const overrides = buildOverridesMap();
+  const linkStatusByName = buildLinkStatusMap();
+  const quarantinedNames = buildQuarantineSet();
 
   const result = [];
   const seen = new Set();
 
+  const buildUrls = (name, configuredUrl, prev) => {
+    const key = normalizeNameKey(name);
+    const ov = overrides.get(key);
+
+    const homepage_url = canonicalizeUrl(
+      ov?.homepage_url || prev?.homepage_url || configuredUrl || prev?.career_url
+    );
+    const career_url = canonicalizeUrl(
+      ov?.career_url || configuredUrl || prev?.career_url || prev?.homepage_url
+    );
+    const platform_type = clean(ov?.platform_type || prev?.platform_type) || inferPlatformFromUrl(career_url) || "generic";
+
+    return {
+      homepage_url,
+      career_url,
+      platform_type,
+      override_notes: ov?.notes || null,
+    };
+  };
+
+  const applyVerification = (row) => {
+    const key = normalizeNameKey(row.name);
+    const link = linkStatusByName.get(key);
+    const isQuarantined = quarantinedNames.has(key);
+
+    const verification_status =
+      (isQuarantined ? "quarantined_broken_link" : null) ||
+      clean(link?.verification_status) ||
+      clean(row.verification_status) ||
+      "unchecked";
+
+    const last_verified_at = link?.last_verified_at || row.last_verified_at || null;
+
+    const merged = {
+      ...row,
+      verification_status,
+      last_verified_at,
+      quarantined_career_url: isQuarantined ? row.career_url : null,
+    };
+
+    if (isQuarantined) {
+      merged.career_url = null;
+      if (merged.coverage_status === "covered") merged.coverage_status = "missing";
+      merged.notes = clean(`${merged.notes || ""} Quarantined due to repeated broken career link checks.`) || null;
+    }
+
+    return merged;
+  };
+
   for (const c of configured) {
-    const key = normalizeKey(c.name);
+    const key = normalizeNameKey(c.name);
     seen.add(key);
     const prev = existingMap.get(key) || {};
     const currentJobCount = jobCountByCollege.get(c.name) || 0;
+    const urls = buildUrls(c.name, c.career_url, prev);
 
-    result.push({
-      unitid: prev.unitid || null,
-      name: c.name,
-      aliases: Array.isArray(prev.aliases) ? prev.aliases : [],
-      state: prev.state || null,
-      sector: prev.sector || null,
-      level: prev.level || null,
-      control: prev.control || null,
-      is_degree_granting: typeof prev.is_degree_granting === "boolean" ? prev.is_degree_granting : null,
-      career_url: c.career_url,
-      platform_type: c.platform_type || null,
-      coverage_status: currentJobCount > 0 ? "covered" : "missing",
-      last_seen_job_count: currentJobCount,
-      last_checked_at: new Date().toISOString(),
-      notes: prev.notes || null,
-    });
+    result.push(
+      applyVerification({
+        unitid: prev.unitid || null,
+        name: c.name,
+        aliases: Array.isArray(prev.aliases) ? prev.aliases : [],
+        state: prev.state || null,
+        sector: prev.sector || null,
+        level: prev.level || null,
+        control: prev.control || null,
+        is_degree_granting: typeof prev.is_degree_granting === "boolean" ? prev.is_degree_granting : null,
+        homepage_url: urls.homepage_url,
+        career_url: urls.career_url,
+        platform_type: urls.platform_type,
+        coverage_status: currentJobCount > 0 ? "covered" : "missing",
+        last_seen_job_count: currentJobCount,
+        last_checked_at: new Date().toISOString(),
+        notes: clean(`${prev.notes || ""} ${urls.override_notes || ""}`) || null,
+      })
+    );
   }
 
   for (const [college, count] of jobCountByCollege.entries()) {
-    const key = normalizeKey(college);
+    const key = normalizeNameKey(college);
     if (seen.has(key)) continue;
     const prev = existingMap.get(key) || {};
-    result.push({
-      unitid: prev.unitid || null,
-      name: college,
-      aliases: Array.isArray(prev.aliases) ? prev.aliases : [],
-      state: prev.state || null,
-      sector: prev.sector || null,
-      level: prev.level || null,
-      control: prev.control || null,
-      is_degree_granting: typeof prev.is_degree_granting === "boolean" ? prev.is_degree_granting : null,
-      career_url: prev.career_url || null,
-      platform_type: prev.platform_type || null,
-      coverage_status: "covered",
-      last_seen_job_count: count,
-      last_checked_at: new Date().toISOString(),
-      notes: prev.notes || "Present in jobs data but missing from explicit campus config.",
-    });
+    const urls = buildUrls(college, prev?.career_url, prev);
+
+    result.push(
+      applyVerification({
+        unitid: prev.unitid || null,
+        name: college,
+        aliases: Array.isArray(prev.aliases) ? prev.aliases : [],
+        state: prev.state || null,
+        sector: prev.sector || null,
+        level: prev.level || null,
+        control: prev.control || null,
+        is_degree_granting: typeof prev.is_degree_granting === "boolean" ? prev.is_degree_granting : null,
+        homepage_url: urls.homepage_url,
+        career_url: urls.career_url,
+        platform_type: urls.platform_type,
+        coverage_status: "covered",
+        last_seen_job_count: count,
+        last_checked_at: new Date().toISOString(),
+        notes: prev.notes || "Present in jobs data but missing from explicit campus config.",
+      })
+    );
   }
 
-  // Preserve institutions that exist in the master (e.g., imported from IPEDS)
-  // but are not currently in scraper config or current jobs snapshot.
-  for (const [k, prev] of existingMap.entries()) {
-    if (seen.has(k)) continue;
-    result.push({
-      unitid: prev.unitid || null,
-      name: prev.name || null,
-      aliases: Array.isArray(prev.aliases) ? prev.aliases : [],
-      state: prev.state || null,
-      sector: prev.sector ?? null,
-      level: prev.level || null,
-      control: prev.control || null,
-      is_degree_granting: typeof prev.is_degree_granting === "boolean" ? prev.is_degree_granting : null,
-      career_url: prev.career_url || null,
-      platform_type: prev.platform_type || null,
-      coverage_status: prev.coverage_status || "missing",
-      last_seen_job_count: Number(prev.last_seen_job_count || 0),
-      last_checked_at: new Date().toISOString(),
-      notes: prev.notes || "Preserved from previous master snapshot.",
-    });
+  for (const [key, prev] of existingMap.entries()) {
+    if (seen.has(key)) continue;
+    const urls = buildUrls(prev.name, prev.career_url, prev);
+
+    result.push(
+      applyVerification({
+        unitid: prev.unitid || null,
+        name: prev.name || null,
+        aliases: Array.isArray(prev.aliases) ? prev.aliases : [],
+        state: prev.state || null,
+        sector: prev.sector ?? null,
+        level: prev.level || null,
+        control: prev.control || null,
+        is_degree_granting: typeof prev.is_degree_granting === "boolean" ? prev.is_degree_granting : null,
+        homepage_url: urls.homepage_url,
+        career_url: urls.career_url,
+        platform_type: urls.platform_type,
+        coverage_status: prev.coverage_status || "missing",
+        last_seen_job_count: Number(prev.last_seen_job_count || 0),
+        last_checked_at: new Date().toISOString(),
+        notes: prev.notes || "Preserved from previous master snapshot.",
+      })
+    );
   }
 
-  // Enforce global exclusion of private for-profit institutions.
   const filtered = result.filter((r) => String(r?.control || "").toLowerCase() !== "private for-profit");
   filtered.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
 
   const out = {
     generatedAt: new Date().toISOString(),
     source: {
-      configuredFrom: path.relative(ROOT, SERVER_PATH),
+      configuredFrom: "server.js",
       jobsFrom: path.relative(ROOT, JOBS_PATH),
-      note: "Seeded from current scraper config + current jobs snapshot. Replace/merge with IPEDS UNITID master for full national coverage.",
+      overridesFrom: path.relative(ROOT, OVERRIDES_PATH),
+      linkStatusFrom: path.relative(ROOT, LINK_STATUS_PATH),
+      quarantineFrom: path.relative(ROOT, QUARANTINE_PATH),
+      note: "Includes homepage_url + career_url split, override priority, and link verification/quarantine metadata.",
     },
     counts: {
       totalInstitutions: filtered.length,
       covered: filtered.filter((r) => r.coverage_status === "covered").length,
       missing: filtered.filter((r) => r.coverage_status === "missing").length,
+      quarantined: filtered.filter((r) => r.verification_status === "quarantined_broken_link").length,
     },
     institutions: filtered,
   };

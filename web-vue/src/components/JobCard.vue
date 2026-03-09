@@ -5,7 +5,7 @@ const props = defineProps({
   emphasized: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['toggle-save', 'hover-college'])
+const emit = defineEmits(['toggle-save', 'hover-college', 'report-bad-listing'])
 
 function getDeadlineLabel(job) {
   if (job.openUntilFilled) return 'Open until filled'
@@ -56,6 +56,18 @@ function getDeadlineLabel(job) {
       <span class="meta-pill">{{ props.job.positionType || 'Faculty' }}</span>
       <span v-if="props.job.tenureTrack === true" class="meta-pill">Tenure Track</span>
       <span v-else-if="props.job.tenureTrack === false" class="meta-pill">Non-Tenure</span>
+      <span v-if="props.job.duplicateCount > 1" class="meta-pill">Grouped {{ props.job.duplicateCount }}x</span>
+      <span v-if="props.job.isNew" class="meta-pill">New</span>
+    </p>
+    <p v-if="Array.isArray(props.job.confidenceBadges) && props.job.confidenceBadges.length" class="meta-strip">
+      <span
+        v-for="badge in props.job.confidenceBadges"
+        :key="`${badge.kind}-${badge.label}`"
+        class="meta-pill"
+        :class="{ 'meta-pill-warn': badge.kind === 'warn' }"
+      >
+        {{ badge.label }}
+      </span>
     </p>
     <section v-if="props.job.college || props.job.department || props.job.location || getDeadlineLabel(props.job)" class="info-grid">
       <template v-if="props.job.college">
@@ -84,6 +96,9 @@ function getDeadlineLabel(job) {
       <a :href="props.job.url" target="_blank" rel="noreferrer">View Position</a>
       <button type="button" :class="{ saved: props.saved }" @click="emit('toggle-save', props.job.url)">
         {{ props.saved ? 'Saved' : 'Save' }}
+      </button>
+      <button type="button" @click="emit('report-bad-listing', props.job)">
+        Report
       </button>
     </div>
   </article>

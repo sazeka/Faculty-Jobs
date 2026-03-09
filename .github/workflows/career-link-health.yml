@@ -1,0 +1,59 @@
+name: Weekly career link health
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 14 * * 1"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-career-link-health
+  cancel-in-progress: true
+
+jobs:
+  verify-links:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Check for merge conflict markers
+        run: npm run verify:no-conflicts
+
+      - name: Verify critical institution career links
+        run: npm run verify:career-links -- --critical-only --fail-on-broken --concurrency 4 --timeout 15000
+
+      - name: Verify all institution career links
+        run: npm run verify:career-links -- --quarantine-threshold 2 --concurrency 12 --timeout 12000
+
+      - name: Validate critical school checks
+        run: npm run verify:critical-schools
+
+      - name: Rebuild institutions with verification metadata
+        run: npm run build:institutions
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add generated/career-link-verification.json generated/institution-link-status.json generated/career-link-quarantine.json generated/career-link-health-state.json data/institutions-master.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Weekly career link health verification"
+          git push

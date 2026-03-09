@@ -30,8 +30,20 @@ jobs:
       - name: Install deps
         run: npm ci
 
+      - name: Check for merge conflict markers
+        run: npm run verify:no-conflicts
+
       - name: Install Playwright Chromium (with deps)
         run: npx playwright install --with-deps chromium
+
+      - name: Verify critical institution career links
+        run: npm run verify:career-links -- --critical-only --fail-on-broken --concurrency 4 --timeout 15000
+
+      - name: Verify all institution career links (report + quarantine)
+        run: npm run verify:career-links -- --quarantine-threshold 2 --concurrency 12 --timeout 12000
+
+      - name: Validate critical school checks from report
+        run: npm run verify:critical-schools
 
       - name: Build coverage + exclusions artifacts
         run: npm run build:coverage
@@ -50,7 +62,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add docs/jobs.json public/jobs.json generated/policy-excluded-colleges.json generated/coverage-report.json public/policy-excluded-colleges.json docs/policy-excluded-colleges.json web-vue/public/policy-excluded-colleges.json
+          git add docs/jobs.json public/jobs.json generated/policy-excluded-colleges.json generated/coverage-report.json generated/career-link-verification.json generated/institution-link-status.json generated/career-link-quarantine.json generated/career-link-health-state.json public/policy-excluded-colleges.json docs/policy-excluded-colleges.json web-vue/public/policy-excluded-colleges.json data/institutions-master.json data/career-url-overrides.json
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0

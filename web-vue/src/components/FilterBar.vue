@@ -7,7 +7,7 @@ const props = defineProps({
   showSearch: { type: Boolean, default: true },
 })
 
-const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data'])
+const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'save-alert'])
 
 function updateField(key, value) {
   emit('update:filters', { [key]: value })
@@ -86,7 +86,16 @@ function updateField(key, value) {
     />
     Saved Jobs Only
   </label>
+  <label class="check">
+    <input
+      :checked="props.filters.newOnly"
+      type="checkbox"
+      @change="updateField('newOnly', $event.target.checked)"
+    />
+    New Since Last Visit
+  </label>
 
   <button type="button" @click="emit('reset-filters')">Clear Filters</button>
+  <button type="button" @click="emit('save-alert')">Save Alert</button>
   <button type="button" @click="emit('refresh-data')">Refresh Data</button>
 </template>

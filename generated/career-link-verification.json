@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-03-08T23:55:30.616Z",
+  "settings": {
+    "timeoutMs": 30000,
+    "concurrency": 1,
+    "quarantineThreshold": 2,
+    "criticalOnly": true
+  },
+  "counts": {
+    "checked": 1,
+    "healthy": 0,
+    "broken": 1,
+    "quarantined": 1
+  },
+  "institutions": [
+    {
+      "name": "Dean College",
+      "platform_type": "generic",
+      "homepage_url": "https://www.dean.edu/",
+      "career_url": "https://www.dean.edu/about-dean/leadership/administration/office-of-human-resources",
+      "override_applied": true,
+      "override_notes": "Homepage generic scrape missed stable employment endpoint; route to HR office page.",
+      "checked_at": "2026-03-08T23:55:30.616Z",
+      "last_verified_at": "2026-03-08T23:55:30.616Z",
+      "verification_status": "quarantined_broken_link",
+      "http_status": null,
+      "final_url": null,
+      "error": "fetch failed (ENOTFOUND)",
+      "consecutive_failures": 3,
+      "quarantined": true
+    }
+  ]
+}

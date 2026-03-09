@@ -47,3 +47,11 @@ Optional custom date:
 ```bash
 node scripts/release-dataset.js --date 2026-02-23
 ```
+
+Data quality checks:
+
+```bash
+npm run verify:no-conflicts
+npm run verify:career-links
+npm run verify:critical-schools
+```

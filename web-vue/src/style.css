@@ -124,6 +124,35 @@ strong,
   gap: 8px;
 }
 
+.trust-panel {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.trust-card {
+  border: 1px solid #d8dde5;
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.trust-card span {
+  display: block;
+  color: #687382;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.trust-card strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
 .logo {
   display: inline-flex;
   align-items: center;
@@ -628,6 +657,12 @@ strong,
   line-height: 1.4;
 }
 
+.meta-pill.meta-pill-warn {
+  background: #f7eee8;
+  border-color: #e3cdb9;
+  color: #6d4c2f;
+}
+
 .quick-facts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -748,6 +783,51 @@ strong,
 .card-actions button.saved {
   border-color: #3d4d4b;
   background: linear-gradient(180deg, #4f6863, #3d524d);
+}
+
+.alert-panel {
+  margin-top: 12px;
+  border-top: 1px dashed #ced4de;
+  padding-top: 10px;
+}
+
+.alert-panel h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+}
+
+.alert-list {
+  display: grid;
+  gap: 8px;
+}
+
+.alert-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid #d6dbe3;
+  border-radius: 10px;
+  background: #f6f8fb;
+  padding: 7px 9px;
+}
+
+.alert-item strong {
+  font-size: 0.84rem;
+}
+
+.alert-item span {
+  font-size: 0.8rem;
+  color: #556173;
+}
+
+.alert-item button {
+  min-height: 28px;
+  border-radius: 8px;
+  border: 1px solid #c7ced8;
+  background: #fff;
+  padding: 4px 8px;
+  font-size: 0.78rem;
 }
 
 .page.density-compact .grid {

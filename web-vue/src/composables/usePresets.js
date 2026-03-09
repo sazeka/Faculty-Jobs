@@ -24,6 +24,7 @@ function presetHasFilters(preset) {
       preset.college !== ALL_FILTER_VALUE ||
       preset.tenureTrackOnly ||
       preset.savedOnly ||
+      preset.newOnly ||
       preset.sortBy !== DEFAULT_SORT,
   )
 }
@@ -34,6 +35,7 @@ function presetLabel(preset) {
   if (preset.state && preset.state !== ALL_FILTER_VALUE) parts.push(preset.state)
   if (preset.positionType && preset.positionType !== ALL_FILTER_VALUE) parts.push(preset.positionType)
   if (preset.savedOnly) parts.push('Saved')
+  if (preset.newOnly) parts.push('New')
   if (preset.tenureTrackOnly) parts.push('Tenure')
   return parts.length ? parts.join(' · ') : 'Default filters'
 }
@@ -53,6 +55,7 @@ export function usePresets({ filtersRef, updateFilters }) {
       college: filtersRef.value.college,
       tenureTrackOnly: filtersRef.value.tenureTrackOnly,
       savedOnly: filtersRef.value.savedOnly,
+      newOnly: filtersRef.value.newOnly,
       sortBy: filtersRef.value.sortBy,
     }
   }
@@ -67,6 +70,7 @@ export function usePresets({ filtersRef, updateFilters }) {
       sortBy: preset?.sortBy || DEFAULT_SORT,
       tenureTrackOnly: !!preset?.tenureTrackOnly,
       savedOnly: !!preset?.savedOnly,
+      newOnly: !!preset?.newOnly,
     })
   }
 

@@ -1,36 +1,233 @@
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+
+const CACHE_KEY = 'facultyJobs.jobsCache.v2'
+const SEEN_URLS_KEY = 'facultyJobs.seenUrls.v1'
+const LAST_VISIT_KEY = 'facultyJobs.lastVisitAt.v1'
+
+function safeParse(value, fallback) {
+  try {
+    return JSON.parse(value)
+  } catch {
+    return fallback
+  }
+}
+
+function clean(value) {
+  return String(value || '').replace(/\s+/g, ' ').trim()
+}
+
+function toIso(value) {
+  const parsed = new Date(value)
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString()
+}
+
+function freshnessLabel(scrapedAt) {
+  if (!scrapedAt) return 'Unknown freshness'
+  const then = new Date(scrapedAt).getTime()
+  if (!Number.isFinite(then)) return 'Unknown freshness'
+  const diff = Date.now() - then
+  const hours = Math.floor(diff / (60 * 60 * 1000))
+  if (hours < 6) return 'Fresh (under 6 hours)'
+  if (hours < 24) return 'Recent (under 24 hours)'
+  if (hours < 72) return 'Aging (1-3 days old)'
+  return 'Stale (over 3 days old)'
+}
+
+function computeQualitySummary(jobs, scrapedAt) {
+  const total = jobs.length
+  let withDescription = 0
+  let withDepartment = 0
+  let secureUrls = 0
+  const colleges = new Set()
+  const bySource = new Map()
+
+  for (const job of jobs) {
+    if (clean(job?.description)) withDescription += 1
+    if (clean(job?.department)) withDepartment += 1
+    if (/^https:\/\//i.test(String(job?.url || ''))) secureUrls += 1
+    if (clean(job?.college)) colleges.add(clean(job.college))
+    const source = clean(job?.source) || 'Unknown'
+    bySource.set(source, (bySource.get(source) || 0) + 1)
+  }
+
+  const topSources = [...bySource.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([source, count]) => ({ source, count }))
+
+  const pct = (n) => (total > 0 ? Math.round((n / total) * 100) : 0)
+
+  return {
+    total,
+    uniqueColleges: colleges.size,
+    secureUrlPct: pct(secureUrls),
+    withDescriptionPct: pct(withDescription),
+    withDepartmentPct: pct(withDepartment),
+    freshness: freshnessLabel(scrapedAt),
+    topSources,
+  }
+}
+
+async function readJsonSafe(response, label) {
+  const text = await response.text()
+  try {
+    return JSON.parse(text)
+  } catch {
+    const preview = String(text || '').slice(0, 80).replace(/\s+/g, ' ')
+    throw new Error(`${label} returned non-JSON content (preview: "${preview}")`)
+  }
+}
+
+async function fetchWithTimeout(url, timeoutMs = 25000) {
+  const ctrl = new AbortController()
+  const t = setTimeout(() => ctrl.abort(), timeoutMs)
+  try {
+    return await fetch(url, { cache: 'no-store', signal: ctrl.signal })
+  } finally {
+    clearTimeout(t)
+  }
+}
+
+async function loadFromChunks(baseUrl) {
+  const manifestResponse = await fetchWithTimeout(`${baseUrl}data/jobs-manifest.json`)
+  if (!manifestResponse.ok) {
+    throw new Error(`jobs-manifest.json returned ${manifestResponse.status}`)
+  }
+
+  const manifest = await readJsonSafe(manifestResponse, 'jobs-manifest.json')
+  const chunks = Array.isArray(manifest?.chunks) ? manifest.chunks : []
+  if (chunks.length === 0) {
+    return {
+      jobs: [],
+      scrapedAt: manifest?.scrapedAt || null,
+      transport: 'chunks',
+      manifest,
+    }
+  }
+
+  const jobs = []
+  for (const chunk of chunks) {
+    const chunkPath = String(chunk?.path || '')
+    if (!chunkPath) continue
+    const chunkResponse = await fetchWithTimeout(`${baseUrl}data/${chunkPath}`)
+    if (!chunkResponse.ok) throw new Error(`${chunkPath} returned ${chunkResponse.status}`)
+    const payload = await readJsonSafe(chunkResponse, chunkPath)
+    const rows = Array.isArray(payload?.jobs) ? payload.jobs : []
+    jobs.push(...rows)
+  }
+
+  return {
+    jobs,
+    scrapedAt: manifest?.scrapedAt || null,
+    transport: 'chunks',
+    manifest,
+  }
+}
+
+function loadCachedPayload() {
+  const parsed = safeParse(localStorage.getItem(CACHE_KEY) || '{}', {})
+  if (!Array.isArray(parsed?.jobs)) return null
+  return {
+    jobs: parsed.jobs,
+    scrapedAt: parsed.scrapedAt || null,
+    cachedAt: parsed.cachedAt || null,
+    transport: parsed.transport || 'cache',
+  }
+}
+
+function persistCache(payload) {
+  const minimal = {
+    jobs: payload.jobs,
+    scrapedAt: payload.scrapedAt || null,
+    cachedAt: new Date().toISOString(),
+    transport: payload.transport || 'jobs.json',
+  }
+  localStorage.setItem(CACHE_KEY, JSON.stringify(minimal))
+}
+
+function loadSeenUrls() {
+  const parsed = safeParse(localStorage.getItem(SEEN_URLS_KEY) || '[]', [])
+  return new Set(Array.isArray(parsed) ? parsed : [])
+}
+
+function persistSeenUrls(urlsSet) {
+  localStorage.setItem(SEEN_URLS_KEY, JSON.stringify([...urlsSet]))
+  localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString())
+}
 
 export function useJobsData() {
   const jobs = ref([])
   const status = ref('Loading jobs...')
   const scrapedAt = ref(null)
   const loadError = ref('')
+  const transport = ref('jobs.json')
   const baseUrl = import.meta.env.BASE_URL || '/'
+  const lastVisitAt = ref(localStorage.getItem(LAST_VISIT_KEY) || null)
 
-  async function readJsonSafe(response, label) {
-    const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      const preview = String(text || '').slice(0, 80).replace(/\s+/g, ' ')
-      throw new Error(`${label} returned non-JSON content (preview: "${preview}")`)
-    }
-  }
+  const qualitySummary = computed(() => computeQualitySummary(jobs.value, scrapedAt.value))
+  const newJobsCount = computed(() => jobs.value.filter((j) => j?._isNew === true).length)
 
   async function loadJobs() {
     loadError.value = ''
     status.value = 'Loading jobs...'
+
     try {
-      const response = await fetch(`${baseUrl}jobs.json`, { cache: 'no-store' })
-      if (!response.ok) throw new Error(`jobs.json returned ${response.status}`)
-      const payload = await readJsonSafe(response, 'jobs.json')
-      jobs.value = Array.isArray(payload?.jobs) ? payload.jobs : []
-      scrapedAt.value = payload?.scrapedAt || null
-      status.value = `Loaded ${jobs.value.length.toLocaleString()} jobs`
+      const cached = loadCachedPayload()
+      if (cached) {
+        jobs.value = cached.jobs
+        scrapedAt.value = cached.scrapedAt
+        transport.value = `cache (${cached.transport})`
+        status.value = `Loaded ${cached.jobs.length.toLocaleString()} jobs from cache (refreshing...)`
+      }
+    } catch (_err) {
+      // Ignore bad cache and continue network load.
+    }
+
+    try {
+      let payload
+      try {
+        payload = await loadFromChunks(baseUrl)
+      } catch (_manifestErr) {
+        const response = await fetchWithTimeout(`${baseUrl}jobs.json`)
+        if (!response.ok) throw new Error(`jobs.json returned ${response.status}`)
+        const raw = await readJsonSafe(response, 'jobs.json')
+        payload = {
+          jobs: Array.isArray(raw?.jobs) ? raw.jobs : [],
+          scrapedAt: raw?.scrapedAt || null,
+          transport: 'jobs.json',
+          manifest: null,
+        }
+      }
+
+      const seen = loadSeenUrls()
+      const nextJobs = payload.jobs.map((job) => {
+        const url = clean(job?.url)
+        const isNew = Boolean(url) && !seen.has(url)
+        return { ...job, _isNew: isNew }
+      })
+
+      jobs.value = nextJobs
+      scrapedAt.value = toIso(payload.scrapedAt)
+      transport.value = payload.transport || 'jobs.json'
+      status.value = `Loaded ${jobs.value.length.toLocaleString()} jobs via ${transport.value}`
+
+      persistCache({ jobs: nextJobs, scrapedAt: scrapedAt.value, transport: transport.value })
+
+      for (const job of payload.jobs) {
+        const url = clean(job?.url)
+        if (url) seen.add(url)
+      }
+      persistSeenUrls(seen)
+      lastVisitAt.value = localStorage.getItem(LAST_VISIT_KEY) || null
     } catch (error) {
-      jobs.value = []
-      status.value = 'Failed to load jobs'
-      loadError.value = error?.message || String(error)
+      if (jobs.value.length > 0) {
+        status.value = 'Using cached jobs (refresh failed)'
+        loadError.value = error?.message || String(error)
+      } else {
+        jobs.value = []
+        status.value = 'Failed to load jobs'
+        loadError.value = error?.message || String(error)
+      }
     }
   }
 
@@ -44,5 +241,9 @@ export function useJobsData() {
     scrapedAt,
     loadError,
     loadJobs,
+    qualitySummary,
+    newJobsCount,
+    transport,
+    lastVisitAt,
   }
 }

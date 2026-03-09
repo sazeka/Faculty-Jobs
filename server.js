@@ -680,7 +680,7 @@ const MA_PRIVATE_CAMPUSES = [
   { campus: "College of Our Lady of the Elms", type: "generic", url: "https://www.elms.edu/" },
   { campus: "Conway School of Landscape Design", type: "generic", url: "https://www.csld.edu/" },
   { campus: "Curry College", type: "generic", url: "https://www.curry.edu/" },
-  { campus: "Dean College", type: "generic", url: "https://www.dean.edu/" },
+  { campus: "Dean College", type: "generic", url: "https://www.dean.edu/about-dean/leadership/administration/office-of-human-resources/" },
   { campus: "Eastern Nazarene College", type: "generic", url: "https://www.enc.edu/" },
   { campus: "Emerson College", type: "generic", url: "https://www.emerson.edu/" },
   { campus: "Emmanuel College", type: "generic", url: "https://www.emmanuel.edu/" },
@@ -3567,6 +3567,34 @@ const HI_CAMPUSES = [
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const CAREER_OVERRIDES_PATH = path.join(__dirname, "data", "career-url-overrides.json");
+
+function loadCareerOverridesMap() {
+  try {
+    if (!fs.existsSync(CAREER_OVERRIDES_PATH)) return new Map();
+    const payload = JSON.parse(fs.readFileSync(CAREER_OVERRIDES_PATH, "utf8"));
+    const rows = Array.isArray(payload?.overrides) ? payload.overrides : [];
+    const map = new Map();
+    for (const row of rows) {
+      const name = clean(row?.name || "").toLowerCase();
+      const url = clean(row?.career_url || "");
+      if (!name || !url) continue;
+      map.set(name, { career_url: url, platform_type: clean(row?.platform_type || "") || null });
+    }
+    return map;
+  } catch (e) {
+    console.warn(`⚠️  Failed to load career URL overrides: ${e?.message || e}`);
+    return new Map();
+  }
+}
+
+const CAREER_OVERRIDES = loadCareerOverridesMap();
+
+function resolveCareerUrlOverride(campusName, fallbackUrl) {
+  const key = clean(campusName || "").toLowerCase();
+  const override = CAREER_OVERRIDES.get(key);
+  return override?.career_url || fallbackUrl;
+}
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
@@ -9047,7 +9075,11 @@ async function scrapeStJohnsDirectoryAs(context, directoryUrl, campusName, sourc
 async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    const effectiveUrl = resolveCareerUrlOverride(campusName, startUrl);
+    if (effectiveUrl !== startUrl) {
+      console.log(`↪️  ${campusName} override URL applied`);
+    }
+    await page.goto(effectiveUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
     const jobs = await safeEvaluate(page, () => {
