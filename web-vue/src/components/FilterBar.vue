@@ -19,11 +19,12 @@ function updateField(key, value) {
     v-if="props.showSearch"
     :value="props.filters.q"
     type="search"
+    aria-label="Search jobs by title, university, department, or state"
     placeholder="Search title, university, department, state..."
     @input="updateField('q', $event.target.value)"
   />
 
-  <select :value="props.filters.state" @change="updateField('state', $event.target.value)">
+  <select :value="props.filters.state" aria-label="Filter by state" @change="updateField('state', $event.target.value)">
     <option value="all">All States ({{ props.stateOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
     <option
       v-for="option in props.stateOptions"
@@ -36,7 +37,7 @@ function updateField(key, value) {
     </option>
   </select>
 
-  <select :value="props.filters.positionType" @change="updateField('positionType', $event.target.value)">
+  <select :value="props.filters.positionType" aria-label="Filter by position type" @change="updateField('positionType', $event.target.value)">
     <option value="all">All Position Types ({{ props.positionTypeOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
     <option
       v-for="option in props.positionTypeOptions"
@@ -49,7 +50,7 @@ function updateField(key, value) {
     </option>
   </select>
 
-  <select :value="props.filters.college" @change="updateField('college', $event.target.value)">
+  <select :value="props.filters.college" aria-label="Filter by university" @change="updateField('college', $event.target.value)">
     <option value="all">All Universities ({{ props.collegeOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
     <option
       v-for="option in props.collegeOptions"
@@ -62,7 +63,7 @@ function updateField(key, value) {
     </option>
   </select>
 
-  <select :value="props.filters.sortBy" @change="updateField('sortBy', $event.target.value)">
+  <select :value="props.filters.sortBy" aria-label="Sort results" @change="updateField('sortBy', $event.target.value)">
     <option value="relevance">Sort: Relevance</option>
     <option value="title-asc">Sort: Title A-Z</option>
     <option value="title-desc">Sort: Title Z-A</option>

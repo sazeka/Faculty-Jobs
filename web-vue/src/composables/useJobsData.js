@@ -162,7 +162,13 @@ export function useJobsData() {
   const loadError = ref('')
   const transport = ref('jobs.json')
   const baseUrl = import.meta.env.BASE_URL || '/'
-  const lastVisitAt = ref(localStorage.getItem(LAST_VISIT_KEY) || null)
+  let _initialLastVisit = null
+  try {
+    _initialLastVisit = localStorage.getItem(LAST_VISIT_KEY) || null
+  } catch {
+    // Ignore in restricted/private browsing environments.
+  }
+  const lastVisitAt = ref(_initialLastVisit)
 
   const qualitySummary = computed(() => computeQualitySummary(jobs.value, scrapedAt.value))
   const newJobsCount = computed(() => jobs.value.filter((j) => j?._isNew === true).length)

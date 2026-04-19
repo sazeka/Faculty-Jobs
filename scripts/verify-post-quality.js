@@ -248,4 +248,7 @@ function main() {
   console.log("Post quality check passed.");
 }
 
-main();
+main().catch((err) => {
+  console.error(err?.stack || err?.message || String(err));
+  process.exit(1);
+});

@@ -313,7 +313,7 @@ export function useLeafletMap({ jobsRef, selectedCollegeRef, hoveredCollegeRef, 
     }
   })
 
-  watch(groupedEntries, () => renderMarkers(), { deep: true })
+  watch(groupedEntries, () => renderMarkers())
   watch(selectedCollegeRef, () => setMarkerActiveState(getActiveCollege()))
   watch(hoveredCollegeRef, () => setMarkerActiveState(getActiveCollege()))
 

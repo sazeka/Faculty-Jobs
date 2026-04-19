@@ -93,7 +93,7 @@ function getDeadlineLabel(job) {
       <p>{{ props.job.summary }}</p>
     </details>
     <div class="card-actions">
-      <a :href="props.job.url" target="_blank" rel="noreferrer">View Position</a>
+      <a :href="props.job.url" target="_blank" rel="noreferrer" :aria-label="`View position: ${props.job.title}${props.job.college ? ` at ${props.job.college}` : ''}`">View Position</a>
       <button type="button" :class="{ saved: props.saved }" @click="emit('toggle-save', props.job.url)">
         {{ props.saved ? 'Saved' : 'Save' }}
       </button>

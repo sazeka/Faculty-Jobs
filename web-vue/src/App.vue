@@ -100,6 +100,8 @@ function downloadReportFile(fileName, content) {
   URL.revokeObjectURL(url)
 }
 
+let _reportStatusTimer = null
+
 async function reportBadListing(job) {
   const payload = buildReportPayload(job)
   const serialized = JSON.stringify(payload, null, 2)
@@ -120,6 +122,11 @@ async function reportBadListing(job) {
   reportStatus.value = copied
     ? 'Report payload copied to clipboard and issue flow opened.'
     : 'Report payload prepared. A JSON file was downloaded.'
+
+  clearTimeout(_reportStatusTimer)
+  _reportStatusTimer = setTimeout(() => {
+    reportStatus.value = ''
+  }, 5000)
 }
 
 onMounted(() => {
