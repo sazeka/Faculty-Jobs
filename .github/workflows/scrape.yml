@@ -60,12 +60,22 @@ jobs:
       - name: Verify policy integrity (post-scrape)
         run: npm run verify:policy
 
+      - name: Rebuild web data chunks from updated jobs.json
+        run: |
+          node scripts/sync-web-data-files.js
+          cp -R web-vue/public/data/. docs/data/
+          cp -R web-vue/public/data/. public/data/
+
+      - name: Validate job posting URLs (sample per source)
+        run: npm run verify:job-urls -- --sample-per-source 8 --concurrency 8
+        continue-on-error: true
+
       - name: Commit & push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add docs/jobs.json public/jobs.json generated/post-quality-report.json generated/post-quality-drift.json generated/post-quality-dashboard.html generated/policy-excluded-colleges.json generated/coverage-report.json generated/career-link-verification.json generated/institution-link-status.json generated/career-link-quarantine.json generated/career-link-health-state.json public/policy-excluded-colleges.json docs/policy-excluded-colleges.json web-vue/public/policy-excluded-colleges.json data/institutions-master.json data/career-url-overrides.json data/post-quality-source-thresholds.json
+          git add docs/jobs.json public/jobs.json docs/data/ public/data/ generated/post-quality-report.json generated/post-quality-drift.json generated/post-quality-dashboard.html generated/policy-excluded-colleges.json generated/coverage-report.json generated/career-link-verification.json generated/institution-link-status.json generated/career-link-quarantine.json generated/career-link-health-state.json generated/job-url-cache.json generated/job-url-report.json generated/job-url-dead.json public/policy-excluded-colleges.json docs/policy-excluded-colleges.json web-vue/public/policy-excluded-colleges.json data/institutions-master.json data/career-url-overrides.json data/post-quality-source-thresholds.json
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
@@ -73,3 +83,7 @@ jobs:
 
           git commit -m "Daily update jobs and policy artifacts"
           git push
+
+      - name: Monitor live site
+        run: npm run monitor:live
+        continue-on-error: true

@@ -44,12 +44,16 @@ jobs:
       - name: Rebuild institutions with verification metadata
         run: npm run build:institutions
 
+      - name: Validate job posting URLs (larger sample for weekly run)
+        run: npm run verify:job-urls -- --sample-per-source 20 --concurrency 10
+        continue-on-error: true
+
       - name: Commit & push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add generated/career-link-verification.json generated/institution-link-status.json generated/career-link-quarantine.json generated/career-link-health-state.json data/institutions-master.json
+          git add generated/career-link-verification.json generated/institution-link-status.json generated/career-link-quarantine.json generated/career-link-health-state.json generated/job-url-cache.json generated/job-url-report.json generated/job-url-dead.json data/institutions-master.json
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
