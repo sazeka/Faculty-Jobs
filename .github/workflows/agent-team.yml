@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: agent-team
@@ -40,11 +41,16 @@ jobs:
       - name: Run data-health agent (remove dead listings, strip HTML titles, baseline check)
         run: npm run agent:data-health
 
+      - name: Track job presence and purge expired listings
+        run: npm run agent:job-presence
+        continue-on-error: true
+
       - name: Rebuild web data chunks from updated jobs.json
         run: |
           node scripts/sync-web-data-files.js
           cp -R web-vue/public/data/. docs/data/
           cp -R web-vue/public/data/. public/data/
+          node scripts/inject-og-meta.js
 
       - name: Commit & push if changed
         run: |
@@ -54,13 +60,17 @@ jobs:
           git add \
             public/jobs.json \
             docs/jobs.json \
+            docs/index.html \
+            public/index.html \
             docs/data/ \
             public/data/ \
             generated/job-url-cache.json \
             generated/job-url-report.json \
             generated/job-url-dead.json \
             generated/source-count-baseline.json \
-            generated/data-health-report.json
+            generated/data-health-report.json \
+            generated/job-presence.json \
+            generated/job-presence-report.json
 
           if git diff --cached --quiet; then
             echo "No changes to commit."
@@ -69,3 +79,9 @@ jobs:
 
           git commit -m "Agent team: data health pass"
           git push
+
+      - name: Open GitHub Issues for critical alerts
+        run: npm run agent:alert-issues
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

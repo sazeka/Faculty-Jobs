@@ -1,0 +1,274 @@
+#!/usr/bin/env node
+/**
+ * generate-weekly-trends.js
+ *
+ * Computes weekly faculty hiring stats from jobs.json, then calls the
+ * Claude API (claude-haiku-4-5-20251001) to generate a prose narrative
+ * summary. Falls back to a data-only summary if ANTHROPIC_API_KEY is unset.
+ *
+ * Outputs:
+ *   docs/data/weekly-trends.json     (served by GitHub Pages)
+ *   public/data/weekly-trends.json
+ *   generated/weekly-stats-history.json  (rolling 52-week record)
+ *
+ * Usage:
+ *   node scripts/generate-weekly-trends.js [--dry-run]
+ *
+ * Requires:
+ *   ANTHROPIC_API_KEY env var (or .env file) for AI prose generation.
+ */
+import fs from "fs";
+import path from "path";
+import https from "https";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dirname, "..");
+
+const JOBS_PATH    = path.join(ROOT, "public", "jobs.json");
+const HISTORY_PATH = path.join(ROOT, "generated", "weekly-stats-history.json");
+const OUT_PATHS    = [
+  path.join(ROOT, "docs",   "data", "weekly-trends.json"),
+  path.join(ROOT, "public", "data", "weekly-trends.json"),
+];
+
+// ── CLI / env ─────────────────────────────────────────────────────────────────
+
+const DRY_RUN = process.argv.includes("--dry-run");
+const API_KEY = process.env.ANTHROPIC_API_KEY || null;
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function readJson(p) {
+  try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return null; }
+}
+
+function writeJson(p, v) {
+  fs.mkdirSync(path.dirname(p), { recursive: true });
+  fs.writeFileSync(p, JSON.stringify(v, null, 2) + "\n", "utf8");
+}
+
+function isoWeekEnd() {
+  // Sunday of the current week (end of week)
+  const d = new Date();
+  d.setUTCHours(0, 0, 0, 0);
+  const day = d.getUTCDay(); // 0=Sun
+  d.setUTCDate(d.getUTCDate() + (day === 0 ? 0 : 7 - day));
+  return d.toISOString().slice(0, 10);
+}
+
+// ── Position-type detector ────────────────────────────────────────────────────
+
+function detectPositionType(title) {
+  const t = String(title || "").toLowerCase();
+  if (t.includes("adjunct"))                                           return "Adjunct";
+  if (t.includes("visiting"))                                          return "Visiting";
+  if (t.includes("clinical"))                                          return "Clinical";
+  if (t.includes("assistant professor") || /asst\.?\s+prof/.test(t))  return "Assistant Professor";
+  if (t.includes("associate professor") || /assoc\.?\s+prof/.test(t)) return "Associate Professor";
+  if (t.includes("professor"))                                         return "Professor (Full/Open Rank)";
+  if (t.includes("instructor"))                                        return "Instructor";
+  if (t.includes("lecturer"))                                          return "Lecturer";
+  if (t.includes("postdoc"))                                           return "Postdoctoral";
+  if (t.includes("research"))                                          return "Research Faculty";
+  return "Other";
+}
+
+// ── Stats computation ─────────────────────────────────────────────────────────
+
+function computeStats(jobs) {
+  const bySource     = {};
+  const byType       = {};
+  const byInstitution = {};
+
+  for (const job of jobs) {
+    const src  = String(job.source   || "Unknown");
+    const inst = String(job.college  || "Unknown");
+    const type = detectPositionType(job.title);
+
+    bySource[src]      = (bySource[src]      || 0) + 1;
+    byType[type]       = (byType[type]       || 0) + 1;
+    byInstitution[inst] = (byInstitution[inst] || 0) + 1;
+  }
+
+  const topSources = Object.entries(bySource)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([source, count]) => ({ source, count }));
+
+  const topInstitutions = Object.entries(byInstitution)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([institution, count]) => ({ institution, count }));
+
+  return { totalJobs: jobs.length, bySource, byType, topSources, topInstitutions };
+}
+
+// ── Fallback template summary ─────────────────────────────────────────────────
+
+function templateSummary(stats, prev) {
+  const delta = prev ? stats.totalJobs - prev.totalJobs : 0;
+  const sign  = delta >= 0 ? "+" : "";
+  const top3  = stats.topSources.slice(0, 3).map(s => `${s.source} (${s.count.toLocaleString()})`).join(", ");
+  const topType = Object.entries(stats.byType).sort((a, b) => b[1] - a[1])[0];
+  return [
+    `Faculty Atlas is currently tracking ${stats.totalJobs.toLocaleString()} open faculty positions` +
+      (prev ? ` — ${sign}${delta} compared to last week.` : "."),
+    `The most active systems this week are ${top3}.`,
+    topType
+      ? `${topType[0]} roles represent the largest category with ${topType[1].toLocaleString()} listings.`
+      : "",
+  ].filter(Boolean).join(" ");
+}
+
+// ── Claude API call ───────────────────────────────────────────────────────────
+
+function callClaude(statsForPrompt) {
+  return new Promise((resolve, reject) => {
+    const prompt = `You are writing a weekly digest for Faculty Atlas, a U.S. faculty job listings platform.
+
+Write a 2-3 paragraph summary (150–200 words) of this week's faculty hiring trends. Use a professional but readable newsletter tone.
+
+Focus on:
+- Changes in total listing volume vs last week (if available)
+- Which states or systems are most active
+- What position types dominate
+- Anything noteworthy or surprising in the data
+
+Avoid: technical jargon, mentioning job IDs, phrases like "the data shows" or "according to the data", or bullet points.
+
+Weekly data:
+${JSON.stringify(statsForPrompt, null, 2)}`;
+
+    const body = JSON.stringify({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 400,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const req = https.request(
+      {
+        hostname: "api.anthropic.com",
+        path: "/v1/messages",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": API_KEY,
+          "anthropic-version": "2023-06-01",
+          "Content-Length": Buffer.byteLength(body),
+        },
+      },
+      (res) => {
+        let data = "";
+        res.on("data", (c) => (data += c));
+        res.on("end", () => {
+          try {
+            const parsed = JSON.parse(data);
+            const text = parsed?.content?.[0]?.text;
+            if (text) resolve(text.trim());
+            else reject(new Error(JSON.stringify(parsed)));
+          } catch (e) {
+            reject(e);
+          }
+        });
+      }
+    );
+    req.on("error", reject);
+    req.write(body);
+    req.end();
+  });
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+
+async function main() {
+  console.log("\nFaculty Atlas - Weekly Trends Generator");
+  if (DRY_RUN) console.log("  *** DRY RUN ***");
+  if (!API_KEY) console.log("  ANTHROPIC_API_KEY not set — will use template summary.");
+
+  const payload = readJson(JOBS_PATH);
+  if (!payload?.jobs?.length) { console.error("Cannot read public/jobs.json"); process.exit(1); }
+
+  const history = readJson(HISTORY_PATH) || [];
+  const prev    = history.length ? history[history.length - 1] : null;
+  const stats   = computeStats(payload.jobs);
+  const weekEnd = isoWeekEnd();
+
+  console.log(`\n  Week ending : ${weekEnd}`);
+  console.log(`  Total jobs  : ${stats.totalJobs.toLocaleString()}`);
+  if (prev) console.log(`  vs last week: ${prev.totalJobs.toLocaleString()} (${stats.totalJobs - prev.totalJobs >= 0 ? "+" : ""}${stats.totalJobs - prev.totalJobs})`);
+
+  // Build stats subset for Claude (keep prompt size reasonable)
+  const statsForPrompt = {
+    weekEnd,
+    totalJobs: stats.totalJobs,
+    previousWeekTotal: prev?.totalJobs ?? null,
+    totalDelta: prev ? stats.totalJobs - prev.totalJobs : null,
+    totalDeltaPct: prev ? Number(((( stats.totalJobs - prev.totalJobs) / prev.totalJobs) * 100).toFixed(1)) : null,
+    topSourcesByJobs: stats.topSources.slice(0, 8),
+    positionTypeBreakdown: stats.byType,
+    topInstitutions: stats.topInstitutions.slice(0, 5),
+  };
+
+  // Generate prose summary
+  let summary;
+  if (API_KEY) {
+    try {
+      console.log("\n  Calling Claude API for prose summary...");
+      summary = await callClaude(statsForPrompt);
+      console.log("  Summary generated.");
+    } catch (err) {
+      console.warn(`  Claude API error: ${err.message} — falling back to template.`);
+      summary = templateSummary(stats, prev);
+    }
+  } else {
+    summary = templateSummary(stats, prev);
+  }
+
+  // Build history entry
+  const historyEntry = {
+    weekEnd,
+    totalJobs: stats.totalJobs,
+    bySource: stats.bySource,
+    byType: stats.byType,
+  };
+
+  // Avoid duplicate entries for the same weekEnd
+  const updatedHistory = [
+    ...history.filter((h) => h.weekEnd !== weekEnd),
+    historyEntry,
+  ].slice(-52); // keep 52 weeks
+
+  // Build output
+  const out = {
+    weekEnd,
+    generatedAt: new Date().toISOString(),
+    aiSummary: summary,
+    stats: {
+      ...statsForPrompt,
+      topSources: stats.topSources,
+      topInstitutions: stats.topInstitutions,
+    },
+    history: updatedHistory.map((h) => ({ weekEnd: h.weekEnd, totalJobs: h.totalJobs })),
+  };
+
+  if (DRY_RUN) {
+    console.log("\n-- DRY RUN output preview --");
+    console.log(`  Summary: ${summary.slice(0, 120)}...`);
+    console.log("  (No files written)");
+    return;
+  }
+
+  for (const p of OUT_PATHS) writeJson(p, out);
+  writeJson(HISTORY_PATH, updatedHistory);
+
+  console.log("\n  Files written:");
+  for (const p of OUT_PATHS) console.log(`    ${path.relative(ROOT, p)}`);
+  console.log(`    ${path.relative(ROOT, HISTORY_PATH)}`);
+  console.log("");
+}
+
+main().catch((err) => {
+  console.error(err?.stack || err?.message || String(err));
+  process.exit(1);
+});

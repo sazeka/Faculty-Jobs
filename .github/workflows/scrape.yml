@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: daily-scrape
@@ -66,6 +67,7 @@ jobs:
           cp -R web-vue/public/data/. docs/data/
           cp -R web-vue/public/data/. public/data/
           node scripts/generate-sitemap.js
+          node scripts/inject-og-meta.js
 
       - name: Validate job posting URLs (sample per source)
         run: npm run verify:job-urls -- --sample-per-source 8 --concurrency 8
@@ -75,12 +77,16 @@ jobs:
         run: npm run agent:data-health
         continue-on-error: true
 
+      - name: Track job presence and purge expired listings
+        run: npm run agent:job-presence
+        continue-on-error: true
+
       - name: Commit & push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add docs/jobs.json public/jobs.json docs/data/ public/data/ docs/sitemap.xml public/sitemap.xml docs/robots.txt public/robots.txt generated/post-quality-report.json generated/post-quality-drift.json generated/post-quality-dashboard.html generated/policy-excluded-colleges.json generated/coverage-report.json generated/career-link-verification.json generated/institution-link-status.json generated/career-link-quarantine.json generated/career-link-health-state.json generated/job-url-cache.json generated/job-url-report.json generated/job-url-dead.json generated/source-count-baseline.json generated/data-health-report.json public/policy-excluded-colleges.json docs/policy-excluded-colleges.json web-vue/public/policy-excluded-colleges.json data/institutions-master.json data/career-url-overrides.json data/post-quality-source-thresholds.json
+          git add docs/jobs.json public/jobs.json docs/data/ public/data/ docs/index.html public/index.html docs/sitemap.xml public/sitemap.xml docs/robots.txt public/robots.txt generated/post-quality-report.json generated/post-quality-drift.json generated/post-quality-dashboard.html generated/policy-excluded-colleges.json generated/coverage-report.json generated/career-link-verification.json generated/institution-link-status.json generated/career-link-quarantine.json generated/career-link-health-state.json generated/job-url-cache.json generated/job-url-report.json generated/job-url-dead.json generated/source-count-baseline.json generated/data-health-report.json generated/job-presence.json generated/job-presence-report.json public/policy-excluded-colleges.json docs/policy-excluded-colleges.json web-vue/public/policy-excluded-colleges.json data/institutions-master.json data/career-url-overrides.json data/post-quality-source-thresholds.json
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
@@ -92,3 +98,9 @@ jobs:
       - name: Monitor live site
         run: npm run monitor:live
         continue-on-error: true
+
+      - name: Open GitHub Issues for critical alerts
+        run: npm run agent:alert-issues
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

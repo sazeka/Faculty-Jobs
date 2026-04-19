@@ -878,6 +878,254 @@ strong,
   }
 }
 
+/* ── Tab bar ─────────────────────────────────────────────────────────────── */
+
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  margin: 14px 0 16px;
+  border-bottom: 2px solid var(--panel-border);
+  padding-bottom: 0;
+}
+
+.tab-btn {
+  padding: 9px 20px;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  border-radius: 8px 8px 0 0;
+  transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.tab-btn:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+.tab-btn.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.tab-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(63, 74, 90, 0.2);
+}
+
+/* ── Trends tab ──────────────────────────────────────────────────────────── */
+
+.trends-tab {
+  display: grid;
+  gap: 16px;
+  animation: rise-in 350ms ease-out;
+}
+
+.trends-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.trends-title {
+  margin: 4px 0 2px;
+  font-size: 1.4rem;
+}
+
+.trends-date {
+  margin: 0;
+  font-size: 0.88rem;
+}
+
+.trends-totals {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.trends-total-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 140px;
+}
+
+.trends-total-card span:first-child {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.trends-total-card strong {
+  font-size: 1.8rem;
+  line-height: 1.1;
+}
+
+.trends-delta {
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.delta-up   { color: #2a7a48; }
+.delta-down { color: var(--danger); }
+
+.trends-narrative .trends-prose p {
+  margin: 0 0 10px;
+  line-height: 1.7;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.trends-narrative .trends-prose p:last-child {
+  margin-bottom: 0;
+}
+
+.trends-generated-note {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+}
+
+.trends-stats-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.trends-stat-panel .eyebrow {
+  margin: 0 0 12px;
+}
+
+/* Horizontal bar list (sources + position types) */
+
+.trends-bar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.trends-bar-item {
+  display: grid;
+  grid-template-columns: 120px 1fr 52px;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.trends-bar-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.trends-bar-track {
+  height: 8px;
+  background: var(--bg-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.trends-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3a4455, #2b3442);
+  border-radius: 999px;
+  transition: width 400ms ease;
+}
+
+.trends-bar-count {
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* Institution list */
+
+.trends-institution-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.trends-inst-item {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+}
+
+.trends-inst-rank {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--muted);
+  text-align: right;
+}
+
+.trends-inst-name {
+  color: var(--ink);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trends-inst-count {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* Sparkline */
+
+.trends-sparkline {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 80px;
+  padding-bottom: 4px;
+}
+
+.trends-spark-bar {
+  flex: 1;
+  background: linear-gradient(180deg, #4b5566, #363f4d);
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+  cursor: default;
+  transition: opacity 120ms ease;
+}
+
+.trends-spark-bar:hover {
+  opacity: 0.7;
+}
+
+.trends-spark-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.trends-loading,
+.trends-error {
+  padding: 32px;
+  text-align: center;
+}
+
+/* Dark mode additions for trends */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-1: #16191e;
@@ -972,6 +1220,11 @@ strong,
   .map-empty    { background: rgba(26, 30, 38, 0.95); border-color: #3a424f; color: #a0b4c2; }
 
   .density-toggle button { background: #252c38; color: #9aaabb; }
+
+  .tab-btn:hover { background: rgba(255,255,255,0.05); }
+  .trends-bar-track { background: #2a3040; }
+  .trends-narrative .trends-prose p { color: var(--ink); }
+  .delta-up { color: #5abf80; }
 }
 
 @media (max-width: 760px) {

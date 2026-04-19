@@ -1,0 +1,54 @@
+name: Weekly trends digest
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Sundays at 20:00 UTC (after the daily scrape + agent-team pass)
+    - cron: "0 20 * * 0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-trends
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Generate weekly trends (with AI summary)
+        run: node scripts/generate-weekly-trends.js
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            docs/data/weekly-trends.json \
+            public/data/weekly-trends.json \
+            generated/weekly-stats-history.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Weekly trends digest"
+          git push

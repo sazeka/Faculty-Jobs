@@ -11,6 +11,7 @@ import { useJobFilters } from './composables/useJobFilters'
 import { useJobsData } from './composables/useJobsData'
 import { useAlerts } from './composables/useAlerts'
 import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
+import TrendsTab from './components/TrendsTab.vue'
 
 const DENSITY_STORAGE_KEY = 'facultyJobs.cardDensity.v1'
 const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || ''
@@ -22,6 +23,7 @@ const { jobs, status, scrapedAt, loadError, loadJobs, qualitySummary, newJobsCou
 const hoveredCollege = ref(null)
 const density = ref('comfortable')
 const reportStatus = ref('')
+const activeTab = ref('jobs')
 
 const filters = ref(createDefaultFilters())
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
@@ -210,6 +212,28 @@ onMounted(() => {
       <p v-if="reportStatus" class="muted">{{ reportStatus }}</p>
     </header>
 
+    <nav class="tab-bar" aria-label="Main navigation">
+      <button
+        type="button"
+        :class="['tab-btn', { active: activeTab === 'jobs' }]"
+        aria-controls="panel-jobs"
+        :aria-selected="activeTab === 'jobs'"
+        role="tab"
+        @click="activeTab = 'jobs'"
+      >Browse Jobs</button>
+      <button
+        type="button"
+        :class="['tab-btn', { active: activeTab === 'trends' }]"
+        aria-controls="panel-trends"
+        :aria-selected="activeTab === 'trends'"
+        role="tab"
+        @click="activeTab = 'trends'"
+      >Weekly Trends</button>
+    </nav>
+
+    <TrendsTab v-if="activeTab === 'trends'" :base-url="baseUrl" />
+
+    <template v-if="activeTab === 'jobs'">
     <section class="search-map-layout">
       <aside class="panel control-deck">
         <h2 class="section-title">Refine Search</h2>
@@ -268,5 +292,6 @@ onMounted(() => {
         @report-bad-listing="reportBadListing"
       />
     </section>
+    </template>
   </main>
 </template>
