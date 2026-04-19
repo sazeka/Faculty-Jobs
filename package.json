@@ -37,6 +37,8 @@
     "scrape:json": "node scripts/scrape-to-json.js",
     "release:dataset": "node scripts/release-dataset.js",
     "monitor:live": "node scripts/monitor-live-site.js",
+    "verify:job-urls": "node scripts/verify-job-urls.js",
+    "verify:job-urls:dry": "node scripts/verify-job-urls.js --dry-run",
     "ollama": "ollama serve"
   },
   "dependencies": {

@@ -90,7 +90,7 @@ Log "================================================"
 $OverallSuccess = $true
 
 # 1. Scrape
-LogSection "Step 1/4 - Scrape jobs"
+LogSection "Step 1/5 - Scrape jobs"
 $scraped = Invoke-Step "Scrape" $NpmCmd @("run", "scrape:json")
 if (-not $scraped) {
     Log "Scrape failed - aborting to preserve existing data." "ERROR"
@@ -100,14 +100,14 @@ if (-not $scraped) {
 
 # 2. Build frontend (only if scrape succeeded)
 if ($scraped) {
-    LogSection "Step 2/4 - Build frontend"
+    LogSection "Step 2/5 - Build frontend"
     $built = Invoke-Step "Build" $NpmCmd @("run", "build:frontend")
     if (-not $built) {
         Log "Build failed - skipping commit." "ERROR"
         $OverallSuccess = $false
     } else {
         # 3. Commit and push
-        LogSection "Step 3/4 - Commit and push"
+        LogSection "Step 3/5 - Commit and push"
         if ($DryRun) {
             Log "DRY RUN: skipping git commit and push." "WARN"
         } else {
@@ -153,8 +153,12 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
     }
 }
 
-# 4. Monitor live site
-LogSection "Step 4/4 - Monitor live site"
+# 4. Validate job posting URLs
+LogSection "Step 4/5 - Validate job URLs"
+Invoke-Step "Verify job URLs" $NpmCmd @("run", "verify:job-urls") | Out-Null
+
+# 5. Monitor live site
+LogSection "Step 5/5 - Monitor live site"
 if (-not $DryRun -and $scraped) {
     Log "Waiting 30s for GitHub Pages to propagate..."
     Start-Sleep -Seconds 30
