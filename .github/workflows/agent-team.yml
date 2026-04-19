@@ -1,0 +1,71 @@
+name: Agent team - data health
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs daily at 19:00 UTC (after the 16:15 UTC daily scrape finishes)
+    - cron: "0 19 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: agent-team
+  cancel-in-progress: true
+
+jobs:
+  data-health:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Check for merge conflict markers
+        run: npm run verify:no-conflicts
+
+      - name: Verify job posting URLs (sample)
+        run: npm run verify:job-urls -- --sample-per-source 10 --concurrency 8
+        continue-on-error: true
+
+      - name: Run data-health agent (remove dead listings, strip HTML titles, baseline check)
+        run: npm run agent:data-health
+
+      - name: Rebuild web data chunks from updated jobs.json
+        run: |
+          node scripts/sync-web-data-files.js
+          cp -R web-vue/public/data/. docs/data/
+          cp -R web-vue/public/data/. public/data/
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            public/jobs.json \
+            docs/jobs.json \
+            docs/data/ \
+            public/data/ \
+            generated/job-url-cache.json \
+            generated/job-url-report.json \
+            generated/job-url-dead.json \
+            generated/source-count-baseline.json \
+            generated/data-health-report.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Agent team: data health pass"
+          git push

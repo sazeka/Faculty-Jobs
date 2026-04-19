@@ -14,7 +14,7 @@ const emit = defineEmits(['save-current', 'apply-preset', 'remove-preset'])
       <button type="button" class="preset-apply" @click="emit('apply-preset', item.preset)">
         {{ item.label }}
       </button>
-      <button type="button" class="preset-remove" @click="emit('remove-preset', item.idx)">x</button>
+      <button type="button" class="preset-remove" :aria-label="`Remove preset: ${item.label}`" @click="emit('remove-preset', item.idx)">x</button>
     </span>
   </div>
 </template>

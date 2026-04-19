@@ -240,7 +240,7 @@ onMounted(() => {
             <article v-for="item in alertsWithCounts" :key="item.id" class="alert-item">
               <strong>{{ item.label }}</strong>
               <span>{{ item.matchCount.toLocaleString() }} matches</span>
-              <button type="button" @click="removeAlert(item.id)">Remove</button>
+              <button type="button" :aria-label="`Remove alert: ${item.label}`" @click="removeAlert(item.id)">Remove</button>
             </article>
           </div>
         </section>

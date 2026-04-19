@@ -10,7 +10,7 @@ const emit = defineEmits(['clear-chip'])
   <section v-if="props.chips.length" class="active-filters">
     <span v-for="chip in props.chips" :key="chip.key" class="filter-chip">
       {{ chip.label }}
-      <button type="button" @click="emit('clear-chip', chip.key)">x</button>
+      <button type="button" :aria-label="`Remove ${chip.label} filter`" @click="emit('clear-chip', chip.key)">x</button>
     </span>
   </section>
 </template>

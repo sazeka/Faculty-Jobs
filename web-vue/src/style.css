@@ -878,6 +878,102 @@ strong,
   }
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-1: #16191e;
+    --bg-2: #1e2229;
+    --ink: #e4e8ef;
+    --muted: #8a93a0;
+    --panel: rgba(30, 35, 43, 0.92);
+    --panel-border: #3a404a;
+    --focus: #7a98c4;
+    --accent: #c8d3e0;
+    --accent-soft: #1e2530;
+    --success-soft: #1c2920;
+    --danger: #ff7b6b;
+    --shadow-soft: 0 12px 34px rgba(0, 0, 0, 0.3);
+    --shadow-pop: 0 18px 36px rgba(0, 0, 0, 0.45);
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 8% -15%, rgba(58, 66, 78, 0.3), transparent 36%),
+      radial-gradient(circle at 92% 0%, rgba(84, 95, 112, 0.2), transparent 32%),
+      linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  }
+
+  body::before { background: rgba(66, 76, 89, 0.2); }
+  body::after  { background: rgba(103, 113, 128, 0.15); }
+
+  .eyebrow { color: #8a97aa; }
+  .logo-faculty { color: #d0dae8; }
+  .logo-atlas   { color: #8898aa; }
+  .subtitle     { color: #b8c8d8; }
+  .meta-links a { color: #7aabef; border-bottom-color: rgba(122, 171, 239, 0.3); }
+  .meta-links a:hover { color: #a4c8ff; border-bottom-color: rgba(164, 200, 255, 0.5); }
+
+  .status-pill  { border-color: #3a424f; background: #222830; color: #c2ccd8; }
+  .saved-count  { border-color: #3a424f; background: #1e2530; }
+
+  .trust-card   { background: rgba(38, 44, 55, 0.78); border-color: #3a404a; }
+  .trust-card span { color: #8a96a6; }
+
+  .metric-card  { background: rgba(30, 36, 46, 0.76); border-color: #3a404a; }
+  .metric-card span { color: #8a95a3; }
+
+  .filters input,
+  .filters select,
+  .filters .check {
+    background: #252c38;
+    border-color: #3a424f;
+    color: var(--ink);
+  }
+
+  .filters input:hover,
+  .filters select:hover { border-color: #4a5568; }
+
+  .filter-chip  { background: #252c38; border-color: #3a424f; color: #c2ccd8; }
+  .filter-chip button { border-left-color: #3a424f; }
+
+  .preset-item  { background: #252c38; border-color: #3a424f; }
+  .preset-remove { border-left-color: #3a424f; }
+
+  .card {
+    background: rgba(28, 33, 42, 0.96);
+    border-color: #373e4c;
+  }
+
+  .card.state-focus { border-color: #5a6675; }
+
+  .meta-pill { background: #252c38; border-color: #3a424f; color: #a0b0c4; }
+  .meta-pill.meta-pill-warn { background: #2c2018; border-color: #5a3e28; color: #d4a07a; }
+
+  .quick-fact       { background: #202530; border-color: #353d4c; }
+  .quick-fact .k    { color: #7a8698; }
+  .quick-fact .v    { color: #c0ccd8; }
+  .quick-fact.positive { background: #1a2820; border-color: #304038; }
+  .quick-fact.neutral  { background: #1e2330; border-color: #323846; }
+
+  .info-label { color: #7a8698; }
+  .info-value { color: #c0ccd8; }
+
+  .description { color: #a0b4c8; border-left-color: #3a424f; }
+
+  .summary-box { background: #202530; border-color: #353d4c; }
+  .summary-box summary { color: #8898aa; }
+  .summary-box p { color: #b0bfce; }
+
+  .alert-panel  { border-top-color: #353d4c; }
+  .alert-item   { background: #1e2430; border-color: #353d4c; }
+  .alert-item span { color: #8898aa; }
+  .alert-item button { background: #252c38; border-color: #3a424f; }
+
+  .leaflet-map  { border-color: #3a424f; }
+  .map-empty    { background: rgba(26, 30, 38, 0.95); border-color: #3a424f; color: #a0b4c2; }
+
+  .density-toggle button { background: #252c38; color: #9aaabb; }
+}
+
 @media (max-width: 760px) {
   .page {
     padding: 16px;

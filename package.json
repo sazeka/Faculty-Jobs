@@ -39,6 +39,8 @@
     "monitor:live": "node scripts/monitor-live-site.js",
     "verify:job-urls": "node scripts/verify-job-urls.js",
     "verify:job-urls:dry": "node scripts/verify-job-urls.js --dry-run",
+    "agent:data-health": "node scripts/agent-data-health.js",
+    "agent:data-health:dry": "node scripts/agent-data-health.js --dry-run",
     "ollama": "ollama serve"
   },
   "dependencies": {
