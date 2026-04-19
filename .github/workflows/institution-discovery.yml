@@ -1,0 +1,67 @@
+name: Weekly institution discovery
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Saturdays at 14:00 UTC (between monthly hygiene and daily scrape)
+    - cron: "0 14 * * 6"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: institution-discovery
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Check for merge conflict markers
+        run: npm run verify:no-conflicts
+
+      - name: Seed new institutions from IPEDS WEBADDR
+        run: npm run seed:ipeds:webaddr
+
+      - name: Generate promotion candidates report
+        run: npm run promote:seeded
+
+      - name: Rebuild institutions and coverage artifacts
+        run: npm run build:coverage
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add data/institutions-master.json \
+            generated/scrape-config-additions.json \
+            generated/promotion-candidates.json \
+            generated/promotion-candidates-snippets.js \
+            generated/promotion-candidates.csv \
+            generated/coverage-report.json \
+            generated/policy-excluded-colleges.json \
+            public/policy-excluded-colleges.json \
+            docs/policy-excluded-colleges.json \
+            web-vue/public/policy-excluded-colleges.json
+
+          if git diff --cached --quiet; then
+            echo "No new institutions discovered this week."
+            exit 0
+          fi
+
+          git commit -m "Weekly institution discovery — seed IPEDS + rebuild coverage"
+          git push
