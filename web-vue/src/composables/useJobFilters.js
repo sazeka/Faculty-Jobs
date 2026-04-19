@@ -75,6 +75,37 @@ function clean(value) {
   return String(value || '').replace(/\s+/g, ' ').trim()
 }
 
+// Returns a sanitised department string or null if the value looks like garbage
+// (scraped job title, truncated description, etc.)
+const INSTITUTION_WORDS = ['university', 'college', 'institute', 'school', 'academy']
+function cleanDepartment(dept) {
+  if (!dept) return null
+  const s = clean(String(dept))
+  if (!s || s.length < 3) return null
+  if (s.length > 80) return null                   // likely a description
+  if (/^[\d()\-,]/.test(s)) return null            // starts with digit, bracket, or punctuation
+  if (/\.\s[a-z]/.test(s)) return null             // sentence break mid-string
+  if (/\)\s/.test(s)) return null                  // leftover parenthetical noise
+  if (/^\d{4}\s/.test(s)) return null              // starts with year
+  if (/\b(position|posted|internal only|open until filled|all ranks|region:)\b/i.test(s)) return null
+  return s
+}
+
+// Extracts "City, ST" from raw location strings like "Campus - Philadelphia, PA"
+function extractCity(location) {
+  if (!location) return null
+  const parts = String(location).split(' - ')
+  const candidate = parts[parts.length - 1].trim()
+  const match = candidate.match(/^(.+),\s*([A-Z]{2})$/)
+  if (!match) return null
+  const cityPart = match[1].trim()
+  const statePart = match[2]
+  const lower = cityPart.toLowerCase()
+  if (INSTITUTION_WORDS.some((w) => lower.includes(w))) return null
+  if (cityPart.split(/\s+/).length > 4) return null
+  return `${cityPart}, ${statePart}`
+}
+
 function normalizeForKey(value) {
   return clean(value).toLowerCase().replace(/[^a-z0-9]+/g, ' ')
 }
@@ -99,7 +130,7 @@ function normalizeJob(job) {
   const normalizedTitle = stripDateTextFromTitle(job?.titleClean || job?.title || '(No title)')
   const title = normalizedTitle || '(No title)'
   const college = normalizeSystemCollege(job)
-  const department = job?.department || null
+  const department = cleanDepartment(job?.department)
   const state = inferState(job)
   const derivedGroupKey = [normalizeForKey(title), normalizeForKey(college), normalizeForKey(department || ''), normalizeForKey(state || '')]
     .filter(Boolean)
@@ -113,6 +144,7 @@ function normalizeJob(job) {
     source: job?.source || null,
     college,
     location: job?.location || null,
+    city: extractCity(job?.location),
     department,
     description: job?.description || null,
     summary: job?.summary || null,
@@ -217,6 +249,8 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   const allStateValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.state))
   const allPositionTypeValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.positionType))
   const allCollegeValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.college))
+  const allDepartmentValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.department))
+  const allCityValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.city))
 
   function applyFiltersWithValues(filterValues, { ignoreKey = null } = {}) {
     const q = clean(filterValues.q).toLowerCase()
@@ -231,6 +265,12 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     }
     if (ignoreKey !== 'college' && filterValues.college !== ALL_FILTER_VALUE) {
       out = out.filter((job) => job.college === filterValues.college)
+    }
+    if (ignoreKey !== 'department' && filterValues.department !== ALL_FILTER_VALUE) {
+      out = out.filter((job) => job.department === filterValues.department)
+    }
+    if (ignoreKey !== 'city' && filterValues.city !== ALL_FILTER_VALUE) {
+      out = out.filter((job) => job.city === filterValues.city)
     }
     if (ignoreKey !== 'tenureTrackOnly' && filterValues.tenureTrackOnly) {
       out = out.filter((job) => job.tenureTrack === true)
@@ -298,6 +338,34 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     })
   })
 
+  const departmentOptions = computed(() => {
+    const counts = countBy(applyFilters({ ignoreKey: 'department' }), (job) => job.department)
+    return allDepartmentValues.value.map((value) => {
+      const count = counts.get(value) || 0
+      return {
+        value,
+        count,
+        label: formatOptionLabel(value, count, 40),
+        fullLabel: `${value} (${count})`,
+        disabled: count === 0 && filtersRef.value.department !== value,
+      }
+    })
+  })
+
+  const cityOptions = computed(() => {
+    const counts = countBy(applyFilters({ ignoreKey: 'city' }), (job) => job.city)
+    return allCityValues.value.map((value) => {
+      const count = counts.get(value) || 0
+      return {
+        value,
+        count,
+        label: formatOptionLabel(value, count, 30),
+        fullLabel: `${value} (${count})`,
+        disabled: count === 0 && filtersRef.value.city !== value,
+      }
+    })
+  })
+
   const filteredJobs = computed(() => {
     let out = applyFilters()
 
@@ -327,6 +395,8 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     if (filtersRef.value.newOnly) chips.push({ key: 'newOnly', label: 'New Since Visit' })
     if (filtersRef.value.positionType !== ALL_FILTER_VALUE) chips.push({ key: 'positionType', label: filtersRef.value.positionType })
     if (filtersRef.value.college !== ALL_FILTER_VALUE) chips.push({ key: 'college', label: truncate(filtersRef.value.college, 25) })
+    if (filtersRef.value.department !== ALL_FILTER_VALUE) chips.push({ key: 'department', label: truncate(filtersRef.value.department, 30) })
+    if (filtersRef.value.city !== ALL_FILTER_VALUE) chips.push({ key: 'city', label: filtersRef.value.city })
     return chips
   })
 
@@ -346,6 +416,8 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     if (key === 'newOnly') updateFilters({ newOnly: false })
     if (key === 'positionType') updateFilters({ positionType: ALL_FILTER_VALUE })
     if (key === 'college') updateFilters({ college: ALL_FILTER_VALUE })
+    if (key === 'department') updateFilters({ department: ALL_FILTER_VALUE })
+    if (key === 'city') updateFilters({ city: ALL_FILTER_VALUE })
   }
 
   function resetFilters() {
@@ -362,6 +434,8 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     stateOptions,
     positionTypeOptions,
     collegeOptions,
+    departmentOptions,
+    cityOptions,
     filteredJobs,
     activeFilterChips,
     updateFilters,

@@ -4,6 +4,8 @@ const props = defineProps({
   stateOptions: { type: Array, required: true },
   positionTypeOptions: { type: Array, required: true },
   collegeOptions: { type: Array, required: true },
+  departmentOptions: { type: Array, required: true },
+  cityOptions: { type: Array, required: true },
   showSearch: { type: Boolean, default: true },
 })
 
@@ -54,6 +56,32 @@ function updateField(key, value) {
     <option value="all">All Universities ({{ props.collegeOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
     <option
       v-for="option in props.collegeOptions"
+      :key="option.value"
+      :value="option.value"
+      :disabled="option.disabled"
+      :title="option.fullLabel || option.label"
+    >
+      {{ option.label }}
+    </option>
+  </select>
+
+  <select :value="props.filters.department" aria-label="Filter by department" @change="updateField('department', $event.target.value)">
+    <option value="all">All Departments ({{ props.departmentOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
+    <option
+      v-for="option in props.departmentOptions"
+      :key="option.value"
+      :value="option.value"
+      :disabled="option.disabled"
+      :title="option.fullLabel || option.label"
+    >
+      {{ option.label }}
+    </option>
+  </select>
+
+  <select :value="props.filters.city" aria-label="Filter by city" @change="updateField('city', $event.target.value)">
+    <option value="all">All Cities ({{ props.cityOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
+    <option
+      v-for="option in props.cityOptions"
       :key="option.value"
       :value="option.value"
       :disabled="option.disabled"

@@ -27,7 +27,7 @@ const activeTab = ref('jobs')
 
 const filters = ref(createDefaultFilters())
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
-const { stateOptions, positionTypeOptions, collegeOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
+const { stateOptions, positionTypeOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
   useJobFilters({
     jobsRef: jobs,
     filtersRef: filters,
@@ -243,6 +243,8 @@ onMounted(() => {
             :state-options="stateOptions"
             :position-type-options="positionTypeOptions"
             :college-options="collegeOptions"
+            :department-options="departmentOptions"
+            :city-options="cityOptions"
             @update:filters="updateFilters"
             @reset-filters="resetFilters"
             @refresh-data="loadJobs"
