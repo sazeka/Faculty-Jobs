@@ -238,6 +238,7 @@ function canonicalizeJobUrls(data) {
   const targets = [
     path.join(__dirname, "..", "docs", "jobs.json"),
     path.join(__dirname, "..", "public", "jobs.json"),
+    path.join(__dirname, "..", "web-vue", "public", "jobs.json"),
   ];
 
   const previousPath = path.join(__dirname, "..", "public", "jobs.json");

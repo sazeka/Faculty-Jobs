@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev:frontend": "npm run sync:web-data && cd web-vue && npm run dev",
-    "build:frontend": "npm run build:coverage && npm run sync:policy-exclusions && cd web-vue && npm run build && cd .. && cp -R web-vue/dist/. public/ && cp -R web-vue/dist/. docs/ && node scripts/generate-sitemap.js && node scripts/inject-og-meta.js",
+    "build:frontend": "npm run build:coverage && npm run sync:policy-exclusions && npm run sync:web-data && cd web-vue && npm run build && cd .. && cp -R web-vue/dist/. public/ && cp -R web-vue/dist/. docs/ && node scripts/generate-sitemap.js && node scripts/inject-og-meta.js",
     "generate:sitemap": "node scripts/generate-sitemap.js",
     "build:institutions": "node scripts/build-institutions-master.js",
     "verify:career-links": "node scripts/verify-career-links.js",
@@ -48,6 +48,8 @@
     "agent:job-presence:dry": "node scripts/agent-job-presence.js --dry-run",
     "agent:alert-issues": "node scripts/agent-alert-issues.js",
     "agent:alert-issues:dry": "node scripts/agent-alert-issues.js --dry-run",
+    "agent:enrich": "node scripts/agent-job-enrichment.js",
+    "agent:enrich:dry": "node scripts/agent-job-enrichment.js --dry-run",
     "inject:og-meta": "node scripts/inject-og-meta.js",
     "ollama": "ollama serve"
   },
