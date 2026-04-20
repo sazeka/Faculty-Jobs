@@ -38,7 +38,7 @@ $Trigger = New-ScheduledTaskTrigger -Daily -At $RunAt
 $Settings = New-ScheduledTaskSettingsSet `
     -DisallowStartIfOnBatteries:$false `
     -StopIfGoingOnBatteries:$false `
-    -ExecutionTimeLimit (New-TimeSpan -Hours 2) `
+    -ExecutionTimeLimit (New-TimeSpan -Hours 5) `
     -StartWhenAvailable `
     -RunOnlyIfNetworkAvailable
 

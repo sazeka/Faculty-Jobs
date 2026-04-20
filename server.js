@@ -5494,6 +5494,7 @@ async function scrapeJibeApiAs(startUrl, campusName, sourceName) {
         const apiUrl = `${origin}/api/jobs?search=${encodeURIComponent(term)}&page=${page}&limit=${limit}`;
         const resp = await fetch(apiUrl, {
           headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+          signal: AbortSignal.timeout(30_000),
         });
         if (!resp.ok) break;
         const data = await resp.json().catch(() => null);
@@ -5539,6 +5540,7 @@ async function scrapeJobviteAs(startUrl, campusName, sourceName) {
   try {
     const resp = await fetch(startUrl, {
       headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+      signal: AbortSignal.timeout(30_000),
     });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const html = await resp.text();
@@ -5589,6 +5591,7 @@ async function scrapeSmithInterfolioPage(startUrl, campusName, sourceName) {
   try {
     const resp = await fetch(startUrl, {
       headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+      signal: AbortSignal.timeout(30_000),
     });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const html = await resp.text();
@@ -5645,6 +5648,7 @@ async function scrapeInterfolioLinksFromPageAs(startUrl, campusName, sourceName)
   try {
     const resp = await fetch(startUrl, {
       headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+      signal: AbortSignal.timeout(30_000),
     });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const html = await resp.text();
@@ -5738,6 +5742,7 @@ async function scrapeUscJobsAs(startUrl, campusName, sourceName) {
 
       const resp = await fetch(pageUrl, {
         headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+        signal: AbortSignal.timeout(30_000),
       });
       if (!resp.ok) break;
       const html = await resp.text();
@@ -5823,6 +5828,7 @@ async function scrapeWorkdaySearchApiAs(startUrl, campusName, sourceName, search
             offset,
             searchText: term,
           }),
+          signal: AbortSignal.timeout(30_000),
         });
         if (!response.ok) break;
 
@@ -5868,6 +5874,7 @@ async function scrapeLafayetteFacultyPageAs(startUrl, campusName, sourceName) {
   try {
     const resp = await fetch(startUrl, {
       headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+      signal: AbortSignal.timeout(30_000),
     });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const html = await resp.text();
@@ -6544,7 +6551,8 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
           limit,
           offset,
           searchText: ""
-        })
+        }),
+        signal: AbortSignal.timeout(30_000),
       });
 
       if (!response.ok) {
@@ -7515,7 +7523,7 @@ async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
 
 async function scrapePeopleAdminHttpFallback(startUrl, campusName, sourceName) {
   try {
-    const response = await fetch(startUrl);
+    const response = await fetch(startUrl, { signal: AbortSignal.timeout(30_000) });
     if (!response.ok) return [];
     const html = await response.text();
     if (!html) return [];
@@ -7752,7 +7760,7 @@ async function scrapePeopleAdminWithDept(context, startUrl, campusName, sourceNa
         }
         if (!dept) {
           try {
-            const res = await fetch(j.url);
+            const res = await fetch(j.url, { signal: AbortSignal.timeout(30_000) });
             if (res.ok) {
               const html = await res.text();
               dept = extractDeptFromPeopleAdminDetailHtml(html) || null;
@@ -9361,7 +9369,7 @@ async function scrapePeopleClickAs(context, startUrl, campusName, sourceName) {
 
 async function scrapeWvsuFacultyPdfAs(startUrl, campusName, sourceName) {
   try {
-    const res = await fetch(startUrl);
+    const res = await fetch(startUrl, { signal: AbortSignal.timeout(30_000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const html = await res.text();
     const cleanText = (s) => clean(String(s || "").replace(/<[^>]+>/g, " "));
@@ -11236,7 +11244,7 @@ async function scrapeAdpCareerCenterAs(context, startUrl, campusName, sourceName
 
 async function scrapeNdsuJoblistAs(startUrl, campusName, sourceName) {
   try {
-    const res = await fetch(startUrl);
+    const res = await fetch(startUrl, { signal: AbortSignal.timeout(30_000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const html = await res.text();
 
@@ -11966,7 +11974,7 @@ async function scrapeInterfolioInstitution(context, startUrl, campusName, source
 
     while (allResults.length < totalCount) {
       const apiUrl = `${apiBase}?limit=${pageSize}&page=${page}`;
-      const resp = await fetch(apiUrl);
+      const resp = await fetch(apiUrl, { signal: AbortSignal.timeout(30_000) });
       if (!resp.ok) throw new Error(`API returned ${resp.status}`);
       const data = await resp.json();
       totalCount = data.total_count || 0;
@@ -12009,7 +12017,7 @@ async function scrapeSaasHrApi(apiUrl, campusName, sourceName) {
 
     for (let page = 0; page < 10; page++) {
       const url = `${apiUrl}?offset=${offset}&size=${pageSize}&sort=desc&ein_id=&lang=en-US`;
-      const resp = await fetch(url);
+      const resp = await fetch(url, { signal: AbortSignal.timeout(30_000) });
       if (!resp.ok) throw new Error(`API returned ${resp.status}`);
       const data = await resp.json();
       const items = data.job_requisitions || [];

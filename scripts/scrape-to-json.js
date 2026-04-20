@@ -199,7 +199,7 @@ function canonicalizeJobUrls(data) {
 }
 
 (async () => {
-  const data = await scrapeAllJobsStandalone(); // { scrapedAt, count, jobs }
+  let data = await scrapeAllJobsStandalone(); // { scrapedAt, count, jobs }
 
   // Local GPU LLM summarization (offline)
   if (data && Array.isArray(data.jobs)) {

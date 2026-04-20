@@ -44,18 +44,13 @@ function Invoke-Step {
     )
     Log "Running: $Command $($Arguments -join ' ')"
 
-    $stdoutTmp = "$LogFile.stdout.tmp"
-    $stderrTmp = "$LogFile.stderr.tmp"
-
     Push-Location $ProjectRoot
     try {
-        $output = & $Command @Arguments 2>&1
+        & $Command @Arguments 2>&1 | ForEach-Object { Log "  $_" }
         $exitCode = $LASTEXITCODE
     } finally {
         Pop-Location
     }
-
-    foreach ($line in $output) { Log "  $line" }
 
     if ($exitCode -ne 0) {
         Log "$Label FAILED (exit code $exitCode)" "ERROR"
