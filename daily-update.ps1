@@ -46,11 +46,13 @@ function Invoke-Step {
 
     Push-Location $ProjectRoot
     try {
-        & $Command @Arguments 2>&1 | ForEach-Object { Log "  $_" }
+        $output = & $Command @Arguments 2>&1
         $exitCode = $LASTEXITCODE
     } finally {
         Pop-Location
     }
+
+    foreach ($line in $output) { Log "  $line" }
 
     if ($exitCode -ne 0) {
         Log "$Label FAILED (exit code $exitCode)" "ERROR"
