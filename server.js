@@ -176,7 +176,12 @@ async function postWithRetry(url, body, attempts = LOCAL_LLM_RETRIES, softFail =
 
 async function checkEndpointHealth(url) {
   try {
-    await postWithRetry(url, { jobs: [], max_new_tokens: 1 }, 1);
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jobs: [], max_new_tokens: 1 }),
+      signal: AbortSignal.timeout(5_000),
+    });
     return true;
   } catch { return false; }
 }
