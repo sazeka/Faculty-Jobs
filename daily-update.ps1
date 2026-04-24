@@ -23,7 +23,7 @@ function Log {
     param([string]$Message, [string]$Level = "INFO")
     $line = "[$(Get-Date -Format 'HH:mm:ss')] [$Level] $Message"
     Write-Host $line
-    Add-Content -Path $LogFile -Value $line
+    try { Add-Content -Path $LogFile -Value $line -ErrorAction Stop } catch {}
 }
 
 function LogSection {
@@ -47,11 +47,7 @@ function Invoke-Step {
     Push-Location $ProjectRoot
     try {
         & $Command @Arguments 2>&1 | ForEach-Object {
-            if ($_ -is [System.Management.Automation.ErrorRecord]) {
-                Log "  [stderr] $($_.Exception.Message)"
-            } else {
-                Log "  $_"
-            }
+            Log "  $([string]$_)"
         }
         $exitCode = $LASTEXITCODE
     } finally {
