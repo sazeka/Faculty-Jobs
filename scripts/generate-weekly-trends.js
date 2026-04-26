@@ -2,9 +2,13 @@
 /**
  * generate-weekly-trends.js
  *
- * Computes weekly faculty hiring stats from jobs.json, then calls the
- * Claude API (claude-haiku-4-5-20251001) to generate a prose narrative
- * summary. Falls back to a data-only summary if ANTHROPIC_API_KEY is unset.
+ * Computes weekly faculty hiring stats from jobs.json, then uses AI to
+ * generate a prose narrative summary.
+ *
+ * Backend selection (automatic):
+ *   ANTHROPIC_API_KEY set → Claude Haiku (used in CI/GitHub Actions)
+ *   not set              → Ollama local (used on developer machines)
+ *   neither available    → template summary fallback
  *
  * Outputs:
  *   docs/data/weekly-trends.json     (served by GitHub Pages)
@@ -13,12 +17,10 @@
  *
  * Usage:
  *   node scripts/generate-weekly-trends.js [--dry-run]
- *
- * Requires:
- *   ANTHROPIC_API_KEY env var (or .env file) for AI prose generation.
  */
 import fs from "fs";
 import path from "path";
+import http from "http";
 import https from "https";
 import { fileURLToPath } from "url";
 
@@ -34,8 +36,11 @@ const OUT_PATHS    = [
 
 // ── CLI / env ─────────────────────────────────────────────────────────────────
 
-const DRY_RUN = process.argv.includes("--dry-run");
-const API_KEY = process.env.ANTHROPIC_API_KEY || null;
+const DRY_RUN      = process.argv.includes("--dry-run");
+const API_KEY      = process.env.ANTHROPIC_API_KEY || null;
+const OLLAMA_HOST  = process.env.OLLAMA_HOST  || "localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:7b";
+const USE_OLLAMA   = process.env.USE_CLAUDE !== "1";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -179,12 +184,71 @@ ${JSON.stringify(statsForPrompt, null, 2)}`;
   });
 }
 
+// ── Ollama API call ───────────────────────────────────────────────────────────
+
+function callOllama(statsForPrompt) {
+  return new Promise((resolve, reject) => {
+    const prompt = `You are writing a weekly digest for Faculty Atlas, a U.S. faculty job listings platform.
+
+Write a 2-3 paragraph summary (150–200 words) of this week's faculty hiring trends. Use a professional but readable newsletter tone.
+
+Focus on:
+- Changes in total listing volume vs last week (if available)
+- Which states or systems are most active
+- What position types dominate
+- Anything noteworthy or surprising in the data
+
+Avoid: technical jargon, mentioning job IDs, phrases like "the data shows" or "according to the data", or bullet points.
+
+Weekly data:
+${JSON.stringify(statsForPrompt, null, 2)}`;
+
+    const body = JSON.stringify({
+      model: OLLAMA_MODEL,
+      messages: [{ role: "user", content: prompt }],
+      stream: false,
+    });
+
+    const [hostname, port] = OLLAMA_HOST.split(":");
+    const req = http.request(
+      {
+        hostname,
+        port: Number(port) || 11434,
+        path: "/api/chat",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(body),
+        },
+      },
+      (res) => {
+        let data = "";
+        res.on("data", (c) => (data += c));
+        res.on("end", () => {
+          try {
+            const parsed = JSON.parse(data);
+            const text = parsed?.message?.content;
+            if (text) resolve(text.trim());
+            else reject(new Error(JSON.stringify(parsed)));
+          } catch (e) {
+            reject(e);
+          }
+        });
+      }
+    );
+    req.on("error", reject);
+    req.write(body);
+    req.end();
+  });
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
   console.log("\nFaculty Atlas - Weekly Trends Generator");
   if (DRY_RUN) console.log("  *** DRY RUN ***");
-  if (!API_KEY) console.log("  ANTHROPIC_API_KEY not set — will use template summary.");
+  if (USE_OLLAMA) console.log(`  Backend: Ollama (${OLLAMA_MODEL} @ ${OLLAMA_HOST})`);
+  else            console.log("  Backend: Claude Haiku (Anthropic API)");
 
   const payload = readJson(JOBS_PATH);
   if (!payload?.jobs?.length) { console.error("Cannot read public/jobs.json"); process.exit(1); }
@@ -212,16 +276,13 @@ async function main() {
 
   // Generate prose summary
   let summary;
-  if (API_KEY) {
-    try {
-      console.log("\n  Calling Claude API for prose summary...");
-      summary = await callClaude(statsForPrompt);
-      console.log("  Summary generated.");
-    } catch (err) {
-      console.warn(`  Claude API error: ${err.message} — falling back to template.`);
-      summary = templateSummary(stats, prev);
-    }
-  } else {
+  const aiCall = USE_OLLAMA ? callOllama : callClaude;
+  try {
+    console.log(`\n  Generating prose summary...`);
+    summary = await aiCall(statsForPrompt);
+    console.log("  Summary generated.");
+  } catch (err) {
+    console.warn(`  AI error: ${err.message} — falling back to template.`);
     summary = templateSummary(stats, prev);
   }
 

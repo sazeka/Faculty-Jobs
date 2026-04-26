@@ -45,6 +45,13 @@ jobs:
         run: npm run agent:job-presence
         continue-on-error: true
 
+      - name: Enrich new jobs with discipline, tenure status, and position type
+        run: npm run agent:enrich -- --max 500
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          USE_CLAUDE: '1'
+
       - name: Rebuild web data chunks from updated jobs.json
         run: |
           node scripts/sync-web-data-files.js
@@ -70,7 +77,8 @@ jobs:
             generated/source-count-baseline.json \
             generated/data-health-report.json \
             generated/job-presence.json \
-            generated/job-presence-report.json
+            generated/job-presence-report.json \
+            generated/enrichment-report.json
 
           if git diff --cached --quiet; then
             echo "No changes to commit."

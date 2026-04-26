@@ -244,7 +244,26 @@
       "WebFetch(domain:www.saintpeters.edu)",
       "Bash(CAMPUS_ALLOWLIST=NJ npm run scrape:json:*)",
       "Bash(xargs:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(cd /c/Users/StevenAzeka/OneDrive/Documents/GitHub/Faculty-Jobs && rm -f generated/job-presence-report.json generated/job-presence.json generated/job-url-cache.json generated/job-url-dead.json generated/job-url-report.json && git merge origin/main -m \"Merge remote agent-team run\" && git push 2>&1)",
+      "Bash(schtasks /query /tn \"FacultyAtlas-DailyUpdate\" /fo LIST)",
+      "Bash(grep -B5 \"^--$\")",
+      "Bash(awk '/await fetch\\\\\\(/{start=NR; found=0} found==0 && NR>start && NR<=start+5 && /AbortSignal/{found=1} NR==start+5 && found==0{print start\": \"$0}' server.js)",
+      "Bash(npm run *)",
+      "Bash(gh run *)",
+      "Bash(git fetch *)",
+      "Bash(git merge *)",
+      "Bash(where gh *)",
+      "PowerShell(Get-ScheduledTask *)",
+      "PowerShell(try { $client = New-Object System.Net.Sockets.TcpClient; $result = $client.BeginConnect\\(\"127.0.0.1\", 9000, $null, $null\\); $waited = $result.AsyncWaitHandle.WaitOne\\(2000\\); if \\($waited\\) { \"Port 9000: OPEN\" } else { \"Port 9000: TIMEOUT \\(no response in 2s\\)\" }; $client.Close\\(\\) } catch { \"Port 9000: \" + $_.Exception.Message })",
+      "PowerShell(head *)",
+      "PowerShell($events = Get-WinEvent -LogName \"Microsoft-Windows-TaskScheduler/Operational\" -ErrorAction SilentlyContinue | Where-Object { $_.TimeCreated -gt \\(Get-Date \"2026-04-22 01:55:00\"\\) -and $_.Id -in @\\(100, 101, 102, 103, 110, 111, 201\\) }; $events | Select-Object TimeCreated, Id, Message | Format-List | Out-String -Stream | Select-Object -First 80)",
+      "PowerShell($events = Get-WinEvent -LogName \"Microsoft-Windows-TaskScheduler/Operational\" -ErrorAction SilentlyContinue | Where-Object { $_.TimeCreated -gt \\(Get-Date \"2026-04-22 01:55:00\"\\) }; \"Total events: \" + $events.Count; $events | Select-Object -First 10 | ForEach-Object { $_.TimeCreated.ToString\\(\\) + \" ID:\" + $_.Id + \" \" + $_.Message.Substring\\(0, [Math]::Min\\(100, $_.Message.Length\\)\\) })",
+      "PowerShell(\\(Get-Item \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\\\\docs\\\\jobs.json\"\\).LastWriteTime; \\(Get-Item \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\\\\public\\\\jobs.json\"\\).LastWriteTime)",
+      "Bash(git rebase *)",
+      "PowerShell(\\(Get-Item \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\\\\generated\\\\automation-logs\\\\daily-update-2026-04-24_02-00-02.log\"\\).LastWriteTime; \\(Get-Item \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\\\\docs\\\\jobs.json\"\\).LastWriteTime)",
+      "PowerShell(Get-Item *)",
+      "Bash(grep *)"
     ]
   }
 }
