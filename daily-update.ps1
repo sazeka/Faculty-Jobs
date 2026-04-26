@@ -35,7 +35,7 @@ function LogSection {
     Log $sep
 }
 
-# -- Run a command, stream output, and return exit code ----------------------
+# -- Run a command via Start-Process (no pipeline — survives session events) --
 function Invoke-Step {
     param(
         [string]$Label,
@@ -44,14 +44,27 @@ function Invoke-Step {
     )
     Log "Running: $Command $($Arguments -join ' ')"
 
-    Push-Location $ProjectRoot
+    $stdOut = [System.IO.Path]::GetTempFileName()
+    $stdErr = [System.IO.Path]::GetTempFileName()
+
     try {
-        & $Command @Arguments 2>&1 | ForEach-Object {
-            Log "  $([string]$_)"
-        }
-        $exitCode = $LASTEXITCODE
+        $proc = Start-Process `
+            -FilePath $Command `
+            -ArgumentList $Arguments `
+            -WorkingDirectory $ProjectRoot `
+            -RedirectStandardOutput $stdOut `
+            -RedirectStandardError $stdErr `
+            -NoNewWindow -Wait -PassThru
+        $exitCode = $proc.ExitCode
     } finally {
-        Pop-Location
+        if (Test-Path $stdOut) {
+            Get-Content $stdOut -ErrorAction SilentlyContinue | ForEach-Object { Log "  $_" }
+            Remove-Item $stdOut -ErrorAction SilentlyContinue
+        }
+        if (Test-Path $stdErr) {
+            Get-Content $stdErr -ErrorAction SilentlyContinue | ForEach-Object { Log "  [stderr] $_" }
+            Remove-Item $stdErr -ErrorAction SilentlyContinue
+        }
     }
 
     if ($exitCode -ne 0) {
