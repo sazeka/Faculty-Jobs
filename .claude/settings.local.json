@@ -263,7 +263,8 @@
       "Bash(git rebase *)",
       "PowerShell(\\(Get-Item \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\\\\generated\\\\automation-logs\\\\daily-update-2026-04-24_02-00-02.log\"\\).LastWriteTime; \\(Get-Item \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\\\\docs\\\\jobs.json\"\\).LastWriteTime)",
       "PowerShell(Get-Item *)",
-      "Bash(grep *)"
+      "Bash(grep *)",
+      "PowerShell(gh run list --limit 15 --json status,conclusion,name,createdAt,headBranch | ConvertFrom-Json | Format-Table name, status, conclusion, createdAt -AutoSize)"
     ]
   }
 }
