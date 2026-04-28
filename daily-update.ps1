@@ -139,12 +139,10 @@ if ($scraped) {
                 $statusOutput = & $GitCmd -C $ProjectRoot status --porcelain 2>&1
                 if ($statusOutput) {
                     $dateLabel = Get-Date -Format "yyyy-MM-dd"
-                    $commitMsg = "Daily scrape update $dateLabel
-
-Automated via daily-update.ps1
-
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
-                    $committed = Invoke-Step "git commit" $GitCmd @("commit", "-m", $commitMsg)
+                    $msgFile = [System.IO.Path]::GetTempFileName()
+                    Set-Content -Path $msgFile -Value "Daily scrape update $dateLabel`n`nAutomated via daily-update.ps1`n`nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>" -NoNewline
+                    $committed = Invoke-Step "git commit" $GitCmd @("commit", "-F", $msgFile)
+                    Remove-Item $msgFile -ErrorAction SilentlyContinue
                     if ($committed) {
                         $pushed = Invoke-Step "git push" $GitCmd @("push")
                         if (-not $pushed) {
