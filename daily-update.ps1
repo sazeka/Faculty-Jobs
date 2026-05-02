@@ -146,8 +146,16 @@ if ($scraped) {
                     if ($committed) {
                         $pushed = Invoke-Step "git push" $GitCmd @("push")
                         if (-not $pushed) {
-                            Log "Push failed." "ERROR"
-                            $OverallSuccess = $false
+                            # Remote may have new commits (CI ran between our commit and push).
+                            # Fetch, merge keeping our data, then retry once.
+                            Log "Push rejected - fetching and merging remote changes..." "WARN"
+                            Invoke-Step "git fetch" $GitCmd @("fetch") | Out-Null
+                            Invoke-Step "git merge -X ours" $GitCmd @("merge", "-X", "ours", "origin/main") | Out-Null
+                            $pushed = Invoke-Step "git push (retry)" $GitCmd @("push")
+                            if (-not $pushed) {
+                                Log "Push failed after merge retry." "ERROR"
+                                $OverallSuccess = $false
+                            }
                         }
                     } else {
                         Log "Commit failed." "ERROR"
