@@ -1,5 +1,5 @@
 // Candidate campus config entries generated from institutions-master
-// Generated: 2026-05-09T14:22:47.506Z
+// Generated: 2026-05-16T14:27:09.003Z
 
 // Unknown (19)
 const CANDIDATES = [
