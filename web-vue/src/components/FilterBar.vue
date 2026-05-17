@@ -5,8 +5,7 @@ const props = defineProps({
   positionTypeOptions: { type: Array, required: true },
   collegeOptions: { type: Array, required: true },
   departmentOptions: { type: Array, required: true },
-  cityOptions: { type: Array, required: true },
-  showSearch: { type: Boolean, default: true },
+  cityOptions: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'save-alert'])
@@ -14,117 +13,108 @@ const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'sa
 function updateField(key, value) {
   emit('update:filters', { [key]: value })
 }
+
+function toggleState(value) {
+  updateField('state', props.filters.state === value ? 'all' : value)
+}
+function togglePositionType(value) {
+  updateField('positionType', props.filters.positionType === value ? 'all' : value)
+}
 </script>
 
 <template>
-  <input
-    v-if="props.showSearch"
-    :value="props.filters.q"
-    type="search"
-    aria-label="Search jobs by title, university, department, or state"
-    placeholder="Search title, university, department, state..."
-    @input="updateField('q', $event.target.value)"
-  />
+  <div class="fa-sidebar-inner">
+    <div class="fa-label" style="margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--rule)">
+      Refine
+    </div>
 
-  <select :value="props.filters.state" aria-label="Filter by state" @change="updateField('state', $event.target.value)">
-    <option value="all">All States ({{ props.stateOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
-    <option
-      v-for="option in props.stateOptions"
-      :key="option.value"
-      :value="option.value"
-      :disabled="option.disabled"
-      :title="option.fullLabel || option.label"
-    >
-      {{ option.label }}
-    </option>
-  </select>
+    <!-- Search -->
+    <div style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 10px;">Search</div>
+      <input
+        class="fa-input"
+        :value="props.filters.q"
+        type="search"
+        placeholder="Title, university, department…"
+        aria-label="Search jobs"
+        @input="updateField('q', $event.target.value)"
+      />
+    </div>
 
-  <select :value="props.filters.positionType" aria-label="Filter by position type" @change="updateField('positionType', $event.target.value)">
-    <option value="all">All Position Types ({{ props.positionTypeOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
-    <option
-      v-for="option in props.positionTypeOptions"
-      :key="option.value"
-      :value="option.value"
-      :disabled="option.disabled"
-      :title="option.fullLabel || option.label"
-    >
-      {{ option.label }}
-    </option>
-  </select>
+    <!-- Position Type -->
+    <div style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Rank</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label
+          v-for="opt in positionTypeOptions.slice(0, 8)"
+          :key="opt.value"
+          class="fa-facet-item"
+          :class="{ active: filters.positionType === opt.value }"
+          @click="togglePositionType(opt.value)"
+        >
+          <span class="fa-check" :class="{ checked: filters.positionType === opt.value }">
+            {{ filters.positionType === opt.value ? '✓' : '' }}
+          </span>
+          <span style="flex: 1;">{{ opt.label }}</span>
+          <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
+        </label>
+      </div>
+    </div>
 
-  <select :value="props.filters.college" aria-label="Filter by university" @change="updateField('college', $event.target.value)">
-    <option value="all">All Universities ({{ props.collegeOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
-    <option
-      v-for="option in props.collegeOptions"
-      :key="option.value"
-      :value="option.value"
-      :disabled="option.disabled"
-      :title="option.fullLabel || option.label"
-    >
-      {{ option.label }}
-    </option>
-  </select>
+    <!-- Tenure Track -->
+    <div style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Track</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label class="fa-facet-item" :class="{ active: filters.tenureTrackOnly }" @click="updateField('tenureTrackOnly', !filters.tenureTrackOnly)">
+          <span class="fa-check" :class="{ checked: filters.tenureTrackOnly }">{{ filters.tenureTrackOnly ? '✓' : '' }}</span>
+          <span style="flex: 1;">Tenure-Track only</span>
+        </label>
+      </div>
+    </div>
 
-  <select :value="props.filters.department" aria-label="Filter by department" @change="updateField('department', $event.target.value)">
-    <option value="all">All Departments ({{ props.departmentOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
-    <option
-      v-for="option in props.departmentOptions"
-      :key="option.value"
-      :value="option.value"
-      :disabled="option.disabled"
-      :title="option.fullLabel || option.label"
-    >
-      {{ option.label }}
-    </option>
-  </select>
+    <!-- State / Region -->
+    <div style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Region</div>
+      <div style="display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto;">
+        <label
+          v-for="opt in stateOptions.slice(0, 20)"
+          :key="opt.value"
+          class="fa-facet-item"
+          :class="{ active: filters.state === opt.value }"
+          @click="toggleState(opt.value)"
+        >
+          <span class="fa-check" :class="{ checked: filters.state === opt.value }">
+            {{ filters.state === opt.value ? '✓' : '' }}
+          </span>
+          <span style="flex: 1;">{{ opt.label }}</span>
+          <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
+        </label>
+      </div>
+    </div>
 
-  <select :value="props.filters.city" aria-label="Filter by city" @change="updateField('city', $event.target.value)">
-    <option value="all">All Cities ({{ props.cityOptions.reduce((sum, option) => sum + option.count, 0) }})</option>
-    <option
-      v-for="option in props.cityOptions"
-      :key="option.value"
-      :value="option.value"
-      :disabled="option.disabled"
-      :title="option.fullLabel || option.label"
-    >
-      {{ option.label }}
-    </option>
-  </select>
+    <!-- Quick toggles -->
+    <div style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">View</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label class="fa-facet-item" :class="{ active: filters.newOnly }" @click="updateField('newOnly', !filters.newOnly)">
+          <span class="fa-check" :class="{ checked: filters.newOnly }">{{ filters.newOnly ? '✓' : '' }}</span>
+          <span style="flex: 1;">New since last visit</span>
+        </label>
+        <label class="fa-facet-item" :class="{ active: filters.savedOnly }" @click="updateField('savedOnly', !filters.savedOnly)">
+          <span class="fa-check" :class="{ checked: filters.savedOnly }">{{ filters.savedOnly ? '✓' : '' }}</span>
+          <span style="flex: 1;">Saved jobs only</span>
+        </label>
+      </div>
+    </div>
 
-  <select :value="props.filters.sortBy" aria-label="Sort results" @change="updateField('sortBy', $event.target.value)">
-    <option value="relevance">Sort: Relevance</option>
-    <option value="title-asc">Sort: Title A-Z</option>
-    <option value="title-desc">Sort: Title Z-A</option>
-    <option value="university">Sort: University</option>
-    <option value="state">Sort: State</option>
-  </select>
-
-  <label class="check">
-    <input
-      :checked="props.filters.tenureTrackOnly"
-      type="checkbox"
-      @change="updateField('tenureTrackOnly', $event.target.checked)"
-    />
-    Tenure Track Only
-  </label>
-  <label class="check">
-    <input
-      :checked="props.filters.savedOnly"
-      type="checkbox"
-      @change="updateField('savedOnly', $event.target.checked)"
-    />
-    Saved Jobs Only
-  </label>
-  <label class="check">
-    <input
-      :checked="props.filters.newOnly"
-      type="checkbox"
-      @change="updateField('newOnly', $event.target.checked)"
-    />
-    New Since Last Visit
-  </label>
-
-  <button type="button" @click="emit('reset-filters')">Clear Filters</button>
-  <button type="button" @click="emit('save-alert')">Save Alert</button>
-  <button type="button" @click="emit('refresh-data')">Refresh Data</button>
+    <!-- Actions -->
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <button class="fa-btn fa-btn-ghost" style="width: 100%; justify-content: center;" type="button" @click="emit('reset-filters')">
+        Clear filters
+      </button>
+      <button class="fa-btn fa-btn-ghost" style="width: 100%; justify-content: center;" type="button" @click="emit('save-alert')">
+        ⏿ Save alert
+      </button>
+    </div>
+  </div>
 </template>

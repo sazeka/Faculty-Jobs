@@ -1,0 +1,286 @@
+/* Faculty Atlas — editorial cartography design system */
+
+:root {
+  --paper:    #F2ECDF;
+  --paper-2:  #E8E0CE;
+  --paper-3:  #DDD3BD;
+  --ink:      #15110D;
+  --ink-2:    #3D362C;
+  --ink-3:    #6B6354;
+  --ink-4:    #A39A86;
+  --rule:     #221C15;
+  --rule-2:   rgba(34, 28, 21, 0.18);
+  --accent:   #7A1F23;
+  --accent-2: #B85C1E;
+  --sage:     #4F6149;
+  --ocean:    #2A4A5C;
+
+  --font-display: "Instrument Serif", "Cormorant Garamond", "Times New Roman", serif;
+  --font-body:    "Newsreader", "Source Serif Pro", Georgia, serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  --pad: 72px;
+}
+
+/* ─── Base ─── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "onum";
+  font-variant-numeric: oldstyle-nums;
+}
+
+/* ─── Paper grain texture ─── */
+.fa-grain { position: relative; }
+.fa-grain::after {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.08, 0 0 0 0 0.07, 0 0 0 0 0.05, 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+}
+
+/* ─── Typography ─── */
+.fa-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.015em;
+}
+.fa-display i, .fa-display em { font-style: italic; }
+
+.fa-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 500;
+}
+
+.fa-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+
+.fa-num {
+  font-family: var(--font-display);
+  font-feature-settings: "lnum", "tnum";
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* ─── Rules ─── */
+.fa-rule        { height: 1px; background: var(--rule);   border: 0; margin: 0; }
+.fa-rule-thin   { height: 1px; background: var(--rule-2); border: 0; margin: 0; }
+.fa-rule-double {
+  height: 4px; border: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  margin: 0;
+}
+
+/* ─── Buttons ─── */
+.fa-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 40px; padding: 0 18px;
+  font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--ink); color: var(--paper);
+  border: 1px solid var(--ink);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.fa-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+.fa-btn-ghost { background: transparent; color: var(--ink); }
+.fa-btn-ghost:hover { background: var(--ink); color: var(--paper); }
+
+.fa-btn-sm { height: 32px; padding: 0 14px; font-size: 11px; }
+
+/* ─── Input ─── */
+.fa-input {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--ink);
+  background: transparent;
+  border: 0; border-bottom: 1px solid var(--rule);
+  padding: 8px 0;
+  outline: none;
+  width: 100%;
+}
+.fa-input::placeholder { color: var(--ink-4); font-style: italic; }
+.fa-input:focus { border-bottom-color: var(--accent); }
+
+/* ─── Tag pill ─── */
+.fa-tag {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid var(--rule-2);
+  color: var(--ink-2);
+  background: var(--paper);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.fa-tag:hover          { border-color: var(--ink); color: var(--ink); }
+.fa-tag-accent         { color: var(--accent); border-color: var(--accent); }
+.fa-tag-filled         { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.fa-tag-filled:hover   { background: var(--accent); border-color: var(--accent); }
+
+/* ─── Link ─── */
+.fa-link {
+  color: var(--ink); text-decoration: none;
+  border-bottom: 1px solid var(--rule-2);
+  transition: border-color .15s, color .15s;
+}
+.fa-link:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ─── Section head ─── */
+.fa-section-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-top: 1px solid var(--rule);
+  padding-top: 14px;
+  margin-bottom: 32px;
+}
+
+/* ─── Listing row ─── */
+.fa-listing {
+  display: grid;
+  grid-template-columns: 56px 1fr 200px 120px 56px;
+  gap: 20px;
+  align-items: baseline;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule-2);
+  transition: background .15s;
+  text-decoration: none;
+  color: inherit;
+}
+.fa-listing:hover { background: rgba(34, 28, 21, 0.025); }
+
+.fa-listing-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-4);
+  letter-spacing: 0.05em;
+  padding-top: 4px;
+}
+.fa-listing-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.fa-listing-title i { font-style: italic; color: var(--ink-2); }
+.fa-listing-inst {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--ink-2);
+  margin-top: 4px;
+}
+.fa-listing-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.fa-listing-coord {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-4);
+  letter-spacing: 0.02em;
+  margin-top: 3px;
+}
+.fa-listing-arrow {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--ink-3);
+  text-align: right;
+  align-self: center;
+  transition: color .15s;
+}
+.fa-listing:hover .fa-listing-arrow { color: var(--accent); }
+
+/* ─── Checkbox facet ─── */
+.fa-facet-item {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink-2);
+  padding: 3px 0;
+  user-select: none;
+}
+.fa-facet-item.active { color: var(--ink); font-weight: 500; }
+
+.fa-check {
+  width: 14px; height: 14px;
+  border: 1px solid var(--rule);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent;
+  color: var(--paper);
+  font-size: 10px;
+  flex-shrink: 0;
+  transition: background .12s, border-color .12s;
+}
+.fa-check.checked { background: var(--ink); border-color: var(--ink); }
+
+/* ─── Map container ─── */
+.fa-map-container {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+}
+.fa-map-container .leaflet-container { background: var(--paper-2) !important; }
+
+/* ─── Discipline card ─── */
+.fa-discipline-card {
+  display: block;
+  padding: 28px 24px;
+  border-top: 1px solid var(--rule-2);
+  text-decoration: none;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .15s;
+  min-height: 160px;
+}
+.fa-discipline-card:hover { background: rgba(34, 28, 21, 0.03); }
+
+/* ─── Stat cell ─── */
+.fa-stat {
+  padding: 16px 0;
+}
+.fa-stat-val {
+  font-family: var(--font-display);
+  font-feature-settings: "lnum", "tnum";
+  font-variant-numeric: lining-nums tabular-nums;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--ink);
+}
+.fa-stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
