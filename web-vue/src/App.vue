@@ -249,11 +249,10 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Decorative coords -->
-      <div class="fa-meta fa-hero-coords">
-        <div>N 41° 18′ 36″</div>
-        <div>W 72° 55′ 12″</div>
-        <div style="margin-top: 6px; color: var(--ink-4);">EST. MMXXIV</div>
+      <!-- Site viewers -->
+      <div v-if="siteViews !== null" class="fa-meta fa-hero-coords" style="text-align: right;">
+        <div class="fa-display" style="font-size: 36px; line-height: 1;">{{ siteViews.toLocaleString() }}</div>
+        <div style="margin-top: 4px; letter-spacing: 0.1em; text-transform: uppercase; font-size: 9px;">visitors · 14 days</div>
       </div>
     </section>
 
@@ -469,7 +468,7 @@ onMounted(async () => {
       </div>
       <div class="fa-footer-bottom">
         <div class="fa-meta">Faculty Atlas · An independent academic directory</div>
-        <div class="fa-meta">41.31°N · 72.92°W</div>
+        <div v-if="siteViews !== null" class="fa-meta">{{ siteViews.toLocaleString() }} visitors · 14d</div>
       </div>
     </footer>
 
