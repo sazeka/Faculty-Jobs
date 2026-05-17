@@ -288,6 +288,7 @@ onMounted(async () => {
               :selected-college="filters.college !== ALL_FILTER_VALUE ? filters.college : null"
               :hovered-college="hoveredCollege"
               @select-college="handleMapCollegeSelect"
+              @select-state="(s) => updateFilters({ state: s })"
               @hover-college="handleHoverCollege"
             />
           </div>
@@ -412,6 +413,7 @@ onMounted(async () => {
               :selected-college="null"
               :hovered-college="null"
               @select-college="(c) => { handleMapCollegeSelect(c); activeTab = 'jobs' }"
+              @select-state="(s) => { updateFilters({ state: s }); activeTab = 'jobs' }"
               @hover-college="() => {}"
             />
           </div>

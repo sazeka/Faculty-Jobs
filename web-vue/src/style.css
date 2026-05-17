@@ -604,6 +604,13 @@ strong,
   background: linear-gradient(180deg, #786353, #5f4d40);
 }
 
+.leaflet-job-marker.state-bubble {
+  background: linear-gradient(180deg, #a83030, #7a1f23);
+  border-color: rgba(255, 255, 255, 0.7);
+  opacity: 0.82;
+  font-size: 10px;
+}
+
 .leaflet-job-marker.active {
   transform: scale(calc(var(--marker-zoom-scale, 1) * 1.14));
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65), 0 8px 16px rgba(29, 42, 43, 0.24);

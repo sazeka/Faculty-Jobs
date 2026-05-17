@@ -8,7 +8,7 @@ const props = defineProps({
   hoveredCollege: { type: String, default: null },
 })
 
-const emit = defineEmits(['select-college', 'hover-college'])
+const emit = defineEmits(['select-college', 'select-state', 'hover-college'])
 
 const { mapEl, mapNote, hasMappableData, canZoomIn, canZoomOut, zoomInMap, zoomOutMap, zoomResetMap, clearMapSelection } =
   useLeafletMap({
@@ -16,6 +16,7 @@ const { mapEl, mapNote, hasMappableData, canZoomIn, canZoomOut, zoomInMap, zoomO
     selectedCollegeRef: toRef(props, 'selectedCollege'),
     hoveredCollegeRef: toRef(props, 'hoveredCollege'),
     onSelectCollege: (college) => emit('select-college', college),
+    onSelectState: (state) => emit('select-state', state),
     onHoverCollege: (college) => emit('hover-college', college),
   })
 </script>
