@@ -3,8 +3,8 @@ name: Daily scrape
 on:
   workflow_dispatch:
   schedule:
-    # 08:15 America/Los_Angeles (winter) ≈ 16:15 UTC
-    - cron: "15 16 * * *"
+    # 08:15 America/Los_Angeles (winter) ≈ 16:15 UTC, every other day
+    - cron: "15 16 */2 * *"
 
 permissions:
   contents: write
