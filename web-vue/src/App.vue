@@ -20,6 +20,18 @@ const logoSrc = `${baseUrl}assets/logos/favicon.svg`
 const policyExclusionsHref = `${baseUrl}policy-exclusions.html`
 const inclusionCriteriaHref = `${baseUrl}inclusion-criteria.html`
 const { jobs, status, scrapedAt, loadError, loadJobs, qualitySummary, newJobsCount, transport, lastVisitAt } = useJobsData()
+const siteViews = ref(null)
+onMounted(async () => {
+  try {
+    const res = await fetch(`${baseUrl}traffic.json`)
+    if (res.ok) {
+      const d = await res.json()
+      siteViews.value = d.views14d ?? null
+    }
+  } catch {
+    // traffic data unavailable
+  }
+})
 const hoveredCollege = ref(null)
 const density = ref('comfortable')
 const reportStatus = ref('')
@@ -205,6 +217,10 @@ onMounted(() => {
           <article class="metric-card">
             <span>New Since Visit</span>
             <strong>{{ newJobsCount.toLocaleString() }}</strong>
+          </article>
+          <article v-if="siteViews !== null" class="metric-card">
+            <span>Site Views (14d)</span>
+            <strong>{{ siteViews.toLocaleString() }}</strong>
           </article>
         </div>
       </div>
