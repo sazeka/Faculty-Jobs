@@ -19,7 +19,7 @@ const { jobs, scrapedAt, loadError, loadJobs, qualitySummary, newJobsCount } = u
 
 const filters = ref(createDefaultFilters())
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
-const { stateOptions, positionTypeOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
+const { stateOptions, positionTypeOptions, disciplineOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
   useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob })
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({ filtersRef: filters, updateFilters })
 const { alertsWithCounts, addAlert, removeAlert } = useAlerts({ filtersRef: filters, countMatches })
@@ -333,6 +333,7 @@ onMounted(async () => {
               :filters="filters"
               :state-options="stateOptions"
               :position-type-options="positionTypeOptions"
+              :discipline-options="disciplineOptions"
               :college-options="collegeOptions"
               :department-options="departmentOptions"
               :city-options="cityOptions"
@@ -395,46 +396,6 @@ onMounted(async () => {
         </div>
       </section>
 
-      <!-- § II — By geography (inline) -->
-      <section class="fa-section">
-        <div class="fa-section-head">
-          <div>
-            <div class="fa-label">§ II</div>
-            <h2 class="fa-display" style="font-size: 48px; margin: 4px 0 0;">By <i>geography</i></h2>
-          </div>
-          <button class="fa-meta fa-link" style="background: none; border: none; cursor: pointer;" @click="activeTab = 'map'">Open full map →</button>
-        </div>
-        <div class="fa-geo-grid">
-          <div class="fa-map-container" style="min-height: 340px;">
-            <MapPanel
-              style="width: 100%; height: 100%;"
-              :jobs="jobs"
-              :selected-college="null"
-              :hovered-college="null"
-              @select-college="(c) => { handleMapCollegeSelect(c); activeTab = 'jobs' }"
-              @select-state="(s) => { updateFilters({ state: s }); activeTab = 'jobs' }"
-              @hover-college="() => {}"
-            />
-          </div>
-          <div>
-            <div class="fa-label" style="margin-bottom: 16px;">Top Regions</div>
-            <div style="border-top: 1px solid var(--rule);">
-              <div
-                v-for="r in topRegions"
-                :key="r.name"
-                class="fa-region-row"
-                style="cursor: pointer;"
-                @click="() => { updateFilters({ state: r.name }); activeTab = 'jobs' }"
-              >
-                <span class="fa-meta" style="font-size: 10px; width: 20px;">{{ String(r.rank).padStart(2, '0') }}</span>
-                <span class="fa-display" style="font-size: 20px; flex: 1;">{{ r.name }}</span>
-                <span class="fa-num" style="font-size: 18px;">{{ r.count.toLocaleString() }}</span>
-                <span class="fa-meta" style="font-size: 10px; color: var(--accent);">→</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </template>
 
     <!-- ═══ FOOTER ═══ -->

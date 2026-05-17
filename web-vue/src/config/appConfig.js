@@ -15,6 +15,7 @@ export function createDefaultFilters() {
     positionType: ALL_FILTER_VALUE,
     college: ALL_FILTER_VALUE,
     department: ALL_FILTER_VALUE,
+    discipline: ALL_FILTER_VALUE,
     city: ALL_FILTER_VALUE,
     sortBy: DEFAULT_SORT,
     tenureTrackOnly: false,

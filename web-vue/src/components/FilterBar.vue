@@ -1,14 +1,25 @@
 <script setup>
+import { ref, computed } from 'vue'
+
 const props = defineProps({
   filters: { type: Object, required: true },
   stateOptions: { type: Array, required: true },
   positionTypeOptions: { type: Array, required: true },
+  disciplineOptions: { type: Array, default: () => [] },
   collegeOptions: { type: Array, required: true },
   departmentOptions: { type: Array, required: true },
   cityOptions: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'save-alert'])
+
+const disciplineSearch = ref('')
+
+const filteredDisciplineOptions = computed(() => {
+  const q = disciplineSearch.value.trim().toLowerCase()
+  if (!q) return props.disciplineOptions
+  return props.disciplineOptions.filter(opt => opt.value.toLowerCase().includes(q))
+})
 
 function updateField(key, value) {
   emit('update:filters', { [key]: value })
@@ -19,6 +30,9 @@ function toggleState(value) {
 }
 function togglePositionType(value) {
   updateField('positionType', props.filters.positionType === value ? 'all' : value)
+}
+function toggleDiscipline(value) {
+  updateField('discipline', props.filters.discipline === value ? 'all' : value)
 }
 </script>
 
@@ -39,6 +53,35 @@ function togglePositionType(value) {
         aria-label="Search jobs"
         @input="updateField('q', $event.target.value)"
       />
+    </div>
+
+    <!-- Discipline -->
+    <div style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 10px;">Discipline</div>
+      <input
+        class="fa-input"
+        v-model="disciplineSearch"
+        type="search"
+        placeholder="Search disciplines…"
+        aria-label="Search disciplines"
+        style="font-size: 13px; margin-bottom: 8px;"
+      />
+      <div style="display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto;">
+        <label
+          v-for="opt in filteredDisciplineOptions"
+          :key="opt.value"
+          class="fa-facet-item"
+          :class="{ active: filters.discipline === opt.value }"
+          @click="toggleDiscipline(opt.value)"
+        >
+          <span class="fa-check" :class="{ checked: filters.discipline === opt.value }">
+            {{ filters.discipline === opt.value ? '✓' : '' }}
+          </span>
+          <span style="flex: 1;">{{ opt.value }}</span>
+          <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
+        </label>
+        <div v-if="filteredDisciplineOptions.length === 0" class="fa-meta" style="padding: 4px 0; font-style: italic;">No match</div>
+      </div>
     </div>
 
     <!-- Position Type -->

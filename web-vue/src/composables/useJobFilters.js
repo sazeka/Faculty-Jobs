@@ -2,6 +2,30 @@ import { computed } from 'vue'
 import { ALL_FILTER_VALUE, createDefaultFilters } from '../config/appConfig'
 import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxonomy'
 
+const DISCIPLINE_RULES = [
+  { label: 'Arts & Music',            terms: ['art', 'music', 'theatre', 'theater', 'dance', 'film', 'studio', 'visual art', 'fine art', 'performing', 'sculpture', 'painting', 'ceramics', 'graphic design', 'illustration', 'photography'] },
+  { label: 'Biological Sciences',     terms: ['biology', 'biolog', 'botany', 'zoology', 'ecology', 'genetics', 'genomics', 'neuroscience', 'biochemistry', 'microbiology', 'molecular', 'cell biology', 'evolutionary', 'anatomy', 'physiology', 'marine biology', 'wildlife'] },
+  { label: 'Business & Economics',    terms: ['business', 'economics', 'econom', 'accounting', 'finance', 'marketing', 'management', 'entrepreneurship', 'supply chain', 'operations', 'mba', 'commerce', 'hospitality', 'real estate', 'taxation', 'audit'] },
+  { label: 'Computer Science & Engineering', terms: ['computer science', 'software', 'computer engineering', 'electrical engineering', 'mechanical engineering', 'civil engineering', 'chemical engineering', 'aerospace', 'biomedical engineering', 'industrial engineering', 'systems engineering', 'data science', 'artificial intelligence', 'machine learning', 'cybersecurity', 'robotics', 'materials science'] },
+  { label: 'Education',               terms: ['education', 'teaching', 'curriculum', 'pedagogy', 'early childhood', 'literacy', 'special education', 'educational leadership', 'school counseling', 'instructional design', 'higher education'] },
+  { label: 'Health & Medicine',       terms: ['medicine', 'nursing', 'health', 'pharmacy', 'clinical', 'medical', 'dental', 'physical therapy', 'occupational therapy', 'public health', 'epidemiology', 'nutrition', 'kinesiology', 'exercise science', 'radiolog', 'surgery', 'pediatrics', 'psychiatry', 'pathology', 'anesthesiology', 'oncology', 'physician assistant'] },
+  { label: 'Humanities',              terms: ['english', 'literature', 'history', 'philosophy', 'classics', 'rhetoric', 'writing', 'humanities', 'religious studies', 'theology', 'ethics', 'medieval', 'cultural studies', 'american studies', 'comparative literature'] },
+  { label: 'Languages & Linguistics', terms: ['linguistics', 'language', 'spanish', 'french', 'german', 'chinese', 'japanese', 'arabic', 'portuguese', 'italian', 'russian', 'korean', 'translation', 'applied linguistics', 'esl', 'tesol', 'second language'] },
+  { label: 'Law & Criminal Justice',  terms: ['law', 'legal', 'criminology', 'criminal justice', 'jurisprudence', 'paralegal', 'forensic', 'corrections', 'policing', 'homeland security'] },
+  { label: 'Mathematics & Statistics',terms: ['mathematics', 'statistics', 'math', 'actuarial', 'applied math', 'calculus', 'algebra', 'analysis', 'probability', 'data analytics'] },
+  { label: 'Natural Sciences',        terms: ['physics', 'chemistry', 'geology', 'astronomy', 'astrophysics', 'geophysics', 'environmental science', 'earth science', 'atmospheric', 'oceanography', 'climate', 'geoscience', 'material science'] },
+  { label: 'Psychology & Social Work',terms: ['psychology', 'social work', 'counseling', 'mental health', 'behavioral', 'cognitive', 'developmental psychology', 'clinical psychology', 'human services'] },
+  { label: 'Social Sciences',         terms: ['sociology', 'anthropology', 'political science', 'geography', 'communications', 'journalism', 'media studies', 'public administration', 'public policy', 'international relations', 'urban planning', 'social science', 'demography', 'gender studies', 'ethnic studies', 'african american', 'chicano', 'latinx'] },
+]
+
+function getDiscipline(job) {
+  const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
+  for (const rule of DISCIPLINE_RULES) {
+    if (rule.terms.some(t => hay.includes(t))) return rule.label
+  }
+  return 'Other'
+}
+
 function getPositionType(title) {
   const t = (title || '').toLowerCase()
   if (t.includes('assistant professor')) return 'Assistant Professor'
@@ -138,7 +162,7 @@ function normalizeJob(job) {
   const canonicalGroupId = clean(job?.canonicalGroupId) || (derivedGroupKey ? `grp_${derivedGroupKey}` : null)
   const canonicalJobId = clean(job?.canonicalJobId) || clean(job?.url) || `${title}|${college || ''}`
 
-  return {
+  const normalized = {
     title,
     url: job?.url || '#',
     source: job?.source || null,
@@ -149,6 +173,7 @@ function normalizeJob(job) {
     description: job?.description || null,
     summary: job?.summary || null,
     specialization: job?.specialization || null,
+    discipline: null, // set after object creation
     openUntilFilled: Boolean(job?.openUntilFilled),
     closeDateRaw: job?.closeDateRaw || null,
     closeDate: job?.closeDate || null,
@@ -163,6 +188,8 @@ function normalizeJob(job) {
     duplicateCount: 1,
     duplicateUrls: [job?.url || '#'],
   }
+  normalized.discipline = getDiscipline(normalized)
+  return normalized
 }
 
 function truncate(value, length) {
@@ -269,6 +296,9 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     if (ignoreKey !== 'department' && filterValues.department !== ALL_FILTER_VALUE) {
       out = out.filter((job) => job.department === filterValues.department)
     }
+    if (ignoreKey !== 'discipline' && filterValues.discipline !== ALL_FILTER_VALUE) {
+      out = out.filter((job) => job.discipline === filterValues.discipline)
+    }
     if (ignoreKey !== 'city' && filterValues.city !== ALL_FILTER_VALUE) {
       out = out.filter((job) => job.city === filterValues.city)
     }
@@ -352,6 +382,15 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     })
   })
 
+  const disciplineOptions = computed(() => {
+    const counts = countBy(applyFilters({ ignoreKey: 'discipline' }), (job) => job.discipline)
+    const allLabels = [...new Set(DISCIPLINE_RULES.map(r => r.label).concat(['Other']))]
+    return allLabels
+      .map(label => ({ value: label, count: counts.get(label) || 0 }))
+      .filter(opt => opt.count > 0 || filtersRef.value.discipline === opt.value)
+      .sort((a, b) => b.count - a.count)
+  })
+
   const cityOptions = computed(() => {
     const counts = countBy(applyFilters({ ignoreKey: 'city' }), (job) => job.city)
     return allCityValues.value.map((value) => {
@@ -396,6 +435,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     if (filtersRef.value.positionType !== ALL_FILTER_VALUE) chips.push({ key: 'positionType', label: filtersRef.value.positionType })
     if (filtersRef.value.college !== ALL_FILTER_VALUE) chips.push({ key: 'college', label: truncate(filtersRef.value.college, 25) })
     if (filtersRef.value.department !== ALL_FILTER_VALUE) chips.push({ key: 'department', label: truncate(filtersRef.value.department, 30) })
+    if (filtersRef.value.discipline !== ALL_FILTER_VALUE) chips.push({ key: 'discipline', label: filtersRef.value.discipline })
     if (filtersRef.value.city !== ALL_FILTER_VALUE) chips.push({ key: 'city', label: filtersRef.value.city })
     return chips
   })
@@ -417,6 +457,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     if (key === 'positionType') updateFilters({ positionType: ALL_FILTER_VALUE })
     if (key === 'college') updateFilters({ college: ALL_FILTER_VALUE })
     if (key === 'department') updateFilters({ department: ALL_FILTER_VALUE })
+    if (key === 'discipline') updateFilters({ discipline: ALL_FILTER_VALUE })
     if (key === 'city') updateFilters({ city: ALL_FILTER_VALUE })
   }
 
@@ -433,6 +474,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   return {
     stateOptions,
     positionTypeOptions,
+    disciplineOptions,
     collegeOptions,
     departmentOptions,
     cityOptions,
