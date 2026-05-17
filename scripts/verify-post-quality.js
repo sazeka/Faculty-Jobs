@@ -153,7 +153,7 @@ function buildDashboard(summary, failures) {
 </html>`;
 }
 
-function main() {
+async function main() {
   const args = parseArgs(process.argv.slice(2));
   const maxNonJob = Number(args["max-nonjob"] ?? 0);
   const maxNonHttpsPct = Number(args["max-nonhttps-pct"] ?? 1);
