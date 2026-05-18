@@ -2142,7 +2142,7 @@ const VT_CAMPUSES = [
   },
   {
     campus: "Middlebury College",
-    type: "interfolio-inst",
+    type: "interfolio",
     url: "https://apply.interfolio.com/36079/positions",
   },
   {
@@ -2799,7 +2799,7 @@ const IL_CAMPUSES = [
   {
     campus: "Governors State University",
     type: "schooljobs",
-    url: "https://www.schooljobs.com/careers/govst/",
+    url: "https://www.schooljobs.com/careers/govst",
   },
   {
     campus: "Illinois State University",

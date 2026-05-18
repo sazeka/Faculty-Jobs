@@ -39,6 +39,9 @@ jobs:
       - name: Generate promotion candidates report
         run: npm run promote:seeded
 
+      - name: Auto-promote candidates into scrape config
+        run: npm run promote:apply
+
       - name: Rebuild institutions and coverage artifacts
         run: npm run build:coverage
 
@@ -47,11 +50,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add data/institutions-master.json \
+          git add server.js \
+            data/institutions-master.json \
             generated/scrape-config-additions.json \
             generated/promotion-candidates.json \
             generated/promotion-candidates-snippets.js \
             generated/promotion-candidates.csv \
+            generated/promotion-apply-report.json \
             generated/coverage-report.json \
             generated/policy-excluded-colleges.json \
             public/policy-excluded-colleges.json \
@@ -63,5 +68,12 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Weekly institution discovery — seed IPEDS + rebuild coverage"
+          APPLIED=$(node -e "
+            try {
+              const r = JSON.parse(require('fs').readFileSync('generated/promotion-apply-report.json','utf8'));
+              console.log(r.appliedCount || 0);
+            } catch { console.log(0); }
+          ")
+
+          git commit -m "Weekly institution discovery — seed IPEDS + promote ${APPLIED} new institutions"
           git push

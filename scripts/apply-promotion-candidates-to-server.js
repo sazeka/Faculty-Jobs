@@ -143,20 +143,31 @@ function main() {
     const nameKey = norm(item.name);
     if (!nameKey) continue;
 
-    const campusObjectRe = new RegExp(`\\{[\\s\\S]*?campus:\\s*"${escapeJs(item.name)}"[\\s\\S]*?\\},`, "m");
-    const campusMatch = outText.match(campusObjectRe);
-    if (campusMatch) {
-      const original = campusMatch[0];
-      let next = original;
-      next = next.replace(/(type:\s*")[^"]*(")/, `$1${escapeJs(item.platform_type)}$2`);
-      next = next.replace(/(url:\s*")[^"]*(")/, `$1${escapeJs(item.career_url)}$2`);
-      if (next !== original) {
-        outText = outText.replace(original, next);
-        updated.push({ name: item.name, state: item.state });
-      } else {
-        skippedExisting.push({ name: item.name, state: item.state, reason: "already present with same type/url" });
+    // Locate the campus entry by finding the exact campus: "Name" needle, then
+    // walking backwards to the nearest '{' and forwards to the nearest '},'.
+    // This avoids the cross-entry regex that previously matched Yale's opening '{'
+    // and WIU's closing '},' and corrupted Yale's type/url fields.
+    const needle = `campus: "${escapeJs(item.name)}"`;
+    const needleIdx = outText.indexOf(needle);
+    if (needleIdx >= 0) {
+      const openBrace = outText.lastIndexOf("{", needleIdx);
+      const closeComma = outText.indexOf("},", needleIdx);
+      if (openBrace >= 0 && closeComma > needleIdx) {
+        const original = outText.slice(openBrace, closeComma + 2);
+        // Only update if the object contains exactly this campus name (sanity check)
+        if (original.includes(needle)) {
+          let next = original;
+          next = next.replace(/(type:\s*")[^"]*(")/, `$1${escapeJs(item.platform_type)}$2`);
+          next = next.replace(/(url:\s*")[^"]*(")/, `$1${escapeJs(item.career_url)}$2`);
+          if (next !== original) {
+            outText = outText.slice(0, openBrace) + next + outText.slice(closeComma + 2);
+            updated.push({ name: item.name, state: item.state });
+          } else {
+            skippedExisting.push({ name: item.name, state: item.state, reason: "already present with same type/url" });
+          }
+          continue;
+        }
       }
-      continue;
     }
 
     const arrayName = targetArrayForCandidate(item);
