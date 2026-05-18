@@ -496,7 +496,7 @@ onMounted(async () => {
                   · {{ excludedColleges.count }} institutions
                 </span>
               </div>
-              <p style="margin-bottom: 16px;">Some institutions use third-party hiring platforms (Workday, Oracle Taleo) whose terms of service explicitly prohibit automated data collection. Faculty Atlas respects these restrictions and does not scrape those portals. Jobs from these institutions will not appear in the catalog.</p>
+              <p style="margin-bottom: 16px;">A small number of institutions use Oracle Taleo, whose terms of service explicitly prohibit automated data collection. Faculty Atlas respects these restrictions. Workday institutions are covered via Workday's public job-search JSON API rather than HTML scraping. Jobs from Oracle Taleo institutions will not appear in the catalog.</p>
 
               <div v-if="excludedColleges" class="fa-excluded-grid">
                 <div
