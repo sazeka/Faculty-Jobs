@@ -29,6 +29,16 @@ const activeTab = ref('jobs')
 const showAllJobs = ref(false)
 const siteViews = ref(null)
 const showMethodology = ref(false)
+const excludedColleges = ref(null)
+
+async function openMethodology() {
+  showMethodology.value = true
+  if (excludedColleges.value) return
+  try {
+    const res = await fetch(`${baseUrl}policy-excluded-colleges.json`)
+    if (res.ok) excludedColleges.value = await res.json()
+  } catch { /* unavailable */ }
+}
 
 const LISTINGS_PAGE = 30
 
@@ -429,7 +439,7 @@ onMounted(async () => {
         <div>
           <div class="fa-label" style="margin-bottom: 16px;">About</div>
           <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
-            <li><button class="fa-footer-link" @click="showMethodology = true">Methodology</button></li>
+            <li><button class="fa-footer-link" @click="openMethodology">Methodology</button></li>
             <li><a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer" class="fa-footer-link">GitHub</a></li>
           </ul>
         </div>
@@ -477,6 +487,28 @@ onMounted(async () => {
             <div class="fa-modal-section">
               <div class="fa-label" style="margin-bottom: 10px;">Limitations</div>
               <p>Faculty Atlas covers institutions with publicly accessible employment portals. Private institutions without standardized career pages, and positions posted only through disciplinary societies (Chronicle of Higher Education, H-Net, MLA Job List, etc.) are not currently included. Closing dates are parsed from source postings and may occasionally be missing or inaccurate.</p>
+            </div>
+
+            <div class="fa-modal-section">
+              <div class="fa-label" style="margin-bottom: 10px;">
+                Excluded institutions
+                <span v-if="excludedColleges" style="color: var(--ink-4); font-weight: 400;">
+                  · {{ excludedColleges.count }} institutions
+                </span>
+              </div>
+              <p style="margin-bottom: 16px;">Some institutions use third-party hiring platforms (Workday, Oracle Taleo) whose terms of service explicitly prohibit automated data collection. Faculty Atlas respects these restrictions and does not scrape those portals. Jobs from these institutions will not appear in the catalog.</p>
+
+              <div v-if="excludedColleges" class="fa-excluded-grid">
+                <div
+                  v-for="item in excludedColleges.items"
+                  :key="item.college"
+                  class="fa-excluded-row"
+                >
+                  <span class="fa-display" style="font-size: 15px; flex: 1;">{{ item.college }}</span>
+                  <span class="fa-tag" style="cursor: default; font-size: 9px; flex-shrink: 0;">{{ item.platform_type }}</span>
+                </div>
+              </div>
+              <div v-else class="fa-meta" style="font-style: italic;">Loading list…</div>
             </div>
 
           </div>
@@ -741,6 +773,14 @@ onMounted(async () => {
   margin: 0;
 }
 .fa-modal-section p b { font-weight: 600; color: var(--ink); }
+.fa-excluded-grid { margin-top: 12px; border-top: 1px solid var(--rule-2); }
+.fa-excluded-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule-2);
+}
 
 /* ─── Map override ─── */
 .fa-map-container .map-panel,
