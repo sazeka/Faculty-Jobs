@@ -28,6 +28,7 @@ const hoveredCollege = ref(null)
 const activeTab = ref('jobs')
 const showAllJobs = ref(false)
 const siteViews = ref(null)
+const showMethodology = ref(false)
 
 const LISTINGS_PAGE = 30
 
@@ -415,15 +416,21 @@ onMounted(async () => {
             Curated automatically, free to browse.
           </p>
         </div>
-        <div v-for="col in [
-          { h: 'Browse', l: ['By state', 'By institution', 'Tenure-track only', 'New postings'] },
-          { h: 'About', l: ['Methodology', 'Data sources', 'Coverage', 'GitHub'] },
-        ]" :key="col.h">
-          <div class="fa-label" style="margin-bottom: 16px;">{{ col.h }}</div>
+        <div>
+          <div class="fa-label" style="margin-bottom: 16px;">Browse</div>
           <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
-            <li v-for="li in col.l" :key="li">
-              <span style="font-family: var(--font-body); font-size: 14px; color: var(--ink-2);">{{ li }}</span>
-            </li>
+            <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ tenureTrackOnly: false, newOnly: false })">All postings</button></li>
+            <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ tenureTrackOnly: true })">Tenure-track only</button></li>
+            <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ newOnly: true })">New postings</button></li>
+            <li><button class="fa-footer-link" @click="activeTab = 'map'">Browse by map</button></li>
+            <li><button class="fa-footer-link" @click="activeTab = 'trends'">Weekly digest</button></li>
+          </ul>
+        </div>
+        <div>
+          <div class="fa-label" style="margin-bottom: 16px;">About</div>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+            <li><button class="fa-footer-link" @click="showMethodology = true">Methodology</button></li>
+            <li><a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer" class="fa-footer-link">GitHub</a></li>
           </ul>
         </div>
       </div>
@@ -432,6 +439,50 @@ onMounted(async () => {
         <div v-if="siteViews !== null" class="fa-meta">{{ siteViews.toLocaleString() }} visitors · 14d</div>
       </div>
     </footer>
+
+    <!-- ═══ METHODOLOGY MODAL ═══ -->
+    <Teleport to="body">
+      <div v-if="showMethodology" class="fa-modal-backdrop" @click.self="showMethodology = false">
+        <div class="fa-modal" role="dialog" aria-modal="true" aria-label="Methodology">
+          <div class="fa-modal-header">
+            <div>
+              <div class="fa-label" style="margin-bottom: 6px;">About the data</div>
+              <div class="fa-display" style="font-size: 36px;">Methodology</div>
+            </div>
+            <button class="fa-modal-close" aria-label="Close" @click="showMethodology = false">✕</button>
+          </div>
+          <hr class="fa-rule" style="margin: 20px 0;" />
+          <div class="fa-modal-body">
+
+            <div class="fa-modal-section">
+              <div class="fa-label" style="margin-bottom: 10px;">How it works</div>
+              <p>Faculty Atlas automatically scrapes open faculty listings from university employment portals across North America. A GitHub Actions workflow runs every other day, fetching job data from institutional systems and normalizing it into a unified format. Listings are deduplicated, classified by discipline, and published to this site within minutes of the scrape completing.</p>
+            </div>
+
+            <div class="fa-modal-section">
+              <div class="fa-label" style="margin-bottom: 10px;">Sources</div>
+              <p>Data is collected from state university systems and individual institutions. Current coverage includes the University of California system, California State University, SUNY New York, University of Washington, University of North Carolina system, University of Texas system, and dozens of individual public and private universities across all 50 states. Over {{ qualitySummary.uniqueColleges.toLocaleString() }} institutions are currently tracked.</p>
+            </div>
+
+            <div class="fa-modal-section">
+              <div class="fa-label" style="margin-bottom: 10px;">Classification</div>
+              <p><b>Rank</b> is inferred from job titles — "Assistant Professor," "Lecturer," "Visiting Faculty," etc. <b>Tenure-track</b> status is determined by whether the title or posting explicitly mentions tenure or tenure-track. <b>Discipline</b> is inferred by matching job titles and department names against a curated keyword taxonomy covering 13 broad academic fields.</p>
+            </div>
+
+            <div class="fa-modal-section">
+              <div class="fa-label" style="margin-bottom: 10px;">Freshness & "New" listings</div>
+              <p>The catalog is updated every other day. A listing is marked <b>New</b> when it appears in the dataset for the first time after your last visit — this is tracked locally in your browser and requires no account. Listings removed from the source institution are dropped from the catalog at the next scrape.</p>
+            </div>
+
+            <div class="fa-modal-section">
+              <div class="fa-label" style="margin-bottom: 10px;">Limitations</div>
+              <p>Faculty Atlas covers institutions with publicly accessible employment portals. Private institutions without standardized career pages, and positions posted only through disciplinary societies (Chronicle of Higher Education, H-Net, MLA Job List, etc.) are not currently included. Closing dates are parsed from source postings and may occasionally be missing or inaccurate.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
   </div>
 </template>
@@ -623,6 +674,73 @@ onMounted(async () => {
   padding-top: 24px;
   border-top: 1px solid var(--rule-2);
 }
+
+/* ─── Footer links ─── */
+.fa-footer-link {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink-2);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color .15s, border-color .15s;
+  display: inline;
+}
+.fa-footer-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ─── Methodology modal ─── */
+.fa-modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(21, 17, 13, 0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 24px;
+  overflow-y: auto;
+  backdrop-filter: blur(2px);
+}
+.fa-modal {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  width: 100%;
+  max-width: 680px;
+  padding: 40px 48px 48px;
+  position: relative;
+}
+.fa-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.fa-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--ink-3);
+  padding: 4px;
+  line-height: 1;
+  transition: color .15s;
+}
+.fa-modal-close:hover { color: var(--ink); }
+.fa-modal-body { display: flex; flex-direction: column; gap: 0; }
+.fa-modal-section {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule-2);
+}
+.fa-modal-section:last-child { border-bottom: none; }
+.fa-modal-section p {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.72;
+  color: var(--ink-2);
+  margin: 0;
+}
+.fa-modal-section p b { font-weight: 600; color: var(--ink); }
 
 /* ─── Map override ─── */
 .fa-map-container .map-panel,
