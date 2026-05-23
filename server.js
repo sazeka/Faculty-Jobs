@@ -1627,12 +1627,12 @@ const NY_SUNY_CAMPUSES = [
   {
     campus: "University at Albany (SUNY)",
     type: "interfolio",
-    url: "https://apply.interfolio.com/search#q=&institution_name=University%20at%20Albany&position_type=Faculty",
+    url: "https://apply.interfolio.com/search",
   },
   {
     campus: "Binghamton University (SUNY)",
     type: "interfolio",
-    url: "https://apply.interfolio.com/search#q=&institution_name=Binghamton%20University&position_type=Faculty",
+    url: "https://apply.interfolio.com/search",
   },
   { campus: "Binghamton University (SUNY)", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=Binghamton%20University&position_type=Faculty" },
   { campus: "University at Albany (SUNY)", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=University%20at%20Albany&position_type=Faculty" },
