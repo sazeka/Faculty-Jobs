@@ -54,6 +54,46 @@ function shouldBlockOverwrite(newData, prevData, allowlistRaw) {
   return { block: reasons.length > 0, reasons };
 }
 
+// Surgical anti-flake guard: if a source's job count craters versus the previous
+// snapshot (a strong signal of a blocked/timed-out scrape, not a real listing
+// drop), restore THAT source's previous jobs while still accepting fresh data for
+// every healthy source. Unlike shouldBlockOverwrite this is always on (no allowlist
+// required) and never discards the whole run — it only patches the cratered source.
+function healCrateredSources(newData, prevData, { minBaseline, dropPct }) {
+  const empty = { data: newData, healed: [], jobsRestored: 0 };
+  if (!prevData || !Array.isArray(prevData.jobs) || prevData.jobs.length === 0) return empty;
+  if (!newData || !Array.isArray(newData.jobs) || newData.jobs.length === 0) return empty;
+
+  const prevBy = countBySource(prevData);
+  const nextBy = countBySource(newData);
+
+  const cratered = new Set();
+  const healed = [];
+  for (const s of Object.keys(prevBy)) {
+    const p = prevBy[s] || 0;
+    const n = nextBy[s] || 0;
+    // Threshold = the minimum count we'd tolerate before calling it a crater.
+    const floor = Math.ceil(p * (1 - dropPct / 100));
+    if (p >= minBaseline && n < floor) {
+      cratered.add(s);
+      healed.push({ source: s, baseline: p, current: n, restoredTo: p });
+    }
+  }
+  if (cratered.size === 0) return empty;
+
+  // Drop the (likely-flaky) new jobs for cratered sources, splice in the previous ones.
+  const jobs = newData.jobs.filter((j) => !cratered.has(String(j?.source || "").trim()));
+  let jobsRestored = 0;
+  for (const j of prevData.jobs) {
+    if (cratered.has(String(j?.source || "").trim())) {
+      jobs.push(j);
+      jobsRestored += 1;
+    }
+  }
+
+  return { data: { ...newData, jobs, count: jobs.length }, healed, jobsRestored };
+}
+
 function clean(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
@@ -249,6 +289,41 @@ function canonicalizeJobUrls(data) {
     }
   } catch (e) {
     console.warn(`⚠️  Failed to read previous snapshot: ${e?.message || e}`);
+  }
+
+  // Always-on per-source anti-flake healing (runs even with no CAMPUS_ALLOWLIST).
+  const healMinBaseline = Number(process.env.SOURCE_HEAL_MIN_BASELINE || 20);
+  const healDropPct = Number(process.env.SOURCE_HEAL_DROP_PCT || 70);
+  if (process.env.DISABLE_SOURCE_HEAL !== "1") {
+    const heal = healCrateredSources(data, previousData, {
+      minBaseline: healMinBaseline,
+      dropPct: healDropPct,
+    });
+    if (heal.healed.length > 0) {
+      data = heal.data;
+      console.warn(
+        `🩹 Healed ${heal.healed.length} cratered source(s), restored ${heal.jobsRestored} jobs from previous snapshot:`
+      );
+      for (const h of heal.healed) {
+        console.warn(`   - ${h.source}: ${h.current} → restored to ${h.restoredTo} (baseline ${h.baseline})`);
+      }
+      const healReportPath = path.join(__dirname, "..", "generated", "source-heal-report.json");
+      fs.writeFileSync(
+        healReportPath,
+        `${JSON.stringify(
+          {
+            generatedAt: new Date().toISOString(),
+            config: { minBaseline: healMinBaseline, dropPct: healDropPct },
+            healed: heal.healed,
+            jobsRestored: heal.jobsRestored,
+          },
+          null,
+          2
+        )}\n`,
+        "utf8"
+      );
+      console.warn(`   Report written to ${healReportPath}`);
+    }
   }
 
   const allowlist = process.env.CAMPUS_ALLOWLIST || "";
