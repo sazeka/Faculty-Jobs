@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { loadCampusConfigs } from "./lib/campus-config.js";
 import { canonicalizeUrl, clean, normalizeNameKey, inferPlatformFromUrl } from "./lib/url-normalization.js";
+import { parseCsv, mapIpedsRows, buildLookupByName } from "./lib/ipeds.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,6 +15,25 @@ const OUT_PATH = path.join(ROOT, "data", "institutions-master.json");
 const OVERRIDES_PATH = path.join(ROOT, "data", "career-url-overrides.json");
 const LINK_STATUS_PATH = path.join(ROOT, "generated", "institution-link-status.json");
 const QUARANTINE_PATH = path.join(ROOT, "generated", "career-link-quarantine.json");
+const IPEDS_DIR = path.join(ROOT, "data", "ipeds");
+
+// Load a normalized-name → metadata lookup from the latest IPEDS hd*.csv so that
+// state/control/level/is_degree_granting are always populated from the source of
+// truth, instead of perpetually carrying forward null from the previous master.
+function buildIpedsLookup() {
+  try {
+    const files = fs
+      .readdirSync(IPEDS_DIR)
+      .filter((f) => /^hd\d{4}\.csv$/i.test(f))
+      .sort();
+    if (files.length === 0) return { lookup: new Map(), file: null };
+    const file = files[files.length - 1]; // latest year
+    const rows = parseCsv(fs.readFileSync(path.join(IPEDS_DIR, file), "utf8"));
+    return { lookup: buildLookupByName(mapIpedsRows(rows)), file };
+  } catch {
+    return { lookup: new Map(), file: null };
+  }
+}
 
 function readJsonOrNull(p) {
   try {
@@ -212,6 +232,28 @@ function main() {
     );
   }
 
+  // Enrich every record with IPEDS metadata (state/control/level/sector/unitid).
+  // IPEDS is the source of truth; fall back to the prior value only when the name
+  // doesn't match a known institution.
+  const { lookup: ipedsByName, file: ipedsFile } = buildIpedsLookup();
+  let ipedsMatched = 0;
+  for (const r of result) {
+    const hit = ipedsByName.get(normalizeNameKey(r.name));
+    if (!hit) continue;
+    ipedsMatched += 1;
+    r.unitid = r.unitid || hit.unitid || null;
+    r.state = hit.state || r.state || null;
+    r.sector = hit.sector ?? r.sector ?? null;
+    r.level = hit.level || r.level || null;
+    r.control = hit.control || r.control || null;
+    if (typeof hit.is_degree_granting === "boolean") r.is_degree_granting = hit.is_degree_granting;
+  }
+  if (ipedsFile) {
+    console.log(`Enriched ${ipedsMatched}/${result.length} institutions from IPEDS (${ipedsFile})`);
+  } else {
+    console.warn("No IPEDS hd*.csv found in data/ipeds — state/control/level not enriched.");
+  }
+
   const filtered = result.filter((r) => String(r?.control || "").toLowerCase() !== "private for-profit");
   filtered.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
 
@@ -223,7 +265,8 @@ function main() {
       overridesFrom: path.relative(ROOT, OVERRIDES_PATH),
       linkStatusFrom: path.relative(ROOT, LINK_STATUS_PATH),
       quarantineFrom: path.relative(ROOT, QUARANTINE_PATH),
-      note: "Includes homepage_url + career_url split, override priority, and link verification/quarantine metadata.",
+      ipedsFrom: ipedsFile ? path.relative(ROOT, path.join(IPEDS_DIR, ipedsFile)) : null,
+      note: "Includes homepage_url + career_url split, override priority, link verification/quarantine metadata, and IPEDS-enriched state/control/level.",
     },
     counts: {
       totalInstitutions: filtered.length,

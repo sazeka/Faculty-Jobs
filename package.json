@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Faculty job scraper with static GitHub Pages frontend and automated daily updates",
   "scripts": {
+    "test": "node --test \"scripts/__tests__/**/*.test.js\"",
     "start": "node server.js",
     "dev:frontend": "npm run sync:web-data && cd web-vue && npm run dev",
     "build:frontend": "npm run build:coverage && npm run sync:policy-exclusions && npm run sync:web-data && cd web-vue && npm run build && cd .. && node scripts/copy-dist.js && node scripts/generate-sitemap.js && node scripts/inject-og-meta.js",
