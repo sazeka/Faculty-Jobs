@@ -9085,7 +9085,72 @@ async function scrapeStJohnsDirectoryAs(context, directoryUrl, campusName, sourc
 }
 
 // Generic job page scraper (for simple listing pages)
-async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
+// Institutional career landing pages frequently just link or iframe out to an
+// Applicant Tracking System (ATS) where the jobs actually live. Detect that and
+// hand off to the existing platform-specific scraper. Order = most common first.
+const ATS_HANDOFF_PATTERNS = [
+  { platform: "workday", re: /myworkdayjobs\.com|myworkdaysite\.com/i },
+  { platform: "pageup", re: /pageuppeople\.com/i },
+  { platform: "taleo", re: /taleo\.net/i },
+  { platform: "peopleadmin", re: /peopleadmin\.com/i },
+  { platform: "schooljobs", re: /schooljobs\.com/i },
+  { platform: "csod", re: /csod\.com/i },
+  { platform: "paycom", re: /paycomonline\.net/i },
+  { platform: "icims", re: /icims\.com/i },
+  { platform: "interfolio", re: /interfolio\.com/i },
+];
+
+// Maps a detected platform to its scraper. Function declarations are hoisted, so
+// referencing scrapers defined later in this file is safe.
+const ATS_HANDOFF_SCRAPERS = {
+  workday: scrapeWorkdayAs,
+  pageup: scrapePageUpAs,
+  taleo: scrapeTaleoAs,
+  peopleadmin: scrapePeopleAdminAs,
+  schooljobs: scrapeSchoolJobsAs,
+  csod: scrapeCsodAs,
+  paycom: scrapePaycomAs,
+  icims: scrapeIcimsAs,
+  interfolio: scrapeInterfolioAs,
+};
+
+// Normalize a Workday URL down to its listing root (tenant + site) so the Workday
+// scraper gets the job board, not a single deep job-detail link.
+function normalizeAtsUrl(platform, url) {
+  if (platform === "workday") {
+    const m = /^(https?:\/\/[^/]+\.myworkdayjobs\.com\/[^/]+)(?:\/|$)/i.exec(url);
+    if (m) return m[1];
+  }
+  return url;
+}
+
+// Inspect the loaded page for an ATS hand-off link/iframe. Returns {platform, url} or null.
+async function detectAtsHandoff(page) {
+  const urls =
+    (await safeEvaluate(page, () => {
+      const abs = (h) => {
+        try { return new URL(h, location.href).toString(); } catch { return null; }
+      };
+      const out = [];
+      for (const a of Array.from(document.querySelectorAll("a[href]"))) {
+        const u = abs(a.getAttribute("href"));
+        if (u) out.push(u);
+      }
+      for (const f of Array.from(document.querySelectorAll("iframe[src]"))) {
+        const u = abs(f.getAttribute("src"));
+        if (u) out.push(u);
+      }
+      return out;
+    })) || [];
+
+  for (const { platform, re } of ATS_HANDOFF_PATTERNS) {
+    const hit = urls.find((u) => re.test(u));
+    if (hit) return { platform, url: normalizeAtsUrl(platform, hit) };
+  }
+  return null;
+}
+
+export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     const effectiveUrl = resolveCareerUrlOverride(campusName, startUrl);
@@ -9164,6 +9229,23 @@ async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
     });
 
     const filtered = jobs.filter((j) => !omitAdjunct(j.title));
+
+    // Fallback only: if no inline jobs were found, the page likely hands off to an
+    // ATS — detect and scrape that. Gated on empty results so pages that already
+    // work via inline anchors are never affected (no regression).
+    if (filtered.length === 0) {
+      const handoff = await detectAtsHandoff(page);
+      if (handoff && ATS_HANDOFF_SCRAPERS[handoff.platform]) {
+        console.log(`↪️  ${campusName}: generic page hands off to ${handoff.platform}`);
+        try {
+          const atsJobs = await ATS_HANDOFF_SCRAPERS[handoff.platform](context, handoff.url, campusName, sourceName);
+          if (Array.isArray(atsJobs) && atsJobs.length > 0) return atsJobs; // finally{} closes page
+        } catch (e) {
+          console.warn(`   ↪️  ${campusName} ${handoff.platform} hand-off failed: ${e?.message || e}`);
+        }
+      }
+    }
+
     console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length}`);
 
     return filtered.map((j) => {

@@ -27,11 +27,15 @@ function norm(v) {
 
 function parseArgs(argv) {
   const args = argv.slice(2);
-  const out = { limit: 100, minScore: 0 };
+  const out = { limit: 100, minScore: 0, updateExisting: false };
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === "--limit" && args[i + 1]) out.limit = Math.max(1, Number(args[++i]));
     else if (a === "--min-score" && args[i + 1]) out.minScore = Number(args[++i]);
+    // Include institutions already configured in server.js when we have a freshly
+    // discovered career page (career_url != homepage) — lets apply-promotion update
+    // their stale hardcoded URLs instead of only inserting brand-new campuses.
+    else if (a === "--update-existing") out.updateExisting = true;
   }
   return out;
 }
@@ -71,7 +75,13 @@ function main() {
     .filter((r) => norm(r.coverage_status) === "missing")
     .filter((r) => norm(r.platform_type) === "generic")
     .filter((r) => clean(r.career_url))
-    .filter((r) => !existingCampuses.has(norm(r.name)))
+    .filter((r) =>
+      opts.updateExisting
+        // Only existing campuses for which we have a real discovered career page,
+        // not the homepage fallback (which would re-write a useless URL).
+        ? clean(r.career_url) !== clean(r.homepage_url)
+        : !existingCampuses.has(norm(r.name))
+    )
     .filter((r) => !excludedByOverride.has(norm(r.name)))
     .map((r) => ({
       unitid: r.unitid || null,
