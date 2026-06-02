@@ -36,11 +36,21 @@ jobs:
       - name: Seed new institutions from IPEDS WEBADDR
         run: npm run seed:ipeds:webaddr
 
+      - name: Probe career paths for missing institutions
+        # Discovers real /careers, /jobs, /employment pages for institutions whose
+        # career_url is still just the homepage; writes them into the master.
+        run: npm run probe:careers
+
       - name: Generate promotion candidates report
         run: npm run promote:seeded
 
       - name: Auto-promote candidates into scrape config
         run: npm run promote:apply
+
+      - name: Sync discovered career URLs into scrape config
+        # Refresh existing campuses' stale hardcoded URLs with the real career
+        # pages found by the probe so the daily scrape (with ATS hand-off) can use them.
+        run: npm run promote:discovered:apply
 
       - name: Rebuild institutions and coverage artifacts
         run: npm run build:coverage
@@ -56,7 +66,10 @@ jobs:
             generated/promotion-candidates.json \
             generated/promotion-candidates-snippets.js \
             generated/promotion-candidates.csv \
+            generated/promotion-candidates-next-batch.json \
             generated/promotion-apply-report.json \
+            generated/promotion-apply-discovered-report.json \
+            generated/career-path-probe-report.json \
             generated/coverage-report.json \
             generated/policy-excluded-colleges.json \
             public/policy-excluded-colleges.json \
@@ -74,6 +87,12 @@ jobs:
               console.log(r.appliedCount || 0);
             } catch { console.log(0); }
           ")
+          DISCOVERED=$(node -e "
+            try {
+              const r = JSON.parse(require('fs').readFileSync('generated/promotion-apply-discovered-report.json','utf8'));
+              console.log((r.updatedCount || 0) + (r.appliedCount || 0));
+            } catch { console.log(0); }
+          ")
 
-          git commit -m "Weekly institution discovery — seed IPEDS + promote ${APPLIED} new institutions"
+          git commit -m "Weekly institution discovery — seed IPEDS + promote ${APPLIED} new, refresh ${DISCOVERED} probed career URLs"
           git push

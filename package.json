@@ -29,6 +29,8 @@
     "promote:apply": "node scripts/apply-promotion-candidates-to-server.js",
     "promote:next100": "node scripts/promote-next-batch.js --limit 100 --min-score 0",
     "promote:next100:apply": "npm run promote:next100 && node scripts/apply-promotion-candidates-to-server.js --input generated/promotion-candidates-next-batch.json --report generated/promotion-apply-next100-report.json",
+    "promote:discovered": "node scripts/promote-next-batch.js --limit 1000 --min-score 0.3 --update-existing",
+    "promote:discovered:apply": "npm run promote:discovered && node scripts/apply-promotion-candidates-to-server.js --input generated/promotion-candidates-next-batch.json --report generated/promotion-apply-discovered-report.json",
     "discover:careers": "node scripts/discover-career-pages.js",
     "discover:careers:apply": "node scripts/discover-career-pages.js --apply --limit 200",
     "discover:careers:batch": "node scripts/discover-careers-batch.js --batch-size 150 --max-batches 20 --rebuild-coverage",
