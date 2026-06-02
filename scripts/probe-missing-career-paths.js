@@ -179,7 +179,13 @@ async function mapWithConcurrency(items, limit, worker) {
 function chooseTargets(master, ipedsByUnitid, ipedsByName, limit) {
   const unresolved = (master.institutions || [])
     .filter((i) => norm(i.coverage_status) === "missing")
-    .filter((i) => !clean(i.career_url))
+    // Target institutions with no *real* career page: either no career_url, or a
+    // career_url that's just the homepage (the build's fallback, not a job listing).
+    .filter((i) => {
+      const career = clean(i.career_url);
+      const home = clean(i.homepage_url);
+      return !career || career === home;
+    })
     .filter((i) => {
       const c = norm(i.control);
       return c !== "private for-profit";
@@ -196,7 +202,9 @@ function chooseTargets(master, ipedsByUnitid, ipedsByName, limit) {
     if (selected.length >= limit) break;
     const uid = Number(inst.unitid);
     const row = (Number.isFinite(uid) && ipedsByUnitid.get(uid)) || ipedsByName.get(norm(inst.name));
-    const web = normalizeUrl(row?.WEBADDR);
+    // Prefer the authoritative IPEDS web address; fall back to the homepage we
+    // already have so a missing WEBADDR doesn't skip an otherwise-probeable site.
+    const web = normalizeUrl(row?.WEBADDR) || normalizeUrl(inst.homepage_url);
     if (!web) continue;
     selected.push({ inst, web });
   }
