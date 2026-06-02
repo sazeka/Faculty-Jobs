@@ -104,6 +104,11 @@ function inferPlatform(url) {
   return "generic";
 }
 
+// URL patterns that indicate a STUDENT-facing career-services / internship page
+// (résumé help, internships, recreation jobs) rather than faculty/staff employment.
+const STUDENT_CAREER_RE =
+  /career-services|career[-_]?center|career-development|student-services|recreational|aquatics|\/students?\/|\binternships?\b/;
+
 function scoreCandidate(url, bodyText) {
   const u = norm(url);
   const t = norm(bodyText).slice(0, 12000);
@@ -112,6 +117,8 @@ function scoreCandidate(url, bodyText) {
   if (/\bfaculty\b|\bacademic\b|\bprofessor\b/.test(u)) s += 0.25;
   if (/\bfaculty\b|\bopen positions\b|\bjob search\b|\bemployment opportunities\b/.test(t)) s += 0.25;
   if (/\blogin\b|\bsign in\b/.test(t) && !/\bjob\b/.test(t)) s -= 0.15;
+  // Demote student career-services pages so they fall below the apply threshold.
+  if (STUDENT_CAREER_RE.test(u)) s -= 0.3;
   if (s < 0) s = 0;
   if (s > 0.99) s = 0.99;
   return Number(s.toFixed(2));
