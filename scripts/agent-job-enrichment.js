@@ -16,7 +16,7 @@
  *   not set              → Ollama local (used on developer machines)
  *
  * Usage:
- *   node scripts/agent-job-enrichment.js [--dry-run] [--max <n>] [--batch-size <n>]
+ *   node scripts/agent-job-enrichment.js [--dry-run] [--max <n>] [--batch-size <n>] [--concurrency <n>]
  */
 import fs from 'fs';
 import path from 'path';
@@ -51,6 +51,7 @@ const args        = parseArgs(process.argv.slice(2));
 const DRY_RUN     = Boolean(args['dry-run']);
 const MAX         = Number(args['max'] || process.env.AI_ENRICH_MAX || 500);
 const BATCH_SIZE  = Math.min(Number(args['batch-size'] || 25), 50);
+const CONCURRENCY = Math.min(Number(args['concurrency'] || process.env.AI_ENRICH_CONCURRENCY || 1), 8);
 const API_KEY     = process.env.ANTHROPIC_API_KEY;
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'localhost:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
@@ -230,6 +231,7 @@ async function main() {
   console.log(`  Already enriched : ${(payload.jobs.length - unenriched.length).toLocaleString()}`);
   console.log(`  To process now   : ${toProcess.length.toLocaleString()} (max ${MAX})`);
   console.log(`  Batch size       : ${BATCH_SIZE}`);
+  console.log(`  Concurrency      : ${CONCURRENCY}`);
 
   if (toProcess.length === 0) {
     console.log('\n  All jobs already enriched. Nothing to do.');
@@ -255,47 +257,59 @@ async function main() {
   // Index by canonicalJobId for fast in-place mutation
   const jobIndex = new Map(payload.jobs.map(j => [j.canonicalJobId, j]));
 
+  // Build batch list up front
+  const batches = [];
+  for (let i = 0; i < toProcess.length; i += BATCH_SIZE) {
+    batches.push(toProcess.slice(i, i + BATCH_SIZE));
+  }
+  const totalBatches = batches.length;
+
   let enrichedCount = 0;
   let errorCount    = 0;
+  let nextBatch     = 0;
 
-  for (let i = 0; i < toProcess.length; i += BATCH_SIZE) {
-    const batch  = toProcess.slice(i, i + BATCH_SIZE);
-    const batchN = Math.floor(i / BATCH_SIZE) + 1;
-    const total  = Math.ceil(toProcess.length / BATCH_SIZE);
+  // Worker: grabs the next available batch until all are done.
+  async function worker() {
+    while (nextBatch < totalBatches) {
+      const batchIdx = nextBatch++;
+      const batch    = batches[batchIdx];
+      const label    = `  Batch ${batchIdx + 1}/${totalBatches} (${batch.length} jobs)`;
 
-    process.stdout.write(`  Batch ${batchN}/${total} (${batch.length} jobs)... `);
+      try {
+        const results = await enrichBatch(batch);
 
-    try {
-      const results = await enrichBatch(batch);
+        if (!Array.isArray(results) || results.length !== batch.length) {
+          throw new Error(`Expected ${batch.length} results, got ${results?.length}`);
+        }
 
-      if (!Array.isArray(results) || results.length !== batch.length) {
-        throw new Error(`Expected ${batch.length} results, got ${results?.length}`);
+        let batchEnriched = 0;
+        for (let j = 0; j < batch.length; j++) {
+          const job    = jobIndex.get(batch[j].canonicalJobId);
+          const result = results[j];
+          if (!job || !result) continue;
+          const norm = normalizeResult(result);
+          job.discipline   = norm.discipline;
+          job.tenureTrack  = norm.tenureTrack;
+          job.positionType = norm.positionType;
+          enrichedCount++;
+          batchEnriched++;
+        }
+
+        // Save after each batch — partial progress is never lost
+        writeJson(PUBLIC_JOBS, payload);
+        if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+
+        console.log(`${label}... done (+${batchEnriched})`);
+      } catch (err) {
+        errorCount++;
+        console.log(`${label}... ERROR: ${err.message}`);
+        // Leave these jobs unenriched so they're retried next run
       }
-
-      for (let j = 0; j < batch.length; j++) {
-        const job    = jobIndex.get(batch[j].canonicalJobId);
-        const result = results[j];
-        if (!job || !result) continue;
-        const norm = normalizeResult(result);
-        job.discipline   = norm.discipline;
-        job.tenureTrack  = norm.tenureTrack;
-        job.positionType = norm.positionType;
-        enrichedCount++;
-      }
-
-      // Save after each batch — partial progress is never lost
-      writeJson(PUBLIC_JOBS, payload);
-      if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
-
-      console.log(`done (+${batch.length})`);
-    } catch (err) {
-      errorCount++;
-      console.log(`ERROR: ${err.message}`);
-      // Leave these jobs unenriched so they're retried next run
     }
-
-    if (i + BATCH_SIZE < toProcess.length) await sleep(500);
   }
+
+  // Launch CONCURRENCY workers in parallel
+  await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
   const totalEnriched = payload.jobs.filter(j => j.discipline !== undefined).length;
 

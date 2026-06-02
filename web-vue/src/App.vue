@@ -30,6 +30,7 @@ const showAllJobs = ref(false)
 const siteViews = ref(null)
 const showMethodology = ref(false)
 const excludedColleges = ref(null)
+const filterDrawerOpen = ref(false)
 
 async function openMethodology() {
   showMethodology.value = true
@@ -338,8 +339,12 @@ onMounted(async () => {
         <ActiveChips v-if="activeFilterChips.length" :chips="activeFilterChips" style="margin-bottom: 20px;" @clear-chip="clearFilterChip" />
 
         <div class="fa-catalog-layout">
-          <!-- Sidebar -->
-          <aside class="fa-filters-col">
+          <!-- Sidebar / mobile drawer -->
+          <aside class="fa-filters-col" :class="{ 'is-open': filterDrawerOpen }">
+            <div class="fa-drawer-header">
+              <span class="fa-label">Filters</span>
+              <button class="fa-drawer-close" aria-label="Close filters" @click="filterDrawerOpen = false">✕</button>
+            </div>
             <FilterBar
               :filters="filters"
               :state-options="stateOptions"
@@ -355,6 +360,11 @@ onMounted(async () => {
             />
           </aside>
 
+          <!-- Mobile backdrop -->
+          <Teleport to="body">
+            <div v-if="filterDrawerOpen" class="fa-drawer-backdrop" @click="filterDrawerOpen = false" />
+          </Teleport>
+
           <!-- Results -->
           <div class="fa-results-col">
             <!-- Toolbar -->
@@ -362,7 +372,8 @@ onMounted(async () => {
               <div class="fa-meta">
                 <b style="color: var(--ink);">{{ filteredJobs.length.toLocaleString() }}</b> postings
               </div>
-              <div style="display: flex; gap: 16px; align-items: center;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <button class="fa-filters-toggle" @click="filterDrawerOpen = true">⊞ Filters</button>
                 <select
                   class="fa-meta"
                   style="background: none; border: none; cursor: pointer; color: var(--ink); font-family: var(--font-mono);"
@@ -788,4 +799,121 @@ onMounted(async () => {
 .fa-map-container .leaflet-map { height: 100% !important; min-height: 320px; }
 .fa-map-container .map-top-row,
 .fa-map-container .map-note { display: none; }
+
+/* ─── Mobile filter drawer ─── */
+.fa-filters-toggle {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--rule-2);
+  color: var(--ink);
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.fa-filters-toggle:hover { border-color: var(--ink); }
+
+.fa-drawer-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(21, 17, 13, 0.45);
+  z-index: 199;
+}
+.fa-drawer-header {
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.fa-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--ink-3);
+  padding: 4px;
+  line-height: 1;
+  transition: color .15s;
+}
+.fa-drawer-close:hover { color: var(--ink); }
+
+/* ─── Tablet (hero headline shrink) ─── */
+@media (max-width: 1100px) {
+  .fa-hero-headline { font-size: 88px; }
+  .fa-hero { gap: 40px; }
+}
+
+/* ─── Mobile ─── */
+@media (max-width: 767px) {
+  /* Core padding */
+  :root { --pad: 18px; }
+
+  /* Header */
+  .fa-header { padding-top: 16px; }
+  .fa-header-top { flex-wrap: wrap; gap: 12px; padding-bottom: 14px; }
+  .fa-nav { gap: 18px; flex-wrap: wrap; }
+  .fa-edition-bar { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .fa-edition-bar > div:last-child { display: none; }
+
+  /* Hero */
+  .fa-hero {
+    grid-template-columns: 1fr;
+    padding: 28px var(--pad) 36px;
+    gap: 28px;
+  }
+  .fa-hero-headline { font-size: 56px; }
+  .fa-hero-coords { display: none; }
+  .fa-stat-grid { margin-bottom: 20px; }
+  .fa-stat-val { font-size: 34px; }
+
+  /* Tagline */
+  .fa-tagline-bar { flex-direction: column; gap: 6px; }
+
+  /* Sections */
+  .fa-section { padding: 28px var(--pad) 0; }
+  .fa-section-head { flex-wrap: wrap; gap: 8px; }
+  .fa-section-head h2[style] { font-size: 32px !important; }
+
+  /* Catalog */
+  .fa-catalog-layout { grid-template-columns: 1fr; gap: 0; }
+
+  /* Filter sidebar → full-screen drawer on mobile */
+  .fa-filters-col {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--paper);
+    overflow-y: auto;
+    padding: 20px var(--pad) 40px;
+    border-right: none;
+  }
+  .fa-filters-col.is-open { display: block; }
+
+  /* Show mobile-only elements */
+  .fa-filters-toggle { display: flex; }
+  .fa-drawer-backdrop { display: block; }
+  .fa-drawer-header { display: flex; }
+
+  /* Geo grid */
+  .fa-geo-grid { grid-template-columns: 1fr; }
+  .fa-map-container { aspect-ratio: 4 / 3; }
+
+  /* Footer */
+  .fa-footer { padding: 36px var(--pad); }
+  .fa-footer-grid { grid-template-columns: 1fr; gap: 28px; margin-bottom: 28px; }
+  .fa-footer-bottom { flex-direction: column; gap: 4px; }
+
+  /* Modal */
+  .fa-modal-backdrop { padding: 16px 12px; }
+  .fa-modal { padding: 24px 20px 32px; }
+}
 </style>
