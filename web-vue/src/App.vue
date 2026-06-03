@@ -292,7 +292,7 @@ onMounted(async () => {
 
     <!-- ═══ MAP TAB ═══ -->
     <template v-if="activeTab === 'map'">
-      <section class="fa-section">
+      <section class="fa-section" style="padding-top: 2px;">
         <div class="fa-section-head">
           <div>
             <div class="fa-label">§ III</div>
