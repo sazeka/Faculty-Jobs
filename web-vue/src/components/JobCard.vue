@@ -57,8 +57,12 @@ function indexStr(n) {
       </div>
       <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
         <span v-if="props.job._isNew" class="fa-tag fa-tag-accent">New</span>
-        <span v-if="props.job.positionType && props.job.positionType !== 'Faculty'" class="fa-tag">
-          {{ props.job.positionType }}
+        <span
+          v-for="pt in (props.job.positionTypes || []).filter((p) => p && p !== 'Faculty')"
+          :key="pt"
+          class="fa-tag"
+        >
+          {{ pt }}
         </span>
         <span v-if="props.job.duplicateCount > 1" class="fa-tag">
           {{ props.job.duplicateCount }}x grouped
