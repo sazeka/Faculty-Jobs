@@ -54,6 +54,10 @@ const RECHECK_DAYS   = Math.max(1, Number(args["recheck-days"] || 7));
 const TIMEOUT_MS     = Math.max(3000, Number(args["timeout-ms"] || 12000));
 const DRY_RUN        = Boolean(args["dry-run"]);
 const RECHECK_MS     = RECHECK_DAYS * 24 * 60 * 60 * 1000;
+// A URL must return 404/410 this many consecutive checks before it's treated as
+// confirmed-dead and pruned — guards against transient 404s (deploys, CDN blips)
+// purging a live job. Mid-streak URLs are rechecked every run to confirm quickly.
+const DEAD_CONFIRM   = Math.max(1, Number(args["dead-confirm"] || 2));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -214,14 +218,25 @@ async function main() {
     bySource.get(source).push({ url, title: clean(job?.title), college: clean(job?.college) });
   }
 
+  const isMidDeadStreak = (url) => {
+    const c = cache[url];
+    return c && c.status === "dead" && (c.deadStreak || 0) >= 1 && (c.deadStreak || 0) < DEAD_CONFIRM;
+  };
+
   const toCheck = [];
   for (const [source, entries] of bySource) {
-    const stale = shuffle(entries).filter(({ url }) => {
+    const shuffled = shuffle(entries);
+    // URLs that have failed once but aren't yet confirmed dead get rechecked every
+    // run (ignoring cache freshness) so a transient 404 is reconfirmed or cleared fast.
+    const reconfirm = shuffled.filter(({ url }) => isMidDeadStreak(url));
+    const stale = shuffled.filter(({ url }) => {
       const cached = cache[url];
       if (!cached) return true;
       return (now - new Date(cached.checkedAt).getTime()) > RECHECK_MS;
     });
-    toCheck.push(...stale.slice(0, SAMPLE).map((e) => ({ ...e, source })));
+    const seen = new Set();
+    const ordered = [...reconfirm, ...stale].filter(({ url }) => (seen.has(url) ? false : seen.add(url)));
+    toCheck.push(...ordered.slice(0, SAMPLE).map((e) => ({ ...e, source })));
   }
 
   const skipped = jobs.length - toCheck.length;
@@ -240,11 +255,18 @@ async function main() {
     let done = 0;
     const results = await mapWithConcurrency(toCheck, CONCURRENCY, async (item) => {
       const result = await headRequest(item.url);
+      const prevStreak = cache[item.url]?.deadStreak || 0;
+      // Increment on 404/410; clear only on a definitive "ok". Ambiguous results
+      // (blocked/timeout/error/rate-limited) leave the streak untouched.
+      let deadStreak = prevStreak;
+      if (result.status === "dead") deadStreak = prevStreak + 1;
+      else if (result.status === "ok") deadStreak = 0;
       cache[item.url] = {
         checkedAt: new Date().toISOString(),
         status: result.status,
         httpCode: result.httpCode || null,
         finalUrl: result.finalUrl !== item.url ? result.finalUrl : undefined,
+        deadStreak,
       };
       done++;
       if (done % 10 === 0 || done === toCheck.length) {
@@ -284,14 +306,17 @@ async function main() {
     if (!bySourceStats.has(source)) bySourceStats.set(source, { checked: 0, dead: 0, redirected: 0 });
     const st = bySourceStats.get(source);
     st.checked++;
-    if (cached.status === "dead" || cached.status === "homepage-redirect") {
+    // Confirmed-dead = 404/410 for DEAD_CONFIRM consecutive checks. A homepage
+    // redirect is a stable "posting gone" signal, so it prunes immediately.
+    const confirmedDead = cached.status === "dead" && (cached.deadStreak || 0) >= DEAD_CONFIRM;
+    if (confirmedDead || cached.status === "homepage-redirect") {
       st.dead++;
-      if (cached.status === "dead") st.redirected === undefined;
-      else st.redirected++;
+      if (cached.status === "homepage-redirect") st.redirected++;
       deadJobs.push({
         url,
         status: cached.status,
         httpCode: cached.httpCode || null,
+        deadStreak: cached.deadStreak || 0,
         checkedAt: cached.checkedAt,
         title: clean(job?.title),
         college: clean(job?.college),

@@ -5,10 +5,26 @@ import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import { scrapeAllJobsStandalone, callLocalSummarizer, getSystemGroup } from "../server.js";
 import { canonicalizeUrl } from "./lib/url-normalization.js";
-import { shouldBlockOverwrite, healCrateredSources } from "./lib/scrape-guard.js";
+import { shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from "./lib/scrape-guard.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Drop jobs whose URL was confirmed dead (404/410 for >= DEAD_CONFIRM consecutive
+// checks, or redirected to a homepage) per the URL verifier's cache, so a listing
+// page that still shows a filled posting can't keep re-introducing it each scrape.
+function filterConfirmedDeadUrls(data, deadConfirm = 2) {
+  if (!data || !Array.isArray(data.jobs)) return { data, removed: 0 };
+  let cache;
+  try {
+    cache = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "generated", "job-url-cache.json"), "utf8"));
+  } catch {
+    return { data, removed: 0 }; // no cache yet — nothing to filter
+  }
+  const before = data.jobs.length;
+  const jobs = data.jobs.filter((j) => !isConfirmedDeadUrl(cache[j?.url], deadConfirm));
+  return { data: { ...data, jobs, count: jobs.length }, removed: before - jobs.length };
+}
 
 function clean(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
@@ -190,6 +206,14 @@ function canonicalizeJobUrls(data) {
     console.log(`🧹 Quality gates dropped ${quality.report.dropped} listings`);
   }
   console.log(`📄 Wrote ${qualityReportPath}`);
+
+  // Drop listings whose URL the verifier has confirmed dead, so a stale listing
+  // page can't keep re-introducing filled postings each scrape.
+  const deadFilter = filterConfirmedDeadUrls(data);
+  if (deadFilter.removed > 0) {
+    data = deadFilter.data;
+    console.log(`⚰️  Filtered ${deadFilter.removed} confirmed-dead URL(s) from scrape`);
+  }
 
   const targets = [
     path.join(__dirname, "..", "docs", "jobs.json"),

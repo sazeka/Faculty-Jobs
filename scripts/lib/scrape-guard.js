@@ -48,6 +48,16 @@ export function shouldBlockOverwrite(newData, prevData, allowlistRaw) {
   return { block: reasons.length > 0, reasons };
 }
 
+// True when a URL-verifier cache entry represents a CONFIRMED-dead posting: a
+// homepage redirect (stable "posting gone" signal), or 404/410 sustained for
+// `deadConfirm` consecutive checks. A single transient 404 (deadStreak < threshold)
+// is NOT confirmed, so it won't trigger pruning.
+export function isConfirmedDeadUrl(cacheEntry, deadConfirm = 2) {
+  if (!cacheEntry) return false;
+  if (cacheEntry.status === "homepage-redirect") return true;
+  return cacheEntry.status === "dead" && (cacheEntry.deadStreak || 0) >= deadConfirm;
+}
+
 // Surgical anti-flake guard: if a source's job count craters versus the previous
 // snapshot (a strong signal of a blocked/timed-out scrape, not a real listing
 // drop), restore THAT source's previous jobs while still accepting fresh data for

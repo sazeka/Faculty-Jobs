@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { countBySource, shouldBlockOverwrite, healCrateredSources } from "../lib/scrape-guard.js";
+import { countBySource, shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from "../lib/scrape-guard.js";
 
 const mk = (source, n) =>
   Array.from({ length: n }, (_, i) => ({ source, url: `https://x/${source}/${i}`, title: `t${i}` }));
@@ -56,4 +56,20 @@ test("shouldBlockOverwrite blocks on >50% allowlisted-total collapse", () => {
   const next = { jobs: [...mk("NM", 10), ...mk("NY", 10)] };
   const r = shouldBlockOverwrite(next, prev, "NM,NY");
   assert.equal(r.block, true);
+});
+
+test("isConfirmedDeadUrl requires a sustained dead streak", () => {
+  assert.equal(isConfirmedDeadUrl(undefined), false);
+  assert.equal(isConfirmedDeadUrl({ status: "ok", httpCode: 200 }), false);
+  // single 404 is not yet confirmed (guards against transient failures)
+  assert.equal(isConfirmedDeadUrl({ status: "dead", deadStreak: 1 }), false);
+  assert.equal(isConfirmedDeadUrl({ status: "dead", deadStreak: 2 }), true);
+  // legacy entry with no deadStreak field is treated as unconfirmed
+  assert.equal(isConfirmedDeadUrl({ status: "dead" }), false);
+  // homepage redirect is a stable "gone" signal → confirmed immediately
+  assert.equal(isConfirmedDeadUrl({ status: "homepage-redirect" }), true);
+  // blocked/timeout are never dead
+  assert.equal(isConfirmedDeadUrl({ status: "blocked", deadStreak: 5 }), false);
+  // custom threshold
+  assert.equal(isConfirmedDeadUrl({ status: "dead", deadStreak: 1 }, 1), true);
 });
