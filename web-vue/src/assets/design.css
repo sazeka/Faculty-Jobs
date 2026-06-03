@@ -74,6 +74,38 @@ body {
   color: var(--ink-3);
 }
 
+/* Catalog / Map view toggle */
+.fa-viewtoggle {
+  display: inline-flex;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.fa-viewtoggle button {
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 6px 16px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.fa-viewtoggle button + button {
+  border-left: 1px solid var(--rule);
+}
+.fa-viewtoggle button.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+.fa-viewtoggle button:not(.active):hover {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
 .fa-num {
   font-family: var(--font-display);
   font-feature-settings: "lnum", "tnum";

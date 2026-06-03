@@ -298,7 +298,10 @@ onMounted(async () => {
             <div class="fa-label">§ III</div>
             <h2 class="fa-display" style="font-size: 48px; margin: 4px 0 0;">By <i>geography</i></h2>
           </div>
-          <button class="fa-meta fa-link" style="background: none; border: none; cursor: pointer;" @click="activeTab = 'jobs'">← Back to catalog</button>
+          <div class="fa-viewtoggle" role="group" aria-label="Toggle catalog and map view">
+            <button type="button" :class="{ active: activeTab === 'jobs' }" @click="activeTab = 'jobs'">Catalog</button>
+            <button type="button" :class="{ active: activeTab === 'map' }" @click="activeTab = 'map'">Map</button>
+          </div>
         </div>
         <div class="fa-geo-grid">
           <div class="fa-map-container" style="min-height: 400px;">
@@ -340,7 +343,10 @@ onMounted(async () => {
               Showing <b style="color: var(--ink);">{{ displayedJobs.length.toLocaleString() }}</b>
               of <b style="color: var(--ink);">{{ filteredJobs.length.toLocaleString() }}</b>
             </span>
-            <button class="fa-meta fa-link" style="background: none; border: none; cursor: pointer;" @click="activeTab = 'map'">Map view →</button>
+            <div class="fa-viewtoggle" role="group" aria-label="Toggle catalog and map view">
+              <button type="button" :class="{ active: activeTab === 'jobs' }" @click="activeTab = 'jobs'">Catalog</button>
+              <button type="button" :class="{ active: activeTab === 'map' }" @click="activeTab = 'map'">Map</button>
+            </div>
           </div>
         </div>
 
