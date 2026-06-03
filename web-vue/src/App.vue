@@ -202,8 +202,8 @@ onMounted(async () => {
       <div class="fa-hero-left">
         <div class="fa-label" style="margin-bottom: 24px;">The Atlas · {{ todayStr }}</div>
         <h1 class="fa-display fa-hero-headline">
-          Every<br />
-          <i style="color: var(--accent);">open position</i><br />
+          Thousands of<br />
+          <i style="color: var(--accent);">open positions</i><br />
           in academia,<br />
           charted.
         </h1>
