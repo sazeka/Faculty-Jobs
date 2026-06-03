@@ -37,6 +37,7 @@ function sharedJobsJsonPlugin() {
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Faculty-Jobs/',
+  // Custom domain (facultyatlas.org) serves from root, not the /Faculty-Jobs/ subpath.
+  base: '/',
   plugins: [vue(), sharedJobsJsonPlugin()],
 })

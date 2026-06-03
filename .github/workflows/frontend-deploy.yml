@@ -65,7 +65,8 @@ jobs:
           git checkout -- docs/data public/data docs/jobs.json public/jobs.json 2>/dev/null || true
           git add -A docs/assets public/assets
           git add docs/index.html public/index.html \
-            docs/sitemap.xml public/sitemap.xml docs/robots.txt public/robots.txt
+            docs/sitemap.xml public/sitemap.xml docs/robots.txt public/robots.txt \
+            docs/CNAME public/CNAME
 
           if git diff --cached --quiet; then
             echo "No bundle changes to deploy."

@@ -17,7 +17,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT      = path.resolve(__dirname, "..");
 
-const BASE_URL  = "https://sazeka.github.io/Faculty-Jobs";
+const BASE_URL  = "https://facultyatlas.org";
 
 // Static pages that exist as individual HTML files under docs/
 const STATIC_PAGES = [
