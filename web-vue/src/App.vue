@@ -169,7 +169,7 @@ onMounted(async () => {
         <!-- Nav -->
         <nav class="fa-nav">
           <button
-            v-for="t in ['Jobs', 'Map', 'Trends']"
+            v-for="t in ['Jobs', 'Trends']"
             :key="t"
             class="fa-meta fa-nav-link"
             :class="{ active: activeTab === t.toLowerCase() }"
