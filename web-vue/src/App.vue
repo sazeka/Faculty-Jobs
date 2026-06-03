@@ -332,7 +332,7 @@ onMounted(async () => {
     <!-- ═══ JOBS TAB ═══ -->
     <template v-if="activeTab === 'jobs'">
       <!-- § I — Today's catalog -->
-      <section class="fa-section" style="padding-top: 16px;">
+      <section class="fa-section" style="padding-top: 0;">
         <div class="fa-section-head">
           <div>
             <div class="fa-label">§ I</div>
