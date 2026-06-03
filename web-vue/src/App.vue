@@ -112,12 +112,21 @@ async function reportBadListing(job) {
   }
 }
 
+// GoatCounter site code (the CODE in CODE.goatcounter.com). Its public counter
+// endpoint returns the live total visit count for the on-page number; the beacon
+// script in index.html does the actual tracking. Replace with your code.
+const GOATCOUNTER_CODE = 'facultyatlas'
+
 onMounted(async () => {
+  if (!GOATCOUNTER_CODE || GOATCOUNTER_CODE.startsWith('__')) return
   try {
-    const res = await fetch(`${baseUrl}traffic.json`)
+    const res = await fetch(`https://${GOATCOUNTER_CODE}.goatcounter.com/counter/TOTAL.json`)
     if (res.ok) {
       const d = await res.json()
-      siteViews.value = d.views14d ?? null
+      // GoatCounter returns counts as formatted strings (e.g. "1,234").
+      const raw = d.count_unique ?? d.count ?? ''
+      const n = parseInt(String(raw).replace(/[^0-9]/g, ''), 10)
+      siteViews.value = Number.isFinite(n) ? n : null
     }
   } catch { /* unavailable */ }
 })
@@ -183,7 +192,7 @@ onMounted(async () => {
           <span><b style="font-weight: 600; color: var(--ink);">{{ qualitySummary.total.toLocaleString() }}</b> posts</span>
           <span><b style="font-weight: 600; color: var(--ink);">{{ qualitySummary.uniqueColleges.toLocaleString() }}</b> institutions</span>
           <span><b style="font-weight: 600; color: var(--ink);">{{ stateCount }}</b> state systems</span>
-          <span v-if="siteViews !== null"><b style="font-weight: 600; color: var(--ink);">{{ siteViews.toLocaleString() }}</b> views / 14d</span>
+          <span v-if="siteViews !== null"><b style="font-weight: 600; color: var(--ink);">{{ siteViews.toLocaleString() }}</b> visitors</span>
         </div>
       </div>
     </header>
@@ -457,7 +466,7 @@ onMounted(async () => {
       </div>
       <div class="fa-footer-bottom">
         <div class="fa-meta">Faculty Atlas · An independent academic directory</div>
-        <div v-if="siteViews !== null" class="fa-meta">{{ siteViews.toLocaleString() }} visitors · 14d</div>
+        <div v-if="siteViews !== null" class="fa-meta">{{ siteViews.toLocaleString() }} visitors</div>
       </div>
     </footer>
 
