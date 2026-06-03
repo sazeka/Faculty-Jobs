@@ -58,7 +58,7 @@ const META_TAGS = [
   {
     attr: "property",
     attrVal: "og:url",
-    tag: `<meta property="og:url" content="https://facultyatlas.org/">`,
+    tag: `<meta property="og:url" content="https://www.facultyatlas.org/">`,
   },
   {
     attr: "property",
@@ -68,7 +68,7 @@ const META_TAGS = [
   {
     attr: "canonical",  // special sentinel — matched differently below
     attrVal: "canonical",
-    tag: `<link rel="canonical" href="https://facultyatlas.org/">`,
+    tag: `<link rel="canonical" href="https://www.facultyatlas.org/">`,
   },
 ];
 
