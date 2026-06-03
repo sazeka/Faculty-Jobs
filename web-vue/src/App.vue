@@ -458,7 +458,6 @@ onMounted(async () => {
             <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ tenureTrackOnly: false, newOnly: false })">All postings</button></li>
             <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ tenureTrackOnly: true })">Tenure-track only</button></li>
             <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ newOnly: true })">New postings</button></li>
-            <li><button class="fa-footer-link" @click="activeTab = 'map'">Browse by map</button></li>
             <li><button class="fa-footer-link" @click="activeTab = 'trends'">Weekly digest</button></li>
           </ul>
         </div>
