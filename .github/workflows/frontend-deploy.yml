@@ -1,0 +1,76 @@
+name: Build & deploy frontend
+
+# Rebuilds the Vue bundle and commits the result into docs/ + public/ (GitHub
+# Pages serves docs/ on main). Runs only when frontend SOURCE changes — never on
+# data commits — so it doesn't loop or race the scrape/agent-team data workflows.
+# Previously the bundle was only rebuilt by a manual `npm run build:frontend`.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "web-vue/src/**"
+      - "web-vue/index.html"
+      - "web-vue/vite.config.*"
+      - "web-vue/package.json"
+      - "web-vue/package-lock.json"
+      - "scripts/copy-dist.js"
+      - "scripts/inject-og-meta.js"
+      - "scripts/generate-sitemap.js"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: frontend-deploy
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Check for merge conflict markers
+        run: npm run verify:no-conflicts
+
+      - name: Build frontend (coverage + web data + Vue bundle + sitemap + OG meta)
+        run: npm run build:frontend
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Stage the built bundle + the data artifacts the build regenerates.
+          # -A captures rotated hashed asset filenames (adds + deletions).
+          git add -A docs public web-vue/public/data \
+            web-vue/public/policy-excluded-colleges.json \
+            data/institutions-master.json \
+            generated/coverage-report.json \
+            generated/policy-excluded-colleges.json
+
+          if git diff --cached --quiet; then
+            echo "No frontend changes to deploy."
+            exit 0
+          fi
+
+          git commit -m "Build & deploy frontend bundle"
+
+          # Rebase onto any commits the data workflows pushed meanwhile, then push.
+          if ! git push; then
+            git pull --rebase origin main
+            git push
+          fi
