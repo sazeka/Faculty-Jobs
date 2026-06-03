@@ -59,4 +59,7 @@ export const SOURCE_TO_STATE_ALIASES = {
   CUNY: 'New York',
   SUNY: 'New York',
   UMass: 'Massachusetts',
+  Claremont: 'California',
+  'Claremont Colleges': 'California',
+  'CT State': 'Connecticut',
 }

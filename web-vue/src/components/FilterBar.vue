@@ -21,6 +21,15 @@ const filteredDisciplineOptions = computed(() => {
   return props.disciplineOptions.filter(opt => opt.value.toLowerCase().includes(q))
 })
 
+// Full list of states (university systems are grouped into their state upstream),
+// alphabetized; show any state that currently has matches plus the active one.
+const statesForFilter = computed(() =>
+  props.stateOptions
+    .filter((o) => o.count > 0 || o.value === props.filters.state)
+    .slice()
+    .sort((a, b) => String(a.value).localeCompare(String(b.value)))
+)
+
 function updateField(key, value) {
   emit('update:filters', { [key]: value })
 }
@@ -115,12 +124,12 @@ function toggleDiscipline(value) {
       </div>
     </div>
 
-    <!-- State / Region -->
+    <!-- State -->
     <div style="margin-bottom: 28px;">
-      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Region</div>
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">State</div>
       <div style="display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto;">
         <label
-          v-for="opt in stateOptions.slice(0, 20)"
+          v-for="opt in statesForFilter"
           :key="opt.value"
           class="fa-facet-item"
           :class="{ active: filters.state === opt.value }"
