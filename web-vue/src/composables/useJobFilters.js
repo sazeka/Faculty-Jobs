@@ -41,6 +41,27 @@ function getPositionType(title) {
   return 'Faculty'
 }
 
+// Like getPositionType, but returns ALL ranks a title spans, so a combined
+// posting (e.g. "Assistant/Associate Professor", "Open Rank") appears under each
+// matching filter. Only the professor-rank dimension is multi-tagged; everything
+// else falls back to the single-category logic to avoid over-tagging.
+function getPositionTypes(title) {
+  const t = (title || '').toLowerCase()
+  if (/professor/.test(t)) {
+    // "all ranks" / "open rank" spans the full professor ladder
+    if (/\b(all ranks|open rank|any rank|all levels|various ranks)\b/.test(t)) {
+      return ['Assistant Professor', 'Associate Professor', 'Professor']
+    }
+    const ranks = []
+    if (/\bassistant\b/.test(t)) ranks.push('Assistant Professor')
+    if (/\bassociate\b/.test(t)) ranks.push('Associate Professor')
+    if (/\bfull professor\b/.test(t)) ranks.push('Professor')
+    if (ranks.length) return ranks
+  }
+  // Single-category titles keep the existing exclusive priority.
+  return [getPositionType(t)]
+}
+
 function stripDateTextFromTitle(value) {
   let t = String(value || '')
   if (!t) return t
@@ -178,6 +199,7 @@ function normalizeJob(job) {
     closeDateRaw: job?.closeDateRaw || null,
     closeDate: job?.closeDate || null,
     tenureTrack: typeof job?.tenureTrack === 'boolean' ? job.tenureTrack : null,
+    positionTypes: job?.rank ? [job.rank] : getPositionTypes(job?.titleClean || job?.title || ''),
     positionType: job?.rank || getPositionType(job?.titleClean || job?.title || ''),
     state,
     isNew: Boolean(job?._isNew),
@@ -274,7 +296,9 @@ function dedupeGroupedJobs(jobs) {
 export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   const normalizedJobs = computed(() => dedupeGroupedJobs(jobsRef.value.map(normalizeJob)))
   const allStateValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.state))
-  const allPositionTypeValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.positionType))
+  const allPositionTypeValues = computed(() =>
+    [...new Set(normalizedJobs.value.flatMap((job) => job.positionTypes || []).filter(Boolean))].sort((a, b) => a.localeCompare(b))
+  )
   const allCollegeValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.college))
   const allDepartmentValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.department))
   const allCityValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.city))
@@ -288,7 +312,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
       out = out.filter((job) => job.state === filterValues.state)
     }
     if (ignoreKey !== 'positionType' && filterValues.positionType !== ALL_FILTER_VALUE) {
-      out = out.filter((job) => job.positionType === filterValues.positionType)
+      out = out.filter((job) => (job.positionTypes || []).includes(filterValues.positionType))
     }
     if (ignoreKey !== 'college' && filterValues.college !== ALL_FILTER_VALUE) {
       out = out.filter((job) => job.college === filterValues.college)
@@ -341,7 +365,10 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   })
 
   const positionTypeOptions = computed(() => {
-    const counts = countBy(applyFilters({ ignoreKey: 'positionType' }), (job) => job.positionType)
+    const counts = new Map()
+    for (const job of applyFilters({ ignoreKey: 'positionType' })) {
+      for (const pt of job.positionTypes || []) counts.set(pt, (counts.get(pt) || 0) + 1)
+    }
     return allPositionTypeValues.value.map((value) => {
       const count = counts.get(value) || 0
       return {
