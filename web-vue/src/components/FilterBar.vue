@@ -138,7 +138,7 @@ function toggleDiscipline(value) {
           <span class="fa-check" :class="{ checked: filters.state === opt.value }">
             {{ filters.state === opt.value ? '✓' : '' }}
           </span>
-          <span style="flex: 1;">{{ opt.label }}</span>
+          <span style="flex: 1;">{{ opt.value }}</span>
           <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
         </label>
       </div>
