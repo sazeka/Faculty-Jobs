@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-08T00:00:00.000Z",
+  "updatedAt": "2026-06-03T00:00:00.000Z",
   "overrides": [
     {
       "name": "Dean College",
@@ -7,6 +7,13 @@
       "career_url": "https://www.dean.edu/about-dean/leadership/administration/office-of-human-resources",
       "platform_type": "generic",
       "notes": "Homepage generic scrape missed stable employment endpoint; route to HR office page."
+    },
+    {
+      "name": "Auburn University at Montgomery",
+      "homepage_url": "https://www.aum.edu/",
+      "career_url": "https://jobs.aum.edu/aum-careers-home/jobs?tags2=Faculty",
+      "platform_type": "icims",
+      "notes": "Was pointing at the homepage (broken); route to the faculty-filtered iCIMS careers portal."
     }
   ]
 }
