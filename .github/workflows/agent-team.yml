@@ -52,6 +52,13 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           USE_CLAUDE: '1'
 
+      - name: Install Playwright Chromium (for description backfill)
+        run: npx playwright install --with-deps chromium
+
+      - name: Backfill missing job descriptions from detail pages
+        run: npm run agent:descriptions -- --max 400 --concurrency 6
+        continue-on-error: true
+
       - name: Rebuild web data chunks from updated jobs.json
         run: |
           node scripts/sync-web-data-files.js
@@ -78,7 +85,8 @@ jobs:
             generated/data-health-report.json \
             generated/job-presence.json \
             generated/job-presence-report.json \
-            generated/enrichment-report.json
+            generated/enrichment-report.json \
+            generated/job-descriptions-report.json
 
           if git diff --cached --quiet; then
             echo "No changes to commit."
