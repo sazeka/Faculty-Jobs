@@ -93,6 +93,41 @@ function runCommand(cmd, label) {
   }
 }
 
+// ── gh resolution ─────────────────────────────────────────────────────────────
+
+/**
+ * Resolve the `gh` executable. Prefer PATH, but fall back to the known install
+ * locations: winget puts gh on the *Machine* PATH, yet a shell (or scheduled
+ * task) started before the install won't have picked that up. Don't let a stale
+ * PATH silently disable the alerting layer.
+ * Returns a command string ready to prefix args, or null if gh isn't found.
+ */
+function resolveGhCmd() {
+  try {
+    execSync("gh --version", { stdio: ["pipe", "pipe", "pipe"] });
+    return "gh";
+  } catch { /* not on PATH — try known locations */ }
+
+  const candidates = [
+    "C:\\Program Files\\GitHub CLI\\gh.exe",
+    "C:\\Program Files (x86)\\GitHub CLI\\gh.exe",
+    process.env.LOCALAPPDATA
+      ? path.join(process.env.LOCALAPPDATA, "Microsoft", "WinGet", "Links", "gh.exe")
+      : null,
+  ].filter(Boolean);
+
+  for (const c of candidates) {
+    if (!fs.existsSync(c)) continue;
+    try {
+      execSync(`"${c}" --version`, { stdio: ["pipe", "pipe", "pipe"] });
+      return `"${c}"`;
+    } catch { /* keep looking */ }
+  }
+  return null;
+}
+
+const GH = resolveGhCmd();
+
 // ── gh availability check ────────────────────────────────────────────────────
 
 /**
@@ -100,22 +135,18 @@ function runCommand(cmd, label) {
  * Returns true if usable, false otherwise (after printing a warning).
  */
 function checkGhAvailable() {
+  if (!GH) {
+    console.warn("[WARNING] gh CLI is not available. Skipping issue creation.");
+    return false;
+  }
   try {
-    execSync("gh auth status", { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
+    execSync(`${GH} auth status`, { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
     return true;
   } catch {
-    // gh may print an error to stderr even on success in some versions; try a
-    // simpler smoke-test instead.
-    try {
-      execSync("gh --version", { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
-      // gh is installed but auth may be missing — warn and continue so the
-      // script still writes the report and exits 0.
-      console.warn("[WARNING] gh is installed but may not be authenticated. Issues will not be created.");
-      return false;
-    } catch {
-      console.warn("[WARNING] gh CLI is not available. Skipping issue creation.");
-      return false;
-    }
+    // gh is installed but auth is missing — warn and continue so the
+    // script still writes the report and exits 0.
+    console.warn("[WARNING] gh is installed but not authenticated. Run: gh auth login");
+    return false;
   }
 }
 
@@ -127,7 +158,7 @@ function checkGhAvailable() {
  */
 function fetchOpenIssueTitles() {
   const raw = runCommand(
-    'gh issue list --state open --json title --limit 500',
+    `${GH} issue list --state open --json title --limit 500`,
     "gh issue list"
   );
   if (raw === null) return null;
@@ -157,7 +188,7 @@ function createIssue(title, body) {
     // Use --body-file so the body is read from disk — no shell escaping needed.
     const safeTitle = title.replace(/"/g, '\\"');
     const result = runCommand(
-      `gh issue create --title "${safeTitle}" --body-file "${tmpPath}"`,
+      `${GH} issue create --title "${safeTitle}" --body-file "${tmpPath}"`,
       `gh issue create: ${title}`
     );
     return result !== null;
