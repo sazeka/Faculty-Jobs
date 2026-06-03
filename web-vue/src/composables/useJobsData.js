@@ -136,13 +136,21 @@ function loadCachedPayload() {
 }
 
 function persistCache(payload) {
-  const minimal = {
-    jobs: payload.jobs,
-    scrapedAt: payload.scrapedAt || null,
-    cachedAt: new Date().toISOString(),
-    transport: payload.transport || 'jobs.json',
+  // Drop `description` (can be several KB/job) before caching — with 6k+ jobs the
+  // full payload blows past the ~5MB localStorage quota. The cache only needs
+  // enough for an instant render; descriptions are refilled on the network load.
+  try {
+    const minimal = {
+      jobs: payload.jobs.map(({ description, ...rest }) => rest),
+      scrapedAt: payload.scrapedAt || null,
+      cachedAt: new Date().toISOString(),
+      transport: payload.transport || 'jobs.json',
+    }
+    localStorage.setItem(CACHE_KEY, JSON.stringify(minimal))
+  } catch {
+    // Quota exceeded or storage unavailable — caching is best-effort, never fatal.
+    try { localStorage.removeItem(CACHE_KEY) } catch { /* ignore */ }
   }
-  localStorage.setItem(CACHE_KEY, JSON.stringify(minimal))
 }
 
 function loadSeenUrls() {
@@ -151,8 +159,13 @@ function loadSeenUrls() {
 }
 
 function persistSeenUrls(urlsSet) {
-  localStorage.setItem(SEEN_URLS_KEY, JSON.stringify([...urlsSet]))
-  localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString())
+  // Best-effort: never let a storage error here abort the load flow.
+  try {
+    localStorage.setItem(SEEN_URLS_KEY, JSON.stringify([...urlsSet]))
+    localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString())
+  } catch {
+    /* quota exceeded or storage unavailable */
+  }
 }
 
 export function useJobsData() {
@@ -217,14 +230,17 @@ export function useJobsData() {
       transport.value = payload.transport || 'jobs.json'
       status.value = `Loaded ${jobs.value.length.toLocaleString()} jobs via ${transport.value}`
 
-      persistCache({ jobs: nextJobs, scrapedAt: scrapedAt.value, transport: transport.value })
-
+      // Record every current URL as "seen" and stamp the visit BEFORE caching, so
+      // a cache-quota failure can never skip it — otherwise the next visit's "new
+      // since last visit" count falls back to every job (== total).
       for (const job of payload.jobs) {
         const url = clean(job?.url)
         if (url) seen.add(url)
       }
       persistSeenUrls(seen)
       lastVisitAt.value = localStorage.getItem(LAST_VISIT_KEY) || null
+
+      persistCache({ jobs: nextJobs, scrapedAt: scrapedAt.value, transport: transport.value })
     } catch (error) {
       if (jobs.value.length > 0) {
         status.value = 'Using cached jobs (refresh failed)'
