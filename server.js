@@ -9150,6 +9150,84 @@ async function detectAtsHandoff(page) {
   return null;
 }
 
+// Modern iCIMS / Jibe "career-home" portals (app.jibecdn.com) render listings
+// client-side but expose a JSON feed at {origin}/api/jobs. Fetch + paginate that
+// directly — far more reliable than scraping the JS-rendered DOM. The careers URL's
+// own query params (e.g. tags2=Faculty) are preserved so the server-side filter
+// applies. Returns [] for non-Jibe sites so callers can fall through.
+async function scrapeJibeApi(careersUrl, campusName, sourceName) {
+  let u;
+  try { u = new URL(careersUrl); } catch { return []; }
+  const origin = u.origin;
+  const m = u.pathname.match(/^(.*?)\/jobs(?:\/|$)/i);
+  const sitePath = m ? m[1] : "";
+
+  const fetchJson = async (url) => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12_000);
+    try {
+      const r = await fetch(url, { signal: ctrl.signal, headers: { "User-Agent": "Mozilla/5.0 FacultyAtlasBot", Accept: "application/json" } });
+      if (!r.ok) return null;
+      const ct = r.headers.get("content-type") || "";
+      if (!ct.includes("json")) return null;
+      return await r.json();
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  const seen = new Set();
+  const collected = [];
+  let page = 1;
+  let total = Infinity;
+  while ((page - 1) * 10 < total && page <= 60) {
+    const qp = new URLSearchParams(u.search);
+    qp.set("page", String(page));
+    qp.set("internal", "f");
+    if (!qp.has("sortBy")) qp.set("sortBy", "relevance");
+    const json = await fetchJson(`${origin}/api/jobs?${qp.toString()}`);
+    if (!json || !Array.isArray(json.jobs)) break; // not a Jibe portal (or done)
+    if (typeof json.totalCount === "number") total = json.totalCount;
+    if (json.jobs.length === 0) break;
+    for (const item of json.jobs) {
+      const d = item?.data || {};
+      const title = String(d.title || "").replace(/\s+/g, " ").trim();
+      const slug = String(d.slug || d.req_id || "").replace(/\s+/g, " ").trim();
+      if (!title || !slug) continue;
+      const url = `${origin}${sitePath}/jobs/${slug}`;
+      if (seen.has(url)) continue;
+      seen.add(url);
+      collected.push({
+        title,
+        url,
+        location: String(d.short_location || d.full_location || "").trim() || null,
+        department: String(d.department || "").trim() || null,
+      });
+    }
+    page++;
+  }
+
+  // The careers URL is already faculty-scoped (tags2=Faculty); just drop adjunct pools.
+  return collected
+    .filter((j) => !omitAdjunct(j.title))
+    .map((j) => {
+      const inferred = inferAcademicFieldsFromTitle(j.title);
+      return {
+        title: j.title,
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: j.location,
+        description: null,
+        department: j.department || inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
+}
+
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
@@ -9234,6 +9312,18 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
     // ATS — detect and scrape that. Gated on empty results so pages that already
     // work via inline anchors are never affected (no regression).
     if (filtered.length === 0) {
+      // iCIMS/Jibe career-home portals expose a JSON feed — try that before the
+      // anchor/iframe ATS hand-off (which would grab the wrong icims.com apply link).
+      try {
+        const jibeJobs = await scrapeJibeApi(effectiveUrl, campusName, sourceName);
+        if (jibeJobs.length > 0) {
+          console.log(`↪️  ${campusName}: scraped ${jibeJobs.length} listings via Jibe/iCIMS API`);
+          return jibeJobs; // finally{} closes page
+        }
+      } catch (e) {
+        console.warn(`   ↪️  ${campusName} Jibe API probe failed: ${e?.message || e}`);
+      }
+
       const handoff = await detectAtsHandoff(page);
       if (handoff && ATS_HANDOFF_SCRAPERS[handoff.platform]) {
         console.log(`↪️  ${campusName}: generic page hands off to ${handoff.platform}`);
