@@ -6,6 +6,7 @@ import { createHash } from "crypto";
 import { scrapeAllJobsStandalone, callLocalSummarizer, getSystemGroup } from "../server.js";
 import { canonicalizeUrl } from "./lib/url-normalization.js";
 import { shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from "./lib/scrape-guard.js";
+import { preserveEnrichment } from "./lib/enrichment-merge.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -275,6 +276,20 @@ function canonicalizeJobUrls(data) {
     console.warn("⚠️  Existing jobs.json files were preserved.");
     console.warn("   Set FORCE_WRITE_ON_DROP=1 to override.");
     return;
+  }
+
+  // Carry enrichment (discipline/positionType/tenureTrack) forward from the
+  // previous snapshot. The scraper produces raw listings with none of these, and
+  // CI has no LLM to re-run agent:enrich — without this, every daily scrape wipes
+  // the enrichment off the live site. Only fills fields the fresh job is missing.
+  if (process.env.DISABLE_ENRICHMENT_PRESERVE !== "1") {
+    const merged = preserveEnrichment(data, previousData);
+    data = merged.data;
+    if (merged.restoredFields > 0) {
+      console.log(
+        `🧬 Preserved enrichment: filled ${merged.restoredFields} field(s) across ${merged.jobsTouched} job(s) (${merged.matched} matched previous snapshot)`
+      );
+    }
   }
 
   for (const outPath of targets) {

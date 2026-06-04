@@ -1,0 +1,58 @@
+// Carry LLM-derived enrichment forward across scrapes. Pure functions, unit-tested
+// in scripts/__tests__/enrichment-merge.test.js.
+//
+// The daily scrape re-fetches raw listings and produces jobs with NO enrichment
+// fields, which used to wipe discipline/positionType/tenureTrack from the live
+// site every day (CI has no LLM to re-run agent:enrich). preserveEnrichment()
+// copies those fields from the previous snapshot onto the fresh one, matching by
+// canonicalJobId first then URL. It ONLY fills fields that are missing/empty on
+// the fresh job — it never overwrites data the fresh scrape actually produced —
+// so a still-posted job keeps its enrichment and only genuinely-new jobs need
+// the (local/periodic) enricher.
+
+export const ENRICHMENT_FIELDS = ["discipline", "tenureTrack", "positionType"];
+
+function isEmpty(v) {
+  return v === undefined || v === null || v === "";
+}
+
+export function preserveEnrichment(newData, prevData, fields = ENRICHMENT_FIELDS) {
+  const empty = { data: newData, restoredFields: 0, jobsTouched: 0, matched: 0 };
+  if (!newData || !Array.isArray(newData.jobs)) return empty;
+  if (!prevData || !Array.isArray(prevData.jobs) || prevData.jobs.length === 0) return empty;
+
+  const byId = new Map();
+  const byUrl = new Map();
+  for (const j of prevData.jobs) {
+    if (!j) continue;
+    if (j.canonicalJobId && !byId.has(j.canonicalJobId)) byId.set(j.canonicalJobId, j);
+    const u = j.url ? String(j.url).trim() : "";
+    if (u && !byUrl.has(u)) byUrl.set(u, j);
+  }
+
+  let restoredFields = 0;
+  let jobsTouched = 0;
+  let matched = 0;
+
+  const jobs = newData.jobs.map((job) => {
+    if (!job) return job;
+    const prev =
+      (job.canonicalJobId && byId.get(job.canonicalJobId)) ||
+      (job.url && byUrl.get(String(job.url).trim())) ||
+      null;
+    if (!prev) return job;
+    matched += 1;
+    let next = job;
+    for (const f of fields) {
+      if (isEmpty(job[f]) && !isEmpty(prev[f])) {
+        if (next === job) next = { ...job }; // copy-on-write so unmatched jobs stay ===
+        next[f] = prev[f];
+        restoredFields += 1;
+      }
+    }
+    if (next !== job) jobsTouched += 1;
+    return next;
+  });
+
+  return { data: { ...newData, jobs }, restoredFields, jobsTouched, matched };
+}
