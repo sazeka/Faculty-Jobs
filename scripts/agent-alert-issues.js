@@ -171,6 +171,20 @@ function fetchOpenIssueTitles() {
   }
 }
 
+/**
+ * Normalize a title for duplicate detection by stripping volatile numbers
+ * (percentages, counts). So "CSU dropped 77.9% from baseline" and "CSU dropped
+ * 81.6% from baseline" collapse to the same key — yielding ONE open issue per
+ * source+condition instead of a fresh duplicate every run.
+ */
+function dedupeKey(title) {
+  return String(title || "")
+    .toLowerCase()
+    .replace(/[\d.,]+\s*%?/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 // ── Issue creation ────────────────────────────────────────────────────────────
 
 /**
@@ -512,16 +526,21 @@ async function main() {
 
   console.log(`  Open issues fetched: ${openTitles.size}`);
 
+  // Match by normalized key (source + condition), not exact title, so a recurring
+  // problem with a changing percentage doesn't spawn a new issue every run.
+  const openKeys = new Set([...openTitles].map(dedupeKey));
+
   // ── Create new issues ─────────────────────────────────────────────────────
 
   console.log("\n  Processing candidates...");
 
   for (const candidate of candidates) {
     const { title, body, source, detail } = candidate;
+    const key = dedupeKey(title);
 
-    if (openTitles.has(title)) {
-      console.log(`  [SKIP] Already open: "${title}"`);
-      report.issuesSkipped.push({ title, source, reason: "Issue already open" });
+    if (openKeys.has(key)) {
+      console.log(`  [SKIP] Already open (same source/condition): "${title}"`);
+      report.issuesSkipped.push({ title, source, reason: "Open issue already exists for this source/condition" });
       continue;
     }
 
@@ -530,6 +549,7 @@ async function main() {
 
     if (ok) {
       console.log(`    Created successfully.`);
+      openKeys.add(key); // prevent a second create for the same key within this run
       report.issuesCreated.push({ title, source, detail, createdAt: nowIso() });
     } else {
       console.warn(`    Failed to create issue.`);
