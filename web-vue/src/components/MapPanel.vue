@@ -33,7 +33,17 @@ const { mapEl, mapNote, hasMappableData, canZoomIn, canZoomOut, zoomInMap, zoomO
       </div>
     </div>
     <p class="muted map-note">{{ mapNote }}</p>
-    <div ref="mapEl" class="leaflet-map"></div>
+    <div class="leaflet-map-wrap">
+      <div ref="mapEl" class="leaflet-map"></div>
+      <div v-if="hasMappableData" class="map-legend" aria-hidden="true">
+        <span class="map-legend-title">Open positions</span>
+        <span class="map-legend-item"><i class="sw tenure"></i>Tenure-track</span>
+        <span class="map-legend-item"><i class="sw non-tenure"></i>Non-tenure-track</span>
+        <span class="map-legend-item"><i class="sw default"></i>Mixed / unknown</span>
+        <span class="map-legend-item"><i class="sw state-bubble"></i>State (campus TBD)</span>
+        <span class="map-legend-note">Bubble size &amp; number = job count</span>
+      </div>
+    </div>
     <div v-if="!hasMappableData" class="map-empty">No mappable state data in these results.</div>
   </section>
 </template>

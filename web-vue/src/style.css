@@ -616,6 +616,90 @@ strong,
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65), 0 8px 16px rgba(29, 42, 43, 0.24);
 }
 
+/* Cluster bubble (sum of grouped campuses) — distinct teal so it reads as an aggregate. */
+.leaflet-job-marker.cluster {
+  background: linear-gradient(180deg, #2f6f8f, #244f66);
+  cursor: pointer;
+}
+
+/* Map wrapper provides the positioning context for the floating legend. */
+.leaflet-map-wrap {
+  position: relative;
+  height: 100%;
+  min-height: 380px;
+}
+.leaflet-map-wrap > .leaflet-map {
+  height: 100%;
+}
+.map-stage .leaflet-map-wrap {
+  flex: 1;
+}
+
+.map-legend {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 650;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #cfd5de;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(27, 39, 56, 0.12);
+  font-size: 0.72rem;
+  color: #36424a;
+}
+.map-legend-title {
+  font-weight: 700;
+  font-size: 0.74rem;
+  margin-bottom: 1px;
+}
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.map-legend .sw {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  flex: none;
+}
+.map-legend .sw.default { background: linear-gradient(180deg, #4b5566, #363f4d); }
+.map-legend .sw.tenure { background: linear-gradient(180deg, #4f6863, #3d524d); }
+.map-legend .sw.non-tenure { background: linear-gradient(180deg, #786353, #5f4d40); }
+.map-legend .sw.state-bubble { background: linear-gradient(180deg, #a83030, #7a1f23); }
+.map-legend-note {
+  margin-top: 2px;
+  color: #6b7780;
+  font-size: 0.68rem;
+}
+
+@media (max-width: 640px) {
+  .map-legend {
+    bottom: 8px;
+    right: 8px;
+    padding: 6px 8px;
+    font-size: 0.66rem;
+    gap: 2px;
+  }
+  .map-legend-note { display: none; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .map-legend {
+    background: rgba(26, 30, 38, 0.92);
+    border-color: #3a424f;
+    color: #c7d3dc;
+  }
+  .map-legend-note { color: #8fa1ad; }
+}
+
 .grid {
   display: grid;
   gap: 13px;
