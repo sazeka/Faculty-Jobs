@@ -3867,6 +3867,9 @@ function normalizeJobTitle(rawTitle) {
   // Strip leading date stamps and academic-year prefixes.
   t = t.replace(/^\s*\d{1,2}[/-]\d{1,2}[/-]\d{2,4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?\s*(?:AM|PM)?)?\s*/i, "");
   t = t.replace(/^\s*(?:AY\s*)?'?\d{2,4}\s*(?:-|\/)\s*'?\d{2,4}\s*/i, "");
+  // Strip leading requisition/posting numbers (e.g. Oracle CE "131520-Title" or
+  // "822960 - Title"). Requires 5+ digits so 4-digit year prefixes are untouched.
+  t = t.replace(/^\s*\d{5,}\s*-\s*(?=[A-Za-z])/, "");
   // Remove trailing requisition/position ids that pollute title text.
   t = t.replace(/\s*[—-]\s*#\d[\dA-Za-z/& -]*$/g, "");
   t = t.replace(/\s*-\s*#\d[\dA-Za-z/& ,.-]*(?=\s*[—-]\s*[A-Za-z])/g, "");
@@ -9247,9 +9250,12 @@ function mapApiJobs(rows, campusName, sourceName) {
   return rows
     .filter((j) => j.title && j.url && !omitAdjunct(j.title))
     .map((j) => {
-      const inferred = inferAcademicFieldsFromTitle(j.title);
+      // API feeds (Oracle/ADP/csod/Paycom/Jibe) skip the DOM path, so normalize
+      // titles here too — strips leading requisition numbers ("131520-Title"), etc.
+      const title = normalizeJobTitle(j.title) || clean(j.title);
+      const inferred = inferAcademicFieldsFromTitle(title);
       return {
-        title: j.title,
+        title,
         url: j.url,
         source: sourceName,
         category: "Faculty",
