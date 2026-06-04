@@ -153,22 +153,33 @@ function checkGhAvailable() {
 // ── Duplicate prevention ─────────────────────────────────────────────────────
 
 /**
- * Fetch all currently open GitHub issue titles.
- * Returns a Set of title strings, or null if the call fails.
+ * Fetch all currently open GitHub issues as [{ number, title }].
+ * Returns null if the call fails.
  */
-function fetchOpenIssueTitles() {
+function fetchOpenIssues() {
   const raw = runCommand(
-    `${GH} issue list --state open --json title --limit 500`,
+    `${GH} issue list --state open --json number,title --limit 500`,
     "gh issue list"
   );
   if (raw === null) return null;
   try {
     const issues = JSON.parse(raw);
-    return new Set(issues.map((i) => i.title));
+    return issues.map((i) => ({ number: i.number, title: i.title }));
   } catch {
     console.warn("[WARNING] Could not parse gh issue list output.");
     return null;
   }
+}
+
+/**
+ * Close an open issue with a resolution comment. Returns true on success.
+ */
+function closeIssue(number, comment) {
+  const result = runCommand(
+    `${GH} issue close ${number} --comment "${comment.replace(/"/g, '\\"')}"`,
+    `gh issue close: #${number}`
+  );
+  return result !== null;
 }
 
 /**
@@ -514,9 +525,9 @@ async function main() {
   // ── Fetch open issue titles for duplicate prevention ──────────────────────
 
   console.log("\n  Fetching open GitHub issues for duplicate check...");
-  const openTitles = fetchOpenIssueTitles();
+  const openIssues = fetchOpenIssues();
 
-  if (openTitles === null) {
+  if (openIssues === null) {
     console.warn("  Could not retrieve open issues. Aborting to avoid creating duplicates.");
     report.errors.push({ reason: "Could not fetch open issue list from gh" });
     writeJson(ALERT_REPORT_PATH, report);
@@ -524,11 +535,11 @@ async function main() {
     process.exit(0);
   }
 
-  console.log(`  Open issues fetched: ${openTitles.size}`);
+  console.log(`  Open issues fetched: ${openIssues.length}`);
 
   // Match by normalized key (source + condition), not exact title, so a recurring
   // problem with a changing percentage doesn't spawn a new issue every run.
-  const openKeys = new Set([...openTitles].map(dedupeKey));
+  const openKeys = new Set(openIssues.map((i) => dedupeKey(i.title)));
 
   // ── Create new issues ─────────────────────────────────────────────────────
 
@@ -557,6 +568,23 @@ async function main() {
     }
   }
 
+  // ── Auto-close resolved alerts ────────────────────────────────────────────
+  // Any open agent alert (title starts with the 🔴 marker) whose source/condition
+  // is no longer firing this run has recovered — close it so the issue list
+  // reflects only current problems (e.g. a source that bounced back above baseline).
+  const currentKeys = new Set(candidates.map((c) => dedupeKey(c.title)));
+  report.issuesClosed = [];
+  for (const issue of openIssues) {
+    if (!/^🔴/.test(issue.title)) continue; // only our 🔴 alert issues
+    if (currentKeys.has(dedupeKey(issue.title))) continue; // still firing — keep open
+    console.log(`  [CLOSE] resolved: "${issue.title}" (#${issue.number})`);
+    if (closeIssue(issue.number, "Auto-closed by agent-alert-issues: condition no longer firing (source recovered).")) {
+      report.issuesClosed.push({ number: issue.number, title: issue.title });
+    } else {
+      report.errors.push({ title: issue.title, reason: "gh issue close returned non-zero" });
+    }
+  }
+
   // ── Write final report ────────────────────────────────────────────────────
 
   writeJson(ALERT_REPORT_PATH, report);
@@ -565,6 +593,7 @@ async function main() {
   console.log(`    Candidates  : ${candidates.length}`);
   console.log(`    Created     : ${report.issuesCreated.length}`);
   console.log(`    Skipped     : ${report.issuesSkipped.length}`);
+  console.log(`    Closed      : ${report.issuesClosed.length}`);
   console.log(`    Errors      : ${report.errors.length}`);
   console.log(`\n  Report saved: generated/alert-issues-report.json\n`);
 }
