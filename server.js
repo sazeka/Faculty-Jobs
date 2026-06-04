@@ -9345,6 +9345,110 @@ async function scrapeAdpApi(careersUrl, campusName, sourceName) {
   return mapApiJobs(rows, campusName, sourceName);
 }
 
+// Cornerstone (csod) and Paycom modern career sites gate their JSON APIs behind a
+// short-lived JWT the page mints. Load the page in the browser context, capture
+// the first matching API request (url + auth header + body), then replay it with
+// pagination. Returns the captured request or null.
+async function captureApiRequest(context, careerUrl, pattern, waitMs = 5000) {
+  const page = await context.newPage();
+  let captured = null;
+  page.on("request", (r) => {
+    if (captured || !pattern.test(r.url())) return;
+    const auth = r.headers()["authorization"];
+    if (auth) captured = { url: r.url(), auth, body: r.postData() };
+  });
+  try {
+    await page.goto(careerUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
+    await page.waitForTimeout(waitMs);
+  } catch { /* ignore */ } finally {
+    await page.close().catch(() => {});
+  }
+  return captured;
+}
+
+function parseBody(s) { try { return JSON.parse(s || "{}"); } catch { return {}; } }
+
+// Cornerstone OnDemand modern UX careersite. API: POST us.api.csod.com/rec-job-search/external/jobs.
+async function scrapeCsodApi(context, careerUrl, campusName, sourceName) {
+  let u;
+  try { u = new URL(careerUrl); } catch { return []; }
+  if (!/\.csod\.com$/i.test(u.hostname)) return [];
+  const corp = u.searchParams.get("c") || u.hostname.split(".")[0];
+  const siteId = (u.pathname.match(/careersite\/(\d+)/) || [])[1];
+  if (!siteId) return [];
+  const cap = await captureApiRequest(context, careerUrl, /rec-job-search\/external\/jobs/);
+  if (!cap) return [];
+  const baseBody = parseBody(cap.body);
+  const rows = [];
+  const seen = new Set();
+  let pageNumber = 1;
+  let total = Infinity;
+  while ((pageNumber - 1) * 25 < total && pageNumber <= 80) {
+    const resp = await context.request
+      .post(cap.url, { headers: { authorization: cap.auth, "content-type": "application/json" }, data: { ...baseBody, pageNumber, pageSize: 25 } })
+      .catch(() => null);
+    if (!resp || !resp.ok()) break;
+    const j = await resp.json().catch(() => null);
+    const d = j?.data || {};
+    if (typeof d.totalCount === "number") total = d.totalCount;
+    const reqs = d.requisitions || [];
+    if (!reqs.length) break;
+    for (const req of reqs) {
+      const id = req.requisitionId;
+      const title = String(req.displayJobTitle || "").trim();
+      if (!id || !title) continue;
+      const url = `${u.origin}/ux/ats/careersite/${siteId}/job/${id}?c=${corp}`;
+      if (seen.has(url)) continue;
+      seen.add(url);
+      const l = Array.isArray(req.locations) && req.locations[0] ? req.locations[0] : null;
+      rows.push({ title, url, location: l ? [l.city, l.state, l.country].filter(Boolean).join(", ") : null, department: null });
+    }
+    pageNumber++;
+  }
+  return mapApiJobs(rows, campusName, sourceName);
+}
+
+// Paycom modern career portal. API: POST .../api/ats/job-posting-previews/search.
+async function scrapePaycomApi(context, careerUrl, campusName, sourceName) {
+  let u;
+  try { u = new URL(careerUrl); } catch { return []; }
+  if (!/paycomonline\.net$/i.test(u.hostname)) return [];
+  const portalId = (u.pathname.match(/\/portal\/([A-F0-9]+)/i) || [])[1];
+  if (!portalId) return [];
+  const cap = await captureApiRequest(context, careerUrl, /job-posting-previews\/search/);
+  if (!cap) return [];
+  const baseBody = parseBody(cap.body);
+  const take = baseBody.take || 10;
+  const rows = [];
+  const seen = new Set();
+  let skip = 0;
+  while (skip < 2000) {
+    const resp = await context.request
+      .post(cap.url, { headers: { authorization: cap.auth, "content-type": "application/json" }, data: { ...baseBody, skip, take } })
+      .catch(() => null);
+    if (!resp || !resp.ok()) break;
+    const j = await resp.json().catch(() => null);
+    const arr = j?.jobPostingPreviews || [];
+    if (!arr.length) break;
+    for (const job of arr) {
+      const id = job.jobId;
+      const title = String(job.jobTitle || "").trim();
+      if (!id || !title) continue;
+      // Paycom portals list ALL jobs (coaches, staff, etc.) and the URL isn't always
+      // faculty-scoped — keep a job only if its positionType is faculty-ish OR the
+      // title looks faculty (covers faculty postings with an empty positionType).
+      const facultyType = /faculty|professor|instructor|lecturer|academic/i.test(String(job.positionType || ""));
+      if (!facultyType && !looksFacultyish(title)) continue;
+      const url = `${u.origin}/v4/ats/web.php/portal/${portalId}/jobs/${id}`;
+      if (seen.has(url)) continue;
+      seen.add(url);
+      rows.push({ title, url, location: job.locations || null, department: null });
+    }
+    skip += take;
+  }
+  return mapApiJobs(rows, campusName, sourceName);
+}
+
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
@@ -9435,6 +9539,18 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
       for (const probe of [scrapeOracleCloudApi, scrapeAdpApi, scrapeJibeApi]) {
         try {
           const apiJobs = await probe(effectiveUrl, campusName, sourceName);
+          if (apiJobs.length > 0) {
+            console.log(`↪️  ${campusName}: scraped ${apiJobs.length} listings via ${probe.name}`);
+            return apiJobs; // finally{} closes page
+          }
+        } catch (e) {
+          console.warn(`   ↪️  ${campusName} ${probe.name} probe failed: ${e?.message || e}`);
+        }
+      }
+      // Token-replay probes (csod/Paycom) need the browser context to mint the JWT.
+      for (const probe of [scrapeCsodApi, scrapePaycomApi]) {
+        try {
+          const apiJobs = await probe(context, effectiveUrl, campusName, sourceName);
           if (apiJobs.length > 0) {
             console.log(`↪️  ${campusName}: scraped ${apiJobs.length} listings via ${probe.name}`);
             return apiJobs; // finally{} closes page
