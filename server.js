@@ -9228,6 +9228,123 @@ async function scrapeJibeApi(careersUrl, campusName, sourceName) {
     });
 }
 
+// Shared helper for the API-based career-portal scrapers below.
+async function fetchJsonApi(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15_000);
+  try {
+    const r = await fetch(url, { signal: ctrl.signal, headers: { "User-Agent": "Mozilla/5.0 FacultyAtlasBot", Accept: "application/json" } });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function mapApiJobs(rows, campusName, sourceName) {
+  return rows
+    .filter((j) => j.title && j.url && !omitAdjunct(j.title))
+    .map((j) => {
+      const inferred = inferAcademicFieldsFromTitle(j.title);
+      return {
+        title: j.title,
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: j.location || null,
+        description: null,
+        department: j.department || inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
+}
+
+// Oracle Cloud HCM (Recruiting) "CandidateExperience" sites expose a REST feed at
+// /hcmRestApi/.../recruitingCEJobRequisitions. Preserve the CE URL's facet params
+// (e.g. selectedCategoriesFacet for a faculty filter). Returns [] for non-Oracle URLs.
+async function scrapeOracleCloudApi(ceUrl, campusName, sourceName) {
+  let u;
+  try { u = new URL(ceUrl); } catch { return []; }
+  if (!/\.oraclecloud\.com$/i.test(u.hostname)) return [];
+  const siteNumber = (u.pathname.match(/\/sites\/([^/]+)(?:\/|$)/) || [])[1];
+  if (!siteNumber) return [];
+  const FACETS = "LOCATIONS%3BWORK_LOCATIONS%3BWORKPLACE_TYPES%3BTITLES%3BCATEGORIES%3BORGANIZATIONS%3BPOSTING_DATES%3BFLEX_FIELDS";
+  const EXPAND = "requisitionList.workLocation,requisitionList.otherWorkLocations,requisitionList.secondaryLocations,flexFieldsFacet.values,requisitionList.requisitionFlexFields";
+  const FACET_KEYS = /^(selected.*Facet|lastSelectedFacet|keyword|location|locationId|radius|radiusUnit|mode|selectedFlexFieldsFacets|selectedPostingDatesFacet)$/i;
+  const facetParams = (ceUrl.split("?")[1] || "").split("&").filter((kv) => FACET_KEYS.test(kv.split("=")[0]));
+
+  const rows = [];
+  const seen = new Set();
+  let offset = 0;
+  let total = Infinity;
+  while (offset < total && offset < 2000) {
+    const finder = `findReqs;siteNumber=${siteNumber},facetsList=${FACETS},limit=25,offset=${offset},sortBy=POSTING_DATES_DESC` +
+      (facetParams.length ? "," + facetParams.join(",") : "");
+    const api = `${u.origin}/hcmRestApi/resources/latest/recruitingCEJobRequisitions?onlyData=true&expand=${EXPAND}&finder=${finder}`;
+    const j = await fetchJsonApi(api);
+    const item = j?.items?.[0];
+    if (!item) break;
+    if (typeof item.TotalJobsCount === "number") total = item.TotalJobsCount;
+    const reqs = item.requisitionList || [];
+    if (!reqs.length) break;
+    for (const req of reqs) {
+      const id = String(req.Id || "").trim();
+      const title = String(req.Title || "").trim();
+      if (!id || !title) continue;
+      const url = `${u.origin}/hcmUI/CandidateExperience/en/sites/${siteNumber}/job/${id}`;
+      if (seen.has(url)) continue;
+      seen.add(url);
+      rows.push({ title, url, location: req.PrimaryLocation, department: req.Department });
+    }
+    offset += 25;
+  }
+  return mapApiJobs(rows, campusName, sourceName);
+}
+
+// ADP WorkforceNow career centers expose a public feed at
+// /mascsr/default/careercenter/public/events/staffing/v1/job-requisitions (cid+ccId).
+// Returns [] for non-ADP URLs.
+async function scrapeAdpApi(careersUrl, campusName, sourceName) {
+  let u;
+  try { u = new URL(careersUrl); } catch { return []; }
+  if (!/workforcenow\.adp\.com$/i.test(u.hostname)) return [];
+  const cid = u.searchParams.get("cid");
+  const ccId = u.searchParams.get("ccId");
+  const lang = u.searchParams.get("lang") || "en_US";
+  if (!cid || !ccId) return [];
+  const base = `${u.origin}/mascsr/default/careercenter/public/events/staffing/v1/job-requisitions`;
+
+  const rows = [];
+  const seen = new Set();
+  let skip = 0;
+  let total = Infinity;
+  while (skip < total && skip < 2000) {
+    const api = `${base}?cid=${cid}&ccId=${ccId}&lang=${lang}&locale=${lang}&$top=50&$skip=${skip}`;
+    const j = await fetchJsonApi(api);
+    const arr = j?.jobRequisitions;
+    if (!Array.isArray(arr)) break;
+    if (typeof j?.meta?.totalNumber === "number") total = j.meta.totalNumber;
+    if (!arr.length) break;
+    for (const req of arr) {
+      const id = String(req.itemID || "").trim();
+      const title = String(req.requisitionTitle || "").trim();
+      if (!id || !title) continue;
+      const url = `${u.origin}/mascsr/default/mdf/recruitment/recruitment.html?cid=${cid}&ccId=${ccId}&jobId=${id}&lang=${lang}&source=CC2`;
+      if (seen.has(url)) continue;
+      seen.add(url);
+      const loc = Array.isArray(req.requisitionLocations) && req.requisitionLocations[0]
+        ? [req.requisitionLocations[0].nameCode?.shortName, req.requisitionLocations[0].countrySubdivisionLevel1?.codeValue].filter(Boolean).join(", ")
+        : null;
+      rows.push({ title, url, location: loc, department: null });
+    }
+    skip += 50;
+  }
+  return mapApiJobs(rows, campusName, sourceName);
+}
+
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
@@ -9312,16 +9429,19 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
     // ATS — detect and scrape that. Gated on empty results so pages that already
     // work via inline anchors are never affected (no regression).
     if (filtered.length === 0) {
-      // iCIMS/Jibe career-home portals expose a JSON feed — try that before the
-      // anchor/iframe ATS hand-off (which would grab the wrong icims.com apply link).
-      try {
-        const jibeJobs = await scrapeJibeApi(effectiveUrl, campusName, sourceName);
-        if (jibeJobs.length > 0) {
-          console.log(`↪️  ${campusName}: scraped ${jibeJobs.length} listings via Jibe/iCIMS API`);
-          return jibeJobs; // finally{} closes page
+      // JS-rendered career portals (Oracle Cloud, ADP, iCIMS/Jibe) expose JSON feeds.
+      // Try those first — before the anchor/iframe ATS hand-off, which would grab the
+      // wrong apply-login link. Each probe returns [] for URLs that aren't its platform.
+      for (const probe of [scrapeOracleCloudApi, scrapeAdpApi, scrapeJibeApi]) {
+        try {
+          const apiJobs = await probe(effectiveUrl, campusName, sourceName);
+          if (apiJobs.length > 0) {
+            console.log(`↪️  ${campusName}: scraped ${apiJobs.length} listings via ${probe.name}`);
+            return apiJobs; // finally{} closes page
+          }
+        } catch (e) {
+          console.warn(`   ↪️  ${campusName} ${probe.name} probe failed: ${e?.message || e}`);
         }
-      } catch (e) {
-        console.warn(`   ↪️  ${campusName} Jibe API probe failed: ${e?.message || e}`);
       }
 
       const handoff = await detectAtsHandoff(page);
