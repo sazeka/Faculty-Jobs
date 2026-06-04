@@ -33,6 +33,13 @@ const SOURCE_STATE = {
   "CT State": "Connecticut",
 };
 
+// Scraper college name → IPEDS INSTNM, for institutions whose names don't
+// normalize to the IPEDS spelling.
+const NAME_ALIASES = {
+  "University of South Carolina": "University of South Carolina-Columbia",
+  "SUNY Herkimer": "Herkimer County Community College",
+};
+
 const norm = (s) =>
   clean(s).toLowerCase().replace(/\(.*?\)/g, "").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
 const readJson = (p) => { try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return null; } };
@@ -75,7 +82,7 @@ const unmatched = [];
 for (const [name, meta] of collegeMeta) {
   const cur = colleges[name];
   if (cur && Number.isFinite(Number(cur.lat)) && Number.isFinite(Number(cur.lon))) continue; // already good
-  const cands = ipedsByName.get(norm(name));
+  const cands = ipedsByName.get(norm(name)) || (NAME_ALIASES[name] && ipedsByName.get(norm(NAME_ALIASES[name])));
   if (!cands || cands.length === 0) { unmatched.push(name); continue; }
   const abbr = abbrevFor(meta.source, meta.systemGroup);
   let pick;
