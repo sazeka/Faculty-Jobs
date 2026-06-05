@@ -3348,7 +3348,6 @@ const AL_CAMPUSES = [
   { campus: "Athens State University", type: "generic", url: "https://www.athens.edu/about/offices/human-resources/employment-opportunities/" },
   { campus: "Auburn University at Montgomery", type: "generic", url: "https://www.aum.edu/" },
   { campus: "Bevill State Community College", type: "generic", url: "https://www.bscc.edu/" },
-  { campus: "Birmingham-Southern College", type: "generic", url: "https://www.bsc.edu/" },
   { campus: "Bishop State Community College", type: "generic", url: "https://www.bishop.edu/" },
   { campus: "Central Alabama Community College", type: "generic", url: "https://www.cacc.edu/" },
   { campus: "Chattahoochee Valley Community College", type: "generic", url: "https://www.cv.edu/" },
