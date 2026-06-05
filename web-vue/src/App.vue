@@ -293,7 +293,7 @@ onMounted(async () => {
     <hr class="fa-rule" style="margin: 0 var(--pad);" />
 
     <!-- ═══ TRENDS TAB ═══ -->
-    <TrendsTab v-if="activeTab === 'trends'" :base-url="baseUrl" style="padding: 56px var(--pad);" />
+    <TrendsTab v-if="activeTab === 'trends'" :base-url="baseUrl" />
 
     <!-- ═══ MAP TAB ═══ -->
     <template v-if="activeTab === 'map'">

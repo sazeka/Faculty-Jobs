@@ -52,6 +52,7 @@ function fmtWeek(s) {
 </script>
 
 <template>
+  <div class="trends-tab">
   <!-- Loading -->
   <div v-if="loading" style="padding: 80px 0; text-align: center;">
     <div class="fa-meta" style="letter-spacing: 0.1em;">Loading trends…</div>
@@ -171,9 +172,18 @@ function fmtWeek(s) {
     </div>
 
   </template>
+  </div>
 </template>
 
 <style scoped>
+/* Single root: owns the section padding (component has multiple v-if branches so
+   a fallthrough style attr wouldn't apply) and caps width on wide laptops so the
+   bars/columns read as a centered column instead of stretching edge-to-edge. */
+.trends-tab {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px var(--pad);
+}
 .trends-narrative {
   margin: 32px 0 0;
   max-width: 720px;
