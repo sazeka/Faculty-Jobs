@@ -6535,11 +6535,15 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
       return await scrapeNjWorkdayBrowser(context, startUrl, campusName, sourceLabel);
     }
 
-    // Parse facets from URL query parameters (e.g. ?jobFamilyGroup=abc&timeType=xyz)
+    // Parse facets from URL query parameters (e.g. ?jobFamilyGroup=abc&timeType=xyz).
+    // Workday's `q` (and `searchText`) is the keyword search, NOT a facet — routing
+    // it into appliedFacets makes the API reject the request, so map it to searchText.
     const appliedFacets = {};
+    let searchText = "";
     try {
       const qs = new URL(startUrl).searchParams;
       for (const [key, val] of qs.entries()) {
+        if (key === "q" || key === "searchText") { searchText = val; continue; }
         if (!appliedFacets[key]) appliedFacets[key] = [];
         appliedFacets[key].push(val);
       }
@@ -6557,7 +6561,7 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
           appliedFacets,
           limit,
           offset,
-          searchText: ""
+          searchText
         }),
         signal: AbortSignal.timeout(30_000),
       });
