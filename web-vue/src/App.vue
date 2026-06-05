@@ -15,7 +15,12 @@ import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || ''
 const baseUrl = import.meta.env.BASE_URL || '/'
 
-const { jobs, scrapedAt, loadError, loadJobs, qualitySummary, newJobsCount } = useJobsData()
+const { jobs, scrapedAt, loadError, loadJobs, qualitySummary, newJobsCount, newThisWeek } = useJobsData()
+
+// Prefer the global, daily-computed "new this week" figure; fall back to the
+// per-visitor count only if site-stats.json hasn't loaded.
+const heroNew = computed(() => (newThisWeek.value != null ? newThisWeek.value : newJobsCount.value))
+const heroNewLabel = computed(() => (newThisWeek.value != null ? 'new this week' : 'new since last visit'))
 
 const filters = ref(createDefaultFilters())
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
@@ -224,8 +229,8 @@ onMounted(async () => {
             <div class="fa-stat-label">institutions tracked</div>
           </div>
           <div class="fa-stat">
-            <div class="fa-stat-val" style="color: var(--accent);">+{{ newJobsCount.toLocaleString() }}</div>
-            <div class="fa-stat-label">new since last visit</div>
+            <div class="fa-stat-val" style="color: var(--accent);">+{{ heroNew.toLocaleString() }}</div>
+            <div class="fa-stat-label">{{ heroNewLabel }}</div>
           </div>
           <div class="fa-stat">
             <div class="fa-stat-val">{{ stateCount }}</div>

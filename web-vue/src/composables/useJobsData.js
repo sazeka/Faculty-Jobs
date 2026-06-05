@@ -184,7 +184,26 @@ export function useJobsData() {
   const lastVisitAt = ref(_initialLastVisit)
 
   const qualitySummary = computed(() => computeQualitySummary(jobs.value, scrapedAt.value))
+  // Per-user "new since you last looked" (kept for any local use).
   const newJobsCount = computed(() => jobs.value.filter((j) => j?._isNew === true).length)
+  // Global, daily-computed "new" counts (same for every visitor), from
+  // data/site-stats.json produced by the job-presence agent each scrape.
+  const siteStats = ref(null)
+  const newThisWeek = computed(() => {
+    const n = Number(siteStats.value?.newThisWeek)
+    return Number.isFinite(n) ? n : null
+  })
+
+  async function loadSiteStats() {
+    try {
+      const res = await fetchWithTimeout(`${baseUrl}data/site-stats.json`, 12000)
+      if (!res.ok) return
+      const data = await readJsonSafe(res, 'site-stats.json')
+      if (data && typeof data === 'object') siteStats.value = data
+    } catch {
+      // Best-effort: the homepage falls back to hiding the figure if unavailable.
+    }
+  }
 
   async function loadJobs() {
     loadError.value = ''
@@ -255,6 +274,7 @@ export function useJobsData() {
 
   onMounted(() => {
     loadJobs()
+    loadSiteStats()
   })
 
   return {
@@ -265,6 +285,8 @@ export function useJobsData() {
     loadJobs,
     qualitySummary,
     newJobsCount,
+    newThisWeek,
+    siteStats,
     transport,
     lastVisitAt,
   }

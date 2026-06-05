@@ -37,6 +37,15 @@ const PUBLIC_JOBS    = path.join(ROOT, "public",    "jobs.json");
 const DOCS_JOBS      = path.join(ROOT, "docs",      "jobs.json");
 const PRESENCE_PATH  = path.join(ROOT, "generated", "job-presence.json");
 const REPORT_PATH    = path.join(ROOT, "generated", "job-presence-report.json");
+// site-stats.json carries the global "new" counts the homepage shows, so the
+// figure is computed once per scrape for everyone (not per-browser localStorage).
+// Written into every served data dir; the daily commit step git-adds docs/data
+// + public/data.
+const SITE_STATS_DIRS = [
+  path.join(ROOT, "docs", "data"),
+  path.join(ROOT, "public", "data"),
+  path.join(ROOT, "web-vue", "public", "data"),
+];
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
 
@@ -72,6 +81,16 @@ function writeJson(p, value) {
 /** Returns today's date as YYYY-MM-DD in local time. */
 function todayDateString() {
   const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** YYYY-MM-DD for `n` days before today (local). */
+function daysAgoDateString(n) {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
@@ -193,11 +212,36 @@ if (purgedCount > 0) {
 
 presence.lastRunDate = today;
 
+// ── Global "new" counts for the homepage (computed once, same for everyone) ────
+// firstSeen on the latest scrape date = added today; within the last 7 days =
+// new this week. Restrict to jobs still present today (lastSeen === today).
+const weekCutoff = daysAgoDateString(6);
+let newToday = 0;
+let newThisWeek = 0;
+for (const entry of Object.values(presence.jobs)) {
+  if (entry.lastSeen !== today) continue;
+  if (entry.firstSeen === today) newToday += 1;
+  if (entry.firstSeen >= weekCutoff) newThisWeek += 1;
+}
+
+const siteStats = {
+  generatedAt: new Date().toISOString(),
+  scrapeDate: today,
+  total: cleanedJobs.length,
+  newToday,
+  newThisWeek,
+};
+
+console.log(`  New today        : ${newToday.toLocaleString()}`);
+console.log(`  New this week    : ${newThisWeek.toLocaleString()}`);
+
 const report = {
   generatedAt:  new Date().toISOString(),
   trackedCount,
   todayCount,
   purgedCount,
+  newToday,
+  newThisWeek,
   purgedJobs,
 };
 
@@ -218,9 +262,18 @@ if (!DRY_RUN) {
   // Persist summary report
   writeJson(REPORT_PATH, report);
 
+  // Persist global site stats into every served data dir (commit step adds
+  // docs/data + public/data).
+  for (const dir of SITE_STATS_DIRS) {
+    if (dir.includes(`${path.sep}docs${path.sep}`) || dir.includes(`${path.sep}public${path.sep}`) || fs.existsSync(dir)) {
+      writeJson(path.join(dir, "site-stats.json"), siteStats);
+    }
+  }
+
   console.log("\n  public/jobs.json updated.");
   console.log("  generated/job-presence.json saved.");
   console.log("  generated/job-presence-report.json saved.");
+  console.log("  data/site-stats.json saved (docs + public + web-vue).");
 } else {
   console.log("\n  DRY RUN: no files written.");
   console.log("  Would write: public/jobs.json");
