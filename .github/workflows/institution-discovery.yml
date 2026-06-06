@@ -95,4 +95,14 @@ jobs:
           ")
 
           git commit -m "Weekly institution discovery — seed IPEDS + promote ${APPLIED} new, refresh ${DISCOVERED} probed career URLs"
-          git push
+
+          # main moves often (daily scrape, frontend-deploy, agent runs), so a plain
+          # push races and fails with non-fast-forward. Retry: rebase onto latest,
+          # preferring this run's freshly-rebuilt artifacts on conflict (-X theirs).
+          for attempt in 1 2 3 4 5; do
+            if git push; then exit 0; fi
+            echo "Push rejected (attempt ${attempt}) — rebasing onto latest origin/main…"
+            git pull --rebase -X theirs --autostash origin main || git rebase --abort
+          done
+          echo "::error::Push still failing after 5 rebase/retry attempts." >&2
+          exit 1
