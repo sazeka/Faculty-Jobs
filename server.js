@@ -762,7 +762,6 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Butte College", type: "generic", url: "https://www.butte.edu/careers/" },
   { campus: "Cabrillo College", type: "generic", url: "https://www.cabrillo.edu/" },
   { campus: "California Baptist University", type: "generic", url: "https://www.calbaptist.edu/" },
-  { campus: "California College of ASU", type: "generic", url: "https://californiacollege.asu.edu/" },
   { campus: "California College of the Arts", type: "generic", url: "https://www.cca.edu/about/jobs/" },
   { campus: "California Institute of Advanced Management", type: "generic", url: "https://ciam.edu/employment-opportunities/" },
   { campus: "California Institute of Integral Studies", type: "generic", url: "https://www.ciis.edu/" },
