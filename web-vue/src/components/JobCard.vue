@@ -26,6 +26,20 @@ function trackLabel(job) {
   return null
 }
 
+// "Posted {date}" from the real source date (datePosted) when we have it,
+// otherwise "Listed {date}" from when our scrape first saw it (firstSeen).
+function getPostedLabel(job) {
+  const raw = job.datePosted || job.firstSeen
+  if (!raw) return null
+  const s = String(raw)
+  const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(s) ? s + 'T00:00:00' : s)
+  if (Number.isNaN(d.getTime())) return null
+  return {
+    verb: job.datePosted ? 'Posted' : 'Listed',
+    date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+  }
+}
+
 function indexStr(n) {
   return String(n + 1).padStart(5, '0')
 }
@@ -76,6 +90,10 @@ function indexStr(n) {
         {{ props.job.location || props.job.state || '—' }}
       </div>
       <div v-if="props.job.state" class="fa-listing-coord">{{ props.job.state }}</div>
+      <div v-if="getPostedLabel(props.job)" class="fa-meta" style="font-size: 10px; margin-top: 4px; color: var(--ink-3);"
+        :title="getPostedLabel(props.job).verb === 'Posted' ? 'Posting date from the source listing' : 'Date this listing was first seen by Faculty Atlas'">
+        {{ getPostedLabel(props.job).verb }} {{ getPostedLabel(props.job).date }}
+      </div>
     </div>
 
     <!-- Deadline -->

@@ -9249,6 +9249,17 @@ async function fetchJsonApi(url) {
   }
 }
 
+// Normalize a posting date from an API feed to YYYY-MM-DD; reject implausible years.
+function normalizePostedDate(raw) {
+  const s = String(raw || "").trim();
+  if (!s) return null;
+  const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(s) ? s + "T00:00:00Z" : s);
+  if (Number.isNaN(d.getTime())) return null;
+  const y = d.getUTCFullYear();
+  if (y < 2000 || y > 2100) return null;
+  return d.toISOString().slice(0, 10);
+}
+
 function mapApiJobs(rows, campusName, sourceName) {
   return rows
     .filter((j) => j.title && j.url && !omitAdjunct(j.title))
@@ -9257,6 +9268,8 @@ function mapApiJobs(rows, campusName, sourceName) {
       // titles here too — strips leading requisition numbers ("131520-Title"), etc.
       const title = normalizeJobTitle(j.title) || clean(j.title);
       const inferred = inferAcademicFieldsFromTitle(title);
+      // Source posting date when the feed provides one (e.g. Oracle PostedDate).
+      const datePosted = normalizePostedDate(j.postedDate);
       return {
         title,
         url: j.url,
@@ -9267,6 +9280,7 @@ function mapApiJobs(rows, campusName, sourceName) {
         description: null,
         department: j.department || inferred.department,
         specialization: inferred.specialization,
+        ...(datePosted ? { datePosted } : {}),
       };
     });
 }
@@ -9306,7 +9320,7 @@ async function scrapeOracleCloudApi(ceUrl, campusName, sourceName) {
       const url = `${u.origin}/hcmUI/CandidateExperience/en/sites/${siteNumber}/job/${id}`;
       if (seen.has(url)) continue;
       seen.add(url);
-      rows.push({ title, url, location: req.PrimaryLocation, department: req.Department });
+      rows.push({ title, url, location: req.PrimaryLocation, department: req.Department, postedDate: req.PostedDate });
     }
     offset += 25;
   }
