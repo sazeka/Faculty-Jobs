@@ -1,5 +1,5 @@
 export const ALL_FILTER_VALUE = 'all'
-export const DEFAULT_SORT = 'relevance'
+export const DEFAULT_SORT = 'recent'
 
 export const STORAGE_KEYS = {
   savedJobs: 'facultyJobs.saved.v1',

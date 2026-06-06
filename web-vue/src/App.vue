@@ -403,6 +403,7 @@ onMounted(async () => {
                   :value="filters.sortBy"
                   @change="updateFilters({ sortBy: $event.target.value })"
                 >
+                  <option value="recent">Sort: Most recent</option>
                   <option value="relevance">Sort: Relevance</option>
                   <option value="title-asc">Sort: Title A–Z</option>
                   <option value="university">Sort: University</option>

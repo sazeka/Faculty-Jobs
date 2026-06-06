@@ -187,6 +187,13 @@ for (const id of purgedIds) {
 // ── 8 & 9. Write outputs ──────────────────────────────────────────────────────
 
 const cleanedJobs   = todayJobs.filter((j) => !purgedIds.has(j.canonicalJobId));
+// Stamp each surviving job with firstSeen from the presence ledger so the
+// frontend can sort "Most recent" (newest postings first) without a per-job
+// posting date from the source.
+for (const job of cleanedJobs) {
+  const p = presence.jobs[job.canonicalJobId];
+  if (p && p.firstSeen) job.firstSeen = p.firstSeen;
+}
 const trackedCount  = Object.keys(presence.jobs).length;
 const todayCount    = todayIds.size;
 const purgedCount   = purgedIds.size;

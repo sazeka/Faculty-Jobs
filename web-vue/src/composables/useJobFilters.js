@@ -443,6 +443,20 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
       out.sort((a, b) => (a.college || '').localeCompare(b.college || ''))
     } else if (filtersRef.value.sortBy === 'state') {
       out.sort((a, b) => (a.state || '').localeCompare(b.state || ''))
+    } else if (filtersRef.value.sortBy === 'recent') {
+      // Newest postings first (firstSeen = date our scrape first saw the listing).
+      // When a search query is active, keep relevance primary so the best match
+      // isn't buried by an older-but-less-relevant post; recency breaks ties.
+      const hasQuery = Boolean(clean(filtersRef.value.q))
+      out.sort((a, b) => {
+        if (hasQuery) {
+          const s = (b._score || 0) - (a._score || 0)
+          if (s) return s
+        }
+        const fa = a.firstSeen || '', fb = b.firstSeen || ''
+        if (fa !== fb) return fb.localeCompare(fa)
+        return (a.title || '').localeCompare(b.title || '')
+      })
     } else {
       out.sort((a, b) => (b._score || 0) - (a._score || 0))
     }
