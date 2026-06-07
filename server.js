@@ -3862,6 +3862,13 @@ function normalizeJobTitle(rawTitle) {
   while (/^\[[^\]]{1,40}\]\s*/.test(t)) t = t.replace(/^\[[^\]]{1,40}\]\s*/, "");
   // Unwrap full-title brackets.
   t = t.replace(/^\[([^\]]+)\]$/, "$1");
+  // Drop leading markdown-bold/asterisk status tags like "**INTERNAL ONLY**",
+  // "*REVISED*", "*REPOST*" (the wrapped text must be an ALL-CAPS short tag so
+  // real titles aren't touched), then strip any stray leading "**".
+  while (/^\s*\*+\s*[A-Z][A-Z0-9 /&.-]{0,28}[A-Z]\s*\*+\s*/.test(t)) {
+    t = t.replace(/^\s*\*+\s*[A-Z][A-Z0-9 /&.-]{0,28}[A-Z]\s*\*+\s*/, "");
+  }
+  t = t.replace(/^\s*\*+\s*/, "");
   // Strip leading date stamps and academic-year prefixes.
   t = t.replace(/^\s*\d{1,2}[/-]\d{1,2}[/-]\d{2,4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?\s*(?:AM|PM)?)?\s*/i, "");
   t = t.replace(/^\s*(?:AY\s*)?'?\d{2,4}\s*(?:-|\/)\s*'?\d{2,4}\s*/i, "");
