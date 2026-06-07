@@ -3779,6 +3779,13 @@ export async function scrapeAllJobsStandalone() {
     const preFilterCount = normalizedJobs.length;
     let facultyJobs = normalizedJobs.filter(j => {
       const t = String(j.title || "").toLowerCase();
+      // Reject news/announcement headlines scraped as jobs (e.g. "...Announces
+      // Promotion of X to Full Professor...Learn More") — even though they
+      // contain "professor"/"faculty". High-precision signals: a "Learn/Read
+      // More" CTA suffix, news verbs, or a leading "Mon DD, YYYY |" date headline.
+      if (/\b(learn|read)\s+more$/.test(t)) return false;
+      if (/\b(announces|celebrates|in memoriam|obituary|remembering|congratulat)/.test(t)) return false;
+      if (/^\s*[a-z]+\.?\s+\d{1,2},?\s+\d{4}\s*\|/.test(t)) return false;
       // Keep if title contains faculty-related keywords
       if (looksFacultyish(t)) return true;
       // Also keep common academic titles not caught by looksFacultyish
