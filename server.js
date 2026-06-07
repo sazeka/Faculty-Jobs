@@ -3881,7 +3881,14 @@ function normalizeJobTitle(rawTitle) {
   t = t.replace(/\s+#\d[\dA-Za-z/& ,.-]*(?=\s*[—-]\s*[A-Za-z])/g, "");
   t = t.replace(/\s+#\d[\dA-Za-z/& -]*$/g, "");
   t = t.replace(/\s*-\s*\d{4,7}(?=\s*[—-]\s*[A-Za-z])/g, "");
-  t = t.replace(/\s*\(\s*#?\d[\dA-Za-z/& -]*\)\s*$/g, "");
+  // Trailing parenthesized requisition codes like "(174831)" / "(R012345)":
+  // a 5+ digit run with an optional short letter prefix and NO spaces, so real
+  // qualifiers — "(9-month Tenure Track)", "(Tenure-Track)", "(VAPSHCS)" — survive.
+  t = t.replace(/\s*\(\s*#?[A-Za-z]{0,4}\d{5,}[A-Za-z\d-]*\)\s*$/g, "");
+  // Trailing bracketed requisition codes like "[R0148940]" / "[REQ-12345]":
+  // bracket content with no spaces and a 3+ digit run (so "[K-12]" and word tags
+  // are kept). Brackets at the end of a title are virtually always codes.
+  t = t.replace(/\s*\[[^\]\s]*\d{3,}[^\]\s]*\]\s*$/g, "");
   // Remove trailing dates and academic-year tails.
   t = t.replace(new RegExp(`\\s*(?:[—-]\\s*)?${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?\\s*$`, "i"), "");
   t = t.replace(new RegExp(`\\s*\\((?:\\s*${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?)\\)\\s*$`, "i"), "");
