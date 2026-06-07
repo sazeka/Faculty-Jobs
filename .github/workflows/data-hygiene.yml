@@ -53,4 +53,13 @@ jobs:
           fi
 
           git commit -m "Monthly data hygiene refresh"
-          git push
+
+          # main moves often (other scheduled workflows + manual commits), so a bare
+          # push races and fails non-fast-forward. Retry: rebase onto latest,
+          # preferring this run's freshly-built artifacts on conflict (-X theirs).
+          for attempt in 1 2 3 4 5; do
+            if git push; then break; fi
+            echo "Push rejected (attempt ${attempt}) — rebasing onto latest origin/main…"
+            git pull --rebase -X theirs --autostash origin main || git rebase --abort
+            if [ "${attempt}" = "5" ]; then echo "::error::Push still failing after 5 attempts." >&2; exit 1; fi
+          done
