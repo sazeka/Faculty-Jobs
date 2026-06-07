@@ -1,10 +1,11 @@
 name: Daily scrape
 
 on:
+  # Manual-only. The nightly local daily-update.ps1 is the primary scraper — it
+  # has local Ollama so it can enrich + stamp firstSeen, which CI can't. Running
+  # both double-scraped and raced pushes on main, so the scheduled cron is
+  # removed; trigger here manually (Run workflow) when a CI scrape is wanted.
   workflow_dispatch:
-  schedule:
-    # 08:15 America/Los_Angeles (winter) ≈ 16:15 UTC, every other day
-    - cron: "15 16 */2 * *"
 
 permissions:
   contents: write
