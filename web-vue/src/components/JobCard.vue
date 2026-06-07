@@ -12,9 +12,12 @@ function getDeadlineLabel(job) {
   if (job.openUntilFilled) return 'Rolling'
   if (job.closeDateRaw)    return job.closeDateRaw
   if (job.closeDate) {
-    const parsed = new Date(job.closeDate)
+    const s = String(job.closeDate)
+    // Parse date-only (YYYY-MM-DD) as local midnight, else it renders a day early
+    // in negative-offset timezones.
+    const parsed = new Date(/^\d{4}-\d{2}-\d{2}$/.test(s) ? s + 'T00:00:00' : s)
     if (!Number.isNaN(parsed.getTime())) {
-      return parsed.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      return parsed.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     }
   }
   return null

@@ -9267,8 +9267,11 @@ function mapApiJobs(rows, campusName, sourceName) {
       // titles here too — strips leading requisition numbers ("131520-Title"), etc.
       const title = normalizeJobTitle(j.title) || clean(j.title);
       const inferred = inferAcademicFieldsFromTitle(title);
-      // Source posting date when the feed provides one (e.g. Oracle PostedDate).
+      // Source posting date / application deadline when the feed provides them
+      // (e.g. Oracle PostedDate / PostingEndDate). closeDate feeds the card's
+      // DEADLINE column.
       const datePosted = normalizePostedDate(j.postedDate);
+      const closeDate = normalizePostedDate(j.postingEndDate);
       return {
         title,
         url: j.url,
@@ -9280,6 +9283,7 @@ function mapApiJobs(rows, campusName, sourceName) {
         department: j.department || inferred.department,
         specialization: inferred.specialization,
         ...(datePosted ? { datePosted } : {}),
+        ...(closeDate ? { closeDate } : {}),
       };
     });
 }
@@ -9319,7 +9323,7 @@ async function scrapeOracleCloudApi(ceUrl, campusName, sourceName) {
       const url = `${u.origin}/hcmUI/CandidateExperience/en/sites/${siteNumber}/job/${id}`;
       if (seen.has(url)) continue;
       seen.add(url);
-      rows.push({ title, url, location: req.PrimaryLocation, department: req.Department, postedDate: req.PostedDate });
+      rows.push({ title, url, location: req.PrimaryLocation, department: req.Department, postedDate: req.PostedDate, postingEndDate: req.PostingEndDate });
     }
     offset += 25;
   }

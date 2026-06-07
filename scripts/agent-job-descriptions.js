@@ -113,6 +113,7 @@ async function main() {
 
   let filled = 0;
   let datedFilled = 0;
+  let deadlineFilled = 0;
   let attempted = 0;
   let nextIdx = 0;
   let sinceSave = 0;
@@ -124,15 +125,17 @@ async function main() {
       const page = await context.newPage();
       let desc = "";
       let datePosted = "";
+      let validThrough = "";
       try {
         await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
         await page.waitForTimeout(1500);
         const result = await page.evaluate(
           ([minLen, maxLen]) => {
             const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-            // schema.org JobPosting.datePosted — the source-authored posting date,
-            // embedded for Google for Jobs SEO. Walk JSON-LD (incl. @graph arrays).
-            const findDatePosted = () => {
+            // schema.org JobPosting.datePosted (posting date) + validThrough
+            // (application deadline) — embedded for Google for Jobs SEO. Walk
+            // JSON-LD (incl. @graph arrays).
+            const findJobDates = () => {
               const blocks = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));
               for (const b of blocks) {
                 let data;
@@ -142,10 +145,12 @@ async function main() {
                   if (!node || typeof node !== "object") continue;
                   const t = node["@type"];
                   const isJob = t === "JobPosting" || (Array.isArray(t) && t.includes("JobPosting"));
-                  if (isJob && node.datePosted) return String(node.datePosted);
+                  if (isJob && (node.datePosted || node.validThrough)) {
+                    return { datePosted: String(node.datePosted || ""), validThrough: String(node.validThrough || "") };
+                  }
                 }
               }
-              return "";
+              return { datePosted: "", validThrough: "" };
             };
             // Read an element's text with page chrome (nav/header/footer/forms)
             // removed, so we keep the posting body and drop "Skip to Main Content…"
@@ -187,12 +192,13 @@ async function main() {
               }
               return best.length >= minLen ? best.slice(0, maxLen) : "";
             };
-            return { desc: findDesc(), datePosted: findDatePosted() };
+            return { desc: findDesc(), ...findJobDates() };
           },
           [MIN_LEN, MAX_LEN]
         );
         desc = result?.desc || "";
         datePosted = result?.datePosted || "";
+        validThrough = result?.validThrough || "";
       } catch {
         desc = "";
       } finally {
@@ -212,6 +218,12 @@ async function main() {
       if (datePosted && target.datePosted === undefined) {
         const nd = normalizeDate(datePosted);
         if (nd) { target.datePosted = nd; datedFilled++; }
+      }
+      // validThrough = application deadline → closeDate (the field the card's
+      // DEADLINE column already renders). Only fill if not already set.
+      if (validThrough && target.closeDate === undefined) {
+        const nd = normalizeDate(validThrough);
+        if (nd) { target.closeDate = nd; deadlineFilled++; }
       }
 
       // Persist periodically so a long run's progress survives interruption.
@@ -241,7 +253,9 @@ async function main() {
     attemptedThisRun: attempted,
     filledThisRun: filled,
     datePostedFilledThisRun: datedFilled,
+    deadlineFilledThisRun: deadlineFilled,
     totalWithDatePosted: payload.jobs.filter((j) => j.datePosted).length,
+    totalWithDeadline: payload.jobs.filter((j) => j.closeDate).length,
     totalWithDescription,
     remaining,
     config: { max: MAX, concurrency: CONCURRENCY, timeoutMs: TIMEOUT_MS, minLen: MIN_LEN },
@@ -250,6 +264,7 @@ async function main() {
   console.log(`\n  Attempted this run : ${attempted}`);
   console.log(`  Filled this run    : ${filled} (${attempted ? ((filled / attempted) * 100).toFixed(0) : 0}%)`);
   console.log(`  datePosted found   : ${datedFilled} (${attempted ? ((datedFilled / attempted) * 100).toFixed(0) : 0}%)`);
+  console.log(`  deadlines found    : ${deadlineFilled} (${attempted ? ((deadlineFilled / attempted) * 100).toFixed(0) : 0}%)`);
   console.log(`  Total w/ description: ${totalWithDescription.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
   console.log(`  Remaining unfetched: ${remaining.toLocaleString()}`);
   console.log(`  Report saved       : generated/job-descriptions-report.json\n`);
