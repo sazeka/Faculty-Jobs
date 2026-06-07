@@ -53,8 +53,9 @@ function getPositionTypes(title) {
       return ['Assistant Professor', 'Associate Professor', 'Professor']
     }
     const ranks = []
-    if (/\bassistant\b/.test(t)) ranks.push('Assistant Professor')
-    if (/\bassociate\b/.test(t)) ranks.push('Associate Professor')
+    // Accept abbreviations too: "Asst/Assoc Professor" → Assistant + Associate.
+    if (/\b(?:assistant|asst)\b/.test(t)) ranks.push('Assistant Professor')
+    if (/\b(?:associate|assoc)\b/.test(t)) ranks.push('Associate Professor')
     if (/\bfull professor\b/.test(t)) ranks.push('Professor')
     if (ranks.length) return ranks
   }
