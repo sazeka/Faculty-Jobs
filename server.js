@@ -3784,8 +3784,8 @@ export async function scrapeAllJobsStandalone() {
       // contain "professor"/"faculty". High-precision signals: a "Learn/Read
       // More" CTA suffix, news verbs, or a leading "Mon DD, YYYY |" date headline.
       if (/\b(learn|read)\s+more$/.test(t)) return false;
-      if (/\b(announces|announced|celebrates|in memoriam|obituary|remembering|congratulat)/.test(t)) return false;
-      if (/(dean|president)['’]?s?\s+lists?\b|\bhonor roll\b|\bcommencement\b/.test(t)) return false;
+      if (/\b(announces|announced|celebrates|in memoriam|obituary|remembering|congratulat|receives)\b/.test(t)) return false;
+      if (/(dean|president)['’]?s?\s+lists?\b|\bhonor roll\b|\bcommencement\b|\bmagazine\b/.test(t)) return false;
       if (/^\s*[a-z]+\.?\s+\d{1,2},?\s+\d{4}\s*\|/.test(t)) return false;
       // Keep if title contains faculty-related keywords
       if (looksFacultyish(t)) return true;
@@ -3879,9 +3879,12 @@ function normalizeJobTitle(rawTitle) {
   if (!t) return t;
   // Some feeds leak HTML/media markup directly into title fields.
   t = stripHtmlToText(t);
-  // Decode leftover HTML entities (e.g. "Dean&#39;s Office" → "Dean's Office").
-  t = t.replace(/&#x27;|&#39;/gi, "'").replace(/&amp;/gi, "&").replace(/&nbsp;/gi, " ")
-       .replace(/&quot;/gi, '"').replace(/&#(\d{2,5});/g, (_, n) => { try { return String.fromCharCode(Number(n)); } catch { return _; } });
+  // Decode leftover HTML entities (e.g. "Dean&#39;s Office" → "Dean's Office",
+  // "&#x2013;" → "–"). Then collapse "--" double-hyphens to a " - " separator.
+  t = t.replace(/&#x27;|&#39;/gi, "'").replace(/&amp;/gi, "&").replace(/&nbsp;/gi, " ").replace(/&quot;/gi, '"')
+       .replace(/&#x([0-9a-f]{2,5});/gi, (_, h) => { try { return String.fromCharCode(parseInt(h, 16)); } catch { return _; } })
+       .replace(/&#(\d{2,5});/g, (_, n) => { try { return String.fromCharCode(Number(n)); } catch { return _; } });
+  t = t.replace(/\s*--\s*/g, " - ");
   t = t.replace(/^\s*(?:image|photo)\s+(?=[A-Z0-9])/i, "");
   t = t.replace(/\bimage[-\w]*\.(?:png|jpe?g|gif|svg|webp)\b/gi, " ");
   const dateToken =
@@ -3924,6 +3927,10 @@ function normalizeJobTitle(rawTitle) {
   // "(*Restricted*)" — the leading "*" marks it as a posting flag, not part of
   // the title. Real parentheticals (e.g. "(Tenure-Track)") don't start with "*".
   t = t.replace(/\s*\(\s*\*[^)]*\)\s*$/g, "");
+  // Drop trailing posting-status tags: "(INTERNAL)" / "(External)" / "(Reposted)"
+  // / "(Confidential)". (Meaningful parentheticals like "(Multiple Positions)"
+  // and "(Tenure-Track)" are left alone.)
+  t = t.replace(/\s*\((?:internal|external|confidential|reposted?|re-?post)\)\s*$/i, "");
   // Remove trailing dates and academic-year tails.
   t = t.replace(new RegExp(`\\s*(?:[—-]\\s*)?${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?\\s*$`, "i"), "");
   t = t.replace(new RegExp(`\\s*\\((?:\\s*${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?)\\)\\s*$`, "i"), "");
