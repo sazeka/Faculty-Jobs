@@ -11,12 +11,18 @@
 // the (local/periodic) enricher.
 
 export const ENRICHMENT_FIELDS = ["discipline", "tenureTrack", "positionType"];
+// Also carry recency dates across scrapes: a scrape that skips the job-presence
+// step (firstSeen) or description backfill (datePosted) — e.g. a bare local
+// scrape — would otherwise wipe them and break the "Most recent" sort. Only
+// fills when the fresh job lacks the field, so Oracle's freshly-scraped
+// datePosted and job-presence's firstSeen still win when present.
+export const CARRIED_FIELDS = [...ENRICHMENT_FIELDS, "datePosted", "firstSeen"];
 
 function isEmpty(v) {
   return v === undefined || v === null || v === "";
 }
 
-export function preserveEnrichment(newData, prevData, fields = ENRICHMENT_FIELDS) {
+export function preserveEnrichment(newData, prevData, fields = CARRIED_FIELDS) {
   const empty = { data: newData, restoredFields: 0, jobsTouched: 0, matched: 0 };
   if (!newData || !Array.isArray(newData.jobs)) return empty;
   if (!prevData || !Array.isArray(prevData.jobs) || prevData.jobs.length === 0) return empty;
