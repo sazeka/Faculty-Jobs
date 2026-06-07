@@ -3893,6 +3893,20 @@ function normalizeJobTitle(rawTitle) {
   t = t.replace(new RegExp(`\\s*(?:[—-]\\s*)?${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?\\s*$`, "i"), "");
   t = t.replace(new RegExp(`\\s*\\((?:\\s*${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?)\\)\\s*$`, "i"), "");
   t = t.replace(/\s*[—-]?\s*(?:AY\s*)?'?\d{2,4}\s*(?:-|\/)\s*'?\d{2,4}\s*$/i, "");
+  // Michigan State HR title artifacts: drop the "1855" professorship prefix,
+  // normalize "FixedTerm", and rewrite "{Rank}[-/ ]{Appointment} - Of {College}"
+  // into the readable "{Rank} of {College} - {Appointment}". Anchored on " - Of "
+  // (capital Of), an MSU-specific artifact, so other titles are unaffected.
+  t = t.replace(/^\s*1855\s+(?=[A-Za-z])/, "");
+  t = t.replace(/\bFixed[\s-]?Term\b/gi, "Fixed Term");
+  {
+    const msu = t.match(/^(.*?)\s*[-\s]\s*(Tenure System|Fixed Term|Health Programs(?:\s+Fixed Term)?)\s+-\s+Of\s+(.+)$/i);
+    if (msu) {
+      t = `${clean(msu[1])} of ${clean(msu[3])} - ${clean(msu[2])}`;
+    } else {
+      t = t.replace(/\s+-\s+Of\s+/g, " of ");
+    }
+  }
   // Repair concatenated all-caps titles seen on some feeds (e.g., Duke AJO).
   t = t.replace(/\bTENURETRACK\b/gi, "TENURE TRACK");
   t = t.replace(/\bASSISTANTPROFESSOR\b/gi, "ASSISTANT PROFESSOR");
