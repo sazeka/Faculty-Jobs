@@ -3861,6 +3861,9 @@ function normalizeJobTitle(rawTitle) {
   if (!t) return t;
   // Some feeds leak HTML/media markup directly into title fields.
   t = stripHtmlToText(t);
+  // Decode leftover HTML entities (e.g. "Dean&#39;s Office" → "Dean's Office").
+  t = t.replace(/&#x27;|&#39;/gi, "'").replace(/&amp;/gi, "&").replace(/&nbsp;/gi, " ")
+       .replace(/&quot;/gi, '"').replace(/&#(\d{2,5});/g, (_, n) => { try { return String.fromCharCode(Number(n)); } catch { return _; } });
   t = t.replace(/^\s*(?:image|photo)\s+(?=[A-Z0-9])/i, "");
   t = t.replace(/\bimage[-\w]*\.(?:png|jpe?g|gif|svg|webp)\b/gi, " ");
   const dateToken =
@@ -3930,6 +3933,26 @@ function normalizeJobTitle(rawTitle) {
   t = t.replace(/\bASSOCPROFESSOR\b/gi, "ASSOCIATE PROFESSOR");
   t = t.replace(/\bPROFESSORIN\b/gi, "PROFESSOR IN ");
   t = t.replace(/\b(PROFESSOR|LECTURER|INSTRUCTOR|FACULTY)(\d+)\b/gi, "$1");
+  // Strip feed tails that leak location/region/deadline metadata into the title:
+  //   - University of Houston: "… - {City}, {State}, United States - {fragment}"
+  //   - SUNY: "… Region: {region} Open until filled" (and a standalone deadline)
+  // then trim any dangling trailing separators/punctuation left behind.
+  {
+    // UH feed: "{role} - {City}, {State}, United States[ - {tail}]". The tail is
+    // sometimes the real subject ("English") and sometimes garbage ("of … Staff
+    // Full-Time …"). Keep a short Title-Case subject, drop sentence/garbage tails.
+    const uh = t.match(/^(.*?)\s*[-–—]\s+[^,\-–—]+,\s*[^,]+,\s*United States\b\s*(?:[-–—]\s*(.*))?$/i);
+    if (uh) {
+      const role = clean(uh[1]);
+      const rest = clean(uh[2] || "");
+      const subjectLike = rest && rest.length <= 45 && /^[A-Z]/.test(rest) && !/[.]/.test(rest) &&
+        !/\b(staff|full-time|part-time|come work|the co|dean,)\b/i.test(rest);
+      t = subjectLike ? `${role} - ${rest}` : role;
+    }
+  }
+  t = t.replace(/\s+Region:\s.*$/i, "");
+  t = t.replace(/\s*[-–—:,]?\s*open until filled\.?\s*$/i, "");
+  t = t.replace(/[\s\-–—|•:,]+$/, "");
   return clean(t);
 }
 
