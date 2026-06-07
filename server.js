@@ -3784,7 +3784,8 @@ export async function scrapeAllJobsStandalone() {
       // contain "professor"/"faculty". High-precision signals: a "Learn/Read
       // More" CTA suffix, news verbs, or a leading "Mon DD, YYYY |" date headline.
       if (/\b(learn|read)\s+more$/.test(t)) return false;
-      if (/\b(announces|celebrates|in memoriam|obituary|remembering|congratulat)/.test(t)) return false;
+      if (/\b(announces|announced|celebrates|in memoriam|obituary|remembering|congratulat)/.test(t)) return false;
+      if (/(dean|president)['’]?s?\s+lists?\b|\bhonor roll\b|\bcommencement\b/.test(t)) return false;
       if (/^\s*[a-z]+\.?\s+\d{1,2},?\s+\d{4}\s*\|/.test(t)) return false;
       // Keep if title contains faculty-related keywords
       if (looksFacultyish(t)) return true;
@@ -3854,6 +3855,23 @@ export async function scrapeAllJobsStandalone() {
 
 function clean(s) {
   return String(s || "").replace(/\s+/g, " ").trim();
+}
+
+// Title-case a SHOUTING (all-caps) title while preserving acronyms and codes.
+const TITLE_SMALL_WORDS = new Set(["a","an","and","as","at","but","by","for","from","in","nor","of","on","or","per","the","to","via","vs","with"]);
+const TITLE_ACRONYMS = new Set(["AI","ML","IT","HR","PR","STEM","STEAM","ESL","EFL","GIS","HCI","CS","EE","ECE","CMS","AMO","RF","OB","GYN","ENT","ICU","ER","UX","UI","PHD","MD","DO","RN","LPN","BSN","MSN","DNP","CRNA","JD","LLM","MBA","MFA","MPH","DVM","EDD","PSYD","DDS","US","USA","UK","EU","NYC","DC","UC","CSU","SUNY","CUNY","VA","NIH","NSF","WOT","HS","II","III","IV","VI","VII"]);
+function titleCaseShout(str) {
+  let seen = 0;
+  return str.replace(/[A-Za-z][A-Za-z0-9'’]*/g, (w) => {
+    const isFirst = seen++ === 0;
+    if (/[0-9]/.test(w)) return w;                 // codes like FH14 — leave as-is
+    const up = w.toUpperCase();
+    if (TITLE_ACRONYMS.has(up)) return up;         // known acronym → keep caps
+    if (w.length === 1) return up;                 // single letter (e.g. "Clinical X")
+    const lo = w.toLowerCase();
+    if (!isFirst && TITLE_SMALL_WORDS.has(lo)) return lo;
+    return lo.charAt(0).toUpperCase() + lo.slice(1);
+  });
 }
 
 function normalizeJobTitle(rawTitle) {
@@ -3953,6 +3971,12 @@ function normalizeJobTitle(rawTitle) {
   t = t.replace(/\s+Region:\s.*$/i, "");
   t = t.replace(/\s*[-–—:,]?\s*open until filled\.?\s*$/i, "");
   t = t.replace(/[\s\-–—|•:,]+$/, "");
+  // Convert a fully-uppercase ("shouting") title to Title Case, preserving
+  // acronyms/codes. Only when there are no lowercase letters and enough letters
+  // to be a real title (not a deliberate short acronym).
+  if (!/[a-z]/.test(t) && t.replace(/[^A-Za-z]/g, "").length >= 10) {
+    t = titleCaseShout(t);
+  }
   return clean(t);
 }
 
