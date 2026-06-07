@@ -108,16 +108,29 @@ if (-not $scraped) {
     # Don't exit - still run monitor so we know the site is still up.
 }
 
-# 2. Build frontend (only if scrape succeeded)
+# 2-5. Agent pipeline (local Ollama) then build — only if scrape succeeded.
+# These run BEFORE build:frontend so the rebuilt data chunks include firstSeen,
+# enrichment, and posting dates. Each is best-effort (| Out-Null, no gating):
+# preserveEnrichment already carries prior enrichment/firstSeen/datePosted, so a
+# skipped or partial agent step degrades gracefully instead of losing data.
 if ($scraped) {
-    LogSection "Step 2/5 - Build frontend"
+    LogSection "Step 2/8 - Track job presence (stamp firstSeen, purge expired)"
+    Invoke-Step "Job presence" $NpmCmd @("run", "agent:job-presence") | Out-Null
+
+    LogSection "Step 3/8 - Enrich new jobs (discipline/positionType/tenureTrack via local Ollama)"
+    Invoke-Step "Enrich" $NpmCmd @("run", "agent:enrich", "--", "--max", "1500", "--batch-size", "6") | Out-Null
+
+    LogSection "Step 4/8 - Backfill descriptions + posting dates (datePosted)"
+    Invoke-Step "Descriptions" $NpmCmd @("run", "agent:descriptions", "--", "--max", "400") | Out-Null
+
+    LogSection "Step 5/8 - Build frontend"
     $built = Invoke-Step "Build" $NpmCmd @("run", "build:frontend")
     if (-not $built) {
         Log "Build failed - skipping commit." "ERROR"
         $OverallSuccess = $false
     } else {
-        # 3. Commit and push
-        LogSection "Step 3/5 - Commit and push"
+        # 6. Commit and push
+        LogSection "Step 6/8 - Commit and push"
         if ($DryRun) {
             Log "DRY RUN: skipping git commit and push." "WARN"
         } else {
@@ -169,12 +182,12 @@ if ($scraped) {
     }
 }
 
-# 4. Validate job posting URLs
-LogSection "Step 4/5 - Validate job URLs"
+# 7. Validate job posting URLs
+LogSection "Step 7/8 - Validate job URLs"
 Invoke-Step "Verify job URLs" $NpmCmd @("run", "verify:job-urls") | Out-Null
 
-# 5. Monitor live site
-LogSection "Step 5/5 - Monitor live site"
+# 8. Monitor live site
+LogSection "Step 8/8 - Monitor live site"
 if (-not $DryRun -and $scraped) {
     Log "Waiting 30s for GitHub Pages to propagate..."
     Start-Sleep -Seconds 30
