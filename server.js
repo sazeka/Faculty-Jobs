@@ -3882,6 +3882,9 @@ function normalizeJobTitle(rawTitle) {
   // Strip leading requisition/posting numbers (e.g. Oracle CE "131520-Title" or
   // "822960 - Title"). Requires 5+ digits so 4-digit year prefixes are untouched.
   t = t.replace(/^\s*\d{5,}\s*-\s*(?=[A-Za-z])/, "");
+  // Normalize a leading appointment-length prefix: "12 month- Title" / "10 Month
+  // Title" / "9 month - Title" → "12-Month Title".
+  t = t.replace(/^\s*(\d{1,2})\s*[- ]?\s*month\b[-\s]*/i, "$1-Month ");
   // Remove trailing requisition/position ids that pollute title text.
   t = t.replace(/\s*[—-]\s*#\d[\dA-Za-z/& -]*$/g, "");
   t = t.replace(/\s*-\s*#\d[\dA-Za-z/& ,.-]*(?=\s*[—-]\s*[A-Za-z])/g, "");
@@ -3896,6 +3899,10 @@ function normalizeJobTitle(rawTitle) {
   // bracket content with no spaces and a 3+ digit run (so "[K-12]" and word tags
   // are kept). Brackets at the end of a title are virtually always codes.
   t = t.replace(/\s*\[[^\]\s]*\d{3,}[^\]\s]*\]\s*$/g, "");
+  // Drop a trailing asterisk-footnote status tag like "(*Restricted)" /
+  // "(*Restricted*)" — the leading "*" marks it as a posting flag, not part of
+  // the title. Real parentheticals (e.g. "(Tenure-Track)") don't start with "*".
+  t = t.replace(/\s*\(\s*\*[^)]*\)\s*$/g, "");
   // Remove trailing dates and academic-year tails.
   t = t.replace(new RegExp(`\\s*(?:[—-]\\s*)?${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?\\s*$`, "i"), "");
   t = t.replace(new RegExp(`\\s*\\((?:\\s*${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?)\\)\\s*$`, "i"), "");
