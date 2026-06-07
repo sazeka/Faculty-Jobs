@@ -3977,6 +3977,16 @@ function normalizeJobTitle(rawTitle) {
   }
   t = t.replace(/\s+Region:\s.*$/i, "");
   t = t.replace(/\s*[-–—:,]?\s*open until filled\.?\s*$/i, "");
+  // Strip trailing location metadata that some feeds append to the title (the
+  // location lives in its own field). Three safe shapes, all anchored on a real
+  // 2-letter US state code at the end:
+  //  1. em-dash concatenation/location tail (Wayne State, Arizona): "… — of {dept} {City}, ST"
+  //  2. comma-delimited location: "…, {Place}, ST"
+  //  3. a curated known city joined by a space (USC "Los Angeles", Cameron "Lawton", …)
+  const US_STATE = "AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC";
+  t = t.replace(new RegExp(`\\s+—\\s.*,\\s*(?:${US_STATE})\\s*$`), "");
+  t = t.replace(new RegExp(`,\\s*[A-Z][A-Za-z .'/-]+,\\s*(?:${US_STATE})\\s*$`), "");
+  t = t.replace(new RegExp(`\\s+(?:Los Angeles|San Francisco|San Diego|Santa Barbara|Lawton|Anchorage|Poulsbo|Woodinville|Detroit|Tucson|Phoenix|Albuquerque|New Orleans|Pomona|Orange|Sacramento|Riverside),\\s*(?:${US_STATE})\\s*$`), "");
   t = t.replace(/[\s\-–—|•:,]+$/, "");
   // Convert a fully-uppercase ("shouting") title to Title Case, preserving
   // acronyms/codes. Only when there are no lowercase letters and enough letters
