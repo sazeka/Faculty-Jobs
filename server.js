@@ -3909,6 +3909,10 @@ function normalizeJobTitle(rawTitle) {
   // Normalize a leading appointment-length prefix: "12 month- Title" / "10 Month
   // Title" / "9 month - Title" → "12-Month Title".
   t = t.replace(/^\s*(\d{1,2})\s*[- ]?\s*month\b[-\s]*/i, "$1-Month ");
+  // Strip a leading UMiami-style college/department code prefix, e.g.
+  // "A&S - PHI - Lecturer" → "Lecturer". Requires two ALL-CAPS code tokens so
+  // normal titles ("MBA - Finance - Director", "ESL - Coordinator") are safe.
+  t = t.replace(/^[A-Z][A-Z&]{0,4}\s*[-–]\s*[A-Z]{2,6}\s*[-–]\s+/, "");
   // Remove trailing requisition/position ids that pollute title text.
   t = t.replace(/\s*[—-]\s*#\d[\dA-Za-z/& -]*$/g, "");
   t = t.replace(/\s*-\s*#\d[\dA-Za-z/& ,.-]*(?=\s*[—-]\s*[A-Za-z])/g, "");
@@ -3935,6 +3939,8 @@ function normalizeJobTitle(rawTitle) {
   t = t.replace(new RegExp(`\\s*(?:[—-]\\s*)?${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?\\s*$`, "i"), "");
   t = t.replace(new RegExp(`\\s*\\((?:\\s*${dateToken}(?:\\s*(?:to|through|[-–—])\\s*${dateToken})?)\\)\\s*$`, "i"), "");
   t = t.replace(/\s*[—-]?\s*(?:AY\s*)?'?\d{2,4}\s*(?:-|\/)\s*'?\d{2,4}\s*$/i, "");
+  // Drop "(AY 26/27)" / "(AY 26-27)" academic-year parenthetical tags.
+  t = t.replace(/\s*\(\s*AY\b[^)]*\)/gi, "");
   // Michigan State HR title artifacts: drop the "1855" professorship prefix,
   // normalize "FixedTerm", and rewrite "{Rank}[-/ ]{Appointment} - Of {College}"
   // into the readable "{Rank} of {College} - {Appointment}". Anchored on " - Of "
@@ -3992,6 +3998,7 @@ function normalizeJobTitle(rawTitle) {
   // Mechanical Engineering", "Family Medicine Family Medicine"). Only an exact
   // back-to-back repeat at the very end is collapsed, so non-repeats are safe.
   t = t.replace(/\b(\w+(?:[\s&/.-]+\w+){0,6})\s*[,;:–—-]?\s+\1\s*$/i, "$1");
+  t = t.replace(/\s*\(\s*\)/g, "");          // drop empty parens "()" residue
   t = t.replace(/[\s\-–—|•:,]+$/, "");
   // Convert a fully-uppercase ("shouting") title to Title Case, preserving
   // acronyms/codes. Only when there are no lowercase letters and enough letters
