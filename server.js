@@ -3987,6 +3987,11 @@ function normalizeJobTitle(rawTitle) {
   t = t.replace(new RegExp(`\\s+—\\s.*,\\s*(?:${US_STATE})\\s*$`), "");
   t = t.replace(new RegExp(`,\\s*[A-Z][A-Za-z .'/-]+,\\s*(?:${US_STATE})\\s*$`), "");
   t = t.replace(new RegExp(`\\s+(?:Los Angeles|San Francisco|San Diego|Santa Barbara|Lawton|Anchorage|Poulsbo|Woodinville|Detroit|Tucson|Phoenix|Albuquerque|New Orleans|Pomona|Orange|Sacramento|Riverside),\\s*(?:${US_STATE})\\s*$`), "");
+  // Collapse a trailing department/phrase that's an IMMEDIATE adjacent repeat —
+  // some feeds append the department again at the end ("… Mechanical Engineering
+  // Mechanical Engineering", "Family Medicine Family Medicine"). Only an exact
+  // back-to-back repeat at the very end is collapsed, so non-repeats are safe.
+  t = t.replace(/\b(\w+(?:[\s&/.-]+\w+){0,6})\s*[,;:–—-]?\s+\1\s*$/i, "$1");
   t = t.replace(/[\s\-–—|•:,]+$/, "");
   // Convert a fully-uppercase ("shouting") title to Title Case, preserving
   // acronyms/codes. Only when there are no lowercase letters and enough letters
