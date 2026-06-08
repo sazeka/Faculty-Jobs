@@ -93,10 +93,18 @@ function indexStr(n) {
         {{ props.job.location || props.job.state || '—' }}
       </div>
       <div v-if="props.job.state" class="fa-listing-coord">{{ props.job.state }}</div>
-      <div v-if="getPostedLabel(props.job)" class="fa-meta" style="font-size: 10px; margin-top: 4px; color: var(--ink-3);"
-        :title="getPostedLabel(props.job).verb === 'Posted' ? 'Posting date from the source listing' : 'Date this listing was first seen by Faculty Atlas'">
-        {{ getPostedLabel(props.job).verb }} {{ getPostedLabel(props.job).date }}
+    </div>
+
+    <!-- Posted / first-seen date -->
+    <div>
+      <div class="fa-meta" style="font-size: 10px; margin-bottom: 4px;"
+        :title="getPostedLabel(props.job) && getPostedLabel(props.job).verb === 'Posted' ? 'Posting date from the source listing' : 'Date this listing was first seen by Faculty Atlas'">
+        {{ getPostedLabel(props.job) && getPostedLabel(props.job).verb === 'Listed' ? 'LISTED' : 'POSTED' }}
       </div>
+      <div v-if="getPostedLabel(props.job)" class="fa-display" style="font-size: 20px;">
+        {{ getPostedLabel(props.job).date }}
+      </div>
+      <div v-else class="fa-meta">—</div>
     </div>
 
     <!-- Deadline -->
