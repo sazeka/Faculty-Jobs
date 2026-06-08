@@ -3874,7 +3874,7 @@ function titleCaseShout(str) {
   });
 }
 
-function normalizeJobTitle(rawTitle) {
+export function normalizeJobTitle(rawTitle) {
   let t = clean(rawTitle);
   if (!t) return t;
   // Some feeds leak HTML/media markup directly into title fields.
