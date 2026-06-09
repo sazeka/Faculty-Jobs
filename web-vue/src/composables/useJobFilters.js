@@ -445,19 +445,26 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     } else if (filtersRef.value.sortBy === 'state') {
       out.sort((a, b) => (a.state || '').localeCompare(b.state || ''))
     } else if (filtersRef.value.sortBy === 'recent') {
-      // Newest postings first. Prefer the real source datePosted (JSON-LD/API);
-      // fall back to firstSeen (date our scrape first saw the listing) where the
-      // source exposes no posting date. When a search query is active, keep
-      // relevance primary so the best match isn't buried; recency breaks ties.
+      // Most recent POSTED first: jobs with a real source posting date
+      // (datePosted, from JSON-LD/API/listing) rank above those without, newest
+      // posting date at the very top. Jobs with no posting date follow, ordered
+      // by firstSeen (when our scrape first saw the listing). When a search query
+      // is active, keep relevance primary so the best match isn't buried.
       const hasQuery = Boolean(clean(filtersRef.value.q))
-      const recencyOf = (j) => j.datePosted || j.firstSeen || ''
       out.sort((a, b) => {
         if (hasQuery) {
           const s = (b._score || 0) - (a._score || 0)
           if (s) return s
         }
-        const fa = recencyOf(a), fb = recencyOf(b)
-        if (fa !== fb) return fb.localeCompare(fa)
+        const ad = a.datePosted || '', bd = b.datePosted || ''
+        // A real posting date always ranks above a job that has none.
+        if (Boolean(ad) !== Boolean(bd)) return ad ? -1 : 1
+        if (ad && bd) {
+          if (ad !== bd) return bd.localeCompare(ad) // newest posted first
+        } else {
+          const af = a.firstSeen || '', bf = b.firstSeen || ''
+          if (af !== bf) return bf.localeCompare(af)
+        }
         return (a.title || '').localeCompare(b.title || '')
       })
     } else {
