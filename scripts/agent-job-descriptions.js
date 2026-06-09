@@ -178,9 +178,16 @@ async function main() {
                 "|\\d{4}-\\d{2}-\\d{2}" +                      // 2026-05-01
                 "|\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}" +          // 05/01/2026
                 ")";
+              // Posting-date label variants observed across ATS platforms:
+              //   PeopleAdmin/Taleo → "Open Date"; Buffalo → "Posted"; PageUp
+              //   (UF/CSU) → "Advertised"; UMich → "Posting Begin/End Date".
+              // Deliberately EXCLUDED: "date published" (UW renders a stale template
+              // value), "start date"/"available" (a start date, not posting),
+              // "apply by"/"close"/"deadline" (that's the deadline → closeDate).
               const LABEL =
-                "(?:open(?:ing)?\\s*date|posting\\s*date|date\\s*posted|posted\\s*date|posted\\s*on|date\\s*opened|initial\\s*posting\\s*date|first\\s*posted)";
-              const re = new RegExp(LABEL + "\\s*[:\\-]?\\s*" + DATE, "i");
+                "(?:open(?:ing)?\\s*date|posting\\s*date|posting\\s*begin(?:[\\s/]*end)?\\s*date|date\\s*posted|posted\\s*date|posted\\s*on|date\\s*opened|initial\\s*posting\\s*date|first\\s*posted|advertised|posted)";
+              const re = new RegExp("\\b" + LABEL + "\\s*[:\\-]?\\s*" + DATE, "i");
+              const labelAnchored = new RegExp("^" + LABEL + "\\s*:?\\s*$", "i");
               // Prefer a labeled field rendered as a label/value pair (dt/dd, th/td,
               // or [class*=label]/sibling) to avoid grabbing a date from prose.
               const labelNodes = Array.from(
@@ -188,7 +195,7 @@ async function main() {
               );
               for (const el of labelNodes) {
                 const lt = (el.textContent || "").replace(/\s+/g, " ").trim();
-                if (!/^(?:open(?:ing)?\s*date|posting\s*date|date\s*posted|posted\s*date|posted\s*on|date\s*opened|initial\s*posting\s*date|first\s*posted)\s*:?\s*$/i.test(lt)) continue;
+                if (!labelAnchored.test(lt)) continue;
                 // Value is in the next sibling, the parent's next cell, or the parent text.
                 const cand = [
                   el.nextElementSibling && el.nextElementSibling.textContent,
