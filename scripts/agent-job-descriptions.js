@@ -19,6 +19,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { chromium } from "playwright";
+import { extractStartDate } from "./lib/start-date.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -124,6 +125,7 @@ async function main() {
   let datedFilled = 0;
   let openDateFilled = 0;
   let deadlineFilled = 0;
+  let startFilled = 0;
   let attempted = 0;
   let nextIdx = 0;
   let sinceSave = 0;
@@ -287,6 +289,11 @@ async function main() {
         target.description = desc;
         filled++;
       }
+      // Soft "anticipated start date" parsed from the posting body (free text).
+      if (!target.startDate) {
+        const sd = extractStartDate(desc || target.description || "");
+        if (sd) { target.startDate = sd; startFilled++; }
+      }
       if (datePosted && !target.datePosted) {
         const nd = normalizeDate(datePosted);
         if (nd) {
@@ -330,6 +337,8 @@ async function main() {
     filledThisRun: filled,
     datePostedFilledThisRun: datedFilled,
     openDateFilledThisRun: openDateFilled,
+    startDateFilledThisRun: startFilled,
+    totalWithStartDate: payload.jobs.filter((j) => j.startDate).length,
     deadlineFilledThisRun: deadlineFilled,
     mode: REDATE ? "redate" : "normal",
     totalWithDatePosted: payload.jobs.filter((j) => j.datePosted).length,
@@ -343,6 +352,7 @@ async function main() {
   console.log(`  Filled this run    : ${filled} (${attempted ? ((filled / attempted) * 100).toFixed(0) : 0}%)`);
   console.log(`  datePosted found   : ${datedFilled} (${attempted ? ((datedFilled / attempted) * 100).toFixed(0) : 0}%)  [${openDateFilled} via labeled Open Date]`);
   console.log(`  deadlines found    : ${deadlineFilled} (${attempted ? ((deadlineFilled / attempted) * 100).toFixed(0) : 0}%)`);
+  console.log(`  start dates found  : ${startFilled} (${attempted ? ((startFilled / attempted) * 100).toFixed(0) : 0}%)`);
   console.log(`  Total w/ description: ${totalWithDescription.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
   console.log(`  Remaining unfetched: ${remaining.toLocaleString()}`);
   console.log(`  Report saved       : generated/job-descriptions-report.json\n`);

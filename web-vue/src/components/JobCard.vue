@@ -43,6 +43,20 @@ function getPostedLabel(job) {
   }
 }
 
+// Soft "anticipated start" — startDate is either YYYY-MM-DD (format it) or a
+// season/month string like "Fall 2026" (show as-is).
+function getStartLabel(job) {
+  const s = job.startDate
+  if (!s) return null
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    const d = new Date(s + 'T00:00:00')
+    if (!Number.isNaN(d.getTime())) {
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    }
+  }
+  return String(s)
+}
+
 function indexStr(n) {
   return String(n + 1).padStart(5, '0')
 }
@@ -105,6 +119,10 @@ function indexStr(n) {
         {{ getPostedLabel(props.job).date }}
       </div>
       <div v-else class="fa-meta">—</div>
+      <div v-if="getStartLabel(props.job)" class="fa-meta" style="font-size: 10px; margin-top: 4px; color: var(--ink-3);"
+        title="Anticipated start date stated in the posting">
+        Starts {{ getStartLabel(props.job) }}
+      </div>
     </div>
 
     <!-- Deadline -->

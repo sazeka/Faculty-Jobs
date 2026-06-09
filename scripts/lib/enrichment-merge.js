@@ -16,7 +16,7 @@ export const ENRICHMENT_FIELDS = ["discipline", "tenureTrack", "positionType"];
 // scrape — would otherwise wipe them and break the "Most recent" sort. Only
 // fills when the fresh job lacks the field, so Oracle's freshly-scraped
 // datePosted and job-presence's firstSeen still win when present.
-export const CARRIED_FIELDS = [...ENRICHMENT_FIELDS, "datePosted", "firstSeen", "closeDate"];
+export const CARRIED_FIELDS = [...ENRICHMENT_FIELDS, "datePosted", "firstSeen", "closeDate", "startDate"];
 
 function isEmpty(v) {
   return v === undefined || v === null || v === "";
