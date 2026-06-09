@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
-import { scrapeAllJobsStandalone, callLocalSummarizer, getSystemGroup } from "../server.js";
+import { scrapeAllJobsStandalone, callLocalSummarizer, getSystemGroup, normalizeJobTitle } from "../server.js";
 import { canonicalizeUrl } from "./lib/url-normalization.js";
 import { shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from "./lib/scrape-guard.js";
 import { preserveEnrichment } from "./lib/enrichment-merge.js";
@@ -37,6 +37,31 @@ function normalizeKeyPart(value) {
 
 function sha1Hex(value) {
   return createHash("sha1").update(String(value || "")).digest("hex");
+}
+
+// Central title-cleaning choke point. Many DOM scrapers push a raw `title` and
+// never call normalizeJobTitle, so messy titles (leading "**INTERNAL ONLY**" /
+// year prefixes / "Region: … Open until filled" tails, etc.) re-entered the data
+// every scrape — undoing any prior cleanup. Running it here, before canonical IDs
+// are assigned, guarantees every job is normalized regardless of its scraper and
+// that IDs are derived from the clean title. If the normalizer returns empty
+// (e.g. a rejected non-job), the original title is kept — dropping is the quality
+// gate's job, not this pass's.
+function normalizeJobTitles(data) {
+  if (!data || !Array.isArray(data.jobs)) return { data, changed: 0 };
+  let changed = 0;
+  const jobs = data.jobs.map((job) => {
+    const before = job?.title || "";
+    if (!before) return job;
+    let after;
+    try { after = normalizeJobTitle(before); } catch { after = before; }
+    if (typeof after === "string" && after.trim() && after !== before) {
+      changed += 1;
+      return { ...job, title: after };
+    }
+    return job;
+  });
+  return { data: { ...data, jobs }, changed };
 }
 
 function addCanonicalIds(data) {
@@ -190,6 +215,14 @@ function canonicalizeJobUrls(data) {
     console.log(
       `🔗 Canonicalized job URLs: ${canonicalized.changed} updated, ${canonicalized.removedInvalid} invalid removed`
     );
+  }
+
+  // Clean every title BEFORE canonical IDs are derived from it, so no scraper can
+  // re-introduce messy titles (and IDs stay stable across scrapes).
+  const titled = normalizeJobTitles(data);
+  data = titled.data;
+  if (titled.changed > 0) {
+    console.log(`✂️  Normalized ${titled.changed} job titles`);
   }
 
   const canonicalIds = addCanonicalIds(data);

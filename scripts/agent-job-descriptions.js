@@ -43,6 +43,10 @@ function parseArgs(argv) {
 
 const args = parseArgs(process.argv.slice(2));
 const DRY_RUN = Boolean(args["dry-run"]);
+// --redate: re-visit pages already fetched (descriptionFetchedAt set) that still
+// have no datePosted, to pick up labeled "Open Date" fields added since the last
+// fetch. Targets only the already-fetched-but-undated set, not the whole corpus.
+const REDATE = Boolean(args["redate"]);
 const MAX = Number(args["max"] || process.env.DESC_MAX || 300);
 const CONCURRENCY = Math.min(Number(args["concurrency"] || process.env.DESC_CONCURRENCY || 6), 12);
 const TIMEOUT_MS = Math.max(8000, Number(args["timeout-ms"] || 30000));
@@ -76,12 +80,17 @@ async function main() {
     process.exit(1);
   }
 
-  const needs = payload.jobs.filter(
-    (j) => (!j.description || !String(j.description).trim()) && j.descriptionFetchedAt === undefined && /^https?:\/\//i.test(j.url || "")
-  );
+  const needs = REDATE
+    ? payload.jobs.filter(
+        (j) => !j.datePosted && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "")
+      )
+    : payload.jobs.filter(
+        (j) => (!j.description || !String(j.description).trim()) && j.descriptionFetchedAt === undefined && /^https?:\/\//i.test(j.url || "")
+      );
   const toProcess = needs.slice(0, MAX);
 
   const haveDesc = payload.jobs.filter((j) => j.description && String(j.description).trim()).length;
+  if (REDATE) console.log("\n  *** REDATE MODE — re-scanning fetched pages missing datePosted ***");
   console.log(`\n  Total jobs        : ${payload.jobs.length.toLocaleString()}`);
   console.log(`  With description  : ${haveDesc.toLocaleString()}`);
   console.log(`  Missing (unfetched): ${needs.length.toLocaleString()}`);
@@ -113,6 +122,7 @@ async function main() {
 
   let filled = 0;
   let datedFilled = 0;
+  let openDateFilled = 0;
   let deadlineFilled = 0;
   let attempted = 0;
   let nextIdx = 0;
@@ -126,6 +136,7 @@ async function main() {
       let desc = "";
       let datePosted = "";
       let validThrough = "";
+      let datePostedFromOpenDate = false;
       try {
         await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
         await page.waitForTimeout(1500);
@@ -151,6 +162,47 @@ async function main() {
                 }
               }
               return { datePosted: "", validThrough: "" };
+            };
+            // Fallback when JSON-LD has no datePosted: many ATS detail pages
+            // (PeopleAdmin, Interfolio, Oracle/Taleo, Workday) render the posting
+            // date as a labeled field — most commonly "Open Date", also "Posting
+            // Date" / "Date Posted" / "Posted On". Scan the page text for one of
+            // those labels followed by a date and return the date string. Labels
+            // are anchored so "Application Deadline"/"Close Date" aren't matched.
+            const findLabeledOpenDate = () => {
+              const MONTH = "(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\.?";
+              const DATE =
+                "(" +
+                MONTH + "\\s+\\d{1,2},?\\s+\\d{4}" +          // May 1, 2026
+                "|\\d{1,2}\\s+" + MONTH + ",?\\s+\\d{4}" +    // 1 May 2026
+                "|\\d{4}-\\d{2}-\\d{2}" +                      // 2026-05-01
+                "|\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}" +          // 05/01/2026
+                ")";
+              const LABEL =
+                "(?:open(?:ing)?\\s*date|posting\\s*date|date\\s*posted|posted\\s*date|posted\\s*on|date\\s*opened|initial\\s*posting\\s*date|first\\s*posted)";
+              const re = new RegExp(LABEL + "\\s*[:\\-]?\\s*" + DATE, "i");
+              // Prefer a labeled field rendered as a label/value pair (dt/dd, th/td,
+              // or [class*=label]/sibling) to avoid grabbing a date from prose.
+              const labelNodes = Array.from(
+                document.querySelectorAll("dt, th, label, [class*='label' i], strong, b, span")
+              );
+              for (const el of labelNodes) {
+                const lt = (el.textContent || "").replace(/\s+/g, " ").trim();
+                if (!/^(?:open(?:ing)?\s*date|posting\s*date|date\s*posted|posted\s*date|posted\s*on|date\s*opened|initial\s*posting\s*date|first\s*posted)\s*:?\s*$/i.test(lt)) continue;
+                // Value is in the next sibling, the parent's next cell, or the parent text.
+                const cand = [
+                  el.nextElementSibling && el.nextElementSibling.textContent,
+                  el.parentElement && el.parentElement.textContent,
+                ];
+                for (const c of cand) {
+                  const m = new RegExp(DATE, "i").exec((c || "").replace(/\s+/g, " "));
+                  if (m) return m[1];
+                }
+              }
+              // Fallback: scan the whole body text for "label: date".
+              const body = (document.body && document.body.innerText ? document.body.innerText : "").replace(/\s+/g, " ");
+              const m = re.exec(body);
+              return m ? m[1] : "";
             };
             // Read an element's text with page chrome (nav/header/footer/forms)
             // removed, so we keep the posting body and drop "Skip to Main Content…"
@@ -192,12 +244,14 @@ async function main() {
               }
               return best.length >= minLen ? best.slice(0, maxLen) : "";
             };
-            return { desc: findDesc(), ...findJobDates() };
+            return { desc: findDesc(), ...findJobDates(), openDate: findLabeledOpenDate() };
           },
           [MIN_LEN, MAX_LEN]
         );
         desc = result?.desc || "";
-        datePosted = result?.datePosted || "";
+        // JSON-LD datePosted wins; fall back to a labeled "Open Date" field.
+        datePosted = result?.datePosted || result?.openDate || "";
+        datePostedFromOpenDate = !result?.datePosted && !!result?.openDate;
         validThrough = result?.validThrough || "";
       } catch {
         desc = "";
@@ -211,13 +265,19 @@ async function main() {
 
       attempted++;
       target.descriptionFetchedAt = new Date().toISOString();
-      if (desc) {
+      // Only fill an empty description — a redate re-scan must not clobber a
+      // description captured on the original fetch.
+      if (desc && !String(target.description || "").trim()) {
         target.description = desc;
         filled++;
       }
-      if (datePosted && target.datePosted === undefined) {
+      if (datePosted && !target.datePosted) {
         const nd = normalizeDate(datePosted);
-        if (nd) { target.datePosted = nd; datedFilled++; }
+        if (nd) {
+          target.datePosted = nd;
+          datedFilled++;
+          if (datePostedFromOpenDate) openDateFilled++;
+        }
       }
       // validThrough = application deadline → closeDate (the field the card's
       // DEADLINE column already renders). Only fill if not already set.
@@ -253,7 +313,9 @@ async function main() {
     attemptedThisRun: attempted,
     filledThisRun: filled,
     datePostedFilledThisRun: datedFilled,
+    openDateFilledThisRun: openDateFilled,
     deadlineFilledThisRun: deadlineFilled,
+    mode: REDATE ? "redate" : "normal",
     totalWithDatePosted: payload.jobs.filter((j) => j.datePosted).length,
     totalWithDeadline: payload.jobs.filter((j) => j.closeDate).length,
     totalWithDescription,
@@ -263,7 +325,7 @@ async function main() {
 
   console.log(`\n  Attempted this run : ${attempted}`);
   console.log(`  Filled this run    : ${filled} (${attempted ? ((filled / attempted) * 100).toFixed(0) : 0}%)`);
-  console.log(`  datePosted found   : ${datedFilled} (${attempted ? ((datedFilled / attempted) * 100).toFixed(0) : 0}%)`);
+  console.log(`  datePosted found   : ${datedFilled} (${attempted ? ((datedFilled / attempted) * 100).toFixed(0) : 0}%)  [${openDateFilled} via labeled Open Date]`);
   console.log(`  deadlines found    : ${deadlineFilled} (${attempted ? ((deadlineFilled / attempted) * 100).toFixed(0) : 0}%)`);
   console.log(`  Total w/ description: ${totalWithDescription.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
   console.log(`  Remaining unfetched: ${remaining.toLocaleString()}`);
