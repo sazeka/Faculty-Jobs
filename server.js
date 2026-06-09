@@ -13258,17 +13258,22 @@ async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
         const container = a.closest("li") || a.parentElement?.closest("li") || a.parentElement;
         if (!container) continue;
 
-        // Extract title from container text
-        let text = clean(container.textContent || "");
+        // Keep the raw container text to mine the posting dates, which UW renders
+        // on the LISTING (not the detail page): "Open date: M/D/YYYY" and
+        // "Position open through: <date|Until filled>".
+        const raw = clean(container.textContent || "");
+        const odm = raw.match(/Open date:\s*(\d{1,2}\/\d{1,2}\/\d{4})/i);
+        const otm = raw.match(/Position open through:\s*(.+?)\s*(?:More info|Apply now|$)/i);
+
         // Remove common footer text like "More info", "Apply now", dates
-        text = text.replace(/More info|Apply now|Open date:.*|Position open through:.*/gi, "").trim();
+        let text = raw.replace(/More info|Apply now|Open date:.*|Position open through:.*/gi, "").trim();
         // Extract title after "Position NNNNN" pattern
         const match = text.match(/Position\s+\d+\s+(.+?)(?:\s+(?:Seattle|Tacoma|Bothell|WA|Open date|$))/i);
         const title = match ? clean(match[1]) : clean(text.split(/\n/)[0]);
 
         if (title && title.length > 5) {
           seen.add(href);
-          out.push({ title, url: href });
+          out.push({ title, url: href, openDate: odm ? odm[1] : null, openThrough: otm ? clean(otm[1]) : null });
         }
       }
 
@@ -13297,15 +13302,40 @@ async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
       return out;
     });
 
-    const jobs = (items || []).map((x) => ({
-      title: normalizeUwTitle(x.title),
-      url: x.url,
-      source: sourceName,
-      category: "Faculty",
-      college: campusName,
-      location: null,
-      description: null,
-    }));
+    // M/D/YYYY (or a parseable date string) → YYYY-MM-DD; reject implausible years.
+    const toYmd = (s) => {
+      const m = String(s || "").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (m) return `${m[3]}-${String(m[1]).padStart(2, "0")}-${String(m[2]).padStart(2, "0")}`;
+      const d = new Date(s);
+      if (!Number.isNaN(d.getTime())) {
+        const y = d.getFullYear();
+        if (y > 2000 && y < 2100) return d.toISOString().slice(0, 10);
+      }
+      return null;
+    };
+
+    const jobs = (items || []).map((x) => {
+      const job = {
+        title: normalizeUwTitle(x.title),
+        url: x.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      };
+      const posted = toYmd(x.openDate);
+      if (posted) job.datePosted = posted;
+      if (x.openThrough) {
+        if (/until\s+filled|open\s+until\s+filled|continuous|ongoing/i.test(x.openThrough)) {
+          job.openUntilFilled = true;
+        } else {
+          const close = toYmd(x.openThrough);
+          if (close) job.closeDate = close;
+        }
+      }
+      return job;
+    });
 
     console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
     return jobs;

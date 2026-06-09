@@ -139,7 +139,16 @@ async function main() {
       let datePostedFromOpenDate = false;
       try {
         await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
-        await page.waitForTimeout(1500);
+        // Cornerstone (csod) is a single-page app that renders the "Posted on …"
+        // date client-side well after DOMContentLoaded; the default 1.5s wait
+        // fires before it paints, so the date (and full body) is missed. Give
+        // those pages longer and let the network settle.
+        if (/\.csod\.com/i.test(job.url)) {
+          await page.waitForLoadState("networkidle", { timeout: 12000 }).catch(() => {});
+          await page.waitForTimeout(3500);
+        } else {
+          await page.waitForTimeout(1500);
+        }
         const result = await page.evaluate(
           ([minLen, maxLen]) => {
             const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
