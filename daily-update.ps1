@@ -121,7 +121,9 @@ if ($scraped) {
     Invoke-Step "Enrich" $NpmCmd @("run", "agent:enrich", "--", "--max", "1500", "--batch-size", "6") | Out-Null
 
     LogSection "Step 4/8 - Backfill descriptions + posting dates (datePosted)"
-    Invoke-Step "Descriptions" $NpmCmd @("run", "agent:descriptions", "--", "--max", "400") | Out-Null
+    # Higher --max to work through the ~5.5k unfetched-page backlog faster (clears
+    # in ~3 nights). Each fetch also extracts JSON-LD/Open Date posting dates.
+    Invoke-Step "Descriptions" $NpmCmd @("run", "agent:descriptions", "--", "--max", "2000", "--concurrency", "8") | Out-Null
 
     LogSection "Step 5/8 - Build frontend"
     $built = Invoke-Step "Build" $NpmCmd @("run", "build:frontend")
