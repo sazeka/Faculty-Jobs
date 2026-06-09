@@ -12541,21 +12541,33 @@ async function scrapeInterfolioInstitution(context, startUrl, campusName, source
       page++;
     }
 
-    const jobs = allResults.map((r) => ({
-      title: clean(r.name || ""),
-      url: `https://apply.interfolio.com/${r.id}`,
-      source: sourceName,
-      category: "Faculty",
-      college: campusName,
-      location: (() => {
-        const loc = (r.location || "").trim();
-        if (!loc) return null;
-        // Skip numeric campus codes (e.g., "01", "02", "06") and garbage like "Other 70"
-        if (/^\d+$/.test(loc) || /^other\s+\d+$/i.test(loc)) return null;
-        return loc;
-      })(),
-      description: r.description ? r.description.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().substring(0, 2000) : null,
-    }));
+    const ymd = (v) => (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v.trim()) ? v.trim() : null);
+    const jobs = allResults.map((r) => {
+      // Interfolio's API exposes the posting open date + deadline directly
+      // (open_date_raw / close_date_raw are already YYYY-MM-DD), so we capture
+      // them here instead of visiting each detail page — these jobs already ship
+      // an API description and so never enter the page-fetch/date-scan queue.
+      const job = {
+        title: clean(r.name || ""),
+        url: `https://apply.interfolio.com/${r.id}`,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: (() => {
+          const loc = (r.location || "").trim();
+          if (!loc) return null;
+          // Skip numeric campus codes (e.g., "01", "02", "06") and garbage like "Other 70"
+          if (/^\d+$/.test(loc) || /^other\s+\d+$/i.test(loc)) return null;
+          return loc;
+        })(),
+        description: r.description ? r.description.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().substring(0, 2000) : null,
+      };
+      const posted = ymd(r.open_date_raw);
+      const close = ymd(r.close_date_raw) || ymd(r.deadline);
+      if (posted) job.datePosted = posted;
+      if (close) job.closeDate = close;
+      return job;
+    });
 
     console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
     return jobs;
