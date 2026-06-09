@@ -48,6 +48,10 @@ const DRY_RUN = Boolean(args["dry-run"]);
 // have no datePosted, to pick up labeled "Open Date" fields added since the last
 // fetch. Targets only the already-fetched-but-undated set, not the whole corpus.
 const REDATE = Boolean(args["redate"]);
+// --reclose: re-visit already-fetched pages that have no deadline signal yet
+// (no closeDate and not openUntilFilled) to pick up labeled "Close Date" /
+// "Applications Close" fields.
+const RECLOSE = Boolean(args["reclose"]);
 const MAX = Number(args["max"] || process.env.DESC_MAX || 300);
 const CONCURRENCY = Math.min(Number(args["concurrency"] || process.env.DESC_CONCURRENCY || 6), 12);
 const TIMEOUT_MS = Math.max(8000, Number(args["timeout-ms"] || 30000));
@@ -81,7 +85,11 @@ async function main() {
     process.exit(1);
   }
 
-  const needs = REDATE
+  const needs = RECLOSE
+    ? payload.jobs.filter(
+        (j) => !j.closeDate && !j.openUntilFilled && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "")
+      )
+    : REDATE
     ? payload.jobs.filter(
         (j) => !j.datePosted && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "")
       )
@@ -92,6 +100,7 @@ async function main() {
 
   const haveDesc = payload.jobs.filter((j) => j.description && String(j.description).trim()).length;
   if (REDATE) console.log("\n  *** REDATE MODE — re-scanning fetched pages missing datePosted ***");
+  if (RECLOSE) console.log("\n  *** RECLOSE MODE — re-scanning fetched pages missing a deadline ***");
   console.log(`\n  Total jobs        : ${payload.jobs.length.toLocaleString()}`);
   console.log(`  With description  : ${haveDesc.toLocaleString()}`);
   console.log(`  Missing (unfetched): ${needs.length.toLocaleString()}`);
@@ -125,6 +134,7 @@ async function main() {
   let datedFilled = 0;
   let openDateFilled = 0;
   let deadlineFilled = 0;
+  let rollingFilled = 0;
   let startFilled = 0;
   let attempted = 0;
   let nextIdx = 0;
@@ -138,6 +148,7 @@ async function main() {
       let desc = "";
       let datePosted = "";
       let validThrough = "";
+      let closeRolling = false;
       let datePostedFromOpenDate = false;
       try {
         await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
@@ -262,7 +273,25 @@ async function main() {
               }
               return best.length >= minLen ? best.slice(0, maxLen) : "";
             };
-            return { desc: findDesc(), ...findJobDates(), openDate: findLabeledOpenDate() };
+            // Application DEADLINE from a labeled field, when JSON-LD validThrough
+            // is absent: PeopleAdmin "Close Date", PageUp "Applications Close",
+            // also "Application Deadline" / "Deadline to Apply" / "Apply By". The
+            // value is either a date OR an "open until filled" phrase (→ rolling).
+            // Anchored on close/deadline/apply-by labels so "priority review date"
+            // and "review will begin" (a review START, not a deadline) are skipped.
+            const findLabeledCloseDate = () => {
+              const M = "(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\.?";
+              const D = "(" + M + "\\s+\\d{1,2},?\\s+\\d{4}|\\d{1,2}\\s+" + M + ",?\\s+\\d{4}|\\d{4}-\\d{2}-\\d{2}|\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})";
+              const LBL = "(?:clos(?:e|ing)\\s*date|applications?\\s*clos(?:e|ing)|application\\s*deadline|deadline(?:\\s*(?:to\\s*apply|for\\s*application?s?))?|apply\\s*by|posting\\s*end\\s*date)";
+              const body = (document.body && document.body.innerText ? document.body.innerText : "").replace(/\s+/g, " ");
+              // A close/deadline label followed by "open until filled" → rolling.
+              if (new RegExp(LBL + "\\s*[:\\-]?\\s*(?:open\\s+)?(?:until\\s+filled|continuous(?:ly)?|ongoing)", "i").test(body)) {
+                return { rolling: true };
+              }
+              const m = new RegExp("\\b" + LBL + "\\s*[:\\-]?\\s*" + D, "i").exec(body);
+              return m ? { date: m[1] } : {};
+            };
+            return { desc: findDesc(), ...findJobDates(), openDate: findLabeledOpenDate(), close: findLabeledCloseDate() };
           },
           [MIN_LEN, MAX_LEN]
         );
@@ -270,7 +299,9 @@ async function main() {
         // JSON-LD datePosted wins; fall back to a labeled "Open Date" field.
         datePosted = result?.datePosted || result?.openDate || "";
         datePostedFromOpenDate = !result?.datePosted && !!result?.openDate;
-        validThrough = result?.validThrough || "";
+        // Deadline: JSON-LD validThrough wins, else a labeled close/deadline date.
+        validThrough = result?.validThrough || result?.close?.date || "";
+        closeRolling = !result?.validThrough && !result?.close?.date && !!result?.close?.rolling;
       } catch {
         desc = "";
       } finally {
@@ -308,6 +339,11 @@ async function main() {
         const nd = normalizeDate(validThrough);
         if (nd) { target.closeDate = nd; deadlineFilled++; }
       }
+      // A labeled "Close Date: Open Until Filled" → rolling (card shows "Rolling").
+      if (closeRolling && !target.closeDate && target.openUntilFilled === undefined) {
+        target.openUntilFilled = true;
+        rollingFilled++;
+      }
 
       // Persist periodically so a long run's progress survives interruption.
       if (++sinceSave >= 25) {
@@ -340,7 +376,8 @@ async function main() {
     startDateFilledThisRun: startFilled,
     totalWithStartDate: payload.jobs.filter((j) => j.startDate).length,
     deadlineFilledThisRun: deadlineFilled,
-    mode: REDATE ? "redate" : "normal",
+    rollingFilledThisRun: rollingFilled,
+    mode: RECLOSE ? "reclose" : REDATE ? "redate" : "normal",
     totalWithDatePosted: payload.jobs.filter((j) => j.datePosted).length,
     totalWithDeadline: payload.jobs.filter((j) => j.closeDate).length,
     totalWithDescription,
@@ -351,7 +388,7 @@ async function main() {
   console.log(`\n  Attempted this run : ${attempted}`);
   console.log(`  Filled this run    : ${filled} (${attempted ? ((filled / attempted) * 100).toFixed(0) : 0}%)`);
   console.log(`  datePosted found   : ${datedFilled} (${attempted ? ((datedFilled / attempted) * 100).toFixed(0) : 0}%)  [${openDateFilled} via labeled Open Date]`);
-  console.log(`  deadlines found    : ${deadlineFilled} (${attempted ? ((deadlineFilled / attempted) * 100).toFixed(0) : 0}%)`);
+  console.log(`  deadlines found    : ${deadlineFilled} (${attempted ? ((deadlineFilled / attempted) * 100).toFixed(0) : 0}%)  [+${rollingFilled} rolling/until-filled]`);
   console.log(`  start dates found  : ${startFilled} (${attempted ? ((startFilled / attempted) * 100).toFixed(0) : 0}%)`);
   console.log(`  Total w/ description: ${totalWithDescription.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
   console.log(`  Remaining unfetched: ${remaining.toLocaleString()}`);
