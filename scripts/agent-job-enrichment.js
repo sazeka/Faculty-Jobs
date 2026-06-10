@@ -82,6 +82,39 @@ const VALID_POSITION_TYPES = new Set([
 
 const VALID_TENURE_TRACK = new Set(['tenure-track', 'non-tenure-track', 'unknown']);
 
+// The local model frequently returns descriptive or compound positionType
+// strings outside the allowed enum (e.g. "Assistant/Associate/Full Professor",
+// "Clinical Instructor", "Postdoctoral Fellow"). Map the common variants onto a
+// valid value instead of collapsing every off-enum answer to "Other".
+function coercePositionType(raw) {
+  if (typeof raw !== 'string') return 'Other';
+  if (VALID_POSITION_TYPES.has(raw)) return raw;
+  const s = raw.toLowerCase();
+
+  // Compound / open-rank signals first: any "X/Y" rank slash or explicit phrasing.
+  if (/open[\s-]?rank|all\s+ranks?|any\s+rank|multiple\s+ranks?/.test(s)) return 'Open Rank';
+  const rankHits = ['assistant', 'associate', 'full'].filter(r => s.includes(r)).length;
+  if (s.includes('professor') && (rankHits >= 2 || s.includes('/'))) return 'Open Rank';
+
+  // Distinct categories that may co-occur with a rank word — match these before
+  // the plain rank checks so "Clinical Assistant Professor" → Clinical, etc.
+  if (s.includes('postdoc')) return 'Postdoctoral';
+  if (s.includes('adjunct')) return 'Adjunct';
+  if (s.includes('visiting')) return 'Visiting';
+  if (s.includes('clinical')) return 'Clinical';
+
+  // Single ranks.
+  if (s.includes('assistant professor') || /\basst\.?\s*prof/.test(s)) return 'Assistant Professor';
+  if (s.includes('associate professor') || /\bassoc\.?\s*prof/.test(s)) return 'Associate Professor';
+  if (s.includes('full professor') || /^professor\b/.test(s) || /\bfull\s+prof/.test(s)) return 'Full Professor';
+
+  if (s.includes('lecturer')) return 'Lecturer';
+  if (s.includes('instructor')) return 'Instructor';
+  if (s.includes('research')) return 'Research';
+
+  return 'Other';
+}
+
 function buildPrompt(batch) {
   const jobLines = batch
     .map((j, i) => {
@@ -109,7 +142,7 @@ function normalizeResult(result) {
   return {
     discipline:   result.discipline ?? null,
     tenureTrack:  VALID_TENURE_TRACK.has(result.tenureTrack) ? result.tenureTrack : 'unknown',
-    positionType: VALID_POSITION_TYPES.has(result.positionType) ? result.positionType : 'Other',
+    positionType: coercePositionType(result.positionType),
   };
 }
 
