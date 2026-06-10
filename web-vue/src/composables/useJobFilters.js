@@ -203,6 +203,8 @@ function normalizeJob(job) {
     positionTypes: job?.rank ? [job.rank] : getPositionTypes(job?.titleClean || job?.title || ''),
     positionType: job?.rank || getPositionType(job?.titleClean || job?.title || ''),
     state,
+    datePosted: job?.datePosted || null,
+    firstSeen: job?.firstSeen || null,
     isNew: Boolean(job?._isNew),
     confidenceBadges: deriveConfidenceBadges(job),
     canonicalJobId,
@@ -287,6 +289,8 @@ function dedupeGroupedJobs(jobs) {
       description: existing.description || job.description,
       summary: existing.summary || job.summary,
       location: existing.location || job.location,
+      datePosted: existing.datePosted || job.datePosted,
+      firstSeen: existing.firstSeen || job.firstSeen,
       isNew: existing.isNew || job.isNew,
     })
   }
