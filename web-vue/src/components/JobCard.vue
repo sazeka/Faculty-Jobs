@@ -88,7 +88,7 @@ function indexStr(n) {
       </div>
       <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
         <span v-if="props.job.isClosed" class="fa-tag" style="background: var(--ink-3); color: #fff; border-color: var(--ink-3);">Closed</span>
-        <span v-if="props.job._isNew" class="fa-tag fa-tag-accent">New</span>
+        <span v-if="props.job.isNew" class="fa-tag fa-tag-accent">New</span>
         <span
           v-for="pt in (props.job.positionTypes || []).filter((p) => p && p !== 'Faculty')"
           :key="pt"

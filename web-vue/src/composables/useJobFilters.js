@@ -203,6 +203,7 @@ function normalizeJob(job) {
     openUntilFilled: Boolean(job?.openUntilFilled),
     closeDateRaw: job?.closeDateRaw || null,
     closeDate: job?.closeDate || null,
+    startDate: job?.startDate || null,
     // Closed = a real close date in the past, and not an open-until-filled
     // (rolling) posting. Used to default-hide expired listings.
     isClosed: Boolean(job?.closeDate && !job?.openUntilFilled && String(job.closeDate) < TODAY_ISO),
@@ -298,6 +299,7 @@ function dedupeGroupedJobs(jobs) {
       location: existing.location || job.location,
       datePosted: existing.datePosted || job.datePosted,
       firstSeen: existing.firstSeen || job.firstSeen,
+      startDate: existing.startDate || job.startDate,
       // A grouped posting is only "closed" if every duplicate is closed.
       isClosed: existing.isClosed && job.isClosed,
       isNew: existing.isNew || job.isNew,
