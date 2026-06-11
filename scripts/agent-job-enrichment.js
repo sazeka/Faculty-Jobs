@@ -115,6 +115,23 @@ function coercePositionType(raw) {
   return 'Other';
 }
 
+// The model is inconsistent on tenureTrack: casing ("Tenure-Track"), spacing
+// ("tenure track", "non tenure track"), and synonyms ("tenured", "NTT") all
+// fall outside the enum and were being dropped to "unknown". Normalize and map
+// the common variants. Check non-tenure first — "non-tenure-track" contains the
+// substring "tenure".
+function coerceTenureTrack(raw) {
+  if (typeof raw !== 'string') return 'unknown';
+  if (VALID_TENURE_TRACK.has(raw)) return raw;
+  const s = raw.toLowerCase().trim().replace(/[\s_]+/g, '-');
+
+  if (/non-?tenure/.test(s) || /\bntt\b/.test(s)) return 'non-tenure-track';
+  if (/tenure-track|tenured|tenure-eligible|tenure-eligibility|\btt\b/.test(s)) return 'tenure-track';
+  if (s.includes('tenure')) return 'tenure-track';
+
+  return 'unknown';
+}
+
 function buildPrompt(batch) {
   const jobLines = batch
     .map((j, i) => {
@@ -141,7 +158,7 @@ ${jobLines}`;
 function normalizeResult(result) {
   return {
     discipline:   result.discipline ?? null,
-    tenureTrack:  VALID_TENURE_TRACK.has(result.tenureTrack) ? result.tenureTrack : 'unknown',
+    tenureTrack:  coerceTenureTrack(result.tenureTrack),
     positionType: coercePositionType(result.positionType),
   };
 }
