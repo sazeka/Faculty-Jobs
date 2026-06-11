@@ -10,6 +10,7 @@ import { usePresets } from './composables/usePresets'
 import { useJobFilters } from './composables/useJobFilters'
 import { useJobsData } from './composables/useJobsData'
 import { useAlerts } from './composables/useAlerts'
+import { useFilterUrlSync, buildShareUrl } from './composables/useFilterUrlSync'
 import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 
 const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || ''
@@ -44,6 +45,21 @@ const { stateOptions, positionTypeOptions, disciplineOptions, collegeOptions, de
   useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob })
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({ filtersRef: filters, updateFilters })
 const { alertsWithCounts, addAlert, removeAlert } = useAlerts({ filtersRef: filters, countMatches })
+
+// Shareable filter URLs: hydrate from the query string on load, then keep the
+// address bar in sync as filters change.
+const { applyFromUrl, startSync } = useFilterUrlSync({ filtersRef: filters, updateFilters })
+applyFromUrl()
+startSync()
+
+const shareCopied = ref(false)
+async function copyShareLink() {
+  try {
+    await navigator.clipboard.writeText(buildShareUrl(filters.value))
+    shareCopied.value = true
+    setTimeout(() => { shareCopied.value = false }, 2000)
+  } catch { /* clipboard unavailable; the address bar already holds the link */ }
+}
 
 const hoveredCollege = ref(null)
 const activeTab = ref('jobs')
@@ -412,6 +428,9 @@ onMounted(async () => {
                 <b style="color: var(--ink);">{{ filteredJobs.length.toLocaleString() }}</b> postings
               </div>
               <div style="display: flex; gap: 12px; align-items: center;">
+                <button class="fa-filters-toggle" @click="copyShareLink" :title="'Copy a link to this filtered view'">
+                  {{ shareCopied ? '✓ Copied' : '⎘ Copy link' }}
+                </button>
                 <button class="fa-filters-toggle" @click="filterDrawerOpen = true">⊞ Filters</button>
                 <select
                   class="fa-meta"
