@@ -21,5 +21,6 @@ export function createDefaultFilters() {
     tenureTrackOnly: false,
     savedOnly: false,
     newOnly: false,
+    showClosed: false,
   }
 }

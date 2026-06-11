@@ -56,6 +56,7 @@ export function usePresets({ filtersRef, updateFilters }) {
       tenureTrackOnly: filtersRef.value.tenureTrackOnly,
       savedOnly: filtersRef.value.savedOnly,
       newOnly: filtersRef.value.newOnly,
+      showClosed: filtersRef.value.showClosed,
       sortBy: filtersRef.value.sortBy,
     }
   }
@@ -71,6 +72,7 @@ export function usePresets({ filtersRef, updateFilters }) {
       tenureTrackOnly: !!preset?.tenureTrackOnly,
       savedOnly: !!preset?.savedOnly,
       newOnly: !!preset?.newOnly,
+      showClosed: !!preset?.showClosed,
     })
   }
 

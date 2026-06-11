@@ -40,6 +40,7 @@ export function useAlerts({ filtersRef, countMatches }) {
       tenureTrackOnly: Boolean(filtersRef.value.tenureTrackOnly),
       savedOnly: Boolean(filtersRef.value.savedOnly),
       newOnly: Boolean(filtersRef.value.newOnly),
+      showClosed: Boolean(filtersRef.value.showClosed),
     }
   }
 

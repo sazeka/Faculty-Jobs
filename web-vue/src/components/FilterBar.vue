@@ -156,6 +156,10 @@ function toggleDiscipline(value) {
           <span class="fa-check" :class="{ checked: filters.savedOnly }">{{ filters.savedOnly ? '✓' : '' }}</span>
           <span style="flex: 1;">Saved jobs only</span>
         </label>
+        <label class="fa-facet-item" :class="{ active: filters.showClosed }" @click="updateField('showClosed', !filters.showClosed)">
+          <span class="fa-check" :class="{ checked: filters.showClosed }">{{ filters.showClosed ? '✓' : '' }}</span>
+          <span style="flex: 1;">Show closed postings</span>
+        </label>
       </div>
     </div>
 

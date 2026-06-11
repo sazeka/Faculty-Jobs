@@ -2,6 +2,10 @@ import { computed } from 'vue'
 import { ALL_FILTER_VALUE, createDefaultFilters } from '../config/appConfig'
 import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxonomy'
 
+// Today as YYYY-MM-DD for deadline comparisons; computed once per page load.
+// closeDate values are date-only, so a UTC slice is the right granularity.
+const TODAY_ISO = new Date().toISOString().slice(0, 10)
+
 const DISCIPLINE_RULES = [
   { label: 'Arts & Music',            terms: ['art', 'music', 'theatre', 'theater', 'dance', 'film', 'studio', 'visual art', 'fine art', 'performing', 'sculpture', 'painting', 'ceramics', 'graphic design', 'illustration', 'photography'] },
   { label: 'Biological Sciences',     terms: ['biology', 'biolog', 'botany', 'zoology', 'ecology', 'genetics', 'genomics', 'neuroscience', 'biochemistry', 'microbiology', 'molecular', 'cell biology', 'evolutionary', 'anatomy', 'physiology', 'marine biology', 'wildlife'] },
@@ -199,6 +203,9 @@ function normalizeJob(job) {
     openUntilFilled: Boolean(job?.openUntilFilled),
     closeDateRaw: job?.closeDateRaw || null,
     closeDate: job?.closeDate || null,
+    // Closed = a real close date in the past, and not an open-until-filled
+    // (rolling) posting. Used to default-hide expired listings.
+    isClosed: Boolean(job?.closeDate && !job?.openUntilFilled && String(job.closeDate) < TODAY_ISO),
     tenureTrack: typeof job?.tenureTrack === 'boolean' ? job.tenureTrack : null,
     positionTypes: job?.rank ? [job.rank] : getPositionTypes(job?.titleClean || job?.title || ''),
     positionType: job?.rank || getPositionType(job?.titleClean || job?.title || ''),
@@ -291,6 +298,8 @@ function dedupeGroupedJobs(jobs) {
       location: existing.location || job.location,
       datePosted: existing.datePosted || job.datePosted,
       firstSeen: existing.firstSeen || job.firstSeen,
+      // A grouped posting is only "closed" if every duplicate is closed.
+      isClosed: existing.isClosed && job.isClosed,
       isNew: existing.isNew || job.isNew,
     })
   }
@@ -339,6 +348,10 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     }
     if (ignoreKey !== 'newOnly' && filterValues.newOnly) {
       out = out.filter((job) => job.isNew === true)
+    }
+    // Expired postings are hidden unless the user opts to show them.
+    if (ignoreKey !== 'showClosed' && !filterValues.showClosed) {
+      out = out.filter((job) => !job.isClosed)
     }
 
     if (terms.length === 0) return out
@@ -487,6 +500,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     if (filtersRef.value.tenureTrackOnly) chips.push({ key: 'tenureTrackOnly', label: 'Tenure Track' })
     if (filtersRef.value.savedOnly) chips.push({ key: 'savedOnly', label: 'Saved Jobs' })
     if (filtersRef.value.newOnly) chips.push({ key: 'newOnly', label: 'New Since Visit' })
+    if (filtersRef.value.showClosed) chips.push({ key: 'showClosed', label: 'Including Closed' })
     if (filtersRef.value.positionType !== ALL_FILTER_VALUE) chips.push({ key: 'positionType', label: filtersRef.value.positionType })
     if (filtersRef.value.college !== ALL_FILTER_VALUE) chips.push({ key: 'college', label: truncate(filtersRef.value.college, 25) })
     if (filtersRef.value.department !== ALL_FILTER_VALUE) chips.push({ key: 'department', label: truncate(filtersRef.value.department, 30) })
@@ -509,6 +523,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     if (key === 'tenureTrackOnly') updateFilters({ tenureTrackOnly: false })
     if (key === 'savedOnly') updateFilters({ savedOnly: false })
     if (key === 'newOnly') updateFilters({ newOnly: false })
+    if (key === 'showClosed') updateFilters({ showClosed: false })
     if (key === 'positionType') updateFilters({ positionType: ALL_FILTER_VALUE })
     if (key === 'college') updateFilters({ college: ALL_FILTER_VALUE })
     if (key === 'department') updateFilters({ department: ALL_FILTER_VALUE })
