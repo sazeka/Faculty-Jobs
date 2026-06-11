@@ -27,6 +27,10 @@ const heroNewLabel = computed(() => (newThisWeek.value != null ? 'new this week'
 // file that loads near-instantly — so the numbers don't sit blank at 0 while
 // 50+ chunks stream in, the way "new this week" already shows immediately.
 const jobsLoaded = computed(() => jobs.value.length > 0)
+// True only on a cold first visit while the job chunks are still streaming in
+// (no cache yet, no load error). Used to show a loading message in the posts
+// section instead of the "no matches" empty state.
+const isInitialLoading = computed(() => !jobsLoaded.value && !loadError.value)
 const heroTotal = computed(() =>
   jobsLoaded.value ? qualitySummary.value.total : (Number(siteStats.value?.total) || 0))
 const heroInstitutions = computed(() =>
@@ -425,7 +429,12 @@ onMounted(async () => {
             </div>
 
             <!-- Listing rows -->
-            <div v-if="filteredJobs.length === 0" style="padding: 48px 0; text-align: center;">
+            <div v-if="isInitialLoading && filteredJobs.length === 0" style="padding: 48px 0; text-align: center;">
+              <p class="fa-display" style="font-size: 28px; color: var(--ink-3);">Loading postings…</p>
+              <p class="fa-meta" style="margin-top: 8px;">Fetching the latest faculty listings.</p>
+            </div>
+
+            <div v-else-if="filteredJobs.length === 0" style="padding: 48px 0; text-align: center;">
               <p class="fa-display" style="font-size: 28px; color: var(--ink-3);">No postings match your filters.</p>
               <button class="fa-btn fa-btn-ghost" style="margin-top: 16px;" @click="resetFilters">Clear filters</button>
             </div>
