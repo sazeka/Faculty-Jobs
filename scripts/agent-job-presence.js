@@ -231,10 +231,24 @@ for (const entry of Object.values(presence.jobs)) {
   if (entry.firstSeen >= weekCutoff) newThisWeek += 1;
 }
 
+// Institution and state-system counts, so the homepage hero can show them
+// instantly from this tiny file instead of waiting for every job chunk to load.
+// Mirrors the frontend: distinct college, and distinct (state || source).
+const collegeSet = new Set();
+const stateSet = new Set();
+for (const job of cleanedJobs) {
+  const college = String(job?.college || '').trim();
+  if (college) collegeSet.add(college);
+  const stateSystem = String(job?.state || job?.source || '').trim();
+  if (stateSystem) stateSet.add(stateSystem);
+}
+
 const siteStats = {
   generatedAt: new Date().toISOString(),
   scrapeDate: today,
   total: cleanedJobs.length,
+  uniqueColleges: collegeSet.size,
+  stateSystems: stateSet.size,
   newToday,
   newThisWeek,
 };

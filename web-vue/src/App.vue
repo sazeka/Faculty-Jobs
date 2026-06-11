@@ -15,12 +15,24 @@ import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || ''
 const baseUrl = import.meta.env.BASE_URL || '/'
 
-const { jobs, scrapedAt, loadError, loadJobs, qualitySummary, newJobsCount, newThisWeek } = useJobsData()
+const { jobs, scrapedAt, loadError, loadJobs, qualitySummary, newJobsCount, newThisWeek, siteStats } = useJobsData()
 
 // Prefer the global, daily-computed "new this week" figure; fall back to the
 // per-visitor count only if site-stats.json hasn't loaded.
 const heroNew = computed(() => (newThisWeek.value != null ? newThisWeek.value : newJobsCount.value))
 const heroNewLabel = computed(() => (newThisWeek.value != null ? 'new this week' : 'new since last visit'))
+
+// Hero counts. Once the job chunks load, the computed values are authoritative.
+// Until then (first visit, cold cache) fall back to site-stats.json — a tiny
+// file that loads near-instantly — so the numbers don't sit blank at 0 while
+// 50+ chunks stream in, the way "new this week" already shows immediately.
+const jobsLoaded = computed(() => jobs.value.length > 0)
+const heroTotal = computed(() =>
+  jobsLoaded.value ? qualitySummary.value.total : (Number(siteStats.value?.total) || 0))
+const heroInstitutions = computed(() =>
+  jobsLoaded.value ? qualitySummary.value.uniqueColleges : (Number(siteStats.value?.uniqueColleges) || 0))
+const heroStates = computed(() =>
+  jobsLoaded.value ? stateCount.value : (Number(siteStats.value?.stateSystems) || 0))
 
 const filters = ref(createDefaultFilters())
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
@@ -197,9 +209,9 @@ onMounted(async () => {
           <span v-if="scrapedLabel" style="color: var(--accent);">● Updated {{ scrapedLabel }}</span>
         </div>
         <div class="fa-meta" style="display: flex; gap: 24px;">
-          <span><b style="font-weight: 600; color: var(--ink);">{{ qualitySummary.total.toLocaleString() }}</b> posts</span>
-          <span><b style="font-weight: 600; color: var(--ink);">{{ qualitySummary.uniqueColleges.toLocaleString() }}</b> institutions</span>
-          <span><b style="font-weight: 600; color: var(--ink);">{{ stateCount }}</b> state systems</span>
+          <span><b style="font-weight: 600; color: var(--ink);">{{ heroTotal.toLocaleString() }}</b> posts</span>
+          <span><b style="font-weight: 600; color: var(--ink);">{{ heroInstitutions.toLocaleString() }}</b> institutions</span>
+          <span><b style="font-weight: 600; color: var(--ink);">{{ heroStates }}</b> state systems</span>
           <span v-if="siteViews !== null"><b style="font-weight: 600; color: var(--ink);">{{ siteViews.toLocaleString() }}</b> visitors</span>
         </div>
       </div>
@@ -224,11 +236,11 @@ onMounted(async () => {
         <!-- Stat grid -->
         <div class="fa-stat-grid">
           <div class="fa-stat">
-            <div class="fa-stat-val">{{ qualitySummary.total.toLocaleString() }}</div>
+            <div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div>
             <div class="fa-stat-label">open posts today</div>
           </div>
           <div class="fa-stat">
-            <div class="fa-stat-val">{{ qualitySummary.uniqueColleges.toLocaleString() }}</div>
+            <div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div>
             <div class="fa-stat-label">institutions tracked</div>
           </div>
           <div class="fa-stat">
@@ -236,7 +248,7 @@ onMounted(async () => {
             <div class="fa-stat-label">{{ heroNewLabel }}</div>
           </div>
           <div class="fa-stat">
-            <div class="fa-stat-val">{{ stateCount }}</div>
+            <div class="fa-stat-val">{{ heroStates }}</div>
             <div class="fa-stat-label">state systems</div>
           </div>
         </div>
@@ -505,7 +517,7 @@ onMounted(async () => {
 
             <div class="fa-modal-section">
               <div class="fa-label" style="margin-bottom: 10px;">Sources</div>
-              <p>Data is collected from state university systems and individual institutions. Current coverage includes the University of California system, California State University, SUNY New York, University of Washington, University of North Carolina system, University of Texas system, and dozens of individual public and private universities across all 50 states. Over {{ qualitySummary.uniqueColleges.toLocaleString() }} institutions are currently tracked.</p>
+              <p>Data is collected from state university systems and individual institutions. Current coverage includes the University of California system, California State University, SUNY New York, University of Washington, University of North Carolina system, University of Texas system, and dozens of individual public and private universities across all 50 states. Over {{ heroInstitutions.toLocaleString() }} institutions are currently tracked.</p>
             </div>
 
             <div class="fa-modal-section">
