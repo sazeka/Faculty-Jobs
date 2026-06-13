@@ -132,11 +132,18 @@ function coerceTenureTrack(raw) {
   return 'unknown';
 }
 
+// Description snippet length fed to the model. Titles alone rarely state tenure
+// status or rank; the opening of a posting usually does. Kept short to bound
+// tokens and keep batches reliable.
+const DESC_SNIPPET_CHARS = 600;
+
 function buildPrompt(batch) {
   const jobLines = batch
     .map((j, i) => {
       const dept = j.department ? ` [Dept: ${j.department}]` : '';
-      return `${i + 1}. ${j.title}${dept}`;
+      const desc = String(j.description || '').replace(/\s+/g, ' ').trim();
+      const snippet = desc ? `\n   Description: ${desc.slice(0, DESC_SNIPPET_CHARS)}` : '';
+      return `${i + 1}. ${j.title}${dept}${snippet}`;
     })
     .join('\n');
 
@@ -146,6 +153,8 @@ For each item, extract three fields:
 1. discipline - the academic field (e.g., "Computer Science", "Nursing", "Mathematics", "English Literature"). Be specific. Return null if the item is not a real faculty job posting (e.g., a phone number, degree program name, or non-job listing).
 2. tenureTrack - exactly one of: "tenure-track", "non-tenure-track", or "unknown"
 3. positionType - MUST be exactly one of these strings (no others allowed): "Assistant Professor", "Associate Professor", "Full Professor", "Open Rank", "Lecturer", "Instructor", "Adjunct", "Visiting", "Clinical", "Postdoctoral", "Research", "Other". Use "Other" for anything that does not fit.
+
+When a Description is provided, use it — it usually states tenure status, rank, and field more reliably than the title alone.
 
 Return ONLY a JSON array with one object per item in the same order. No explanation, no markdown fences.
 
