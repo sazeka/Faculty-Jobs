@@ -540,7 +540,7 @@ onMounted(async () => {
 
             <div class="fa-modal-section">
               <div class="fa-label" style="margin-bottom: 10px;">How it works</div>
-              <p>Faculty Atlas automatically scrapes open faculty listings from university employment portals across North America. A GitHub Actions workflow runs every other day, fetching job data from institutional systems and normalizing it into a unified format. Listings are deduplicated, classified by discipline, and published to this site within minutes of the scrape completing.</p>
+              <p>Faculty Atlas automatically scrapes open faculty listings from university employment portals across North America. An automated pipeline runs daily, fetching job data from institutional systems and normalizing it into a unified format. Listings are deduplicated, classified by discipline, and published to this site within minutes of the scrape completing.</p>
             </div>
 
             <div class="fa-modal-section">
@@ -555,7 +555,7 @@ onMounted(async () => {
 
             <div class="fa-modal-section">
               <div class="fa-label" style="margin-bottom: 10px;">Freshness & "New" listings</div>
-              <p>The catalog is updated every other day. A listing is marked <b>New</b> when it appears in the dataset for the first time after your last visit — this is tracked locally in your browser and requires no account. Listings removed from the source institution are dropped from the catalog at the next scrape.</p>
+              <p>The catalog is updated daily. A listing is marked <b>New</b> when it appears in the dataset for the first time after your last visit — this is tracked locally in your browser and requires no account. Listings removed from the source institution are dropped from the catalog at the next scrape.</p>
             </div>
 
             <div class="fa-modal-section">
