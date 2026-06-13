@@ -44,7 +44,7 @@ const lastmod     = jobsPayload?.generatedAt
 
 // ── Build sitemap XML ─────────────────────────────────────────────────────────
 
-const urlEntries = STATIC_PAGES.map(({ path: p, changefreq, priority }) => {
+const staticEntries = STATIC_PAGES.map(({ path: p, changefreq, priority }) => {
   const loc = p === "/" ? BASE_URL + "/" : BASE_URL + p;
   return [
     "  <url>",
@@ -54,12 +54,26 @@ const urlEntries = STATIC_PAGES.map(({ path: p, changefreq, priority }) => {
     `    <priority>${priority}</priority>`,
     "  </url>",
   ].join("\n");
-}).join("\n");
+});
+
+// Per-job pages, from the manifest written by generate-job-pages.js (which runs
+// before this script in the build). Lower priority, weekly changefreq.
+const jobPages = readJson(path.join(ROOT, "generated", "job-pages.json")) || [];
+const jobEntries = jobPages.map(({ loc, lastmod: lm }) =>
+  [
+    "  <url>",
+    `    <loc>${loc}</loc>`,
+    `    <lastmod>${lm || lastmod}</lastmod>`,
+    "    <changefreq>weekly</changefreq>",
+    "    <priority>0.6</priority>",
+    "  </url>",
+  ].join("\n")
+);
 
 const sitemap = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-  urlEntries,
+  [...staticEntries, ...jobEntries].join("\n"),
   "</urlset>",
   "",
 ].join("\n");
@@ -80,6 +94,6 @@ for (const dir of ["docs", "public"]) {
   writeFile(path.join(ROOT, dir, "robots.txt"),  robots);
 }
 
-console.log(`Sitemap written — lastmod: ${lastmod}, ${STATIC_PAGES.length} URLs`);
+console.log(`Sitemap written — lastmod: ${lastmod}, ${STATIC_PAGES.length} static + ${jobPages.length} job URLs`);
 console.log("  docs/sitemap.xml  public/sitemap.xml");
 console.log("  docs/robots.txt   public/robots.txt");
