@@ -73,13 +73,13 @@ const META_TAGS = [
   {
     attr: "property",
     attrVal: "og:image",
-    tag: `<meta property="og:image" content="https://www.facultyatlas.org/apple-touch-icon.png">`,
+    tag: `<meta property="og:image" content="https://www.facultyatlas.org/og-card.png">`,
   },
   // Twitter/X card — mirror the live count-based OG copy so the two stay in sync.
   {
     attr: "name",
     attrVal: "twitter:card",
-    tag: `<meta name="twitter:card" content="summary">`,
+    tag: `<meta name="twitter:card" content="summary_large_image">`,
   },
   {
     attr: "name",
@@ -94,7 +94,7 @@ const META_TAGS = [
   {
     attr: "name",
     attrVal: "twitter:image",
-    tag: `<meta name="twitter:image" content="https://www.facultyatlas.org/apple-touch-icon.png">`,
+    tag: `<meta name="twitter:image" content="https://www.facultyatlas.org/og-card.png">`,
   },
   {
     attr: "canonical",  // special sentinel — matched differently below
