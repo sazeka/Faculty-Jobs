@@ -66,6 +66,37 @@ const META_TAGS = [
     tag: `<meta property="og:type" content="website">`,
   },
   {
+    attr: "property",
+    attrVal: "og:site_name",
+    tag: `<meta property="og:site_name" content="Faculty Atlas">`,
+  },
+  {
+    attr: "property",
+    attrVal: "og:image",
+    tag: `<meta property="og:image" content="https://www.facultyatlas.org/apple-touch-icon.png">`,
+  },
+  // Twitter/X card — mirror the live count-based OG copy so the two stay in sync.
+  {
+    attr: "name",
+    attrVal: "twitter:card",
+    tag: `<meta name="twitter:card" content="summary">`,
+  },
+  {
+    attr: "name",
+    attrVal: "twitter:title",
+    tag: `<meta name="twitter:title" content="Faculty Atlas — ${jobCount} Faculty Jobs">`,
+  },
+  {
+    attr: "name",
+    attrVal: "twitter:description",
+    tag: `<meta name="twitter:description" content="Browse ${jobCount} open faculty job listings across ${collegeCount} institutions. Updated daily.">`,
+  },
+  {
+    attr: "name",
+    attrVal: "twitter:image",
+    tag: `<meta name="twitter:image" content="https://www.facultyatlas.org/apple-touch-icon.png">`,
+  },
+  {
     attr: "canonical",  // special sentinel — matched differently below
     attrVal: "canonical",
     tag: `<link rel="canonical" href="https://www.facultyatlas.org/">`,
