@@ -327,43 +327,66 @@ async function main() {
   let errorCount    = 0;
   let nextBatch     = 0;
 
+  // Process one batch. The local model frequently drops rows (or emits
+  // malformed JSON) on larger batches, which would otherwise discard the
+  // whole batch. So on a count mismatch or parse failure we bisect and retry
+  // the halves recursively, down to single jobs — bad rows get isolated while
+  // good ones still land in a single run. Returns the number enriched.
+  async function processBatch(batch, label) {
+    let results = null;
+    let errMsg  = null;
+    try {
+      results = await enrichBatch(batch);
+    } catch (err) {
+      errMsg = err.message;
+    }
+
+    const ok = Array.isArray(results) && results.length === batch.length;
+
+    if (!ok) {
+      if (batch.length === 1) {
+        // Genuinely un-enrichable on this pass; leave it for the next run.
+        errorCount++;
+        const why = errMsg || `expected 1 result, got ${results?.length ?? 0}`;
+        console.log(`${label}... ERROR: ${why}`);
+        return 0;
+      }
+      // Bisect and retry each half independently.
+      const mid = Math.ceil(batch.length / 2);
+      console.log(`${label}... mismatch, splitting into ${mid}+${batch.length - mid}`);
+      const a = await processBatch(batch.slice(0, mid), `${label} ↳`);
+      const b = await processBatch(batch.slice(mid), `${label} ↳`);
+      return a + b;
+    }
+
+    let batchEnriched = 0;
+    for (let j = 0; j < batch.length; j++) {
+      const job    = jobIndex.get(batch[j].canonicalJobId);
+      const result = results[j];
+      if (!job || !result) continue;
+      const norm = normalizeResult(result);
+      job.discipline   = norm.discipline;
+      job.tenureTrack  = norm.tenureTrack;
+      job.positionType = norm.positionType;
+      enrichedCount++;
+      batchEnriched++;
+    }
+
+    // Save after each successful (sub)batch — partial progress is never lost
+    writeJson(PUBLIC_JOBS, payload);
+    if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+
+    console.log(`${label}... done (+${batchEnriched})`);
+    return batchEnriched;
+  }
+
   // Worker: grabs the next available batch until all are done.
   async function worker() {
     while (nextBatch < totalBatches) {
       const batchIdx = nextBatch++;
       const batch    = batches[batchIdx];
       const label    = `  Batch ${batchIdx + 1}/${totalBatches} (${batch.length} jobs)`;
-
-      try {
-        const results = await enrichBatch(batch);
-
-        if (!Array.isArray(results) || results.length !== batch.length) {
-          throw new Error(`Expected ${batch.length} results, got ${results?.length}`);
-        }
-
-        let batchEnriched = 0;
-        for (let j = 0; j < batch.length; j++) {
-          const job    = jobIndex.get(batch[j].canonicalJobId);
-          const result = results[j];
-          if (!job || !result) continue;
-          const norm = normalizeResult(result);
-          job.discipline   = norm.discipline;
-          job.tenureTrack  = norm.tenureTrack;
-          job.positionType = norm.positionType;
-          enrichedCount++;
-          batchEnriched++;
-        }
-
-        // Save after each batch — partial progress is never lost
-        writeJson(PUBLIC_JOBS, payload);
-        if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
-
-        console.log(`${label}... done (+${batchEnriched})`);
-      } catch (err) {
-        errorCount++;
-        console.log(`${label}... ERROR: ${err.message}`);
-        // Leave these jobs unenriched so they're retried next run
-      }
+      await processBatch(batch, label);
     }
   }
 
@@ -378,13 +401,13 @@ async function main() {
     enrichedThisRun: enrichedCount,
     totalEnriched,
     remaining:       payload.jobs.length - totalEnriched,
-    errors:          errorCount,
+    failedThisRun:   errorCount,
     config: { max: MAX, batchSize: BATCH_SIZE },
   });
 
   console.log(`\n  Enriched this run : ${enrichedCount}`);
   console.log(`  Total enriched    : ${totalEnriched.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
-  if (errorCount) console.log(`  Batch errors      : ${errorCount}`);
+  if (errorCount) console.log(`  Jobs left for next run : ${errorCount}`);
   console.log(`  Report saved      : generated/enrichment-report.json`);
   console.log('');
 }
