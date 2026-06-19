@@ -140,14 +140,16 @@ if ($scraped) {
                 Log "git not found on PATH - skipping commit." "ERROR"
                 $OverallSuccess = $false
             } else {
-                # Stage everything the build pipeline touches
+                # Stage everything the build pipeline touches. NOTE: this must
+                # cover ALL files the scrape modifies — generated/ reports and
+                # web-vue/public/ data included — otherwise the commit leaves the
+                # working tree dirty, and the merge -X ours recovery below aborts
+                # with "commit your changes or stash them before you merge",
+                # silently stranding the push (this caused 6 days of stale data).
                 Invoke-Step "git add" $GitCmd @(
-                    "add",
-                    "docs/", "public/",
-                    "data/institutions-master.json",
-                    "generated/coverage-report.json",
-                    "generated/policy-excluded-colleges.json",
-                    "web-vue/public/policy-excluded-colleges.json"
+                    "add", "-A",
+                    "docs/", "public/", "generated/", "web-vue/public/",
+                    "data/institutions-master.json"
                 ) | Out-Null
 
                 # Only commit if there are actual changes
@@ -165,10 +167,19 @@ if ($scraped) {
                             # Fetch, merge keeping our data, then retry once.
                             Log "Push rejected - fetching and merging remote changes..." "WARN"
                             Invoke-Step "git fetch" $GitCmd @("fetch") | Out-Null
-                            Invoke-Step "git merge -X ours" $GitCmd @("merge", "-X", "ours", "origin/main") | Out-Null
+                            # --no-edit so the merge can't block on an editor in the
+                            # non-interactive scheduled-task context. -X ours keeps our
+                            # fresh scrape data when CI's data-health pass conflicts.
+                            Invoke-Step "git merge --no-edit -X ours" $GitCmd @("merge", "--no-edit", "-X", "ours", "origin/main") | Out-Null
                             $pushed = Invoke-Step "git push (retry)" $GitCmd @("push")
                             if (-not $pushed) {
-                                Log "Push failed after merge retry." "ERROR"
+                                # Remote moved again during the merge — one more fetch/merge/push.
+                                Invoke-Step "git fetch (2)" $GitCmd @("fetch") | Out-Null
+                                Invoke-Step "git merge --no-edit -X ours (2)" $GitCmd @("merge", "--no-edit", "-X", "ours", "origin/main") | Out-Null
+                                $pushed = Invoke-Step "git push (retry 2)" $GitCmd @("push")
+                            }
+                            if (-not $pushed) {
+                                Log "Push failed after merge retries." "ERROR"
                                 $OverallSuccess = $false
                             }
                         }
