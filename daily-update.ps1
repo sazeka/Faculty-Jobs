@@ -163,23 +163,33 @@ if ($scraped) {
                     if ($committed) {
                         $pushed = Invoke-Step "git push" $GitCmd @("push")
                         if (-not $pushed) {
-                            # Remote may have new commits (CI ran between our commit and push).
-                            # Fetch, merge keeping our data, then retry once.
-                            Log "Push rejected - fetching and merging remote changes..." "WARN"
-                            Invoke-Step "git fetch" $GitCmd @("fetch") | Out-Null
-                            # --no-edit so the merge can't block on an editor in the
-                            # non-interactive scheduled-task context. -X ours keeps our
-                            # fresh scrape data when CI's data-health pass conflicts.
-                            Invoke-Step "git merge --no-edit -X ours" $GitCmd @("merge", "--no-edit", "-X", "ours", "origin/main") | Out-Null
-                            $pushed = Invoke-Step "git push (retry)" $GitCmd @("push")
-                            if (-not $pushed) {
-                                # Remote moved again during the merge — one more fetch/merge/push.
-                                Invoke-Step "git fetch (2)" $GitCmd @("fetch") | Out-Null
-                                Invoke-Step "git merge --no-edit -X ours (2)" $GitCmd @("merge", "--no-edit", "-X", "ours", "origin/main") | Out-Null
-                                $pushed = Invoke-Step "git push (retry 2)" $GitCmd @("push")
+                            # Remote moved (CI's agent-team pass commits between our
+                            # commit and push), so the push is non-fast-forward.
+                            # Reconcile by rebasing onto latest, then retry.
+                            #
+                            # IMPORTANT: use `pull --rebase --autostash`, NOT `merge`.
+                            # core.autocrlf=true + `* text=auto` make the Node-written
+                            # generated/*.json files read as locally-modified right
+                            # after commit, so a bare `merge` aborts with "local changes
+                            # would be overwritten ... commit or stash before merge" and
+                            # strands the push (this caused ~6 days of stale firstSeen /
+                            # presence data). --autostash stashes that churn before the
+                            # rebase and restores it after. -X theirs keeps OUR fresh
+                            # scrape data: during a rebase our replayed commits are
+                            # "theirs". Mirrors .github/workflows/agent-team.yml.
+                            Log "Push rejected - rebasing onto latest origin/main (autostash)..." "WARN"
+                            for ($attempt = 1; $attempt -le 5; $attempt++) {
+                                $rebased = Invoke-Step "git pull --rebase -X theirs --autostash (attempt $attempt)" `
+                                    $GitCmd @("pull", "--rebase", "-X", "theirs", "--autostash", "origin", "main")
+                                if (-not $rebased) {
+                                    # Leave no half-applied rebase behind for the next run.
+                                    Invoke-Step "git rebase --abort" $GitCmd @("rebase", "--abort") | Out-Null
+                                }
+                                $pushed = Invoke-Step "git push (retry $attempt)" $GitCmd @("push")
+                                if ($pushed) { break }
                             }
                             if (-not $pushed) {
-                                Log "Push failed after merge retries." "ERROR"
+                                Log "Push failed after 5 rebase/push attempts." "ERROR"
                                 $OverallSuccess = $false
                             }
                         }
