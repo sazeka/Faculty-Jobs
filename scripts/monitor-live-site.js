@@ -33,7 +33,10 @@ function parseArgs(argv) {
 }
 
 const args = parseArgs(process.argv.slice(2));
-const BASE_URL = String(args["base-url"] || "https://sazeka.github.io/Faculty-Jobs").replace(/\/$/, "");
+// The site moved to the facultyatlas.org custom domain; the old
+// sazeka.github.io/Faculty-Jobs URL now 301-redirects there, which breaks
+// asset checks (assets resolve against the redirected origin and 404).
+const BASE_URL = String(args["base-url"] || "https://www.facultyatlas.org").replace(/\/$/, "");
 const MAX_AGE_DAYS = Number(args["max-age-days"] || 14);
 const WARN_AGE_DAYS = Number(args["warn-age-days"] || 7);
 const MIN_JOBS = Number(args["min-jobs"] || 500);
