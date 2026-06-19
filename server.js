@@ -4729,6 +4729,34 @@ async function safeEvaluate(page, fn, { retries = 4, settleMs = 600 } = {}) {
   throw lastErr;
 }
 
+// Navigate with retries for transient network failures. Some ATS hosts (e.g.
+// careers.und.edu) sit behind a WAF that intermittently resets the connection
+// on the listings path, so a single failed goto under-counts that source for
+// the whole scrape. Retry on connection-reset / network errors only; surface
+// anything else (bad URL, real 4xx) immediately.
+async function gotoWithRetry(page, url, { retries = 3, settleMs = 1500, ...gotoOpts } = {}) {
+  let lastErr;
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await page.goto(url, gotoOpts);
+    } catch (e) {
+      const msg = String(e?.message || e);
+      lastErr = e;
+      const transient =
+        msg.includes("ERR_CONNECTION_RESET") ||
+        msg.includes("ERR_CONNECTION_CLOSED") ||
+        msg.includes("ERR_NETWORK_CHANGED") ||
+        msg.includes("ERR_CONNECTION_REFUSED") ||
+        msg.includes("ERR_TIMED_OUT") ||
+        msg.includes("ERR_SOCKET_NOT_CONNECTED") ||
+        msg.toLowerCase().includes("timeout");
+      if (!transient || i === retries - 1) throw e;
+      await page.waitForTimeout(settleMs * (i + 1)); // linear backoff
+    }
+  }
+  throw lastErr;
+}
+
 function looksFacultyish(title) {
   const s = String(title || "").toLowerCase();
   // Strict filter: only true faculty positions
@@ -9600,7 +9628,7 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
     if (effectiveUrl !== startUrl) {
       console.log(`↪️  ${campusName} override URL applied`);
     }
-    await page.goto(effectiveUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, effectiveUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
     const jobs = await safeEvaluate(page, () => {
