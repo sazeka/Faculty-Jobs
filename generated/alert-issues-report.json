@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-06-19T16:58:13.353Z",
+  "dryRun": true,
+  "conditionsChecked": [
+    "Dead source (job-url-report.json sourceWarnings, deadPct >= 50, checked >= 5)",
+    "Scraper health drop (data-health-report.json sourceDropWarnings, dropPct >= 60)",
+    "Live site fail (live-site-health.json overallStatus === \"FAIL\")",
+    "Data staleness (public/jobs.json generatedAt/scrapedAt > 48 hours old)"
+  ],
+  "candidatesFound": 0,
+  "issuesSkipped": [],
+  "issuesCreated": [],
+  "errors": []
+}
