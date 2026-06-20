@@ -1,5 +1,5 @@
 // Candidate campus config entries generated from institutions-master
-// Generated: 2026-06-13T14:51:16.883Z
+// Generated: 2026-06-20T14:53:06.608Z
 
 // CT (1)
 const CANDIDATES = [
@@ -17,11 +17,12 @@ const CANDIDATES = [
   { campus: "Kennesaw State University", type: "peopleadmin", url: "https://kennesaw.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search" },
 ];
 
-// IL (3)
+// IL (4)
 const CANDIDATES = [
   { campus: "Governors State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/govst" },
   { campus: "Southern Illinois University Edwardsville", type: "interfolio", url: "https://apply.interfolio.com/69563/positions" },
-  { campus: "University of Illinois Chicago", type: "csod", url: "https://uic.csod.com/ux/ats/careersite/1/home?c=uic&cfdd[0][id]=192&cfdd[0][options][0]=1161&cfdd[1][id]=250&cfdd[1][options][0]=1856" },
+  { campus: "University of Illinois Springfield", type: "csod", url: "https://uis.csod.com/ux/ats/careersite/1/home?c=uis" },
+  { campus: "Western Illinois University", type: "interviewexchange", url: "https://wiu.interviewexchange.com/static/clients/467WIM1/index.jsp?c=1098" },
 ];
 
 // IN (1)
@@ -45,10 +46,9 @@ const CANDIDATES = [
   { campus: "University of Nebraska Medical Center", type: "peopleadmin", url: "https://unmc.peopleadmin.com/postings/search?query_position_type_id%5B%5D=14" },
 ];
 
-// RI (2)
+// NJ (1)
 const CANDIDATES = [
-  { campus: "Providence College", type: "schooljobs", url: "https://www.schooljobs.com/careers/providencecollege" },
-  { campus: "Salve Regina University", type: "interviewexchange", url: "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp" },
+  { campus: "Ramapo College of New Jersey", type: "schooljobs", url: "https://www.schooljobs.com/careers/ramapo?keywords=faculty" },
 ];
 
 // Unknown (6)
@@ -59,11 +59,6 @@ const CANDIDATES = [
   { campus: "Kutztown University", type: "schooljobs", url: "https://www.schooljobs.com/careers/kutztownedu/promotionaljobs?jobType[0]=Tenure%20Track&sort=PostingDate%7CDescending" },
   { campus: "The Citadel", type: "schooljobs", url: "https://www.schooljobs.com/careers/citadel?keywords=faculty" },
   { campus: "West Chester University", type: "schooljobs", url: "https://www.schooljobs.com/careers/wcupa?keywords=faculty%20" },
-];
-
-// UT (1)
-const CANDIDATES = [
-  { campus: "Utah Tech University", type: "schooljobs", url: "https://www.schooljobs.com/careers/utahtech" },
 ];
 
 // VA (1)
