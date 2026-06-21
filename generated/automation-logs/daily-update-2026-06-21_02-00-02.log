@@ -1,0 +1,2067 @@
+[02:00:02] [INFO] ================================================
+[02:00:02] [INFO]   Faculty Atlas - Daily Update
+[02:00:02] [INFO]   Sunday, June 21 2026 02:00:02
+[02:00:02] [INFO]   Project: C:\Users\StevenAzeka\OneDrive\Documents\GitHub\Faculty-Jobs
+[02:00:02] [INFO] ================================================
+[02:00:02] [INFO] 
+[02:00:02] [INFO] --------------------------------------------------
+[02:00:02] [INFO]   Step 1/5 - Scrape jobs
+[02:00:02] [INFO] --------------------------------------------------
+[02:00:02] [INFO] Running: C:\Program Files\nodejs\npm.cmd run scrape:json
+[02:12:12] [INFO]   
+[02:12:12] [INFO]   > faculty-jobs@1.0.0 scrape:json
+[02:12:12] [INFO]   > node scripts/scrape-to-json.js
+[02:12:12] [INFO]   
+[02:12:12] [INFO]   🧾 Loaded policy exclusions: 12 institutions
+[02:12:12] [INFO]   🏷️  Loaded private for-profit exclusions: 0 institutions
+[02:12:12] [INFO]   ↪️  Arizona Christian University override URL applied
+[02:12:12] [INFO]   Wesleyan University CT listings scraped: 4 (API)
+[02:12:12] [INFO]   University of Hartford CT listings scraped: 16
+[02:12:12] [INFO]   Trinity College CT listings scraped: 5
+[02:12:12] [INFO]   Community Christian College AZ listings scraped: 0
+[02:12:12] [INFO]   Arizona Western College AZ listings scraped: 0
+[02:12:12] [INFO]   Fairfield University CT listings scraped: 3 (API)
+[02:12:12] [INFO]   Estrella Mountain Community College AZ listings scraped: 0
+[02:12:12] [INFO]   Prescott College AZ listings scraped: 0
+[02:12:12] [INFO]   Arizona Board of Regents AZ listings scraped: 0
+[02:12:12] [INFO]   Arizona State University Digital Immersion AZ listings scraped: 0
+[02:12:12] [INFO]   Arizona State University Campus Immersion AZ listings scraped: 0
+[02:12:12] [INFO]   ↪️  Cochise County Community College District: generic page hands off to schooljobs
+[02:12:12] [INFO]   Central Arizona College AZ listings scraped: 1
+[02:12:12] [INFO]   Northern Arizona University AZ listings scraped: 7
+[02:12:12] [INFO]   UMass Dartmouth listing scraped: 2
+[02:12:12] [INFO]   Eastern Arizona College AZ listings scraped: 0
+[02:12:12] [INFO]   Western Maricopa Education Center AZ listings scraped: 0
+[02:12:12] [INFO]   ASU facultypositions listings scraped: 20
+[02:12:12] [INFO]   Embry-Riddle Aeronautical University-Prescott AZ listings scraped: 0
+[02:12:12] [INFO]   Connecticut College CT listings scraped: 16
+[02:12:12] [INFO]   Yale University CT listings scraped: 0
+[02:12:12] [INFO]   Ottawa University-Surprise AZ listings scraped: 0
+[02:12:12] [INFO]   ↪️  Coconino Community College: generic page hands off to schooljobs
+[02:12:12] [INFO]   Cochise County Community College District AZ listings scraped: 0
+[02:12:12] [INFO]   Cochise County Community College District AZ listings scraped: 0
+[02:12:12] [INFO]   University of Connecticut CT listings scraped: 14
+[02:12:12] [INFO]   Quinnipiac University CT listings scraped: 6
+[02:12:12] [INFO]   UMass Boston listing scraped: 27
+[02:12:12] [INFO]   Albertus Magnus College CT listings scraped: 0
+[02:12:12] [INFO]   Dine College AZ listings scraped: 0
+[02:12:12] [INFO]   University of Arizona AZ listings scraped: 8
+[02:12:12] [INFO]   Charter Oak State College CT listings scraped: 0
+[02:12:12] [INFO]   Coconino Community College AZ listings scraped: 0
+[02:12:12] [INFO]   Coconino Community College AZ listings scraped: 0
+[02:12:12] [INFO]   Central Connecticut State University CT listings scraped: 0
+[02:12:12] [INFO]   Arizona Christian University AZ listings scraped: 0
+[02:12:12] [INFO]   University of Bridgeport CT listings scraped: 3
+[02:12:12] [INFO]   Connecticut State Community College CT listings scraped: 0
+[02:12:12] [INFO]   UMass Amherst page 1: 4 jobs
+[02:12:12] [INFO]   UMass Amherst total scraped: 4
+[02:12:12] [INFO]   Eastern Connecticut State University CT listings scraped: 0
+[02:12:12] [INFO]   Brandeis University MA listings scraped: 0 (API)
+[02:12:12] [INFO]   UC Berkeley UC listings scraped: 146
+[02:12:12] [INFO]   UC Santa Barbara UC listings scraped: 60
+[02:12:12] [INFO]   UC San Diego UC listings scraped: 171
+[02:12:12] [INFO]   UC Santa Cruz UC listings scraped: 96
+[02:12:12] [INFO]   UC Riverside UC listings scraped: 90
+[02:12:12] [INFO]   UC Merced UC listings scraped: 144
+[02:12:12] [INFO]   UC Davis UC listings scraped: 229
+[02:12:12] [INFO]   UCLA UC listings scraped: 235
+[02:12:12] [INFO]   Amherst College MA listings scraped: 2 (API)
+[02:12:12] [INFO]   Mount Holyoke College MA: API failed, falling back to browser
+[02:12:12] [INFO]   UC Irvine UC listings scraped: 310
+[02:12:12] [INFO]   UC San Francisco UC listings scraped: 376
+[02:12:12] [INFO]   Massachusetts Institute of Technology MA listings scraped: 0 (PeopleClick)
+[02:12:12] [INFO]   Stanford University CA Private listings scraped: 15
+[02:12:12] [INFO]   Academy for Jewish Religion California CA Private listings scraped: 0
+[02:12:12] [INFO]   ↪️  Alder Graduate School of Education override URL applied
+[02:12:12] [INFO]   Boston University MA listings scraped: 0
+[02:12:12] [INFO]   Acupuncture and Integrative Medicine College-Berkeley CA Private listings scraped: 0
+[02:12:12] [INFO]   University of Southern California CA Private listings scraped: 11 (USC listing)
+[02:12:12] [INFO]   California Institute of Technology CA Private Taleo listings scraped: 0
+[02:12:12] [INFO]   Boston College MA listings scraped: 0
+[02:12:12] [INFO]   Alder Graduate School of Education CA Private listings scraped: 1
+[02:12:12] [INFO]   Allan Hancock College CA Private listings scraped: 0
+[02:12:12] [INFO]   Northeastern University MA listings scraped: 6 (API)
+[02:12:12] [INFO]   Wellesley College MA listings scraped: 5 (API)
+[02:12:12] [INFO]   American Academy of Dramatic Arts-Los Angeles CA Private listings scraped: 0
+[02:12:12] [INFO]   American Jewish University CA Private listings scraped: 0
+[02:12:12] [INFO]   Williams College MA listings scraped: 0
+[02:12:12] [INFO]   Smith College MA listings scraped: 0 (Smith Interfolio page)
+[02:12:12] [INFO]   ↪️  American River College: generic page hands off to schooljobs
+[02:12:12] [INFO]   Babson College MA listings scraped: 0
+[02:12:12] [INFO]   Bentley University MA listings scraped: 3 (API)
+[02:12:12] [INFO]   College of the Holy Cross MA listings scraped: 0 (Jobvite)
+[02:12:12] [INFO]   Antioch University-Los Angeles CA Private listings scraped: 0
+[02:12:12] [INFO]   American River College CA Private listings scraped: 0
+[02:12:12] [INFO]   American River College CA Private listings scraped: 0
+[02:12:12] [INFO]   Springfield College-Regional, Online, and Continuing Education MA listings scraped: 0
+[02:12:12] [INFO]   CSU listing scraped: 112
+[02:12:12] [INFO]   CT Faculty/Teaching results scraped: 24
+[02:12:12] [INFO]   Antioch University-Santa Barbara CA Private listings scraped: 0
+[02:12:12] [INFO]   Montclair State University NJ listings scraped: 5 (API)
+[02:12:12] [INFO]   Kean University NJ listings scraped: 5 (API)
+[02:12:12] [INFO]   William Paterson University NJ listings scraped: 6 (API)
+[02:12:12] [INFO]   Stevens Institute of Technology NJ listings scraped: 11 (API)
+[02:12:12] [INFO]   Tufts University MA listings scraped: 4 (Jibe API)
+[02:12:12] [INFO]   ↪️  Antelope Valley Community College District: generic page hands off to schooljobs
+[02:12:12] [INFO]   ↪️  Signature Healthcare Brockton Hospital School of Nursing: generic page hands off to csod
+[02:12:12] [INFO]   The College of New Jersey NJ listings scraped: 0
+[02:12:12] [INFO]   Coalinga College CA Private listings scraped: 0
+[02:12:12] [INFO]   New Jersey City University NJ listings scraped: 0
+[02:12:12] [INFO]   Fairleigh Dickinson University NJ listings scraped: 31
+[02:12:12] [INFO]   Ramapo College of New Jersey NJ listings scraped: 0
+[02:12:12] [INFO]   Mount Holyoke College MA listings scraped: 0
+[02:12:12] [INFO]   Lemoore College CA Private listings scraped: 0
+[02:12:12] [INFO]   Princeton University NJ listings scraped: 1
+[02:12:12] [INFO]   Rider University NJ listings scraped: 1
+[02:12:12] [INFO]   Antelope Valley Community College District CA Private listings scraped: 0
+[02:12:12] [INFO]   Antelope Valley Community College District CA Private listings scraped: 0
+[02:12:12] [INFO]   Loma Linda University CA Private listings scraped: 0
+[02:12:12] [INFO]   American International College MA listings scraped: 0
+[02:12:12] [INFO]   Monmouth University NJ listings scraped: 6
+[02:12:12] [INFO]   New Jersey Institute of Technology NJ listings scraped: 4
+[02:12:12] [INFO]   Capital Health School of Nursing NJ listings scraped: 0
+[02:12:12] [INFO]   Saint Peter's University NJ listings scraped: 8
+[02:12:12] [INFO]   Middlebury Institute of International Studies at Monterey CA Private listings scraped: 0
+[02:12:12] [INFO]   Los Angeles County College of Nursing and Allied Health CA Private listings scraped: 0
+[02:12:12] [INFO]   Anna Maria College MA listings scraped: 1
+[02:12:12] [INFO]   Signature Healthcare Brockton Hospital School of Nursing MA listings scraped: 0
+[02:12:12] [INFO]   Signature Healthcare Brockton Hospital School of Nursing MA listings scraped: 0
+[02:12:12] [INFO]   Capital Health School of Radiologic Technology NJ listings scraped: 0
+[02:12:12] [INFO]   Moorpark College CA Private listings scraped: 0
+[02:12:12] [INFO]   Sanford Burnham Prebys Medical Discovery Institute CA Private listings scraped: 2
+[02:12:12] [INFO]   Santiago Canyon College CA Private listings scraped: 0
+[02:12:12] [INFO]   Hackensack Meridian School of Medicine NJ listings scraped: 0
+[02:12:12] [INFO]   Assumption University MA listings scraped: 0
+[02:12:12] [INFO]   Bard College at Simon's Rock MA listings scraped: 0
+[02:12:12] [INFO]   Bay Path University MA listings scraped: 0
+[02:12:12] [INFO]   Holy Name Medical Center-Sister Claire Tynan School of Nursing NJ listings scraped: 0
+[02:12:12] [INFO]   The Chicago School at Anaheim CA Private listings scraped: 0
+[02:12:12] [INFO]   The Chicago School at Los Angeles CA Private listings scraped: 0
+[02:12:12] [INFO]   The Chicago School at San Diego CA Private listings scraped: 0
+[02:12:12] [INFO]   Atlantic Cape Community College NJ listings scraped: 0
+[02:12:12] [INFO]   Trinity Law School CA Private listings scraped: 0
+[02:12:12] [INFO]   Berkshire Community College MA listings scraped: 0
+[02:12:12] [INFO]   Azusa Pacific University CA Private listings scraped: 3
+[02:12:12] [INFO]   Berklee College of Music MA listings scraped: 0
+[02:12:12] [INFO]   Benjamin Franklin Cummings Institute of Technology MA listings scraped: 0
+[02:12:12] [INFO]   Beth Medrash Govoha NJ listings scraped: 0
+[02:12:12] [INFO]   Bergen Community College NJ listings scraped: 0
+[02:12:12] [INFO]   Art Center College of Design CA Private listings scraped: 0
+[02:12:12] [INFO]   Rutgers, The State University of New Jersey NJ listings scraped: 280
+[02:12:12] [INFO]   Bloomfield College of Montclair State University NJ listings scraped: 0
+[02:12:12] [INFO]   Bakersfield College CA Private listings scraped: 0
+[02:12:12] [INFO]   ↪️  Boston Architectural College: generic page hands off to paycom
+[02:12:12] [INFO]   Boston Baptist College MA listings scraped: 0
+[02:12:12] [INFO]   ↪️  Barstow Community College: generic page hands off to schooljobs
+[02:12:12] [INFO]   Berkeley City College CA Private listings scraped: 0
+[02:12:12] [INFO]   Boston Graduate School of Psychoanalysis Inc MA listings scraped: 0
+[02:12:12] [INFO]   Caldwell University NJ listings scraped: 1
+[02:12:12] [INFO]   Bethesda University CA Private listings scraped: 0
+[02:12:12] [INFO]   Camden County College NJ listings scraped: 0
+[02:12:12] [INFO]   Rowan University NJ listings scraped: 19
+[02:12:12] [INFO]   ↪️  Brookdale Community College: generic page hands off to icims
+[02:12:12] [INFO]   Bridgewater State University MA listings scraped: 0
+[02:12:12] [INFO]   ↪️  Biola University: generic page hands off to csod
+[02:12:12] [INFO]   Butte College CA Private listings scraped: 0
+[02:12:12] [INFO]   Bristol Community College MA listings scraped: 0
+[02:12:12] [INFO]   Centenary University NJ listings scraped: 0
+[02:12:12] [INFO]   Brookdale Community College NJ listings scraped: 0
+[02:12:12] [INFO]   Brookdale Community College NJ listings scraped: 0
+[02:12:12] [INFO]   Boston Architectural College MA listings scraped: 3
+[02:12:12] [INFO]   Barstow Community College CA Private listings scraped: 0
+[02:12:12] [INFO]   Barstow Community College CA Private listings scraped: 0
+[02:12:12] [INFO]   County College of Morris NJ listings scraped: 1
+[02:12:12] [INFO]   Drew University NJ listings scraped: 2
+[02:12:12] [INFO]   Bunker Hill Community College MA listings scraped: 2
+[02:12:12] [INFO]   Cabrillo College CA Private listings scraped: 0
+[02:12:12] [INFO]   Berkeley School of Theology CA Private listings scraped: 0
+[02:12:12] [INFO]   Cambridge College MA listings scraped: 0
+[02:12:12] [INFO]   Fairleigh Dickinson University-Metropolitan Campus NJ listings scraped: 0
+[02:12:12] [INFO]   Fairleigh Dickinson University-Florham Campus NJ listings scraped: 1
+[02:12:12] [INFO]   Clark University MA listings scraped: 0
+[02:12:12] [INFO]   California College of the Arts CA Private listings scraped: 1
+[02:12:12] [INFO]   California Baptist University CA Private listings scraped: 0
+[02:12:12] [INFO]   California Institute of Advanced Management CA Private listings scraped: 1
+[02:12:12] [INFO]   Cape Cod Community College MA listings scraped: 0
+[02:12:12] [INFO]   College of Our Lady of the Elms MA listings scraped: 1
+[02:12:12] [INFO]   ↪️  Dean College override URL applied
+[02:12:12] [INFO]   Fayetteville State University NC listings scraped: 8
+[02:12:12] [INFO]   Elizabeth City State University NC listings scraped: 6
+[02:12:12] [INFO]   Appalachian State University NC listings scraped: 19
+[02:12:12] [INFO]   Conway School of Landscape Design MA listings scraped: 0
+[02:12:12] [INFO]   California Institute of Integral Studies CA Private listings scraped: 0
+[02:12:12] [INFO]   Curry College MA listings scraped: 0
+[02:12:12] [INFO]   California Jazz Conservatory CA Private listings scraped: 0
+[02:12:12] [INFO]   Dean College MA listings scraped: 1
+[02:12:12] [INFO]   California Institute of the Arts CA Private listings scraped: 0
+[02:12:12] [INFO]   North Carolina A&T State University NC listings scraped: 19
+[02:12:12] [INFO]   Felician University NJ listings scraped: 0
+[02:12:12] [INFO]   Emerson College MA listings scraped: 1
+[02:12:12] [INFO]   ↪️  Essex County College: generic page hands off to peopleadmin
+[02:12:12] [INFO]   California Lutheran University CA Private listings scraped: 0
+[02:12:12] [INFO]   Biola University CA Private listings scraped: 9
+[02:12:12] [INFO]   Emmanuel College MA listings scraped: 0
+[02:12:12] [INFO]   UNC Asheville NC listings scraped: 1
+[02:12:12] [INFO]   California Polytechnic State University-San Luis Obispo CA Private listings scraped: 0
+[02:12:12] [INFO]   Essex County College NJ listings scraped: 0
+[02:12:12] [INFO]   Essex County College NJ listings scraped: 0
+[02:12:12] [INFO]   California State Polytechnic University-Humboldt CA Private listings scraped: 2
+[02:12:12] [INFO]   ↪️  Fisher College: generic page hands off to paycom
+[02:12:12] [INFO]   William & Mary VA listings scraped: 0
+[02:12:12] [INFO]   California State Polytechnic University-Pomona CA Private listings scraped: 0
+[02:12:12] [INFO]   Fitchburg State University MA listings scraped: 0
+[02:12:12] [INFO]   California State University-Bakersfield CA Private listings scraped: 0
+[02:12:12] [INFO]   George Mason University VA listings scraped: 0
+[02:12:12] [INFO]   California State University-Chancellors Office CA Private listings scraped: 0
+[02:12:12] [INFO]   University of Virginia VA listings scraped: 0 (Workday search API)
+[02:12:12] [INFO]   ↪️  Endicott College: generic page hands off to workday
+[02:12:12] [INFO]   Endicott College MA listings scraped: 3 (API)
+[02:12:12] [INFO]   Old Dominion University VA listings scraped: 17
+[02:12:12] [INFO]   NC State University NC listings scraped: 3 (HTTP fallback)
+[02:12:12] [INFO]   James Madison University VA listings scraped: 0
+[02:12:12] [INFO]   Framingham State University MA listings scraped: 1
+[02:12:12] [INFO]   California State University-Channel Islands CA Private listings scraped: 1
+[02:12:12] [INFO]   California State University-Chico CA Private listings scraped: 1
+[02:12:12] [INFO]   University of Richmond VA listings scraped: 5 (API)
+[02:12:12] [INFO]   California State University Maritime Academy CA Private listings scraped: 0
+[02:12:12] [INFO]   Franklin W Olin College of Engineering MA listings scraped: 0
+[02:12:12] [INFO]   Fisher College MA listings scraped: 3
+[02:12:12] [INFO]   ↪️  California State University-East Bay: generic page hands off to pageup
+[02:12:12] [INFO]   Washington and Lee University VA listings scraped: 0
+[02:12:12] [INFO]   California State University-Fresno CA Private listings scraped: 0
+[02:12:12] [INFO]   UNC Charlotte NC listings scraped: 6
+[02:12:12] [INFO]   California State University-Fullerton CA Private listings scraped: 0
+[02:12:12] [INFO]   Hollins University VA listings scraped: 1
+[02:12:12] [INFO]   Centra College VA listings scraped: 0
+[02:12:13] [INFO]   UNC Pembroke NC listings scraped: 23
+[02:12:13] [INFO]   Virginia Commonwealth University VA listings scraped: 0
+[02:12:13] [INFO]   ↪️  California State University-Long Beach: generic page hands off to pageup
+[02:12:13] [INFO]   UNC School of the Arts NC listings scraped: 1
+[02:12:13] [INFO]   California State University-Los Angeles CA Private listings scraped: 0
+[02:12:13] [INFO]   California State University-Long Beach CA Private listings scraped: 0
+[02:12:13] [INFO]   California State University-Long Beach CA Private listings scraped: 0
+[02:12:13] [INFO]   Virginia Tech VA listings scraped: 64 (keyword search)
+[02:12:13] [INFO]   Appalachian College of Pharmacy VA listings scraped: 2
+[02:12:13] [INFO]   California State University-Dominguez Hills CA Private listings scraped: 0
+[02:12:13] [INFO]   East Carolina University NC listings scraped: 52
+[02:12:13] [INFO]   UNC Wilmington NC listings scraped: 0
+[02:12:13] [INFO]   Riverside College of Health Careers VA listings scraped: 0
+[02:12:13] [INFO]   Agora University VA listings scraped: 0
+[02:12:13] [INFO]   California State University-Northridge CA Private listings scraped: 0
+[02:12:13] [INFO]   California State University-Monterey Bay CA Private listings scraped: 0
+[02:12:13] [INFO]   California State University-East Bay CA Private listings scraped: 32
+[02:12:13] [INFO]   Appalachian School of Law VA listings scraped: 1
+[02:12:13] [INFO]   Winston-Salem State University NC listings scraped: 1
+[02:12:13] [INFO]   North Carolina Central University NC listings scraped: 19
+[02:12:13] [INFO]   California State University-Sacramento CA Private listings scraped: 1
+[02:12:13] [INFO]   Ascent College VA listings scraped: 0
+[02:12:13] [INFO]   Averett University VA listings scraped: 1
+[02:12:13] [INFO]   California State University-San Bernardino CA Private listings scraped: 0
+[02:12:13] [INFO]   California State University-Stanislaus CA Private listings scraped: 0
+[02:12:13] [INFO]   Blue Ridge Community College VA listings scraped: 0
+[02:12:13] [INFO]   California State University-San Marcos CA Private listings scraped: 0
+[02:12:13] [INFO]   Bluefield University VA listings scraped: 0
+[02:12:13] [INFO]   Wake Forest University NC listings scraped: 2
+[02:12:13] [INFO]   Bon Secours Memorial College of Nursing VA listings scraped: 1
+[02:12:13] [INFO]   Davidson College NC listings scraped: 0 (Workday search API)
+[02:12:13] [INFO]   Bon Secours St Mary's Hospital School of Medical Imaging VA listings scraped: 0
+[02:12:13] [INFO]   Western Carolina University NC listings scraped: 17
+[02:12:13] [INFO]   California University of Science and Medicine CA Private listings scraped: 0
+[02:12:13] [INFO]   Bryant & Stratton College-Virginia Beach VA listings scraped: 0
+[02:12:13] [INFO]   Canada College CA Private listings scraped: 0
+[02:12:13] [INFO]   UNC Greensboro NC listings scraped: 29
+[02:12:13] [INFO]   Central Virginia Community College VA listings scraped: 43
+[02:12:13] [INFO]   Brightpoint Community College VA listings scraped: 0
+[02:12:13] [INFO]   Elon University NC listings scraped: 0
+[02:12:13] [INFO]   ↪️  Bridgewater College: generic page hands off to paycom
+[02:12:13] [INFO]   Casa Loma College-Los Angeles CA Private listings scraped: 0
+[02:12:13] [INFO]   California Western School of Law CA Private listings scraped: 0
+[02:12:13] [INFO]   Christopher Newport University VA listings scraped: 0
+[02:12:13] [INFO]   Johnson & Wales University-Charlotte NC listings scraped: 0
+[02:12:13] [INFO]   Danville Community College VA listings scraped: 0
+[02:12:13] [INFO]   Cerritos College CA Private listings scraped: 0
+[02:12:13] [INFO]   ↪️  Alamance Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Divine Mercy University VA listings scraped: 0
+[02:12:13] [INFO]   Duke University NC listings scraped: 26 (keyword search)
+[02:12:13] [INFO]   CBD College CA Private listings scraped: 0
+[02:12:13] [INFO]   Eastern Mennonite University VA listings scraped: 0
+[02:12:13] [INFO]   Cerro Coso Community College CA Private listings scraped: 0
+[02:12:13] [INFO]   Asheville-Buncombe Technical Community College NC listings scraped: 0
+[02:12:13] [INFO]   ↪️  Chabot College: generic page hands off to peopleadmin
+[02:12:13] [INFO]   Chaffey College CA Private listings scraped: 0
+[02:12:13] [INFO]   Eastern Shore Community College VA listings scraped: 0
+[02:12:13] [INFO]   Bridgewater College VA listings scraped: 10
+[02:12:13] [INFO]   ↪️  Eastern Virginia Medical School: generic page hands off to icims
+[02:12:13] [INFO]   Chabot College CA Private listings scraped: 4
+[02:12:13] [INFO]   Edward Via College of Osteopathic Medicine VA listings scraped: 0
+[02:12:13] [INFO]   ↪️  Barton College: generic page hands off to paycom
+[02:12:13] [INFO]   Charles R Drew University of Medicine and Science CA Private listings scraped: 0
+[02:12:13] [INFO]   Chapman University CA Private listings scraped: 1
+[02:12:13] [INFO]   Beaufort County Community College NC listings scraped: 2
+[02:12:13] [INFO]   Alamance Community College NC listings scraped: 1
+[02:12:13] [INFO]   Eastern Virginia Medical School VA listings scraped: 0
+[02:12:13] [INFO]   Eastern Virginia Medical School VA listings scraped: 0
+[02:12:13] [INFO]   ↪️  Emory & Henry University: generic page hands off to paycom
+[02:12:13] [INFO]   Ferrum College VA listings scraped: 0
+[02:12:13] [INFO]   Citrus College CA Private listings scraped: 0
+[02:12:13] [INFO]   Harvard University MA listings scraped: 197
+[02:12:13] [INFO]   City College of San Francisco CA Private listings scraped: 0
+[02:12:13] [INFO]   Bennett College NC listings scraped: 0
+[02:12:13] [INFO]   College of Charleston SC listings scraped: 7
+[02:12:13] [INFO]   Coastal Carolina University SC listings scraped: 10
+[02:12:13] [INFO]   Barton College NC listings scraped: 6
+[02:12:13] [INFO]   Belmont Abbey College NC listings scraped: 0
+[02:12:13] [INFO]   Winthrop University SC listings scraped: 1
+[02:12:13] [INFO]   Emory & Henry University VA listings scraped: 7
+[02:12:13] [INFO]   Clemson University SC listings scraped: 0
+[02:12:13] [INFO]   Furman University SC: API failed, falling back to browser
+[02:12:13] [INFO]   Claremont Lincoln University CA Private listings scraped: 0
+[02:12:13] [INFO]   Claremont School of Theology CA Private listings scraped: 0
+[02:12:13] [INFO]   Church Divinity School of the Pacific CA Private listings scraped: 3
+[02:12:13] [INFO]   Wofford College SC listings scraped: 1 (API)
+[02:12:13] [INFO]   The Citadel SC listings scraped: 0
+[02:12:13] [INFO]   Bladen Community College NC listings scraped: 1
+[02:12:13] [INFO]   Delaware Technical Community College DE listings scraped: 3
+[02:12:13] [INFO]   Clovis Community College CA Private listings scraped: 0
+[02:12:13] [INFO]   Brunswick Community College NC listings scraped: 0
+[02:12:13] [INFO]   University of South Carolina-Lancaster SC listings scraped: 0
+[02:12:13] [INFO]   ↪️  Coast Community College District Office: generic page hands off to schooljobs
+[02:12:13] [INFO]   University of South Carolina SC listings scraped: 88
+[02:12:13] [INFO]   Brevard College NC listings scraped: 0
+[02:12:13] [INFO]   Delaware State University DE listings scraped: 1
+[02:12:13] [INFO]   Cabarrus College of Health Sciences NC listings scraped: 1
+[02:12:13] [INFO]   College of Alameda CA Private listings scraped: 0
+[02:12:13] [INFO]   Presbyterian College SC listings scraped: 0
+[02:12:13] [INFO]   College of Marin CA Private listings scraped: 0
+[02:12:13] [INFO]   University of South Carolina-Salkehatchie SC listings scraped: 0
+[02:12:13] [INFO]   University of South Carolina-Sumter SC listings scraped: 0
+[02:12:13] [INFO]   Wilmington University DE Taleo listings scraped: 0
+[02:12:13] [INFO]   Coastline Community College CA Private listings scraped: 0
+[02:12:13] [INFO]   ↪️  Caldwell Community College and Technical Institute: generic page hands off to schooljobs
+[02:12:13] [INFO]   ↪️  Campbell University: generic page hands off to taleo
+[02:12:13] [INFO]   University of South Carolina-Union SC listings scraped: 0
+[02:12:13] [INFO]   University of Maryland, Baltimore County MD listings scraped: 11
+[02:12:13] [INFO]   University of Maryland, College Park MD listings scraped: 59 (API)
+[02:12:13] [INFO]   Aiken Technical College SC listings scraped: 0
+[02:12:13] [INFO]   College of San Mateo CA Private listings scraped: 0
+[02:12:13] [INFO]   Allen University SC listings scraped: 0
+[02:12:13] [INFO]   Caldwell Community College and Technical Institute NC listings scraped: 0
+[02:12:13] [INFO]   Caldwell Community College and Technical Institute NC listings scraped: 0
+[02:12:13] [INFO]   College of the Desert CA Private listings scraped: 0
+[02:12:13] [INFO]   Johns Hopkins University MD listings scraped: 1
+[02:12:13] [INFO]   American College of the Building Arts SC listings scraped: 0
+[02:12:13] [INFO]   College of the Canyons CA Private listings scraped: 0
+[02:12:13] [INFO]   University of Maryland, Baltimore MD Taleo listings scraped: 9
+[02:12:13] [INFO]   Morgan State University MD listings scraped: 62
+[02:12:13] [INFO]   Cape Fear Community College NC listings scraped: 0
+[02:12:13] [INFO]   Carolina Christian College NC listings scraped: 0
+[02:12:13] [INFO]   College of the Redwoods CA Private listings scraped: 0
+[02:12:13] [INFO]   Anderson University SC listings scraped: 2
+[02:12:13] [INFO]   ↪️  College of the Sequoias: generic page hands off to schooljobs
+[02:12:13] [INFO]   Goucher College MD listings scraped: 0
+[02:12:13] [INFO]   St. Mary's College of Maryland MD listings scraped: 0
+[02:12:13] [INFO]   Campbell University NC Taleo listings scraped: 0
+[02:12:13] [INFO]   Campbell University NC listings scraped: 0
+[02:12:13] [INFO]   Towson University MD Taleo listings scraped: 0
+[02:12:13] [INFO]   College of the Sequoias CA Private listings scraped: 0
+[02:12:13] [INFO]   College of the Sequoias CA Private listings scraped: 0
+[02:12:13] [INFO]   College of the Siskiyous CA Private listings scraped: 1
+[02:12:13] [INFO]   Bob Jones University SC listings scraped: 0
+[02:12:13] [INFO]   Carolina University NC listings scraped: 0
+[02:12:13] [INFO]   Garrett College MD listings scraped: 0
+[02:12:13] [INFO]   Central Carolina Technical College SC listings scraped: 0
+[02:12:13] [INFO]   Carolina College of Biblical Studies NC listings scraped: 0
+[02:12:13] [INFO]   Compton College CA Private listings scraped: 0
+[02:12:13] [INFO]   ↪️  Allegany College of Maryland: generic page hands off to schooljobs
+[02:12:13] [INFO]   Anne Arundel Community College MD listings scraped: 0
+[02:12:13] [INFO]   Contra Costa College CA Private listings scraped: 0
+[02:12:13] [INFO]   Charleston Southern University SC listings scraped: 1
+[02:12:13] [INFO]   Catawba College NC listings scraped: 0
+[02:12:13] [INFO]   Concordia University-Irvine CA Private listings scraped: 0
+[02:12:13] [INFO]   Baltimore City Community College MD listings scraped: 0
+[02:12:13] [INFO]   ↪️  Carteret Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Citadel Military College of South Carolina SC listings scraped: 0
+[02:12:13] [INFO]   Bais HaMedrash and Mesivta of Baltimore MD listings scraped: 0
+[02:12:13] [INFO]   Contra Costa Community College District Office CA Private listings scraped: 0
+[02:12:13] [INFO]   Allegany College of Maryland MD listings scraped: 0
+[02:12:13] [INFO]   Allegany College of Maryland MD listings scraped: 0
+[02:12:13] [INFO]   ↪️  Bowie State University: generic page hands off to workday
+[02:12:13] [INFO]   Furman University SC listings scraped: 0
+[02:12:13] [INFO]   Bowie State University MD listings scraped: 6 (API)
+[02:12:13] [INFO]   ↪️  Copper Mountain Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Catawba Valley Community College NC listings scraped: 1
+[02:12:13] [INFO]   Benedict College SC listings scraped: 0
+[02:12:13] [INFO]   Claflin University SC listings scraped: 0
+[02:12:13] [INFO]   Capitol Technology University MD listings scraped: 0
+[02:12:13] [INFO]   Central Carolina Community College NC listings scraped: 0
+[02:12:13] [INFO]   Clinton College SC listings scraped: 2
+[02:12:13] [INFO]   Coast Community College District Office CA Private listings scraped: 0
+[02:12:13] [INFO]   Coast Community College District Office CA Private listings scraped: 0
+[02:12:13] [INFO]   Carroll Community College MD listings scraped: 0
+[02:12:13] [INFO]   ↪️  Central Piedmont Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   ↪️  Cosumnes River College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Coker University SC listings scraped: 0
+[02:12:13] [INFO]   Copper Mountain Community College CA Private listings scraped: 0
+[02:12:13] [INFO]   Copper Mountain Community College CA Private listings scraped: 0
+[02:12:13] [INFO]   Converse University SC listings scraped: 0
+[02:12:13] [INFO]   Charlotte Christian College and Theological Seminary NC listings scraped: 0
+[02:12:13] [INFO]   Crafton Hills College CA Private listings scraped: 0
+[02:12:13] [INFO]   ↪️  Community College of Baltimore County: generic page hands off to schooljobs
+[02:12:13] [INFO]   ↪️  College of Southern Maryland: generic page hands off to schooljobs
+[02:12:13] [INFO]   Carteret Community College NC listings scraped: 1
+[02:12:13] [INFO]   Chesapeake College MD listings scraped: 0
+[02:12:13] [INFO]   Florence-Darlington Technical College SC listings scraped: 0
+[02:12:13] [INFO]   Columbia International University SC listings scraped: 0
+[02:12:13] [INFO]   Cuyamaca College CA Private listings scraped: 0
+[02:12:13] [INFO]   Chowan University NC listings scraped: 0
+[02:12:13] [INFO]   Erskine College SC listings scraped: 1
+[02:12:13] [INFO]   Cuesta College CA Private listings scraped: 0
+[02:12:13] [INFO]   Community College of Baltimore County MD listings scraped: 9
+[02:12:13] [INFO]   ↪️  Denmark Technical College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Cecil College MD listings scraped: 0
+[02:12:13] [INFO]   Central Piedmont Community College NC listings scraped: 2
+[02:12:13] [INFO]   Cypress College CA Private listings scraped: 0
+[02:12:13] [INFO]   Cosumnes River College CA Private listings scraped: 0
+[02:12:13] [INFO]   Cosumnes River College CA Private listings scraped: 0
+[02:12:13] [INFO]   ↪️  Coastal Carolina Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   College of Southern Maryland MD listings scraped: 3
+[02:12:13] [INFO]   Frederick Community College MD listings scraped: 0
+[02:12:13] [INFO]   De Anza College CA Private listings scraped: 0
+[02:12:13] [INFO]   Cleveland Community College NC listings scraped: 0
+[02:12:13] [INFO]   ↪️  Coppin State University: generic page hands off to workday
+[02:12:13] [INFO]   Coppin State University MD listings scraped: 2 (API)
+[02:12:13] [INFO]   ↪️  Frostburg State University: generic page hands off to workday
+[02:12:13] [INFO]   Diablo Valley College CA Private listings scraped: 0
+[02:12:13] [INFO]   College of the Albemarle NC listings scraped: 0
+[02:12:13] [INFO]   Frostburg State University MD listings scraped: 5 (API)
+[02:12:13] [INFO]   Francis Marion University SC listings scraped: 1
+[02:12:13] [INFO]   Denmark Technical College SC listings scraped: 2
+[02:12:13] [INFO]   DHARMA REALM BUDDHIST UNIVERSITY CA Private listings scraped: 0
+[02:12:13] [INFO]   ↪️  Craven Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Coastal Carolina Community College NC listings scraped: 1
+[02:12:13] [INFO]   Dominican University of California CA Private listings scraped: 0
+[02:12:13] [INFO]   Dominican School of Philosophy & Theology CA Private listings scraped: 0
+[02:12:13] [INFO]   Kutztown University PA listings scraped: 0
+[02:12:13] [INFO]   Cheyney University PA listings scraped: 0
+[02:12:13] [INFO]   Commonwealth University PA listings scraped: 4
+[02:12:13] [INFO]   Rhode Island College RI listings scraped: 3
+[02:12:13] [INFO]   ↪️  Davidson-Davie Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Daybreak University CA Private listings scraped: 0
+[02:12:13] [INFO]   Craven Community College NC listings scraped: 0
+[02:12:13] [INFO]   Craven Community College NC listings scraped: 0
+[02:12:13] [INFO]   ↪️  Brown University: generic page hands off to workday
+[02:12:13] [INFO]   ↪️  Durham Technical Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Bryant University RI listings scraped: 0
+[02:12:13] [INFO]   Davidson-Davie Community College NC listings scraped: 2
+[02:12:13] [INFO]   PennWest PA listings scraped: 6
+[02:12:13] [INFO]   East Los Angeles College CA Private listings scraped: 0
+[02:12:13] [INFO]   Providence College RI listings scraped: 2
+[02:12:13] [INFO]   Brown University RI listings scraped: 0 (API)
+[02:12:13] [INFO]   Brown University RI listings scraped: 0
+[02:12:13] [INFO]   Millersville University PA listings scraped: 4
+[02:12:13] [INFO]   Rhode Island School of Design RI listings scraped: 3
+[02:12:13] [INFO]   Shippensburg University PA listings scraped: 3
+[02:12:13] [INFO]   EDvance College CA Private listings scraped: 0
+[02:12:13] [INFO]   Downey Adult School CA Private listings scraped: 0
+[02:12:13] [INFO]   ↪️  Edgecombe Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   The Pennsylvania State University PA listings scraped: 35 (API)
+[02:12:13] [INFO]   Slippery Rock University PA listings scraped: 2
+[02:12:13] [INFO]   Dongguk University Los Angeles CA Private listings scraped: 0
+[02:12:13] [INFO]   Salve Regina University RI listings scraped: 2
+[02:12:13] [INFO]   West Chester University PA listings scraped: 0
+[02:12:13] [INFO]   Carnegie Mellon University PA listings scraped: 3 (API)
+[02:12:13] [INFO]   Johnson & Wales University-Providence RI listings scraped: 0
+[02:12:13] [INFO]   El Camino Community College District CA Private listings scraped: 0
+[02:12:13] [INFO]   Durham Technical Community College NC listings scraped: 0
+[02:12:13] [INFO]   Durham Technical Community College NC listings scraped: 0
+[02:12:13] [INFO]   College Unbound RI listings scraped: 1
+[02:12:13] [INFO]   Edgecombe Community College NC listings scraped: 0
+[02:12:13] [INFO]   Edgecombe Community College NC listings scraped: 0
+[02:12:13] [INFO]   ↪️  Fayetteville Technical Community College: generic page hands off to peopleadmin
+[02:12:13] [INFO]   Epic Bible College & Graduate School CA Private listings scraped: 0
+[02:12:13] [INFO]   ↪️  Evergreen Valley College: generic page hands off to peopleadmin
+[02:12:13] [INFO]   East Stroudsburg University PA listings scraped: 0
+[02:12:13] [INFO]   Bucknell University PA listings scraped: 3 (API)
+[02:12:13] [INFO]   University of Pennsylvania PA listings scraped: 7 (Workday search API)
+[02:12:13] [INFO]   Community College of Rhode Island RI listings scraped: 0
+[02:12:13] [INFO]   Feather River Community College District CA Private listings scraped: 0
+[02:12:13] [INFO]   Fayetteville Technical Community College NC listings scraped: 0
+[02:12:13] [INFO]   Fayetteville Technical Community College NC listings scraped: 0
+[02:12:13] [INFO]   Gettysburg College PA listings scraped: 16
+[02:12:13] [INFO]   Evergreen Valley College CA Private listings scraped: 0
+[02:12:13] [INFO]   Evergreen Valley College CA Private listings scraped: 0
+[02:12:13] [INFO]   Dickinson College PA listings scraped: 1 (API)
+[02:12:13] [INFO]   Fielding Graduate University CA Private listings scraped: 1
+[02:12:13] [INFO]   Drexel University PA listings scraped: 9
+[02:12:13] [INFO]   Lafayette College PA listings scraped: 0 (Lafayette faculty page)
+[02:12:13] [INFO]   Franklin & Marshall College PA listings scraped: 1 (Interfolio links page)
+[02:12:13] [INFO]   Forsyth Technical Community College NC listings scraped: 0
+[02:12:13] [INFO]   Swarthmore College PA listings scraped: 1
+[02:12:13] [INFO]   Foothill College CA Private listings scraped: 1
+[02:12:13] [INFO]   University of Rhode Island RI listings scraped: 26
+[02:12:13] [INFO]   ↪️  Foothill-De Anza Community College District: generic page hands off to taleo
+[02:12:13] [INFO]   ↪️  Folsom Lake College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Franciscan School of Theology CA Private listings scraped: 0
+[02:12:13] [INFO]   Central Michigan University MI listings scraped: 12
+[02:12:13] [INFO]   Fresno City College CA Private listings scraped: 0
+[02:12:13] [INFO]   Eastern Michigan University MI listings scraped: 1
+[02:12:13] [INFO]   UNC-Chapel Hill NC listings scraped: 212
+[02:12:13] [INFO]   Oakland University MI listings scraped: 21
+[02:12:13] [INFO]   Folsom Lake College CA Private listings scraped: 0
+[02:12:13] [INFO]   Folsom Lake College CA Private listings scraped: 0
+[02:12:13] [INFO]   Fresno Pacific University CA Private listings scraped: 0
+[02:12:13] [INFO]   Governors State University IL listings scraped: 0
+[02:12:13] [INFO]   Chicago State University IL listings scraped: 21
+[02:12:13] [INFO]   Fuller Theological Seminary CA Private listings scraped: 0
+[02:12:13] [INFO]   Knox College IL listings scraped: 1
+[02:12:13] [INFO]   Northern Illinois University IL listings scraped: 19
+[02:12:13] [INFO]   University of Illinois Springfield IL listings scraped: 0
+[02:12:13] [INFO]   Southern Illinois University Carbondale IL listings scraped: 4
+[02:12:13] [INFO]   University of Illinois Chicago IL listings scraped: 2
+[02:12:13] [INFO]   Villanova University PA listings scraped: 357
+[02:12:13] [INFO]   Western Illinois University IL listings scraped: 0
+[02:12:13] [INFO]   Southern Illinois University Edwardsville IL listings scraped: 0
+[02:12:13] [INFO]   University of Illinois Urbana-Champaign IL listings scraped: 11
+[02:12:13] [INFO]   Claremont McKenna College Claremont listings scraped: 6
+[02:12:13] [INFO]   Michigan State University MI listings scraped: 463
+[02:12:13] [INFO]   Cornell University NY listings scraped: 5 (API)
+[02:12:13] [INFO]   Waiting for CUNY jobs to load...
+[02:12:13] [INFO]   Stony Brook University (SUNY) NY listings scraped: 80
+[02:12:13] [INFO]   Fordham University NY listings scraped: 28
+[02:12:13] [INFO]   Keck Graduate Institute Claremont listings scraped: 9
+[02:12:13] [INFO]   Claremont Colleges listings scraped: 86
+[02:12:13] [INFO]   Southern Oregon University OR listings scraped: 0 (API)
+[02:12:13] [INFO]   Foothill-De Anza Community College District CA Private listings scraped: 0
+[02:12:13] [INFO]   Whitman College WA listings scraped: 3 (Interfolio links page)
+[02:12:13] [INFO]   Washington State University WA listings scraped: 4 (API)
+[02:12:13] [INFO]   New York University NY listings scraped: 0
+[02:12:13] [INFO]   CUNY initial job count: 10
+[02:12:13] [INFO]   University at Buffalo (SUNY) NY listings scraped: 44
+[02:12:13] [INFO]   Reed College OR listings scraped: 0
+[02:12:13] [INFO]   St. John's directory sub-pages found: 9
+[02:12:13] [INFO]   Columbia University NY listings scraped: 584
+[02:12:13] [INFO]   Wayne State University MI listings scraped: 8
+[02:12:13] [INFO]   Eastern Washington University WA listings scraped: 20
+[02:12:13] [INFO]   Eastern Oregon University OR listings scraped: 25
+[02:12:13] [INFO]   Columbia Gorge Community College OR listings scraped: 0
+[02:12:13] [INFO]   George Fox University OR listings scraped: 0
+[02:12:13] [INFO]   Pace University NY listings scraped: 7 (SaaS HR API)
+[02:12:13] [INFO]   Lewis & Clark College OR listings scraped: 0
+[02:12:13] [INFO]   Pacific Lutheran University WA listings scraped: 5 (HTTP fallback)
+[02:12:13] [INFO]   Evergreen State College WA listings scraped: 3
+[02:12:13] [INFO]   Willamette University OR listings scraped: 0
+[02:12:13] [INFO]   Pacific University OR listings scraped: 0
+[02:12:13] [INFO]   ↪️  University of Portland: generic page hands off to peopleadmin
+[02:12:13] [INFO]   Syracuse University NY listings scraped: 35
+[02:12:13] [INFO]   Pacific Northwest College of Art OR listings scraped: 0
+[02:12:13] [INFO]   Oregon Institute of Technology OR listings scraped: 15
+[02:12:13] [INFO]   Binghamton University (SUNY) NY listings scraped: 1
+[02:12:13] [INFO]   University at Albany (SUNY) NY listings scraped: 1
+[02:12:13] [INFO]   Binghamton University (SUNY) NY listings scraped: 0
+[02:12:13] [INFO]   Chemeketa Community College OR listings scraped: 0
+[02:12:13] [INFO]   ↪️  Bastyr University: generic page hands off to paycom
+[02:12:13] [INFO]   ↪️  Big Bend Community College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Bellevue College WA listings scraped: 0
+[02:12:13] [INFO]   Gonzaga University WA listings scraped: 0
+[02:12:13] [INFO]   Clover Park Technical College WA listings scraped: 0
+[02:12:13] [INFO]   ↪️  University of Puget Sound: generic page hands off to icims
+[02:12:13] [INFO]   Saint Martin's University WA listings scraped: 0
+[02:12:13] [INFO]   University at Albany (SUNY) NY listings scraped: 1
+[02:12:13] [INFO]   Bellingham Technical College WA listings scraped: 0
+[02:12:13] [INFO]   Clatsop Community College OR listings scraped: 0
+[02:12:13] [INFO]   Clackamas Community College OR listings scraped: 0
+[02:12:13] [INFO]   Corban University OR listings scraped: 0
+[02:12:13] [INFO]   Cornish College of the Arts WA listings scraped: 0
+[02:12:13] [INFO]   Antioch University-Seattle WA listings scraped: 0
+[02:12:13] [INFO]   Mount Angel Seminary OR listings scraped: 0
+[02:12:13] [INFO]   Clark College WA listings scraped: 1
+[02:12:13] [INFO]   Blue Mountain Community College OR listings scraped: 0
+[02:12:13] [INFO]   Cascadia College WA listings scraped: 0
+[02:12:13] [INFO]   ↪️  Whitworth University: generic page hands off to schooljobs
+[02:12:13] [INFO]   Centralia College WA listings scraped: 0
+[02:12:13] [INFO]   ↪️  Whitworth University-Adult Degree Programs: generic page hands off to schooljobs
+[02:12:13] [INFO]   Edmonds College WA listings scraped: 0
+[02:12:13] [INFO]   ↪️  Bates Technical College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Columbia Basin College WA listings scraped: 0
+[02:12:13] [INFO]   ↪️  Seattle University: generic page hands off to csod
+[02:12:13] [INFO]   University of Washington WA listings scraped: 310
+[02:12:13] [INFO]   ↪️  Seattle Pacific University: generic page hands off to workday
+[02:12:13] [INFO]   University of Portland OR listings scraped: 0
+[02:12:13] [INFO]   University of Portland OR listings scraped: 0
+[02:12:13] [INFO]   Kalamazoo College MI listings scraped: 0
+[02:12:13] [INFO]   Central Oregon Community College OR listings scraped: 0
+[02:12:13] [INFO]   Seattle Pacific University WA listings scraped: 4 (API)
+[02:12:13] [INFO]   SUNY System main page listings scraped: 605
+[02:12:13] [INFO]   Bushnell University OR listings scraped: 0
+[02:12:13] [INFO]   Faith International University WA listings scraped: 0
+[02:12:13] [INFO]   SUNY total listings scraped: 732
+[02:12:13] [INFO]   Long Island University NY listings scraped: 37
+[02:12:13] [INFO]   Hofstra University NY listings scraped: 42
+[02:12:13] [INFO]   City University of Seattle WA listings scraped: 0
+[02:12:13] [INFO]   Everett Community College WA listings scraped: 0
+[02:12:13] [INFO]   University of Puget Sound WA listings scraped: 0
+[02:12:13] [INFO]   University of Puget Sound WA listings scraped: 0
+[02:12:13] [INFO]   Rochester Institute of Technology NY listings scraped: 4 (API)
+[02:12:13] [INFO]   Whitworth University-Adult Degree Programs WA listings scraped: 0
+[02:12:13] [INFO]   Bates Technical College WA listings scraped: 0
+[02:12:13] [INFO]   Whitworth University WA listings scraped: 0
+[02:12:13] [INFO]   Whitworth University-Adult Degree Programs WA listings scraped: 0
+[02:12:13] [INFO]   Bates Technical College WA listings scraped: 0
+[02:12:13] [INFO]   Whitworth University WA listings scraped: 0
+[02:12:13] [INFO]   Western Michigan University MI listings scraped: 19
+[02:12:13] [INFO]   Adelphi University NY Taleo listings scraped: 3
+[02:12:13] [INFO]   Adrian College MI listings scraped: 0
+[02:12:13] [INFO]   Big Bend Community College WA listings scraped: 9
+[02:12:13] [INFO]   Bastyr University WA listings scraped: 1
+[02:12:13] [INFO]   ↪️  Albion College: generic page hands off to interfolio
+[02:12:13] [INFO]   The New School NY listings scraped: 0 (API)
+[02:12:13] [INFO]   University of Rochester NY listings scraped: 348
+[02:12:13] [INFO]   CUNY jobs extracted from listing: 76
+[02:12:13] [INFO]   CUNY jobs after filtering: 52
+[02:12:13] [INFO]   Fetching CUNY job descriptions (JS-rendered pages)...
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 1/13...
+[02:12:13] [INFO]   Seattle University WA listings scraped: 0
+[02:12:13] [INFO]   Seattle University WA listings scraped: 0
+[02:12:13] [INFO]   Pratt Institute NY listings scraped: 1
+[02:12:13] [INFO]   Oregon State University OR listings scraped: 258
+[02:12:13] [INFO]   Alma College MI listings scraped: 0
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 2/13...
+[02:12:13] [INFO]   Colby College ME listings scraped: 0
+[02:12:13] [INFO]   Bates College ME listings scraped: 1
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 3/13...
+[02:12:13] [INFO]   Bowdoin College ME listings scraped: 0
+[02:12:13] [INFO]   University of Maine System ME listings scraped (REST): 22
+[02:12:13] [INFO]   Manhattan University NY listings scraped: 8
+[02:12:13] [INFO]   Yeshiva University NY listings scraped: 18
+[02:12:13] [INFO]   Iona University NY listings scraped: 6
+[02:12:13] [INFO]   Alpena Community College MI listings scraped: 0
+[02:12:13] [INFO]   Central Maine Community College ME listings scraped: 0
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 4/13...
+[02:12:13] [INFO]   Albion College MI listings scraped: 3
+[02:12:13] [INFO]   Maine Media College ME listings scraped: 0
+[02:12:13] [INFO]   Eastern Maine Community College ME listings scraped: 0
+[02:12:13] [INFO]   Associated Beth Rivkah Schools NY listings scraped: 0
+[02:12:13] [INFO]   Belanger School of Nursing NY listings scraped: 0
+[02:12:13] [INFO]   College of the Atlantic ME listings scraped: 0
+[02:12:13] [INFO]   Elmezzi Graduate School of Molecular Medicine NY listings scraped: 0
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 5/13...
+[02:12:13] [INFO]   University of New Hampshire System NH listings scraped: 5 (API)
+[02:12:13] [INFO]   Andrews University MI listings scraped: 1
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 6/13...
+[02:12:13] [INFO]   CVPH Medical Center School of Radiologic Technology NY listings scraped: 0
+[02:12:13] [INFO]   Samaritan Hospital School of Nursing NY listings scraped: 0
+[02:12:13] [INFO]   Saint Anselm College NH listings scraped: 0
+[02:12:13] [INFO]   Aquinas College MI listings scraped: 0
+[02:12:13] [INFO]   Baker College MI listings scraped: 0
+[02:12:13] [INFO]   St. Peter's Hospital College of Nursing NY listings scraped: 0
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 7/13...
+[02:12:13] [INFO]   Mesivta Torah Vodaath Rabbinical Seminary NY listings scraped: 0
+[02:12:13] [INFO]   St. John's University NY SilkRoad listings scraped: 2
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 8/13...
+[02:12:13] [INFO]   Montefiore School of Nursing NY listings scraped: 0
+[02:12:13] [INFO]   ↪️  Bay de Noc Community College: generic page hands off to peopleadmin
+[02:12:13] [INFO]   Memorial Hospital School of Radiation Therapy Technology NY listings scraped: 1
+[02:12:13] [INFO]   Bay Mills Community College MI listings scraped: 0
+[02:12:13] [INFO]   Bay de Noc Community College MI listings scraped: 0
+[02:12:13] [INFO]   Bay de Noc Community College MI listings scraped: 0
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 9/13...
+[02:12:13] [INFO]   School of Professional Horticulture, New York Botanical Garden NY listings scraped: 0
+[02:12:13] [INFO]   The Ailey School NY listings scraped: 1
+[02:12:13] [INFO]   Pomeroy College of Nursing at Crouse Hospital NY listings scraped: 0
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 10/13...
+[02:12:13] [INFO]   Calvin Theological Seminary MI listings scraped: 1
+[02:12:13] [INFO]   Calvin University MI listings scraped: 0
+[02:12:13] [INFO]   Albany College of Pharmacy and Health Sciences NY listings scraped: 0
+[02:12:13] [INFO]   Academy for Jewish Religion NY listings scraped: 0
+[02:12:13] [INFO]   Dartmouth College NH listings scraped: 143
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 11/13...
+[02:12:13] [INFO]   Albany Medical College NY listings scraped: 0
+[02:12:13] [INFO]   Cleary University MI listings scraped: 1
+[02:12:13] [INFO]   Albert Einstein College of Medicine NY listings scraped: 0
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 12/13...
+[02:12:13] [INFO]   Albany Law School NY listings scraped: 0
+[02:12:13] [INFO]   Alfred University NY listings scraped: 0
+[02:12:13] [INFO]   Bennington College VT listings scraped: 0
+[02:12:13] [INFO]   College for Creative Studies MI listings scraped: 0
+[02:12:13] [INFO]   Champlain College VT listings scraped: 0
+[02:12:13] [INFO]   University of Vermont VT listings scraped: 43
+[02:12:13] [INFO]     Fetching CUNY descriptions batch 13/13...
+[02:12:13] [INFO]   American Musical and Dramatic Academy NY listings scraped: 0
+[02:12:13] [INFO]   American Academy of Dramatic Arts-New York NY listings scraped: 0
+[02:12:13] [INFO]   Bard College NY listings scraped: 1
+[02:12:13] [INFO]   CUNY jobs with descriptions: 52/52
+[02:12:13] [INFO]   Cornerstone University MI listings scraped: 0
+[02:12:13] [INFO]   Concordia University Ann Arbor MI listings scraped: 0
+[02:12:13] [INFO]   Barnard College NY listings scraped: 2
+[02:12:13] [INFO]   Be'er Yaakov Talmudic Seminary NY listings scraped: 0
+[02:12:13] [INFO]   Community College of Vermont VT listings scraped: 0
+[02:12:13] [INFO]   Bank Street College of Education NY listings scraped: 0
+[02:12:13] [INFO]   Beth Hamedrash Shaarei Yosher Institute NY listings scraped: 0
+[02:12:13] [INFO]   Binghamton University NY listings scraped: 0
+[02:12:13] [INFO]   Davenport University MI listings scraped: 1
+[02:12:13] [INFO]   Cranbrook Academy of Art MI listings scraped: 0
+[02:12:13] [INFO]   Boricua College NY listings scraped: 0
+[02:12:13] [INFO]   Bryant & Stratton College-Albany NY listings scraped: 0
+[02:12:13] [INFO]   Brooklyn Law School NY listings scraped: 0
+[02:12:13] [INFO]   Bryant & Stratton College-Buffalo NY listings scraped: 0
+[02:12:13] [INFO]   Delta College MI listings scraped: 0
+[02:12:13] [INFO]   Ecumenical Theological Seminary MI listings scraped: 0
+[02:12:13] [INFO]   Bryant & Stratton College-Greece NY listings scraped: 0
+[02:12:13] [INFO]   Bryant & Stratton College-Syracuse North NY listings scraped: 0
+[02:12:13] [INFO]   Bryant & Stratton College-Online NY listings scraped: 0
+[02:12:13] [INFO]   Canisius University NY listings scraped: 2
+[02:12:13] [INFO]   Ferris State University MI listings scraped: 1
+[02:12:13] [INFO]   Portland State University OR listings scraped: 19
+[02:12:13] [INFO]   Minnesota State System MN: API failed, falling back to browser
+[02:12:13] [INFO]   Cayuga County Community College NY listings scraped: 0
+[02:12:13] [INFO]   Carleton College MN listings scraped: 3 (API)
+[02:12:13] [INFO]   Clarkson University NY listings scraped: 1
+[02:12:13] [INFO]   Clinton Community College NY listings scraped: 0
+[02:12:13] [INFO]   Central Yeshiva Tomchei Tmimim Lubavitz NY listings scraped: 0
+[02:12:13] [INFO]   Macalester College MN listings scraped: 1
+[02:12:13] [INFO]   Hazelden Betty Ford Graduate School MN listings scraped: 0
+[02:12:13] [INFO]   College of Staten Island CUNY NY listings scraped: 2
+[02:12:13] [INFO]   Colgate University NY listings scraped: 0
+[02:12:13] [INFO]   Columbia University in the City of New York NY listings scraped: 3
+[02:12:13] [INFO]   Adler Graduate School MN listings scraped: 0
+[02:12:13] [INFO]   Alexandria Technical & Community College MN listings scraped: 0
+[02:12:13] [INFO]   Culinary Institute of America NY listings scraped: 0
+[02:12:13] [INFO]   Columbia-Greene Community College NY listings scraped: 0
+[02:12:13] [INFO]   CUNY Bernard M Baruch College NY listings scraped: 0
+[02:12:13] [INFO]   Anoka Technical College MN listings scraped: 0
+[02:12:13] [INFO]   Anoka-Ramsey Community College MN listings scraped: 0
+[02:12:13] [INFO]   CUNY Borough of Manhattan Community College NY listings scraped: 0
+[02:12:13] [INFO]   Colgate Rochester Crozer Divinity School NY listings scraped: 0
+[02:12:13] [INFO]   Saint Michael's College VT listings scraped (DOM): 3
+[02:12:13] [INFO]   North Dakota State University ND listings scraped: 5
+[02:12:13] [INFO]   CUNY Bronx Community College NY listings scraped: 0
+[02:12:13] [INFO]   Augsburg University MN listings scraped: 0
+[02:12:13] [INFO]   CUNY Brooklyn College NY listings scraped: 0
+[02:12:13] [INFO]   CUNY City College NY listings scraped: 0
+[02:12:13] [INFO]   Bemidji State University MN listings scraped: 0
+[02:12:13] [INFO]   CUNY Graduate School and University Center NY listings scraped: 0
+[02:12:13] [INFO]   University of Mary ND listings scraped: 0
+[02:12:13] [INFO]   University of Jamestown ND listings scraped: 0
+[02:12:13] [INFO]   University of North Dakota ND listings scraped: 2
+[02:12:13] [INFO]   Bismarck State College ND listings scraped: 1
+[02:12:13] [INFO]   CUNY John Jay College of Criminal Justice NY listings scraped: 1
+[02:12:13] [INFO]   Bethany Global University MN listings scraped: 0
+[02:12:13] [INFO]   CUNY Hostos Community College NY listings scraped: 0
+[02:12:13] [INFO]   Bethany Lutheran College MN listings scraped: 0
+[02:12:13] [INFO]   CUNY Hunter College NY listings scraped: 0
+[02:12:13] [INFO]   Minnesota State System MN listings scraped: 0
+[02:12:13] [INFO]   CUNY Kingsborough Community College NY listings scraped: 0
+[02:12:13] [INFO]   Cankdeska Cikana Community College ND listings scraped: 0
+[02:12:13] [INFO]   University of Minnesota MN listings scraped: 0
+[02:12:13] [INFO]   Dickinson State University ND listings scraped: 0
+[02:12:13] [INFO]   Dakota College at Bottineau ND listings scraped: 0
+[02:12:13] [INFO]   Augustana University SD listings scraped: 0 (Workday search API)
+[02:12:13] [INFO]   Bethlehem College & Seminary MN listings scraped: 0
+[02:12:13] [INFO]   CUNY LaGuardia Community College NY listings scraped: 0
+[02:12:13] [INFO]   CUNY Lehman College NY listings scraped: 0
+[02:12:13] [INFO]   CUNY Medgar Evers College NY listings scraped: 0
+[02:12:13] [INFO]   CUNY New York City College of Technology NY listings scraped: 0
+[02:12:13] [INFO]   Concordia College at Moorhead MN listings scraped: 0
+[02:12:13] [INFO]   University of Sioux Falls SD listings scraped: 0
+[02:12:13] [INFO]   Black Hills State University SD listings scraped: 0
+[02:12:13] [INFO]   College of Saint Benedict MN listings scraped: 0
+[02:12:13] [INFO]   Dakota Wesleyan University SD listings scraped: 0
+[02:12:13] [INFO]   CUNY Queensborough Community College NY listings scraped: 0
+[02:12:13] [INFO]   CUNY School of Law NY listings scraped: 2
+[02:12:13] [INFO]   CUNY Stella and Charles Guttman Community College NY listings scraped: 0
+[02:12:13] [INFO]   Concordia University-Saint Paul MN listings scraped: 0
+[02:12:13] [INFO]   Central Lakes College-Brainerd MN listings scraped: 0
+[02:12:13] [INFO]   CUNY Queens College NY listings scraped: 1
+[02:12:13] [INFO]   Crown College MN listings scraped: 0
+[02:12:13] [INFO]   CUNY York College NY listings scraped: 0
+[02:12:13] [INFO]   CUNY System Office NY listings scraped: 1
+[02:12:13] [INFO]   Dakota County Technical College MN listings scraped: 4
+[02:12:13] [INFO]   D'Youville University NY listings scraped: 0
+[02:12:13] [INFO]   Daemen University NY listings scraped: 0
+[02:12:13] [INFO]   Fond du Lac Tribal and Community College MN listings scraped: 1
+[02:12:13] [INFO]   ↪️  Dunwoody College of Technology: generic page hands off to workday
+[02:12:13] [INFO]   Dominican University New York NY listings scraped: 0
+[02:12:13] [INFO]   Dunwoody College of Technology MN: API failed, falling back to browser
+[02:12:13] [INFO]   South Dakota Board of Regents SD listings scraped: 40
+[02:12:13] [INFO]   Elim Bible Institute and College NY listings scraped: 0
+[02:12:13] [INFO]   Dutchess Community College NY listings scraped: 0
+[02:12:13] [INFO]   University of Nebraska Omaha NE listings scraped: 13
+[02:12:13] [INFO]   University of Nebraska Medical Center NE listings scraped: 0
+[02:12:13] [INFO]   Creighton University NE listings scraped: 1
+[02:12:13] [INFO]   Elmira College NY listings scraped: 0
+[02:12:13] [INFO]   Empire State University NY listings scraped: 0
+[02:12:13] [INFO]   Doane University NE listings scraped: 0
+[02:12:13] [INFO]   Elyon College NY listings scraped: 0
+[02:12:13] [INFO]   ↪️  Erie Community College: generic page hands off to workday
+[02:12:13] [INFO]   Erie Community College NY: Could not parse Workday URL, falling back to browser
+[02:12:13] [INFO]   Bryan College of Health Sciences NE listings scraped: 0
+[02:12:13] [INFO]   Nebraska Wesleyan University NE listings scraped: 0
+[02:12:13] [INFO]   Farmingdale State College NY listings scraped: 0
+[02:12:13] [INFO]   CHI Health School of Radiologic Technology NE listings scraped: 0
+[02:12:13] [INFO]   Central Community College NE listings scraped: 0
+[02:12:13] [INFO]   Fashion Institute of Technology NY listings scraped: 2
+[02:12:13] [INFO]   Bellevue University NE listings scraped: 0
+[02:12:13] [INFO]   Excelsior University NY listings scraped: 0
+[02:12:13] [INFO]   Finger Lakes Community College NY listings scraped: 0
+[02:12:13] [INFO]   College of Saint Mary NE listings scraped: 0
+[02:12:13] [INFO]   Chadron State College NE listings scraped: 1
+[02:12:13] [INFO]   Clarkson College NE listings scraped: 0
+[02:12:13] [INFO]   Finger Lakes Health College of Nursing & Health Sciences NY listings scraped: 0
+[02:12:13] [INFO]   University of Nebraska-Lincoln NE listings scraped: 170
+[02:12:13] [INFO]   University of Michigan MI listings scraped: 167
+[02:12:13] [INFO]   Concordia University-Nebraska NE listings scraped: 0
+[02:12:13] [INFO]   University of Northern Iowa IA listings scraped: 1 (API)
+[02:12:13] [INFO]   Iowa State University IA listings scraped: 7 (API)
+[02:12:13] [INFO]   Grinnell College IA listings scraped: 5
+[02:12:13] [INFO]   University of Iowa IA listings scraped: 5
+[02:12:13] [INFO]   Drake University IA listings scraped: 5
+[02:12:13] [INFO]   Mercy-St Luke's School of Radiologic Technology IA listings scraped: 0
+[02:12:13] [INFO]   Dunwoody College of Technology MN listings scraped: 0
+[02:12:13] [INFO]   Dunwoody College of Technology MN listings scraped: 0
+[02:12:13] [INFO]   Luther College IA listings scraped: 0
+[02:12:13] [INFO]   UnityPoint Health-Des Moines School of Radiologic Technology IA listings scraped: 0
+[02:12:13] [INFO]   Allen College IA listings scraped: 0
+[02:12:13] [INFO]   Briar Cliff University IA listings scraped: 0
+[02:12:13] [INFO]   Central Wyoming College WY listings scraped: 1
+[02:12:13] [INFO]   Wyoming Catholic College WY listings scraped: 0
+[02:12:13] [INFO]   ↪️  Casper College: generic page hands off to schooljobs
+[02:12:13] [INFO]   Clarke University IA listings scraped: 0
+[02:12:13] [INFO]   University of Wyoming WY listings scraped (REST): 25
+[02:12:13] [INFO]   Erie Community College NY listings scraped: 0
+[02:12:13] [INFO]   Erie Community College NY listings scraped: 0
+[02:12:13] [INFO]   Buena Vista University IA listings scraped: 0
+[02:12:13] [INFO]   UW-Milwaukee WI listings scraped: 3 (API)
+[02:12:13] [INFO]   UW-Madison WI listings scraped: 6 (API)
+[02:12:13] [INFO]   Central College IA listings scraped: 0
+[02:12:13] [INFO]   UW System Comprehensives WI listings scraped: 2 (API)
+[02:12:13] [INFO]   Coe College IA listings scraped: 0
+[02:12:13] [INFO]   Casper College WY listings scraped: 2
+[02:12:13] [INFO]   Eastern Wyoming College WY listings scraped: 0
+[02:12:13] [INFO]   Cornell College IA listings scraped: 0
+[02:12:13] [INFO]   University of Montana MT listings scraped: 7
+[02:12:13] [INFO]   Des Moines University-Osteopathic Medical Center IA listings scraped: 0
+[02:12:13] [INFO]   ↪️  Lawrence University: generic page hands off to peopleadmin
+[02:12:13] [INFO]   Des Moines Area Community College IA listings scraped: 0
+[02:12:13] [INFO]   Alverno College WI listings scraped: 0
+[02:12:13] [INFO]   Divine Word College IA listings scraped: 0
+[02:12:13] [INFO]   Marquette University WI listings scraped: 83
+[02:12:13] [INFO]   Carroll College MT listings scraped: 0
+[02:12:13] [INFO]   Dordt University IA listings scraped: 0
+[02:12:13] [INFO]   Aaniiih Nakoda College MT listings scraped: 6
+[02:12:13] [INFO]   Lawrence University WI listings scraped: 0
+[02:12:13] [INFO]   Lawrence University WI listings scraped: 0
+[02:12:13] [INFO]   St. Norbert College WI listings scraped: 0
+[02:12:13] [INFO]   Eastern Iowa Community College District IA listings scraped: 0
+[02:12:13] [INFO]   Ellsworth Community College IA listings scraped: 0
+[02:12:13] [INFO]   Rocky Mountain College MT listings scraped: 0
+[02:12:13] [INFO]   Bellin College WI listings scraped: 2
+[02:12:13] [INFO]   Emmaus Bible College IA listings scraped: 0
+[02:12:13] [INFO]   Bryant & Stratton College-Wauwatosa WI listings scraped: 0
+[02:12:13] [INFO]   Faith Baptist Bible College and Theological Seminary IA listings scraped: 0
+[02:12:13] [INFO]   University of Toledo OH: API failed, falling back to browser
+[02:12:13] [INFO]   Montana State University MT listings scraped: 100
+[02:12:13] [INFO]   Chief Dull Knife College MT listings scraped: 0
+[02:12:13] [INFO]   Carthage College WI listings scraped: 0
+[02:12:13] [INFO]   Ohio State University OH listings scraped: 37 (API)
+[02:12:13] [INFO]   Blackfeet Community College MT listings scraped: 0
+[02:12:13] [INFO]   Carroll University WI listings scraped: 0
+[02:12:13] [INFO]   ↪️  Chippewa Valley Technical College: generic page hands off to icims
+[02:12:13] [INFO]   Kent State University OH listings scraped: 0
+[02:12:13] [INFO]   CU Anschutz CO Taleo listings scraped: 0
+[02:12:13] [INFO]   UCCS CO Taleo listings scraped: 0
+[02:12:13] [INFO]   CU Denver CO Taleo listings scraped: 0
+[02:12:13] [INFO]   Fort Peck Community College MT listings scraped: 0
+[02:12:13] [INFO]   Dawson Community College MT listings scraped: 0
+[02:12:13] [INFO]   Colorado State University CO listings scraped: 4 (API)
+[02:12:13] [INFO]   CU Boulder CO listings scraped: 0
+[02:12:13] [INFO]   Colorado School of Mines CO listings scraped: 8 (API)
+[02:12:13] [INFO]   College of Menominee Nation WI listings scraped: 0
+[02:12:13] [INFO]   University of Denver CO listings scraped: 0
+[02:12:13] [INFO]   Concordia University-Wisconsin WI listings scraped: 0
+[02:12:13] [INFO]   Chippewa Valley Technical College WI listings scraped: 0
+[02:12:13] [INFO]   Chippewa Valley Technical College WI listings scraped: 0
+[02:12:13] [INFO]   Colorado College CO listings scraped: 0
+[02:12:13] [INFO]   Cleveland State University OH listings scraped: 56
+[02:12:13] [INFO]   Wright State University OH listings scraped: 0
+[02:12:13] [INFO]   Ohio University OH listings scraped: 40
+[02:12:13] [INFO]   ↪️  Adams State University: generic page hands off to workday
+[02:12:13] [INFO]   Edgewood College WI listings scraped: 1
+[02:12:13] [INFO]   Aims Community College CO listings scraped: 0
+[02:12:13] [INFO]   ↪️  Blackhawk Technical College: generic page hands off to icims
+[02:12:13] [INFO]   Adams State University CO listings scraped: 5 (API)
+[02:12:13] [INFO]   Arapahoe Community College CO listings scraped: 1
+[02:12:13] [INFO]   Fox Valley Technical College WI listings scraped: 0
+[02:12:13] [INFO]   University of Cincinnati OH listings scraped: 0
+[02:12:13] [INFO]   Case Western Reserve University OH listings scraped: 0
+[02:12:13] [INFO]   University of Dayton OH listings scraped: 1
+[02:12:13] [INFO]   Blackhawk Technical College WI listings scraped: 0
+[02:12:13] [INFO]   Blackhawk Technical College WI listings scraped: 0
+[02:12:13] [INFO]   Colorado Christian University CO listings scraped: 2
+[02:12:13] [INFO]   Colorado Mesa University CO listings scraped: 0
+[02:12:13] [INFO]   Colorado Mountain College CO listings scraped: 0
+[02:12:13] [INFO]   Denison University OH listings scraped: 0
+[02:12:13] [INFO]   Casa Loma College - Aurora CO listings scraped: 0
+[02:12:13] [INFO]   Flathead Valley Community College MT listings scraped: 1
+[02:12:13] [INFO]   Oberlin College OH listings scraped: 58
+[02:12:13] [INFO]   Colorado Northwestern Community College CO listings scraped: 0
+[02:12:13] [INFO]   Kenyon College OH listings scraped: 0
+[02:12:13] [INFO]   ↪️  Central New Mexico Community College: generic page hands off to workday
+[02:12:13] [INFO]   Nevada State University NV listings scraped: 4 (API)
+[02:12:13] [INFO]   University of Nevada, Reno NV listings scraped: 16 (API)
+[02:12:13] [INFO]   Central New Mexico Community College NM listings scraped: 2 (API)
+[02:12:13] [INFO]   University of Nevada, Las Vegas NV listings scraped: 56 (API)
+[02:12:13] [INFO]   Colorado State University Pueblo CO listings scraped: 0
+[02:12:13] [INFO]   New Mexico State University NM listings scraped: 0
+[02:12:13] [INFO]   Kent State University at Ashtabula OH listings scraped: 0
+[02:12:13] [INFO]   Cleveland Clinic Health System-School of Diagnostic Imaging OH listings scraped: 0
+[02:12:13] [INFO]   College of Southern Nevada NV listings scraped: 0
+[02:12:13] [INFO]   Colorado State University Global CO listings scraped: 0
+[02:12:13] [INFO]   Eastern New Mexico University Ruidoso Branch Community College NM listings scraped: 0
+[02:12:13] [INFO]   Kent State University at East Liverpool OH listings scraped: 0
+[02:12:13] [INFO]   Eastern New Mexico University-Roswell Campus NM listings scraped: 1
+[02:12:13] [INFO]   Community College of Aurora CO listings scraped: 0
+[02:12:13] [INFO]   Colorado State University-System Office CO listings scraped: 1
+[02:12:13] [INFO]   Weber State University UT listings scraped: 11
+[02:12:13] [INFO]   Eastern New Mexico University-Main Campus NM listings scraped: 1
+[02:12:13] [INFO]   Kent State University at Salem OH listings scraped: 0
+[02:12:13] [INFO]   Kent State University at Geauga OH listings scraped: 0
+[02:12:13] [INFO]   Kent State University at Stark OH listings scraped: 0
+[02:12:13] [INFO]   ↪️  Community College of Denver: generic page hands off to schooljobs
+[02:12:13] [INFO]   Utah Tech University UT listings scraped: 2
+[02:12:13] [INFO]   University of Toledo OH listings scraped: 0
+[02:12:13] [INFO]   Denver Seminary CO listings scraped: 1
+[02:12:13] [INFO]   Front Range Community College CO listings scraped: 0
+[02:12:13] [INFO]   Kent State University at Trumbull OH listings scraped: 0
+[02:12:13] [INFO]   Community College of Denver CO listings scraped: 0
+[02:12:13] [INFO]   Community College of Denver CO listings scraped: 0
+[02:12:13] [INFO]   Kent State University at Tuscarawas OH listings scraped: 0
+[02:12:13] [INFO]   ↪️  Fort Lewis College: generic page hands off to workday
+[02:12:13] [INFO]   Utah State University UT listings scraped: 0
+[02:12:13] [INFO]   Southern Utah University UT listings scraped: 2
+[02:12:13] [INFO]   Fort Lewis College CO listings scraped: 0 (API)
+[02:12:13] [INFO]   Fort Lewis College CO listings scraped: 0
+[02:12:13] [INFO]   Utah Valley University UT listings scraped: 1
+[02:12:13] [INFO]   Miami University-Middletown OH listings scraped: 2
+[02:12:13] [INFO]   Miami University-Hamilton OH listings scraped: 2
+[02:12:13] [INFO]   Ohio University-Chillicothe Campus OH listings scraped: 0
+[02:12:13] [INFO]   Ohio University-Eastern Campus OH listings scraped: 0
+[02:12:13] [INFO]   University of Idaho ID listings scraped: 27
+[02:12:13] [INFO]   Lewis-Clark State College ID listings scraped: 3
+[02:12:13] [INFO]   Ohio University-Lancaster Campus OH listings scraped: 0
+[02:12:13] [INFO]   Brigham Young University UT listings scraped: 1
+[02:12:13] [INFO]   Ensign College UT listings scraped: 0
+[02:12:13] [INFO]   Ohio University-Southern Campus OH listings scraped: 0
+[02:12:13] [INFO]   Ohio University-Zanesville Campus OH listings scraped: 0
+[02:12:13] [INFO]   Westminster University (Utah) UT listings scraped: 2
+[02:12:13] [INFO]   Boise Bible College ID listings scraped: 0
+[02:12:13] [INFO]   Firelands Regional Medical Center School of Nursing OH listings scraped: 0
+[02:12:13] [INFO]   Remington College-Cleveland Campus OH listings scraped: 0
+[02:12:13] [INFO]   Rabbinical College Telshe OH listings scraped: 0
+[02:12:13] [INFO]   The College of Idaho ID listings scraped: 0
+[02:12:14] [INFO]   Toledo Public Schools Adult and Continuing Education OH listings scraped: 0
+[02:12:14] [INFO]   Brigham Young University-Idaho ID listings scraped: 0
+[02:12:14] [INFO]   Air Force Institute of Technology-Graduate School of Engineering & Management OH listings scraped: 0
+[02:12:14] [INFO]   ↪️  College of Eastern Idaho: generic page hands off to schooljobs
+[02:12:14] [INFO]   Antioch College OH listings scraped: 1
+[02:12:14] [INFO]   Allegheny Wesleyan College OH listings scraped: 0
+[02:12:14] [INFO]   College of Eastern Idaho ID listings scraped: 1
+[02:12:14] [INFO]   Antioch University OH listings scraped: 0
+[02:12:14] [INFO]   Antioch University-System Administration OH listings scraped: 0
+[02:12:14] [INFO]   College of Southern Idaho ID listings scraped: 0
+[02:12:14] [INFO]   Idaho State University ID listings scraped: 12
+[02:12:14] [INFO]   Ashland University OH listings scraped: 0
+[02:12:14] [INFO]   Art Academy of Cincinnati OH listings scraped: 0
+[02:12:14] [INFO]   College of Western Idaho ID listings scraped: 0
+[02:12:14] [INFO]   Athenaeum of Ohio OH listings scraped: 0
+[02:12:14] [INFO]   Aultman College of Nursing and Health Sciences OH listings scraped: 0
+[02:12:14] [INFO]   Baldwin Wallace University OH listings scraped: 0
+[02:12:14] [INFO]   Bluffton University OH listings scraped: 2
+[02:12:14] [INFO]   Bowling Green State University-Firelands OH listings scraped: 1
+[02:12:14] [INFO]   ↪️  Bowling Green State University-Main Campus: generic page hands off to schooljobs
+[02:12:14] [INFO]   Belmont College OH listings scraped: 0
+[02:12:14] [INFO]   Bryant & Stratton College-Parma OH listings scraped: 0
+[02:12:14] [INFO]   Bowling Green State University-Main Campus OH listings scraped: 0
+[02:12:14] [INFO]   Bowling Green State University-Main Campus OH listings scraped: 0
+[02:12:14] [INFO]   Capital University OH listings scraped: 0
+[02:12:14] [INFO]   Cedarville University OH listings scraped: 0
+[02:12:14] [INFO]   University of Utah UT listings scraped: 369
+[02:12:14] [INFO]   Central Ohio Technical College OH listings scraped: 0
+[02:12:14] [INFO]   Central State University OH listings scraped: 0
+[02:12:14] [INFO]   Indiana State University IN listings scraped: 7
+[02:12:14] [INFO]   Cincinnati College of Mortuary Science OH listings scraped: 0
+[02:12:14] [INFO]   Ball State University IN listings scraped: 0
+[02:12:14] [INFO]   Butler University IN: API failed, falling back to browser
+[02:12:14] [INFO]   Cincinnati State Technical and Community College OH listings scraped: 0
+[02:12:14] [INFO]   Clark State College OH listings scraped: 0
+[02:12:14] [INFO]   University of Southern Indiana IN listings scraped: 0
+[02:12:14] [INFO]   Cleveland Institute of Music OH listings scraped: 0
+[02:12:14] [INFO]   Cleveland Institute of Art OH listings scraped: 0
+[02:12:14] [INFO]   DePauw University IN listings scraped: 0 (API)
+[02:12:14] [INFO]   Purdue University IN listings scraped: 0
+[02:12:14] [INFO]   Northwest Nazarene University ID listings scraped: 0
+[02:12:14] [INFO]   Collins Career Technical Center OH listings scraped: 0
+[02:12:14] [INFO]   Columbus College of Art & Design OH listings scraped: 0
+[02:12:14] [INFO]   Indiana University IN listings scraped: 109
+[02:12:14] [INFO]   ↪️  Cuyahoga Community College District: generic page hands off to csod
+[02:12:14] [INFO]   Wabash College IN listings scraped: 0
+[02:12:14] [INFO]   Columbus State Community College OH listings scraped: 0
+[02:12:14] [INFO]   University of Charleston WV listings scraped: 0
+[02:12:14] [INFO]   Marian University-Ancilla IN listings scraped: 0
+[02:12:14] [INFO]   West Virginia State University WV listings scraped: 1
+[02:12:14] [INFO]   Defiance College OH listings scraped: 1
+[02:12:14] [INFO]   Eastern Gateway Community College OH listings scraped: 0
+[02:12:14] [INFO]   Marshall University WV listings scraped: 107
+[02:12:14] [INFO]   Edison State Community College OH listings scraped: 0
+[02:12:14] [INFO]   West Virginia Wesleyan College WV listings scraped: 0
+[02:12:14] [INFO]   Trine University-Regional/Non-Traditional Campuses IN listings scraped: 10
+[02:12:14] [INFO]   Anabaptist Mennonite Biblical Seminary IN listings scraped: 0
+[02:12:14] [INFO]   West Virginia University WV Taleo listings scraped: 13
+[02:12:14] [INFO]   Mercer County Technical Education Center WV listings scraped: 0
+[02:12:14] [INFO]   Earlham College IN listings scraped: 0
+[02:12:14] [INFO]   Franklin University OH listings scraped: 0
+[02:12:14] [INFO]   Bethany Theological Seminary IN listings scraped: 0
+[02:12:14] [INFO]   Appalachian Bible College WV listings scraped: 0
+[02:12:14] [INFO]   Calumet College of Saint Joseph IN listings scraped: 0
+[02:12:14] [INFO]   West Virginia University Hospital Departments of Rad Tech and Nutrition WV listings scraped: 0
+[02:12:14] [INFO]   Bethany College (WV) WV listings scraped: 0
+[02:12:14] [INFO]   Franciscan University of Steubenville OH listings scraped: 0
+[02:12:14] [INFO]   Bethany College WV listings scraped: 0
+[02:12:14] [INFO]   Cuyahoga Community College District OH listings scraped: 0
+[02:12:14] [INFO]   Cuyahoga Community College District OH listings scraped: 0
+[02:12:14] [INFO]   Bluefield State University WV listings scraped: 1
+[02:12:14] [INFO]   BridgeValley Community & Technical College WV listings scraped: 0
+[02:12:14] [INFO]   Franklin College IN listings scraped: 1
+[02:12:14] [INFO]   Christian Theological Seminary IN listings scraped: 0
+[02:12:14] [INFO]   Georgia State University GA listings scraped: 25
+[02:12:14] [INFO]   Concord University WV listings scraped: 1
+[02:12:14] [INFO]   Catholic International University WV listings scraped: 0
+[02:12:14] [INFO]   Spelman College GA listings scraped: 3
+[02:12:14] [INFO]   University of North Georgia GA listings scraped: 0
+[02:12:14] [INFO]   Butler University IN listings scraped: 0
+[02:12:14] [INFO]   Davis & Elkins College WV listings scraped: 0
+[02:12:14] [INFO]   Concordia Theological Seminary IN listings scraped: 0
+[02:12:14] [INFO]   Fairmont State University WV listings scraped: 0
+[02:12:14] [INFO]   Abraham Baldwin Agricultural College GA listings scraped: 0
+[02:12:14] [INFO]   Agnes Scott College GA listings scraped: 0
+[02:12:14] [INFO]   University of Georgia GA listings scraped: 106
+[02:12:14] [INFO]   Blue Ridge Community and Technical College WV listings scraped: 0
+[02:12:14] [INFO]   Eastern West Virginia Community and Technical College WV listings scraped: 0
+[02:12:14] [INFO]   Fred W Eberle Technical Center WV listings scraped: 0
+[02:12:14] [INFO]   Auburn University AL listings scraped: 0
+[02:12:14] [INFO]   University of Mississippi MS listings scraped: 12 (API)
+[02:12:14] [INFO]   University of South Alabama AL listings scraped: 16
+[02:12:14] [INFO]   University of Alabama AL listings scraped: 0
+[02:12:14] [INFO]   Albany State University GA listings scraped: 0
+[02:12:14] [INFO]   Albany Technical College GA listings scraped: 0
+[02:12:14] [INFO]   Delta State University MS listings scraped: 40
+[02:12:14] [INFO]   Andrew College GA listings scraped: 0
+[02:12:14] [INFO]   Mississippi University for Women MS listings scraped: 44
+[02:12:14] [INFO]   Millsaps College MS listings scraped: 1
+[02:12:14] [INFO]   Spring Hill College AL listings scraped: 0
+[02:12:14] [INFO]   Alcorn State University MS listings scraped: 1
+[02:12:14] [INFO]   ↪️  Alabama College of Osteopathic Medicine override URL applied
+[02:12:14] [INFO]   Remington College-Mobile Campus AL listings scraped: 0
+[02:12:14] [INFO]   Alabama A & M University AL listings scraped: 0
+[02:12:14] [INFO]   Athens Technical College GA listings scraped: 1
+[02:12:14] [INFO]   Belhaven University MS listings scraped: 0
+[02:12:14] [INFO]   Atlanta Metropolitan State College GA listings scraped: 0
+[02:12:14] [INFO]   Blue Mountain Christian University MS listings scraped: 0
+[02:12:14] [INFO]   Alabama College of Osteopathic Medicine AL listings scraped: 0
+[02:12:14] [INFO]   Alabama State University AL listings scraped: 0
+[02:12:14] [INFO]   ↪️  Auburn University at Montgomery override URL applied
+[02:12:14] [INFO]   Coahoma Community College MS listings scraped: 0
+[02:12:14] [INFO]   Board of Trustees-Mississippi State Institutions of Higher Learning MS listings scraped: 0
+[02:12:14] [INFO]   Augusta Technical College GA listings scraped: 0
+[02:12:14] [INFO]   Amridge University AL listings scraped: 0
+[02:12:14] [INFO]   Atlanta's John Marshall Law School GA listings scraped: 3
+[02:12:14] [INFO]   Athens State University AL listings scraped: 0
+[02:12:14] [INFO]   Copiah-Lincoln Community College MS listings scraped: 0
+[02:12:14] [INFO]   East Central Community College MS listings scraped: 0
+[02:12:14] [INFO]   East Mississippi Community College MS listings scraped: 0
+[02:12:14] [INFO]   Augusta University GA listings scraped: 1
+[02:12:14] [INFO]   Berry College GA listings scraped: 1
+[02:12:14] [INFO]   ↪️  Auburn University at Montgomery: scraped 51 listings via scrapeJibeApi
+[02:12:14] [INFO]   Louisiana State University LA listings scraped: 34 (API)
+[02:12:14] [INFO]   Bevill State Community College AL listings scraped: 1
+[02:12:14] [INFO]   Louisiana Tech University LA listings scraped: 4
+[02:12:14] [INFO]   Baton Rouge General Medical Center School of Nursing & School of Radiologic Technology LA listings scraped: 0
+[02:12:14] [INFO]   University of Alabama at Birmingham AL listings scraped: 367
+[02:12:14] [INFO]   Dillard University LA listings scraped: 0
+[02:12:14] [INFO]   Brenau University GA listings scraped: 0
+[02:12:14] [INFO]   Brewton-Parker College GA listings scraped: 0
+[02:12:14] [INFO]   Central Alabama Community College AL listings scraped: 0
+[02:12:14] [INFO]   Remington College-Baton Rouge Campus LA listings scraped: 0
+[02:12:14] [INFO]   Remington College-Lafayette Campus LA listings scraped: 0
+[02:12:14] [INFO]   Remington College-Shreveport Campus LA listings scraped: 0
+[02:12:14] [INFO]   Coastal Alabama Community College AL listings scraped: 1
+[02:12:14] [INFO]   Chattahoochee Valley Community College AL listings scraped: 0
+[02:12:14] [INFO]   ↪️  Faulkner University override URL applied
+[02:12:14] [INFO]   Chattahoochee Technical College GA listings scraped: 0
+[02:12:14] [INFO]   Beulah Heights University GA listings scraped: 0
+[02:12:14] [INFO]   The Chicago School at Xavier University of Louisiana LA listings scraped: 0
+[02:12:14] [INFO]   Enterprise State Community College AL listings scraped: 0
+[02:12:14] [INFO]   Baton Rouge Community College LA listings scraped: 1
+[02:12:14] [INFO]   Central Georgia Technical College GA listings scraped: 0
+[02:12:14] [INFO]   Faulkner University AL listings scraped: 2
+[02:12:14] [INFO]   Bossier Parish Community College LA listings scraped: 0
+[02:12:14] [INFO]   Clark Atlanta University GA listings scraped: 0
+[02:12:14] [INFO]   Clayton State University GA listings scraped: 0
+[02:12:14] [INFO]   Bridges Christian College LA listings scraped: 0
+[02:12:14] [INFO]   Central Louisiana Technical Community College LA listings scraped: 0
+[02:12:14] [INFO]   Coastal Pines Technical College GA listings scraped: 0
+[02:12:14] [INFO]   ↪️  Columbia Theological Seminary override URL applied
+[02:12:14] [INFO]   Delgado Community College LA listings scraped: 0
+[02:12:14] [INFO]   Centenary College of Louisiana LA listings scraped: 0
+[02:12:14] [INFO]   College of Coastal Georgia GA listings scraped: 0
+[02:12:14] [INFO]   Columbia Theological Seminary GA listings scraped: 0
+[02:12:14] [INFO]   College of Athens GA listings scraped: 0
+[02:12:14] [INFO]   Fletcher Technical Community College LA listings scraped: 0
+[02:12:14] [INFO]   Franciscan Missionaries of Our Lady University LA listings scraped: 0
+[02:12:14] [INFO]   University of New Mexico NM listings scraped: 63
+[02:12:14] [INFO]   University of Arkansas AR listings scraped: 19 (API)
+[02:12:14] [INFO]   Columbus State University GA listings scraped: 0
+[02:12:14] [INFO]   Digital Media Institute LA listings scraped: 0
+[02:12:14] [INFO]   Cossatot Community College of the University of Arkansas AR listings scraped: 0
+[02:12:14] [INFO]   Covenant College GA listings scraped: 0
+[02:12:14] [INFO]   Columbus Technical College GA listings scraped: 0
+[02:12:14] [INFO]   University of Central Arkansas AR listings scraped: 41
+[02:12:14] [INFO]   University of Arkansas Hope-Texarkana AR listings scraped: 0
+[02:12:14] [INFO]   ↪️  University of Arkansas at Little Rock: generic page hands off to workday
+[02:12:14] [INFO]   Baker University KS listings scraped: 1
+[02:12:14] [INFO]   Arkansas Baptist College AR listings scraped: 0
+[02:12:14] [INFO]   Kansas State University KS listings scraped: 0
+[02:12:14] [INFO]   University of Kansas KS listings scraped: 13
+[02:12:14] [INFO]   ↪️  Southwestern College (KS): generic page hands off to paycom
+[02:12:14] [INFO]   Dalton State College GA listings scraped: 0
+[02:12:14] [INFO]   East Georgia State College GA listings scraped: 0
+[02:12:14] [INFO]   Emory University GA listings scraped: 0
+[02:12:14] [INFO]   University of Arkansas at Little Rock AR listings scraped: 0 (API)
+[02:12:14] [INFO]   University of Arkansas at Little Rock AR listings scraped: 0
+[02:12:14] [INFO]   Arkansas Northeastern College AR listings scraped: 0
+[02:12:14] [INFO]   Arkansas Colleges of Health Education AR listings scraped: 0
+[02:12:14] [INFO]   ↪️  Arkansas State University: generic page hands off to taleo
+[02:12:14] [INFO]   Barclay College KS listings scraped: 0
+[02:12:14] [INFO]   Barton County Community College KS listings scraped: 0
+[02:12:14] [INFO]   Allen County Community College KS listings scraped: 0
+[02:12:14] [INFO]   ↪️  Emory University-Oxford College: generic page hands off to icims
+[02:12:14] [INFO]   Arkansas State University System AR listings scraped: 0
+[02:12:14] [INFO]   ↪️  Arkansas State University Three Rivers: generic page hands off to taleo
+[02:12:14] [INFO]   Fort Valley State University GA listings scraped: 0
+[02:12:14] [INFO]   Benedictine College KS listings scraped: 4
+[02:12:14] [INFO]   Butler Community College KS listings scraped: 5
+[02:12:14] [INFO]   Bethel College-North Newton KS listings scraped: 0
+[02:12:14] [INFO]   Emory University-Oxford College GA listings scraped: 0
+[02:12:14] [INFO]   Emory University-Oxford College GA listings scraped: 0
+[02:12:14] [INFO]   Arkansas State University Mid-South AR listings scraped: 0
+[02:12:14] [INFO]   Arkansas State University-Beebe AR listings scraped: 1
+[02:12:14] [INFO]   Arkansas State University AR Taleo listings scraped: 0
+[02:12:14] [INFO]   Arkansas State University AR listings scraped: 0
+[02:12:14] [INFO]   Central Christian College of Kansas KS listings scraped: 0
+[02:12:14] [INFO]   Cloud County Community College KS listings scraped: 0
+[02:12:14] [INFO]   ↪️  Arkansas State University-Mountain Home: generic page hands off to taleo
+[02:12:14] [INFO]   Arkansas State University Three Rivers AR Taleo listings scraped: 0
+[02:12:14] [INFO]   Arkansas State University Three Rivers AR listings scraped: 0
+[02:12:14] [INFO]   Arkansas Tech University AR listings scraped: 0
+[02:12:14] [INFO]   Coffeyville Community College KS listings scraped: 0
+[02:12:14] [INFO]   Colby Community College KS listings scraped: 0
+[02:12:14] [INFO]   Baptist Health College Little Rock AR listings scraped: 0
+[02:12:14] [INFO]   Cowley County Community College KS listings scraped: 0
+[02:12:14] [INFO]   Cleveland University-Kansas City KS listings scraped: 1
+[02:12:14] [INFO]   Arkansas State University-Mountain Home AR Taleo listings scraped: 0
+[02:12:14] [INFO]   Arkansas State University-Mountain Home AR listings scraped: 0
+[02:12:14] [INFO]   Arkansas State University-Newport AR listings scraped: 0
+[02:12:14] [INFO]   ↪️  Crowley's Ridge College override URL applied
+[02:12:14] [INFO]   Black River Technical College AR listings scraped: 0
+[02:12:14] [INFO]   Dodge City Community College KS listings scraped: 0
+[02:12:14] [INFO]   Central Baptist College AR listings scraped: 0
+[02:12:14] [INFO]   ↪️  Ecclesia College override URL applied
+[02:12:14] [INFO]   Donnelly College KS listings scraped: 0
+[02:12:14] [INFO]   Champion Christian College AR listings scraped: 0
+[02:12:14] [INFO]   East Arkansas Community College AR listings scraped: 3
+[02:12:14] [INFO]   Emporia State University KS listings scraped: 0
+[02:12:14] [INFO]   Fort Hays State University KS listings scraped: 1
+[02:12:14] [INFO]   Flint Hills Technical College KS listings scraped: 0
+[02:12:14] [INFO]   Southwestern College (KS) KS listings scraped: 0
+[02:12:14] [INFO]   Southwestern College (KS) KS listings scraped: 0
+[02:12:14] [INFO]   Ecclesia College AR listings scraped: 0
+[02:12:14] [INFO]   Crowley's Ridge College AR listings scraped: 0
+[02:12:14] [INFO]   Fort Hays State University-Northwest Kansas Technical College KS listings scraped: 1
+[02:12:14] [INFO]   Fort Hays Tech North Central KS listings scraped: 0
+[02:12:14] [INFO]   Friends University KS listings scraped: 0
+[02:12:14] [INFO]   Oklahoma State University OK listings scraped: 0
+[02:12:14] [INFO]   Cameron University OK listings scraped: 7
+[02:12:14] [INFO]   Canadian Valley Technology Center OK listings scraped: 1
+[02:12:14] [INFO]   Autry Technology Center OK listings scraped: 0
+[02:12:14] [INFO]   Connors State College OK listings scraped: 0
+[02:12:14] [INFO]   ↪️  Community Care College: generic page hands off to paycom
+[02:12:14] [INFO]   Fort Scott Community College KS listings scraped: 0
+[02:12:14] [INFO]   College of the Muscogee Nation OK listings scraped: 0
+[02:12:14] [INFO]   Missouri State University MO listings scraped: 9
+[02:12:14] [INFO]   East Central University OK listings scraped: 0
+[02:12:14] [INFO]   Carl Albert State College OK listings scraped: 0
+[02:12:14] [INFO]   Washington University in St. Louis MO listings scraped: 6 (API)
+[02:12:14] [INFO]   Missouri University of Science and Technology MO listings scraped: 1
+[02:12:14] [INFO]   Drury University-College of Continuing Professional Studies MO listings scraped: 1
+[02:12:14] [INFO]   ↪️  Urshan Graduate School of Theology: generic page hands off to paycom
+[02:12:14] [INFO]   Family of Faith Christian University OK listings scraped: 0
+[02:12:14] [INFO]   Eastern Oklahoma State College OK listings scraped: 0
+[02:12:14] [INFO]   Community Care College OK listings scraped: 9
+[02:12:14] [INFO]   A T Still University of Health Sciences MO listings scraped: 0
+[02:12:14] [INFO]   Avila University MO listings scraped: 1
+[02:12:14] [INFO]   Northern Kentucky University KY listings scraped: 0
+[02:12:14] [INFO]   Aquinas Institute of Theology MO listings scraped: 0
+[02:12:14] [INFO]   Murray State University KY listings scraped: 24
+[02:12:14] [INFO]   Morehead State University KY listings scraped: 33
+[02:12:14] [INFO]   Barnes-Jewish College Goldfarb School of Nursing MO listings scraped: 0
+[02:12:14] [INFO]   Gateway Community and Technical College KY listings scraped: 0
+[02:12:14] [INFO]   Alice Lloyd College KY listings scraped: 0
+[02:12:14] [INFO]   Urshan Graduate School of Theology MO listings scraped: 2
+[02:12:14] [INFO]   Calvary University MO listings scraped: 0
+[02:12:14] [INFO]   Hopkinsville Community College KY listings scraped: 0
+[02:12:14] [INFO]   ↪️  Asbury Theological Seminary: generic page hands off to paycom
+[02:12:14] [INFO]   Asbury University KY listings scraped: 0
+[02:12:14] [INFO]   Central Christian College of the Bible MO listings scraped: 0
+[02:12:14] [INFO]   Ashland Community and Technical College KY listings scraped: 0
+[02:12:14] [INFO]   Central Methodist University-College of Graduate and Extended Studies MO listings scraped: 0
+[02:12:14] [INFO]   Central Methodist University-College of Liberal Arts and Sciences MO listings scraped: 0
+[02:12:14] [INFO]   Bellarmine University KY listings scraped: 0
+[02:12:14] [INFO]   Berea College KY listings scraped: 0
+[02:12:14] [INFO]   Big Sandy Community and Technical College KY listings scraped: 0
+[02:12:14] [INFO]   College of the Ozarks MO listings scraped: 0
+[02:12:14] [INFO]   Bluegrass Community and Technical College KY listings scraped: 0
+[02:12:14] [INFO]   Conception Seminary College MO listings scraped: 0
+[02:12:14] [INFO]   Asbury Theological Seminary KY listings scraped: 9
+[02:12:14] [INFO]   City Vision University MO listings scraped: 0
+[02:12:14] [INFO]   Brescia University KY listings scraped: 2
+[02:12:14] [INFO]   Bolivar Technical College MO listings scraped: 0
+[02:12:14] [INFO]   ↪️  Campbellsville University: generic page hands off to workday
+[02:12:14] [INFO]   Campbellsville University KY listings scraped: 8 (API)
+[02:12:14] [INFO]   Concordia Seminary MO listings scraped: 0
+[02:12:14] [INFO]   Eastern Kentucky University KY listings scraped: 0
+[02:12:14] [INFO]   Covenant Theological Seminary MO listings scraped: 0
+[02:12:14] [INFO]   Cottey College MO listings scraped: 0
+[02:12:14] [INFO]   Centre College KY listings scraped: 0
+[02:12:14] [INFO]   Elizabethtown Community and Technical College KY listings scraped: 0
+[02:12:14] [INFO]   Crowder College MO listings scraped: 0
+[02:12:14] [INFO]   Clear Creek Baptist Bible College KY listings scraped: 0
+[02:12:14] [INFO]   Frontier Nursing University KY listings scraped: 0
+[02:12:14] [INFO]   Culver-Stockton College MO listings scraped: 0
+[02:12:14] [INFO]   ↪️  Remington College-Memphis Campus override URL applied
+[02:12:14] [INFO]   ↪️  Remington College-Nashville Campus override URL applied
+[02:12:14] [INFO]   ↪️  American Baptist College override URL applied
+[02:12:14] [INFO]   Drury University MO listings scraped: 1
+[02:12:14] [INFO]   East Central College MO listings scraped: 0
+[02:12:14] [INFO]   Cox College MO listings scraped: 0
+[02:12:14] [INFO]   Middle Tennessee State University TN listings scraped: 26
+[02:12:14] [INFO]   ↪️  Austin Peay State University override URL applied
+[02:12:14] [INFO]   ↪️  American Baptist College: scraped 1 listings via scrapeAdpApi
+[02:12:14] [INFO]   ↪️  Remington College-Nashville Campus: scraped 5 listings via scrapeAdpApi
+[02:12:14] [INFO]   Evangel University MO listings scraped: 0
+[02:12:14] [INFO]   Remington College-Memphis Campus TN listings scraped: 0
+[02:12:14] [INFO]   ↪️  Baptist Health Sciences University override URL applied
+[02:12:14] [INFO]   ↪️  Belmont University override URL applied
+[02:12:14] [INFO]   ↪️  Bethel University override URL applied
+[02:12:14] [INFO]   Evangel University-College of Online Learning MO listings scraped: 0
+[02:12:14] [INFO]   Eden Theological Seminary MO listings scraped: 0
+[02:12:14] [INFO]   Evangel University-James River Assembly of God Church MO listings scraped: 0
+[02:12:14] [INFO]   Bethel University TN listings scraped: 6
+[02:12:14] [INFO]   ↪️  Bryan College-Dayton override URL applied
+[02:12:14] [INFO]   Baptist Health Sciences University TN listings scraped: 1
+[02:12:14] [INFO]   Fontbonne University MO listings scraped: 0
+[02:12:14] [INFO]   ↪️  Alaska Pacific University override URL applied
+[02:12:14] [INFO]   ↪️  Austin Peay State University: scraped 4 listings via scrapeOracleCloudApi
+[02:12:14] [INFO]   ↪️  Chattanooga State Community College override URL applied
+[02:12:14] [INFO]   Bryan College-Dayton TN listings scraped: 0
+[02:12:14] [INFO]   ↪️  Christian Brothers University override URL applied
+[02:12:14] [INFO]   Carson-Newman University TN listings scraped: 0
+[02:12:14] [INFO]   Alaska Bible College AK listings scraped: 0
+[02:12:14] [INFO]   Alaska Pacific University AK listings scraped: 1
+[02:12:14] [INFO]   Chattanooga State Community College TN listings scraped: 4
+[02:12:14] [INFO]   ↪️  Columbia State Community College override URL applied
+[02:12:14] [INFO]   Christian Brothers University TN listings scraped: 2
+[02:12:14] [INFO]   ↪️  Cumberland University override URL applied
+[02:12:14] [INFO]   Alaska Christian College AK listings scraped: 0
+[02:12:14] [INFO]   ↪️  Belmont University: scraped 19 listings via scrapeCsodApi
+[02:12:14] [INFO]   ↪️  Cleveland State Community College: generic page hands off to pageup
+[02:12:14] [INFO]   Columbia State Community College TN listings scraped: 1
+[02:12:14] [INFO]   ↪️  East Tennessee State University override URL applied
+[02:12:14] [INFO]   Cleveland State Community College TN listings scraped: 0
+[02:12:14] [INFO]   Cleveland State Community College TN listings scraped: 0
+[02:12:14] [INFO]   University of Alaska System AK listings scraped: 18
+[02:12:14] [INFO]   ↪️  Dyersburg State Community College: generic page hands off to pageup
+[02:12:14] [INFO]   Dyersburg State Community College TN listings scraped: 0
+[02:12:14] [INFO]   Dyersburg State Community College TN listings scraped: 0
+[02:12:14] [INFO]   ↪️  Freed-Hardeman University override URL applied
+[02:12:14] [INFO]   ↪️  East Tennessee State University: scraped 47 listings via scrapeOracleCloudApi
+[02:12:14] [INFO]   Chaminade University of Honolulu HI listings scraped: 1
+[02:12:14] [INFO]   University of Hawaii System HI listings scraped: 10
+[02:12:14] [INFO]   ↪️  Fisk University: generic page hands off to paycom
+[02:12:14] [INFO]   Brigham Young University-Hawaii HI listings scraped: 0
+[02:12:14] [INFO]   Texas Tech University TX: API failed, falling back to browser
+[02:12:14] [INFO]   Freed-Hardeman University TN listings scraped: 5
+[02:12:14] [INFO]   University of Texas at Austin TX listings scraped: 1 (API)
+[02:12:14] [INFO]   Texas A&M University TX listings scraped: 71
+[02:12:14] [INFO]   ↪️  Cumberland University: scraped 7 listings via scrapePaycomApi
+[02:12:14] [INFO]   University of Texas at Arlington TX listings scraped: 88
+[02:12:14] [INFO]   University of Texas at Dallas TX listings scraped: 93
+[02:12:14] [INFO]   University of North Texas TX listings scraped: 0
+[02:12:14] [INFO]   Rice University TX listings scraped: 0
+[02:12:14] [INFO]   Baylor University TX listings scraped: 17
+[02:12:14] [INFO]   Texas Christian University TX: API failed, falling back to browser
+[02:12:14] [INFO]   University of Houston TX listings scraped: 446
+[02:12:14] [INFO]   Southern Methodist University TX Taleo listings scraped: 0
+[02:12:14] [INFO]   Fisk University TN listings scraped: 0
+[02:12:14] [INFO]   Fisk University TN listings scraped: 0
+[02:12:14] [INFO]   Trinity University TX listings scraped: 5 (API)
+[02:12:14] [INFO]   Texas Tech University TX listings scraped: 0
+[02:12:14] [INFO]   University of Central Florida FL listings scraped: 0
+[02:12:14] [INFO]   University of South Florida FL listings scraped (REST): 24
+[02:12:14] [INFO]   Florida Atlantic University FL listings scraped: 8 (API)
+[02:12:14] [INFO]   University of North Florida FL: API failed, falling back to browser
+[02:12:14] [INFO]   Florida State University FL listings scraped: 4
+[02:12:14] [INFO]   Abilene Christian University-Undergraduate Online TX listings scraped: 0
+[02:12:14] [INFO]   University of Miami FL listings scraped: 37 (API)
+[02:12:14] [INFO]   Alamo Community College District Central Office TX listings scraped: 0
+[02:12:14] [INFO]   Dallas College TX listings scraped: 0
+[02:12:14] [INFO]   Nova Southeastern University FL listings scraped: 0
+[02:12:14] [INFO]   Texas Christian University TX listings scraped: 0
+[02:12:14] [INFO]   Laredo College TX listings scraped: 0
+[02:12:14] [INFO]   Florida International University FL listings scraped: 0
+[02:12:14] [INFO]   Rollins College FL listings scraped: 0
+[02:12:14] [INFO]   Northeast Lakeview College TX listings scraped: 0
+[02:12:14] [INFO]   Eckerd College FL listings scraped: 0
+[02:12:14] [INFO]   Stetson University FL listings scraped: 0
+[02:12:14] [INFO]   Northwest Vista College TX listings scraped: 0
+[02:12:14] [INFO]   Palo Alto College TX listings scraped: 0
+[02:12:14] [INFO]   New College of Florida FL listings scraped: 0
+[02:12:14] [INFO]   Remington College-Dallas Campus TX listings scraped: 0
+[02:12:14] [INFO]   Remington College-Fort Worth Campus TX listings scraped: 0
+[02:12:14] [INFO]   Remington College-Houston Southeast Campus TX listings scraped: 0
+[02:12:14] [INFO]   Florida Southern College FL listings scraped: 12
+[02:12:14] [INFO]   Jacksonville University FL listings scraped: 0
+[02:12:14] [INFO]   Remington College-North Houston Campus TX listings scraped: 0
+[02:12:14] [INFO]   Remington College-Online Dallas TX listings scraped: 0
+[02:12:14] [INFO]   San Antonio College TX listings scraped: 0
+[02:12:14] [INFO]   Southwest College for the Deaf TX listings scraped: 0
+[02:12:14] [INFO]   Erwin Technical College FL listings scraped: 0
+[02:12:14] [INFO]   H W Brewster Technical College FL listings scraped: 0
+[02:12:14] [INFO]   St Philip's College TX listings scraped: 0
+[02:12:14] [INFO]   University of North Florida FL listings scraped: 0
+[02:12:14] [INFO]   The Chicago School at Dallas TX listings scraped: 0
+[02:12:14] [INFO]   The Chicago School-College of Nursing TX listings scraped: 0
+[02:12:14] [INFO]   Abilene Christian University TX listings scraped: 0
+[02:12:14] [INFO]   Riveroak Technical College FL listings scraped: 0
+[02:12:14] [INFO]   Orange Technical College-East Campus FL listings scraped: 0
+[02:12:14] [INFO]   Orange Technical College-West Campus FL listings scraped: 0
+[02:12:14] [INFO]   Alvin Community College TX listings scraped: 1
+[02:12:14] [INFO]   Covenant School of Nursing and Allied Health TX listings scraped: 0
+[02:12:14] [INFO]   Academy for Nursing and Health Occupations FL listings scraped: 0
+[02:12:14] [INFO]   Suncoast Technical College FL listings scraped: 0
+[02:12:14] [INFO]   Academy for Five Element Acupuncture FL listings scraped: 0
+[02:12:14] [INFO]   Amarillo College TX listings scraped: 0
+[02:12:14] [INFO]   Angelina College TX listings scraped: 0
+[02:12:14] [INFO]   Amberton University TX listings scraped: 0
+[02:12:14] [INFO]   Angelo State University TX listings scraped: 0
+[02:12:14] [INFO]   Ana G. Mendez University FL listings scraped: 0
+[02:12:14] [INFO]   AdventHealth University FL listings scraped: 0
+[02:12:14] [INFO]   Albizu University-Miami FL listings scraped: 0
+[02:12:14] [INFO]   Arlington Baptist University TX listings scraped: 0
+[02:12:14] [INFO]   Austin College TX listings scraped: 0
+[02:12:14] [INFO]   Atlantic Technical College FL listings scraped: 0
+[02:12:14] [INFO]   Austin Community College District TX listings scraped: 0
+[02:12:14] [INFO]   Ave Maria School of Law FL listings scraped: 1
+[02:12:14] [INFO]   Ave Maria University FL listings scraped: 0
+[02:12:14] [INFO]   ↪️  Austin Presbyterian Theological Seminary: generic page hands off to paycom
+[02:12:14] [INFO]   Bakke Graduate University TX listings scraped: 0
+[02:12:14] [INFO]   Atlantic Institute of Oriental Medicine FL listings scraped: 0
+[02:12:14] [INFO]   Baptist University of Florida FL listings scraped: 0
+[02:12:14] [INFO]   Beacon College FL listings scraped: 0
+[02:12:14] [INFO]   Barry University FL listings scraped: 4
+[02:12:14] [INFO]   Austin Presbyterian Theological Seminary TX listings scraped: 2
+[02:12:14] [INFO]   Baptist University of the Americas TX listings scraped: 0
+[02:12:14] [INFO]   Broward College FL listings scraped: 0
+[02:12:14] [INFO]   Baptist Missionary Association Theological Seminary TX listings scraped: 0
+[02:12:14] [INFO]   Bethune-Cookman University FL listings scraped: 0
+[02:12:14] [INFO]   Chipola College FL listings scraped: 0
+[02:12:14] [INFO]   Baylor College of Medicine TX listings scraped: 1
+[02:12:14] [INFO]   ↪️  Blinn College District: generic page hands off to csod
+[02:12:14] [INFO]   Daytona State College FL listings scraped: 0
+[02:12:14] [INFO]   Brazosport College TX listings scraped: 0
+[02:12:14] [INFO]   Doral College FL listings scraped: 0
+[02:12:14] [INFO]   Brite Divinity School TX listings scraped: 3
+[02:12:14] [INFO]   Eastern Florida State College FL listings scraped: 0
+[02:12:14] [INFO]   ↪️  Central Texas College: generic page hands off to schooljobs
+[02:12:14] [INFO]   College of Central Florida FL listings scraped: 0
+[02:12:14] [INFO]   Edward Waters University FL listings scraped: 0
+[02:12:14] [INFO]   Embry-Riddle Aeronautical University-Daytona Beach FL listings scraped: 0
+[02:12:14] [INFO]   Christ Mission College TX listings scraped: 0
+[02:12:14] [INFO]   Central Texas College TX listings scraped: 0
+[02:12:14] [INFO]   Central Texas College TX listings scraped: 0
+[02:12:14] [INFO]   Everglades University FL listings scraped: 0
+[02:12:14] [INFO]   Embry-Riddle Aeronautical University-Worldwide FL listings scraped: 0
+[02:12:14] [INFO]   Flagler College FL listings scraped: 0
+[02:12:14] [INFO]   Clarendon College TX listings scraped: 0
+[02:12:14] [INFO]   Florida Agricultural and Mechanical University FL listings scraped: 0
+[02:12:14] [INFO]   Cisco College TX listings scraped: 0
+[02:12:14] [INFO]   Flagler Technical College FL listings scraped: 0
+[02:12:14] [INFO]   Blinn College District TX listings scraped: 12
+[02:12:14] [INFO]   Florida Gateway College FL listings scraped: 0
+[02:12:14] [INFO]   Florida Gulf Coast University FL listings scraped: 1
+[02:12:14] [INFO]   Coastal Bend College TX listings scraped: 0
+[02:12:14] [INFO]   College of the Mainland TX listings scraped: 0
+[02:12:14] [INFO]   College of Biblical Studies-Houston TX listings scraped: 0
+[02:12:14] [INFO]   Florida College FL listings scraped: 0
+[02:12:14] [INFO]   ↪️  Florida Institute of Technology: generic page hands off to workday
+[02:12:14] [INFO]   ↪️  Florida Institute of Technology-Online: generic page hands off to workday
+[02:12:14] [INFO]   Florida Institute of Technology FL listings scraped: 11 (API)
+[02:12:14] [INFO]   Collin County Community College District TX listings scraped: 1
+[02:12:14] [INFO]   Florida Institute of Technology-Online FL listings scraped: 11 (API)
+[02:12:14] [INFO]   University of Florida FL listings scraped: 269
+[02:12:14] [INFO]   Concordia University Texas TX listings scraped: 0
+[02:12:14] [INFO]   Florida Memorial University FL listings scraped: 0
+[02:12:14] [INFO]   Commonwealth Institute of Funeral Service TX listings scraped: 0
+[02:12:14] [INFO]   Criswell College TX listings scraped: 0
+[02:12:14] [INFO]   Florida Polytechnic University FL listings scraped: 0
+[02:12:14] [INFO]   Florida SouthWestern State College FL listings scraped: 0
+[02:12:14] [INFO]   Dallas Baptist University TX listings scraped: 0
+[02:12:14] [INFO]   Florida State College at Jacksonville FL listings scraped: 0
+[02:12:14] [INFO]   Dallas Institute of Funeral Service TX listings scraped: 0
+[02:12:14] [INFO]   Dallas Christian College TX listings scraped: 0
+[02:12:14] [INFO]   Dallas Theological Seminary TX listings scraped: 0
+[02:12:14] [INFO]   Fort Myers Technical College FL listings scraped: 0
+[02:12:14] [INFO]   Del Mar College TX listings scraped: 0
+[02:12:14] [INFO]   East Texas A&M University TX listings scraped: 1
+[02:12:14] [INFO]   East Texas Baptist University TX listings scraped: 0
+[02:12:14] [INFO]   El Paso Community College TX listings scraped: 0
+[02:12:14] [INFO]   Frank Phillips College TX listings scraped: 1
+[02:12:14] [INFO]   Episcopal Theological Seminary of the Southwest TX listings scraped: 0
+[02:12:14] [INFO]   🔍 Global faculty filter: 11430 → 6431 (removed 4999 non-faculty jobs)
+[02:12:14] [INFO]   🧾 Policy exclusions: 6431 → 6406 (removed 25 jobs)
+[02:12:14] [INFO]   📡 Calling local summarizer for 6406 jobs
+[02:12:14] [INFO]   📦 Using 0 cached summaries, 6406 jobs need AI processing
+[02:12:14] [INFO]   📡 Checking 1 summarizer endpoint(s)...
+[02:12:14] [INFO]   📡 Summarizer endpoints: 0 active, 1 unreachable
+[02:12:14] [INFO]   🔗 Canonicalized job URLs: 719 updated, 0 invalid removed
+[02:12:14] [INFO]   ✂️  Normalized 1137 job titles
+[02:12:14] [INFO]   🧬 Assigned canonical IDs for 6380 jobs
+[02:12:14] [INFO]   🧹 Quality gates dropped 9 listings
+[02:12:14] [INFO]   📄 Wrote C:\Users\StevenAzeka\OneDrive\Documents\GitHub\Faculty-Jobs\generated\post-quality-report.json
+[02:12:14] [INFO]   ⚰️  Filtered 37 confirmed-dead URL(s) from scrape
+[02:12:14] [INFO]   🧬 Preserved enrichment: filled 30118 field(s) across 6123 job(s) (6123 matched previous snapshot)
+[02:12:14] [INFO]   ✅ Wrote C:\Users\StevenAzeka\OneDrive\Documents\GitHub\Faculty-Jobs\docs\jobs.json (6334 jobs)
+[02:12:14] [INFO]   ✅ Wrote C:\Users\StevenAzeka\OneDrive\Documents\GitHub\Faculty-Jobs\public\jobs.json (6334 jobs)
+[02:12:14] [INFO]   ✅ Wrote C:\Users\StevenAzeka\OneDrive\Documents\GitHub\Faculty-Jobs\web-vue\public\jobs.json (6334 jobs)
+[02:12:14] [INFO]   [stderr] ❌ Chandler-Gilbert Community College AZ scrape failed: page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.cgc.maricopa.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.cgc.maricopa.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ UMass Lowell UMass scrape failed: page.goto: net::ERR_CONNECTION_RESET at https://explorejobs.uml.edu/lowell/en-us/filter/?job-mail-subscribe-privacy=agree&search-keyword=&work-type=faculty%20full%20time
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://explorejobs.uml.edu/lowell/en-us/filter/?job-mail-subscribe-privacy=agree&search-keyword=&work-type=faculty%20full%20time", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Academy of Chinese Culture and Health Sciences CA Private scrape failed: page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.acchs.edu/faculty/jobs
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.acchs.edu/faculty/jobs", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Stockton University NJ scrape failed: page.goto: net::ERR_CONNECTION_RESET at https://employment.stockton.edu/jobs/search?page=1&employment_type_uids%5B%5D=fbab94e63ae2bac64f314b271869e32d&query=
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://employment.stockton.edu/jobs/search?page=1&employment_type_uids%5B%5D=fbab94e63ae2bac64f314b271869e32d&query=", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Seton Hall University NJ scrape failed: page.goto: net::ERR_CONNECTION_RESET at https://jobs.shu.edu/cw/en-us/listing/?page=3&page-items=20
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://jobs.shu.edu/cw/en-us/listing/?page=3&page-items=20", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ America Evangelical University CA Private scrape failed: page.goto: net::ERR_CONNECTION_TIMED_OUT at https://www.aeu.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.aeu.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Bais Medrash Toras Chesed NJ scrape failed: page.goto: net::ERR_SSL_VERSION_OR_CIPHER_MISMATCH at https://www.bmtc.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.bmtc.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Eastern Nazarene College MA scrape failed: page.goto: net::ERR_CERT_DATE_INVALID at https://www.enc.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.enc.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Carolinas College of Health Sciences NC scrape failed: page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.carolinascollege.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.carolinascollege.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Illinois State University IL scrape failed: page.goto: net::ERR_CONNECTION_RESET at https://jobsearch.illinoisstate.edu/en-us/filter/?search-keyword=&category=faculty
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://jobsearch.illinoisstate.edu/en-us/filter/?search-keyword=&category=faculty", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Foothill-De Anza Community College District CA Private Taleo scrape failed: page.goto: net::ERR_CONNECTION_TIMED_OUT at https://ch.tbe.taleo.net/CH17/ats/careers/jobSearch.jsp?org=FHDA&cws=1
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://ch.tbe.taleo.net/CH17/ats/careers/jobSearch.jsp?org=FHDA&cws=1", waiting until "networkidle"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Linfield University OR scrape failed: page.goto: net::ERR_NAME_NOT_RESOLVED at https://careers.linfield.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://careers.linfield.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Beloit College WI scrape failed: page.goto: net::ERR_NAME_NOT_RESOLVED at https://employment.beloit.edu/en-us/listing/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://employment.beloit.edu/en-us/listing/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ St. John's College (Santa Fe) NM scrape failed: page.goto: net::ERR_CONNECTION_RESET at https://www.sjc.edu/santa-fe-job-openings
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.sjc.edu/santa-fe-job-openings", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Colorado State University-Fort Collins CO scrape failed: page.goto: net::ERR_CONNECTION_RESET at https://colostate.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://colostate.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ University of Notre Dame IN scrape failed: page.goto: net::ERR_SSL_UNRECOGNIZED_NAME_ALERT at https://jobs.nd.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://jobs.nd.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Carver Career Center WV scrape failed: page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.carvercareercenter.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.carvercareercenter.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Kennesaw State University GA scrape failed: page.goto: net::ERR_CONNECTION_TIMED_OUT at https://kennesaw.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://kennesaw.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Academy of Interactive Entertainment LA scrape failed: page.goto: net::ERR_CONNECTION_REFUSED at https://lafayette.aie.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://lafayette.aie.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Emmanuel University GA scrape failed: page.goto: net::ERR_SSL_VERSION_OR_CIPHER_MISMATCH at https://www.ec.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.ec.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Bacone College OK scrape failed: page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.bacone.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.bacone.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Southwestern University TX scrape failed: page.goto: net::ERR_CONNECTION_RESET at https://www.southwestern.edu/human-resources/career-opportunities/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.southwestern.edu/human-resources/career-opportunities/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Polytechnic University of Puerto Rico-Orlando FL scrape failed: page.goto: net::ERR_CERT_DATE_INVALID at https://www.pupr.edu/orlando
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.pupr.edu/orlando", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Polytechnic University of Puerto Rico-Miami FL scrape failed: page.goto: net::ERR_CERT_DATE_INVALID at https://www.pupr.edu/miami/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.pupr.edu/miami/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Atlanta Technical College GA scrape failed: page.goto: Timeout 60000ms exceeded.
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://atlantatech.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Bishop State Community College AL scrape failed: page.goto: Timeout 60000ms exceeded.
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.bishop.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr] ❌ Dragon Rises College of Oriental Medicine FL scrape failed: page.goto: net::ERR_CERT_AUTHORITY_INVALID at https://www.dragonrises.edu/
+[02:12:14] [INFO]   [stderr] Call log:
+[02:12:14] [INFO]   [stderr] [2m  - navigating to "https://www.dragonrises.edu/", waiting until "domcontentloaded"[22m
+[02:12:14] [INFO]   [stderr] 
+[02:12:14] [INFO]   [stderr]    ⚠️  Unreachable: http://127.0.0.1:9000/summarize
+[02:12:14] [INFO]   [stderr] ❌ No summarizer endpoints reachable — skipping AI enrichment
+[02:12:14] [OK] Scrape succeeded.
+[02:12:14] [INFO] 
+[02:12:14] [INFO] --------------------------------------------------
+[02:12:14] [INFO]   Step 2/8 - Track job presence (stamp firstSeen, purge expired)
+[02:12:14] [INFO] --------------------------------------------------
+[02:12:14] [INFO] Running: C:\Program Files\nodejs\npm.cmd run agent:job-presence
+[02:12:15] [INFO]   
+[02:12:15] [INFO]   > faculty-jobs@1.0.0 agent:job-presence
+[02:12:15] [INFO]   > node scripts/agent-job-presence.js
+[02:12:15] [INFO]   
+[02:12:15] [INFO]   
+[02:12:15] [INFO]   Faculty Atlas - Job Presence Agent
+[02:12:15] [INFO]     Config        : expiry-days=7
+[02:12:15] [INFO]   
+[02:12:15] [INFO]     Jobs seen today  : 6,334
+[02:12:15] [INFO]     Jobs tracked     : 7,067
+[02:12:15] [INFO]     Jobs to purge    : 0
+[02:12:15] [INFO]     New today        : 18
+[02:12:15] [INFO]     New this week    : 488
+[02:12:15] [INFO]   
+[02:12:15] [INFO]     docs/jobs.json updated.
+[02:12:15] [INFO]   
+[02:12:15] [INFO]     public/jobs.json updated.
+[02:12:15] [INFO]     generated/job-presence.json saved.
+[02:12:15] [INFO]     generated/job-presence-report.json saved.
+[02:12:15] [INFO]     data/site-stats.json saved (docs + public + web-vue).
+[02:12:15] [OK] Job presence succeeded.
+[02:12:15] [INFO] 
+[02:12:15] [INFO] --------------------------------------------------
+[02:12:15] [INFO]   Step 3/8 - Enrich new jobs (discipline/positionType/tenureTrack via local Ollama)
+[02:12:15] [INFO] --------------------------------------------------
+[02:12:15] [INFO] Running: C:\Program Files\nodejs\npm.cmd run agent:enrich -- --max 1500 --batch-size 6
+[02:21:44] [INFO]   
+[02:21:44] [INFO]   > faculty-jobs@1.0.0 agent:enrich
+[02:21:44] [INFO]   > node scripts/agent-job-enrichment.js --max 1500 --batch-size 6
+[02:21:44] [INFO]   
+[02:21:44] [INFO]   
+[02:21:44] [INFO]   Faculty Atlas - Job Enrichment Agent
+[02:21:44] [INFO]     Backend: Ollama (qwen2.5:7b @ localhost:11434)
+[02:21:44] [INFO]   
+[02:21:44] [INFO]     Total jobs       : 6,334
+[02:21:44] [INFO]     Already enriched : 5,544
+[02:21:44] [INFO]     To process now   : 790 (max 1500)
+[02:21:44] [INFO]     Batch size       : 6
+[02:21:44] [INFO]     Concurrency      : 1
+[02:21:44] [INFO]     Batch 1/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 2/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 3/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 4/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 5/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:44] [INFO]     Batch 5/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:44] [INFO]     Batch 6/132 (6 jobs)... done (+2)
+[02:21:44] [INFO]     Batch 7/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 8/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 9/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 10/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 11/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 12/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:44] [INFO]     Batch 12/132 (6 jobs) ↳... done (+3)
+[02:21:44] [INFO]     Batch 12/132 (6 jobs) ↳... done (+3)
+[02:21:44] [INFO]     Batch 13/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 14/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 15/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 16/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 17/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 18/132 (6 jobs)... done (+4)
+[02:21:44] [INFO]     Batch 19/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 20/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 21/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 22/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 23/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:44] [INFO]     Batch 23/132 (6 jobs) ↳... done (+3)
+[02:21:44] [INFO]     Batch 23/132 (6 jobs) ↳... done (+3)
+[02:21:44] [INFO]     Batch 24/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 25/132 (6 jobs)... done (+3)
+[02:21:44] [INFO]     Batch 26/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 27/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 28/132 (6 jobs)... done (+6)
+[02:21:44] [INFO]     Batch 29/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:44] [INFO]     Batch 29/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 29/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 29/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 29/132 (6 jobs) ↳ ↳ ↳... ERROR: expected 1 result, got 0
+[02:21:45] [INFO]     Batch 29/132 (6 jobs) ↳ ↳... ERROR: expected 1 result, got 0
+[02:21:45] [INFO]     Batch 29/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 30/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳ ↳ ↳... ERROR: expected 1 result, got 0
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 30/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 31/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 32/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 32/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 32/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 32/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 32/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 32/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 32/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 33/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 33/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 33/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 33/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 33/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 33/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 33/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 34/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 35/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 36/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 37/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 37/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 37/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 37/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 37/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 37/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 37/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 38/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 38/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 38/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 38/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 38/132 (6 jobs) ↳ ↳ ↳... ERROR: expected 1 result, got 0
+[02:21:45] [INFO]     Batch 38/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 38/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 38/132 (6 jobs) ↳ ↳... done (+2)
+[02:21:45] [INFO]     Batch 38/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 39/132 (6 jobs)... done (+1)
+[02:21:45] [INFO]     Batch 40/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 41/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 42/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 43/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 44/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 45/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 45/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 45/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 45/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 45/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 45/132 (6 jobs) ↳ ↳ ↳... done (+0)
+[02:21:45] [INFO]     Batch 45/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 46/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 46/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 46/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 46/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 46/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 46/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 46/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 47/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 48/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 49/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 50/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 51/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 52/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 53/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 54/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 55/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 56/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 57/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 58/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 59/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 60/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 61/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 62/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 63/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 64/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 64/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 64/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 65/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 66/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 67/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 67/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 67/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 67/132 (6 jobs) ↳ ↳... done (+2)
+[02:21:45] [INFO]     Batch 67/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 68/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 69/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 69/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 69/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 69/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 69/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 69/132 (6 jobs) ↳ ↳ ↳... ERROR: expected 1 result, got 0
+[02:21:45] [INFO]     Batch 69/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 70/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 71/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 72/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 73/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 73/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 73/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 74/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 75/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 76/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 77/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 78/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 79/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 80/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 81/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 81/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 81/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 81/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 81/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 81/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 81/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 82/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 83/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 84/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 85/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 85/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 85/132 (6 jobs) ↳ ↳... done (+2)
+[02:21:45] [INFO]     Batch 85/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 85/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 86/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 87/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 88/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 89/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 90/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 91/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 92/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 93/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 94/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 95/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 96/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 97/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 98/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 98/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 98/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 99/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 100/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 100/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 100/132 (6 jobs) ↳ ↳... done (+2)
+[02:21:45] [INFO]     Batch 100/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 100/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 101/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 102/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 102/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 103/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 103/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 104/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 105/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 106/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 107/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 107/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 107/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 108/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 109/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 110/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 111/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 112/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 112/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 112/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 113/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 114/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 115/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 116/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 117/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 117/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 117/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 117/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 117/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 117/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 117/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 118/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 119/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 120/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 121/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 121/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 121/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 121/132 (6 jobs) ↳ ↳... done (+2)
+[02:21:45] [INFO]     Batch 121/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 122/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 123/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 124/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 125/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 126/132 (6 jobs)... mismatch, splitting into 3+3
+[02:21:45] [INFO]     Batch 126/132 (6 jobs) ↳... mismatch, splitting into 2+1
+[02:21:45] [INFO]     Batch 126/132 (6 jobs) ↳ ↳... mismatch, splitting into 1+1
+[02:21:45] [INFO]     Batch 126/132 (6 jobs) ↳ ↳ ↳... ERROR: expected 1 result, got 0
+[02:21:45] [INFO]     Batch 126/132 (6 jobs) ↳ ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 126/132 (6 jobs) ↳ ↳... done (+1)
+[02:21:45] [INFO]     Batch 126/132 (6 jobs) ↳... done (+3)
+[02:21:45] [INFO]     Batch 127/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 128/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 129/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 130/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 131/132 (6 jobs)... done (+6)
+[02:21:45] [INFO]     Batch 132/132 (4 jobs)... done (+4)
+[02:21:45] [INFO]   
+[02:21:45] [INFO]     Enriched this run : 769
+[02:21:45] [INFO]     Total enriched    : 6,313 / 6,334
+[02:21:45] [INFO]     Jobs left for next run : 6
+[02:21:45] [INFO]     Report saved      : generated/enrichment-report.json
+[02:21:45] [INFO]   
+[02:21:45] [OK] Enrich succeeded.
+[02:21:45] [INFO] 
+[02:21:45] [INFO] --------------------------------------------------
+[02:21:45] [INFO]   Step 4/8 - Backfill descriptions + posting dates (datePosted)
+[02:21:45] [INFO] --------------------------------------------------
+[02:21:45] [INFO] Running: C:\Program Files\nodejs\npm.cmd run agent:descriptions -- --max 2000 --concurrency 8
+[02:32:29] [INFO]   
+[02:32:29] [INFO]   > faculty-jobs@1.0.0 agent:descriptions
+[02:32:29] [INFO]   > node scripts/agent-job-descriptions.js --max 2000 --concurrency 8
+[02:32:29] [INFO]   
+[02:32:29] [INFO]   
+[02:32:29] [INFO]     Total jobs        : 6,334
+[02:32:29] [INFO]     With description  : 671
+[02:32:29] [INFO]     Missing (unfetched): 5,663
+[02:32:29] [INFO]     To process now    : 2,000 (max 2000)
+[02:32:29] [INFO]     Concurrency       : 8
+[02:32:29] [INFO]     ...attempted 25/2000 (filled 22)
+[02:32:29] [INFO]     ...attempted 50/2000 (filled 43)
+[02:32:29] [INFO]     ...attempted 75/2000 (filled 68)
+[02:32:29] [INFO]     ...attempted 100/2000 (filled 92)
+[02:32:29] [INFO]     ...attempted 125/2000 (filled 116)
+[02:32:29] [INFO]     ...attempted 150/2000 (filled 140)
+[02:32:29] [INFO]     ...attempted 175/2000 (filled 160)
+[02:32:29] [INFO]     ...attempted 200/2000 (filled 184)
+[02:32:29] [INFO]     ...attempted 225/2000 (filled 209)
+[02:32:29] [INFO]     ...attempted 250/2000 (filled 231)
+[02:32:29] [INFO]     ...attempted 275/2000 (filled 255)
+[02:32:29] [INFO]     ...attempted 300/2000 (filled 276)
+[02:32:29] [INFO]     ...attempted 325/2000 (filled 301)
+[02:32:29] [INFO]     ...attempted 350/2000 (filled 324)
+[02:32:29] [INFO]     ...attempted 375/2000 (filled 348)
+[02:32:29] [INFO]     ...attempted 400/2000 (filled 369)
+[02:32:29] [INFO]     ...attempted 425/2000 (filled 390)
+[02:32:29] [INFO]     ...attempted 450/2000 (filled 406)
+[02:32:29] [INFO]     ...attempted 475/2000 (filled 423)
+[02:32:29] [INFO]     ...attempted 500/2000 (filled 444)
+[02:32:29] [INFO]     ...attempted 525/2000 (filled 469)
+[02:32:29] [INFO]     ...attempted 550/2000 (filled 488)
+[02:32:29] [INFO]     ...attempted 575/2000 (filled 508)
+[02:32:29] [INFO]     ...attempted 600/2000 (filled 529)
+[02:32:29] [INFO]     ...attempted 625/2000 (filled 552)
+[02:32:29] [INFO]     ...attempted 650/2000 (filled 576)
+[02:32:29] [INFO]     ...attempted 675/2000 (filled 599)
+[02:32:29] [INFO]     ...attempted 700/2000 (filled 620)
+[02:32:29] [INFO]     ...attempted 725/2000 (filled 644)
+[02:32:29] [INFO]     ...attempted 750/2000 (filled 669)
+[02:32:29] [INFO]     ...attempted 775/2000 (filled 690)
+[02:32:29] [INFO]     ...attempted 800/2000 (filled 711)
+[02:32:30] [INFO]     ...attempted 825/2000 (filled 736)
+[02:32:30] [INFO]     ...attempted 850/2000 (filled 756)
+[02:32:30] [INFO]     ...attempted 875/2000 (filled 776)
+[02:32:30] [INFO]     ...attempted 900/2000 (filled 797)
+[02:32:30] [INFO]     ...attempted 925/2000 (filled 821)
+[02:32:30] [INFO]     ...attempted 950/2000 (filled 844)
+[02:32:30] [INFO]     ...attempted 975/2000 (filled 869)
+[02:32:30] [INFO]     ...attempted 1000/2000 (filled 893)
+[02:32:30] [INFO]     ...attempted 1025/2000 (filled 915)
+[02:32:30] [INFO]     ...attempted 1050/2000 (filled 935)
+[02:32:30] [INFO]     ...attempted 1075/2000 (filled 956)
+[02:32:30] [INFO]     ...attempted 1100/2000 (filled 979)
+[02:32:30] [INFO]     ...attempted 1125/2000 (filled 1000)
+[02:32:30] [INFO]     ...attempted 1150/2000 (filled 1025)
+[02:32:30] [INFO]     ...attempted 1175/2000 (filled 1048)
+[02:32:30] [INFO]     ...attempted 1200/2000 (filled 1073)
+[02:32:30] [INFO]     ...attempted 1225/2000 (filled 1097)
+[02:32:30] [INFO]     ...attempted 1250/2000 (filled 1122)
+[02:32:30] [INFO]     ...attempted 1275/2000 (filled 1146)
+[02:32:30] [INFO]     ...attempted 1300/2000 (filled 1158)
+[02:32:30] [INFO]     ...attempted 1325/2000 (filled 1183)
+[02:32:30] [INFO]     ...attempted 1350/2000 (filled 1208)
+[02:32:30] [INFO]     ...attempted 1375/2000 (filled 1233)
+[02:32:30] [INFO]     ...attempted 1400/2000 (filled 1258)
+[02:32:30] [INFO]     ...attempted 1425/2000 (filled 1282)
+[02:32:30] [INFO]     ...attempted 1450/2000 (filled 1306)
+[02:32:30] [INFO]     ...attempted 1475/2000 (filled 1329)
+[02:32:30] [INFO]     ...attempted 1500/2000 (filled 1353)
+[02:32:30] [INFO]     ...attempted 1525/2000 (filled 1378)
+[02:32:30] [INFO]     ...attempted 1550/2000 (filled 1403)
+[02:32:30] [INFO]     ...attempted 1575/2000 (filled 1428)
+[02:32:30] [INFO]     ...attempted 1600/2000 (filled 1453)
+[02:32:30] [INFO]     ...attempted 1625/2000 (filled 1478)
+[02:32:30] [INFO]     ...attempted 1650/2000 (filled 1501)
+[02:32:30] [INFO]     ...attempted 1675/2000 (filled 1526)
+[02:32:30] [INFO]     ...attempted 1700/2000 (filled 1550)
+[02:32:30] [INFO]     ...attempted 1725/2000 (filled 1574)
+[02:32:30] [INFO]     ...attempted 1750/2000 (filled 1596)
+[02:32:30] [INFO]     ...attempted 1775/2000 (filled 1621)
+[02:32:30] [INFO]     ...attempted 1800/2000 (filled 1645)
+[02:32:30] [INFO]     ...attempted 1825/2000 (filled 1668)
+[02:32:30] [INFO]     ...attempted 1850/2000 (filled 1691)
+[02:32:30] [INFO]     ...attempted 1875/2000 (filled 1714)
+[02:32:30] [INFO]     ...attempted 1900/2000 (filled 1737)
+[02:32:30] [INFO]     ...attempted 1925/2000 (filled 1761)
+[02:32:30] [INFO]     ...attempted 1950/2000 (filled 1784)
+[02:32:30] [INFO]     ...attempted 1975/2000 (filled 1808)
+[02:32:30] [INFO]     ...attempted 2000/2000 (filled 1832)
+[02:32:30] [INFO]   
+[02:32:30] [INFO]     Attempted this run : 2000
+[02:32:30] [INFO]     Filled this run    : 1832 (92%)
+[02:32:30] [INFO]     datePosted found   : 74 (4%)  [2 via labeled Open Date]
+[02:32:30] [INFO]     deadlines found    : 28 (1%)  [+372 rolling/until-filled]
+[02:32:30] [INFO]     start dates found  : 7 (0%)
+[02:32:30] [INFO]     Total w/ description: 2,503 / 6,334
+[02:32:30] [INFO]     Remaining unfetched: 3,663
+[02:32:30] [INFO]     Report saved       : generated/job-descriptions-report.json
+[02:32:30] [INFO]   
+[02:32:30] [OK] Descriptions succeeded.
+[02:32:30] [INFO] 
+[02:32:30] [INFO] --------------------------------------------------
+[02:32:30] [INFO]   Step 5/8 - Build frontend
+[02:32:30] [INFO] --------------------------------------------------
+[02:32:30] [INFO] Running: C:\Program Files\nodejs\npm.cmd run build:frontend
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   > faculty-jobs@1.0.0 build:frontend
+[02:32:42] [INFO]   > npm run build:coverage && npm run sync:policy-exclusions && npm run sync:web-data && cd web-vue && npm run build && cd .. && node scripts/copy-dist.js && node scripts/generate-job-pages.js && node scripts/generate-sitemap.js && node scripts/inject-og-meta.js
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   > faculty-jobs@1.0.0 build:coverage
+[02:32:42] [INFO]   > npm run build:institutions && npm run build:policy-exclusions && npm run sync:policy-exclusions && npm run build:coverage-report
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   > faculty-jobs@1.0.0 build:institutions
+[02:32:42] [INFO]   > node scripts/build-institutions-master.js
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   Enriched 1295/1543 institutions from IPEDS (hd2024.csv)
+[02:32:42] [INFO]   Wrote data\institutions-master.json (1543 institutions)
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   > faculty-jobs@1.0.0 build:policy-exclusions
+[02:32:42] [INFO]   > node scripts/generate-policy-exclusions.js
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   Wrote generated\policy-excluded-colleges.json (12 excluded institutions)
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   > faculty-jobs@1.0.0 sync:policy-exclusions
+[02:32:42] [INFO]   > node scripts/sync-policy-exclusions-web.js
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   Synced generated\policy-excluded-colleges.json -> web-vue\public\policy-excluded-colleges.json
+[02:32:42] [INFO]   Synced generated\policy-excluded-colleges.json -> public\policy-excluded-colleges.json
+[02:32:42] [INFO]   Synced generated\policy-excluded-colleges.json -> docs\policy-excluded-colleges.json
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   > faculty-jobs@1.0.0 build:coverage-report
+[02:32:42] [INFO]   > node scripts/generate-coverage-report.js
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   Wrote generated\coverage-report.json (eligible universe: 1543)
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   > faculty-jobs@1.0.0 sync:policy-exclusions
+[02:32:42] [INFO]   > node scripts/sync-policy-exclusions-web.js
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   Synced generated\policy-excluded-colleges.json -> web-vue\public\policy-excluded-colleges.json
+[02:32:42] [INFO]   Synced generated\policy-excluded-colleges.json -> public\policy-excluded-colleges.json
+[02:32:42] [INFO]   Synced generated\policy-excluded-colleges.json -> docs\policy-excluded-colleges.json
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   > faculty-jobs@1.0.0 sync:web-data
+[02:32:42] [INFO]   > node scripts/sync-web-data-files.js
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   Synced public/jobs.json -> web-vue/public/jobs.json
+[02:32:42] [INFO]   Synced public/college-coords.json -> web-vue/public/college-coords.json
+[02:32:42] [INFO]   Built web chunk manifest: web-vue/public/data/jobs-manifest.json
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   > web-vue@0.0.0 build
+[02:32:42] [INFO]   > vite build
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   [36mvite v8.0.0-beta.15 [32mbuilding client environment for production...[36m[39m
+[02:32:42] [INFO]   [2K
+[02:32:42] [INFO]   transforming...✓ 32 modules transformed.
+[02:32:42] [INFO]   rendering chunks...
+[02:32:42] [INFO]   computing gzip size...
+[02:32:42] [INFO]   dist/index.html                   2.67 kB │ gzip:   0.97 kB
+[02:32:42] [INFO]   dist/assets/index-B1Fe9rZq.css   33.18 kB │ gzip:  10.54 kB
+[02:32:42] [INFO]   dist/assets/index-75zeCueU.js   322.50 kB │ gzip: 101.40 kB
+[02:32:42] [INFO]   
+[02:32:42] [INFO]   [32m✓ built in 381ms[39m
+[02:32:42] [INFO]   Copied web-vue/dist → public/ and docs/
+[02:32:42] [INFO]   generate-job-pages: 2480 pages (of 6334 jobs; 3854 skipped as thin/no-url)
+[02:32:42] [INFO]   Sitemap written — lastmod: 2026-06-21, 3 static + 2480 job URLs
+[02:32:42] [INFO]     docs/sitemap.xml  public/sitemap.xml
+[02:32:42] [INFO]     docs/robots.txt   public/robots.txt
+[02:32:42] [INFO]   inject-og-meta: patched 2 files — 6334 jobs, 428 colleges, 56 sources
+[02:32:42] [OK] Build succeeded.
+[02:32:42] [INFO] 
+[02:32:42] [INFO] --------------------------------------------------
+[02:32:42] [INFO]   Step 6/8 - Commit and push
+[02:32:42] [INFO] --------------------------------------------------
+[02:32:42] [INFO] Running: C:\Program Files\Git\cmd\git.exe add -A docs/ public/ generated/ web-vue/public/ data/institutions-master.json
