@@ -1,0 +1,387 @@
+// agent-career-discovery.js
+//
+// LLM-assisted discovery of real career/ATS URLs for institutions stuck on a
+// "homepage default" — coverage_status "missing" with career_url == homepage_url
+// (or none), so the scraper lands on a homepage and finds 0 jobs.
+//
+// For each target it:
+//   1. searches the web for candidate career URLs (DuckDuckGo html endpoint),
+//   2. asks an LLM to rank those *real* candidates (grounded — it only chooses
+//      among URLs we actually found, so it can't hallucinate a URL),
+//   3. scrape-tests the ranked candidates with the real scraper and records the
+//      first that yields faculty jobs into data/career-url-overrides.json.
+//
+// The scrape-test is the hard gate: a wrong LLM pick simply fails verification
+// and is discarded, so the LLM improves hit-rate but can't create false records.
+// Overrides only take effect for institutions already in server.js's scrape
+// list, so targets are intersected with that list.
+//
+// Usage:
+//   node scripts/agent-career-discovery.js [--max N] [--dry-run] [--concurrency N] [--per-candidate K]
+//   USE_CLAUDE=1 -> Claude (needs ANTHROPIC_API_KEY); otherwise Ollama (qwen2.5:7b).
+
+import fs from "fs";
+import path from "path";
+import http from "http";
+import https from "https";
+import { fileURLToPath } from "url";
+import { chromium } from "playwright";
+import { scrapeGenericJobPage } from "../server.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT = path.join(__dirname, "..");
+const MASTER_PATH = path.join(ROOT, "data", "institutions-master.json");
+const OVERRIDES_PATH = path.join(ROOT, "data", "career-url-overrides.json");
+const SERVER_PATH = path.join(ROOT, "server.js");
+const REPORT_PATH = path.join(ROOT, "generated", "career-discovery-report.json");
+
+function parseArgs(argv) {
+  const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800 };
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (a === "--dry-run") out.dryRun = true;
+    else if (a === "--max" && argv[i + 1]) out.max = Math.max(1, Number(argv[++i]));
+    else if (a === "--concurrency" && argv[i + 1]) out.concurrency = Math.min(4, Math.max(1, Number(argv[++i])));
+    else if (a === "--per-candidate" && argv[i + 1]) out.perCandidate = Math.max(1, Number(argv[++i]));
+  }
+  return out;
+}
+
+const ARGS = parseArgs(process.argv.slice(2));
+const API_KEY = process.env.ANTHROPIC_API_KEY;
+const OLLAMA_HOST = process.env.OLLAMA_HOST || "localhost:11434";
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:7b";
+const USE_OLLAMA = process.env.USE_CLAUDE !== "1";
+
+const clean = (v) => String(v ?? "").trim();
+const normalize = (v) => clean(v).toLowerCase();
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// ── candidate discovery (web search) — mirrors discover-career-pages.js ──────
+
+function inferPlatformFromUrl(url) {
+  const u = normalize(url);
+  if (!u) return null;
+  if (u.includes("myworkdayjobs.com") || u.includes("myworkdaysite.com")) return "workday";
+  if (u.includes("pageuppeople.com")) return "pageup";
+  if (u.includes("taleo.net")) return "taleo";
+  if (u.includes("peopleadmin.com")) return "peopleadmin";
+  if (u.includes("schooljobs.com") || u.includes("governmentjobs.com")) return "schooljobs";
+  if (u.includes("csod.com")) return "csod";
+  if (u.includes("paycomonline.net")) return "paycom";
+  if (u.includes("interviewexchange.com")) return "interviewexchange";
+  if (u.includes("jobvite.com")) return "jobvite";
+  if (u.includes("interfolio.com")) return "interfolio";
+  if (u.includes("icims.com")) return "icims";
+  if (u.includes("isolvedhire.com")) return "isolvedhire";
+  if (u.includes("workforcenow.adp.com")) return "adp";
+  return "generic";
+}
+
+function decodeDdgRedirect(url) {
+  try {
+    const u = new URL(url);
+    if (u.pathname.startsWith("/l/") && u.searchParams.get("uddg")) {
+      return decodeURIComponent(u.searchParams.get("uddg"));
+    }
+    return url;
+  } catch {
+    return url;
+  }
+}
+
+function extractCandidateUrlsFromDdgHtml(html) {
+  const urls = [];
+  const re = /<a[^>]+class="[^"]*result__a[^"]*"[^>]+href="([^"]+)"/gi;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const decoded = decodeDdgRedirect(m[1]);
+    if (/^https?:\/\//i.test(decoded)) urls.push(decoded);
+  }
+  if (urls.length === 0) {
+    const reAlt = /uddg=([^&"'>\s]+)/gi;
+    while ((m = reAlt.exec(html)) !== null) {
+      try {
+        const decoded = decodeURIComponent(m[1]);
+        if (/^https?:\/\//i.test(decoded)) urls.push(decoded);
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+  return [...new Set(urls)];
+}
+
+// Aggregators and non-employer hosts: useful to a human, useless to the scraper.
+const DENY = [
+  "wikipedia.org", "linkedin.com", "facebook.com", "instagram.com", "x.com",
+  "twitter.com", "youtube.com", "indeed.com", "glassdoor.com", "ziprecruiter.com",
+  "higheredjobs.com", "academicjobs.com", "insidehighered.com", "chronicle.com",
+  "simplyhired.com", "/news", "/events", "/giving", "/alumni",
+];
+function looksBadCandidate(url) {
+  const u = normalize(url);
+  if (!u) return true;
+  return DENY.some((d) => u.includes(d));
+}
+
+function scoreCandidate(url, schoolName) {
+  const u = normalize(url);
+  let score = 0;
+  if (inferPlatformFromUrl(u) !== "generic") score += 0.6;
+  if (/\bfaculty\b|\bprofessor\b|\bacademic\b|\binstructor\b|\blecturer\b/.test(u)) score += 0.25;
+  if (/\bjobs\b|\bcareers\b|\bemployment\b|\brecruiting\b|\bjobsearch\b|\bpostings\b/.test(u)) score += 0.2;
+  if (/\.edu\b/.test(u)) score += 0.1;
+  const words = normalize(schoolName)
+    .split(/[^a-z0-9]+/)
+    .filter((w) => w.length >= 4 && !["university", "college", "state", "system", "school"].includes(w));
+  if (words.some((w) => u.includes(w))) score += 0.15;
+  if (/\/login|sign[-_]?in|sso|auth/.test(u)) score -= 0.2;
+  return Number(Math.max(0, Math.min(0.99, score)).toFixed(2));
+}
+
+// Guard against matching a *different* school's site (e.g. an acupuncture
+// college whose name contains "Berkeley" matching berkeley.edu/jobs). The real
+// ATS URL almost always carries the school's own domain token in its host or
+// path (acu.edu -> acu.wd108.myworkdayjobs.com; aamu.edu -> .../careers/aamu).
+function homepageSld(homepage) {
+  try {
+    const h = new URL(homepage).hostname.replace(/^www\./, "");
+    const p = h.split(".");
+    return p.length >= 2 ? p[p.length - 2] : p[0];
+  } catch {
+    return null;
+  }
+}
+function candidateBelongsToSchool(url, homepage) {
+  const s = homepageSld(homepage);
+  if (!s || s.length < 3) return true; // can't tell — don't over-reject
+  return normalize(url).includes(s);
+}
+
+async function fetchDdg(query, timeoutMs = 12000) {
+  const searchUrl = `https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const resp = await fetch(searchUrl, {
+      signal: controller.signal,
+      headers: { "User-Agent": "Mozilla/5.0 FacultyJobsDiscovery/1.0" },
+    });
+    if (!resp.ok) return [];
+    return extractCandidateUrlsFromDdgHtml(await resp.text()).filter((u) => !looksBadCandidate(u));
+  } catch {
+    return [];
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function discoverCandidates(inst) {
+  const queries = [
+    `${inst.name} faculty jobs careers`,
+    `${inst.name} academic employment apply`,
+  ];
+  const byUrl = new Map();
+  for (const q of queries) {
+    for (const url of await fetchDdg(q)) {
+      // Reject other schools' sites up front (domain-ownership guard).
+      if (!candidateBelongsToSchool(url, inst.homepage_url)) continue;
+      if (!byUrl.has(url)) {
+        byUrl.set(url, { url, platform_type: inferPlatformFromUrl(url), score: scoreCandidate(url, inst.name) });
+      }
+    }
+    await sleep(ARGS.searchDelayMs);
+  }
+  return [...byUrl.values()].sort((a, b) => b.score - a.score).slice(0, 8);
+}
+
+// ── LLM ranking (grounded in the real candidate list) ────────────────────────
+
+function buildRankPrompt(inst, candidates) {
+  const list = candidates.map((c, i) => `${i + 1}. ${c.url}  [platform: ${c.platform_type}]`).join("\n");
+  return [
+    `You are picking the official faculty job-listing page for a US university.`,
+    `University: ${inst.name}`,
+    `Homepage: ${inst.homepage_url}`,
+    ``,
+    `Candidate URLs found by web search:`,
+    list,
+    ``,
+    `Pick the candidates most likely to be the university's OWN applicant/job`,
+    `listing portal where faculty/professor openings are posted (e.g. a Workday,`,
+    `PeopleAdmin, SchoolJobs/GovernmentJobs, iCIMS, Taleo, Interfolio, or the`,
+    `school's /careers or /jobs/employment page). Prefer the school's own ATS over`,
+    `third-party boards. Reply with ONLY the candidate numbers in priority order,`,
+    `comma-separated (e.g. "3,1,5"). If none look like a real job listing page,`,
+    `reply "none". No other text.`,
+  ].join("\n");
+}
+
+function callLlmRaw(prompt) {
+  return new Promise((resolve, reject) => {
+    if (USE_OLLAMA) {
+      const body = JSON.stringify({ model: OLLAMA_MODEL, messages: [{ role: "user", content: prompt }], stream: false });
+      const [hostname, port] = OLLAMA_HOST.split(":");
+      const req = http.request(
+        { hostname, port: Number(port) || 11434, path: "/api/chat", method: "POST", headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) } },
+        (res) => { let d = ""; res.on("data", (c) => (d += c)); res.on("end", () => { try { resolve(JSON.parse(d)?.message?.content?.trim() || ""); } catch (e) { reject(e); } }); }
+      );
+      req.on("error", reject); req.write(body); req.end();
+    } else {
+      const body = JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 64, messages: [{ role: "user", content: prompt }] });
+      const req = https.request(
+        { hostname: "api.anthropic.com", path: "/v1/messages", method: "POST", headers: { "Content-Type": "application/json", "x-api-key": API_KEY, "anthropic-version": "2023-06-01", "Content-Length": Buffer.byteLength(body) } },
+        (res) => { let d = ""; res.on("data", (c) => (d += c)); res.on("end", () => { try { resolve(JSON.parse(d)?.content?.[0]?.text?.trim() || ""); } catch (e) { reject(e); } }); }
+      );
+      req.on("error", reject); req.write(body); req.end();
+    }
+  });
+}
+
+// Returns candidates reordered by the LLM's priority; falls back to score order.
+async function rankCandidates(inst, candidates) {
+  if (candidates.length <= 1) return candidates;
+  let text = "";
+  try {
+    text = await callLlmRaw(buildRankPrompt(inst, candidates));
+  } catch {
+    return candidates;
+  }
+  if (/^\s*none\s*$/i.test(text)) return [];
+  const order = [...text.matchAll(/\d+/g)].map((m) => Number(m[0]) - 1).filter((i) => i >= 0 && i < candidates.length);
+  if (order.length === 0) return candidates;
+  const seen = new Set();
+  const ranked = [];
+  for (const i of order) { if (!seen.has(i)) { seen.add(i); ranked.push(candidates[i]); } }
+  return ranked;
+}
+
+// ── targets ──────────────────────────────────────────────────────────────────
+
+function loadServerCampusNames() {
+  const src = fs.readFileSync(SERVER_PATH, "utf8");
+  const names = new Set();
+  for (const m of src.matchAll(/campus:\s*"([^"]+)"/g)) names.add(normalize(m[1]));
+  return names;
+}
+
+function chooseTargets(master, campusSet, existingOverrideNames) {
+  return (master.institutions || [])
+    .filter((i) => normalize(i.coverage_status) === "missing")
+    .filter((i) => {
+      const c = clean(i.career_url).replace(/\/+$/, "");
+      const h = clean(i.homepage_url).replace(/\/+$/, "");
+      return !c || c === h;
+    })
+    .filter((i) => normalize(i.control) !== "private for-profit")
+    .filter((i) => i.is_degree_granting !== false)
+    .filter((i) => i.homepage_url)
+    .filter((i) => campusSet.has(normalize(i.name)))        // override only fires if scraped
+    .filter((i) => !existingOverrideNames.has(normalize(i.name)))
+    .sort((a, b) => clean(a.name).localeCompare(clean(b.name)));
+}
+
+// ── verification (the hard gate) ──────────────────────────────────────────────
+
+async function verify(context, inst, url) {
+  try {
+    const jobs = await scrapeGenericJobPage(context, url, inst.name, inst.state || "XX");
+    return Array.isArray(jobs) ? jobs : [];
+  } catch {
+    return [];
+  }
+}
+
+// ── main ──────────────────────────────────────────────────────────────────────
+
+async function main() {
+  console.log("\nFaculty Atlas - Career Discovery Agent");
+  console.log(`  Backend: ${USE_OLLAMA ? `Ollama (${OLLAMA_MODEL})` : "Claude (haiku)"}`);
+  if (ARGS.dryRun) console.log("  *** DRY RUN — nothing written ***");
+
+  const master = JSON.parse(fs.readFileSync(MASTER_PATH, "utf8"));
+  const overridesDoc = fs.existsSync(OVERRIDES_PATH)
+    ? JSON.parse(fs.readFileSync(OVERRIDES_PATH, "utf8"))
+    : { updatedAt: null, overrides: [] };
+  const existingNames = new Set((overridesDoc.overrides || []).map((o) => normalize(o.name)));
+  const campusSet = loadServerCampusNames();
+
+  const targets = chooseTargets(master, campusSet, existingNames).slice(0, ARGS.max);
+  console.log(`  Targets this run : ${targets.length} (max ${ARGS.max}, in scrape list, not already overridden)`);
+  console.log(`  Concurrency      : ${ARGS.concurrency} | scrape-tests/school: up to ${ARGS.perCandidate}\n`);
+
+  const browser = await chromium.launch({ headless: true });
+  const context = await browser.newContext({
+    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121 Safari/537.36",
+    viewport: { width: 1280, height: 800 },
+    locale: "en-US",
+  });
+
+  const found = [];
+  const misses = [];
+  let next = 0;
+
+  async function worker() {
+    while (next < targets.length) {
+      const inst = targets[next++];
+      const label = `  [${String(next).padStart(3)}/${targets.length}] ${inst.name}`;
+      try {
+        const candidates = await discoverCandidates(inst);
+        if (candidates.length === 0) { console.log(`${label} … no candidates`); misses.push({ name: inst.name, reason: "no_candidates" }); continue; }
+        const ranked = await rankCandidates(inst, candidates);
+        if (ranked.length === 0) { console.log(`${label} … LLM: none viable`); misses.push({ name: inst.name, reason: "llm_none" }); continue; }
+
+        let hit = null;
+        for (const cand of ranked.slice(0, ARGS.perCandidate)) {
+          const jobs = await verify(context, inst, cand.url);
+          if (jobs.length > 0) { hit = { cand, count: jobs.length, sample: jobs.slice(0, 3).map((j) => j.title) }; break; }
+        }
+        if (!hit) { console.log(`${label} … ${ranked.length} ranked, 0 verified`); misses.push({ name: inst.name, reason: "no_jobs", tried: ranked.slice(0, ARGS.perCandidate).map((c) => c.url) }); continue; }
+
+        const platform = inferPlatformFromUrl(hit.cand.url);
+        found.push({
+          name: inst.name,
+          homepage_url: inst.homepage_url,
+          career_url: hit.cand.url,
+          platform_type: platform,
+          notes: `Discovered via agent-career-discovery; verified live (${hit.count} faculty posting${hit.count === 1 ? "" : "s"}).`,
+          _jobCount: hit.count,
+        });
+        console.log(`${label} … ✓ ${platform} (${hit.count}) ${hit.cand.url}`);
+      } catch (e) {
+        console.log(`${label} … ERROR ${String(e.message || e).split("\n")[0]}`);
+        misses.push({ name: inst.name, reason: "error", error: String(e.message || e) });
+      }
+    }
+  }
+
+  await Promise.all(Array.from({ length: ARGS.concurrency }, worker));
+  await browser.close();
+
+  // ── write results ────────────────────────────────────────────────────────
+  console.log(`\n  Verified finds : ${found.length} / ${targets.length}`);
+  for (const f of found) console.log(`    ${f.name}  ->  ${f.career_url}  (${f.platform_type}, ${f._jobCount})`);
+
+  if (!ARGS.dryRun && found.length > 0) {
+    for (const f of found) {
+      const { _jobCount, ...entry } = f;
+      overridesDoc.overrides.push(entry);
+    }
+    overridesDoc.updatedAt = new Date().toISOString();
+    fs.writeFileSync(OVERRIDES_PATH, JSON.stringify(overridesDoc, null, 2) + "\n", "utf8");
+    console.log(`\n  career-url-overrides.json updated (+${found.length}, now ${overridesDoc.overrides.length}).`);
+  } else if (ARGS.dryRun) {
+    console.log("\n  DRY RUN: no files written.");
+  }
+
+  fs.writeFileSync(
+    REPORT_PATH,
+    JSON.stringify({ generatedAt: new Date().toISOString(), backend: USE_OLLAMA ? OLLAMA_MODEL : "claude-haiku", config: ARGS, targetsConsidered: targets.length, verifiedFinds: found.map(({ _jobCount, ...f }) => ({ ...f, jobCount: _jobCount })), misses }, null, 2) + "\n",
+    "utf8"
+  );
+  console.log(`  Report saved   : generated/career-discovery-report.json\n`);
+}
+
+main().catch((e) => { console.error(e?.stack || e?.message || String(e)); process.exit(1); });
