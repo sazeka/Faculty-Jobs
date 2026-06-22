@@ -4757,7 +4757,7 @@ async function gotoWithRetry(page, url, { retries = 3, settleMs = 1500, ...gotoO
   throw lastErr;
 }
 
-function looksFacultyish(title) {
+export function looksFacultyish(title) {
   const s = String(title || "").toLowerCase();
   // Strict filter: only true faculty positions
   // Must contain professor, lecturer, instructor, or faculty

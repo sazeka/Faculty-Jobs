@@ -26,7 +26,7 @@ import http from "http";
 import https from "https";
 import { fileURLToPath } from "url";
 import { chromium } from "playwright";
-import { scrapeGenericJobPage } from "../server.js";
+import { scrapeGenericJobPage, looksFacultyish } from "../server.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -433,7 +433,11 @@ function chooseTargets(master, campusSet, existingOverrideNames, systemMembers, 
 async function verify(context, inst, url) {
   try {
     const jobs = await scrapeGenericJobPage(context, url, inst.name, inst.state || "XX");
-    return Array.isArray(jobs) ? jobs : [];
+    // scrapeGenericJobPage returns ALL job links (incl. staff). The real scrape
+    // applies looksFacultyish per state scraper, so verify on the FACULTY subset
+    // — else a staff-heavy "employment" page passes the gate on staff count and
+    // records an override that yields ~0 faculty downstream.
+    return Array.isArray(jobs) ? jobs.filter((j) => looksFacultyish(j.title)) : [];
   } catch {
     return [];
   }
