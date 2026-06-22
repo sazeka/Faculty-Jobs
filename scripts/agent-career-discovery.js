@@ -240,10 +240,16 @@ async function homepageCandidates(context, inst) {
   return [...urls];
 }
 
+// Reject portals scoped to a non-faculty department — they verify (real jobs)
+// but the jobs are wrong (e.g. ASU's ...myworkdayjobs.com/ASUStaffCareers,
+// UCF's .../athletics). Recurred across runs, so guard it at the source.
+const WRONG_DEPARTMENT = /athletic|staff.?careers|\/staff(\b|\/)|police\b|medical.?center.?careers/i;
+
 async function discoverCandidates(context, inst) {
   const pool = new Map();
   const add = (url) => {
     if (!url || !candidateBelongsToSchool(url, inst.homepage_url)) return;
+    if (WRONG_DEPARTMENT.test(url)) return;
     if (!pool.has(url)) pool.set(url, { url, platform_type: inferPlatformFromUrl(url), score: scoreCandidate(url, inst.name) });
   };
   // primary: the school's own site (reliable)
