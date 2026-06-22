@@ -438,12 +438,23 @@ async function main() {
         const ranked = await rankCandidates(inst, candidates);
         if (ranked.length === 0) { console.log(`${label} … LLM: none viable`); misses.push({ name: inst.name, reason: "llm_none" }); continue; }
 
+        // Quality gate: accept >=2 jobs, OR >=1 from a recognized ATS. A single
+        // job off a generic page is usually a stray link on an HR landing page
+        // (the Aurora/Case Western noise), so it's held as "weak" not recorded.
         let hit = null;
+        let weak = null;
         for (const cand of ranked.slice(0, ARGS.perCandidate)) {
           const jobs = await verify(context, inst, cand.url);
-          if (jobs.length > 0) { hit = { cand, count: jobs.length, sample: jobs.slice(0, 3).map((j) => j.title) }; break; }
+          if (jobs.length === 0) continue;
+          const isAts = inferPlatformFromUrl(cand.url) !== "generic";
+          if (jobs.length >= 2 || isAts) { hit = { cand, count: jobs.length, sample: jobs.slice(0, 3).map((j) => j.title) }; break; }
+          if (!weak) weak = { url: cand.url, count: jobs.length };
         }
-        if (!hit) { console.log(`${label} … ${ranked.length} ranked, 0 verified`); misses.push({ name: inst.name, reason: "no_jobs", tried: ranked.slice(0, ARGS.perCandidate).map((c) => c.url) }); continue; }
+        if (!hit) {
+          if (weak) { console.log(`${label} … weak only (${weak.count} on generic page)`); misses.push({ name: inst.name, reason: "weak_single", url: weak.url, count: weak.count }); }
+          else { console.log(`${label} … ${ranked.length} ranked, 0 verified`); misses.push({ name: inst.name, reason: "no_jobs", tried: ranked.slice(0, ARGS.perCandidate).map((c) => c.url) }); }
+          continue;
+        }
 
         const platform = inferPlatformFromUrl(hit.cand.url);
         found.push({
