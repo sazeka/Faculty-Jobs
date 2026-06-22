@@ -4776,7 +4776,7 @@ async function fetchCunyJobDescription(context, url, maxRetries = 2) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     const page = await context.newPage();
     try {
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30_000 });
+      await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 30_000 });
       // Wait for JS to render content
       await page.waitForTimeout(2000);
 
@@ -4849,7 +4849,7 @@ async function fetchCunyJobDescriptions(context, jobs, concurrency = 4) {
 async function scrapeCunyFaculty(context) {
   const page = await context.newPage();
   try {
-    await page.goto(CUNY_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, CUNY_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
 
     // Wait for job links to appear (JS-rendered page)
     console.log("Waiting for CUNY jobs to load...");
@@ -5065,7 +5065,7 @@ async function clickMoreControl(page) {
 
 async function scrapeCtFacultyTeaching(context) {
   const page = await context.newPage();
-  await page.goto(CT_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await gotoWithRetry(page, CT_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
   await page.waitForTimeout(900);
 
   const beforeSig = await ctResultsSignature(page);
@@ -5170,7 +5170,7 @@ async function scrapeYaleAcademicPositions(context, campusName, sourceName) {
       let batch = [];
       for (let attempt = 0; attempt < 3; attempt++) {
         try {
-          await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90_000 });
+          await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 90_000 });
           await page.waitForTimeout(1200);
 
           batch = await safeEvaluate(page, () => {
@@ -5359,7 +5359,7 @@ async function scrapeCtAll(context) {
 
 async function scrapeCsuFaculty(context) {
   const page = await context.newPage();
-  await page.goto(CSU_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await gotoWithRetry(page, CSU_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
   await page.waitForTimeout(900);
 
   const jobs = await scrapeEnUsFilterSite(page, {
@@ -5446,7 +5446,7 @@ async function fetchCsuDetailsFromDetails(context, urls, concurrency = 6) {
       const url = urls[idx++];
       const page = await context.newPage();
       try {
-        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
         await page.waitForTimeout(500);
 
         const details = await page.evaluate(() => {
@@ -5522,7 +5522,7 @@ async function scrapeUmassAll(context) {
     UMASS_CAMPUSES.map(async ({ campus, url }) => {
       try {
         const page = await context.newPage();
-        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
         await page.waitForTimeout(900);
 
         const jobs = await scrapeEnUsFilterSite(page, {
@@ -5550,7 +5550,7 @@ async function scrapeUmassAmherst(context) {
   const page = await context.newPage();
 
   try {
-    await page.goto(UMASS_AMHERST_URL, { waitUntil: "networkidle", timeout: 60_000 });
+    await gotoWithRetry(page, UMASS_AMHERST_URL, { waitUntil: "networkidle", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
     // PageUp sites load jobs dynamically - wait for job cards
@@ -6204,7 +6204,7 @@ async function scrapeEnUsFilterSite(page, { source, campus, category }) {
     if (!nextUrl || nextUrl === currentUrl) break;
     currentUrl = nextUrl;
 
-    await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
   }
 
@@ -6230,7 +6230,7 @@ async function scrapeUcAll(context) {
     UC_CAMPUSES.map(async ({ campus, url }) => {
       try {
         const page = await context.newPage();
-        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
         await page.waitForTimeout(900);
 
         const jobs = await scrapeApRecruitCampus(page, campus);
@@ -6334,7 +6334,7 @@ async function scrapeApRecruitCampus(page, campusName) {
         if (href) {
           const nextUrl = new URL(href, page.url()).toString();
           if (nextUrl !== page.url()) {
-            await page.goto(nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
             await page.waitForTimeout(800);
             continue;
           }
@@ -6394,7 +6394,7 @@ async function scrapePrincetonFaculty(context, campusName, sourceName) {
     const baseUrl = "https://puwebp.princeton.edu/AcadHire/apply/";
 
     // Load the page once — Princeton AHIRE is a JSF app, session-based pagination
-    await page.goto(baseUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, baseUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2500);
 
     // Select "Faculty" category filter if available to reduce noise
@@ -6560,7 +6560,7 @@ function toNjJob(title, url, campusName, category = "Faculty") {
 async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
 
         const jobs = await page.evaluate(() => {
@@ -6760,7 +6760,7 @@ async function scrapeNjWorkday(context, startUrl, campusName, sourceLabel = "NJ"
 async function scrapeNjWorkdayBrowser(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 25_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 25_000 });
     await page.waitForSelector(
       '[data-automation-id="jobTitle"], [data-automation-id*="jobTitle" i], a[href*="/job/"], a[href*="/jobs/"]',
       { timeout: 20_000 }
@@ -6844,7 +6844,7 @@ async function scrapeNjRutgers(context, startUrl, campusName) {
     let currentUrl = startUrl;
 
     for (let safety = 0; safety < 80; safety++) {
-      await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await gotoWithRetry(page, currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await page.waitForTimeout(700);
 
       const batch = await page.evaluate(() => {
@@ -6934,7 +6934,7 @@ async function scrapeNjRutgers(context, startUrl, campusName) {
 async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
     // Try clicking on Faculty filter/category if present (UNM style)
@@ -7116,7 +7116,7 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "
     const jobs = [];
     const seen = new Set();
 
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
 
     for (let safety = 0; safety < 120; safety++) {
@@ -7169,7 +7169,7 @@ async function scrapeNjStockton(context, startUrl, campusName, sourceLabel = "NJ
     let currentUrl = startUrl;
 
     for (let safety = 0; safety < 80; safety++) {
-      await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await gotoWithRetry(page, currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await page.waitForTimeout(800);
 
       const batch = await page.evaluate(() => {
@@ -7265,7 +7265,7 @@ async function scrapeVaAll(context) {
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
             await page.waitForTimeout(900);
             return await scrapeEnUsFilterSite(page, { source: "VA", campus, category: "Faculty" });
           } finally {
@@ -7321,7 +7321,7 @@ if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "DE");
 if (type === "enusfilter") {
   const page = await context.newPage();
   try {
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
     return await scrapeEnUsFilterSite(page, { source: "DE", campus, category: "Faculty" });
   } finally {
@@ -7406,7 +7406,7 @@ async function scrapeNhAll(context) {
         // Fallback: try en-us/filter-style extractor
         const page = await context.newPage();
         try {
-          await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+          await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
           await page.waitForTimeout(900);
           return await scrapeEnUsFilterSite(page, { source: "NH", campus, category: "Faculty" });
         } finally {
@@ -7449,7 +7449,7 @@ async function scrapePaAll(context) {
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
             await page.waitForTimeout(900);
             return await scrapeEnUsFilterSite(page, { source: "PA", campus, category: "Faculty" });
           } finally {
@@ -7485,7 +7485,7 @@ async function scrapeMiAll(context) {
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
             await page.waitForTimeout(900);
             return await scrapeEnUsFilterSite(page, { source: "MI", campus, category: "Faculty" });
           } finally {
@@ -7570,7 +7570,7 @@ async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
     let currentUrl = startUrl;
 
     for (let safety = 0; safety < 120; safety++) {
-      await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await gotoWithRetry(page, currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await page.waitForTimeout(700);
 
       const batch = await safeEvaluate(page, () => {
@@ -7726,7 +7726,7 @@ async function scrapePeopleAdminHttpFallback(startUrl, campusName, sourceName) {
 async function scrapePeopleSoftAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1500);
 
     // PeopleSoft pages vary; pull plausible job links.
@@ -7862,7 +7862,7 @@ async function scrapePeopleAdminWithDept(context, startUrl, campusName, sourceNa
     };
 
     for (let safety = 0; safety < 120; safety++) {
-      await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await gotoWithRetry(page, currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await page.waitForTimeout(700);
 
       const batch = await safeEvaluate(page, () => {
@@ -7985,7 +7985,7 @@ async function scrapeIlAll(context) {
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
             await page.waitForTimeout(900);
             return await scrapeEnUsFilterSite(page, { source: "IL", campus, category: "Faculty" });
           } finally {
@@ -8015,7 +8015,7 @@ async function scrapeIlAll(context) {
 async function scrapeEiuJobs(context, startUrl, campusName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
 
     const items = await safeEvaluate(page, () => {
@@ -8077,7 +8077,7 @@ async function scrapeEiuJobs(context, startUrl, campusName) {
 async function scrapeInterfolioPositionsAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
 
     const jobs = [];
@@ -8123,7 +8123,7 @@ async function scrapeInterfolioPositionsAs(context, startUrl, campusName, source
         if (!href) break;
         const nextUrl = new URL(href, page.url()).toString();
         if (nextUrl === page.url()) break;
-        await page.goto(nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await gotoWithRetry(page, nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
         await page.waitForTimeout(800);
       } else {
         await next.click({ timeout: 8000 }).catch(() => {});
@@ -8151,7 +8151,7 @@ async function scrapeInterfolioPositionsAs(context, startUrl, campusName, source
 async function scrapeInterviewExchangeAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1200);
 
     const items = await safeEvaluate(page, () => {
@@ -8241,7 +8241,7 @@ function toStaticJob(title, url, campusName, sourceName) {
 async function scrapeStaticLinksAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(800);
 
     const items = await page.evaluate(() => {
@@ -8291,7 +8291,7 @@ async function scrapeStaticLinksAs(context, startUrl, campusName, sourceName) {
 async function scrapeKnoxFacultyJobs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
 
     const items = await safeEvaluate(page, () => {
@@ -8349,7 +8349,7 @@ async function scrapeKnoxFacultyJobs(context, startUrl, campusName, sourceName) 
 async function scrapeKzooFacultyJobs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(900);
 
     const items = await safeEvaluate(page, () => {
@@ -8423,7 +8423,7 @@ function toClaremontJob(title, url, campusName) {
 async function scrapeClaremontStatic(context, startUrl, campusName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(800);
 
     const items = await page.evaluate(() => {
@@ -8494,7 +8494,7 @@ async function scrapeClaremontStatic(context, startUrl, campusName) {
 async function scrapeClaremontCmc(context, startUrl, campusName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(800);
 
     const items = await page.evaluate(() => {
@@ -8550,7 +8550,7 @@ async function scrapeClaremontCmc(context, startUrl, campusName) {
 async function scrapeClaremontWorkday(context, startUrl, campusName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 25_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 25_000 });
     await page.waitForSelector('[data-automation-id="jobTitle"]', { timeout: 20_000 });
 
     const jobs = [];
@@ -8715,7 +8715,7 @@ async function schoolJobsGoNext(page) {
 
     if (!bad) {
       const nextUrl = new URL(href, page.url()).toString();
-      await page.goto(nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await gotoWithRetry(page, nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
       const after = await schoolJobsSignature(page);
       return after && after !== before;
     }
@@ -8761,7 +8761,7 @@ async function fetchAllJobDetails(context, links, source, concurrency = 6) {
 async function scrapeJobDetail(context, url) {
   const page = await context.newPage();
   try {
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45_000 });
+    await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 45_000 });
     await page.waitForTimeout(900);
 
     const job = await page.evaluate(() => {
@@ -8856,7 +8856,7 @@ async function scrapeAzAll(context) {
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
             await page.waitForTimeout(900);
             return await scrapeEnUsFilterSite(page, { source: "AZ", campus, category: "Faculty" });
           } finally {
@@ -8946,7 +8946,7 @@ async function scrapeNySunyMain(context) {
   // Scrape main SUNY careers page (Cloudflare protected, needs browser)
   const page = await context.newPage();
   try {
-    await page.goto(NY_SUNY_MAIN.url, { waitUntil: "networkidle", timeout: 60_000 });
+    await gotoWithRetry(page, NY_SUNY_MAIN.url, { waitUntil: "networkidle", timeout: 60_000 });
     // Wait for Cloudflare challenge to complete
     await page.waitForTimeout(5000);
 
@@ -9055,7 +9055,7 @@ async function scrapeNyPrivate(context) {
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
             return await scrapeEnUsFilterSite(page, { source: "NY", campus, category: "Faculty" });
           } finally {
             await page.close().catch(() => {});
@@ -9077,7 +9077,7 @@ async function scrapeNyPrivate(context) {
 async function scrapePaycomAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     // Paycom portals are SPAs - wait for job cards to render
     await page.waitForTimeout(5000);
     // Try waiting for any job listing element
@@ -9150,7 +9150,7 @@ async function scrapePaycomAs(context, startUrl, campusName, sourceName) {
 async function scrapeStJohnsDirectoryAs(context, directoryUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(directoryUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, directoryUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
     // Step 1: Collect sub-page links from the directory
@@ -9530,7 +9530,7 @@ async function captureApiRequest(context, careerUrl, pattern, waitMs = 5000) {
     if (auth) captured = { url: r.url(), auth, body: r.postData() };
   });
   try {
-    await page.goto(careerUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
+    await gotoWithRetry(page, careerUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
     await page.waitForTimeout(waitMs);
   } catch { /* ignore */ } finally {
     await page.close().catch(() => {});
@@ -9774,7 +9774,7 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
 async function scrapeAcademicJobsOnlineAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1200);
 
     const jobs = await safeEvaluate(page, () => {
@@ -9859,7 +9859,7 @@ async function scrapeAcademicJobsOnlineAs(context, startUrl, campusName, sourceN
 async function scrapePeopleClickAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 90_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 90_000 });
     await page.waitForTimeout(3000);
 
     let jobs = await safeEvaluate(page, () => {
@@ -10028,7 +10028,7 @@ async function scrapeKeywordSearchJobsAs(
     for (const term of terms) {
       const sep = startUrl.includes("?") ? "&" : "?";
       const url = `${startUrl}${sep}${queryParam}=${encodeURIComponent(term)}`;
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 90_000 });
+      await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 90_000 });
       await page.waitForTimeout(1800);
 
       const batch = await page.evaluate((pathPattern) => {
@@ -10091,7 +10091,7 @@ async function scrapeKeywordSearchJobsAs(
 async function scrapeSjcSantaFeJobs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1200);
 
     const items = await safeEvaluate(page, () => {
@@ -10155,7 +10155,7 @@ async function scrapePageUpAs(context, startUrl, campusName, sourceName) {
     let currentUrl = startUrl;
 
     for (let safety = 0; safety < 80; safety++) {
-      await page.goto(currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await gotoWithRetry(page, currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await page.waitForTimeout(1200);
 
       const batch = await safeEvaluate(page, () => {
@@ -10268,7 +10268,7 @@ async function scrapePageUpAs(context, startUrl, campusName, sourceName) {
 async function scrapeIcimsAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
     await page.waitForTimeout(2000);
 
     // iCIMS pages often have job cards with links
@@ -10360,7 +10360,7 @@ async function scrapeUcfSearchAs(context, startUrl, campusName, sourceName) {
   };
 
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2500);
 
     const blocked = await safeEvaluate(page, () => {
@@ -10435,7 +10435,7 @@ async function scrapeUcfSearchAs(context, startUrl, campusName, sourceName) {
 async function scrapeNyuFaculty(context, startUrl) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, {
+    await gotoWithRetry(page, startUrl, {
       waitUntil: "domcontentloaded",
       timeout: 60_000,
     });
@@ -10524,7 +10524,7 @@ async function scrapeAsuFacultyPositionsTable(context, campusName, startUrl) {
     let url = startUrl;
 
     for (let safety = 0; safety < 80; safety++) {
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await page.waitForTimeout(800);
 
       const batch = await safeEvaluate(page, () => {
@@ -10649,7 +10649,7 @@ async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
       base.searchParams.set("page", String(pageNo));
       const url = base.toString();
 
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await page.waitForTimeout(900);
 
       const batch = await safeEvaluate(page, () => {
@@ -10827,7 +10827,7 @@ async function fetchEnUsJobDetails(context, urls, concurrency = 6) {
       const url = urls[idx++];
       const page = await context.newPage();
       try {
-        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
         await page.waitForTimeout(600);
 
         const details = await safeEvaluate(page, () => {
@@ -10984,7 +10984,7 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
       base.searchParams.set("page", String(pageNo));
       const url = base.toString();
 
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await page.waitForTimeout(900);
 
       const batch = await safeEvaluate(page, () => {
@@ -11127,7 +11127,7 @@ async function scrapeOrAll(context) {
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
             await page.waitForTimeout(900);
             return await scrapeEnUsFilterSite(page, {
               source: "OR",
@@ -11445,7 +11445,7 @@ function splitMinnStateSystemCollege(job) {
 async function scrapeUmnJobs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
     // Try to load more results by scrolling and clicking "Show More" if present
@@ -11680,7 +11680,7 @@ async function scrapeUtAll(context) {
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
             await page.waitForTimeout(900);
             return await scrapeEnUsFilterSite(page, { source: "UT", campus, category: "Faculty" });
           } finally {
@@ -11716,7 +11716,7 @@ async function scrapeIdAll(context) {
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
-            await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+            await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
             await page.waitForTimeout(900);
             return await scrapeEnUsFilterSite(page, { source: "ID", campus, category: "Faculty" });
           } finally {
@@ -11762,7 +11762,7 @@ async function scrapeInAll(context) {
 async function scrapeAdpCareerCenterAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 90_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 90_000 });
     await page.waitForTimeout(9000);
 
     const rows = await page.evaluate(() => {
@@ -12133,7 +12133,7 @@ async function scrapeHiAll(context) {
 async function scrapeFloridaSouthernPortal(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1200);
 
     const searchBtn = page.locator("#pg0_V_psSearch_gbtnSearch").first();
@@ -12188,7 +12188,7 @@ async function scrapeFloridaSouthernPortal(context, startUrl, campusName, source
 async function scrapeFsuPeopleSoftJobs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1800);
 
     const items = await safeEvaluate(page, () => {
@@ -12362,7 +12362,7 @@ async function scrapeFlAll(context) {
 async function scrapeTaleoAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "networkidle", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "networkidle", timeout: 60_000 });
     await page.waitForTimeout(4000);
 
     // Determine which Taleo format we're dealing with
@@ -12483,7 +12483,7 @@ async function scrapeCuBoulder(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     // Go to faculty jobs page
-    await page.goto("https://jobs.colorado.edu/jobs/SearchJobs?employmentType=Faculty", { waitUntil: "networkidle", timeout: 60_000 });
+    await gotoWithRetry(page, "https://jobs.colorado.edu/jobs/SearchJobs?employmentType=Faculty", { waitUntil: "networkidle", timeout: 60_000 });
     await page.waitForTimeout(3000);
 
     const jobs = await safeEvaluate(page, () => {
@@ -12651,7 +12651,7 @@ async function scrapeSaasHrApi(apiUrl, campusName, sourceName) {
 async function scrapeInterfolioAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(4000);
 
     // Wait for job listings to load (multiple possible selectors)
@@ -12773,7 +12773,7 @@ async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
       } catch {}
     });
 
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     // Let the SPA hydrate and fire its XHRs
     await page.waitForTimeout(2500);
 
@@ -13143,7 +13143,7 @@ async function fetchOracleCxRequisitions(context, baseUrl, { q, site, origin, ca
 async function scrapeWwuFacultyPage(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1200);
 
     const items = await safeEvaluate(page, () => {
@@ -13247,7 +13247,7 @@ function normalizeUwTitle(raw) {
 async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    await page.goto(startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1200);
 
     // Warm up lazy-loaded parts by scrolling until the number of "More info" links stops increasing
