@@ -34,7 +34,20 @@ const ROOT = path.join(__dirname, "..");
 const MASTER_PATH = path.join(ROOT, "data", "institutions-master.json");
 const OVERRIDES_PATH = path.join(ROOT, "data", "career-url-overrides.json");
 const SERVER_PATH = path.join(ROOT, "server.js");
+const IPEDS_PATH = path.join(ROOT, "data", "ipeds", "hd2024.csv");
 const REPORT_PATH = path.join(ROOT, "generated", "career-discovery-report.json");
+
+// IPEDS F1SYSNAM values for systems scraped at the SYSTEM level (CSU_URL, the
+// UC source, CUNY_URL, the SUNY feed). Members are already covered there, so
+// per-campus discovery would create a duplicate campus under a second name.
+// Using IPEDS membership (not a name regex) catches every member regardless of
+// name format ("Cal Poly Humboldt") or current job count.
+const AGGREGATE_SYSTEM_NAMES = new Set([
+  "california state university",
+  "university of california",
+  "city university of new york",
+  "state university of new york system",
+]);
 
 function parseArgs(argv) {
   const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800, universities: false };
@@ -313,7 +326,46 @@ function loadServerCampusNames() {
   return names;
 }
 
-function chooseTargets(master, campusSet, existingOverrideNames) {
+function parseCsvLine(line) {
+  const out = [];
+  let cur = "", q = false;
+  for (const ch of line) {
+    if (ch === '"') q = !q;
+    else if (ch === "," && !q) { out.push(cur); cur = ""; }
+    else cur += ch;
+  }
+  out.push(cur);
+  return out.map((c) => c.replace(/^﻿/, "").replace(/^"|"$/g, "").trim());
+}
+
+// Build the set of campuses belonging to an aggregate-scraped system, keyed by
+// both IPEDS unitid and normalized name (master entries may lack a unitid).
+function loadSystemMembers() {
+  const members = { unitids: new Set(), names: new Set(), ok: false };
+  let raw;
+  try { raw = fs.readFileSync(IPEDS_PATH, "latin1"); } catch { return members; }
+  const lines = raw.split(/\r?\n/);
+  if (lines.length < 2) return members;
+  const hdr = parseCsvLine(lines[0]);
+  const iName = hdr.indexOf("INSTNM");
+  const iSys = hdr.indexOf("F1SYSNAM");
+  if (iName < 0 || iSys < 0) return members;
+  for (let k = 1; k < lines.length; k++) {
+    if (!lines[k]) continue;
+    const f = parseCsvLine(lines[k]);
+    if (!AGGREGATE_SYSTEM_NAMES.has(normalize(f[iSys]))) continue;
+    const uid = f[0]; // UNITID is the first column
+    const nm = normalize(f[iName]);
+    if (uid) members.unitids.add(uid);
+    if (nm) members.names.add(nm);
+  }
+  members.ok = members.names.size > 0;
+  return members;
+}
+
+function chooseTargets(master, campusSet, existingOverrideNames, systemMembers) {
+  const isSystemMember = (i) =>
+    systemMembers.unitids.has(String(i.unitid ?? "").trim()) || systemMembers.names.has(normalize(i.name));
   return (master.institutions || [])
     .filter((i) => normalize(i.coverage_status) === "missing")
     .filter((i) => {
@@ -326,10 +378,10 @@ function chooseTargets(master, campusSet, existingOverrideNames) {
     .filter((i) => i.homepage_url)
     .filter((i) => campusSet.has(normalize(i.name)))        // override only fires if scraped
     .filter((i) => !existingOverrideNames.has(normalize(i.name)))
-    // CSU and UC member campuses are covered by system-level scrapes (CSU_URL,
-    // the UC source), so per-campus discovery just creates duplicate campuses
-    // under a second name — skip them.
-    .filter((i) => !/california state|cal poly|cal state|university of california/i.test(i.name))
+    // Skip campuses covered by an aggregate system scrape (CSU/UC/CUNY/SUNY) —
+    // membership comes from IPEDS F1SYSNAM, so per-campus discovery can't create
+    // a duplicate campus. (See AGGREGATE_SYSTEM_NAMES / loadSystemMembers.)
+    .filter((i) => !isSystemMember(i))
     .filter((i) => !ARGS.universities || /university/i.test(i.name)) // high-yield subset
     .sort((a, b) => clean(a.name).localeCompare(clean(b.name)));
 }
@@ -358,8 +410,10 @@ async function main() {
     : { updatedAt: null, overrides: [] };
   const existingNames = new Set((overridesDoc.overrides || []).map((o) => normalize(o.name)));
   const campusSet = loadServerCampusNames();
+  const systemMembers = loadSystemMembers();
+  console.log(`  System members   : ${systemMembers.ok ? `${systemMembers.names.size} CSU/UC/CUNY/SUNY campuses excluded (IPEDS)` : "IPEDS unavailable — system guard OFF"}`);
 
-  const targets = chooseTargets(master, campusSet, existingNames).slice(0, ARGS.max);
+  const targets = chooseTargets(master, campusSet, existingNames, systemMembers).slice(0, ARGS.max);
   console.log(`  Targets this run : ${targets.length} (max ${ARGS.max}, in scrape list, not already overridden)`);
   console.log(`  Concurrency      : ${ARGS.concurrency} | scrape-tests/school: up to ${ARGS.perCandidate}\n`);
 
