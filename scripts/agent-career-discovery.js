@@ -51,11 +51,12 @@ const AGGREGATE_SYSTEM_NAMES = new Set([
 ]);
 
 function parseArgs(argv) {
-  const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800, universities: false };
+  const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800, universities: false, communityColleges: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--dry-run") out.dryRun = true;
     else if (a === "--universities") out.universities = true; // bias to the high-yield subset
+    else if (a === "--community-colleges") out.communityColleges = true; // community/technical/junior colleges
     else if (a === "--max" && argv[i + 1]) out.max = Math.max(1, Number(argv[++i]));
     else if (a === "--concurrency" && argv[i + 1]) out.concurrency = Math.min(4, Math.max(1, Number(argv[++i])));
     else if (a === "--per-candidate" && argv[i + 1]) out.perCandidate = Math.max(1, Number(argv[++i]));
@@ -421,7 +422,9 @@ function chooseTargets(master, campusSet, existingOverrideNames, systemMembers, 
     // a duplicate campus. (See AGGREGATE_SYSTEM_NAMES / loadSystemMembers.)
     .filter((i) => !isSystemMember(i))
     .filter((i) => !skipSet.has(normalize(i.name))) // manual skip: shared/system portals (career-discovery-skip.json)
-    .filter((i) => !ARGS.universities || /university/i.test(i.name)) // high-yield subset
+    // optional subset filters (CSU/UC/CUNY/SUNY already removed above by the IPEDS guard)
+    .filter((i) => !ARGS.universities || /university/i.test(i.name))
+    .filter((i) => !ARGS.communityColleges || /community college|technical college|junior college/i.test(i.name))
     .sort((a, b) => clean(a.name).localeCompare(clean(b.name)));
 }
 
