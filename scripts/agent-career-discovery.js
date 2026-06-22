@@ -37,10 +37,11 @@ const SERVER_PATH = path.join(ROOT, "server.js");
 const REPORT_PATH = path.join(ROOT, "generated", "career-discovery-report.json");
 
 function parseArgs(argv) {
-  const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800 };
+  const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800, universities: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--dry-run") out.dryRun = true;
+    else if (a === "--universities") out.universities = true; // bias to the high-yield subset
     else if (a === "--max" && argv[i + 1]) out.max = Math.max(1, Number(argv[++i]));
     else if (a === "--concurrency" && argv[i + 1]) out.concurrency = Math.min(4, Math.max(1, Number(argv[++i])));
     else if (a === "--per-candidate" && argv[i + 1]) out.perCandidate = Math.max(1, Number(argv[++i]));
@@ -280,6 +281,7 @@ function chooseTargets(master, campusSet, existingOverrideNames) {
     .filter((i) => i.homepage_url)
     .filter((i) => campusSet.has(normalize(i.name)))        // override only fires if scraped
     .filter((i) => !existingOverrideNames.has(normalize(i.name)))
+    .filter((i) => !ARGS.universities || /university/i.test(i.name)) // high-yield subset
     .sort((a, b) => clean(a.name).localeCompare(clean(b.name)));
 }
 
