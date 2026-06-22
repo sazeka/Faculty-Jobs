@@ -179,23 +179,68 @@ async function fetchDdg(query, timeoutMs = 12000) {
   }
 }
 
-async function discoverCandidates(inst) {
-  const queries = [
-    `${inst.name} faculty jobs careers`,
-    `${inst.name} academic employment apply`,
-  ];
-  const byUrl = new Map();
-  for (const q of queries) {
-    for (const url of await fetchDdg(q)) {
-      // Reject other schools' sites up front (domain-ownership guard).
-      if (!candidateBelongsToSchool(url, inst.homepage_url)) continue;
-      if (!byUrl.has(url)) {
-        byUrl.set(url, { url, platform_type: inferPlatformFromUrl(url), score: scoreCandidate(url, inst.name) });
-      }
+// Links on the school's own pages that look employment-related.
+const CAREERY = /career|job|employ|human[-_ ]?resources|\bhr\b|hiring|join[-_ ]?(us|our)|opportunit|vacanc|positions?|work[-_ ]?(with|here|at|for)/i;
+const isCareerLink = (l) => CAREERY.test(l.text || "") || CAREERY.test(l.href || "");
+
+async function extractLinks(context, url, timeoutMs = 30000) {
+  const page = await context.newPage();
+  try {
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: timeoutMs });
+    await page.waitForTimeout(1200);
+    return await page.evaluate(() => {
+      const abs = (h) => { try { return new URL(h, location.href).toString(); } catch { return null; } };
+      return Array.from(document.querySelectorAll("a[href]"))
+        .map((a) => ({ text: (a.textContent || "").replace(/\s+/g, " ").trim().slice(0, 80), href: abs(a.getAttribute("href")) }))
+        .filter((x) => x.href);
+    });
+  } catch {
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Primary, reliable candidate source: crawl the school's OWN homepage for
+// careers/HR links, then follow the best one hop (the homepage often links to
+// an HR landing page that in turn links to the ATS). No external search.
+async function homepageCandidates(context, inst) {
+  const home = inst.homepage_url;
+  const homeNorm = normalize(home).replace(/\/+$/, "");
+  const urls = new Set();
+  const careerLinks = (await extractLinks(context, home))
+    .filter(isCareerLink)
+    .map((l) => l.href)
+    .filter((h) => normalize(h).replace(/\/+$/, "") !== homeNorm)
+    .filter((h) => candidateBelongsToSchool(h, home) || inferPlatformFromUrl(h) !== "generic");
+  for (const h of careerLinks) urls.add(h);
+  // follow up to 2 best on-domain careers links to surface the ATS behind them
+  const toHop = careerLinks
+    .filter((h) => inferPlatformFromUrl(h) === "generic")
+    .sort((a, b) => scoreCandidate(b, inst.name) - scoreCandidate(a, inst.name))
+    .slice(0, 2);
+  for (const cl of toHop) {
+    for (const l of await extractLinks(context, cl)) {
+      if (isCareerLink(l) && candidateBelongsToSchool(l.href, home)) urls.add(l.href);
     }
+  }
+  return [...urls];
+}
+
+async function discoverCandidates(context, inst) {
+  const pool = new Map();
+  const add = (url) => {
+    if (!url || !candidateBelongsToSchool(url, inst.homepage_url)) return;
+    if (!pool.has(url)) pool.set(url, { url, platform_type: inferPlatformFromUrl(url), score: scoreCandidate(url, inst.name) });
+  };
+  // primary: the school's own site (reliable)
+  try { for (const u of await homepageCandidates(context, inst)) add(u); } catch { /* ignore */ }
+  // secondary: web search (best-effort; DuckDuckGo html throttles under load)
+  for (const q of [`${inst.name} faculty jobs careers`, `${inst.name} academic employment apply`]) {
+    for (const url of await fetchDdg(q)) add(url);
     await sleep(ARGS.searchDelayMs);
   }
-  return [...byUrl.values()].sort((a, b) => b.score - a.score).slice(0, 8);
+  return [...pool.values()].sort((a, b) => b.score - a.score).slice(0, 10);
 }
 
 // ── LLM ranking (grounded in the real candidate list) ────────────────────────
@@ -330,7 +375,7 @@ async function main() {
       const inst = targets[next++];
       const label = `  [${String(next).padStart(3)}/${targets.length}] ${inst.name}`;
       try {
-        const candidates = await discoverCandidates(inst);
+        const candidates = await discoverCandidates(context, inst);
         if (candidates.length === 0) { console.log(`${label} … no candidates`); misses.push({ name: inst.name, reason: "no_candidates" }); continue; }
         const ranked = await rankCandidates(inst, candidates);
         if (ranked.length === 0) { console.log(`${label} … LLM: none viable`); misses.push({ name: inst.name, reason: "llm_none" }); continue; }
