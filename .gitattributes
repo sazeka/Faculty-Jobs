@@ -1,2 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# All JSON here is machine-written (scrapers/agents emit LF). Pin it to LF in
+# both the repo and the working tree so core.autocrlf=true never smudges it to
+# CRLF. Without this, Node-written *.json read as "locally modified" right after
+# commit, which blocked git pull/merge and stranded the nightly push for ~6 days.
+*.json text eol=lf

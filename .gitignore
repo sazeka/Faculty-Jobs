@@ -19,3 +19,9 @@ __pycache__/
 nul
 *.tmp
 gitignore_addition.txt
+
+# Nightly automation run logs — local-only, regenerated each run, large.
+# (daily-update.ps1 writes these; they were previously committed and bloated
+# the repo ~760KB/night. The git add generated/ in the script skips ignored
+# files, so this is all that's needed to stop tracking them.)
+generated/automation-logs/
