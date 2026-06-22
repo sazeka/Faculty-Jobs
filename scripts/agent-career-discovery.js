@@ -192,8 +192,10 @@ async function fetchDdg(query, timeoutMs = 12000) {
   }
 }
 
-// Links on the school's own pages that look employment-related.
-const CAREERY = /career|job|employ|human[-_ ]?resources|\bhr\b|hiring|join[-_ ]?(us|our)|opportunit|vacanc|positions?|work[-_ ]?(with|here|at|for)/i;
+// Links on the school's own pages that look employment-related — including the
+// call-to-action text that often fronts the ATS link on an HR landing page
+// ("View Openings", "Search Postings", "Current Openings").
+const CAREERY = /career|job|employ|human[-_ ]?resources|\bhr\b|hiring|join[-_ ]?(us|our)|opportunit|vacanc|positions?|work[-_ ]?(with|here|at|for)|open[-_ ]?(positions?|openings?)|current openings?|view (openings?|positions?|jobs?)|search (jobs?|postings?)|browse (jobs?|positions?)/i;
 const isCareerLink = (l) => CAREERY.test(l.text || "") || CAREERY.test(l.href || "");
 
 async function extractLinks(context, url, timeoutMs = 30000) {
@@ -214,28 +216,48 @@ async function extractLinks(context, url, timeoutMs = 30000) {
   }
 }
 
-// Primary, reliable candidate source: crawl the school's OWN homepage for
-// careers/HR links, then follow the best one hop (the homepage often links to
-// an HR landing page that in turn links to the ATS). No external search.
+// Primary, reliable candidate source: crawl the school's OWN site for the ATS.
+// The homepage usually links to an HR landing page, which in turn links to the
+// real ATS — sometimes one more hop down (the "no_jobs" cases). So we crawl up
+// to 2 levels deep and, on EVERY page, harvest links to known ATS domains
+// regardless of their anchor text (the ATS link is often labelled "Apply" or
+// "Search Postings", which the careers-text filter alone would miss).
 async function homepageCandidates(context, inst) {
   const home = inst.homepage_url;
-  const homeNorm = normalize(home).replace(/\/+$/, "");
-  const urls = new Set();
-  const careerLinks = (await extractLinks(context, home))
-    .filter(isCareerLink)
-    .map((l) => l.href)
-    .filter((h) => normalize(h).replace(/\/+$/, "") !== homeNorm)
-    .filter((h) => candidateBelongsToSchool(h, home) || inferPlatformFromUrl(h) !== "generic");
-  for (const h of careerLinks) urls.add(h);
-  // follow up to 2 best on-domain careers links to surface the ATS behind them
-  const toHop = careerLinks
-    .filter((h) => inferPlatformFromUrl(h) === "generic")
-    .sort((a, b) => scoreCandidate(b, inst.name) - scoreCandidate(a, inst.name))
-    .slice(0, 2);
-  for (const cl of toHop) {
-    for (const l of await extractLinks(context, cl)) {
-      if (isCareerLink(l) && candidateBelongsToSchool(l.href, home)) urls.add(l.href);
+  const normKey = (u) => normalize(u).replace(/\/+$/, "");
+  const urls = new Set();   // collected candidates (ATS portals + careers pages)
+  const seen = new Set([normKey(home)]);
+
+  // From a page's links: take ATS-domain links directly; return on-domain
+  // careers-ish pages to consider hopping into next.
+  const harvest = (links) => {
+    const careerish = [];
+    for (const l of links) {
+      if (!l.href || normKey(l.href) === normKey(home)) continue;
+      if (!candidateBelongsToSchool(l.href, home) || WRONG_DEPARTMENT.test(l.href)) continue;
+      if (inferPlatformFromUrl(l.href) !== "generic") urls.add(l.href);  // real ATS link — grab it
+      else if (isCareerLink(l)) careerish.push(l.href);
     }
+    return [...new Set(careerish)];
+  };
+
+  let frontier = harvest(await extractLinks(context, home));
+  for (const h of frontier) urls.add(h);
+
+  // Hop deeper, following the best generic careers links to surface the ATS
+  // behind HR landing pages. Bounded fan-out (2/level) and a visited-guard keep
+  // it to <=5 page fetches per school.
+  for (let depth = 0; depth < 2 && frontier.length; depth++) {
+    const next = [];
+    const toVisit = frontier
+      .filter((h) => !seen.has(normKey(h)) && inferPlatformFromUrl(h) === "generic")
+      .sort((a, b) => scoreCandidate(b, inst.name) - scoreCandidate(a, inst.name))
+      .slice(0, 2);
+    for (const u of toVisit) {
+      seen.add(normKey(u));
+      for (const h of harvest(await extractLinks(context, u))) { urls.add(h); next.push(h); }
+    }
+    frontier = next;
   }
   return [...urls];
 }
