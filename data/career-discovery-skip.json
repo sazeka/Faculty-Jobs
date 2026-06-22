@@ -1,0 +1,13 @@
+{
+  "_comment": "Campuses agent-career-discovery must NOT target. Use for cases the automatic guards can't catch: shared multi-entity ATS portals and system-tenant URLs that over-attribute one campus with a whole system's jobs. Names match institutions-master.json (case-insensitive).",
+  "skip": [
+    {
+      "name": "University of Illinois Springfield",
+      "reason": "Discovery resolves to illinois.csod.com (U of I SYSTEM Cornerstone tenant, ~67 jobs) which over-attributes the whole system to UIS; UIUC/UIC are scraped separately. UIS's own portal is uis.csod.com?c=uis. Domain guard can't tell csod tenants apart."
+    },
+    {
+      "name": "The Chicago School at Xavier University of Louisiana",
+      "reason": "thechicagoschool.edu careers is a shared portal serving all Chicago School locations/partnerships; per-entity overrides would replicate the same jobs across every Chicago School entry."
+    }
+  ]
+}

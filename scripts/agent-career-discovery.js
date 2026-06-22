@@ -34,6 +34,7 @@ const ROOT = path.join(__dirname, "..");
 const MASTER_PATH = path.join(ROOT, "data", "institutions-master.json");
 const OVERRIDES_PATH = path.join(ROOT, "data", "career-url-overrides.json");
 const SERVER_PATH = path.join(ROOT, "server.js");
+const SKIP_PATH = path.join(ROOT, "data", "career-discovery-skip.json");
 const IPEDS_PATH = path.join(ROOT, "data", "ipeds", "hd2024.csv");
 const REPORT_PATH = path.join(ROOT, "generated", "career-discovery-report.json");
 
@@ -391,7 +392,16 @@ function loadSystemMembers() {
   return members;
 }
 
-function chooseTargets(master, campusSet, existingOverrideNames, systemMembers) {
+function loadSkipList() {
+  try {
+    const doc = JSON.parse(fs.readFileSync(SKIP_PATH, "utf8"));
+    return new Set((doc.skip || []).map((s) => normalize(typeof s === "string" ? s : s.name)));
+  } catch {
+    return new Set();
+  }
+}
+
+function chooseTargets(master, campusSet, existingOverrideNames, systemMembers, skipSet) {
   const isSystemMember = (i) =>
     systemMembers.unitids.has(String(i.unitid ?? "").trim()) || systemMembers.names.has(normalize(i.name));
   return (master.institutions || [])
@@ -410,6 +420,7 @@ function chooseTargets(master, campusSet, existingOverrideNames, systemMembers) 
     // membership comes from IPEDS F1SYSNAM, so per-campus discovery can't create
     // a duplicate campus. (See AGGREGATE_SYSTEM_NAMES / loadSystemMembers.)
     .filter((i) => !isSystemMember(i))
+    .filter((i) => !skipSet.has(normalize(i.name))) // manual skip: shared/system portals (career-discovery-skip.json)
     .filter((i) => !ARGS.universities || /university/i.test(i.name)) // high-yield subset
     .sort((a, b) => clean(a.name).localeCompare(clean(b.name)));
 }
@@ -439,9 +450,11 @@ async function main() {
   const existingNames = new Set((overridesDoc.overrides || []).map((o) => normalize(o.name)));
   const campusSet = loadServerCampusNames();
   const systemMembers = loadSystemMembers();
+  const skipSet = loadSkipList();
   console.log(`  System members   : ${systemMembers.ok ? `${systemMembers.names.size} CSU/UC/CUNY/SUNY campuses excluded (IPEDS)` : "IPEDS unavailable — system guard OFF"}`);
+  if (skipSet.size) console.log(`  Manual skips     : ${skipSet.size} (career-discovery-skip.json)`);
 
-  const targets = chooseTargets(master, campusSet, existingNames, systemMembers).slice(0, ARGS.max);
+  const targets = chooseTargets(master, campusSet, existingNames, systemMembers, skipSet).slice(0, ARGS.max);
   console.log(`  Targets this run : ${targets.length} (max ${ARGS.max}, in scrape list, not already overridden)`);
   console.log(`  Concurrency      : ${ARGS.concurrency} | scrape-tests/school: up to ${ARGS.perCandidate}\n`);
 
