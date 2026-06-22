@@ -326,6 +326,10 @@ function chooseTargets(master, campusSet, existingOverrideNames) {
     .filter((i) => i.homepage_url)
     .filter((i) => campusSet.has(normalize(i.name)))        // override only fires if scraped
     .filter((i) => !existingOverrideNames.has(normalize(i.name)))
+    // CSU and UC member campuses are covered by system-level scrapes (CSU_URL,
+    // the UC source), so per-campus discovery just creates duplicate campuses
+    // under a second name — skip them.
+    .filter((i) => !/california state|cal poly|cal state|university of california/i.test(i.name))
     .filter((i) => !ARGS.universities || /university/i.test(i.name)) // high-yield subset
     .sort((a, b) => clean(a.name).localeCompare(clean(b.name)));
 }
