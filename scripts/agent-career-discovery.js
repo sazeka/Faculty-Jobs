@@ -18,7 +18,16 @@
 //
 // Usage:
 //   node scripts/agent-career-discovery.js [--max N] [--dry-run] [--concurrency N] [--per-candidate K]
-//   USE_CLAUDE=1 -> Claude (needs ANTHROPIC_API_KEY); otherwise Ollama (qwen2.5:7b).
+//                                          [--llm-none-fallback]
+//   USE_CLAUDE=1        -> Claude (needs ANTHROPIC_API_KEY); otherwise Ollama (qwen2.5:7b).
+//   RANK_WITH_CLAUDE=1  -> route only the cheap rank step to Haiku, even on an Ollama run (#3).
+//   --llm-none-fallback -> (default ON) when the ranker says bare "none" but a recognized
+//                          ATS is in the pool, keep the ATS candidates and let verify()
+//                          decide (#2). Use --no-llm-none-fallback to disable.
+//
+// The llm_none miss record carries the candidate pool + raw LLM reply (#1), so a
+// discovery run can be triaged: bad pool (fix discovery) vs ranker rejecting a
+// real ATS (flip on --llm-none-fallback / RANK_WITH_CLAUDE).
 
 import fs from "fs";
 import path from "path";
@@ -51,12 +60,17 @@ const AGGREGATE_SYSTEM_NAMES = new Set([
 ]);
 
 function parseArgs(argv) {
-  const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800, universities: false, communityColleges: false };
+  // llmNoneFallback ON by default: validated (recovers e.g. Bristol's interviewexchange
+  // portal that a bare "none" had vetoed) and safe — verify() is still the gate, so it
+  // only adds scrape-tests on candidates that already look like a recognized ATS.
+  const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800, universities: false, communityColleges: false, llmNoneFallback: true };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--dry-run") out.dryRun = true;
     else if (a === "--universities") out.universities = true; // bias to the high-yield subset
     else if (a === "--community-colleges") out.communityColleges = true; // community/technical/junior colleges
+    else if (a === "--llm-none-fallback") out.llmNoneFallback = true; // #2: don't let a bare "none" veto a recognized-ATS candidate
+    else if (a === "--no-llm-none-fallback") out.llmNoneFallback = false; // opt out of the #2 fallback
     else if (a === "--max" && argv[i + 1]) out.max = Math.max(1, Number(argv[++i]));
     else if (a === "--concurrency" && argv[i + 1]) out.concurrency = Math.min(4, Math.max(1, Number(argv[++i])));
     else if (a === "--per-candidate" && argv[i + 1]) out.perCandidate = Math.max(1, Number(argv[++i]));
@@ -69,6 +83,7 @@ const API_KEY = process.env.ANTHROPIC_API_KEY;
 const OLLAMA_HOST = process.env.OLLAMA_HOST || "localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:7b";
 const USE_OLLAMA = process.env.USE_CLAUDE !== "1";
+const RANK_WITH_CLAUDE = process.env.RANK_WITH_CLAUDE === "1"; // #3: route only the rank step to Haiku even when discovery runs on Ollama
 
 const clean = (v) => String(v ?? "").trim();
 const normalize = (v) => clean(v).toLowerCase();
@@ -308,9 +323,9 @@ function buildRankPrompt(inst, candidates) {
   ].join("\n");
 }
 
-function callLlmRaw(prompt) {
+function callLlmRaw(prompt, useClaude = !USE_OLLAMA) {
   return new Promise((resolve, reject) => {
-    if (USE_OLLAMA) {
+    if (!useClaude) {
       const body = JSON.stringify({ model: OLLAMA_MODEL, messages: [{ role: "user", content: prompt }], stream: false });
       const [hostname, port] = OLLAMA_HOST.split(":");
       const req = http.request(
@@ -329,22 +344,34 @@ function callLlmRaw(prompt) {
   });
 }
 
-// Returns candidates reordered by the LLM's priority; falls back to score order.
+// Returns { ranked, reply }: candidates reordered by the LLM's priority, with the
+// raw reply surfaced for diagnostics (#1). Falls back to score order on error or
+// an unparseable reply. The LLM only ranks the real candidate list; verify() is
+// the hard gate downstream, so a wrong pick just fails verification.
 async function rankCandidates(inst, candidates) {
-  if (candidates.length <= 1) return candidates;
+  if (candidates.length <= 1) return { ranked: candidates, reply: candidates.length ? "(single candidate — LLM skipped)" : "" };
+  const useClaude = !USE_OLLAMA || (RANK_WITH_CLAUDE && Boolean(API_KEY)); // #3
   let text = "";
   try {
-    text = await callLlmRaw(buildRankPrompt(inst, candidates));
+    text = await callLlmRaw(buildRankPrompt(inst, candidates), useClaude);
   } catch {
-    return candidates;
+    return { ranked: candidates, reply: "(LLM error — fell back to score order)" };
   }
-  if (/^\s*none\s*$/i.test(text)) return [];
+  if (/^\s*none\s*$/i.test(text)) {
+    // #2 (staged behind --llm-none-fallback): a bare "none" from a weak ranker
+    // shouldn't veto a recognized-ATS candidate — let verify() be the arbiter.
+    if (ARGS.llmNoneFallback) {
+      const ats = candidates.filter((c) => inferPlatformFromUrl(c.url) !== "generic");
+      if (ats.length) return { ranked: ats, reply: text };
+    }
+    return { ranked: [], reply: text };
+  }
   const order = [...text.matchAll(/\d+/g)].map((m) => Number(m[0]) - 1).filter((i) => i >= 0 && i < candidates.length);
-  if (order.length === 0) return candidates;
+  if (order.length === 0) return { ranked: candidates, reply: text };
   const seen = new Set();
   const ranked = [];
   for (const i of order) { if (!seen.has(i)) { seen.add(i); ranked.push(candidates[i]); } }
-  return ranked;
+  return { ranked, reply: text };
 }
 
 // ── targets ──────────────────────────────────────────────────────────────────
@@ -448,6 +475,8 @@ async function verify(context, inst, url) {
 async function main() {
   console.log("\nFaculty Atlas - Career Discovery Agent");
   console.log(`  Backend: ${USE_OLLAMA ? `Ollama (${OLLAMA_MODEL})` : "Claude (haiku)"}`);
+  if (USE_OLLAMA && RANK_WITH_CLAUDE) console.log(`  Rank step: Claude (haiku) ${API_KEY ? "" : "— NO ANTHROPIC_API_KEY, falling back to Ollama"}`);
+  if (ARGS.llmNoneFallback) console.log(`  llm_none fallback: ON (keep recognized-ATS candidates past a bare "none")`);
   if (ARGS.dryRun) console.log("  *** DRY RUN — nothing written ***");
 
   const master = JSON.parse(fs.readFileSync(MASTER_PATH, "utf8"));
@@ -483,8 +512,14 @@ async function main() {
       try {
         const candidates = await discoverCandidates(context, inst);
         if (candidates.length === 0) { console.log(`${label} … no candidates`); misses.push({ name: inst.name, reason: "no_candidates" }); continue; }
-        const ranked = await rankCandidates(inst, candidates);
-        if (ranked.length === 0) { console.log(`${label} … LLM: none viable`); misses.push({ name: inst.name, reason: "llm_none" }); continue; }
+        const { ranked, reply: llmReply } = await rankCandidates(inst, candidates);
+        if (ranked.length === 0) {
+          console.log(`${label} … LLM: none viable (of ${candidates.length} candidates)`);
+          // #1: record the candidate pool + raw reply so llm_none is diagnosable
+          // — did the ranker reject a real ATS link, or was the pool genuinely junk?
+          misses.push({ name: inst.name, reason: "llm_none", candidates: candidates.map((c) => c.url), llmReply });
+          continue;
+        }
 
         // Quality gate: accept >=2 jobs, OR >=1 from a recognized ATS. A single
         // job off a generic page is usually a stray link on an HR landing page

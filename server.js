@@ -771,23 +771,11 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "California Polytechnic State University-San Luis Obispo", type: "generic", url: "https://calpoly.edu/" },
   { campus: "California State Polytechnic University-Humboldt", type: "generic", url: "https://www.humboldt.edu/hr/jobs" },
   { campus: "California State Polytechnic University-Pomona", type: "generic", url: "https://www.cpp.edu/" },
-  { campus: "California State University Maritime Academy", type: "generic", url: "https://www.csum.edu/" },
-  { campus: "California State University-Bakersfield", type: "generic", url: "https://www.csub.edu/" },
-  { campus: "California State University-Chancellors Office", type: "generic", url: "https://www.calstate.edu/" },
-  { campus: "California State University-Channel Islands", type: "generic", url: "https://www.csuci.edu/careers/" },
-  { campus: "California State University-Chico", type: "generic", url: "https://jobs.csuchico.edu/en-us/listing" },
-  { campus: "California State University-Dominguez Hills", type: "generic", url: "https://www.csudh.edu/" },
-  { campus: "California State University-East Bay", type: "generic", url: "https://www.csueastbay.edu/hr/employment/index.html" },
-  { campus: "California State University-Fresno", type: "generic", url: "https://adminfinance.fresnostate.edu/hr/jobs" },
-  { campus: "California State University-Fullerton", type: "generic", url: "https://www.fullerton.edu/" },
-  { campus: "California State University-Long Beach", type: "generic", url: "https://careers.pageuppeople.com/873/lb/en-us/listing" },
-  { campus: "California State University-Los Angeles", type: "generic", url: "https://www.calstatela.edu/" },
-  { campus: "California State University-Monterey Bay", type: "generic", url: "https://csumb.edu/" },
-  { campus: "California State University-Northridge", type: "generic", url: "https://www.csun.edu/" },
-  { campus: "California State University-Sacramento", type: "generic", url: "https://www.csus.edu/" },
-  { campus: "California State University-San Bernardino", type: "generic", url: "https://www.csusb.edu/" },
-  { campus: "California State University-San Marcos", type: "generic", url: "https://www.csusm.edu/careers" },
-  { campus: "California State University-Stanislaus", type: "generic", url: "https://www.csustan.edu/" },
+  // CSU campuses are covered by the system-wide scrape (scrapeCsuFaculty / CSU_URL,
+  // csucareers.calstate.edu). Per-campus entries here double-scraped members and
+  // produced duplicate postings under a second campus-name spelling (e.g. East Bay
+  // appeared as both "California State University, East Bay" and "...-East Bay").
+  // Removed so CSU is system-only — see the "never per-campus for CSU members" rule.
   { campus: "California University of Science and Medicine", type: "generic", url: "https://www.cusm.edu/" },
   { campus: "California Western School of Law", type: "generic", url: "https://www.cwsl.edu/careers" },
   { campus: "Canada College", type: "generic", url: "https://canadacollege.edu/" },
