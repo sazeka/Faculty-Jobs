@@ -1,25 +1,26 @@
 {
-  "generatedAt": "2026-06-22T19:16:19.328Z",
-  "backend": "qwen2.5:7b",
+  "generatedAt": "2026-06-23T19:36:46.691Z",
+  "backend": "gpt-oss:20b",
   "config": {
-    "max": 30,
-    "dryRun": true,
+    "max": 40,
+    "dryRun": false,
     "concurrency": 2,
     "perCandidate": 3,
     "searchDelayMs": 800,
     "universities": false,
-    "communityColleges": true,
-    "llmNoneFallback": true
+    "communityColleges": false,
+    "llmNoneFallback": true,
+    "states": {}
   },
-  "targetsConsidered": 30,
+  "targetsConsidered": 40,
   "verifiedFinds": [
     {
-      "name": "Antelope Valley Community College District",
-      "homepage_url": "https://www.avc.edu/",
-      "career_url": "https://www.avc.edu/about/administration/human-resources/employment/adjunct-faculty-positions",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (40 faculty postings).",
-      "jobCount": 40
+      "name": "American River College",
+      "homepage_url": "https://www.arc.losrios.edu/",
+      "career_url": "https://www.schooljobs.com/careers/losriosccd",
+      "platform_type": "schooljobs",
+      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting).",
+      "jobCount": 1
     },
     {
       "name": "Austin Community College District",
@@ -30,17 +31,9 @@
       "jobCount": 3
     },
     {
-      "name": "Bluegrass Community and Technical College",
-      "homepage_url": "https://bluegrass.kctcs.edu/",
-      "career_url": "https://careers.kctcs.edu/jobs/search/bluegrass-jobs?page=1&query=&employment_type_uids%5B%5D=f138aabe410894645957a2e0d23cbea5",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings).",
-      "jobCount": 2
-    },
-    {
-      "name": "Bristol Community College",
-      "homepage_url": "https://www.bristolcc.edu/",
-      "career_url": "https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp;jsessionid=3C23F471BF242A30472AA845F1FFDA86",
+      "name": "California Institute of Integral Studies",
+      "homepage_url": "https://www.ciis.edu/",
+      "career_url": "https://ciis.interviewexchange.com/static/clients/529CIM1",
       "platform_type": "interviewexchange",
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting).",
       "jobCount": 1
@@ -48,269 +41,314 @@
   ],
   "misses": [
     {
-      "name": "Aiken Technical College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.atc.edu/Offices/Human-Resources/Job-Postings",
-        "https://www.atc.edu/Offices/Human-Resources/Job-Postings#",
-        "https://www.governmentjobs.com/careers/sc/atc?keywords=tutor"
-      ]
-    },
-    {
-      "name": "Aims Community College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://aims.wd1.myworkdayjobs.com/en-US/Jobs/jobs",
-        "https://aims.wd1.myworkdayjobs.com/Jobs"
-      ]
-    },
-    {
-      "name": "Albany Technical College",
+      "name": "Academy for Nursing and Health Occupations",
       "reason": "llm_none",
       "candidates": [
-        "https://www.albanytech.edu/about-us/employment",
-        "https://www.albanytech.edu/about-us/employment#content",
-        "https://www.albanytech.edu/about-us/employment#",
-        "https://www.albanytech.edu/about-us/employment#googtrans(en|en)",
-        "https://www.albanytech.edu/about-us/employment#googtrans(en|es)",
-        "https://www.albanytech.edu/about-us/employment#googtrans(en|fr)",
-        "https://www.albanytech.edu/about-us/employment#googtrans(en|de)",
-        "https://www.albanytech.edu/student-affairs/career-services",
-        "https://www.albanytech.edu/adult-education/high-school-equivalency-diploma/career-plus-hsd",
-        "https://www.albanytech.edu/human-resources"
+        "https://www.anho.edu/Plan-For-Health-And-Safety-of-the-Institutions-Employees-Students-And-Guests",
+        "https://www.anho.edu/Plan-For-Job-Placement-Services",
+        "https://www.anho.edu/Plan-For-Job-Placement-Follow-Up-Services",
+        "https://www.anho.edu/Employee-Grievance-Complaint-Procedure",
+        "https://www.anho.edu/Grievance-Complaint-Procedure-For_Non-Employee-Non-Student",
+        "https://www.anho.edu/Friday-Learning-Opportunities",
+        "https://www.anho.edu/Drug-And_Alcohol-Prevention-Program-Notice-To-Students-And-Employees",
+        "https://www.anho.edu/Employee-Grievance-Complaint-Procedure-PDF",
+        "https://www.anho.edu/",
+        "https://www.anho.edu/images/2014.06.27/2014%20ANHO%20Application.pdf"
       ],
       "llmReply": "none"
     },
     {
-      "name": "Alexandria Technical & Community College",
-      "reason": "llm_none",
-      "candidates": [
-        "https://www.alextech.edu/college-services/community-employment-resources",
-        "https://www.alextech.edu/community#jobs-panel",
-        "https://www.alextech.edu/about-atcc/student-achievement/graduate-job-placement-history",
-        "https://www.alextech.edu/contact-atcc/employee-directory",
-        "https://www.alextech.edu/about-atcc/human-resources",
-        "https://www.alextech.edu/myatcc",
-        "https://www.alextech.edu/college-services/work-study",
-        "https://www.alextech.edu/about-atcc/student-achievement/graduate-job-placement-history#content-container",
-        "https://www.alextech.edu/about-atcc/student-achievement/graduate-job-placement-history#",
-        "https://www.alextech.edu/contact-atcc/employee-directory#content-container"
-      ],
-      "llmReply": "none"
+      "name": "Acupuncture and Integrative Medicine College-Berkeley",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.aimc.edu/career"
+      ]
     },
     {
-      "name": "Allen County Community College",
-      "reason": "weak_single",
-      "url": "https://www.allencc.edu/contact/careers/opportunities",
-      "count": 1
+      "name": "AdventHealth University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://workforce.ahu.edu/"
+      ]
+    },
+    {
+      "name": "Air Force Institute of Technology-Graduate School of Engineering & Management",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.afit.edu/HR/faculty.cfm"
+      ]
     },
     {
       "name": "Alamo Community College District Central Office",
       "reason": "no_jobs",
       "tried": [
-        "http://www.alamo.edu/about-us/jobs-across-the-alamo-colleges/",
-        "https://www.alamo.edu/about-us/jobs-across-the-alamo-colleges/",
-        "https://alamo.csod.com/ats/careersite/search.aspx?site=2&c=alamo"
+        "https://alamo.csod.com/ats/careersite/search.aspx?site=1&c=alamo",
+        "https://alamo.csod.com/ats/careersite/search.aspx?site=2&c=alamo",
+        "https://alamo.csod.com/ats/careersite/search.aspx?site=3&c=alamo"
       ]
     },
     {
-      "name": "Alpena Community College",
+      "name": "Albizu University-Miami",
       "reason": "no_jobs",
       "tried": [
-        "https://discover.alpenacc.edu/faculty_staff/human_resources/employment_opportunities.php",
-        "https://discover.alpenacc.edu/faculty_staff/human_resources/index.php",
-        "https://discover.alpenacc.edu/workforce_development/index.php"
+        "https://albizu.elluciancrmrecruit.com/Apply",
+        "https://www.albizu.edu/career/"
       ]
     },
     {
-      "name": "Anoka Technical College",
+      "name": "Amarillo College",
       "reason": "no_jobs",
       "tried": [
-        "https://www.governmentjobs.com/careers/anokatech/jobs/newprint/2370360"
+        "https://www.actx.edu/career/job-postings",
+        "https://www.actx.edu/hr/employment"
       ]
     },
     {
-      "name": "Anoka-Ramsey Community College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.anokaramsey.edu/jobs",
-        "https://www.governmentjobs.com/careers/anokaramseycc/jobs/newprint/2276516"
-      ]
-    },
-    {
-      "name": "Athens Technical College",
+      "name": "America Evangelical University",
       "reason": "llm_none",
       "candidates": [
-        "https://www.athenstech.edu/careers/",
-        "https://www.athenstech.edu/careers/#",
-        "https://www.athenstech.edu/wp-content/uploads/2024/11/Recruiting-Hiring.pdf",
-        "https://www.athenstech.edu/wp-content/uploads/2024/11/Verifying-Employment-Eligibility.pdf",
-        "https://www.athenstech.edu/careers/#page-top",
-        "https://athenstech.smartcatalogiq.com/en/2024-2025/catalog/academic-and-student-support-services/career-services/",
-        "https://www.athenstech.edu/wp-content/uploads/2024/11/Verifying-Identity-Employement-Eligibility.pdf",
-        "https://www.athenstech.edu/wp-content/uploads/2023/09/Employee-Self-Service-Instructions.pdf",
-        "https://www.athenstech.edu/wp-content/uploads/2022/11/Request_To_Hire_Full_Time-Employee-Interview-Approval-Checklist.pdf",
-        "https://www.athenstech.edu/wp-content/uploads/2022/11/Request_To_Hire-Part_Time_Hourly_Employee-Interview-Approval-Checklist.pdf"
+        "https://aeu.edu/",
+        "https://aeu.edu/contact/"
       ],
       "llmReply": "none"
     },
     {
-      "name": "Ashland Community and Technical College",
+      "name": "American Academy of Dramatic Arts-Los Angeles",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.aada.edu/admissions/info-session-events/",
+        "https://www.aada.edu/info-night-events",
+        "https://www.aada.edu/campuses/new-york-open-house/",
+        "https://www.aada.edu/you-belong/?t=02",
+        "https://www.aada.edu/apply/",
+        "https://www.aada.edu/you-belong/apply-now-or-later",
+        "https://www.aada.edu/admissions/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Angelina College",
       "reason": "no_jobs",
       "tried": [
-        "https://ashland.kctcs.edu/faculty-staff/services/current-job-postings.aspx",
-        "https://careers.kctcs.edu/Ashland",
-        "https://careers.kctcs.edu/ashland"
+        "https://www.angelina.edu/employment/",
+        "https://www.angelina.edu/health-careers/"
       ]
     },
     {
-      "name": "Atlanta Technical College",
+      "name": "Antelope Valley Community College District",
+      "reason": "weak_single",
+      "url": "https://www.avc.edu/about/administration/human-resources/employment/full-time-faculty-positions",
+      "count": 1
+    },
+    {
+      "name": "Arlington Baptist University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://abu.edu/careers"
+      ]
+    },
+    {
+      "name": "Art Academy of Cincinnati",
       "reason": "llm_none",
       "candidates": [
-        "https://atlantatech.edu/community-and-business/center-for-workforce-innovation-cwi/",
-        "https://atlantatech.edu/student-affairs/career-services/",
-        "https://www.atlantatech.edu/atlanta-technical-college-announces-partnership-with-google-to-expand-access-to-artificial-intelligence-career-certificates/",
-        "https://www.atlantatech.edu/equal-opportunity-institution/",
-        "https://www.atlantatech.edu/community-and-business/center-for-workforce-innovation-cwi/#content",
-        "https://www.atlantatech.edu/community-and-business/center-for-workforce-innovation-cwi/#",
-        "https://www.atlantatech.edu/community-and-business/center-for-workforce-innovation-cwi/#work-together",
-        "https://www.atlantatech.edu/student-affairs/career-services/#content",
-        "https://www.atlantatech.edu/student-affairs/career-services/#",
-        "https://www.atlantatech.edu/student-affairs/career-services/"
+        "https://www.artacademy.edu/student-services/student-employment/",
+        "https://www.artacademy.edu/programs/",
+        "https://www.artacademy.edu/employee-bios/",
+        "https://www.artacademy.edu/"
       ],
       "llmReply": "none"
+    },
+    {
+      "name": "Art Center College of Design",
+      "reason": "no_jobs",
+      "tried": [
+        "https://artcenter.csod.com/ux/ats/careersite/7/home?c=artcenter"
+      ]
+    },
+    {
+      "name": "Athenaeum of Ohio",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.athenaeum.edu/about/careers/",
+        "https://www.athenaeum.edu/about/careers/#main"
+      ]
     },
     {
       "name": "Atlantic Technical College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.atlantictechnicalcollege.edu/career-center-faculty-staff/",
+        "https://www.atlantictechnicalcollege.edu/atccareercenter/"
+      ]
+    },
+    {
+      "name": "Aultman College of Nursing and Health Sciences",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.aultmancollege.edu/why-aultman/careers",
+        "https://www.aultmancollege.edu/inside-aultman/employment/working-at-aultman-college"
+      ]
+    },
+    {
+      "name": "Austin College",
+      "reason": "weak_single",
+      "url": "https://www.austincollege.edu/human-resources/careers",
+      "count": 1
+    },
+    {
+      "name": "Ave Maria University",
+      "reason": "weak_single",
+      "url": "https://www.avemarialaw.edu/employment/",
+      "count": 1
+    },
+    {
+      "name": "Bakersfield College",
       "reason": "llm_none",
       "candidates": [
-        "https://www.atlantictechnicalcollege.edu/career-center-faculty-staff/",
-        "https://www.atlantictechnicalcollege.edu/transition-into-employment/",
-        "https://www.atlantictechnicalcollege.edu/continuing-workforce-education/",
-        "https://www.atlantictechnicalcollege.edu/atccareercenter/",
-        "https://www.atlantictechnicalcollege.edu/career-dual-enrollment/",
-        "https://www.atlantictechnicalcollege.edu/blog/events/employee-planning-no-school-for-students-7/",
-        "https://www.atlantictechnicalcollege.edu/#",
-        "https://www.atlantictechnicalcollege.edu/career-placement-transition-program/",
-        "https://www.collegecentral.com/atlantictechnicalcollege/",
-        "https://www.collegecentral.com/atlantictechnicalcollege/AboutUs.cfm"
+        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/index.html",
+        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/career-resources.html",
+        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/industry-employers.html",
+        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/index.html#main",
+        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/student-employment-faqs.html",
+        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/directory.html",
+        "https://www.bakersfieldcollege.edu/_resources/assets/documents/student-employment/18-19_Student_Employment_Handbook.pdf",
+        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/career-resources.html#main",
+        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/",
+        "https://www.bakersfieldcollege.edu/academics/pathways/pce/index.html"
       ],
       "llmReply": "none"
     },
     {
-      "name": "Baltimore City Community College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.schooljobs.com/careers/bccc/jobs/newprint/4879994"
-      ]
+      "name": "Bakke Graduate University",
+      "reason": "llm_none",
+      "candidates": [
+        "https://bgu.edu/",
+        "https://bgu.edu/admissions-application"
+      ],
+      "llmReply": "none"
     },
     {
-      "name": "Barton County Community College",
+      "name": "Baptist Missionary Association Theological Seminary",
+      "reason": "llm_none",
+      "candidates": [
+        "https://bmats.edu/faculty/",
+        "https://bmats.edu/ministry-opportunities/pastor-lakeridge-baptist-church/",
+        "https://bmats.edu/ministry-opportunities/pastor-pine-drive-baptist-church/",
+        "https://bmats.edu/ministry-opportunities/pastor-pine-drive-baptist-church-2/",
+        "https://bmats.edu/ministry-opportunities/youth-pastor-main-street-baptist-church/",
+        "https://bmats.edu/ministry-opportunities/pastor-bi-vocational-first-baptist-church/",
+        "https://bmats.edu/ministry-opportunities/pastor-trinity-baptist-church/",
+        "https://bmats.edu/ministry-opportunities/pastor-new-life-baptist-church/",
+        "https://bmats.edu/ministry-opportunities/song-leader-golden-baptist-church/",
+        "https://bmats.edu/ministry-opportunities/pastor-bethel-missionary-baptist-church/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Baptist University of Florida",
       "reason": "no_jobs",
       "tried": [
-        "https://jobs.bartonccc.edu/"
+        "https://buf.edu/resources/jobs/"
       ]
     },
     {
       "name": "Barstow Community College",
       "reason": "no_jobs",
       "tried": [
-        "https://www.schooljobs.com/careers/barstowcc",
-        "https://www.barstow.edu/about-bcc/human-resources/professional-development/faculty-pd"
+        "https://www.barstow.edu/academics/career-technical-education-cte/cte-faculty"
       ]
     },
     {
-      "name": "Bay Mills Community College",
+      "name": "Beacon College",
       "reason": "no_jobs",
       "tried": [
-        "https://bmcc.bamboohr.com/careers"
+        "https://www.beaconcollege.edu/career-opportunities/"
       ]
     },
     {
-      "name": "Bergen Community College",
+      "name": "Belmont College",
       "reason": "no_jobs",
       "tried": [
-        "https://bergen.edu/faculty-staff/human-resources/",
-        "https://bergen.edu/career-and-workforce-development-center/student-college-employment/"
+        "https://belmontcollege.edu/careers/",
+        "https://belmontcollege.edu/careers-at-belmont/"
       ]
     },
     {
-      "name": "Bevill State Community College",
-      "reason": "llm_none",
-      "candidates": [
-        "https://www.bscc.edu/about/employment-opportunities",
-        "https://www.bscc.edu/about/employment-opportunities#maincontent",
-        "https://www.bscc.edu/about/employment-opportunities#",
-        "https://www.bscc.edu/about/employment-opportunities/transcripts-for-employment",
-        "https://www.bscc.edu/about/employee-directory",
-        "https://www.bscc.edu/programs/career-tech",
-        "https://www.bscc.edu/programs/career-tech/advanced-engineering-design-technology-edt",
-        "https://www.bscc.edu/programs/career-tech/air-conditioning-and-refrigeration",
-        "https://www.bscc.edu/programs/career-tech/apprenticeship-program",
-        "https://www.bscc.edu/programs/career-tech/automated-manufacturing-technology"
-      ],
-      "llmReply": "none"
-    },
-    {
-      "name": "Big Sandy Community and Technical College",
+      "name": "Berkeley City College",
       "reason": "no_jobs",
       "tried": [
-        "https://careers.kctcs.edu/big-sandy",
-        "https://careers.kctcs.edu/big-sandy#",
-        "https://careers.kctcs.edu/jobs/search/bigsandy-jobs"
+        "https://www.berkeleycitycollege.edu/careers"
       ]
     },
     {
-      "name": "Black River Technical College",
-      "reason": "llm_none",
-      "candidates": [
-        "https://www.blackrivertech.edu/employment?types[0]=1",
-        "https://www.blackrivertech.edu/employment?types[0]=1#",
-        "https://blackrivertech.edu/employment",
-        "https://www.blackrivertech.edu/college-classes/courses/career-technical-center",
-        "https://www.blackrivertech.edu/students/financial-support/career-pathways",
-        "https://www.blackrivertech.edu/students/student-services/career-services",
-        "https://www.blackrivertech.edu/workforce-training/company-services/financial-support-for-training",
-        "https://www.blackrivertech.edu/#",
-        "https://www.blackrivertech.edu/workforce-training/job-training/about-workforce-training",
-        "https://www.blackrivertech.edu/workforce-training/job-training/customized-training"
-      ],
-      "llmReply": "none"
+      "name": "Berkeley School of Theology",
+      "reason": "no_jobs",
+      "tried": [
+        "https://bst.edu/about-bst/employment-at-bst/"
+      ]
     },
     {
-      "name": "Bishop State Community College",
+      "name": "Bethune-Cookman University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://apply.cookman.edu/",
+        "https://www.cookman.edu/hr/job-opportunities.html",
+        "https://www.cookman.edu/hr/index.html"
+      ]
+    },
+    {
+      "name": "Brazosport College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://employment.brazosport.edu/"
+      ]
+    },
+    {
+      "name": "Bryant & Stratton College-Parma",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.bryantstratton.edu/careers/"
+      ]
+    },
+    {
+      "name": "Cabrillo College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.cabrillo.edu/academics-and-careers/",
+        "https://www.cabrillo.edu/career-services/jobs/",
+        "https://www.cabrillo.edu/career-services/on-campus-employment/"
+      ]
+    },
+    {
+      "name": "California Institute of Technology",
+      "reason": "no_jobs",
+      "tried": [
+        "https://phf.tbe.taleo.net/phf03/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=37&org=CALTECH",
+        "https://phf.tbe.taleo.net/phf03/ats/careers/v2/jobSearch?org=CALTECH&cws=37"
+      ]
+    },
+    {
+      "name": "California Jazz Conservatory",
+      "reason": "no_candidates"
+    },
+    {
+      "name": "California Institute of the Arts",
       "reason": "weak_single",
-      "url": "https://www.bishop.edu/human-resources/jobs-at-bishop-state",
+      "url": "https://calarts.edu/provosts-office/faculty-affairs/faculty-recruitment",
       "count": 1
     },
     {
-      "name": "Blue Mountain Community College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://bluecc.edu/about/employment/"
-      ]
-    },
-    {
-      "name": "Blue Ridge Community and Technical College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.blueridgectc.edu/about-blue-ridge/human-resources/faculty-and-staff/"
-      ]
-    },
-    {
-      "name": "Bolivar Technical College",
-      "reason": "llm_none",
-      "candidates": [
-        "https://www.bolivarcollege.edu/search/employment/",
-        "https://www.bolivarcollege.edu/"
-      ],
-      "llmReply": "none"
-    },
-    {
-      "name": "BridgeValley Community & Technical College",
+      "name": "California University of Science and Medicine",
       "reason": "weak_single",
-      "url": "https://www.bridgevalley.edu/offices/hr/jobs.html",
+      "url": "https://www.cusm.edu/careers.php",
       "count": 1
+    },
+    {
+      "name": "Canada College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://canadacollege.edu/careercenter/jobs.php"
+      ]
     }
   ]
 }
