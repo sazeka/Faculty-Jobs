@@ -267,4 +267,21 @@ function fmtWeek(s) {
   margin-top: 8px;
   font-size: 10px;
 }
+
+/* ─── Mobile (matches the app-wide 767px breakpoint) ─── */
+@media (max-width: 767px) {
+  .trends-tab { padding: 32px var(--pad); }
+  .trends-narrative { margin-top: 24px; }
+  .trends-prose p { font-size: 15px; line-height: 1.7; }
+
+  /* Stack the two-up grids — the side-by-side columns and the fixed 380px
+     sparkline column both overflow a phone viewport otherwise. */
+  .trends-stats-grid { grid-template-columns: 1fr; gap: 36px; }
+  .trends-lower-grid { grid-template-columns: 1fr; gap: 36px; }
+
+  /* Narrow the label/count tracks so the bar keeps usable width on small screens. */
+  .trends-bar-row { grid-template-columns: 96px 1fr 40px; gap: 10px; }
+  .trends-bar-label { font-size: 10px; }
+  .trends-bar-count { font-size: 12px; }
+}
 </style>
