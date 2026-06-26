@@ -18,7 +18,7 @@
 //
 // Usage:
 //   node scripts/agent-career-discovery.js [--max N] [--dry-run] [--concurrency N] [--per-candidate K]
-//                                          [--llm-none-fallback] [--state CA,TX,OH,FL]
+//                                          [--llm-none-fallback] [--state CA,TX,OH,FL] [--level 2-year]
 //   USE_CLAUDE=1        -> Claude (needs ANTHROPIC_API_KEY); otherwise Ollama (default gpt-oss:20b,
 //                          override with OLLAMA_MODEL).
 //   RANK_WITH_CLAUDE=1  -> route only the cheap rank step to Haiku, even on an Ollama run (#3).
@@ -64,11 +64,12 @@ function parseArgs(argv) {
   // llmNoneFallback ON by default: validated (recovers e.g. Bristol's interviewexchange
   // portal that a bare "none" had vetoed) and safe — verify() is still the gate, so it
   // only adds scrape-tests on candidates that already look like a recognized ATS.
-  const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800, universities: false, communityColleges: false, llmNoneFallback: true, states: null };
+  const out = { max: 25, dryRun: false, concurrency: 2, perCandidate: 3, searchDelayMs: 800, universities: false, communityColleges: false, llmNoneFallback: true, states: null, level: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--dry-run") out.dryRun = true;
     else if (a === "--state" && argv[i + 1]) out.states = new Set(argv[++i].split(",").map((s) => s.trim().toUpperCase()).filter(Boolean)); // e.g. --state CA,TX,OH,FL
+    else if (a === "--level" && argv[i + 1]) out.level = String(argv[++i]).trim().toLowerCase(); // IPEDS level filter, e.g. --level 2-year (community colleges by classification, not name)
     else if (a === "--universities") out.universities = true; // bias to the high-yield subset
     else if (a === "--community-colleges") out.communityColleges = true; // community/technical/junior colleges
     else if (a === "--llm-none-fallback") out.llmNoneFallback = true; // #2: don't let a bare "none" veto a recognized-ATS candidate
@@ -437,6 +438,7 @@ function chooseTargets(master, campusSet, existingOverrideNames, systemMembers, 
   return (master.institutions || [])
     .filter((i) => normalize(i.coverage_status) === "missing")
     .filter((i) => !ARGS.states || ARGS.states.has(String(i.state ?? "").toUpperCase())) // optional --state CA,TX,... filter
+    .filter((i) => !ARGS.level || normalize(i.level) === ARGS.level) // optional --level 2-year/4-year filter
     .filter((i) => {
       const c = clean(i.career_url).replace(/\/+$/, "");
       const h = clean(i.homepage_url).replace(/\/+$/, "");
@@ -481,6 +483,7 @@ async function main() {
   if (USE_OLLAMA && RANK_WITH_CLAUDE) console.log(`  Rank step: Claude (haiku) ${API_KEY ? "" : "— NO ANTHROPIC_API_KEY, falling back to Ollama"}`);
   if (ARGS.llmNoneFallback) console.log(`  llm_none fallback: ON (keep recognized-ATS candidates past a bare "none")`);
   if (ARGS.states) console.log(`  State filter     : ${[...ARGS.states].join(", ")}`);
+  if (ARGS.level) console.log(`  Level filter     : ${ARGS.level}`);
   if (ARGS.dryRun) console.log("  *** DRY RUN — nothing written ***");
 
   const master = JSON.parse(fs.readFileSync(MASTER_PATH, "utf8"));
