@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-06-23T19:36:46.691Z",
+  "generatedAt": "2026-06-25T17:18:57.138Z",
   "backend": "gpt-oss:20b",
   "config": {
-    "max": 40,
+    "max": 50,
     "dryRun": false,
     "concurrency": 2,
     "perCandidate": 3,
@@ -10,107 +10,35 @@
     "universities": false,
     "communityColleges": false,
     "llmNoneFallback": true,
-    "states": {}
+    "states": {},
+    "level": "2-year"
   },
-  "targetsConsidered": 40,
+  "targetsConsidered": 32,
   "verifiedFinds": [
     {
-      "name": "American River College",
-      "homepage_url": "https://www.arc.losrios.edu/",
+      "name": "Cosumnes River College",
+      "homepage_url": "https://www.crc.losrios.edu/",
       "career_url": "https://www.schooljobs.com/careers/losriosccd",
       "platform_type": "schooljobs",
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting).",
       "jobCount": 1
     },
     {
-      "name": "Austin Community College District",
-      "homepage_url": "https://www.austincc.edu/",
-      "career_url": "https://austincc.wd1.myworkdayjobs.com/External",
-      "platform_type": "workday",
-      "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings).",
-      "jobCount": 3
-    },
-    {
-      "name": "California Institute of Integral Studies",
-      "homepage_url": "https://www.ciis.edu/",
-      "career_url": "https://ciis.interviewexchange.com/static/clients/529CIM1",
-      "platform_type": "interviewexchange",
+      "name": "Folsom Lake College",
+      "homepage_url": "https://www.flc.losrios.edu/",
+      "career_url": "https://www.schooljobs.com/careers/losriosccd",
+      "platform_type": "schooljobs",
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting).",
       "jobCount": 1
     }
   ],
   "misses": [
     {
-      "name": "Academy for Nursing and Health Occupations",
-      "reason": "llm_none",
-      "candidates": [
-        "https://www.anho.edu/Plan-For-Health-And-Safety-of-the-Institutions-Employees-Students-And-Guests",
-        "https://www.anho.edu/Plan-For-Job-Placement-Services",
-        "https://www.anho.edu/Plan-For-Job-Placement-Follow-Up-Services",
-        "https://www.anho.edu/Employee-Grievance-Complaint-Procedure",
-        "https://www.anho.edu/Grievance-Complaint-Procedure-For_Non-Employee-Non-Student",
-        "https://www.anho.edu/Friday-Learning-Opportunities",
-        "https://www.anho.edu/Drug-And_Alcohol-Prevention-Program-Notice-To-Students-And-Employees",
-        "https://www.anho.edu/Employee-Grievance-Complaint-Procedure-PDF",
-        "https://www.anho.edu/",
-        "https://www.anho.edu/images/2014.06.27/2014%20ANHO%20Application.pdf"
-      ],
-      "llmReply": "none"
-    },
-    {
-      "name": "Acupuncture and Integrative Medicine College-Berkeley",
+      "name": "Barstow Community College",
       "reason": "no_jobs",
       "tried": [
-        "https://www.aimc.edu/career"
+        "https://www.barstow.edu/academics/career-technical-education-cte/cte-faculty"
       ]
-    },
-    {
-      "name": "AdventHealth University",
-      "reason": "no_jobs",
-      "tried": [
-        "https://workforce.ahu.edu/"
-      ]
-    },
-    {
-      "name": "Air Force Institute of Technology-Graduate School of Engineering & Management",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.afit.edu/HR/faculty.cfm"
-      ]
-    },
-    {
-      "name": "Alamo Community College District Central Office",
-      "reason": "no_jobs",
-      "tried": [
-        "https://alamo.csod.com/ats/careersite/search.aspx?site=1&c=alamo",
-        "https://alamo.csod.com/ats/careersite/search.aspx?site=2&c=alamo",
-        "https://alamo.csod.com/ats/careersite/search.aspx?site=3&c=alamo"
-      ]
-    },
-    {
-      "name": "Albizu University-Miami",
-      "reason": "no_jobs",
-      "tried": [
-        "https://albizu.elluciancrmrecruit.com/Apply",
-        "https://www.albizu.edu/career/"
-      ]
-    },
-    {
-      "name": "Amarillo College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.actx.edu/career/job-postings",
-        "https://www.actx.edu/hr/employment"
-      ]
-    },
-    {
-      "name": "America Evangelical University",
-      "reason": "llm_none",
-      "candidates": [
-        "https://aeu.edu/",
-        "https://aeu.edu/contact/"
-      ],
-      "llmReply": "none"
     },
     {
       "name": "American Academy of Dramatic Arts-Los Angeles",
@@ -120,194 +48,18 @@
         "https://www.aada.edu/info-night-events",
         "https://www.aada.edu/campuses/new-york-open-house/",
         "https://www.aada.edu/you-belong/?t=02",
-        "https://www.aada.edu/apply/",
         "https://www.aada.edu/you-belong/apply-now-or-later",
-        "https://www.aada.edu/admissions/"
+        "https://www.aada.edu/apply/"
       ],
       "llmReply": "none"
-    },
-    {
-      "name": "Angelina College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.angelina.edu/employment/",
-        "https://www.angelina.edu/health-careers/"
-      ]
-    },
-    {
-      "name": "Antelope Valley Community College District",
-      "reason": "weak_single",
-      "url": "https://www.avc.edu/about/administration/human-resources/employment/full-time-faculty-positions",
-      "count": 1
-    },
-    {
-      "name": "Arlington Baptist University",
-      "reason": "no_jobs",
-      "tried": [
-        "https://abu.edu/careers"
-      ]
-    },
-    {
-      "name": "Art Academy of Cincinnati",
-      "reason": "llm_none",
-      "candidates": [
-        "https://www.artacademy.edu/student-services/student-employment/",
-        "https://www.artacademy.edu/programs/",
-        "https://www.artacademy.edu/employee-bios/",
-        "https://www.artacademy.edu/"
-      ],
-      "llmReply": "none"
-    },
-    {
-      "name": "Art Center College of Design",
-      "reason": "no_jobs",
-      "tried": [
-        "https://artcenter.csod.com/ux/ats/careersite/7/home?c=artcenter"
-      ]
-    },
-    {
-      "name": "Athenaeum of Ohio",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.athenaeum.edu/about/careers/",
-        "https://www.athenaeum.edu/about/careers/#main"
-      ]
-    },
-    {
-      "name": "Atlantic Technical College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.atlantictechnicalcollege.edu/career-center-faculty-staff/",
-        "https://www.atlantictechnicalcollege.edu/atccareercenter/"
-      ]
-    },
-    {
-      "name": "Aultman College of Nursing and Health Sciences",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.aultmancollege.edu/why-aultman/careers",
-        "https://www.aultmancollege.edu/inside-aultman/employment/working-at-aultman-college"
-      ]
-    },
-    {
-      "name": "Austin College",
-      "reason": "weak_single",
-      "url": "https://www.austincollege.edu/human-resources/careers",
-      "count": 1
-    },
-    {
-      "name": "Ave Maria University",
-      "reason": "weak_single",
-      "url": "https://www.avemarialaw.edu/employment/",
-      "count": 1
-    },
-    {
-      "name": "Bakersfield College",
-      "reason": "llm_none",
-      "candidates": [
-        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/index.html",
-        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/career-resources.html",
-        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/industry-employers.html",
-        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/index.html#main",
-        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/student-employment-faqs.html",
-        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/directory.html",
-        "https://www.bakersfieldcollege.edu/_resources/assets/documents/student-employment/18-19_Student_Employment_Handbook.pdf",
-        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/career-resources.html#main",
-        "https://www.bakersfieldcollege.edu/enrollment-aid/student-employment/",
-        "https://www.bakersfieldcollege.edu/academics/pathways/pce/index.html"
-      ],
-      "llmReply": "none"
-    },
-    {
-      "name": "Bakke Graduate University",
-      "reason": "llm_none",
-      "candidates": [
-        "https://bgu.edu/",
-        "https://bgu.edu/admissions-application"
-      ],
-      "llmReply": "none"
-    },
-    {
-      "name": "Baptist Missionary Association Theological Seminary",
-      "reason": "llm_none",
-      "candidates": [
-        "https://bmats.edu/faculty/",
-        "https://bmats.edu/ministry-opportunities/pastor-lakeridge-baptist-church/",
-        "https://bmats.edu/ministry-opportunities/pastor-pine-drive-baptist-church/",
-        "https://bmats.edu/ministry-opportunities/pastor-pine-drive-baptist-church-2/",
-        "https://bmats.edu/ministry-opportunities/youth-pastor-main-street-baptist-church/",
-        "https://bmats.edu/ministry-opportunities/pastor-bi-vocational-first-baptist-church/",
-        "https://bmats.edu/ministry-opportunities/pastor-trinity-baptist-church/",
-        "https://bmats.edu/ministry-opportunities/pastor-new-life-baptist-church/",
-        "https://bmats.edu/ministry-opportunities/song-leader-golden-baptist-church/",
-        "https://bmats.edu/ministry-opportunities/pastor-bethel-missionary-baptist-church/"
-      ],
-      "llmReply": "none"
-    },
-    {
-      "name": "Baptist University of Florida",
-      "reason": "no_jobs",
-      "tried": [
-        "https://buf.edu/resources/jobs/"
-      ]
-    },
-    {
-      "name": "Barstow Community College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.barstow.edu/academics/career-technical-education-cte/cte-faculty"
-      ]
-    },
-    {
-      "name": "Beacon College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.beaconcollege.edu/career-opportunities/"
-      ]
-    },
-    {
-      "name": "Belmont College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://belmontcollege.edu/careers/",
-        "https://belmontcollege.edu/careers-at-belmont/"
-      ]
     },
     {
       "name": "Berkeley City College",
       "reason": "no_jobs",
       "tried": [
-        "https://www.berkeleycitycollege.edu/careers"
-      ]
-    },
-    {
-      "name": "Berkeley School of Theology",
-      "reason": "no_jobs",
-      "tried": [
-        "https://bst.edu/about-bst/employment-at-bst/"
-      ]
-    },
-    {
-      "name": "Bethune-Cookman University",
-      "reason": "no_jobs",
-      "tried": [
-        "https://apply.cookman.edu/",
-        "https://www.cookman.edu/hr/job-opportunities.html",
-        "https://www.cookman.edu/hr/index.html"
-      ]
-    },
-    {
-      "name": "Brazosport College",
-      "reason": "no_jobs",
-      "tried": [
-        "https://employment.brazosport.edu/"
-      ]
-    },
-    {
-      "name": "Bryant & Stratton College-Parma",
-      "reason": "no_jobs",
-      "tried": [
-        "https://www.bryantstratton.edu/careers/"
+        "https://www.berkeleycitycollege.edu/careers",
+        "https://www.berkeleycitycollege.edu/Careers",
+        "https://www.berkeleycitycollege.edu/careers#content"
       ]
     },
     {
@@ -315,39 +67,256 @@
       "reason": "no_jobs",
       "tried": [
         "https://www.cabrillo.edu/academics-and-careers/",
-        "https://www.cabrillo.edu/career-services/jobs/",
-        "https://www.cabrillo.edu/career-services/on-campus-employment/"
+        "https://www.cabrillo.edu/career-services/jobs/"
       ]
-    },
-    {
-      "name": "California Institute of Technology",
-      "reason": "no_jobs",
-      "tried": [
-        "https://phf.tbe.taleo.net/phf03/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=37&org=CALTECH",
-        "https://phf.tbe.taleo.net/phf03/ats/careers/v2/jobSearch?org=CALTECH&cws=37"
-      ]
-    },
-    {
-      "name": "California Jazz Conservatory",
-      "reason": "no_candidates"
-    },
-    {
-      "name": "California Institute of the Arts",
-      "reason": "weak_single",
-      "url": "https://calarts.edu/provosts-office/faculty-affairs/faculty-recruitment",
-      "count": 1
-    },
-    {
-      "name": "California University of Science and Medicine",
-      "reason": "weak_single",
-      "url": "https://www.cusm.edu/careers.php",
-      "count": 1
     },
     {
       "name": "Canada College",
       "reason": "no_jobs",
       "tried": [
         "https://canadacollege.edu/careercenter/jobs.php"
+      ]
+    },
+    {
+      "name": "Cerritos College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.cerritos.edu/hr/employment.htm",
+        "https://www.cerritos.edu/hr/employment.inc",
+        "https://www.schooljobs.com/careers/cerritosedu"
+      ]
+    },
+    {
+      "name": "Cerro Coso Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.cerrocoso.edu/employees/hr/index.html"
+      ]
+    },
+    {
+      "name": "Citrus College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://employment.citruscollege.edu/",
+        "https://employment.citruscollege.edu/postings/search"
+      ]
+    },
+    {
+      "name": "Clovis Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://career.cloviscollege.edu/jobs/"
+      ]
+    },
+    {
+      "name": "Coalinga College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://westhillscollege.com/district/about/jobs-at-whc/"
+      ]
+    },
+    {
+      "name": "Coastline Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.coastline.edu/about/administration/human-resources/employment-opportunities.php"
+      ]
+    },
+    {
+      "name": "College of Alameda",
+      "reason": "llm_none",
+      "candidates": [
+        "https://alameda.edu/academics/cte",
+        "https://alameda.edu/eops",
+        "https://alameda.edu/home",
+        "https://alameda.edu/work-study",
+        "https://www.openlecture.com/universities/college-of-alameda",
+        "https://www.everyjobforme.com/education/school/college-of-alameda/overview.html"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "College of Marin",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.schooljobs.com/careers/collegeofmarin#",
+        "https://www.schooljobs.com/careers/collegeofmarin",
+        "https://www.schooljobs.com/careers/collegeofmarin/user/RecoverUserName"
+      ]
+    },
+    {
+      "name": "College of San Mateo",
+      "reason": "no_jobs",
+      "tried": [
+        "https://collegeofsanmateo.edu/career/employment.asp",
+        "https://www.collegeofsanmateo.edu/career/"
+      ]
+    },
+    {
+      "name": "College of the Canyons",
+      "reason": "no_jobs",
+      "tried": [
+        "https://jobs.canyons.edu/",
+        "https://www.canyons.edu/administration/humanresources/employment/#maincontent",
+        "https://www.schooljobs.com/careers/canyons/academic"
+      ]
+    },
+    {
+      "name": "College of the Desert",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.collegeofthedesert.edu/faculty-staff/human-resources/career-opportunities.php",
+        "https://www.collegeofthedesert.edu/faculty-staff/human-resources/career/default.php"
+      ]
+    },
+    {
+      "name": "College of the Redwoods",
+      "reason": "weak_single",
+      "url": "https://www.redwoods.edu/about/hr/index.php",
+      "count": 1
+    },
+    {
+      "name": "Compton College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.compton.edu/career-education/workforce/job-board.aspx",
+        "https://www.compton.edu/about/officesandservices/human-resources/index.aspx"
+      ]
+    },
+    {
+      "name": "Contra Costa College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.contracosta.edu/faculty-staff-resources/"
+      ]
+    },
+    {
+      "name": "Contra Costa Community College District Office",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.4cd.edu/hr/academic-calendars/index.html",
+        "https://www.4cd.edu/hr/academic-calendars/index.html#",
+        "https://www.4cd.edu/hr/academic-calendars/index.html#previous-calendars",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2024-2025%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2023-2024%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2022-2023%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2021-2022%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2020-2021%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2019-2020%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2018-2019%20Academic%20Calendar.pdf"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Copper Mountain Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.cmccd.edu/jobs/",
+        "https://www.cmccd.edu/gainful-employment/"
+      ]
+    },
+    {
+      "name": "Cuesta College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.schooljobs.com/careers/cuesta"
+      ]
+    },
+    {
+      "name": "Cuyamaca College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways.php",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways.php#",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways/behavioral-and-social-sciences/index.php",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways/business-and-professional-studies/index.php",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways/culture-people-ideas/",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways/environmental-and-applied-technology/index.php",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways/health-science/index.php",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways/language/index.php",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways/stem/index.php",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways/visual-and-performing-arts/index.php"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "De Anza College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.deanza.edu/gov/ipbt/facultyhiring.html",
+        "https://www.deanza.edu/career-center/jobs.html"
+      ]
+    },
+    {
+      "name": "Diablo Valley College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.dvc.edu/faculty-staff",
+        "https://www.dvc.edu/news/real-skills-real-jobs-real-success-stories-dvc-career-education",
+        "https://www.dvc.edu/news/real-skills-real-jobs-real-success-stories-dvc-career-education#main",
+        "https://www.dvc.edu/news/real-skills-real-jobs-real-success-stories-dvc-career-education#",
+        "https://www.dvc.edu/student-services/career-services/jobs-and-internships",
+        "https://www.dvc.edu/academics/career-education-programs",
+        "https://www.dvc.edu/student-services/career-services",
+        "https://www.dvc.edu/academics/high-school-programs/career-academies",
+        "https://www.dvc.edu/news?type[16]=16",
+        "https://www.dvc.edu/academics/career-education-programs#main"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Downey Adult School",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.das.edu/gainful-employment-disclosures/",
+        "https://www.das.edu/gainful-employment-disclosures/#fl-main-content",
+        "https://www.das.edu/career-training/",
+        "https://www.das.edu/wp-content/uploads/Catalog-26-27.pdf",
+        "https://www.das.edu/career-training/#fl-main-content",
+        "https://www.das.edu/",
+        "https://x.com/DAS_Careers",
+        "https://www.instagram.com/dascareers/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "East Los Angeles College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.elac.edu/academic-resources/gainful-employment-disclosure",
+        "https://www.elac.edu/academic-resources/gainful-employment-disclosure#main-content",
+        "https://www.elac.edu/academic-resources/gainful-employment-disclosure#",
+        "http://elacwritingcenter.org/home/employment-opportunities/job-application/tutor-application/",
+        "https://www.elac.edu/academics/pathways",
+        "https://www.elac.edu/academics/cewd",
+        "https://www.elac.edu/student-services/cjs",
+        "https://www.elac.edu/student-services/spr/eops",
+        "https://www.elac.edu/student-services/cjs/",
+        "https://www.elac.edu/student-services/cjs/services"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "El Camino Community College District",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.elcamino.edu/departments/human-resources/employment-opportunities.php",
+        "https://www.elcamino.edu/academics/career/"
+      ]
+    },
+    {
+      "name": "Lemoore College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://westhillscollege.com/district/about/jobs-at-whc/"
+      ]
+    },
+    {
+      "name": "Los Angeles County College of Nursing and Allied Health",
+      "reason": "no_jobs",
+      "tried": [
+        "https://dhs.lacounty.gov/college-of-nursing-and-allied-health/home/school-of-nursing/faculty-and-staff/",
+        "https://dhs.lacounty.gov/college-of-nursing-and-allied-health/home/faculty-and-staff/school-of-nursing-faculty-and-staff/"
       ]
     }
   ]
