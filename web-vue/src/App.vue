@@ -1006,7 +1006,7 @@ onMounted(async () => {
 .leaflet-job-marker.tenure { background: linear-gradient(180deg, #4f6863, #3d524d); }
 .leaflet-job-marker.non-tenure { background: linear-gradient(180deg, #786353, #5f4d40); }
 .leaflet-job-marker.state-bubble {
-  background: linear-gradient(180deg, #a83030, #7a1f23);
+  background: linear-gradient(180deg, #E2571C, #C2410C);
   border-color: rgba(255, 255, 255, 0.7);
   opacity: 0.82;
   font-size: 10px;
@@ -1057,7 +1057,7 @@ onMounted(async () => {
 .map-legend .sw.default { background: linear-gradient(180deg, #4b5566, #363f4d); }
 .map-legend .sw.tenure { background: linear-gradient(180deg, #4f6863, #3d524d); }
 .map-legend .sw.non-tenure { background: linear-gradient(180deg, #786353, #5f4d40); }
-.map-legend .sw.state-bubble { background: linear-gradient(180deg, #a83030, #7a1f23); }
+.map-legend .sw.state-bubble { background: linear-gradient(180deg, #E2571C, #C2410C); }
 .map-legend-note { margin-top: 2px; color: #6b7780; font-size: 0.68rem; }
 
 @media (max-width: 640px) {
