@@ -735,7 +735,7 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "America Evangelical University", type: "generic", url: "https://www.aeu.edu/" },
   { campus: "American Academy of Dramatic Arts-Los Angeles", type: "generic", url: "https://www.aada.edu/" },
   { campus: "American Jewish University", type: "generic", url: "https://aju.edu/careers" },
-  { campus: "American River College", type: "generic", url: "https://www.arc.losrios.edu/" },
+  { campus: "American River College", type: "schooljobs", url: "https://www.arc.losrios.edu/" },
   { campus: "Antelope Valley Community College District", type: "generic", url: "https://www.avc.edu/" },
   { campus: "Antioch University-Los Angeles", type: "generic", url: "https://www.antioch.edu/employment" },
   { campus: "Antioch University-Santa Barbara", type: "generic", url: "https://www.antioch.edu/employment" },
@@ -835,6 +835,9 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Fresno City College", type: "generic", url: "https://www.fresnocitycollege.edu/" },
   { campus: "Fresno Pacific University", type: "generic", url: "https://www.fresno.edu/" },
   { campus: "Fuller Theological Seminary", type: "generic", url: "https://www.fuller.edu/" },
+  { campus: "California State University-Fresno", type: "generic", url: "https://adminfinance.fresnostate.edu/hr/jobs" },
+  { campus: "California State University-Long Beach", type: "generic", url: "https://careers.pageuppeople.com/873/lb/en-us/listing" },
+  { campus: "California State University-San Marcos", type: "generic", url: "https://www.csusm.edu/careers" },
 ];
 
 // NJ (multi-platform)
@@ -1272,8 +1275,8 @@ const VA_CAMPUSES = [
   },
   {
     campus: "Old Dominion University",
-    type: "peopleadmin",
-    url: "https://jobs.odu.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id=2&commit=Search",
+    type: "generic",
+    url: "https://jobs.odu.edu/postings/search",
   },
   {
     campus: "James Madison University",
@@ -1513,8 +1516,8 @@ const RI_PRIVATE_CAMPUSES = [
   },
   {
     campus: "Bryant University",
-    type: "peopleadmin",
-    url: "https://employment.bryant.edu/postings/search?query=&query_v0_posted_at_date=&225=&query_position_type_id%5B%5D=3&commit=Search",
+    type: "generic",
+    url: "https://employment.bryant.edu/postings/search",
   },
   {
     campus: "Rhode Island School of Design",
@@ -2040,7 +2043,7 @@ const WA_CAMPUSES = [
   {
     campus: "Gonzaga University",
     type: "generic",
-    url: "https://www.gonzaga.edu/about/offices-services/human-resources/careers",
+    url: "https://employment.gonzaga.edu/",
   },
   {
     campus: "University of Puget Sound",
@@ -2083,7 +2086,7 @@ const WA_CAMPUSES = [
   { campus: "Centralia College", type: "generic", url: "https://www.centralia.edu/" },
   { campus: "City University of Seattle", type: "generic", url: "https://www.cityu.edu/" },
   { campus: "Clark College", type: "generic", url: "https://www.clark.edu/about/jobs-and-employment/" },
-  { campus: "Clover Park Technical College", type: "generic", url: "https://www.cptc.edu/" },
+  { campus: "Clover Park Technical College", type: "generic", url: "https://www.cptc.edu/careers" },
   { campus: "Columbia Basin College", type: "generic", url: "https://www.columbiabasin.edu/" },
   { campus: "Cornish College of the Arts", type: "generic", url: "https://www.cornish.edu/" },
   { campus: "Edmonds College", type: "generic", url: "https://www.edmonds.edu/" },
@@ -2252,7 +2255,7 @@ const NE_CAMPUSES = [
   {
     campus: "University of Nebraska Medical Center",
     type: "peopleadmin",
-    url: "https://unmc.peopleadmin.com/postings/search?query_position_type_id%5B%5D=14",
+    url: "https://unmc.peopleadmin.com/postings/search",
   },
   {
     campus: "Creighton University",
@@ -2321,7 +2324,7 @@ const IA_CAMPUSES = [
   { campus: "Coe College", type: "generic", url: "https://www.coe.edu/" },
   { campus: "Cornell College", type: "generic", url: "https://www.cornellcollege.edu/faculty/jobs" },
   { campus: "Des Moines Area Community College", type: "generic", url: "https://www.dmacc.edu/" },
-  { campus: "Des Moines University-Osteopathic Medical Center", type: "generic", url: "https://www.dmu.edu/" },
+  { campus: "Des Moines University-Osteopathic Medical Center", type: "generic", url: "https://careers.dmu.edu/en-us/listing" },
   { campus: "Divine Word College", type: "generic", url: "https://www.dwci.edu/" },
   { campus: "Dordt University", type: "generic", url: "https://www.dordt.edu/" },
   { campus: "Eastern Iowa Community College District", type: "generic", url: "https://eicc.edu/faculty/jobs" },
@@ -2571,7 +2574,7 @@ const OH_CAMPUSES = [
   { campus: "Toledo Public Schools Adult and Continuing Education", type: "generic", url: "https://www.tps.org/adult_education/barber_program" },
   { campus: "Air Force Institute of Technology-Graduate School of Engineering & Management", type: "generic", url: "https://www.afit.edu/" },
   { campus: "Allegheny Wesleyan College", type: "generic", url: "https://awc.edu/faculty/jobs" },
-  { campus: "Antioch College", type: "generic", url: "https://antiochcollege.edu/about/employment/faculty-staff-jobs/" },
+  { campus: "Antioch College", type: "generic", url: "https://antiochcollege.edu/about/employment/faculty-staff-jobs" },
   { campus: "Antioch University", type: "generic", url: "https://www.antioch.edu/employment" },
   { campus: "Antioch University-System Administration", type: "generic", url: "https://www.antioch.edu/employment" },
   { campus: "Art Academy of Cincinnati", type: "generic", url: "https://www.artacademy.edu/" },
@@ -2656,8 +2659,8 @@ const UT_CAMPUSES = [
   },
   {
     campus: "Weber State University",
-    type: "peopleadmin",
-    url: "https://jobs.weber.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+    type: "generic",
+    url: "https://jobs.weber.edu/postings/search",
   },
   {
     campus: "Utah Valley University",
@@ -2855,14 +2858,14 @@ const IL_CAMPUSES = [
   { campus: "Adler University", type: "generic", url: "https://www.adler.edu/about/careers" },
   { campus: "American Islamic College", type: "generic", url: "https://aicusa.edu/faculty/jobs" },
   { campus: "Augustana College", type: "generic", url: "https://www.augustana.edu/jobs" },
-  { campus: "Aurora University", type: "generic", url: "https://aurora.edu/" },
-  { campus: "Benedictine University", type: "generic", url: "https://ben.edu/" },
+  { campus: "Aurora University", type: "schooljobs", url: "https://www.schooljobs.com/careers/aurorauniversity?jobType[0]=Full-Time%20Faculty&sort=PositionTitle%7CAscending" },
+  { campus: "Benedictine University", type: "generic", url: "https://www.benedictine.edu/jobs" },
   { campus: "Bexley Hall Seabury Western Theological Seminary Federation, Inc.", type: "generic", url: "https://www.bexleyseabury.edu/" },
   { campus: "Black Hawk College", type: "generic", url: "https://www.bhc.edu/careers" },
   { campus: "Blackburn College", type: "generic", url: "https://www.blackburn.edu/" },
   { campus: "Blessing Rieman College of Nursing and Health Sciences", type: "generic", url: "https://www.brcn.edu/" },
   { campus: "Bradley University", type: "generic", url: "https://www.bradley.edu/" },
-  { campus: "Carl Sandburg College", type: "generic", url: "https://www.sandburg.edu/" },
+  { campus: "Carl Sandburg College", type: "generic", url: "https://www.sandburg.edu/about/administration/employment-human-resources.html" },
   { campus: "Catholic Theological Union at Chicago", type: "generic", url: "https://www.ctu.edu/" },
   { campus: "Chicago Theological Seminary", type: "generic", url: "https://www.ctschicago.edu/" },
   { campus: "City Colleges of Chicago-District Office", type: "generic", url: "https://www.ccc.edu/" },
@@ -3068,8 +3071,8 @@ const TX_CAMPUSES = [
   },
   {
     campus: "University of North Texas",
-    type: "pageup",
-    url: "https://careers.untsystem.edu/en-us/listing/",
+    type: "generic",
+    url: "https://careers.untsystem.edu/jobs/search/search-page-unt-faculty",
   },
   {
     campus: "Rice University",
@@ -3328,7 +3331,7 @@ const AL_CAMPUSES = [
   { campus: "University of South Alabama", type: "generic", url: "https://www.southalabama.edu/departments/academicaffairs/facultyposition.html" },
   { campus: "Spring Hill College", type: "generic", url: "https://www.shc.edu/about-spring-hill-jesuit-college/spring-hill-college-jobs/" },
   { campus: "Remington College-Mobile Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/mobile/" },
-  { campus: "Alabama A & M University", type: "generic", url: "https://www.aamu.edu/" },
+  { campus: "Alabama A & M University", type: "schooljobs", url: "https://www.schooljobs.com/careers/aamu" },
   { campus: "Alabama College of Osteopathic Medicine", type: "generic", url: "https://www.acom.edu/" },
   { campus: "Alabama State University", type: "generic", url: "https://www.alasu.edu/" },
   { campus: "Amridge University", type: "generic", url: "https://www.amridgeuniversity.edu/" },
@@ -3340,7 +3343,7 @@ const AL_CAMPUSES = [
   { campus: "Chattahoochee Valley Community College", type: "generic", url: "https://www.cv.edu/" },
   { campus: "Coastal Alabama Community College", type: "generic", url: "https://www.coastalalabama.edu/about/employment" },
   { campus: "Enterprise State Community College", type: "generic", url: "https://escc.edu/admissions/career-coach/faculty-support" },
-  { campus: "Faulkner University", type: "generic", url: "https://www.faulkner.edu/" },
+  { campus: "Faulkner University", type: "generic", url: "https://faulkner.applicantpro.com/jobs" },
 ];
 
 // MS (Mississippi)
@@ -3385,9 +3388,9 @@ const LA_CAMPUSES = [
 const AR_CAMPUSES = [
   { campus: "University of Arkansas", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site?timeType=8676082fcc890179341a6d2e71495800&jobFamilyGroup=eaddfab9343f0113688d32d525e70000" },
   { campus: "University of Central Arkansas", type: "peopleadmin", url: "https://jobs.uca.edu/postings/search" },
-  { campus: "Cossatot Community College of the University of Arkansas", type: "generic", url: "https://www.cccua.edu/index.html" },
+  { campus: "Cossatot Community College of the University of Arkansas", type: "generic", url: "https://www.cccua.edu/about-ua-cossatot/human-resources/employment-opportunities.html" },
   { campus: "University of Arkansas at Little Rock", type: "generic", url: "https://ualr.edu/careers/person-type/faculty" },
-  { campus: "University of Arkansas Hope-Texarkana", type: "generic", url: "https://www.uaht.edu/index.php" },
+  { campus: "University of Arkansas Hope-Texarkana", type: "generic", url: "https://www.uaht.edu/staff/employment-opportunities.php" },
   { campus: "Arkansas Baptist College", type: "generic", url: "https://www.arkansasbaptist.edu/" },
   { campus: "Arkansas Colleges of Health Education", type: "generic", url: "https://achehealth.edu/employment-opportunities" },
   { campus: "Arkansas Northeastern College", type: "generic", url: "https://www.anc.edu/academics/faculty-jobs" },
@@ -3459,7 +3462,7 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
-  { campus: "Missouri State University", type: "peopleadmin", url: "https://jobs.missouristate.edu/postings/search?query=&query_position_type_id%5B%5D=3" },
+  { campus: "Missouri State University", type: "generic", url: "https://jobs.missouristate.edu/postings/search" },
   { campus: "Washington University in St. Louis", type: "workday", url: "https://wustl.wd1.myworkdayjobs.com/External" },
   { campus: "Missouri University of Science and Technology", type: "generic", url: "https://jobs.mst.edu/postings/search?query_position_type_id%5B%5D=3" },
   { campus: "Drury University-College of Continuing Professional Studies", type: "generic", url: "https://www.drury.edu/hr/drury-university-jobs/" },

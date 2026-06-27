@@ -1,5 +1,15 @@
 // Candidate campus config entries generated from institutions-master
-// Generated: 2026-06-20T14:53:06.608Z
+// Generated: 2026-06-27T14:42:50.864Z
+
+// AL (1)
+const CANDIDATES = [
+  { campus: "Alabama A & M University", type: "schooljobs", url: "https://www.schooljobs.com/careers/aamu" },
+];
+
+// CA (1)
+const CANDIDATES = [
+  { campus: "American River College", type: "schooljobs", url: "https://www.arc.losrios.edu/" },
+];
 
 // CT (1)
 const CANDIDATES = [
@@ -17,8 +27,9 @@ const CANDIDATES = [
   { campus: "Kennesaw State University", type: "peopleadmin", url: "https://kennesaw.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search" },
 ];
 
-// IL (4)
+// IL (5)
 const CANDIDATES = [
+  { campus: "Aurora University", type: "schooljobs", url: "https://www.schooljobs.com/careers/aurorauniversity?jobType[0]=Full-Time%20Faculty&sort=PositionTitle%7CAscending" },
   { campus: "Governors State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/govst" },
   { campus: "Southern Illinois University Edwardsville", type: "interfolio", url: "https://apply.interfolio.com/69563/positions" },
   { campus: "University of Illinois Springfield", type: "csod", url: "https://uis.csod.com/ux/ats/careersite/1/home?c=uis" },
@@ -43,12 +54,18 @@ const CANDIDATES = [
 
 // NE (1)
 const CANDIDATES = [
-  { campus: "University of Nebraska Medical Center", type: "peopleadmin", url: "https://unmc.peopleadmin.com/postings/search?query_position_type_id%5B%5D=14" },
+  { campus: "University of Nebraska Medical Center", type: "peopleadmin", url: "https://unmc.peopleadmin.com/postings/search" },
 ];
 
 // NJ (1)
 const CANDIDATES = [
   { campus: "Ramapo College of New Jersey", type: "schooljobs", url: "https://www.schooljobs.com/careers/ramapo?keywords=faculty" },
+];
+
+// RI (2)
+const CANDIDATES = [
+  { campus: "Providence College", type: "schooljobs", url: "https://www.schooljobs.com/careers/providencecollege" },
+  { campus: "Salve Regina University", type: "interviewexchange", url: "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp" },
 ];
 
 // Unknown (6)
@@ -59,6 +76,11 @@ const CANDIDATES = [
   { campus: "Kutztown University", type: "schooljobs", url: "https://www.schooljobs.com/careers/kutztownedu/promotionaljobs?jobType[0]=Tenure%20Track&sort=PostingDate%7CDescending" },
   { campus: "The Citadel", type: "schooljobs", url: "https://www.schooljobs.com/careers/citadel?keywords=faculty" },
   { campus: "West Chester University", type: "schooljobs", url: "https://www.schooljobs.com/careers/wcupa?keywords=faculty%20" },
+];
+
+// UT (1)
+const CANDIDATES = [
+  { campus: "Utah Valley University", type: "schooljobs", url: "https://www.schooljobs.com/careers/uvu" },
 ];
 
 // VA (1)
