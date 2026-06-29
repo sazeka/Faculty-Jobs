@@ -168,6 +168,15 @@ function persistSeenUrls(urlsSet) {
   }
 }
 
+// firstSeen is the server-computed date our scrape first saw a listing, stored
+// as a date-only string ("2026-06-25"); parse it as UTC midnight to ms.
+function parseFirstSeenMs(v) {
+  if (!v) return null
+  const s = String(v).trim()
+  const ms = Date.parse(/^\d{4}-\d{2}-\d{2}$/.test(s) ? `${s}T00:00:00Z` : s)
+  return Number.isFinite(ms) ? ms : null
+}
+
 export function useJobsData() {
   const jobs = ref([])
   const status = ref('Loading jobs...')
@@ -237,10 +246,27 @@ export function useJobsData() {
         }
       }
 
+      // "New" is based on the server-computed firstSeen (when our scrape first
+      // saw the listing), NOT URL novelty — otherwise a posting whose URL changed
+      // (e.g. an institution moving to a different source/portal) would falsely
+      // read as new. Returning visitors: new = first seen since their last visit;
+      // first-time visitors: new = first seen within the last NEW_WINDOW_MS.
+      // Records without a firstSeen fall back to the legacy URL-novelty check.
       const seen = loadSeenUrls()
+      const lastVisitMs = _initialLastVisit ? Date.parse(_initialLastVisit) : NaN
+      const NEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000
+      const nowMs = Date.now()
       const nextJobs = payload.jobs.map((job) => {
-        const url = clean(job?.url)
-        const isNew = Boolean(url) && !seen.has(url)
+        const fsMs = parseFirstSeenMs(job?.firstSeen)
+        let isNew
+        if (fsMs == null) {
+          const url = clean(job?.url)
+          isNew = Boolean(url) && !seen.has(url)
+        } else if (Number.isFinite(lastVisitMs)) {
+          isNew = fsMs > lastVisitMs
+        } else {
+          isNew = nowMs - fsMs <= NEW_WINDOW_MS
+        }
         return { ...job, _isNew: isNew }
       })
 
