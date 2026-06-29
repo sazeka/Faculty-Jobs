@@ -346,7 +346,7 @@ function isAllowedSystem(name) {
   const n = String(name || "").toUpperCase();
   // Support a few common aliases from the UI dropdown / prior runs
   if (n === "CSU" && want.includes("CA - CSU")) return true;
-  if ((n === "CSU" || n === "UC" || n === "CLAREMONT COLLEGES" || n === "CA PRIVATE") && (want.includes("CA") || want.includes("CALIFORNIA"))) return true;
+  if ((n === "CSU" || n === "UC" || n === "CLAREMONT COLLEGES" || n === "CA PRIVATE" || n === "CA CC") && (want.includes("CA") || want.includes("CALIFORNIA"))) return true;
   if ((n === "UMASS" || n === "UMASS AMHERST" || n === "MA PRIVATE") && (want.includes("MA") || want.includes("MASSACHUSETTS"))) return true;
   if (n === "MD" && (want.includes("MARYLAND") || want.includes("MD"))) return true;
   if (n === "ME" && (want.includes("MAINE") || want.includes("ME"))) return true;
@@ -455,6 +455,8 @@ const SYSTEM_GROUP_MAP = {
   "CSU": "California Public",
   // California Private Universities
   "CA Private": "California Private",
+  // California Community Colleges
+  "CA CC": "California Community Colleges",
   // New York Public Universities
   "NY": "New York Public",
   "CUNY": "New York Public",
@@ -3681,6 +3683,7 @@ export async function scrapeAllJobsStandalone() {
       { name: "MA Private", fn: () => scrapeMaPrivate(context) },
       { name: "UC", fn: () => scrapeUcAll(context) },
       { name: "CA Private", fn: () => scrapeCaPrivate(context) },
+      { name: "CA CC", fn: () => scrapeCaCcRegistry() },
       { name: "NJ", fn: () => scrapeNjAll(context) },
       { name: "NC", fn: () => scrapeNcAll(context) },
       { name: "VA", fn: () => scrapeVaAll(context) },
@@ -5344,6 +5347,84 @@ async function scrapeCtAll(context) {
     scrapeCtPrivate(context),
   ]);
   return uniqByUrl([...ctStateJobs, ...privateJobs]);
+}
+
+/* ===================== CA Community Colleges (CCC Career Connect) ===================== */
+// Statewide CA community-college job board (formerly the CCC Registry, migrated to
+// a new platform Jan 2025), backed by a tRPC JSON API. ONE source covers ~all CA
+// CCs with per-college attribution via jobCreator.name — so CA community colleges
+// are scraped system-wide here, NOT per-campus, which avoids the shared-district-
+// portal duplication (cf. the CSU "never per-campus for members" rule).
+const CA_CC_API = "https://www.communitycollegecareerconnect.com/api/trpc";
+const CA_CC_JOB_URL = "https://www.communitycollegecareerconnect.com/jobs/";
+// Keep full-time, permanent faculty only — the board is ~90% part-time/adjunct/
+// temporary pools, which the omit-adjunct policy excludes. (The API misspells the
+// tenure-track position value as "Tenture".)
+const CA_CC_KEEP_POSITIONS = new Set(["FullTime", "FullTimeTentureTrack"]);
+
+function caCcTrpcUrl(proc, json) {
+  return `${CA_CC_API}/${proc}?batch=1&input=${encodeURIComponent(JSON.stringify({ "0": { json } }))}`;
+}
+
+async function caCcFetchJson(url) {
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121 Safari/537.36",
+      Accept: "application/json",
+    },
+  });
+  if (!res.ok) throw new Error(`CA CC HTTP ${res.status}`);
+  return (await res.json())?.[0]?.result?.data?.json;
+}
+
+async function scrapeCaCcRegistry() {
+  const base = { jobTitle: "", jobCreatorName: "", classification: "Faculty", position: null, categories: null, regions: null, positions: null, display: null };
+
+  let total = 0;
+  try {
+    total = Number(await caCcFetchJson(caCcTrpcUrl("job.countManyPublicSQL", { ...base, currentPage: 1 }))) || 0;
+  } catch (e) {
+    console.error("❌ CA CC count failed:", e?.message || e);
+    return [];
+  }
+  if (!total) return [];
+
+  const pages = Math.ceil(total / 12); // the API returns 12 jobs/page
+  const perPage = await mapWithConcurrency(
+    Array.from({ length: pages }, (_, i) => i + 1),
+    6,
+    async (p) => {
+      try {
+        const rows = await caCcFetchJson(caCcTrpcUrl("job.getManyPublicSQL", { ...base, currentPage: p }));
+        return Array.isArray(rows) ? rows : [];
+      } catch {
+        return [];
+      }
+    }
+  );
+
+  const seen = new Set();
+  const jobs = [];
+  for (const rows of perPage) {
+    for (const r of rows || []) {
+      if (!r?.id || !CA_CC_KEEP_POSITIONS.has(r.position) || seen.has(r.id)) continue;
+      seen.add(r.id);
+      jobs.push({
+        title: clean(r.title),
+        url: CA_CC_JOB_URL + r.id,
+        source: "CA CC",
+        category: clean(r.category?.niceName || r.category?.name || "Faculty"),
+        college: clean(r.jobCreator?.name || ""),
+        location: r.jobCreator?.region ? clean(r.jobCreator.region) : null,
+        description: null,
+      });
+    }
+  }
+  // omitAdjunct backstop: the position tag is occasionally "FullTime" on titles
+  // that say "Adjunct"/"Part-Time" — trust the title for those.
+  const out = jobs.filter((j) => j.college && !omitAdjunct(j.title));
+  console.log(`CA CC: ${total} faculty postings → ${out.length} full-time/permanent across ${new Set(out.map((j) => j.college)).size} colleges`);
+  return out;
 }
 
 /* ============================== CSU ============================== */
