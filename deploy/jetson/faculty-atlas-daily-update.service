@@ -1,0 +1,20 @@
+[Unit]
+Description=Faculty Atlas daily scrape/build/publish
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+# EDIT: your Linux username on the Jetson and the absolute path to the repo.
+User=REPLACE_WITH_YOUR_USERNAME
+WorkingDirectory=/home/REPLACE_WITH_YOUR_USERNAME/Faculty-Jobs
+ExecStart=/home/REPLACE_WITH_YOUR_USERNAME/Faculty-Jobs/daily-update.sh
+# Smaller quantized model to fit an 8GB Orin Nano alongside Chromium + Node.
+# Override/remove if you move to a 16GB board or a different model.
+Environment=OLLAMA_MODEL=qwen2.5:3b
+# npm/node/ollama are usually under /usr/local/bin or ~/.nvm — adjust if
+# `which npm` / `which ollama` on the Jetson point elsewhere.
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=multi-user.target

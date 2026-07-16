@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Faculty Atlas daily update at 2 AM
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+# If the Jetson was powered off at 2 AM, run once shortly after it boots
+# instead of silently skipping the day.
+Persistent=true
+# Spread load slightly in case other timers fire at the same instant.
+RandomizedDelaySec=120
+
+[Install]
+WantedBy=timers.target
