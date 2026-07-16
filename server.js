@@ -925,7 +925,7 @@ const NJ_PRIVATE_CAMPUSES = [
 const CLAREMONT_CAMPUSES = [
   {
     campus: "Pomona College",
-    type: "static",
+    type: "pomona",
     url: "https://www.pomona.edu/administration/academic-dean/general/faculty-jobs",
   },
   {
@@ -8282,6 +8282,7 @@ async function scrapeClaremontAll(context) {
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "Claremont");
         if (type === "cmc") return await scrapeClaremontCmc(context, url, campus);
         if (type === "workday") return await scrapeClaremontWorkday(context, url, campus);
+        if (type === "pomona") return await scrapePomonaFacultyJobs(context, url, campus);
         return [];
       } catch (e) {
         console.error(`❌ ${campus} Claremont scrape failed:`, e?.message || e);
@@ -8558,6 +8559,78 @@ async function scrapeClaremontStatic(context, startUrl, campusName) {
 
     console.log(`${campusName} Claremont listings scraped: ${filtered.length}`);
     return filtered.map((x) => toClaremontJob(x.title, x.url, campusName));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Pomona College's faculty-jobs page renders each opening as an accordion
+// tab (role="tab" button + hidden panel). The real title lives on the tab
+// header — the <a> links inside the panel are generic "Workday REQ# ..."
+// application links (or a bare "Academic Jobs Online #12345" mention with
+// no link at all), so scraping <a href> text directly (the old "static"
+// scraper) produced titles like "Workday REQ# 7951-1" instead of the real
+// job title. See GitHub issue #1.
+async function scrapePomonaFacultyJobs(context, startUrl, campusName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(800);
+
+    const items = await page.evaluate(() => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try {
+          return new URL(href, location.href).toString();
+        } catch {
+          return null;
+        }
+      };
+
+      const out = [];
+      for (const tab of Array.from(document.querySelectorAll('[role="tab"]'))) {
+        const title = clean(tab.textContent);
+        if (!title || title.length < 6) continue;
+
+        const panelId = tab.getAttribute("aria-controls");
+        const panel = panelId ? document.getElementById(panelId) : null;
+        const panelText = clean(panel?.textContent || "");
+
+        // Prefer a real application link (Workday/Interfolio/AJO) inside the panel.
+        let url = null;
+        if (panel) {
+          const links = Array.from(panel.querySelectorAll("a[href]"))
+            .map((a) => ({ href: abs(a.getAttribute("href")), text: clean(a.textContent) }))
+            .filter((l) => l.href && !/^mailto:/i.test(l.href));
+          const appLink = links.find(
+            (l) =>
+              /workday|interfolio|academicjobsonline|req[#\s-]?\d/i.test(l.text) ||
+              /workday|interfolio|academicjobsonline/i.test(l.href)
+          );
+          if (appLink) url = appLink.href;
+        }
+
+        // Fall back to constructing an AcademicJobsOnline URL from a bare
+        // "Academic Jobs Online #12345" mention (no hyperlink present).
+        if (!url) {
+          const m = panelText.match(/Academic Jobs?\s*Online\s*#?\s*(\d+)/i);
+          if (m) url = `https://academicjobsonline.org/ajo/jobs/${m[1]}`;
+        }
+
+        // Last resort: link back to the faculty-jobs page itself so the
+        // posting isn't silently dropped.
+        if (!url) url = location.href;
+
+        out.push({ title, url });
+      }
+
+      // de-dupe by url
+      const seen = new Set();
+      return out.filter((x) => (seen.has(x.url) ? false : (seen.add(x.url), true)));
+    });
+
+    console.log(`${campusName} Claremont listings scraped: ${items.length}`);
+    return items.map((x) => toClaremontJob(normalizeJobTitle(x.title), x.url, campusName));
   } finally {
     await page.close().catch(() => {});
   }
@@ -10795,8 +10868,17 @@ async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
         };
 
         const out = [];
+        // Some sites (e.g. careers.msu.edu) have accordion-toggle <a> tags whose
+        // "href" is actually a jQuery CSS selector (e.g.
+        // ".job-component-details-<hash> .job-component-list-category .collapse")
+        // instead of a real URL/fragment. `new URL(href, location.href)` happily
+        // resolves that under /jobs/, so it passes the "looks like a job URL"
+        // check and gets scraped as a second, bogus posting per real job —
+        // roughly doubling the job count. Real job URLs never contain spaces.
         const jobAnchors = Array.from(document.querySelectorAll('a[href]'))
-          .map((a) => abs(a.getAttribute("href")))
+          .map((a) => a.getAttribute("href"))
+          .filter((raw) => raw && !/\s/.test(raw) && !raw.trim().startsWith("."))
+          .map((raw) => abs(raw))
           .filter((href) => href && /\/jobs\//i.test(href) && !/\/jobs\/search/i.test(href));
 
         // De-dupe URLs on the page first to avoid grabbing secondary anchors within the same card.
@@ -11056,10 +11138,18 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
       base.searchParams.set("page", String(pageNo));
       const url = base.toString();
 
-      await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
-      await page.waitForTimeout(900);
+      // A single deep-pagination page occasionally fails at the network
+      // layer (careers.umich.edu has thrown ERR_HTTP2_PROTOCOL_ERROR on
+      // specific pages). That used to propagate to the outer try/catch and
+      // discard every job already collected from earlier pages, making the
+      // whole scrape intermittently return 0 jobs. Instead, stop paginating
+      // but keep what's been gathered so far.
+      let batch;
+      try {
+        await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        await page.waitForTimeout(900);
 
-      const batch = await safeEvaluate(page, () => {
+        batch = await safeEvaluate(page, () => {
         const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
         const abs = (href) => {
           try {
@@ -11138,7 +11228,14 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
         // De-dupe within page by url
         const seen = new Set();
         return out.filter((x) => (x.url && !seen.has(x.url) ? (seen.add(x.url), true) : false));
-      });
+        });
+      } catch (e) {
+        console.error(
+          `❌ ${campusName} ${sourceName} page ${pageNo} failed, stopping pagination and keeping ${jobs.length} job(s) already collected:`,
+          e?.message || e
+        );
+        break;
+      }
 
       let added = 0;
       for (const j of batch) {
