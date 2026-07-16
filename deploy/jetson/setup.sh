@@ -81,6 +81,12 @@ cd "$REPO_DIR"
 echo "-- npm ci --"
 npm ci
 
+# web-vue/ is a separate npm project (the Vite frontend) with its own
+# package.json/lockfile — build:frontend shells into it and runs `vite build`,
+# which fails with "vite: not found" if this step is skipped.
+echo "-- npm ci (web-vue/) --"
+(cd web-vue && npm ci)
+
 echo "-- Installing Playwright's Chromium --"
 # Playwright ships arm64 Linux Chromium builds; --with-deps installs the
 # matching apt packages. If this 404s on your JetPack/Ubuntu version, install
