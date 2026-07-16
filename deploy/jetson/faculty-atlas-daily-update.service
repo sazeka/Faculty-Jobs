@@ -12,6 +12,13 @@ ExecStart=/home/REPLACE_WITH_YOUR_USERNAME/Faculty-Jobs/daily-update.sh
 # Smaller quantized model to fit an 8GB Orin Nano alongside Chromium + Node.
 # Override/remove if you move to a 16GB board or a different model.
 Environment=OLLAMA_MODEL=qwen2.5:3b
+# The scraper's default concurrency (4 parallel campuses/systems x 6 parallel
+# detail-page fetches per source = 20+ simultaneous Chromium renderers) is
+# tuned for GitHub Actions' x86 runners, not a 6-core Orin Nano. Measured load
+# average of 17 and near-zero free RAM with these defaults on first run —
+# throttle down to keep the board from thrashing/OOMing overnight.
+Environment=MAX_PARALLEL_CAMPUSES=2
+Environment=MAX_PARALLEL_SYSTEMS=2
 # npm/node/ollama are usually under /usr/local/bin or ~/.nvm — adjust if
 # `which npm` / `which ollama` on the Jetson point elsewhere.
 Environment=PATH=/usr/local/bin:/usr/bin:/bin

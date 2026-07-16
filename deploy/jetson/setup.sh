@@ -25,6 +25,25 @@ echo "-- Installing base packages --"
 sudo apt-get update
 sudo apt-get install -y curl git build-essential ca-certificates
 
+# -- 1b. Swap ------------------------------------------------------------------
+# The scraper can run 20+ concurrent Chromium renderers at default concurrency.
+# JetPack ships with zero swap by default, so a memory spike has nowhere to go
+# but the OOM killer. A swapfile is a cheap backstop even with concurrency
+# throttled down (see MAX_PARALLEL_CAMPUSES/MAX_PARALLEL_SYSTEMS below).
+if [[ -z "$(swapon --show)" ]]; then
+    echo "-- No swap detected — creating a 4GB swapfile at /swapfile --"
+    sudo fallocate -l 4G /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    if ! grep -q '^/swapfile ' /etc/fstab; then
+        echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+    fi
+else
+    echo "-- Swap already configured: --"
+    swapon --show
+fi
+
 # -- 2. Node.js (arm64) --------------------------------------------------------
 if ! command -v node >/dev/null 2>&1; then
     echo "-- Installing Node.js 22 LTS --"
