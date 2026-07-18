@@ -24,8 +24,13 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install deps
+      - name: Install deps (root)
         run: npm ci
+
+      # send-job-alerts.js imports web-vue/src/composables/useJobFilters.js,
+      # which imports 'vue' — resolved from web-vue's own node_modules.
+      - name: Install deps (web-vue — has its own package.json)
+        run: npm --prefix web-vue ci
 
       # Subscriber state lives in the job-alerts Worker's KV, not this repo,
       # so this workflow only reads/sends — no git-commit step and no
