@@ -14,11 +14,26 @@ const props = defineProps({
 const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'save-alert'])
 
 const disciplineSearch = ref('')
+const collegeSearch = ref('')
 
 const filteredDisciplineOptions = computed(() => {
   const q = disciplineSearch.value.trim().toLowerCase()
   if (!q) return props.disciplineOptions
   return props.disciplineOptions.filter(opt => opt.value.toLowerCase().includes(q))
+})
+
+// Institution list can run into the hundreds — only show matches once the
+// user has typed something, same reasoning as the discipline search box.
+// When nothing is typed, still surface the active selection (e.g. made via
+// the map) so it can be reviewed or cleared from here too.
+const filteredCollegeOptions = computed(() => {
+  const q = collegeSearch.value.trim().toLowerCase()
+  if (!q) {
+    if (props.filters.college === 'all') return []
+    const active = props.collegeOptions.find((opt) => opt.value === props.filters.college)
+    return active ? [active] : []
+  }
+  return props.collegeOptions.filter(opt => opt.value.toLowerCase().includes(q)).slice(0, 25)
 })
 
 // Full list of states (university systems are grouped into their state upstream),
@@ -43,6 +58,10 @@ function togglePositionType(value) {
 function toggleDiscipline(value) {
   updateField('discipline', props.filters.discipline === value ? 'all' : value)
 }
+function toggleCollege(value) {
+  updateField('college', props.filters.college === value ? 'all' : value)
+  collegeSearch.value = ''
+}
 </script>
 
 <template>
@@ -62,6 +81,35 @@ function toggleDiscipline(value) {
         aria-label="Search jobs"
         @input="updateField('q', $event.target.value)"
       />
+    </div>
+
+    <!-- Institution -->
+    <div style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 10px;">Institution</div>
+      <input
+        class="fa-input"
+        v-model="collegeSearch"
+        type="search"
+        placeholder="Search institutions…"
+        aria-label="Search institutions"
+        style="font-size: 13px; margin-bottom: 8px;"
+      />
+      <div style="display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto;">
+        <label
+          v-for="opt in filteredCollegeOptions"
+          :key="opt.value"
+          class="fa-facet-item"
+          :class="{ active: filters.college === opt.value }"
+          @click="toggleCollege(opt.value)"
+        >
+          <span class="fa-check" :class="{ checked: filters.college === opt.value }">
+            {{ filters.college === opt.value ? '✓' : '' }}
+          </span>
+          <span style="flex: 1;">{{ opt.value }}</span>
+          <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
+        </label>
+        <div v-if="collegeSearch.trim() && filteredCollegeOptions.length === 0" class="fa-meta" style="padding: 4px 0; font-style: italic;">No match</div>
+      </div>
     </div>
 
     <!-- Discipline -->
