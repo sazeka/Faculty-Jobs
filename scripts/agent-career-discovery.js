@@ -128,6 +128,38 @@ const USG_COVERED_CAMPUSES = new Set(
   ].map((n) => normalize(n))
 );
 
+// Technical College System of Georgia: unlike USG, TCSG's shared jobs page
+// (scrapeTcsgFaculty / TCSG_URL in server.js) explicitly covers "the TCSG
+// System Office, as well as our 22 Colleges" — full membership, so this
+// mirrors TCSG_CANONICAL_CAMPUSES in server.js exactly rather than needing
+// UGA/Georgia-State-style exceptions.
+const TCSG_COVERED_CAMPUSES = new Set(
+  [
+    "Albany Technical College",
+    "Athens Technical College",
+    "Atlanta Technical College",
+    "Augusta Technical College",
+    "Central Georgia Technical College",
+    "Chattahoochee Technical College",
+    "Coastal Pines Technical College",
+    "Columbus Technical College",
+    "Georgia Northwestern Technical College",
+    "Georgia Piedmont Technical College",
+    "Gwinnett Technical College",
+    "Lanier Technical College",
+    "North Georgia Technical College",
+    "Oconee Fall Line Technical College",
+    "Ogeechee Technical College",
+    "Savannah Technical College",
+    "South Georgia Technical College",
+    "Southeastern Technical College",
+    "Southern Crescent Technical College",
+    "Southern Regional Technical College",
+    "West Georgia Technical College",
+    "Wiregrass Georgia Technical College",
+  ].map((n) => normalize(n))
+);
+
 // ── candidate discovery (web search) — mirrors discover-career-pages.js ──────
 
 function inferPlatformFromUrl(url) {
@@ -524,7 +556,8 @@ function chooseTargets(master, campusSet, existingOverrideNames, systemMembers, 
   const isSystemMember = (i) =>
     systemMembers.unitids.has(String(i.unitid ?? "").trim()) ||
     systemMembers.names.has(normalize(i.name)) ||
-    USG_COVERED_CAMPUSES.has(normalize(i.name));
+    USG_COVERED_CAMPUSES.has(normalize(i.name)) ||
+    TCSG_COVERED_CAMPUSES.has(normalize(i.name));
   return (master.institutions || [])
     .filter((i) => normalize(i.coverage_status) === "missing")
     .filter((i) => !ARGS.states || ARGS.states.has(String(i.state ?? "").toUpperCase())) // optional --state CA,TX,... filter
@@ -589,7 +622,7 @@ async function main() {
   const campusSet = loadServerCampusNames();
   const systemMembers = loadSystemMembers();
   const skipSet = loadSkipList();
-  console.log(`  System members   : ${systemMembers.ok ? `${systemMembers.names.size} CSU/UC/CUNY/SUNY campuses excluded (IPEDS)` : "IPEDS unavailable — system guard OFF"} + ${USG_COVERED_CAMPUSES.size} USG campuses excluded (manual list)`);
+  console.log(`  System members   : ${systemMembers.ok ? `${systemMembers.names.size} CSU/UC/CUNY/SUNY campuses excluded (IPEDS)` : "IPEDS unavailable — system guard OFF"} + ${USG_COVERED_CAMPUSES.size} USG + ${TCSG_COVERED_CAMPUSES.size} TCSG campuses excluded (manual lists)`);
   if (skipSet.size) console.log(`  Manual skips     : ${skipSet.size} (career-discovery-skip.json)`);
 
   const targets = chooseTargets(master, campusSet, existingNames, systemMembers, skipSet).slice(0, ARGS.max);
