@@ -78,7 +78,7 @@ function renderPage({ heading, message, isError = false }) {
 <body>
   <header>
     <a class="brand" href="${BASE_URL}/">
-      <svg width="26" height="26" viewBox="0 0 64 64"><rect x="20" y="18" width="24" height="5" rx="2.5" fill="#1D2A2B"/><rect x="19" y="27" width="26" height="5" rx="2.5" fill="#355659"/><rect x="18" y="36" width="28" height="5" rx="2.5" fill="#0F766E"/><rect x="17" y="45" width="30" height="5" rx="2.5" fill="#C45C38"/><circle cx="32" cy="12" r="5" fill="#C45C38"/></svg>
+      <svg width="26" height="26" viewBox="0 0 64 64" role="img" aria-label="Faculty Atlas compass"><circle cx="32" cy="32" r="23" fill="none" stroke="#1D2128" stroke-width="2.6"/><path d="M32 12 L37.5 32 L32 27.5 L26.5 32 Z" fill="#1D2128"/><path d="M32 52 L26.5 32 L32 36.5 L37.5 32 Z" fill="none" stroke="#1D2128" stroke-width="1.6" stroke-linejoin="round"/><circle cx="32" cy="32" r="3.2" fill="#1D2128"/></svg>
       <span class="wm">Faculty Atlas</span>
     </a>
   </header>
