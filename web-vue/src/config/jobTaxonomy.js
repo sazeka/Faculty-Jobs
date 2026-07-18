@@ -54,6 +54,7 @@ export const US_STATES_BY_ABBREV = {
 export const SOURCE_TO_STATE_ALIASES = {
   'MA Private': 'Massachusetts',
   'CA Private': 'California',
+  'CA CC': 'California',
   CSU: 'California',
   UC: 'California',
   CUNY: 'New York',

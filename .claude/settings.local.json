@@ -266,7 +266,14 @@
       "Bash(grep *)",
       "PowerShell(gh run list --limit 15 --json status,conclusion,name,createdAt,headBranch | ConvertFrom-Json | Format-Table name, status, conclusion, createdAt -AutoSize)",
       "PowerShell(cd \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\"; git status scripts/agent-job-enrichment.js; git log --oneline -3 -- scripts/agent-job-enrichment.js)",
-      "PowerShell(cd \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\"; node scripts/agent-data-health.js 2>&1 | Select-Object -Last 15; Write-Host \"Exit: $LASTEXITCODE\")"
+      "PowerShell(cd \"C:\\\\Users\\\\StevenAzeka\\\\OneDrive\\\\Documents\\\\GitHub\\\\Faculty-Jobs\"; node scripts/agent-data-health.js 2>&1 | Select-Object -Last 15; Write-Host \"Exit: $LASTEXITCODE\")",
+      "Bash(ssh jetson01 'cd ~/Faculty-Jobs && node -e \" *)",
+      "Bash(ssh jetson01 *)",
+      "Bash(scp /private/tmp/claude-501/-Users-steveazeka-Documents-GitHub-Faculty-Jobs/2683b647-8660-4b04-97fa-5f451039ac6d/scratchpad/commit-message-tcsg.txt jetson01:/tmp/commit-message-tcsg.txt)",
+      "Bash(awk '{print $1}')",
+      "Bash(git status *)",
+      "Read(//tmp/**)",
+      "Bash(awk '{print $2}')"
     ]
   }
 }
