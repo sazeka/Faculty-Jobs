@@ -1,14 +1,1055 @@
 {
-  "generatedAt": "2026-07-01T13:46:46.051Z",
-  "options": {
-    "apply": false,
-    "limit": 50,
-    "delayMs": 700,
-    "minConfidence": 0.65,
-    "scopeEligibleOnly": true
+  "generatedAt": "2026-07-18T19:24:49.677Z",
+  "backend": "qwen2.5:3b",
+  "config": {
+    "max": 100,
+    "dryRun": false,
+    "concurrency": 2,
+    "perCandidate": 3,
+    "searchDelayMs": 800,
+    "universities": false,
+    "communityColleges": false,
+    "llmNoneFallback": true,
+    "states": null,
+    "level": null
   },
-  "scanned": 0,
-  "updated": 0,
-  "note": "No eligible missing institutions require discovery (career_url/platform_type already present).",
-  "results": []
+  "targetsConsidered": 100,
+  "verifiedFinds": [],
+  "misses": [
+    {
+      "name": "Commonwealth Technical Institute",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.governmentjobs.com/careers/pabureau/jobs/newprint/4256073",
+        "https://www.governmentjobs.com/careers/pabureau/jobs/newprint/5290850",
+        "https://www.univstats.com/staffs/commonwealth-technical-institute/faculty-status/"
+      ]
+    },
+    {
+      "name": "Commonwealth University of Pennsylvania",
+      "reason": "no_jobs",
+      "tried": [
+        "https://commonwealthu.peopleadmin.com/",
+        "https://www.commonwealthu.edu/student-employment"
+      ]
+    },
+    {
+      "name": "Community Christian College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.cccollege.edu/student-employment",
+        "https://www.cccollege.edu/student-employment#header",
+        "mailto:finad@cccollege.edu?subject=FWS%20Opportunities",
+        "https://www.cccollege.edu/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Community College of Allegheny County",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.ccac.edu/workforce-and-community/public-safety-institute/instructor-training-and-recertification.php",
+        "https://www.ccac.edu/workforce-and-community/public-safety-institute/instructor-training-and-recertification.php#main-content",
+        "https://www.ccac.edu/workforce-and-community/public-safety-institute/instructor-training-and-recertification.php#footer",
+        "https://www.ccac.edu/workforce-and-community/public-safety-institute/instructor-training-and-recertification.php#",
+        "https://a.cms.omniupdate.com/11/?skin=oucampus&account=ccac&site=ccac&action=de&path=/workforce-and-community/public-safety-institute/instructor-training-and-recertification.pcf",
+        "https://www.ccac.edu/what-type-of-student-are-you/allegheny-county-employee.php",
+        "https://www.ccac.edu/workforce-and-community/index.php",
+        "https://www.ccac.edu/workforce-and-community/community-education/index.php",
+        "https://www.ccac.edu/workforce-and-community/community-impact-fellowship-program.php",
+        "https://www.ccac.edu/workforce-and-community/community-training-and-development/index.php"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Community College of Aurora",
+      "reason": "llm_none",
+      "candidates": [
+        "https://ccaurora.edu/about-cca/careers-at-cca/",
+        "https://ccaurora.edu/about-cca/careers-at-cca/human-resources/",
+        "https://ccaurora.edu/about-cca/careers-at-cca/employee-affinity-group-page/",
+        "https://ccaurora.edu/about-cca/careers-at-cca/human-resources/task-forces-and-councils/",
+        "https://ccaurora.edu/academics/workforce-training/",
+        "https://ccaurora.edu/students/career-services/",
+        "https://ccaurora.edu/academics/concurrent-enrollment/",
+        "https://ccaurora.edu/academics/workforce-training/financial-education-microcredential/",
+        "https://ccaurora.edu/academics/workforce-training/business/",
+        "https://ccaurora.edu/academics/workforce-training/construction-and-trades/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Community College of Beaver County",
+      "reason": "no_jobs",
+      "tried": [
+        "https://ccbc.edu/employment/",
+        "https://ccbc.edu/employment/#content"
+      ]
+    },
+    {
+      "name": "Community College of Denver",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.schooljobs.com/careers/ccd/jobs/5175731/assistant-professor-of-mathematics-provisional-faculty",
+        "https://www.schooljobs.com/careers/ccd"
+      ]
+    },
+    {
+      "name": "Compton College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.compton.edu/student-support/transfer-career/career/index.aspx",
+        "https://www.compton.edu/student-support/transfer-career/transfer/index.aspx",
+        "https://www.compton.edu/student-support/transfer-career/career/jobplacement.aspx",
+        "https://www.compton.edu/#",
+        "https://www.compton.edu/career-education/index.aspx",
+        "https://www.compton.edu/career-education/workforce-development.aspx",
+        "https://www.compton.edu/career-education/biomanufacturing/index.aspx",
+        "https://www.compton.edu/career-education/workforce/job-board.aspx",
+        "https://www.compton.edu/about/officesandservices/human-resources/diversity-equity-inclusion.aspx",
+        "https://www.compton.edu/about/officesandservices/human-resources/index.aspx"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Conception Seminary College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.conceptionabbey.org/monastery/career-opportunities/",
+        "https://www.conception.edu/seminary/human-resources/#fl-main-content",
+        "https://www.careerboutique.com/education/school/conception-seminary-college/overview.html"
+      ]
+    },
+    {
+      "name": "Concordia Seminary",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.csl.edu/about/careers/",
+        "https://www.csl.edu/campus-life/student-employment/",
+        "https://www.csl.edu/campus-life/student-employment/#main"
+      ]
+    },
+    {
+      "name": "Concordia University Ann Arbor",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.cuaa.edu/about/offices/human-resources/employment-opportunities.html",
+        "https://www.cuaa.edu/about/offices/human-resources/index.html"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Concordia Theological Seminary",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.ctsfw.edu/about/who-we-are/employment/",
+        "https://www.ctsfw.edu/about/who-we-are/employment/#main",
+        "https://www.ctsfw.edu/about/who-we-are/employment/#"
+      ]
+    },
+    {
+      "name": "Concordia University Texas",
+      "reason": "weak_single",
+      "url": "https://www.concordia.ca/hr/jobs/openings.html",
+      "count": 1
+    },
+    {
+      "name": "Concordia University-Irvine",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.cui.edu/admissions/undergraduate/career-and-campus-resources#academic-advising",
+        "https://www.cui.edu/hr/employment-opportunities",
+        "https://cui.applicantpro.com/jobsearch/?job_board_classification=Adjunct",
+        "https://cui.applicantpro.com/jobsearch/",
+        "https://cui.applicantpro.com/jobs/3830436",
+        "https://www.cui.edu/academicprograms/undergraduate/majors/music",
+        "https://www.cui.edu/hr",
+        "https://www.cui.edu/academicprograms/undergraduate/majors/music/composition",
+        "https://www.cui.edu/admissions/undergraduate/career-and-campus-resources",
+        "https://www.cui.edu/academicprograms/undergraduate/majors/music#Opportunities"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Concordia University-Nebraska",
+      "reason": "weak_single",
+      "url": "https://www.cune.edu/employment",
+      "count": 1
+    },
+    {
+      "name": "Concordia University-Saint Paul",
+      "reason": "llm_none",
+      "candidates": [
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/",
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/#content",
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/#launch-ai-search",
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/#main-nav-skipper",
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/#!",
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/#posting-wrapper",
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/#uc_jobs_list_widget-4",
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/#uc_resource_tiles-3",
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/#uc_resource_tiles-13",
+        "https://careerhub.csp.edu/channels/internships-for-academic-credit/#uc_resource_tiles-12"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Connecticut College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://conncoll.peopleadmin.com/postings/search?sort=227+asc",
+        "https://conncoll.peopleadmin.com/postings/1603",
+        "https://conncoll.peopleadmin.com/postings/search?sort=434+asc"
+      ]
+    },
+    {
+      "name": "Connors State College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://connorsstate.edu/hr/jobs/",
+        "https://connorsstate.edu/faculty-staff/",
+        "https://connorsstate.edu/finaid/student-employment/"
+      ]
+    },
+    {
+      "name": "Contra Costa College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.contracosta.ca.gov/38/Jobs",
+        "https://www.contracosta.edu/faculty-staff-resources/"
+      ]
+    },
+    {
+      "name": "Contra Costa Community College District Office",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.4cd.edu/hr/academic-calendars/index.html",
+        "https://www.4cd.edu/hr/academic-calendars/index.html#",
+        "https://www.4cd.edu/hr/academic-calendars/index.html#previous-calendars",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2024-2025%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2023-2024%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2022-2023%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2021-2022%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2020-2021%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2019-2020%20Academic%20Calendar.pdf",
+        "https://www.4cd.edu/hr/academic-calendars/previous-calendars/2018-2019%20Academic%20Calendar.pdf"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Conway School of Landscape Design",
+      "reason": "no_jobs",
+      "tried": [
+        "https://csld.edu/job-openings/",
+        "https://csld.edu/admissions/apply/"
+      ]
+    },
+    {
+      "name": "Coppin State University",
+      "reason": "weak_single",
+      "url": "https://www.coppin.edu/event/career-fair",
+      "count": 1
+    },
+    {
+      "name": "Copper Mountain Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.schooljobs.com/careers/cmccd",
+        "https://www.cmccd.edu/gainful-employment/#",
+        "https://www.cmccd.edu/jobs/"
+      ]
+    },
+    {
+      "name": "Cornell University",
+      "reason": "no_candidates"
+    },
+    {
+      "name": "Corban University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.corban.edu/employment/",
+        "https://connect.corban.edu/careers-with-us/"
+      ]
+    },
+    {
+      "name": "Cornerstone University",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.cornerstone.edu/about/employment/",
+        "https://www.cornerstone.edu/about/employment/employment-applications/",
+        "https://www.cornerstone.edu/about/employment/#",
+        "https://www.cornerstone.edu/university-offices/career-services/for-students/#on-campus-jobs",
+        "https://www.cornerstone.edu/about/employment/employment-applications/?jobId=bcfa7fad-52f9-15aa-081c-97c15222acc8",
+        "https://www.cornerstone.edu/about/employment/employment-applications/?jobId=8507ff08-a4f6-9f79-a1d7-faa4348f6d89",
+        "https://www.cornerstone.edu/about/employment/employment-applications/?jobId=851a3b5e-8fc6-b570-8dc1-c4097ab25d16",
+        "https://www.cornerstone.edu/about/employment/employment-applications/?jobId=f3937e83-4bc6-0c31-acd9-05ce51e275c4",
+        "https://www.cornerstone.edu/about/employment/employment-applications/?jobId=74bf078e-016b-ea34-d0ca-e8fe28a1c047",
+        "https://www.cornerstone.edu/about/employment/employment-applications/?jobId=26a6e908-be91-3a7e-99de-f6d833a25f1c"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Cornish College of the Arts",
+      "reason": "no_jobs",
+      "tried": [
+        "http://www.cornish.edu/human-resources/jobs/",
+        "https://www.cornish.edu/human-resources/jobs/#",
+        "https://www.cornish.edu/human-resources/jobs/"
+      ]
+    },
+    {
+      "name": "Cottey College",
+      "reason": "weak_single",
+      "url": "https://networks.h-net.org/jobs/69500/cottey-college-european-history-faculty-full-time-tenure-track",
+      "count": 1
+    },
+    {
+      "name": "Covenant School of Nursing and Allied Health",
+      "reason": "llm_none",
+      "candidates": [
+        "https://covenanthealth.jobs/",
+        "https://covenanthealth.jobs/mission-values/",
+        "https://covenanthealth.jobs/about-us/",
+        "https://covenanthealth.jobs/benefits-rewards/",
+        "https://covenanthealth.jobs/diversity/",
+        "https://covenanthealth.jobs/hiringprocess/",
+        "https://covenanthealth.jobs/contact/",
+        "https://covenanthealth.jobs/#",
+        "https://covenanthealth.jobs/providence-at-covenant/",
+        "https://covenanthealth.jobs/healthtraxx-program/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Covenant Theological Seminary",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.covenantseminary.edu/student-jobs-under-construction",
+        "https://www.covenantseminary.edu/jobs",
+        "https://www.covenantseminary.edu/student-jobs-under-construction#page",
+        "https://www.covenantseminary.edu/jobs#page",
+        "https://www.covenantseminary.edu/job-housing",
+        "https://covenantseminary.us2.list-manage.com/track/click?u=b7df9bd5e45825931f58414ee&id=d51ce410f9&e=c2eea649a2"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Cowley County Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.cowley.edu/search/careers/index.html",
+        "https://www.cowley.edu/_resources/assets/pdf/about/work-at-cowley/faculty-appraisal-report.pdf",
+        "https://builtin.com/company/cowley-college-cowley-county-community-college/jobs"
+      ]
+    },
+    {
+      "name": "Cox College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://coxcollege.edu/",
+        "https://coxcollege.edu/careers/"
+      ]
+    },
+    {
+      "name": "Crafton Hills College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.craftonhills.edu/academic-and-career-programs/college-catalog/index.php",
+        "https://www.craftonhills.edu/academic-and-career-programs/index.php",
+        "https://www.craftonhills.edu/career-and-academic-pathways/index.php",
+        "https://www.craftonhills.edu/academic-and-career-programs/online-classes/index.php",
+        "https://www.craftonhills.edu/academic-and-career-programs/college-honors-institute/index.php",
+        "https://www.craftonhills.edu/academic-and-career-programs/stem-center/index.php",
+        "https://www.craftonhills.edu/academic-and-career-programs/divs-and-depts/career-ed-and-human-dev/business-and-economics/accounting/index.php",
+        "https://www.craftonhills.edu/academic-and-career-programs/divs-and-depts/language-arts-and-academic-support/communication-and-language/american-sign-language/index.php",
+        "https://www.craftonhills.edu/academic-and-career-programs/divs-and-depts/social-info-and-natural-sciences/physical-and-biological-sciences/anatomy-and-physiology/",
+        "https://www.craftonhills.edu/academic-and-career-programs/divs-and-depts/social-info-and-natural-sciences/social-science/anthropology/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Cranbrook Academy of Art",
+      "reason": "no_jobs",
+      "tried": [
+        "https://cranbrookart.edu/employment-opportunities/",
+        "https://cranbrookart.edu/employment-opportunities/#"
+      ]
+    },
+    {
+      "name": "Criswell College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.criswell.edu/employment/#menu",
+        "https://www.criswell.edu/employment/#",
+        "https://www.criswell.edu/life-at-criswell/student-services/student-employment/#"
+      ]
+    },
+    {
+      "name": "Crown College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.crown.edu/careers/#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6Ijg2MyIsInRvZ2dsZSI6ZmFsc2V9",
+        "https://www.crown.edu/careers/#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6Ijg2MiIsInRvZ2dsZSI6ZmFsc2V9",
+        "https://www.crown.edu/careers/"
+      ]
+    },
+    {
+      "name": "Cuesta College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.cuesta.edu/about/human-resources/benefits/ft-faculty-benefits.html#",
+        "https://www.schooljobs.com/careers/cuesta"
+      ]
+    },
+    {
+      "name": "Culinary Institute of America",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.ciachef.edu/cia-culinary-careers-for-veterans/",
+        "https://www.ciachef.edu/cia-culinary-careers-for-veterans/#main",
+        "https://www.ciachef.edu/cia-culinary-careers-for-veterans/#",
+        "https://www.ciachef.edu/center-for-career-academic-advising/",
+        "https://www.ciachef.edu/cia-career-fairs/",
+        "https://www.ciachef.edu/hr/",
+        "https://www.ciachef.edu/cia-career-fairs/#main",
+        "https://www.ciachef.edu/cia-career-fairs/#",
+        "https://applynow.ciachef.edu/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Culver-Stockton College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://culver.edu/employment/",
+        "https://culver.edu/employment"
+      ]
+    },
+    {
+      "name": "Curtis Institute of Music",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.curtis.edu/studio/composition/#faculty",
+        "https://www.curtis.edu/studio/composition/",
+        "https://www.curtis.edu/person/jonathan-bailey-holland/",
+        "https://www.curtis.edu/person/amy-beth-kirsten/",
+        "https://www.curtis.edu/person/jennifer-higdon/",
+        "https://www.curtis.edu/about/administration/work-at-curtis/",
+        "https://www.curtis.edu/studio/composition/#content",
+        "https://www.curtis.edu/studio/composition/#",
+        "https://www.curtis.edu/studio/composition/#curriculum",
+        "https://www.curtis.edu/studio/composition/#degrees"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "CVPH Medical Center School of Radiologic Technology",
+      "reason": "no_jobs",
+      "tried": [
+        "https://careerschoolnow.org/colleges/cvph-medical-center-school-of-radiologic-technology",
+        "https://medcareernow.com/schools/cvph-medical-center-school-of-radiologic-technology",
+        "https://www.univstats.com/staffs/cvph-medical-center-school-of-radiologic-technology/"
+      ]
+    },
+    {
+      "name": "Cuyamaca College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://gcccd.wd1.myworkdayjobs.com/en-US/gcccdcareers/job/San-Diego-County---Cuyamaca-College/MICROBIOLOGY-FACULTY--TENURE-TRACK_R-02572",
+        "https://www.cuyamaca.edu/academics/academic-and-career-pathways/culture-people-ideas/"
+      ]
+    },
+    {
+      "name": "D'Youville University",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.dyu.edu/academics/academic-resources/career-professional-engagement",
+        "https://www.dyu.edu/about/talent-culture-and-human-resources"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Cypress College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.cypresscollege.edu/faculty-staff/",
+        "https://careers.cypresscollege.edu/"
+      ]
+    },
+    {
+      "name": "Dakota College at Bottineau",
+      "reason": "weak_single",
+      "url": "https://www.dakotacollege.edu/explore-dcb/employment",
+      "count": 1
+    },
+    {
+      "name": "Dallas Christian College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://dallaschristiancollege.apscareerportal.com/jobs",
+        "https://www.dallas.edu/careers/",
+        "https://dallaschristiancollege.apscareerportal.com/"
+      ]
+    },
+    {
+      "name": "Dallas Institute of Funeral Service",
+      "reason": "llm_none",
+      "candidates": [
+        "https://dallasinstitute.edu/academics-expert-faculty-funeral-professionals/mortuary-science-programs-overview/",
+        "https://dallasinstitute.edu/student-life/career-services-job-board/",
+        "https://dallasinstitute.edu/student-life/career-services-job-board/#content",
+        "https://dallasinstitute.edu/student-life/career-services-job-board/#",
+        "https://dallasinstitute.edu/student-life/current-job-openings/",
+        "https://dallasinstitute.edu/",
+        "https://dallasinstitute.edu/admissions/application-and-acceptance/",
+        "https://dallasinstitute.edu/apply-now/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Davidson College",
+      "reason": "no_candidates"
+    },
+    {
+      "name": "Dallas Theological Seminary",
+      "reason": "weak_single",
+      "url": "https://www.dts.edu/employment",
+      "count": 1
+    },
+    {
+      "name": "Daybreak University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.daybreakhealth.com/careers",
+        "https://www.mydaybreak.com/community/contact_us/employment_opportunities"
+      ]
+    },
+    {
+      "name": "Davis & Elkins College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.dewv.edu/human-resources/employment-application/",
+        "https://www.dewv.edu/human-resources/employment-application/#",
+        "https://www.dewv.edu/academics/career-services/",
+        "https://www.dewv.edu/human-resources/",
+        "https://www.dewv.edu/academics/career-services/#",
+        "mailto:careerservices@dewv.edu",
+        "mailto:Careerservices@dewv.edu",
+        "https://www.dewv.edu/human-resources/#",
+        "https://www.dewv.edu/human-resources/consumer-information/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Delaware Valley University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://delval.edu/careers-delval"
+      ]
+    },
+    {
+      "name": "Delaware County Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.schooljobs.com/careers/dccc",
+        "https://www.schooljobs.com/careers/dccc/jobs/newprint/3154452",
+        "https://www.dccc.edu/student-support-services/student-employment-services/"
+      ]
+    },
+    {
+      "name": "Delgado Community College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.dcc.edu/administration/policies/academic/faculty-resource-guide/employment-categories.aspx",
+        "https://www.dcc.edu/administration/offices/human-resources/careers/work-at-delgado.aspx",
+        "https://www.dcc.edu/administration/offices/human-resources/careers/work-at-delgado.aspx#main_content",
+        "https://www.dcc.edu/administration/offices/human-resources/careers/work-at-delgado.aspx#",
+        "https://www.dcc.edu/administration/policies/academic/faculty-resource-guide/job-descriptions.aspx",
+        "https://a.cms.omniupdate.com/11/?skin=oucampus&account=dcc&site=www&action=de&path=/administration/offices/human-resources/careers/work-at-delgado.pcf",
+        "https://www.dcc.edu/administration/policies/academic/faculty-resource-guide/job-descriptions.aspx#main_content",
+        "https://www.dcc.edu/administration/policies/academic/faculty-resource-guide/job-descriptions.aspx#",
+        "https://www.dcc.edu/administration/offices/human-resources/careers/default.aspx",
+        "https://www.dcc.edu/administration/offices/human-resources/careers/default.aspx#main_content"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "DePaul University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://careers-depaul.icims.com/",
+        "https://academics.depaul.edu/faculty-jobs/"
+      ]
+    },
+    {
+      "name": "Denison University",
+      "reason": "weak_single",
+      "url": "https://denison.edu/campus/human-resources/student-employment",
+      "count": 1
+    },
+    {
+      "name": "DePauw University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://depauw.wd5.myworkdayjobs.com/DePauw_University"
+      ]
+    },
+    {
+      "name": "Des Moines Area Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://jobs.dmacc.edu/",
+        "https://jobs.dmacc.edu/#content"
+      ]
+    },
+    {
+      "name": "DHARMA REALM BUDDHIST UNIVERSITY",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.drbu.edu/hr/",
+        "https://www.drbu.edu/about/offices/oaa/academic-advising-resources/career-services/",
+        "https://www.drbu.edu/hr/program-coordinator-for-academic-resources-center/#"
+      ]
+    },
+    {
+      "name": "Diablo Valley College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.dvc.edu/faculty-staff",
+        "https://www.dvc.edu/news/real-skills-real-jobs-real-success-stories-dvc-career-education",
+        "https://www.dvc.edu/news/real-skills-real-jobs-real-success-stories-dvc-career-education#main",
+        "https://www.dvc.edu/news/real-skills-real-jobs-real-success-stories-dvc-career-education#",
+        "https://www.dvc.edu/student-services/career-services/jobs-and-internships",
+        "https://www.dvc.edu/academics/career-education-programs",
+        "https://www.dvc.edu/student-services/career-services",
+        "https://www.dvc.edu/academics/high-school-programs/career-academies",
+        "https://www.dvc.edu/news/perfect-mix-turning-passion-audio-lucrative-career",
+        "https://www.dvc.edu/news?type[16]=16"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Dillard University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.dillard.edu/about/administration/human-resources/careers-at-du/",
+        "https://dillard.webscribble.com/jobs",
+        "https://careers.dillards.com/Careers/"
+      ]
+    },
+    {
+      "name": "Digital Media Institute",
+      "reason": "no_jobs",
+      "tried": [
+        "https://careers-dminc.icims.com/jobs/intro",
+        "https://dmi.edu/placement-portal/",
+        "https://dmi.edu/scholarships-aid/#gainful-employment"
+      ]
+    },
+    {
+      "name": "Divine Mercy University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://divinemercy.edu/"
+      ]
+    },
+    {
+      "name": "Divine Word College",
+      "reason": "weak_single",
+      "url": "https://www.dwci.edu/academics/employment-opportunities",
+      "count": 1
+    },
+    {
+      "name": "Doral College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.zippia.com/faculty-doral-fl-jobs/",
+        "https://www.doral.edu/faculty-staff",
+        "https://doralfl.attract.neogov.com/doral-recruitment-qc/p/careers",
+        "https://www.doral.edu/join-our-team",
+        "https://www.doral.edu/apply",
+        "https://www.communitycollegejobs.com/search.php?city_name=Doral",
+        "https://doralfl.attract.neogov.com/p/recruitmentdash",
+        "https://www.academicjobs.net/search.php?city_name=Doral",
+        "https://www.cityofdoral.com/A-Z-Index/Job-Opportunities"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Dongguk University Los Angeles",
+      "reason": "no_jobs",
+      "tried": [
+        "https://dula.edu/forums/topic/hiring-independent-contractor-acupuncturist/",
+        "https://dula.edu/forums/topic/hiring-academic-coordinator-assistant/",
+        "https://dula.edu/employment/"
+      ]
+    },
+    {
+      "name": "Dordt University",
+      "reason": "weak_single",
+      "url": "https://www.dordt.edu/about-dordt/job-openings",
+      "count": 1
+    },
+    {
+      "name": "Downey Adult School",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.das.edu/",
+        "https://www.das.edu/career-training/",
+        "https://www.das.edu/general-information/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Dragon Rises College of Oriental Medicine",
+      "reason": "llm_none",
+      "candidates": [
+        "https://dragonrises.edu/career-pathways/",
+        "https://dragonrises.edu/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Drake University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.drake.edu/about/offices/hr",
+        "https://www.drake.edu/facstaff"
+      ]
+    },
+    {
+      "name": "Durham Technical Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.durhamtech.edu/human-resources-talent-management/durham-tech-careers",
+        "https://www.schooljobs.com/careers/durhamtech",
+        "https://www.durhamtech.edu/apply"
+      ]
+    },
+    {
+      "name": "Earlham College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://hr.earlham.edu/"
+      ]
+    },
+    {
+      "name": "East Central College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.eastcentral.edu/hr/employment-opportunities/",
+        "https://www.eastcentral.edu/hr/wp-content/uploads/sites/19/2025/04/AEL-Integrated-Education-Instructor.pdf",
+        "https://www.eastcentral.edu/hr/employment-opportunities/#primary"
+      ]
+    },
+    {
+      "name": "East-West University",
+      "reason": "llm_none",
+      "candidates": [
+        "https://eastwest.edu.ge/en/category/vacancies/",
+        "https://www.eastwest.edu/career-services/",
+        "https://www.eastwest.edu/",
+        "https://www.eastwestcenter.org/apply"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "East Central University",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.ecok.edu/employment-services/directions-east-central-university.php",
+        "https://www.ecok.edu/employment-services/recruitment-and-screening-procedures-east-central-university.php",
+        "https://www.ecok.edu/employment-services/directions-east-central-university.php#main-content",
+        "https://www.ecok.edu/employment-services/directions-east-central-university.php#site-navigation",
+        "https://www.ecok.edu/employment-services/directions-east-central-university.php#footer",
+        "https://www.ecok.edu/employment-services/recruitment-and-screening-procedures-east-central-university.php#main-content",
+        "https://www.ecok.edu/employment-services/recruitment-and-screening-procedures-east-central-university.php#site-navigation",
+        "https://www.ecok.edu/employment-services/recruitment-and-screening-procedures-east-central-university.php#footer",
+        "https://a.cms.omniupdate.com/11/?skin=oucampus&account=ecok&site=www&action=de&path=/employment-services/directions-east-central-university.pcf",
+        "https://a.cms.omniupdate.com/11/?skin=oucampus&account=ecok&site=www&action=de&path=/employment-services/recruitment-and-screening-procedures-east-central-university.pcf"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Eastern Gateway Community College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://egcc.edu/",
+        "https://egcc.edu/locations/online/",
+        "http://www.egccfreecollege.org/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Eastern Nazarene College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://epokagency.com/workspread/job/adjunct-faculty-adult-graduate-studies-as-available-at-eastern-nazarene-college-quincy-ma-02170-ca2d6c82149da9c7jktk-ZXBva2FnZW"
+      ]
+    },
+    {
+      "name": "Eastern Florida State College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.easternflorida.edu/hr/equity/index.php",
+        "https://www.easternflorida.edu/about/contact-information/index.php",
+        "https://www.easternflorida.edu/hr/job-opportunities/index.php"
+      ]
+    },
+    {
+      "name": "Eastern Virginia Medical School",
+      "reason": "no_jobs",
+      "tried": [
+        "https://careers-evms.icims.com/jobs/intro?hashed=-435770481&mobile=false&width=1755&height=500&bga=true&needsRedirect=false&jan1offset=-300&jun1offset=-240",
+        "https://careers-evms.icims.com/jobs/intro",
+        "https://careers-evms.icims.com/jobs/search?pr=2&mobile=false&width=875&height=500&bga=true&needsRedirect=false&jan1offset=-480&jun1offset=-420"
+      ]
+    },
+    {
+      "name": "Eckerd College",
+      "reason": "no_candidates"
+    },
+    {
+      "name": "Eastern Wyoming College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://ewc.peopleadmin.com/postings/1962",
+        "https://ewc.peopleadmin.com/postings/1964",
+        "https://ewc.peopleadmin.com/postings/1937"
+      ]
+    },
+    {
+      "name": "Eden Theological Seminary",
+      "reason": "llm_none",
+      "candidates": [
+        "https://eden.edu/giving-opportunities/",
+        "https://eden.edu/#",
+        "https://eden.edu/giving-opportunities/#",
+        "https://eden.edu/giving-opportunities/#open-newsletter-popup",
+        "https://eden.edu/giving-opportunities/certificate/leadership-development/#next-steps",
+        "https://eden.edu/giving-opportunities/?bbFormId=30b99ca9-94eb-4341-b5c2-cb6a9c0e647b",
+        "https://eden.edu/giving-opportunities/#giving-club",
+        "https://eden.edu/giving-opportunities/#legacy",
+        "https://eden.edu/giving-opportunities/#other-giving",
+        "https://eden.edu/giving-opportunities/#fund_section"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Edison State Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.edisonohio.edu/faculty-staff",
+        "https://www.edisonohio.edu/about/human-resources"
+      ]
+    },
+    {
+      "name": "Edmonds College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.edmonds.edu/about-edmonds/job-opportunities/faculty-hires.html",
+        "https://www.governmentjobs.com/careers/edmondscollege/jobs/newprint/3444571",
+        "https://www.governmentjobs.com/careers/edmondscollege/jobs/newprint/1595477"
+      ]
+    },
+    {
+      "name": "EDvance College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.edvance.edu/edvance-careers",
+        "https://edvance.isolvedhire.com/jobs/1457480.html",
+        "https://edvance.isolvedhire.com/jobs/1457448.html"
+      ]
+    },
+    {
+      "name": "Edward Via College of Osteopathic Medicine",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.vcom.edu/employment/job-listings",
+        "https://www.vcom.edu/employment/job-listings/77851",
+        "https://www.vcom.edu/employment/job-listings/77927"
+      ]
+    },
+    {
+      "name": "Edward Waters University",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.higheredjobs.com/institution/search.cfm?University=Edward%20Waters%20University&suggest=3",
+        "https://www.openlecture.com/universities/edward-waters-university",
+        "https://intercollegiate.co/schools/edward-waters-university-2457",
+        "https://www.ew.edu/employee-directory/",
+        "https://www.ew.edu/#0",
+        "https://www.ew.edu/career-planning/",
+        "https://www.ew.edu/employee-directory/#main-content",
+        "https://www.ew.edu/employee-directory/#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6IjIzOTQ1IiwidG9nZ2xlIjpmYWxzZX0%3D",
+        "https://www.ew.edu/employee-directory/#0",
+        "https://www.ew.edu/employee-directory/#"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "El Camino Community College District",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.elcamino.edu/departments/human-resources/employment-opportunities.php",
+        "https://www.elcamino.edu/departments/human-resources/employment-opportunities.php#mainNav",
+        "https://www.elcamino.edu/departments/human-resources/employment-opportunities.php#ex1",
+        "https://www.elcamino.edu/departments/human-resources/employment-opportunities.php#",
+        "https://www.elcamino.edu/academics/career/",
+        "https://www.elcamino.edu/academics/career/index.php",
+        "https://www.elcamino.edu/departments/human-resources/",
+        "https://www.elcamino.edu/departments/human-resources/agreements.php",
+        "https://www.elcamino.edu/departments/human-resources/benefits.php",
+        "https://www.elcamino.edu/departments/human-resources/job-descriptions.php"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Elgin Community College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://elgin.edu/areas-of-study/manufacturing-careers/",
+        "https://elgin.edu/calendar/career-spotlight-healthcare-careers.php",
+        "https://elgin.edu/news/ecc-stories/2026/pre-apprenticeship-program-at-ecc-introduces-young-women-to-careers-in-fire-service.php",
+        "https://elgin.edu/areas-of-study/manufacturing-careers/#main-content",
+        "https://elgin.edu/areas-of-study/manufacturing-careers/#",
+        "https://elgin.edu/areas-of-study/manufacturing-careers/two-decades-in-and-still-building-futures.php",
+        "https://elgin.edu/areas-of-study/manufacturing-careers/hands-on-learning-real-world-results.php",
+        "https://elgin.edu/areas-of-study/manufacturing-careers/ecc-student-finds-his-path-in-industrial-maintenance--.php",
+        "https://elgin.edu/areas-of-study/manufacturing-careers/dual-credit-manufacturing-teacher-prepares-students-for-future-success-in-the-field-.php",
+        "https://elgin.edu/areas-of-study/manufacturing-careers/#collapse2753587"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "El Paso Community College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.schooljobs.com/careers/epcc/",
+        "https://www.schooljobs.com/careers/epcc/jobs/newprint/4972564",
+        "https://www.epcc.edu/Administration/HumanResources/faculty-credentials"
+      ]
+    },
+    {
+      "name": "Elim Bible Institute and College",
+      "reason": "no_jobs",
+      "tried": [
+        "https://www.univstats.com/staffs/elim-bible-institute-and-college/",
+        "https://american-school-search.com/faculty/elim-bible-institute-and-college",
+        "https://elim.edu/academic-programs"
+      ]
+    },
+    {
+      "name": "Ellsworth Community College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.iavalley.edu/join-our-team/index.html",
+        "https://www.iavalley.edu/join-our-team/index.html#main-content",
+        "https://www.iavalley.edu/join-our-team/index.html#site-navigation",
+        "https://www.iavalley.edu/join-our-team/index.html#footer",
+        "https://www.iavalley.edu/join-our-team/index.html#",
+        "http://forms.iavalley.edu/doclib/IVCCD%5CEEO_AA_Administrative_Statement.pdf",
+        "https://ecc.iavalley.edu/",
+        "https://a.cms.omniupdate.com/11/?skin=oucampus&account=iavalley&site=www&action=de&path=/join-our-team/index.pcf"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Elizabethtown Community and Technical College",
+      "reason": "weak_single",
+      "url": "https://careers.kctcs.edu/jobs/adjunct-faculty-sociology-elizabethtown-kentucky-united-states",
+      "count": 1
+    },
+    {
+      "name": "Elmezzi Graduate School of Molecular Medicine",
+      "reason": "llm_none",
+      "candidates": [
+        "https://jobs.northwell.edu/?utm_source=corp&utm_medium=website&utm_campaign=topnav",
+        "https://jobs.northwell.edu/",
+        "https://jobs.northwell.edu/?utm_source=corp&utm_medium=website&utm_campaign=topnav#pageHeaderTop",
+        "https://jobs.northwell.edu/?utm_source=corp&utm_medium=website&utm_campaign=topnav#",
+        "https://jobs.northwell.edu/job-search-results/",
+        "https://jobs.northwell.edu/about_us/",
+        "https://jobs.northwell.edu/culture/",
+        "https://jobs.northwell.edu/benefits/",
+        "https://jobs.northwell.edu/career-experience/",
+        "https://jobs.northwell.edu/about_us/#locations"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Elyon College",
+      "reason": "llm_none",
+      "candidates": [
+        "https://elyon.edu/",
+        "https://elyon.edu/wp-content/uploads/2025/09/Elyon-College-Employee-Handbook.pdf",
+        "https://elyon.edu/application/",
+        "https://www.elyoncollege.com/we-are-hiring/teachers",
+        "https://www.elyoncollege.com/we-are-hiring/",
+        "https://www.univstats.com/staffs/elyon-college/occupation/",
+        "https://www.univstats.com/staffs/elyon-college/",
+        "http://elyoncollege.com/",
+        "https://www.elyoncollege.com/we-are-hiring/faq",
+        "https://www.elyoncollege.com/we-are-hiring/about"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Elmhurst University",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.elmhurst.edu/academics/academic-centers/wccpe/",
+        "https://www.elmhurst.edu/academics/academic-centers/wccpe/career-education/",
+        "https://www.elmhurst.edu/academics/academic-centers/wccpe/internships/",
+        "https://www.elmhurst.edu/academics/academic-centers/wccpe/job-career-resources/",
+        "https://www.elmhurst.edu/academics/academic-centers/wccpe/career-advice-on-demand/",
+        "https://www.elmhurst.edu/academics/academic-centers/wccpe/for-employers/",
+        "https://www.elmhurst.edu/academics/academic-centers/cpe/career-advice-on-demand/",
+        "https://www.elmhurst.edu/academics/academic-centers/wccpe/internships/job-search-resources/",
+        "https://www.elmhurst.edu/academics/academic-centers/wccpe/career-education/career-courses/",
+        "https://www.elmhurst.edu/academics/academic-centers/wccpe/for-employers/on-campus-marketing/"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Emmanuel University",
+      "reason": "weak_single",
+      "url": "https://eu.edu/human-resources/",
+      "count": 1
+    },
+    {
+      "name": "Emory University",
+      "reason": "no_jobs",
+      "tried": [
+        "https://faculty-emory.icims.com/",
+        "https://faculty-emory.icims.com/jobs/intro?mobile=true&needsRedirect=false"
+      ]
+    },
+    {
+      "name": "Emporia State University",
+      "reason": "llm_none",
+      "candidates": [
+        "https://www.emporia.edu/alumni-careers/career-services/faculty-resources/",
+        "https://www.emporia.edu/alumni-careers/career-services/faculty-resources/#main",
+        "https://www.emporia.edu/alumni-careers/career-services/faculty-resources/online-presentation-request-form/",
+        "https://www.emporia.edu/alumni-careers/career-services/faculty-resources/course-assignments-online-request-form/",
+        "https://www.emporia.edu/alumni-careers/career-services/",
+        "https://www.emporia.edu/alumni-careers/",
+        "https://www.emporia.edu/alumni-careers/for-alumni/",
+        "https://www.emporia.edu/alumni-careers/for-alumni/recruit-hire-advocate/refer-hornet-form/",
+        "https://www.emporia.edu/alumni-careers/for-alumni/recruit-hire-advocate/",
+        "https://www.emporia.edu/alumni-careers/career-services/#main"
+      ],
+      "llmReply": "none"
+    },
+    {
+      "name": "Epic Bible College & Graduate School",
+      "reason": "no_jobs",
+      "tried": [
+        "https://campusguide.com/colleges/epic-bible-college-graduate-school/worth-it/",
+        "https://www.univstats.com/staffs/epic-bible-college/occupation/",
+        "https://www.collegeraptor.com/colleges/careers/Epic-Bible-College-Graduate-School-CA--124487/"
+      ]
+    }
+  ]
 }

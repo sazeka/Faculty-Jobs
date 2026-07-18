@@ -161,6 +161,13 @@ function main() {
 
     result.push(
       applyVerification({
+        // Carry forward everything from the previous record by default (e.g.
+        // last_discovery_attempt_at/last_discovery_status/discovery_attempts
+        // set by agent-career-discovery.js) — this rebuild only knows how to
+        // recompute the fields explicitly overridden below. Without this
+        // spread, running it silently wiped discovery-agent state on every
+        // nightly build:frontend, resetting retry ordering to scratch daily.
+        ...prev,
         unitid: prev.unitid || null,
         name: c.name,
         aliases: Array.isArray(prev.aliases) ? prev.aliases : [],
@@ -188,6 +195,7 @@ function main() {
 
     result.push(
       applyVerification({
+        ...prev,
         unitid: prev.unitid || null,
         name: college,
         aliases: Array.isArray(prev.aliases) ? prev.aliases : [],
@@ -213,6 +221,7 @@ function main() {
 
     result.push(
       applyVerification({
+        ...prev,
         unitid: prev.unitid || null,
         name: prev.name || null,
         aliases: Array.isArray(prev.aliases) ? prev.aliases : [],
