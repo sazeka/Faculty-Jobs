@@ -5,7 +5,7 @@
 // postings share a title+college, and keeps the URL stable across rebuilds.
 import crypto from "crypto";
 
-function kebab(str, max) {
+export function kebab(str, max) {
   const s = String(str || "")
     .toLowerCase()
     .replace(/&/g, " and ")

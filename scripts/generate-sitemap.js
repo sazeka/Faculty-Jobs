@@ -70,10 +70,36 @@ const jobEntries = jobPages.map(({ loc, lastmod: lm }) =>
   ].join("\n")
 );
 
+// Discipline/state/institution hub pages, from generate-hub-pages.js.
+const hubPages = readJson(path.join(ROOT, "generated", "hub-pages.json")) || [];
+const hubEntries = hubPages.map(({ loc, lastmod: lm }) =>
+  [
+    "  <url>",
+    `    <loc>${loc}</loc>`,
+    `    <lastmod>${lm || lastmod}</lastmod>`,
+    "    <changefreq>weekly</changefreq>",
+    "    <priority>0.5</priority>",
+    "  </url>",
+  ].join("\n")
+);
+
+// Weekly trends digest pages, from generate-trends-pages.js.
+const trendsPages = readJson(path.join(ROOT, "generated", "trends-pages.json")) || [];
+const trendsEntries = trendsPages.map(({ loc, lastmod: lm }) =>
+  [
+    "  <url>",
+    `    <loc>${loc}</loc>`,
+    `    <lastmod>${lm || lastmod}</lastmod>`,
+    "    <changefreq>weekly</changefreq>",
+    "    <priority>0.4</priority>",
+    "  </url>",
+  ].join("\n")
+);
+
 const sitemap = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-  [...staticEntries, ...jobEntries].join("\n"),
+  [...staticEntries, ...jobEntries, ...hubEntries, ...trendsEntries].join("\n"),
   "</urlset>",
   "",
 ].join("\n");
@@ -94,6 +120,6 @@ for (const dir of ["docs", "public"]) {
   writeFile(path.join(ROOT, dir, "robots.txt"),  robots);
 }
 
-console.log(`Sitemap written — lastmod: ${lastmod}, ${STATIC_PAGES.length} static + ${jobPages.length} job URLs`);
+console.log(`Sitemap written — lastmod: ${lastmod}, ${STATIC_PAGES.length} static + ${jobPages.length} job + ${hubPages.length} hub + ${trendsPages.length} trends URLs`);
 console.log("  docs/sitemap.xml  public/sitemap.xml");
 console.log("  docs/robots.txt   public/robots.txt");

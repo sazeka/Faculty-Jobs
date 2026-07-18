@@ -36,6 +36,12 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           USE_CLAUDE: '1'
 
+      - name: Generate indexable trends pages
+        run: node scripts/generate-trends-pages.js
+
+      - name: Regenerate sitemap (picks up new /trends/ pages)
+        run: node scripts/generate-sitemap.js
+
       - name: Commit & push if changed
         run: |
           git config user.name "github-actions[bot]"
@@ -44,7 +50,11 @@ jobs:
           git add \
             docs/data/weekly-trends.json \
             public/data/weekly-trends.json \
-            generated/weekly-stats-history.json
+            generated/weekly-stats-history.json \
+            generated/trends-pages.json \
+            docs/trends \
+            docs/sitemap.xml public/sitemap.xml \
+            docs/robots.txt public/robots.txt
 
           if git diff --cached --quiet; then
             echo "No changes to commit."

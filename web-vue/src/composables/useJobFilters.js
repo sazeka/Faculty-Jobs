@@ -1,12 +1,12 @@
 import { computed } from 'vue'
-import { ALL_FILTER_VALUE, createDefaultFilters } from '../config/appConfig'
-import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxonomy'
+import { ALL_FILTER_VALUE, createDefaultFilters } from '../config/appConfig.js'
+import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxonomy.js'
 
 // Today as YYYY-MM-DD for deadline comparisons; computed once per page load.
 // closeDate values are date-only, so a UTC slice is the right granularity.
 const TODAY_ISO = new Date().toISOString().slice(0, 10)
 
-const DISCIPLINE_RULES = [
+export const DISCIPLINE_RULES = [
   { label: 'Arts & Music',            terms: ['art', 'music', 'theatre', 'theater', 'dance', 'film', 'studio', 'visual art', 'fine art', 'performing', 'sculpture', 'painting', 'ceramics', 'graphic design', 'illustration', 'photography'] },
   { label: 'Biological Sciences',     terms: ['biology', 'biolog', 'botany', 'zoology', 'ecology', 'genetics', 'genomics', 'neuroscience', 'biochemistry', 'microbiology', 'molecular', 'cell biology', 'evolutionary', 'anatomy', 'physiology', 'marine biology', 'wildlife'] },
   { label: 'Business & Economics',    terms: ['business', 'economics', 'econom', 'accounting', 'finance', 'marketing', 'management', 'entrepreneurship', 'supply chain', 'operations', 'mba', 'commerce', 'hospitality', 'real estate', 'taxation', 'audit'] },
@@ -22,7 +22,7 @@ const DISCIPLINE_RULES = [
   { label: 'Social Sciences',         terms: ['sociology', 'anthropology', 'political science', 'geography', 'communications', 'journalism', 'media studies', 'public administration', 'public policy', 'international relations', 'urban planning', 'social science', 'demography', 'gender studies', 'ethnic studies', 'african american', 'chicano', 'latinx'] },
 ]
 
-function getDiscipline(job) {
+export function getDiscipline(job) {
   const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
   for (const rule of DISCIPLINE_RULES) {
     if (rule.terms.some(t => hay.includes(t))) return rule.label
@@ -30,7 +30,7 @@ function getDiscipline(job) {
   return 'Other'
 }
 
-function getPositionType(title) {
+export function getPositionType(title) {
   const t = (title || '').toLowerCase()
   if (t.includes('assistant professor')) return 'Assistant Professor'
   if (t.includes('associate professor')) return 'Associate Professor'
@@ -49,7 +49,7 @@ function getPositionType(title) {
 // posting (e.g. "Assistant/Associate Professor", "Open Rank") appears under each
 // matching filter. Only the professor-rank dimension is multi-tagged; everything
 // else falls back to the single-category logic to avoid over-tagging.
-function getPositionTypes(title) {
+export function getPositionTypes(title) {
   const t = (title || '').toLowerCase()
   if (/professor/.test(t)) {
     // "all ranks" / "open rank" spans the full professor ladder
@@ -79,7 +79,7 @@ function stripDateTextFromTitle(value) {
   return t
 }
 
-function inferState(job) {
+export function inferState(job) {
   if (job?.state) return job.state
   const source = String(job?.source || '').trim()
   if (!source) return null
@@ -88,7 +88,7 @@ function inferState(job) {
   return source
 }
 
-function normalizeSystemCollege(job) {
+export function normalizeSystemCollege(job) {
   const original = String(job?.college || '').trim()
   if (!original) return null
 

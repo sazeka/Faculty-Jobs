@@ -19,7 +19,10 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { jobSlug } from "./lib/job-slug.js";
+import { jobSlug, kebab } from "./lib/job-slug.js";
+import { buildInstitutionIndex, lookupInstitution } from "./lib/institution-lookup.js";
+import { MIN_STATE_JOBS, MIN_INSTITUTION_JOBS, DISCIPLINE_SKIP } from "./lib/hub-thresholds.js";
+import { getDiscipline, inferState, normalizeSystemCollege } from "../web-vue/src/composables/useJobFilters.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -66,7 +69,21 @@ function tagList(job) {
   return tags;
 }
 
-function jobPostingLd(job, pageUrl, descText) {
+// Google's employmentType enum has no "fixed-term" value, so short-term
+// academic appointments are tagged FULL_TIME + TEMPORARY rather than invented
+// a non-standard value.
+function deriveEmploymentType(job) {
+  const pt = String(job.positionType || "").toLowerCase();
+  if (pt === "adjunct") return "PART_TIME";
+  if (pt === "visiting" || pt === "postdoctoral" || pt === "research") return ["FULL_TIME", "TEMPORARY"];
+  return "FULL_TIME";
+}
+
+function isRemote(job) {
+  return /remote/i.test(job.location || "") || /remote/i.test(job.title || "");
+}
+
+function jobPostingLd(job, pageUrl, descText, state, institutionIndex) {
   const ld = {
     "@context": "https://schema.org/",
     "@type": "JobPosting",
@@ -75,25 +92,35 @@ function jobPostingLd(job, pageUrl, descText) {
     hiringOrganization: { "@type": "Organization", name: job.college || "Unknown" },
     url: pageUrl,
     directApply: false,
+    employmentType: deriveEmploymentType(job),
   };
   if (job.datePosted) ld.datePosted = job.datePosted;
   if (job.closeDate) ld.validThrough = `${job.closeDate}T23:59:59`;
-  if (job.location || job.state) {
+  if (job.location || state) {
     ld.jobLocation = {
       "@type": "Place",
       address: {
         "@type": "PostalAddress",
-        addressLocality: job.city || undefined,
-        addressRegion: job.state || undefined,
+        addressRegion: state || undefined,
         addressCountry: "US",
       },
     };
+  }
+  if (isRemote(job)) ld.jobLocationType = "TELECOMMUTE";
+  const inst = lookupInstitution(job.college, institutionIndex);
+  if (inst?.homepage_url) {
+    ld.hiringOrganization.sameAs = inst.homepage_url;
+    try {
+      ld.hiringOrganization.logo = `https://logo.clearbit.com/${new URL(inst.homepage_url).hostname}`;
+    } catch {
+      // malformed homepage_url — skip the logo, sameAs is still useful on its own
+    }
   }
   if (job.url) ld.sameAs = job.url;
   return JSON.stringify(ld);
 }
 
-function renderPage(job) {
+function renderPage(job, groupCounts, institutionIndex) {
   const slug = jobSlug(job);
   const pageUrl = `${BASE_URL}/jobs/${slug}/`;
   const descText = cleanDescription(job.description);
@@ -106,6 +133,25 @@ function renderPage(job) {
   const starts = fmtDate(job.startDate);
   const metaDesc = (descText || `${job.title} at ${job.college}.`).slice(0, 155);
   const title = `${job.title} — ${job.college} | Faculty Atlas`;
+
+  const discipline = getDiscipline(job);
+  const state = inferState(job);
+  const college = normalizeSystemCollege(job);
+  // Only link to a hub page that generate-hub-pages.js will actually emit —
+  // same thresholds, checked against the same open-jobs counts.
+  const browseLinks = [];
+  if (!DISCIPLINE_SKIP.has(discipline) && (groupCounts.discipline.get(discipline) || 0) >= 1) {
+    browseLinks.push({ label: discipline, href: `/disciplines/${kebab(discipline)}/` });
+  }
+  if (state && (groupCounts.state.get(state) || 0) >= MIN_STATE_JOBS) {
+    browseLinks.push({ label: state, href: `/states/${kebab(state)}/` });
+  }
+  if (college && (groupCounts.college.get(college) || 0) >= MIN_INSTITUTION_JOBS) {
+    browseLinks.push({ label: college, href: `/institutions/${kebab(college)}/` });
+  }
+  const browseHtml = browseLinks.length
+    ? `<div class="browse">More: ${browseLinks.map((b) => `<a href="${esc(b.href)}">${esc(b.label)}</a>`).join(" &nbsp;·&nbsp; ")}</div>`
+    : "";
 
   return `<!doctype html>
 <html lang="en">
@@ -126,7 +172,7 @@ function renderPage(job) {
   <meta name="twitter:title" content="${esc(job.title)} — ${esc(job.college)}" />
   <meta name="twitter:description" content="${esc(metaDesc)}" />
   <meta name="twitter:image" content="${BASE_URL}/og-card.png" />
-  <script type="application/ld+json">${jobPostingLd(job, pageUrl, descText)}</script>
+  <script type="application/ld+json">${jobPostingLd(job, pageUrl, descText, state, institutionIndex)}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -158,6 +204,8 @@ function renderPage(job) {
     .fact .v.sm { font-family:'Newsreader',serif; font-size:16px; }
     .apply { display:block; text-align:center; background:var(--accent); color:#fff; font-family:'JetBrains Mono',monospace; font-size:14px; letter-spacing:0.04em; padding:16px; border-radius:11px; margin-top:16px; text-decoration:none; }
     .applynote { font-size:12px; color:var(--ink3); text-align:center; margin-top:9px; font-style:italic; }
+    .browse { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink3); margin-top:24px; }
+    .browse a { color:var(--accent); text-decoration:underline; }
     footer { border-top:1px solid var(--rule); padding:28px 7vw; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink3); }
   </style>
 </head>
@@ -185,11 +233,12 @@ function renderPage(job) {
           ${posted ? `<div class="fact"><div class="l">Posted</div><div class="v">${posted}</div></div>` : ""}
           ${deadline ? `<div class="fact"><div class="l">Deadline</div><div class="v ${/Rolling/.test(deadline) ? "sm" : ""}">${esc(deadline)}</div></div>` : ""}
           ${starts ? `<div class="fact"><div class="l">Starts</div><div class="v sm">${starts}</div></div>` : ""}
-          ${job.location || job.state ? `<div class="fact"><div class="l">Location</div><div class="v sm">${esc(job.location || job.state)}</div></div>` : ""}
+          ${job.location || state ? `<div class="fact"><div class="l">Location</div><div class="v sm">${esc(job.location || state)}</div></div>` : ""}
         </div>
         ${job.url ? `<a class="apply" href="${esc(job.url)}" target="_blank" rel="noopener nofollow">Apply on ${esc(job.college)}'s site →</a><div class="applynote">Opens the institution's official career page</div>` : ""}
       </aside>
     </div>
+    ${browseHtml}
   </div>
   <footer>Faculty Atlas · <a href="/" style="color:var(--ink2);">facultyatlas.org</a> — open faculty positions across North America, charted.</footer>
 </body>
@@ -230,13 +279,39 @@ for (const dir of targets) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
+const institutionIndex = buildInstitutionIndex(path.join(ROOT, "data", "institutions-master.json"));
+
+// Counts used to decide which hub-page cross-links are safe to emit — must
+// match generate-hub-pages.js's own grouping (same open-jobs definition, same
+// thresholds) so a job page never links to a hub page that doesn't exist.
+const TODAY_ISO = new Date().toISOString().slice(0, 10);
+function isOpen(j) {
+  if (!j.closeDate || j.openUntilFilled) return true;
+  return String(j.closeDate) >= TODAY_ISO;
+}
+const openJobs = jobs.filter(isOpen);
+function countBy(items, keyFn) {
+  const counts = new Map();
+  for (const item of items) {
+    const key = keyFn(item);
+    if (!key) continue;
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return counts;
+}
+const groupCounts = {
+  discipline: countBy(openJobs, getDiscipline),
+  state: countBy(openJobs, inferState),
+  college: countBy(openJobs, normalizeSystemCollege),
+};
+
 const manifest = [];
 const seen = new Set();
 for (const job of jobs) {
   const slug = jobSlug(job);
   if (seen.has(slug)) continue; // guard against rare slug collisions
   seen.add(slug);
-  const htmlOut = renderPage(job);
+  const htmlOut = renderPage(job, groupCounts, institutionIndex);
   for (const dir of targets) {
     const outDir = path.join(dir, slug);
     fs.mkdirSync(outDir, { recursive: true });

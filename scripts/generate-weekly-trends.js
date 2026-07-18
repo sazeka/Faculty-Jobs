@@ -286,12 +286,17 @@ async function main() {
     summary = templateSummary(stats, prev);
   }
 
-  // Build history entry
+  // Build history entry. aiSummary is persisted here (not just in the current
+  // week's output) so generate-trends-pages.js can render a permanent page for
+  // every past week, not just the latest one.
   const historyEntry = {
     weekEnd,
     totalJobs: stats.totalJobs,
     bySource: stats.bySource,
     byType: stats.byType,
+    topSources: stats.topSources,
+    topInstitutions: stats.topInstitutions,
+    aiSummary: summary,
   };
 
   // Avoid duplicate entries for the same weekEnd
