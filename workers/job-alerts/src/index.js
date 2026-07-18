@@ -43,6 +43,59 @@ function html(body, { status = 200, headers = {} } = {}) {
   return new Response(body, { status, headers: { "Content-Type": "text/html; charset=utf-8", ...headers } });
 }
 
+// Branded landing page shared by /confirm and /unsubscribe (success and
+// error states) — same visual language as the hub pages (generate-hub-pages.js)
+// so a subscriber landing here from an email link sees a page that matches
+// the rest of the site rather than a bare unstyled string.
+function renderPage({ heading, message, isError = false }) {
+  const BASE_URL = "https://www.facultyatlas.org";
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${heading} | Faculty Atlas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f3f3f1; --paper:#fbfbfa; --ink:#1d2128; --ink2:#454b55; --ink3:#8a8f99; --accent:#2b3442; --rule:#e2e2df; --status:${isError ? "#b3261e" : "#0F766E"}; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--bg); color:var(--ink); font-family:'Newsreader',serif; font-size:17px; line-height:1.6; min-height:100vh; display:flex; flex-direction:column; }
+    a { color:inherit; }
+    header { display:flex; align-items:center; padding:18px 7vw; border-bottom:1px solid var(--rule); background:var(--paper); }
+    .brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+    .brand .wm { font-family:'Instrument Serif',serif; font-size:24px; color:var(--ink); }
+    main { flex:1; display:flex; align-items:center; justify-content:center; padding:48px 7vw; }
+    .card { max-width:480px; width:100%; background:var(--paper); border:1px solid var(--rule); border-radius:8px; padding:40px; text-align:center; }
+    .status-label { font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.08em; color:var(--status); text-transform:uppercase; margin-bottom:12px; }
+    h1 { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(26px,4vw,34px); line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+    .msg { font-size:16px; color:var(--ink2); margin-bottom:28px; }
+    .cta { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:0.06em; text-transform:uppercase; text-decoration:none; color:#fff; background:var(--accent); padding:12px 22px; border-radius:4px; }
+    footer { border-top:1px solid var(--rule); padding:24px 7vw; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink3); text-align:center; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="${BASE_URL}/">
+      <svg width="26" height="26" viewBox="0 0 64 64"><rect x="20" y="18" width="24" height="5" rx="2.5" fill="#1D2A2B"/><rect x="19" y="27" width="26" height="5" rx="2.5" fill="#355659"/><rect x="18" y="36" width="28" height="5" rx="2.5" fill="#0F766E"/><rect x="17" y="45" width="30" height="5" rx="2.5" fill="#C45C38"/><circle cx="32" cy="12" r="5" fill="#C45C38"/></svg>
+      <span class="wm">Faculty Atlas</span>
+    </a>
+  </header>
+  <main>
+    <div class="card">
+      <div class="status-label">${isError ? "Action needed" : "Success"}</div>
+      <h1>${heading}</h1>
+      <div class="msg">${message}</div>
+      <a class="cta" href="${BASE_URL}/">Browse Faculty Atlas</a>
+    </div>
+  </main>
+  <footer>Faculty Atlas — open faculty positions across North America, charted.</footer>
+</body>
+</html>
+`;
+}
+
 async function sha256Hex(text) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -144,7 +197,14 @@ async function handleConfirm(request, env) {
   const token = new URL(request.url).searchParams.get("token") || "";
   const pendingRaw = token ? await env.ALERTS_KV.get(`pending:${token}`) : null;
   if (!pendingRaw) {
-    return html("<p>This confirmation link is invalid or has expired. Please subscribe again.</p>", { status: 400 });
+    return html(
+      renderPage({
+        heading: "Link Expired",
+        message: "This confirmation link is invalid or has expired. Please subscribe again from the site.",
+        isError: true,
+      }),
+      { status: 400 }
+    );
   }
 
   const pending = JSON.parse(pendingRaw);
@@ -164,12 +224,22 @@ async function handleConfirm(request, env) {
   await env.ALERTS_KV.put(activeKey, JSON.stringify(record));
   await env.ALERTS_KV.delete(`pending:${token}`);
 
-  return html("<p>You're subscribed. You'll get an email when new postings match your saved search. You can unsubscribe anytime from the link in any alert email.</p>");
+  return html(
+    renderPage({
+      heading: "Subscription Confirmed",
+      message: "You're all set. You'll receive an email whenever new postings match your saved search. You can unsubscribe at any time from the link included in every alert email.",
+    })
+  );
 }
 
 async function handleUnsubscribe(request, env) {
   const token = new URL(request.url).searchParams.get("token") || "";
-  if (!token) return html("<p>Missing unsubscribe token.</p>", { status: 400 });
+  if (!token) {
+    return html(
+      renderPage({ heading: "Invalid Link", message: "This unsubscribe link is missing its token.", isError: true }),
+      { status: 400 }
+    );
+  }
 
   // No index from unsubscribeToken -> key, so scan active subscribers.
   // Fine at this scale (KV list is paginated at 1000 keys/call).
@@ -182,13 +252,18 @@ async function handleUnsubscribe(request, env) {
       const record = JSON.parse(raw);
       if (record.unsubscribeToken === token) {
         await env.ALERTS_KV.delete(name);
-        return html("<p>You've been unsubscribed. Sorry to see you go.</p>");
+        return html(
+          renderPage({ heading: "Unsubscribed", message: "You won't receive any further alerts for this search. Sorry to see you go." })
+        );
       }
     }
     cursor = page.list_complete ? undefined : page.cursor;
   } while (cursor);
 
-  return html("<p>This unsubscribe link is invalid or already used.</p>", { status: 400 });
+  return html(
+    renderPage({ heading: "Invalid Link", message: "This unsubscribe link is invalid or has already been used.", isError: true }),
+    { status: 400 }
+  );
 }
 
 function requireInternalAuth(request, env) {
