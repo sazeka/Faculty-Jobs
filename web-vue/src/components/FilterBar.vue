@@ -9,12 +9,21 @@ const props = defineProps({
   collegeOptions: { type: Array, required: true },
   departmentOptions: { type: Array, required: true },
   cityOptions: { type: Array, default: () => [] },
+  subscribeStatus: { type: String, default: 'idle' }, // 'idle' | 'pending' | 'success' | 'error'
+  subscribeError: { type: String, default: '' },
 })
 
-const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'save-alert'])
+const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'subscribe-alert'])
 
 const disciplineSearch = ref('')
 const collegeSearch = ref('')
+const showSubscribePanel = ref(false)
+const subscribeEmail = ref('')
+
+function submitSubscribe() {
+  if (!subscribeEmail.value.trim()) return
+  emit('subscribe-alert', subscribeEmail.value.trim())
+}
 
 const filteredDisciplineOptions = computed(() => {
   const q = disciplineSearch.value.trim().toLowerCase()
@@ -216,9 +225,42 @@ function toggleCollege(value) {
       <button class="fa-btn fa-btn-ghost" style="width: 100%; justify-content: center;" type="button" @click="emit('reset-filters')">
         Clear filters
       </button>
-      <button class="fa-btn fa-btn-ghost" style="width: 100%; justify-content: center;" type="button" @click="emit('save-alert')">
-        ⏿ Save alert
+      <button
+        v-if="subscribeStatus !== 'success'"
+        class="fa-btn fa-btn-ghost"
+        style="width: 100%; justify-content: center;"
+        type="button"
+        @click="showSubscribePanel = !showSubscribePanel"
+      >
+        ⏿ Email me new matches
       </button>
+
+      <div v-if="showSubscribePanel && subscribeStatus !== 'success'" style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+        <div class="fa-meta">We'll only email you when new postings match this exact search — unsubscribe anytime.</div>
+        <input
+          class="fa-input"
+          v-model="subscribeEmail"
+          type="email"
+          placeholder="you@university.edu"
+          aria-label="Email address for job alerts"
+          :disabled="subscribeStatus === 'pending'"
+          @keydown.enter="submitSubscribe"
+        />
+        <button
+          class="fa-btn"
+          style="width: 100%; justify-content: center;"
+          type="button"
+          :disabled="subscribeStatus === 'pending' || !subscribeEmail.trim()"
+          @click="submitSubscribe"
+        >
+          {{ subscribeStatus === 'pending' ? 'Sending…' : 'Send confirmation email' }}
+        </button>
+        <div v-if="subscribeStatus === 'error'" class="fa-meta" style="color: #b3261e;">{{ subscribeError }}</div>
+      </div>
+
+      <div v-if="subscribeStatus === 'success'" class="fa-meta">
+        Check your inbox to confirm — you'll start getting alerts once you click the link.
+      </div>
     </div>
   </div>
 </template>

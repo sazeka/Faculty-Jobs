@@ -21,6 +21,8 @@ function sameFilter(a, b) {
 
 export function useAlerts({ filtersRef, countMatches }) {
   const alerts = ref([])
+  const subscribeStatus = ref('idle') // 'idle' | 'pending' | 'success' | 'error'
+  const subscribeError = ref('')
 
   function persist() {
     try {
@@ -70,6 +72,33 @@ export function useAlerts({ filtersRef, countMatches }) {
     persist()
   }
 
+  // Posts the current filter snapshot + email to the job-alerts Worker, which
+  // sends a confirmation email (double opt-in — see the plan doc for why).
+  // Also keeps the local saved-alert list in sync via addAlert() so it stays
+  // meaningful if a UI ever lists it.
+  async function subscribeAlert(email) {
+    subscribeStatus.value = 'pending'
+    subscribeError.value = ''
+    try {
+      const workerUrl = import.meta.env.VITE_ALERTS_WORKER_URL
+      if (!workerUrl) throw new Error('Email alerts aren’t configured yet.')
+
+      const res = await fetch(`${workerUrl}/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, filters: getSnapshot() }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'Something went wrong. Try again.')
+
+      addAlert()
+      subscribeStatus.value = 'success'
+    } catch (err) {
+      subscribeStatus.value = 'error'
+      subscribeError.value = err.message || 'Something went wrong. Try again.'
+    }
+  }
+
   const alertsWithCounts = computed(() =>
     alerts.value.map((a) => ({
       ...a,
@@ -85,5 +114,8 @@ export function useAlerts({ filtersRef, countMatches }) {
     alertsWithCounts,
     addAlert,
     removeAlert,
+    subscribeAlert,
+    subscribeStatus,
+    subscribeError,
   }
 }

@@ -44,7 +44,7 @@ const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
 const { stateOptions, positionTypeOptions, disciplineOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
   useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob })
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({ filtersRef: filters, updateFilters })
-const { alertsWithCounts, addAlert, removeAlert } = useAlerts({ filtersRef: filters, countMatches })
+const { alertsWithCounts, addAlert, removeAlert, subscribeAlert, subscribeStatus, subscribeError } = useAlerts({ filtersRef: filters, countMatches })
 
 // Shareable filter URLs: hydrate from the query string on load, then keep the
 // address bar in sync as filters change.
@@ -408,9 +408,11 @@ onMounted(async () => {
               :college-options="collegeOptions"
               :department-options="departmentOptions"
               :city-options="cityOptions"
+              :subscribe-status="subscribeStatus"
+              :subscribe-error="subscribeError"
               @update:filters="updateFilters"
               @reset-filters="resetFilters"
-              @save-alert="addAlert"
+              @subscribe-alert="subscribeAlert"
               @refresh-data="loadJobs"
             />
           </aside>

@@ -96,10 +96,23 @@ const trendsEntries = trendsPages.map(({ loc, lastmod: lm }) =>
   ].join("\n")
 );
 
+// RSS feeds (global + per state/discipline), from generate-rss.js.
+const rssFeeds = readJson(path.join(ROOT, "generated", "rss-feeds.json")) || [];
+const rssEntries = rssFeeds.map(({ loc, lastmod: lm }) =>
+  [
+    "  <url>",
+    `    <loc>${loc}</loc>`,
+    `    <lastmod>${lm || lastmod}</lastmod>`,
+    "    <changefreq>daily</changefreq>",
+    "    <priority>0.4</priority>",
+    "  </url>",
+  ].join("\n")
+);
+
 const sitemap = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-  [...staticEntries, ...jobEntries, ...hubEntries, ...trendsEntries].join("\n"),
+  [...staticEntries, ...jobEntries, ...hubEntries, ...trendsEntries, ...rssEntries].join("\n"),
   "</urlset>",
   "",
 ].join("\n");
@@ -120,6 +133,6 @@ for (const dir of ["docs", "public"]) {
   writeFile(path.join(ROOT, dir, "robots.txt"),  robots);
 }
 
-console.log(`Sitemap written — lastmod: ${lastmod}, ${STATIC_PAGES.length} static + ${jobPages.length} job + ${hubPages.length} hub + ${trendsPages.length} trends URLs`);
+console.log(`Sitemap written — lastmod: ${lastmod}, ${STATIC_PAGES.length} static + ${jobPages.length} job + ${hubPages.length} hub + ${trendsPages.length} trends + ${rssFeeds.length} rss URLs`);
 console.log("  docs/sitemap.xml  public/sitemap.xml");
 console.log("  docs/robots.txt   public/robots.txt");

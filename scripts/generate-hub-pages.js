@@ -219,6 +219,16 @@ function renderHubPage(section, entry, institutionIndex) {
     }
   }
 
+  // Only state/discipline sections have a matching RSS feed (generate-rss.js
+  // uses the same kebab(name) slug, so the URL is predictable without a
+  // build-order dependency on that script having already run).
+  const rssDir = section === "state" ? "state" : section === "discipline" ? "discipline" : null;
+  const rssUrl = rssDir ? `${BASE_URL}/rss/${rssDir}/${entry.slug}.xml` : null;
+  const rssLinkTag = rssUrl
+    ? `\n  <link rel="alternate" type="application/rss+xml" title="${esc(entry.name)} Faculty Jobs — RSS" href="${rssUrl}" />`
+    : "";
+  const rssSub = rssUrl ? ` · <a href="${rssUrl}">RSS feed</a>` : "";
+
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -237,7 +247,7 @@ function renderHubPage(section, entry, institutionIndex) {
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${esc(title)}" />
   <meta name="twitter:description" content="${esc(metaDesc)}" />
-  <meta name="twitter:image" content="${BASE_URL}/og-card.png" />
+  <meta name="twitter:image" content="${BASE_URL}/og-card.png" />${rssLinkTag}
   <script type="application/ld+json">${itemListLd}</script>
   <script type="application/ld+json">${breadcrumbLd}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -256,7 +266,7 @@ function renderHubPage(section, entry, institutionIndex) {
   <div class="wrap">
     <div class="crumbs"><a href="/">Home</a> / <a href="/${dir}/">${esc(typeLabel)}s</a> / ${esc(entry.name)}</div>
     <h1>${esc(entry.name)} Faculty Jobs</h1>
-    <div class="sub">${count} open posting${count === 1 ? "" : "s"}${officialSite}. Browse the full catalog on <a href="/">the homepage</a>.</div>
+    <div class="sub">${count} open posting${count === 1 ? "" : "s"}${officialSite}${rssSub}. Browse the full catalog on <a href="/">the homepage</a>.</div>
     <ul class="jobs">
       ${listItems}
     </ul>
