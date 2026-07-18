@@ -2,10 +2,8 @@ name = "faculty-atlas-job-alerts"
 main = "src/index.js"
 compatibility_date = "2026-01-01"
 
-# Create with: wrangler kv namespace create ALERTS_KV
-# then paste the returned id below.
 kv_namespaces = [
-  { binding = "ALERTS_KV", id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" }
+  { binding = "ALERTS_KV", id = "3adcd7f7b65c4bfcbba2d7fe4283d739" }
 ]
 
 [vars]
