@@ -569,6 +569,13 @@ const CT_PRIVATE_CAMPUSES = [
 const CSU_URL =
   "https://csucareers.calstate.edu/en-us/filter/?=&leftNavSearchFormQuery=&=&search=&search-keyword=&job-mail-subscribe-privacy=agree&work-type=instructional%20faculty%20%e2%80%93%20tenured%2ftenure-track&category=unit%203%20-%20cfa%20-%20california%20faculty%20association&job-mail-subscribe-privacy=agree";
 
+// University System of Georgia: shared PeopleSoft HCM careers feed covering
+// most USG member institutions (NOT UGA/Georgia State/Georgia Tech, which run
+// their own separate PeopleAdmin sites — those stay in GA_CAMPUSES). Same
+// "system covers members, never per-campus" rule as CSU.
+const USG_URL =
+  "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U";
+
 // UMass (same "en-us/filter" platform style as CSU) - Note: Amherst moved to PageUp in Jan 2026
 const UMASS_CAMPUSES = [
   {
@@ -770,9 +777,11 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "California Institute of the Arts", type: "generic", url: "https://www.calarts.edu/" },
   { campus: "California Jazz Conservatory", type: "generic", url: "https://www.cjc.edu/" },
   { campus: "California Lutheran University", type: "generic", url: "https://www.callutheran.edu/offices/human-resources/employment" },
-  { campus: "California Polytechnic State University-San Luis Obispo", type: "generic", url: "https://calpoly.edu/" },
-  { campus: "California State Polytechnic University-Humboldt", type: "generic", url: "https://www.humboldt.edu/hr/jobs" },
-  { campus: "California State Polytechnic University-Pomona", type: "generic", url: "https://www.cpp.edu/" },
+  // California Polytechnic State University-San Luis Obispo, Cal Poly Humboldt,
+  // and Cal Poly Pomona are CSU members already covered by mapCsuLocationToCampus
+  // — see the "never per-campus for CSU members" rule below. Homepage-only
+  // entries here were dead weight at best and a duplicate-under-a-second-name
+  // risk at worst if ever populated with a real URL, so removed with the rest.
   // CSU campuses are covered by the system-wide scrape (scrapeCsuFaculty / CSU_URL,
   // csucareers.calstate.edu). Per-campus entries here double-scraped members and
   // produced duplicate postings under a second campus-name spelling (e.g. East Bay
@@ -837,9 +846,6 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Fresno City College", type: "generic", url: "https://www.fresnocitycollege.edu/" },
   { campus: "Fresno Pacific University", type: "generic", url: "https://www.fresno.edu/" },
   { campus: "Fuller Theological Seminary", type: "generic", url: "https://www.fuller.edu/" },
-  { campus: "California State University-Fresno", type: "generic", url: "https://adminfinance.fresnostate.edu/hr/jobs" },
-  { campus: "California State University-Long Beach", type: "generic", url: "https://careers.pageuppeople.com/873/lb/en-us/listing" },
-  { campus: "California State University-San Marcos", type: "generic", url: "https://www.csusm.edu/careers" },
 ];
 
 // NJ (multi-platform)
@@ -3285,23 +3291,25 @@ const FL_CAMPUSES = [
 ];
 
 // GA (Georgia)
+// Abraham Baldwin, Albany State, Atlanta Metro State, Augusta, Clayton State,
+// College of Coastal Georgia, Columbus State, Dalton State, East Georgia
+// State, Kennesaw State, and North Georgia are covered by the system-wide
+// USG scrape (scrapeUsgFaculty / USG_URL) instead of per-campus entries here
+// — same "never per-campus for system members" rule as CSU. UGA and Georgia
+// State keep their own PeopleAdmin entries below; USG_CANONICAL_CAMPUSES
+// deliberately excludes both (they've never appeared as a Business Unit on
+// that feed) so they can't get double-scraped under a second name spelling.
 const GA_CAMPUSES = [
   { campus: "University of Georgia", type: "peopleadmin", url: "https://www.ugajobsearch.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&225=&436=&query_position_type_id%5B%5D=7&query_position_type_id%5B%5D=8&commit=Search" },
   { campus: "Georgia State University", type: "peopleadmin", url: "https://facultycareers.gsu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&435=&commit=Search" },
-  { campus: "Kennesaw State University", type: "peopleadmin", url: "https://kennesaw.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search" },
-  { campus: "University of North Georgia", type: "generic", url: "https://ung.edu/human-resources/employment-opportunities/index.php" },
   { campus: "Spelman College", type: "peopleadmin", url: "https://spelman.peopleadmin.com/postings/search?commit=Search&query_position_type_id%5B%5D=3&sort=225+asc&utf8=%E2%9C%93" },
-  { campus: "Abraham Baldwin Agricultural College", type: "generic", url: "https://www.abac.edu/" },
   { campus: "Agnes Scott College", type: "generic", url: "https://www.agnesscott.edu/" },
-  { campus: "Albany State University", type: "generic", url: "https://www.asurams.edu/human-resources/employmentopp/employment.php" },
   { campus: "Albany Technical College", type: "generic", url: "https://www.albanytech.edu/" },
   { campus: "Andrew College", type: "generic", url: "https://www.andrewcollege.edu/employment-opportunities" },
   { campus: "Athens Technical College", type: "generic", url: "https://www.athenstech.edu/" },
-  { campus: "Atlanta Metropolitan State College", type: "generic", url: "https://www.atlm.edu/" },
   { campus: "Atlanta Technical College", type: "generic", url: "https://atlantatech.edu/" },
   { campus: "Atlanta's John Marshall Law School", type: "generic", url: "https://www.johnmarshall.edu/" },
   { campus: "Augusta Technical College", type: "generic", url: "https://www.augustatech.edu/faculty/jobs" },
-  { campus: "Augusta University", type: "generic", url: "https://www.augusta.edu/" },
   { campus: "Berry College", type: "generic", url: "https://www.berry.edu/faculty/jobs" },
   { campus: "Beulah Heights University", type: "generic", url: "https://www.beulah.edu/" },
   { campus: "Brenau University", type: "generic", url: "https://www.brenau.edu/" },
@@ -3309,16 +3317,11 @@ const GA_CAMPUSES = [
   { campus: "Central Georgia Technical College", type: "generic", url: "https://www.centralgatech.edu/" },
   { campus: "Chattahoochee Technical College", type: "generic", url: "https://www.chattahoocheetech.edu/" },
   { campus: "Clark Atlanta University", type: "generic", url: "https://www.cau.edu/" },
-  { campus: "Clayton State University", type: "generic", url: "https://www.clayton.edu/" },
   { campus: "Coastal Pines Technical College", type: "generic", url: "https://www.coastalpines.edu/" },
   { campus: "College of Athens", type: "generic", url: "https://collegeofathens.edu/" },
-  { campus: "College of Coastal Georgia", type: "generic", url: "https://www.ccga.edu/" },
   { campus: "Columbia Theological Seminary", type: "generic", url: "https://www.ctsnet.edu/careers" },
-  { campus: "Columbus State University", type: "generic", url: "https://www.columbusstate.edu/" },
   { campus: "Columbus Technical College", type: "generic", url: "https://www.columbustech.edu/" },
   { campus: "Covenant College", type: "generic", url: "https://www.covenant.edu/about/employment" },
-  { campus: "Dalton State College", type: "generic", url: "https://www.daltonstate.edu/" },
-  { campus: "East Georgia State College", type: "generic", url: "https://www.ega.edu/" },
   { campus: "Emmanuel University", type: "generic", url: "https://www.ec.edu/" },
   { campus: "Emory University", type: "generic", url: "https://www.emory.edu/" },
   { campus: "Emory University-Oxford College", type: "generic", url: "https://www.oxford.emory.edu/resources/human-resources/careers.html" },
@@ -3678,6 +3681,7 @@ export async function scrapeAllJobsStandalone() {
       { name: "CT", fn: () => scrapeCtAll(context) },
       { name: "AZ", fn: () => scrapeAzAll(context) },
       { name: "CSU", fn: () => scrapeCsuFaculty(context) },
+      { name: "USG", fn: () => scrapeUsgFaculty(context) },
       { name: "UMass", fn: () => scrapeUmassAll(context) },
       { name: "UMass Amherst", fn: () => scrapeUmassAmherst(context) },
       { name: "MA Private", fn: () => scrapeMaPrivate(context) },
@@ -5583,6 +5587,143 @@ async function fetchCsuDetailsFromDetails(context, urls, concurrency = 6) {
 
   await Promise.all(Array.from({ length: concurrency }, () => worker()));
   return out;
+}
+
+/* ============================== USG ============================== */
+// University System of Georgia: a shared PeopleSoft HCM careers site (not the
+// simpler "en-us/filter" platform CSU/UMass use). No JSON API and no per-job
+// deep-link URL exposed in the DOM (rows are onclick postback handlers, not
+// <a href> links) — verified against the live site 2026-07-17. Pagination is
+// a classic PeopleSoft "get more rows" postback (.ps_box-more), not scroll-
+// triggered virtualization, so we click it and wait for each batch rather
+// than scrolling.
+const USG_CANONICAL_CAMPUSES = [
+  "Abraham Baldwin Agricultural College",
+  "Albany State University",
+  "Atlanta Metropolitan State College",
+  "College of Coastal Georgia",
+  "Clayton State University",
+  "Columbus State University",
+  "Dalton State College",
+  "East Georgia State College",
+  "Georgia Highlands College",
+  "Fort Valley State University",
+  "Georgia Southwestern State University",
+  "Georgia College & State University",
+  "Georgia Southern University",
+  "Gordon State College",
+  "Savannah State University",
+  "Valdosta State University",
+  "University of West Georgia",
+  "Georgia State University-Perimeter College",
+  "Georgia Gwinnett College",
+  "Augusta University",
+  "Middle Georgia State University",
+  "University of North Georgia",
+  "South Georgia State College",
+  "Kennesaw State University",
+  // UGA, Georgia State University, and Georgia Tech run their own separate
+  // PeopleAdmin sites (GA_CAMPUSES) and have never appeared as a Business
+  // Unit on this feed in testing — deliberately omitted so a coincidental
+  // future label match can't misattribute jobs to them.
+];
+
+function normalizeUsgBusinessUnit(s) {
+  return String(s || "")
+    .toLowerCase()
+    .replace(/\./g, "")
+    .replace(/&/g, "and")
+    .replace(/\buniv\b/g, "university")
+    .replace(/\bga\b/g, "georgia")
+    .replace(/\bagri\b/g, "agricultural")
+    .replace(/\bmetro\b/g, "metropolitan")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const USG_BUSINESS_UNIT_LOOKUP = new Map(
+  USG_CANONICAL_CAMPUSES.map((name) => [normalizeUsgBusinessUnit(name), name])
+);
+
+function mapUsgBusinessUnitToCampus(businessUnit) {
+  return USG_BUSINESS_UNIT_LOOKUP.get(normalizeUsgBusinessUnit(businessUnit)) || null;
+}
+
+// Parses the grid's rendered text into job rows. Each row is a consistent
+// block: title line, then "Job ID<n>", "Location<..>", "Department<..>",
+// "Business Unit<..>", "Posted Date<..>" — order-independent per field since
+// we match by prefix, and bounded to stop at the next "Job ID" marker.
+function parseUsgJobsFromText(text) {
+  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  const jobs = [];
+  for (let i = 0; i < lines.length; i++) {
+    const m = /^Job ID(\d+)$/.exec(lines[i]);
+    if (!m) continue;
+    const jobId = m[1];
+    const title = lines[i - 1] || "";
+    let location = "", department = "", businessUnit = "", postedDate = "";
+    for (let k = i + 1; k < Math.min(i + 6, lines.length); k++) {
+      const l = lines[k];
+      if (l.startsWith("Location")) location = l.slice("Location".length).trim();
+      else if (l.startsWith("Department")) department = l.slice("Department".length).trim();
+      else if (l.startsWith("Business Unit")) businessUnit = l.slice("Business Unit".length).trim();
+      else if (l.startsWith("Posted Date")) postedDate = l.slice("Posted Date".length).trim();
+      else if (/^Job ID\d+$/.test(l)) break;
+    }
+    jobs.push({ jobId, title, location, department, businessUnit, postedDate });
+  }
+  return jobs;
+}
+
+async function scrapeUsgFaculty(context) {
+  const page = await context.newPage();
+  await gotoWithRetry(page, USG_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await page.waitForTimeout(4000);
+
+  const seenIds = new Map();
+  let stableRounds = 0;
+  for (let round = 0; round < 60 && stableRounds < 3; round++) {
+    const text = await safeEvaluate(page, () => document.body.innerText);
+    for (const j of parseUsgJobsFromText(text || "")) {
+      if (!seenIds.has(j.jobId)) seenIds.set(j.jobId, j);
+    }
+
+    const clicked = await safeEvaluate(page, () => {
+      const more = document.querySelector(".ps_box-more");
+      if (!more) return false;
+      more.click();
+      return true;
+    }).catch(() => false);
+    if (!clicked) break;
+    await page.waitForTimeout(1800);
+
+    const after = await safeEvaluate(page, () => document.body.innerText);
+    const newCount = parseUsgJobsFromText(after || "").length;
+    stableRounds = newCount > seenIds.size ? 0 : stableRounds + 1;
+  }
+  await page.close().catch(() => {});
+
+  let unmatched = 0;
+  const jobs = [];
+  for (const j of seenIds.values()) {
+    if (!looksFacultyish(j.title)) continue;
+    const campus = mapUsgBusinessUnitToCampus(j.businessUnit);
+    if (!campus) { unmatched++; continue; }
+    jobs.push({
+      title: clean(j.title),
+      url: `${USG_URL}#jobId=${j.jobId}`,
+      source: "USG",
+      category: "faculty",
+      college: campus,
+      location: j.location || null,
+      description: null,
+    });
+  }
+  if (unmatched > 0) {
+    console.log(`USG: ${unmatched} faculty postings had an unrecognized Business Unit (not in USG_CANONICAL_CAMPUSES) — skipped.`);
+  }
+  console.log(`USG listing scraped: ${jobs.length} faculty postings across ${new Set(jobs.map((j) => j.college)).size} campuses`);
+  return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
 /* ============================== UMass ============================== */

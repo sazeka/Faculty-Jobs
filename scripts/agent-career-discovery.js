@@ -92,6 +92,42 @@ const clean = (v) => String(v ?? "").trim();
 const normalize = (v) => clean(v).toLowerCase();
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// University System of Georgia is a *partial* match for the AGGREGATE_SYSTEM_NAMES
+// pattern above: unlike CSU/UC/CUNY/SUNY, not every USG member is on the shared
+// feed — UGA, Georgia State, and Georgia Tech run their own separate PeopleAdmin
+// sites and have never appeared as a Business Unit on it (see scrapeUsgFaculty /
+// USG_CANONICAL_CAMPUSES in server.js, which this list mirrors exactly). IPEDS
+// F1SYSNAM membership would wrongly exclude those three too, so this is a manual
+// name list instead of an AGGREGATE_SYSTEM_NAMES entry.
+const USG_COVERED_CAMPUSES = new Set(
+  [
+    "Abraham Baldwin Agricultural College",
+    "Albany State University",
+    "Atlanta Metropolitan State College",
+    "College of Coastal Georgia",
+    "Clayton State University",
+    "Columbus State University",
+    "Dalton State College",
+    "East Georgia State College",
+    "Georgia Highlands College",
+    "Fort Valley State University",
+    "Georgia Southwestern State University",
+    "Georgia College & State University",
+    "Georgia Southern University",
+    "Gordon State College",
+    "Savannah State University",
+    "Valdosta State University",
+    "University of West Georgia",
+    "Georgia State University-Perimeter College",
+    "Georgia Gwinnett College",
+    "Augusta University",
+    "Middle Georgia State University",
+    "University of North Georgia",
+    "South Georgia State College",
+    "Kennesaw State University",
+  ].map((n) => normalize(n))
+);
+
 // ── candidate discovery (web search) — mirrors discover-career-pages.js ──────
 
 function inferPlatformFromUrl(url) {
@@ -179,9 +215,18 @@ function scoreCandidate(url, schoolName) {
 // college whose name contains "Berkeley" matching berkeley.edu/jobs). The real
 // ATS URL almost always carries the school's own domain token in its host or
 // path (acu.edu -> acu.wd108.myworkdayjobs.com; aamu.edu -> .../careers/aamu).
+// Multi-label public suffixes where the naive "2nd-to-last label" extraction
+// below picks a US state abbreviation instead of the actual school/district
+// name (e.g. rtc.suwannee.k12.fl.us -> naive extraction gives "fl", a 2-char
+// token that then trips the length<3 "can't tell" bypass in
+// candidateBelongsToSchool, disabling verification entirely and letting an
+// unrelated .edu domain through — this is exactly what happened with Riveroak
+// Technical College, FL, matching Georgia's TCSG system portal).
 function homepageSld(homepage) {
   try {
     const h = new URL(homepage).hostname.replace(/^www\./, "");
+    const k12Match = /^(?:[a-z0-9-]+\.)*([a-z0-9-]+)\.k12\.[a-z]{2}\.us$/i.exec(h);
+    if (k12Match) return k12Match[1].toLowerCase();
     const p = h.split(".");
     return p.length >= 2 ? p[p.length - 2] : p[0];
   } catch {
@@ -191,7 +236,31 @@ function homepageSld(homepage) {
 function candidateBelongsToSchool(url, homepage) {
   const s = homepageSld(homepage);
   if (!s || s.length < 3) return true; // can't tell — don't over-reject
-  return normalize(url).includes(s);
+  let host;
+  try {
+    host = new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return false;
+  }
+  // Third-party ATS/HR platforms (workday, taleo, applicantpro, agilehr, ...)
+  // are commercial domains that host many unrelated schools, so the school
+  // token safely appears as the URL's leftmost subdomain/path instead of the
+  // domain itself (acu.wd108.myworkdayjobs.com; daemen.applicantpro.com) — a
+  // substring check against the whole URL is fine there. Checking "not .edu"
+  // covers the long tail of ATS vendors without needing every one hardcoded
+  // in inferPlatformFromUrl.
+  if (!/\.edu$/i.test(host)) return normalize(url).includes(s);
+  // The candidate claims to be another school's own .edu site: require an
+  // EXACT SLD match instead of a substring. A substring match false-
+  // positives whenever one school's short domain is a literal prefix of a
+  // different .edu domain (dallas.edu vs dallascollege.edu — "Dallas
+  // College"), or two unrelated schools share an acronym that happens to be
+  // one school's SLD but a subdomain of another's (bmcc.edu, "Bay Mills
+  // Community College", vs bmcc.cuny.edu, whose real SLD is "cuny" —
+  // "Borough of Manhattan Community College").
+  const p = host.split(".");
+  const candidateSld = p.length >= 2 ? p[p.length - 2] : p[0];
+  return candidateSld === s;
 }
 
 async function fetchDdg(query, timeoutMs = 12000) {
@@ -285,7 +354,14 @@ async function homepageCandidates(context, inst) {
 // Reject portals scoped to a non-faculty department — they verify (real jobs)
 // but the jobs are wrong (e.g. ASU's ...myworkdayjobs.com/ASUStaffCareers,
 // UCF's .../athletics). Recurred across runs, so guard it at the source.
-const WRONG_DEPARTMENT = /athletic|staff.?careers|\/staff(\b|\/)|police\b|medical.?center.?careers/i;
+// [\/_-]staff (not just /staff): catches "staff" glued onto another word with
+// an underscore/hyphen (Claremont McKenna's .../CMC_Staff Workday site), which
+// a bare "/staff" boundary check misses since "_" is a \w character and never
+// creates a \b before "Staff". The trailing (\b|\/) still keeps "Stafford"-
+// style false positives out. The (?<!faculty[-_]) lookbehind keeps combined
+// "faculty-staff-resources"/"faculty_staff" pages in — those explicitly cover
+// faculty too, so "staff" being adjacent isn't a wrong-department signal.
+const WRONG_DEPARTMENT = /athletic|staff.?careers|(?<!faculty)[\/_-]staff(\b|\/)|police\b|medical.?center.?careers/i;
 
 async function discoverCandidates(context, inst) {
   const pool = new Map();
@@ -432,9 +508,23 @@ function loadSkipList() {
   }
 }
 
+// Shared retry clock with discover-career-pages.js (same field): never-attempted
+// institutions (no timestamp) sort first, then oldest attempt first. Without this,
+// chooseTargets' old name-alphabetical sort meant every run re-hit the same
+// early-alphabet institutions that already failed, and --max always cut off
+// before reaching anything past them.
+function attemptRank(inst) {
+  const ts = clean(inst.last_discovery_attempt_at);
+  if (!ts) return Number.NEGATIVE_INFINITY;
+  const ms = Date.parse(ts);
+  return Number.isFinite(ms) ? ms : Number.NEGATIVE_INFINITY;
+}
+
 function chooseTargets(master, campusSet, existingOverrideNames, systemMembers, skipSet) {
   const isSystemMember = (i) =>
-    systemMembers.unitids.has(String(i.unitid ?? "").trim()) || systemMembers.names.has(normalize(i.name));
+    systemMembers.unitids.has(String(i.unitid ?? "").trim()) ||
+    systemMembers.names.has(normalize(i.name)) ||
+    USG_COVERED_CAMPUSES.has(normalize(i.name));
   return (master.institutions || [])
     .filter((i) => normalize(i.coverage_status) === "missing")
     .filter((i) => !ARGS.states || ARGS.states.has(String(i.state ?? "").toUpperCase())) // optional --state CA,TX,... filter
@@ -457,7 +547,12 @@ function chooseTargets(master, campusSet, existingOverrideNames, systemMembers, 
     // optional subset filters (CSU/UC/CUNY/SUNY already removed above by the IPEDS guard)
     .filter((i) => !ARGS.universities || /university/i.test(i.name))
     .filter((i) => !ARGS.communityColleges || /community college|technical college|junior college/i.test(i.name))
-    .sort((a, b) => clean(a.name).localeCompare(clean(b.name)));
+    .sort((a, b) => {
+      const da = attemptRank(a);
+      const db = attemptRank(b);
+      if (da !== db) return da - db; // oldest / never-attempted first
+      return clean(a.name).localeCompare(clean(b.name));
+    });
 }
 
 // ── verification (the hard gate) ──────────────────────────────────────────────
@@ -494,7 +589,7 @@ async function main() {
   const campusSet = loadServerCampusNames();
   const systemMembers = loadSystemMembers();
   const skipSet = loadSkipList();
-  console.log(`  System members   : ${systemMembers.ok ? `${systemMembers.names.size} CSU/UC/CUNY/SUNY campuses excluded (IPEDS)` : "IPEDS unavailable — system guard OFF"}`);
+  console.log(`  System members   : ${systemMembers.ok ? `${systemMembers.names.size} CSU/UC/CUNY/SUNY campuses excluded (IPEDS)` : "IPEDS unavailable — system guard OFF"} + ${USG_COVERED_CAMPUSES.size} USG campuses excluded (manual list)`);
   if (skipSet.size) console.log(`  Manual skips     : ${skipSet.size} (career-discovery-skip.json)`);
 
   const targets = chooseTargets(master, campusSet, existingNames, systemMembers, skipSet).slice(0, ARGS.max);
@@ -508,6 +603,59 @@ async function main() {
     locale: "en-US",
   });
 
+  // Runs one institution and returns its outcome instead of pushing directly to
+  // found/misses, so the worker loop can stamp attempt metadata exactly once per
+  // institution regardless of which branch it exits through.
+  async function processInstitution(inst, label) {
+    const candidates = await discoverCandidates(context, inst);
+    if (candidates.length === 0) {
+      console.log(`${label} … no candidates`);
+      return { status: "no_candidates" };
+    }
+    const { ranked, reply: llmReply } = await rankCandidates(inst, candidates);
+    if (ranked.length === 0) {
+      console.log(`${label} … LLM: none viable (of ${candidates.length} candidates)`);
+      // #1: record the candidate pool + raw reply so llm_none is diagnosable
+      // — did the ranker reject a real ATS link, or was the pool genuinely junk?
+      return { status: "llm_none", candidates: candidates.map((c) => c.url), llmReply };
+    }
+
+    // Quality gate: accept >=2 jobs, OR >=1 from a recognized ATS. A single
+    // job off a generic page is usually a stray link on an HR landing page
+    // (the Aurora/Case Western noise), so it's held as "weak" not recorded.
+    let hit = null;
+    let weak = null;
+    for (const cand of ranked.slice(0, ARGS.perCandidate)) {
+      const jobs = await verify(context, inst, cand.url);
+      if (jobs.length === 0) continue;
+      const isAts = inferPlatformFromUrl(cand.url) !== "generic";
+      if (jobs.length >= 2 || isAts) { hit = { cand, count: jobs.length, sample: jobs.slice(0, 3).map((j) => j.title) }; break; }
+      if (!weak) weak = { url: cand.url, count: jobs.length };
+    }
+    if (!hit) {
+      if (weak) {
+        console.log(`${label} … weak only (${weak.count} on generic page)`);
+        return { status: "weak_single", url: weak.url, count: weak.count };
+      }
+      console.log(`${label} … ${ranked.length} ranked, 0 verified`);
+      return { status: "no_jobs", tried: ranked.slice(0, ARGS.perCandidate).map((c) => c.url) };
+    }
+
+    const platform = inferPlatformFromUrl(hit.cand.url);
+    console.log(`${label} … ✓ ${platform} (${hit.count}) ${hit.cand.url}`);
+    return {
+      status: "found",
+      entry: {
+        name: inst.name,
+        homepage_url: inst.homepage_url,
+        career_url: hit.cand.url,
+        platform_type: platform,
+        notes: `Discovered via agent-career-discovery; verified live (${hit.count} faculty posting${hit.count === 1 ? "" : "s"}).`,
+        _jobCount: hit.count,
+      },
+    };
+  }
+
   const found = [];
   const misses = [];
   let next = 0;
@@ -516,49 +664,29 @@ async function main() {
     while (next < targets.length) {
       const inst = targets[next++];
       const label = `  [${String(next).padStart(3)}/${targets.length}] ${inst.name}`;
+      const attemptedAt = new Date().toISOString();
+      let result;
       try {
-        const candidates = await discoverCandidates(context, inst);
-        if (candidates.length === 0) { console.log(`${label} … no candidates`); misses.push({ name: inst.name, reason: "no_candidates" }); continue; }
-        const { ranked, reply: llmReply } = await rankCandidates(inst, candidates);
-        if (ranked.length === 0) {
-          console.log(`${label} … LLM: none viable (of ${candidates.length} candidates)`);
-          // #1: record the candidate pool + raw reply so llm_none is diagnosable
-          // — did the ranker reject a real ATS link, or was the pool genuinely junk?
-          misses.push({ name: inst.name, reason: "llm_none", candidates: candidates.map((c) => c.url), llmReply });
-          continue;
-        }
-
-        // Quality gate: accept >=2 jobs, OR >=1 from a recognized ATS. A single
-        // job off a generic page is usually a stray link on an HR landing page
-        // (the Aurora/Case Western noise), so it's held as "weak" not recorded.
-        let hit = null;
-        let weak = null;
-        for (const cand of ranked.slice(0, ARGS.perCandidate)) {
-          const jobs = await verify(context, inst, cand.url);
-          if (jobs.length === 0) continue;
-          const isAts = inferPlatformFromUrl(cand.url) !== "generic";
-          if (jobs.length >= 2 || isAts) { hit = { cand, count: jobs.length, sample: jobs.slice(0, 3).map((j) => j.title) }; break; }
-          if (!weak) weak = { url: cand.url, count: jobs.length };
-        }
-        if (!hit) {
-          if (weak) { console.log(`${label} … weak only (${weak.count} on generic page)`); misses.push({ name: inst.name, reason: "weak_single", url: weak.url, count: weak.count }); }
-          else { console.log(`${label} … ${ranked.length} ranked, 0 verified`); misses.push({ name: inst.name, reason: "no_jobs", tried: ranked.slice(0, ARGS.perCandidate).map((c) => c.url) }); }
-          continue;
-        }
-
-        const platform = inferPlatformFromUrl(hit.cand.url);
-        found.push({
-          name: inst.name,
-          homepage_url: inst.homepage_url,
-          career_url: hit.cand.url,
-          platform_type: platform,
-          notes: `Discovered via agent-career-discovery; verified live (${hit.count} faculty posting${hit.count === 1 ? "" : "s"}).`,
-          _jobCount: hit.count,
-        });
-        console.log(`${label} … ✓ ${platform} (${hit.count}) ${hit.cand.url}`);
+        result = await processInstitution(inst, label);
       } catch (e) {
         console.log(`${label} … ERROR ${String(e.message || e).split("\n")[0]}`);
-        misses.push({ name: inst.name, reason: "error", error: String(e.message || e) });
+        result = { status: "error", error: String(e.message || e) };
+      }
+
+      if (result.status === "found") {
+        found.push(result.entry);
+      } else {
+        const { status, ...rest } = result;
+        misses.push({ name: inst.name, reason: status, ...rest });
+      }
+
+      // Stamp the retry clock (attemptRank) so the next run — whatever its
+      // outcome here — doesn't pick this institution again before less-recently
+      // -tried ones. Skipped in --dry-run to match "nothing written."
+      if (!ARGS.dryRun) {
+        inst.last_discovery_attempt_at = attemptedAt;
+        inst.last_discovery_status = result.status;
+        inst.discovery_attempts = Number(inst.discovery_attempts || 0) + 1;
       }
     }
   }
@@ -580,6 +708,11 @@ async function main() {
     console.log(`\n  career-url-overrides.json updated (+${found.length}, now ${overridesDoc.overrides.length}).`);
   } else if (ARGS.dryRun) {
     console.log("\n  DRY RUN: no files written.");
+  }
+
+  if (!ARGS.dryRun && targets.length > 0) {
+    fs.writeFileSync(MASTER_PATH, JSON.stringify(master, null, 2) + "\n", "utf8");
+    console.log(`  institutions-master.json updated (attempt metadata stamped for ${targets.length} institutions).`);
   }
 
   fs.writeFileSync(
