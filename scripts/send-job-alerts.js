@@ -16,7 +16,7 @@
  *   node scripts/send-job-alerts.js [--dry-run]
  *
  * Required env: JOB_ALERTS_WORKER_URL, ALERTS_INTERNAL_SECRET, RESEND_API_KEY
- * Optional env: FROM_EMAIL (defaults to alerts@facultyatlas.org)
+ * Optional env: FROM_EMAIL (defaults to alerts@alerts.facultyatlas.org)
  */
 import fs from "fs";
 import path from "path";
@@ -45,7 +45,7 @@ const RESEND_FREE_DAILY_CAP = 100;
 const WORKER_URL = process.env.JOB_ALERTS_WORKER_URL;
 const INTERNAL_SECRET = process.env.ALERTS_INTERNAL_SECRET;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.FROM_EMAIL || "alerts@facultyatlas.org";
+const FROM_EMAIL = process.env.FROM_EMAIL || "alerts@alerts.facultyatlas.org";
 
 function esc(s) {
   return String(s == null ? "" : s)

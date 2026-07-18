@@ -21,9 +21,10 @@ npx wrangler secret put ALERTS_INTERNAL_SECRET
 ```
 
 Also requires a [Resend](https://resend.com) account with a verified sending
-domain (`FROM_EMAIL` in `wrangler.toml` must be an address on that domain,
-e.g. `alerts@facultyatlas.org` — add the DNS records Resend gives you to
-whatever manages `facultyatlas.org`'s DNS).
+domain (`FROM_EMAIL` in `wrangler.toml` must be an address on that *exact*
+verified domain — we verified the subdomain `alerts.facultyatlas.org`, so
+`FROM_EMAIL` is `alerts@alerts.facultyatlas.org`, not `alerts@facultyatlas.org`.
+Resend rejects sends where the domain doesn't match a verified domain exactly).
 
 ## Deploy
 

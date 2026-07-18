@@ -8,7 +8,7 @@ kv_namespaces = [
 
 [vars]
 ALLOWED_ORIGINS = "https://www.facultyatlas.org,http://localhost:5173,http://localhost:4173"
-FROM_EMAIL = "alerts@facultyatlas.org"
+FROM_EMAIL = "alerts@alerts.facultyatlas.org"
 
 # Secrets (not set here — run these once after `wrangler login`):
 #   wrangler secret put RESEND_API_KEY
