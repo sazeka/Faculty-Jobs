@@ -119,11 +119,18 @@ async function handleSubscribe(request, env) {
   try {
     await sendEmail(env, {
       to: email,
-      subject: "Confirm your Faculty Atlas job alert",
+      subject: "Confirm your Faculty Atlas job alert subscription",
       htmlBody: `
-        <p>Someone (hopefully you) asked to subscribe this address to a Faculty Atlas job alert.</p>
-        <p><a href="${escHtml(confirmUrl)}">Click here to confirm and start receiving alerts</a>.</p>
-        <p>If this wasn't you, just ignore this email — nothing happens until it's confirmed, and this request expires in 24 hours.</p>
+        <div style="font-family:Georgia,'Times New Roman',serif;color:#1d2128;max-width:520px;margin:0 auto;padding:32px 24px;">
+          <div style="font-size:20px;font-weight:600;letter-spacing:0.02em;margin-bottom:24px;">Faculty Atlas</div>
+          <p style="font-size:15px;line-height:1.6;margin:0 0 16px;">A request was received to subscribe this email address to job alerts from Faculty Atlas, notifying you when new faculty postings match your saved search criteria.</p>
+          <p style="font-size:15px;line-height:1.6;margin:0 0 24px;">Please confirm this subscription to begin receiving alerts:</p>
+          <p style="margin:0 0 24px;">
+            <a href="${escHtml(confirmUrl)}" style="display:inline-block;background:#2b3442;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:4px;font-size:14px;letter-spacing:0.02em;">Confirm Subscription</a>
+          </p>
+          <p style="font-size:13px;line-height:1.6;color:#666666;margin:0 0 8px;">This link will expire in 24 hours. If you did not request this subscription, no further action is required — your address will not be added unless the request above is confirmed.</p>
+          <p style="font-size:12px;color:#999999;margin:32px 0 0;border-top:1px solid #e2e2df;padding-top:16px;">Faculty Atlas — A directory of open faculty positions across North American higher education.</p>
+        </div>
       `,
     });
   } catch (err) {
