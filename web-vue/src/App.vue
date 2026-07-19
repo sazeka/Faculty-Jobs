@@ -661,7 +661,7 @@ onMounted(async () => {
   line-height: 0.88;
   letter-spacing: -0.025em;
 }
-.fa-hero-right { padding-bottom: 8px; align-self: start; }
+.fa-hero-right { padding-bottom: 8px; align-self: center; }
 .fa-stat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
