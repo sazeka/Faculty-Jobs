@@ -1559,8 +1559,28 @@ const NH_CAMPUSES = [
   },
   {
     campus: "Saint Anselm College",
+    type: "workday",
+    url: "https://anselm.wd1.myworkdayjobs.com/Anselm",
+  },
+  {
+    campus: "Franklin Pierce University",
     type: "generic",
-    url: "https://www.anselm.edu/about/offices-centers-institutes/academic-affairs/career-development-center/faculty",
+    url: "https://franklinpierceuniversity.applytojob.com/apply",
+  },
+  {
+    campus: "Rivier University",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/rivieredu",
+  },
+  {
+    campus: "New England College",
+    type: "peopleadmin",
+    url: "https://nec.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&query_position_type_id%5B%5D=6&query_position_type_id%5B%5D=7&1455=&commit=Search",
+  },
+  {
+    campus: "Southern New Hampshire University",
+    type: "generic",
+    url: "https://jobs.snhu.edu/en/jobs/",
   },
 ];
 
@@ -7755,6 +7775,7 @@ async function scrapeNhAll(context) {
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "NH");
         if (type === "workday") return await scrapeWorkdayApi(context, url, campus, "NH");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NH");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NH");
 
         // Fallback: try en-us/filter-style extractor
         const page = await context.newPage();
