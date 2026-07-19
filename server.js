@@ -482,6 +482,8 @@ const SYSTEM_GROUP_MAP = {
   "FL": "Florida",
   // Southeast / South-Central
   "GA": "Georgia",
+  "USG": "Georgia",
+  "TCSG": "Georgia",
   "AL": "Alabama",
   "MS": "Mississippi",
   "LA": "Louisiana",
@@ -3185,7 +3187,7 @@ const FL_CAMPUSES = [
   {
     campus: "University of Central Florida",
     type: "ucf-search",
-    url: "https://jobs.ucf.edu",
+    url: "https://jobs.ucf.edu/jobs/search",
   },
   {
     campus: "University of South Florida",
@@ -3194,8 +3196,8 @@ const FL_CAMPUSES = [
   },
   {
     campus: "Florida International University",
-    type: "generic",
-    url: "https://careers.fiu.edu",
+    type: "fiu-api",
+    url: "https://search.careers.fiu.edu/api/jobs",
   },
   {
     campus: "Florida Atlantic University",
@@ -3205,7 +3207,7 @@ const FL_CAMPUSES = [
   {
     campus: "University of North Florida",
     type: "workday",
-    url: "https://unf.wd5.myworkdayjobs.com/UNF",
+    url: "https://unf.wd5.myworkdayjobs.com/unfjobs",
   },
   {
     campus: "University of Miami",
@@ -3220,29 +3222,29 @@ const FL_CAMPUSES = [
   {
     campus: "Rollins College",
     type: "peopleadmin",
-    url: "https://jobs.rollins.edu/postings/search",
+    url: "https://jobs.rollins.edu",
   },
   {
     campus: "Eckerd College",
-    type: "interviewexchange",
-    url: "https://eckerd.interviewexchange.com/static/clients/393ECM1/index.jsp?cat=101",
+    type: "exacthire",
+    url: "https://eckerd.exacthire.com/",
   },
   {
     campus: "Stetson University",
     type: "generic",
-    url: "https://www.stetson.edu/other/faculty-opportunities.php",
+    url: "https://www.stetson.edu/administration/human-resources/faculty-opportunities.php",
   },
   {
     campus: "New College of Florida",
     type: "schooljobs",
-    url: "https://www.schooljobs.com/careers/ncf",
+    url: "https://www.schooljobs.com/careers/ncfl",
   },
   {
     campus: "Florida Southern College",
     type: "flsouthern-portal",
     url: "https://portal.flsouthern.edu/ICS/Employment_App/",
   },
-  { campus: "Jacksonville University", type: "generic", url: "https://www.ju.edu/index.php" },
+  { campus: "Jacksonville University", type: "generic", url: "https://www.ju.edu/humanresources/employment-opportunities.php" },
   { campus: "Polytechnic University of Puerto Rico-Miami", type: "generic", url: "https://www.pupr.edu/miami/" },
   { campus: "Polytechnic University of Puerto Rico-Orlando", type: "generic", url: "https://www.pupr.edu/orlando" },
   { campus: "Erwin Technical College", type: "generic", url: "https://www.hillsboroughschools.org/erwin" },
@@ -7853,6 +7855,63 @@ async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName) {
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
 
+// ExactHire ATS (a React/MUI SPA): job cards render the title in an <h6> next to a
+// bare arrow-icon <a href="/job/ID"> with no link text of its own, so a plain
+// anchor-text scrape finds nothing. Walk up from each jobDetailsLink anchor to its
+// card and pull the <h6> sibling instead. Clicks "Load More" to reveal the full list.
+async function scrapeExactHireAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(3000);
+
+    for (let i = 0; i < 20; i++) {
+      const btn = page.locator('button:has-text("Load More"), button:has-text("LOAD MORE JOBS")').first();
+      if ((await btn.count().catch(() => 0)) === 0) break;
+      if (!(await btn.isVisible().catch(() => false))) break;
+      await btn.click({ timeout: 5000 }).catch(() => {});
+      await page.waitForTimeout(800);
+    }
+
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const out = [];
+      const seen = new Set();
+      for (const a of document.querySelectorAll('a[data-testid^="jobDetailsLink"]')) {
+        const href = a.getAttribute("href");
+        if (!href) continue;
+        let url;
+        try { url = new URL(href, location.href).toString(); } catch { continue; }
+        if (seen.has(url)) continue;
+        const h = a.parentElement ? a.parentElement.querySelector("h6, h2, h3") : null;
+        const title = clean(h ? h.textContent : "");
+        if (!title) continue;
+        seen.add(url);
+        out.push({ title, url });
+      }
+      return out;
+    }).catch(() => []);
+
+    return items
+      .map((x) => ({
+        title: clean(x.title),
+        url: x.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      }))
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} ExactHire scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 async function scrapeCsodAs(context, startUrl, campusName, sourceName) {
   const items = await scrapeNjCsod(context, startUrl, campusName, sourceName);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
@@ -9114,16 +9173,12 @@ async function schoolJobsGoNext(page) {
     if (!(await loc.count().catch(() => 0))) continue;
     if (!(await loc.isVisible().catch(() => false))) continue;
 
-    const href = await loc.getAttribute("href").catch(() => null);
-    const bad = !href || href === "#" || /^javascript:/i.test(href);
-
-    if (!bad) {
-      const nextUrl = new URL(href, page.url()).toString();
-      await gotoWithRetry(page, nextUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
-      const after = await schoolJobsSignature(page);
-      return after && after !== before;
-    }
-
+    // Always click rather than resolving+navigating the href directly: on
+    // schooljobs.com the "next" link's href can point at the wrong tenant
+    // slug (e.g. "/careers/Home?page=2" instead of "/careers/<slug>?page=2"),
+    // silently dumping the crawl onto governmentjobs.com's homepage after
+    // page 1. The site's own client-side router rewrites the URL correctly
+    // when the link is actually clicked.
     await loc.scrollIntoViewIfNeeded().catch(() => {});
     await loc.click({ timeout: 8000 }).catch(() => {});
     await page.waitForTimeout(900);
@@ -9653,6 +9708,7 @@ const ATS_HANDOFF_PATTERNS = [
   { platform: "paycom", re: /paycomonline\.net/i },
   { platform: "icims", re: /icims\.com/i },
   { platform: "interfolio", re: /interfolio\.com/i },
+  { platform: "adp", re: /workforcenow\.adp\.com/i },
 ];
 
 // Maps a detected platform to its scraper. Function declarations are hoisted, so
@@ -9667,6 +9723,7 @@ const ATS_HANDOFF_SCRAPERS = {
   paycom: scrapePaycomAs,
   icims: scrapeIcimsAs,
   interfolio: scrapeInterfolioAs,
+  adp: scrapeAdpAs,
 };
 
 // Normalize a Workday URL down to its listing root (tenant + site) so the Workday
@@ -9880,9 +9937,35 @@ async function scrapeOracleCloudApi(ceUrl, campusName, sourceName) {
   return mapApiJobs(rows, campusName, sourceName);
 }
 
+// FIU's PantherSoft (PeopleSoft) career search exposes a public JSON feed at
+// search.careers.fiu.edu/api/jobs with a JOB_FAMILY facet ("Faculty",
+// "Temporary Faculty", "Adjunct", "Staff", ...). One request returns the full
+// catalog (no pagination needed at FIU's current volume).
+async function scrapeFiuApi(campusName, sourceName) {
+  const j = await fetchJsonApi("https://search.careers.fiu.edu/api/jobs?limit=2000");
+  const postings = Array.isArray(j?.JOB_POSTINGS) ? j.JOB_POSTINGS : [];
+  const rows = postings
+    .filter((p) => /^(Faculty|Temporary Faculty)$/i.test(String(p?.JOB_FAMILY || "").trim()))
+    .map((p) => ({
+      title: p.POSTING_TITLE,
+      url: p.URL,
+      location: p.LOCATION || null,
+      department: p.BUSINESS_UNIT || p.DEPARTMENT || null,
+      postedDate: p.OPEN_DT || null,
+    }));
+  return mapApiJobs(rows, campusName, sourceName);
+}
+
 // ADP WorkforceNow career centers expose a public feed at
 // /mascsr/default/careercenter/public/events/staffing/v1/job-requisitions (cid+ccId).
 // Returns [] for non-ADP URLs.
+// ATS hand-off wrapper: matches the (context, url, campusName, sourceName)
+// signature every other ATS_HANDOFF_SCRAPERS entry uses; scrapeAdpApi itself
+// needs no browser context since it hits the public ADP feed directly.
+async function scrapeAdpAs(context, url, campusName, sourceName) {
+  return await scrapeAdpApi(url, campusName, sourceName);
+}
+
 async function scrapeAdpApi(careersUrl, campusName, sourceName) {
   let u;
   try { u = new URL(careersUrl); } catch { return []; }
@@ -10765,7 +10848,23 @@ async function scrapeUcfSearchAs(context, startUrl, campusName, sourceName) {
 
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
-    await page.waitForTimeout(2500);
+
+    // This is a client-rendered SPA (job cards hydrate after load) — poll for at
+    // least one job link instead of a fixed sleep, so a slow render (e.g. under
+    // full-scrape concurrency load) doesn't get read before it's populated.
+    const hasJobLinks = () =>
+      safeEvaluate(page, () => {
+        for (const a of document.querySelectorAll('a[href]')) {
+          const href = a.getAttribute("href") || "";
+          if (/\/jobs\//i.test(href) && !/\/jobs\/search/i.test(href)) return true;
+        }
+        return false;
+      }).catch(() => false);
+    const start = Date.now();
+    while (Date.now() - start < 15_000) {
+      if (await hasJobLinks()) break;
+      await page.waitForTimeout(500);
+    }
 
     const blocked = await safeEvaluate(page, () => {
       const txt = (document.body?.innerText || "").toLowerCase();
@@ -12764,8 +12863,10 @@ async function scrapeFlAll(context) {
         if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "FL");
         if (type === "ucf-search") return await scrapeUcfSearchAs(context, url, campus, "FL");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "FL");
+        if (type === "exacthire") return await scrapeExactHireAs(context, url, campus, "FL");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "FL");
         if (type === "flsouthern-portal") return await scrapeFloridaSouthernPortal(context, url, campus, "FL");
+        if (type === "fiu-api") return await scrapeFiuApi(campus, "FL");
         if (type === "nau-search") {
           const base = await scrapeNauSearch(context, url, campus, "FL");
           return await enrichEnUsJobCardsFromDetails(context, base, {
