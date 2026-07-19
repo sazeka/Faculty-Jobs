@@ -309,12 +309,6 @@ onMounted(async () => {
           >{{ opt.label }}</button>
         </div>
       </div>
-
-      <!-- Site viewers -->
-      <div v-if="siteViews !== null" class="fa-meta fa-hero-coords" style="text-align: right;">
-        <div class="fa-display" style="font-size: 36px; line-height: 1;">{{ siteViews.toLocaleString() }}</div>
-        <div style="margin-top: 4px; letter-spacing: 0.1em; text-transform: uppercase; font-size: 9px;">visitors · 14 days</div>
-      </div>
     </section>
 
     <!-- Double rule + tagline -->
@@ -667,7 +661,7 @@ onMounted(async () => {
   line-height: 0.88;
   letter-spacing: -0.025em;
 }
-.fa-hero-right { padding-bottom: 8px; }
+.fa-hero-right { padding-bottom: 8px; align-self: center; }
 .fa-stat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
