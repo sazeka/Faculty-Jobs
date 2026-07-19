@@ -35,6 +35,14 @@ const sourceCount = new Set(jobs.map((j) => j.source).filter(Boolean)).size;
 const TITLE_TEXT =
   `Faculty Atlas \u2014 ${jobCount} Faculty Jobs at ${collegeCount} Institutions`;
 
+// One professional description, reused verbatim for meta/OG/Twitter so search
+// engines and social previews show consistent, on-brand copy instead of the
+// old data-dump phrasing ("Browse X listings across Y institutions and Z
+// state systems") \u2014 which read like an auto-generated stat line and appeared
+// to get passed over by Google in favor of its own on-page snippet.
+const DESCRIPTION_TEXT =
+  `A scholarly directory of open faculty positions across North American higher education. ${jobCount} listings, updated daily \u2014 free to browse, no account required.`;
+
 // Each entry describes one tag to inject/replace.
 // `attr`    – the attribute used to identify the tag (name or property)
 // `attrVal` – the value of that attribute
@@ -43,7 +51,7 @@ const META_TAGS = [
   {
     attr: "name",
     attrVal: "description",
-    tag: `<meta name="description" content="Browse ${jobCount} open faculty job listings across ${collegeCount} institutions and ${sourceCount} state systems. Updated daily.">`,
+    tag: `<meta name="description" content="${DESCRIPTION_TEXT}">`,
   },
   {
     attr: "property",
@@ -53,7 +61,7 @@ const META_TAGS = [
   {
     attr: "property",
     attrVal: "og:description",
-    tag: `<meta property="og:description" content="Browse ${jobCount} open faculty job listings across ${collegeCount} institutions. Updated daily.">`,
+    tag: `<meta property="og:description" content="${DESCRIPTION_TEXT}">`,
   },
   {
     attr: "property",
@@ -89,7 +97,7 @@ const META_TAGS = [
   {
     attr: "name",
     attrVal: "twitter:description",
-    tag: `<meta name="twitter:description" content="Browse ${jobCount} open faculty job listings across ${collegeCount} institutions. Updated daily.">`,
+    tag: `<meta name="twitter:description" content="${DESCRIPTION_TEXT}">`,
   },
   {
     attr: "name",
