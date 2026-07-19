@@ -890,7 +890,7 @@ const NJ_CAMPUSES = [
   {
     campus: "Stockton University",
     type: "stockton",
-    url: "https://employment.stockton.edu/jobs/search?page=1&employment_type_uids%5B%5D=fbab94e63ae2bac64f314b271869e32d&query=",
+    url: "https://employment.stockton.edu/jobs/search",
   },
   {
     campus: "William Paterson University",
@@ -919,14 +919,18 @@ const NJ_PRIVATE_CAMPUSES = [
   { campus: "Bloomfield College of Montclair State University", type: "generic", url: "https://www.bloomfield.edu/" },
   { campus: "Brookdale Community College", type: "generic", url: "https://www.brookdalecc.edu/academic-institutes-and-departments/business-social-sciences/history/careers-and-benefits-for-history-majors" },
   { campus: "Caldwell University", type: "generic", url: "https://www.caldwell.edu/hr/employment-opportunities/faculty-adjunct/" },
-  { campus: "Camden County College", type: "generic", url: "https://www.camdencc.edu/about-1/employment" },
+  {
+    campus: "Camden County College",
+    type: "peopleadmin",
+    url: "https://jobs.camdencc.edu/postings/search?query=&query_v0_posted_at_date=&426=&427%5B%5D=5&commit=Search",
+  },
   { campus: "Centenary University", type: "generic", url: "https://www.centenaryuniversity.edu/" },
   { campus: "County College of Morris", type: "generic", url: "https://www.ccm.edu/" },
   { campus: "Drew University", type: "generic", url: "https://www.drew.edu/" },
   { campus: "Essex County College", type: "generic", url: "https://www.essex.edu/directory/employment-opportunities" },
   { campus: "Fairleigh Dickinson University-Florham Campus", type: "generic", url: "https://www.fdu.edu/" },
   { campus: "Fairleigh Dickinson University-Metropolitan Campus", type: "generic", url: "https://jobs.fdu.edu/" },
-  { campus: "Felician University", type: "generic", url: "https://www.felician.edu/" },
+  { campus: "Felician University", type: "generic", url: "https://felician.edu/about-felician-university/careers-at-felician/" },
 ];
 
 // Claremont Colleges
@@ -6943,7 +6947,22 @@ async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") 
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
-    await page.waitForTimeout(900);
+
+    // Taleo's job list renders via AJAX well after domcontentloaded (observed
+    // ~1.5-2.5s, more under load) — a fixed 900ms sleep reliably read the page
+    // before any rows existed. Poll instead of guessing a fixed delay.
+    const hasJobLinks = () =>
+      safeEvaluate(page, () => {
+        for (const a of document.querySelectorAll("a[href]")) {
+          if (/jobdetail\.ftl\?.*job=/i.test(a.getAttribute("href") || "")) return true;
+        }
+        return false;
+      }).catch(() => false);
+    const pollStart = Date.now();
+    while (Date.now() - pollStart < 10_000) {
+      if (await hasJobLinks()) break;
+      await page.waitForTimeout(400);
+    }
 
         const jobs = await page.evaluate(() => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
@@ -7005,6 +7024,10 @@ async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") 
           /ats\/job/i.test(url) ||
           /\/requisition\//i.test(url) ||
           /requisitionId=/i.test(url) ||
+          // Classic CU-format Taleo job-detail links (e.g. tcnj.taleo.net):
+          // careersection/<section>/jobdetail.ftl?job=<id> — no "/job/" segment,
+          // so the patterns above miss it entirely.
+          /jobdetail\.ftl\?.*\bjob=/i.test(url) ||
           (/careersite/i.test(url) && (/requisition/i.test(url) || /job/i.test(url)));
 
         if (!ok) continue;
@@ -10187,8 +10210,11 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (!/^https?:\/\//i.test(url)) continue;
         if (/^(?:tel|mailto|sms):/i.test(url)) continue;
 
-        // Skip navigation and common non-job links
-        if (/login|logout|search|home|about|contact|privacy|terms|faq|help/i.test(url)) continue;
+        // Skip navigation and common non-job links. Matched as a whole path
+        // segment (not a bare substring) — "about" must be its own segment
+        // ("/about/") so it doesn't kill compound segments like
+        // "/about-felician-university/careers-at-felician/psycprof2/".
+        if (/\/(login|logout|search|home|about|contact|privacy|terms|faq|help)(?:\/|$|\?|\.)/i.test(url)) continue;
         if (/twitter\.com|x\.com|facebook\.com|instagram\.com|linkedin\.com|youtube\.com|tiktok\.com/i.test(url)) continue;
         if (/\/events?\b|\/news\b|\/stories?\b|\/blog\b|\/calendar\b|\/alumni\b/i.test(url)) continue;
         if (/\/directory\b|\/faculty-staff\b|\/our-faculty\b|\/faculty-profiles\b|\/people\b/i.test(url)) continue;
