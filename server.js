@@ -2182,8 +2182,8 @@ const VT_CAMPUSES = [
   },
   {
     campus: "Middlebury College",
-    type: "interfolio",
-    url: "https://apply.interfolio.com/36079/positions",
+    type: "generic",
+    url: "https://www.middlebury.edu/college/academics/academic-affairs/faculty/prospective-faculty/open-positions",
   },
   {
     campus: "Bennington College",
@@ -2195,8 +2195,17 @@ const VT_CAMPUSES = [
     type: "oracle-cx",
     url: "https://stmichaels-ibukjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2",
   },
-  { campus: "Champlain College", type: "generic", url: "https://www.champlain.edu/" },
+  {
+    campus: "Champlain College",
+    type: "oracle-cx",
+    url: "https://champlain-ibumjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+  },
   { campus: "Community College of Vermont", type: "generic", url: "https://www.ccv.edu/" },
+  {
+    campus: "Vermont State University",
+    type: "workday",
+    url: "https://vsc.wd108.myworkdayjobs.com/VTSU",
+  },
 ];
 
 // MN (Minnesota)
