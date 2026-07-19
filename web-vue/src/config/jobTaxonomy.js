@@ -63,4 +63,6 @@ export const SOURCE_TO_STATE_ALIASES = {
   Claremont: 'California',
   'Claremont Colleges': 'California',
   'CT State': 'Connecticut',
+  USG: 'Georgia',
+  TCSG: 'Georgia',
 }

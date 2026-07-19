@@ -30,7 +30,7 @@ const ABBR_STATE = Object.fromEntries(Object.entries(STATE_ABBR).map(([k, v]) =>
 const SOURCE_STATE = {
   "CA - CSU": "California", UC: "California", "CA Private": "California", "Claremont Colleges": "California",
   Claremont: "California", UMass: "Massachusetts", "MA Private": "Massachusetts", "UMass Amherst": "Massachusetts",
-  "CT State": "Connecticut",
+  "CT State": "Connecticut", USG: "Georgia", TCSG: "Georgia",
 };
 
 // Scraper college name → IPEDS INSTNM, for institutions whose names don't
