@@ -57,16 +57,21 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Stage ONLY the built bundle (entry HTML + hashed assets + sitemap).
-          # Never commit data here — the chunks/jobs.json are owned by the scrape
-          # and agent-team workflows, and build:frontend's sync:web-data can emit
+          # Stage the built bundle (entry HTML + hashed assets + sitemap) plus the
+          # static pages generated FROM already-committed data (job/hub/trends
+          # pages + their manifests) — these are derived output, not scraped
+          # source data, so it's safe to commit them alongside the sitemap that's
+          # already trusted to read the same source. Never commit the raw data
+          # itself here — the chunks/jobs.json are owned by the scrape and
+          # agent-team workflows, and build:frontend's sync:web-data can emit
           # un-enriched chunks mid-cycle. Restore any data files the build touched
           # so a deploy can't regress enrichment.
           git checkout -- docs/data public/data docs/jobs.json public/jobs.json 2>/dev/null || true
-          git add -A docs/assets public/assets
+          git add -A docs/assets public/assets docs/jobs docs/disciplines docs/states docs/institutions docs/trends
           git add docs/index.html public/index.html \
             docs/sitemap.xml public/sitemap.xml docs/robots.txt public/robots.txt \
-            docs/CNAME public/CNAME
+            docs/CNAME public/CNAME \
+            generated/job-pages.json generated/hub-pages.json generated/trends-pages.json
 
           if git diff --cached --quiet; then
             echo "No bundle changes to deploy."
