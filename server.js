@@ -2222,7 +2222,7 @@ const MN_CAMPUSES = [
   {
     campus: "Minnesota State System",
     type: "workday",
-    url: "https://minnstate.wd1.myworkdayjobs.com/Minnesota_State_Careers",
+    url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers",
   },
   {
     campus: "Carleton College",
@@ -3501,6 +3501,8 @@ const KS_CAMPUSES = [
 // OK (Oklahoma)
 const OK_CAMPUSES = [
   { campus: "Oklahoma State University", type: "generic", url: "https://jobs.okstate.edu/faculty/jobs" },
+  { campus: "University of Oklahoma", type: "interfolio", url: "https://apply.interfolio.com/16123/positions" },
+  { campus: "University of Oklahoma Health Sciences Center", type: "interfolio", url: "https://apply.interfolio.com/46259/positions" },
   { campus: "Autry Technology Center", type: "generic", url: "https://autrytech.edu/" },
   { campus: "Bacone College", type: "generic", url: "https://www.bacone.edu/" },
   {
@@ -3520,6 +3522,21 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  {
+    campus: "University of Missouri",
+    type: "umsystem-hrs",
+    url: "https://erecruit.umsystem.edu/psc/tamext/COLUM/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=9",
+  },
+  {
+    campus: "University of Missouri-Kansas City",
+    type: "umsystem-hrs",
+    url: "https://erecruit.umsystem.edu/psc/tamext/KCITY/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=8",
+  },
+  {
+    campus: "University of Missouri-St. Louis",
+    type: "umsystem-hrs",
+    url: "https://erecruit.umsystem.edu/psp/tamext/STLOU/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=11",
+  },
   { campus: "Missouri State University", type: "generic", url: "https://jobs.missouristate.edu/postings/search" },
   { campus: "Washington University in St. Louis", type: "workday", url: "https://wustl.wd1.myworkdayjobs.com/External" },
   { campus: "Missouri University of Science and Technology", type: "generic", url: "https://jobs.mst.edu/postings/search?query_position_type_id%5B%5D=3" },
@@ -3609,7 +3626,7 @@ const AK_CAMPUSES = [
 
 // HI (Hawaii)
 const HI_CAMPUSES = [
-  { campus: "University of Hawaii System", type: "generic", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=faculty" },
+  { campus: "University of Hawaii System", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=faculty" },
   { campus: "Chaminade University of Honolulu", type: "generic", url: "https://chaminade.edu/employment-opportunities/" },
   { campus: "Brigham Young University-Hawaii", type: "generic", url: "https://www.byuh.edu/" },
 ];
@@ -7102,6 +7119,12 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
     const allJobs = [];
     let offset = 0;
     const limit = 20;
+    // Some Workday tenants (observed: Minnesota State) only report a correct
+    // `total` on the first page — every subsequent page reports total: 0 even
+    // though jobPostings keeps coming back non-empty. Using data.total fresh
+    // each iteration made the loop quit after page 2 (40 of 185 jobs). Capture
+    // total once from the first response and page against that instead.
+    let knownTotal = null;
 
     for (let page = 0; page < 50; page++) {
       const response = await fetch(apiUrl, {
@@ -7126,6 +7149,9 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
 
       const data = await response.json();
       if (!data.jobPostings || data.jobPostings.length === 0) break;
+      if (knownTotal === null && typeof data.total === "number" && data.total > 0) {
+        knownTotal = data.total;
+      }
 
       for (const job of data.jobPostings) {
         const baseUrl = startUrl.split('?')[0].replace(/\/en-US/, '');
@@ -7141,7 +7167,7 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
       }
 
       offset += limit;
-      if (offset >= data.total) break;
+      if (knownTotal !== null && offset >= knownTotal) break;
     }
 
     const filtered = allJobs
@@ -8541,7 +8567,28 @@ async function scrapeInterfolioPositionsAs(context, startUrl, campusName, source
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
-    await page.waitForTimeout(900);
+
+    // This Interfolio "positions" list is a SPA that renders its rows via AJAX
+    // well after domcontentloaded (observed ~2-3s) — a fixed 900ms sleep reliably
+    // read the page before any job links existed. Poll instead of guessing.
+    // Job rows use Angular's ng-href, which renders as a relative "/171421"
+    // attribute — a CSS attribute selector like a[href*="interfolio.com/"] never
+    // matches, and testing getAttribute("href") directly against a domain regex
+    // never matches either. Resolve each href to absolute first, every time.
+    const hasJobLinks = () =>
+      safeEvaluate(page, () => {
+        for (const a of document.querySelectorAll("a[href]")) {
+          let url;
+          try { url = new URL(a.getAttribute("href"), location.href).toString(); } catch { continue; }
+          if (/interfolio\.com\/\d+(?:$|\?|#)/i.test(url)) return true;
+        }
+        return false;
+      }).catch(() => false);
+    const pollStart = Date.now();
+    while (Date.now() - pollStart < 10_000) {
+      if (await hasJobLinks()) break;
+      await page.waitForTimeout(400);
+    }
 
     const jobs = [];
     const seen = new Set();
@@ -8554,10 +8601,16 @@ async function scrapeInterfolioPositionsAs(context, startUrl, campusName, source
         };
 
         const out = [];
-        const links = Array.from(document.querySelectorAll('a[href*="/positions/"], a[href*="/position/"]'));
+        // Some Interfolio "positions" list pages link straight to a bare job ID
+        // (apply.interfolio.com/<id>, often as a relative ng-href) rather than
+        // nesting under /positions/ or /position/ — resolve every href to
+        // absolute before filtering, since a raw CSS attribute selector can't
+        // see through a relative "/171421"-style href.
+        const links = Array.from(document.querySelectorAll("a[href]"));
         for (const a of links) {
           const url = abs(a.getAttribute("href"));
           if (!url) continue;
+          if (!/interfolio\.com\/\d+(?:$|\?|#)/i.test(url) && !/\/positions?\//i.test(url)) continue;
 
           const title = clean(a.textContent);
           if (!title || title.length < 6) continue;
@@ -12053,65 +12106,133 @@ async function scrapeUmnJobs(context, startUrl, campusName, sourceName) {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
-    // Try to load more results by scrolling and clicking "Show More" if present
+    // UMN's PeopleSoft results list has no <a href> job links at all — titles
+    // render as plain <span id="SCH_JOB_TITLE$N"> with sibling fields addressed
+    // by the same index N (HRS_APP_JBSCH_I_HRS_JOB_OPENING_ID$N, LOCATION$N).
+    // The old link-pattern scraper could never match anything here. 50 results
+    // load at a time; a "div.ps_box-more" postback trigger (labeled just "more",
+    // not "show/load more") appends the next 50 in place. Playwright's locator
+    // click() reports this element as not "visible" (a PeopleSoft layout quirk)
+    // and refuses to click it, so dispatch the click directly in-page instead.
+    // Click until the div disappears or a safety cap is hit (the UI itself caps
+    // display at 300 of 736+ total jobs at last check).
     for (let i = 0; i < 20; i++) {
-      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)).catch(() => {});
-      await page.waitForTimeout(500);
-
-      const showMore = page.locator('button:has-text("Show More"), a:has-text("Show More"), button:has-text("Load More")').first();
-      if ((await showMore.count().catch(() => 0)) > 0 && (await showMore.isVisible().catch(() => false))) {
-        await showMore.click().catch(() => {});
-        await page.waitForTimeout(1000);
-      }
+      const clicked = await safeEvaluate(page, () => {
+        const btn = document.querySelector("div.ps_box-more");
+        if (!btn) return false;
+        btn.click();
+        return true;
+      }).catch(() => false);
+      if (!clicked) break;
+      await page.waitForTimeout(1200);
     }
 
     const items = await safeEvaluate(page, () => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-      const abs = (href) => {
-        try { return new URL(href, location.href).toString(); }
-        catch { return null; }
-      };
-
       const out = [];
       const seen = new Set();
 
-      // PeopleSoft job links often have patterns like HRS_CE_JOB_DTL or job posting IDs
-      const links = Array.from(document.querySelectorAll('a[href]'));
-      for (const a of links) {
-        const href = abs(a.getAttribute("href"));
-        if (!href) continue;
+      for (const titleEl of Array.from(document.querySelectorAll('span[id^="SCH_JOB_TITLE$"]'))) {
+        const title = clean(titleEl.textContent);
+        if (!title || title.length < 4) continue;
+        const m = (titleEl.id || "").match(/\$(\d+)$/);
+        const idx = m ? m[1] : null;
+        const jobIdEl = idx !== null ? document.getElementById(`HRS_APP_JBSCH_I_HRS_JOB_OPENING_ID$${idx}`) : null;
+        const locationEl = idx !== null ? document.getElementById(`LOCATION$${idx}`) : null;
+        const jobId = clean(jobIdEl?.textContent || "");
+        const location = clean(locationEl?.textContent || "");
 
-        // Match PeopleSoft job detail patterns
-        const isJob =
-          /HRS_CE_JOB_DTL/i.test(href) ||
-          /jobid=/i.test(href) ||
-          /job_id=/i.test(href) ||
-          /posting/i.test(href) ||
-          (/HRS.*JOB/i.test(href));
-
-        if (!isJob) continue;
-        if (seen.has(href)) continue;
-
-        const title = clean(a.textContent);
-        if (!title || title.length < 5) continue;
-        if (/^(view|apply|details|more|back|home|search|login)$/i.test(title)) continue;
-
-        seen.add(href);
-        out.push({ title, url: href });
+        const dedupe = `${jobId || title}|${title}`;
+        if (seen.has(dedupe)) continue;
+        seen.add(dedupe);
+        out.push({ title, jobId, location });
       }
-
       return out;
     });
 
-    const jobs = (items || []).map((x) => ({
-      title: clean(x.title),
-      url: x.url,
-      source: sourceName,
-      category: "Faculty",
-      college: campusName,
-      location: null,
-      description: null,
-    }));
+    const jobs = (items || [])
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title))
+      .map((j) => ({
+        title: clean(j.title),
+        url: `${startUrl}#${encodeURIComponent(j.jobId || j.title)}`,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: j.location || null,
+        description: null,
+      }));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// University of Missouri System campuses (same PeopleSoft HRS product as UMN,
+// under erecruit.umsystem.edu, one job board per campus keyed by a "SiteId").
+// Unlike UMN, this instance exposes a JOB_FAMILY_LABEL field directly (e.g.
+// "Teaching & Research Faculty"), so filter on that instead of title regexes
+// — far more precise, and it happens to catch clinical/physician-faculty
+// titles that don't contain "professor/lecturer/instructor".
+async function scrapeUmsystemHrsJobs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(2000);
+
+    for (let i = 0; i < 20; i++) {
+      const clicked = await safeEvaluate(page, () => {
+        const btn = document.querySelector("div.ps_box-more");
+        if (!btn) return false;
+        btn.click();
+        return true;
+      }).catch(() => false);
+      if (!clicked) break;
+      await page.waitForTimeout(1200);
+    }
+
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const out = [];
+      const seen = new Set();
+
+      for (const titleEl of Array.from(document.querySelectorAll('span[id^="SCH_JOB_TITLE$"]'))) {
+        const title = clean(titleEl.textContent);
+        if (!title || title.length < 4) continue;
+        const m = (titleEl.id || "").match(/\$(\d+)$/);
+        const idx = m ? m[1] : null;
+        const jobIdEl = idx !== null ? document.getElementById(`HRS_APP_JBSCH_I_HRS_JOB_OPENING_ID$${idx}`) : null;
+        const locationEl = idx !== null ? document.getElementById(`LOCATION$${idx}`) : null;
+        const familyEl = idx !== null ? document.getElementById(`JOB_FAMILY_LABEL$${idx}`) : null;
+        const jobId = clean(jobIdEl?.textContent || "");
+        const location = clean(locationEl?.textContent || "");
+        const jobFamily = clean(familyEl?.textContent || "");
+
+        const dedupe = `${jobId || title}|${title}`;
+        if (seen.has(dedupe)) continue;
+        seen.add(dedupe);
+        out.push({ title, jobId, location, jobFamily });
+      }
+      return out;
+    });
+
+    const jobs = (items || [])
+      .filter((j) => /faculty/i.test(j.jobFamily) || looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title) && !/\badjunct\b/i.test(j.jobFamily))
+      .map((j) => ({
+        title: clean(j.title),
+        url: `${startUrl}#${encodeURIComponent(j.jobId || j.title)}`,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: j.location || null,
+        description: null,
+      }));
 
     console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
     return jobs;
@@ -12630,6 +12751,7 @@ async function scrapeOkAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OK");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OK");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OK");
+        if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "OK");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} OK scrape failed:`, e?.message || e);
@@ -12649,6 +12771,7 @@ async function scrapeMoAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MO");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MO");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MO");
+        if (type === "umsystem-hrs") return await scrapeUmsystemHrsJobs(context, url, campus, "MO");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} MO scrape failed:`, e?.message || e);
