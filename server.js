@@ -2119,8 +2119,8 @@ const ME_CAMPUSES = [
   },
   {
     campus: "Bowdoin College",
-    type: "generic",
-    url: "https://www.bowdoin.edu/employment",
+    type: "peopleadmin",
+    url: "https://careers.bowdoin.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&query_position_type_id%5B%5D=2&commit=Search",
   },
   {
     campus: "Colby College",
@@ -2131,6 +2131,26 @@ const ME_CAMPUSES = [
   { campus: "Central Maine Community College", type: "generic", url: "https://www.cmcc.edu/" },
   { campus: "College of the Atlantic", type: "generic", url: "https://www.coa.edu/" },
   { campus: "Eastern Maine Community College", type: "generic", url: "https://www.emcc.edu/" },
+  {
+    campus: "University of New England",
+    type: "peopleadmin",
+    url: "https://une.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&811%5B%5D=1&commit=Search",
+  },
+  {
+    campus: "Husson University",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/husson",
+  },
+  {
+    campus: "Maine Maritime Academy",
+    type: "generic",
+    url: "https://mainemaritime.edu/employment-at-mma/faculty-positions/",
+  },
+  {
+    campus: "Unity Environmental University",
+    type: "paycom",
+    url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=ED9820B3EB18F3366E468E5024A065B8",
+  },
 ];
 
 // VT (Vermont)
@@ -11729,6 +11749,8 @@ async function scrapeMeAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "ME");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "ME");
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "ME");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "ME");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "ME");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} ME scrape failed:`, e?.message || e);
