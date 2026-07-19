@@ -267,7 +267,14 @@ function homepageSld(homepage) {
 }
 function candidateBelongsToSchool(url, homepage) {
   const s = homepageSld(homepage);
-  if (!s || s.length < 3) return true; // can't tell — don't over-reject
+  // Only bypass when extraction truly failed (no homepage, unparseable URL) —
+  // NOT just because the extracted token is short. A short-but-real SLD like
+  // "du" (University of Denver, jobs.du.edu) used to trip a `length < 3`
+  // bypass here, letting ANY candidate through unverified and matching
+  // msudenver.edu (Metropolitan State University of Denver — a different,
+  // unrelated public university) as if it were University of Denver's own
+  // site.
+  if (!s) return true;
   let host;
   try {
     host = new URL(url).hostname.replace(/^www\./, "");
