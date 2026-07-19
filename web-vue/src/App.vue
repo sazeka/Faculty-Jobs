@@ -214,9 +214,6 @@ onMounted(async () => {
           >{{ t }}</button>
           <a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer"
             class="fa-meta fa-nav-link">GitHub</a>
-          <a href="https://ko-fi.com/stevzeke" target="_blank" rel="noreferrer"
-            class="fa-meta fa-nav-link" title="Support Faculty Atlas on Ko-fi">
-            <span style="color: var(--accent);" aria-hidden="true">♥</span> Support</a>
         </nav>
       </div>
 
