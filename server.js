@@ -3129,7 +3129,7 @@ const TX_CAMPUSES = [
   },
   {
     campus: "University of Texas at San Antonio",
-    type: "peoplesoft",
+    type: "peoplesoft-hrs",
     url: "https://zahr-prd-candidate-ada.utshare.utsystem.edu/psc/ZAHRPRDADA/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&Page=HRS_APP_SCHJOB&Action=U&FOCUS=Applicant&SiteId=21",
   },
   {
@@ -3149,13 +3149,13 @@ const TX_CAMPUSES = [
   },
   {
     campus: "Southern Methodist University",
-    type: "taleo",
-    url: "https://smu.taleo.net/careersection/ex/jobsearch.ftl?lang=en",
+    type: "generic",
+    url: "https://www.smu.edu/businessfinance/hr/workingatsmu/faculty-careers",
   },
   {
     campus: "Texas Christian University",
-    type: "workday",
-    url: "https://tcu.wd1.myworkdayjobs.com/TCU_External",
+    type: "nau-search",
+    url: "https://jobs.tcu.edu/jobs/search/faculty-jobs",
   },
   {
     campus: "Trinity University",
@@ -3166,6 +3166,16 @@ const TX_CAMPUSES = [
     campus: "Southwestern University",
     type: "generic",
     url: "https://www.southwestern.edu/human-resources/career-opportunities/",
+  },
+  {
+    campus: "Texas State University",
+    type: "peopleadmin",
+    url: "https://jobs.hr.txstate.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&query_position_type_id%5B%5D=4&435=&commit=Search",
+  },
+  {
+    campus: "University of Texas at El Paso",
+    type: "interviewexchange",
+    url: "https://utep.interviewexchange.com/static/clients/533UTM1/index.jsp",
   },
   { campus: "Abilene Christian University-Undergraduate Online", type: "generic", url: "https://www.acu.edu/academics/online/undergraduate" },
   { campus: "Alamo Community College District Central Office", type: "generic", url: "https://alamo.edu/district/" },
@@ -8664,41 +8674,83 @@ async function scrapeInterfolioPositionsAs(context, startUrl, campusName, source
 }
 
 // InterviewExchange (e.g., WIU) – best-effort link scrape
+// Extracts faculty-titled position links from whatever InterviewExchange page
+// is currently loaded. Shared by scrapeInterviewExchangeAs's landing-page pass
+// and its per-category fan-out (see below).
+async function extractInterviewExchangeJobs(page) {
+  return await safeEvaluate(page, () => {
+    const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+    const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+
+    const out = [];
+    const seen = new Set();
+
+    const anchors = Array.from(document.querySelectorAll("a[href]"));
+    for (const a of anchors) {
+      const url = abs(a.getAttribute("href"));
+      if (!url) continue;
+
+      const title = clean(a.textContent);
+      if (!title || title.length < 6) continue;
+
+      const okUrl = /position|posting|requisition|job|opportunity|posting\.jsp/i.test(url);
+      const okTitle = /professor|lecturer|instructor|\bfaculty\b/i.test(title);
+
+      if (!okUrl && !okTitle) continue;
+
+      if (/privacy|accessibility|login|sign in|home|contact/i.test(title)) continue;
+
+      if (seen.has(url)) continue;
+      seen.add(url);
+      out.push({ title, url });
+    }
+
+    return out;
+  }).catch(() => []);
+}
+
 async function scrapeInterviewExchangeAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1200);
 
-    const items = await safeEvaluate(page, () => {
-      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-      const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+    let items = await extractInterviewExchangeJobs(page);
+    const hasRealFacultyJob = (list) => list.some((x) => looksFacultyish(x.title) && !omitAdjunct(x.title));
 
-      const out = [];
-      const seen = new Set();
+    // Some IX sites (e.g. UTEP) only ever show postings once a department
+    // category is selected — the landing page lists bare category links
+    // (?catid=NNN) plus a handful of unrelated nav links that happen to match
+    // the URL/title heuristics (hence checking for a real faculty match, not
+    // just a non-empty list). Fan out into each category and merge, rather
+    // than reporting an empty result for a page that's really just an index.
+    if (!hasRealFacultyJob(items)) {
+      const categoryUrls = await safeEvaluate(page, () => {
+        const abs = (href) => { try { return new URL(href, location.href).toString(); } catch { return null; } };
+        const out = new Set();
+        for (const a of document.querySelectorAll('a[href*="catid="]')) {
+          const url = abs(a.getAttribute("href"));
+          if (url) out.add(url);
+        }
+        return [...out];
+      }).catch(() => []);
 
-      const anchors = Array.from(document.querySelectorAll("a[href]"));
-      for (const a of anchors) {
-        const url = abs(a.getAttribute("href"));
-        if (!url) continue;
-
-        const title = clean(a.textContent);
-        if (!title || title.length < 6) continue;
-
-        const okUrl = /position|posting|requisition|job|opportunity|posting\.jsp/i.test(url);
-        const okTitle = /professor|lecturer|instructor|\bfaculty\b/i.test(title);
-
-        if (!okUrl && !okTitle) continue;
-
-        if (/privacy|accessibility|login|sign in|home|contact/i.test(title)) continue;
-
-        if (seen.has(url)) continue;
-        seen.add(url);
-        out.push({ title, url });
+      if (categoryUrls.length > 0) {
+        const seen = new Set();
+        const merged = [];
+        for (const catUrl of categoryUrls.slice(0, 40)) {
+          await gotoWithRetry(page, catUrl, { waitUntil: "domcontentloaded", timeout: 60_000 }).catch(() => {});
+          await page.waitForTimeout(800);
+          const batch = await extractInterviewExchangeJobs(page);
+          for (const j of batch) {
+            if (seen.has(j.url)) continue;
+            seen.add(j.url);
+            merged.push(j);
+          }
+        }
+        items = merged;
       }
-
-      return out;
-    }).catch(() => []);
+    }
 
     const filtered = items.filter((x) => looksFacultyish(x.title)).filter((x) => !omitAdjunct(x.title));
     console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length}`);
@@ -11906,7 +11958,7 @@ async function scrapeMnAll(context) {
     MAX_PARALLEL_CAMPUSES,
     async ({ campus, type, url }) => {
       try {
-        if (type === "umn") return await scrapeUmnJobs(context, url, campus, "MN");
+        if (type === "umn") return await scrapePeopleSoftHrsBasic(context, url, campus, "MN");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MN");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "MN");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "MN");
@@ -12099,12 +12151,25 @@ function splitMinnStateSystemCollege(job) {
   return { ...job, college: mappedCollege };
 }
 
-// University of Minnesota (PeopleSoft-based MyU portal)
-async function scrapeUmnJobs(context, startUrl, campusName, sourceName) {
+// Generic Oracle/PeopleSoft HRS "Explore Jobs" portal (used by University of
+// Minnesota's MyU and UT System schools sharing utshare.utsystem.edu) with no
+// JOB_FAMILY_LABEL field — filters by title regex instead. See
+// scrapeUmsystemHrsJobs for the variant that does expose job family/business
+// unit fields (University of Missouri System).
+async function scrapePeopleSoftHrsBasic(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
+
+    // Some of these portals (e.g. UT System's HRS_APP_SCHJOB, without the "_FL"
+    // suffix UMN's URL uses) land on a blank "Search Jobs" shell and need an
+    // explicit "View All Jobs" postback click before any rows exist.
+    await safeEvaluate(page, () => {
+      const link = document.querySelector('a[href*="NAV_PB"]');
+      if (link) link.click();
+    }).catch(() => {});
+    await page.waitForTimeout(1500);
 
     // UMN's PeopleSoft results list has no <a href> job links at all — titles
     // render as plain <span id="SCH_JOB_TITLE$N"> with sibling fields addressed
@@ -13026,6 +13091,7 @@ async function scrapeTxAll(context) {
         if (type === "tamu-faculty") return await scrapeTamuFacultyPositions(context, url, campus, "TX");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "TX");
         if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "TX");
+        if (type === "peoplesoft-hrs") return await scrapePeopleSoftHrsBasic(context, url, campus, "TX");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "TX");
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "TX");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "TX");
