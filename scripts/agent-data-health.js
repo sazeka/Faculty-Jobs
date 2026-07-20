@@ -5,7 +5,9 @@
  * Backend data-health agent. Runs after verify-job-urls.js and:
  *   1. Removes confirmed-dead job URLs from public/jobs.json (and docs/jobs.json).
  *   2. Compares per-source job counts to a rolling baseline; flags anomalous drops.
- *   3. Strips raw HTML tags from job title fields.
+ *   3. Strips raw HTML tags from job title fields, trims stray leading
+ *      "-" list-markers, and de-shouts ALL-CAPS titles (preserving
+ *      parenthetical/whitelisted acronyms).
  *   4. Writes a health report to generated/data-health-report.json.
  *
  * Usage:
@@ -63,6 +65,78 @@ function stripHtml(str) {
   return String(str || "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
 }
 
+// ── Title casing/format normalization ────────────────────────────────────────
+
+const KNOWN_ACRONYMS = new Set([
+  "EM", "ESL", "EKG", "UMKC", "GED", "STEM", "ADA", "ROTC", "RN", "LPN",
+  "MD", "PHD", "BSN", "MSN", "IT", "HR", "USA",
+]);
+const ACRONYM_DISPLAY = { PHD: "PhD" };
+
+const SMALL_WORDS = new Set([
+  "of", "and", "or", "in", "the", "a", "an", "at", "to", "for", "by",
+  "on", "with", "from",
+]);
+
+function isShouty(title) {
+  const letters = String(title || "").match(/[A-Za-z]/g) || [];
+  const upper = String(title || "").match(/[A-Z]/g) || [];
+  return letters.length > 6 && upper.length / letters.length > 0.85;
+}
+
+// Title-case a single fully-uppercase sub-word (letters only), honoring the
+// acronym whitelist and small-word lowercasing rules.
+function titleCaseWord(word, { isParenthesized, isFirst }) {
+  if (isParenthesized) return word;
+  const upper = word.toUpperCase();
+  if (KNOWN_ACRONYMS.has(upper)) return ACRONYM_DISPLAY[upper] || upper;
+  if (!isFirst && SMALL_WORDS.has(word.toLowerCase())) return word.toLowerCase();
+  return word.charAt(0) + word.slice(1).toLowerCase();
+}
+
+// De-shout an ALL-CAPS-ish title while leaving already-mixed-case words
+// (e.g. a lowercase "of" in an otherwise shouty title) untouched.
+function normalizeShoutyTitle(title) {
+  const str = String(title || "");
+  if (!isShouty(str)) return str;
+
+  let firstWordSeen = false;
+  // Split on whitespace, keeping the separators, so spacing is preserved.
+  return str
+    .split(/(\s+)/)
+    .map((chunk) => {
+      if (/^\s+$/.test(chunk) || chunk === "") return chunk;
+      // Split the whitespace-delimited chunk on '/' and '-' boundaries,
+      // keeping the separators, so e.g. ASSISTANT/ASSOCIATE title-cases
+      // each side independently.
+      return chunk
+        .split(/([/-])/)
+        .map((part) => {
+          if (part === "/" || part === "-" || part === "") return part;
+          const isFirst = !firstWordSeen;
+          firstWordSeen = true;
+          const isAllUpper = /^[A-Z]+$/.test(part);
+          if (!isAllUpper) return part;
+          const isParenthesized =
+            (str.includes(`(${part})`) ||
+              str.includes(`(${part}`) ||
+              str.includes(`${part})`)) &&
+            /[()]/.test(chunk);
+          return titleCaseWord(part, { isParenthesized, isFirst });
+        })
+        .join("");
+    })
+    .join("");
+}
+
+function normalizeLeadingDash(title) {
+  return String(title || "").replace(/^\s*-+\s*/, "");
+}
+
+function normalizeTitle(title) {
+  return normalizeShoutyTitle(normalizeLeadingDash(title));
+}
+
 // ── 1. Load inputs ────────────────────────────────────────────────────────────
 
 const payload = readJson(PUBLIC_JOBS);
@@ -93,6 +167,7 @@ for (const job of payload.jobs) {
 
 let removedCount  = 0;
 let htmlFixed     = 0;
+let titlesNormalized = 0;
 
 const cleanedJobs = [];
 for (const job of payload.jobs) {
@@ -100,10 +175,15 @@ for (const job of payload.jobs) {
     removedCount++;
     continue;
   }
-  const cleanTitle = stripHtml(job.title);
-  if (cleanTitle !== String(job.title || "")) {
-    htmlFixed++;
-    cleanedJobs.push({ ...job, title: cleanTitle });
+  const originalTitle = String(job.title || "");
+  const htmlStripped = stripHtml(job.title);
+  const finalTitle = normalizeTitle(htmlStripped);
+
+  if (htmlStripped !== originalTitle) htmlFixed++;
+  if (finalTitle !== htmlStripped) titlesNormalized++;
+
+  if (finalTitle !== originalTitle) {
+    cleanedJobs.push({ ...job, title: finalTitle });
   } else {
     cleanedJobs.push(job);
   }
@@ -111,6 +191,7 @@ for (const job of payload.jobs) {
 
 console.log(`\n  Dead listings removed : ${removedCount}`);
 console.log(`  HTML titles cleaned   : ${htmlFixed}`);
+console.log(`  Titles case/format normalized : ${titlesNormalized}`);
 
 // ── 4. Compare per-source counts to baseline ─────────────────────────────────
 
@@ -157,12 +238,13 @@ const report = {
   config: { dropThreshold: DROP_THRESHOLD },
   removedDeadCount: removedCount,
   htmlTitlesFixed: htmlFixed,
+  titlesNormalized,
   sourceDropWarnings: drops,
   sourceCounts: Object.fromEntries([...afterCounts.entries()].sort()),
 };
 
 if (!DRY_RUN) {
-  if (removedCount > 0 || htmlFixed > 0) {
+  if (removedCount > 0 || htmlFixed > 0 || titlesNormalized > 0) {
     const updated = { ...payload, jobs: cleanedJobs };
     writeJson(PUBLIC_JOBS, updated);
     // Mirror to docs/ if it exists
