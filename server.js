@@ -917,7 +917,7 @@ const NJ_PRIVATE_CAMPUSES = [
   { campus: "Bergen Community College", type: "generic", url: "https://www.bergen.edu/" },
   { campus: "Beth Medrash Govoha", type: "generic", url: "https://bmg.edu/" },
   { campus: "Bloomfield College of Montclair State University", type: "generic", url: "https://www.bloomfield.edu/" },
-  { campus: "Brookdale Community College", type: "generic", url: "https://www.brookdalecc.edu/academic-institutes-and-departments/business-social-sciences/history/careers-and-benefits-for-history-majors" },
+  { campus: "Brookdale Community College", type: "peopleadmin", url: "https://jobs.brookdalecc.edu/postings/search" },
   { campus: "Caldwell University", type: "generic", url: "https://www.caldwell.edu/hr/employment-opportunities/faculty-adjunct/" },
   {
     campus: "Camden County College",
@@ -3439,7 +3439,7 @@ const MS_CAMPUSES = [
   { campus: "Mississippi University for Women", type: "peopleadmin", url: "https://muw.peopleadmin.com/postings/search" },
   { campus: "Delta State University", type: "peopleadmin", url: "https://deltastate.peopleadmin.com/postings/search" },
   { campus: "Millsaps College", type: "generic", url: "https://millsaps.edu/offices/human-resources/employment-opportunities/" },
-  { campus: "Alcorn State University", type: "generic", url: "https://www.alcorn.edu/academics/schools-and-departments/caas/office-of-fiscal-officer-budget-analyst/faculty-employment-guidelines/" },
+  { campus: "Alcorn State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/alcornstateuniversity" },
   { campus: "Belhaven University", type: "generic", url: "https://www.belhaven.edu/" },
   { campus: "Blue Mountain Christian University", type: "generic", url: "https://www.bmc.edu/" },
   { campus: "Board of Trustees-Mississippi State Institutions of Higher Learning", type: "generic", url: "https://www.mississippi.edu/" },
@@ -3452,7 +3452,7 @@ const MS_CAMPUSES = [
 // LA (Louisiana)
 const LA_CAMPUSES = [
   { campus: "Louisiana State University", type: "workday", url: "https://lsu.wd1.myworkdayjobs.com/LSU?Job_Profiles=7a9995fc77aa101fe03ed2adb83abd3b&Job_Profiles=7a9995fc77aa101fe03fb0edd613be1b&Job_Profiles=7a9995fc77aa101fe03ea5230b41bd10&Job_Profiles=7a9995fc77aa101fe03c558ab5c0bac4&Job_Profiles=7a9995fc77aa101fe03fb8c46670be23&Job_Profiles=7a9995fc77aa101fe03fa8fe7ecdbe13&Job_Profiles=48b1ff5a2bae01637b1270c77c372403" },
-  { campus: "Louisiana Tech University", type: "generic", url: "https://www.latech.edu/business/about/employment-opportunities.php" },
+  { campus: "Louisiana Tech University", type: "workday", url: "https://ulsltu.wd503.myworkdayjobs.com/LATECHCareers" },
   { campus: "Dillard University", type: "generic", url: "https://www.dillard.edu/human-resources/" },
   { campus: "Baton Rouge General Medical Center School of Nursing & School of Radiologic Technology", type: "generic", url: "https://www.brgeneral.org/medical-education/school-of-nursing/%20OR%20school%20of%20radiologic%20technology" },
   { campus: "Remington College-Baton Rouge Campus", type: "generic", url: "https://www.remingtoncollege.edu/baton-rouge-career-college" },
@@ -10047,7 +10047,11 @@ const ATS_HANDOFF_SCRAPERS = {
 // scraper gets the job board, not a single deep job-detail link.
 function normalizeAtsUrl(platform, url) {
   if (platform === "workday") {
-    const m = /^(https?:\/\/[^/]+\.myworkdayjobs\.com\/[^/]+)(?:\/|$)/i.exec(url);
+    // An optional locale segment ("en-US", "en-GB", ...) can sit between the
+    // tenant host and the site name — without accounting for it, the tenant
+    // root gets truncated at the locale segment itself (treating "en-US" as
+    // if it were the site), producing a URL that 404s / returns no postings.
+    const m = /^(https?:\/\/[^/]+\.myworkdayjobs\.com\/(?:[a-z]{2}-[A-Z]{2}\/)?[^/]+)(?:\/|$)/i.exec(url);
     if (m) return m[1];
   }
   return url;
