@@ -942,10 +942,10 @@ const CLAREMONT_CAMPUSES = [
   },
   {
     campus: "Claremont Graduate University",
-    type: "static",
+    type: "generic",
     url: "https://www.cgu.edu/employment-opportunities/faculty-jobs/",
   },
-  { campus: "Scripps College", type: "static", url: "https://www.scrippscollege.edu/hr/faculty" },
+  { campus: "Scripps College", type: "generic", url: "https://www.scrippscollege.edu/hr/faculty" },
   {
     campus: "Claremont McKenna College",
     type: "cmc",
@@ -953,7 +953,7 @@ const CLAREMONT_CAMPUSES = [
   },
   {
     campus: "Harvey Mudd College",
-    type: "static",
+    type: "generic",
     url: "https://www.hmc.edu/dean-of-faculty/available-faculty-positions/",
   },
   {
@@ -1035,7 +1035,7 @@ const PA_PRIVATE_CAMPUSES = [
   },
   {
     campus: "Lehigh University",
-    type: "static",
+    type: "generic",
     url: "https://facultyjobs.lehigh.edu/faculty",
   },
   {
@@ -1983,7 +1983,7 @@ const OR_CAMPUSES = [
   },
   {
     campus: "Western Oregon University",
-    type: "static",
+    type: "generic",
     url: "https://wou.edu/hr/employment/jobs/",
   },
   {
@@ -2831,7 +2831,7 @@ const MI_CAMPUSES = [
 const IL_CAMPUSES = [
   {
     campus: "Northwestern University",
-    type: "static",
+    type: "generic",
     url: "https://www.northwestern.edu/hr/careers/",
   },
   {
@@ -2876,7 +2876,7 @@ const IL_CAMPUSES = [
   },
   {
     campus: "Northeastern Illinois University",
-    type: "static",
+    type: "generic",
     url: "https://www.neiu.edu/academics/colleges-departments/education/employment-opportunities",
   },
   {
@@ -10368,12 +10368,24 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (/^(open|current|available)\s+(faculty\s+)?(positions?|openings?|vacancies)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/^(career|employment)\s+opportunities$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/^(view|see|browse|explore)\s+(our\s+|all\s+)*(open\s+)?(faculty(\s+(and|&)\s+staff)?|staff(\s+(and|&)\s+faculty)?)\s+(jobs|positions|openings)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
+        // Board-index tiles worded as a page title/banner rather than a plain
+        // category label, e.g. "Faculty & Research Jobs @ Lehigh" (the board's
+        // own homepage) or "Other Faculty Openings including Interdisciplinary
+        // ... Positions (current)" (a sub-index of the same board).
+        if (/^faculty\s*(&|and)\s*research\s+jobs\b/i.test(title)) { tileUrls.push({ title, url }); continue; }
+        if (/faculty\s+openings?\s+including\b/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/^(view details|learn more|read more|click here)$/i.test(title)) continue;
         // "dean" alone is in the faculty-keyword list below (a real "Dean of X"
         // opening is a legitimate job), but nav chrome referencing the dean's
         // office/newsletter as a person/unit — not a posting — also contains the
         // word. Skip those specific phrasings before the keyword check runs.
         if (/dean(?:'s)?\s+(office|message|corner|update|welcome|newsletter)|office\s+of\s+the\s+dean|dean\s+of\s+students\s+office/i.test(title)) continue;
+        // A bare "Dean of the Faculty" / "Dean of Students" (etc.) with nothing
+        // else is almost always the standing administrative office's own landing
+        // page (bio, org chart, "meet the dean"), not a job posting — a real
+        // posting for that role is virtually always titled with more than just
+        // the office name (a college/department, "Search", a date, a rank).
+        if (/^dean\s+of\s+(the\s+)?(faculty|students|admission|admissions|enrollment|academic\s+affairs)$/i.test(title)) continue;
         // Reference/PR material that happens to mention "faculty search" or
         // "postdoc" without being a posting itself.
         if (/\b(search|hiring)\s+(guide|handbook|toolkit|resources?)\b/i.test(title)) continue;
@@ -13653,6 +13665,12 @@ async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
 
     // 1) Best case: reuse the exact API URL the site itself called (most reliable).
     let jobs = [];
+    // Set when an API path returned a real (non-empty) requisition list, even if
+    // none of them were faculty-related — that's a complete, authoritative "zero
+    // open faculty postings" answer, not a failed lookup, so it must NOT fall
+    // through to a later, less reliable path (DOM scraping picks up nav/category
+    // links like a bare "Faculty" facet filter, which isn't a real posting).
+    let apiRespondedWithData = false;
     if (apiHits.length) {
       // Prefer URLs that already include finder= and onlyData=true
       const picked =
@@ -13661,21 +13679,37 @@ async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
         apiHits[0];
 
       try {
-        const res = await context.request.get(picked, { timeout: 60_000 });
+        // A `finder=findReqs;...` URL is Oracle's search-description resource — it
+        // returns facet counts (TotalJobsCount etc.) but not the requisitions
+        // themselves unless `requisitionList` is explicitly expanded as a child
+        // collection. Without this, path 1 "succeeds" (200 OK, valid JSON) but
+        // silently yields zero jobs, so callers fall through to path 3's DOM
+        // scrape instead of using the real data that was one query param away.
+        const pickedUrl = new URL(picked);
+        if (/finder=/i.test(picked)) {
+          const existingExpand = pickedUrl.searchParams.get("expand");
+          if (!/requisitionList/i.test(existingExpand || "")) {
+            pickedUrl.searchParams.set("expand", existingExpand ? `${existingExpand},requisitionList` : "requisitionList");
+          }
+        }
+        const res = await context.request.get(pickedUrl.toString(), { timeout: 60_000 });
         if (res.ok()) {
           const json = await res.json().catch(() => null);
-          jobs = oracleCxJsonToJobs(json, campusName, sourceName, picked);
+          if (oracleCxExtractRequisitionList(json).length > 0) apiRespondedWithData = true;
+          jobs = oracleCxJsonToJobs(json, campusName, sourceName, pickedUrl.toString());
         }
       } catch {}
     }
 
     // 2) If the captured URL path is blocked/empty, try our REST query builder.
-    if (!jobs.length) {
-      jobs = await tryOracleCxRest(context, startUrl, campusName, sourceName);
+    if (!jobs.length && !apiRespondedWithData) {
+      jobs = await tryOracleCxRest(context, startUrl, campusName, sourceName, (found) => {
+        if (found) apiRespondedWithData = true;
+      });
     }
 
     // 3) As a last resort, fall back to DOM scraping (often 0 on Oracle CX SPAs).
-    if (!jobs.length) {
+    if (!jobs.length && !apiRespondedWithData) {
       // Try to load more results: scroll + click any "Load more"/"Show more" style button
       for (let i = 0; i < 40; i++) {
         await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)).catch(() => {});
@@ -13758,6 +13792,7 @@ async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
           location: null,
           description: null,
         }))
+        .filter((j) => looksFacultyish(j.title))
         .filter((j) => !omitAdjunct(j.title));
 
       console.log(`${campusName} ${sourceName} listings scraped (DOM): ${jobs.length}`);
@@ -13826,7 +13861,11 @@ function oracleCxJsonToJobs(json, campusName, sourceName, apiUrlForSiteHint = ""
       });
     }
 
-    return out.filter((j) => !omitAdjunct(j.title));
+    // Oracle CX sites list every open req (custodians, HVAC techs, admissions
+    // counselors, etc.) under the same one or two "sites" this scraper is
+    // configured against — there's no separate faculty-only board to point at
+    // like there is for ADP/Workday, so restrict to faculty-looking titles here.
+    return out.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
   } catch {
     return [];
   }
@@ -13834,8 +13873,10 @@ function oracleCxJsonToJobs(json, campusName, sourceName, apiUrlForSiteHint = ""
 
 
 // Oracle CX REST helper: tries multiple query patterns and paginates.
-// Returns job objects in our standard schema.
-async function tryOracleCxRest(context, startUrl, campusName, sourceName) {
+// Returns job objects in our standard schema. onRawFound(true) is called if any
+// attempt got a real (pre-faculty-filter) requisition list, so the caller can
+// tell "authoritative zero faculty postings" apart from "every attempt failed".
+async function tryOracleCxRest(context, startUrl, campusName, sourceName, onRawFound) {
   try {
     const u = new URL(startUrl);
     const origin = u.origin;
@@ -13862,7 +13903,7 @@ async function tryOracleCxRest(context, startUrl, campusName, sourceName) {
 
     for (const basePath of basePathVariants) {
       for (const q of qCandidates) {
-        const jobs = await fetchOracleCxRequisitions(context, origin + basePath, { q, site, origin, campusName, sourceName });
+        const jobs = await fetchOracleCxRequisitions(context, origin + basePath, { q, site, origin, campusName, sourceName, onRawFound });
         if (jobs && jobs.length) return jobs;
       }
     }
@@ -13917,7 +13958,7 @@ function oracleCxExtractRequisitionList(json) {
   return [];
 }
 
-async function fetchOracleCxRequisitions(context, baseUrl, { q, site, origin, campusName, sourceName }) {
+async function fetchOracleCxRequisitions(context, baseUrl, { q, site, origin, campusName, sourceName, onRawFound }) {
   const limit = 100;
   let offset = 0;
   const out = [];
@@ -13967,6 +14008,7 @@ async function fetchOracleCxRequisitions(context, baseUrl, { q, site, origin, ca
       const reqs = oracleCxExtractRequisitionList(json);
 
       if (!reqs.length) break;
+      if (onRawFound) onRawFound(true);
 
       for (const r of reqs) {
         const reqId = r?.RequisitionId || r?.requisitionId || r?.Id || r?.id || null;
@@ -14007,7 +14049,11 @@ async function fetchOracleCxRequisitions(context, baseUrl, { q, site, origin, ca
       if (reqs.length < limit) break;
     }
 
-    if (out.length) return out;
+    // Oracle CX sites list every open req (custodians, HVAC techs, admissions
+    // counselors, etc.), not just faculty ones, so restrict to faculty-looking
+    // titles here rather than returning the tenant's full staff+faculty board.
+    const facultyOut = out.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+    if (facultyOut.length) return facultyOut;
   }
 
   return [];
