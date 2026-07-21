@@ -9914,6 +9914,22 @@ function normalizeAtsUrl(platform, url) {
   return url;
 }
 
+// A link whose target is itself the root of a known ATS board (tenant/site with
+// no specific job id in the path) is a category tile even when its anchor text
+// reads like a real title ("Law Faculty Openings", "Faculty Positions") — the
+// generic inline scraper has no way to know that without checking the URL shape.
+// Used to drop such links from the inline results so the ATS API-probe/hand-off
+// (which fetches the real listings behind the board) still runs.
+function isBareAtsBoardRoot(url) {
+  let u;
+  try { u = new URL(url); } catch { return false; }
+  const segs = u.pathname.split("/").filter(Boolean);
+  if (/\.myworkdayjobs\.com$|\.myworkdaysite\.com$/i.test(u.hostname)) return segs.length <= 1;
+  if (/(^|\.)schooljobs\.com$/i.test(u.hostname)) return !/\/jobs\//i.test(u.pathname);
+  if (/(^|\.)interfolio\.com$/i.test(u.hostname)) return /^positions\/?$/i.test(segs.join("/"));
+  return false;
+}
+
 // Inspect the loaded page for an ATS hand-off link/iframe. Returns {platform, url} or null.
 async function detectAtsHandoff(page) {
   const urls =
@@ -10296,7 +10312,7 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
     await gotoWithRetry(page, effectiveUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
-    const jobs = await safeEvaluate(page, () => {
+    const evalResult = await safeEvaluate(page, () => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
       const abs = (href) => {
         try { return new URL(href, location.href).toString(); } catch { return null; }
@@ -10307,6 +10323,12 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
 
       const out = [];
       const seen = new Set();
+      // URLs behind titles we recognized as job-board/category tiles rather than
+      // real postings (e.g. "Faculty Positions") — kept so the caller can use one
+      // as the ATS hand-off target instead of blindly re-scanning the DOM, since a
+      // page can link to more than one ATS tenant (e.g. staff + faculty) and only
+      // the tile's own URL is known to be the faculty-scoped one.
+      const tileUrls = [];
 
       // Look for job links
       for (const a of Array.from(document.querySelectorAll("a[href]"))) {
@@ -10335,21 +10357,41 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (/faculty\s+association|faculty\s+senate|faculty\s+development|info\s+for\s+faculty\s+and\s+staff/i.test(title)) continue;
         if (/^["'“].+["'”]$/.test(title)) continue;
         if (/thank\s+a\s+professor|faculty\s+spotlight|student\s+spotlight|alumni\s+spotlight|testimonial/i.test(title)) continue;
-        if (/^(faculty|staff|faculty jobs|employment|careers?)$/i.test(title)) continue;
+        if (/^(faculty|staff|faculty jobs|employment|careers?)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         // Category tiles like "Faculty Positions" / "Faculty Openings" link to a job
         // board, not a specific posting — they pass isFacultyRelated above (contain
         // "faculty" + "position"/"opening") but aren't real jobs. Skip them so the
         // ATS API-probe/hand-off fallback below (gated on filtered.length === 0) can
         // still run and pull the real postings instead of stopping at this one tile.
-        if (/^(faculty|staff)\s+(positions?|openings?|jobs?|opportunities|vacancies)$/i.test(title)) continue;
-        if (/^(open|current|available)\s+(faculty\s+)?(positions?|openings?|vacancies)$/i.test(title)) continue;
-        if (/^(career|employment)\s+opportunities$/i.test(title)) continue;
+        // Their URL is stashed in tileUrls in case it's itself the ATS hand-off link.
+        if (/^(faculty|staff)\s+(positions?|openings?|jobs?|opportunities|vacancies)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
+        if (/^(open|current|available)\s+(faculty\s+)?(positions?|openings?|vacancies)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
+        if (/^(career|employment)\s+opportunities$/i.test(title)) { tileUrls.push({ title, url }); continue; }
+        if (/^(view|see|browse|explore)\s+(our\s+|all\s+)*(open\s+)?(faculty(\s+(and|&)\s+staff)?|staff(\s+(and|&)\s+faculty)?)\s+(jobs|positions|openings)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/^(view details|learn more|read more|click here)$/i.test(title)) continue;
+        // "dean" alone is in the faculty-keyword list below (a real "Dean of X"
+        // opening is a legitimate job), but nav chrome referencing the dean's
+        // office/newsletter as a person/unit — not a posting — also contains the
+        // word. Skip those specific phrasings before the keyword check runs.
+        if (/dean(?:'s)?\s+(office|message|corner|update|welcome|newsletter)|office\s+of\s+the\s+dean|dean\s+of\s+students\s+office/i.test(title)) continue;
+        // Reference/PR material that happens to mention "faculty search" or
+        // "postdoc" without being a posting itself.
+        if (/\b(search|hiring)\s+(guide|handbook|toolkit|resources?)\b/i.test(title)) continue;
+        if (/appreciation\s+week|training\s+program\b/i.test(title)) continue;
 
         // Look for faculty-related keywords in title.
         // "faculty" alone is too noisy on generic pages, so require hiring context.
+        // Likewise a bare "dean"/"postdoc" matches page chrome ("Dean's List",
+        // "Dean's Office", "Postdoctoral Training", news blurbs about postdocs)
+        // far more often than it matches a real posting — real dean openings are
+        // almost always phrased "Dean of ___", and real postdoc openings pair the
+        // word with a role noun (fellow/scholar/associate/researcher/scientist) or
+        // "position"/"opening"/"opportunity", so require that context instead of
+        // matching the bare word.
         const isFacultyRelated =
-          /\b(professor|lecturer|instructor|post[\s-]?doc(?:toral)?|dean|department\s+chair|chairperson)\b/i.test(title) ||
+          /\b(professor|lecturer|instructor|department\s+chair|chairperson)\b/i.test(title) ||
+          /\bdean\s+of\b/i.test(title) ||
+          /\bpost[\s-]?doc(?:toral)?\b/i.test(title) && /\b(fellow|scholar|associate|research(?:er)?|scientist|position|positions|opening|openings|opportunit(?:y|ies))\b/i.test(title) ||
           /\bfaculty\b/i.test(title) && /\b(position|positions|opening|openings|job|jobs|hiring|appointment|search)\b/i.test(title);
 
         if (!isFacultyRelated) continue;
@@ -10372,10 +10414,21 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         out.push({ title, url });
       }
 
-      return out;
+      return { jobs: out, tileUrls };
     });
 
-    const filtered = jobs.filter((j) => !omitAdjunct(j.title));
+    const jobs = evalResult.jobs;
+    const tileUrls = evalResult.tileUrls;
+
+    // A nav/logo link whose text is just the institution's own name (e.g. "Dean
+    // College") slips past the isFacultyRelated word-list whenever that name
+    // happens to contain one of its keywords ("dean", "professor", etc.) — drop
+    // any title that's an exact match for the campus name itself.
+    const campusNameKey = clean(campusName).toLowerCase();
+    const filtered = jobs
+      .filter((j) => !omitAdjunct(j.title))
+      .filter((j) => clean(j.title).toLowerCase() !== campusNameKey)
+      .filter((j) => !isBareAtsBoardRoot(j.url));
 
     // Fallback only: if no inline jobs were found, the page likely hands off to an
     // ATS — detect and scrape that. Gated on empty results so pages that already
@@ -10408,7 +10461,24 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         }
       }
 
-      const handoff = await detectAtsHandoff(page);
+      // Prefer the ATS URL from an anchor we recognized by its title (even one we
+      // just excluded as a category tile) over detectAtsHandoff's blind first-match
+      // DOM scan — a career page can expose more than one ATS tenant/board (e.g. a
+      // separate staff vs. faculty Workday site), and detectAtsHandoff has no idea
+      // which is which since it only looks at raw hrefs. Among our own candidates,
+      // prefer whichever anchor's text reads as faculty-specific.
+      const atsCandidates = [...jobs, ...tileUrls]
+        .map(({ title, url }) => {
+          const hit = ATS_HANDOFF_PATTERNS.find(({ re }) => re.test(url));
+          return hit ? { platform: hit.platform, url: normalizeAtsUrl(hit.platform, url), title } : null;
+        })
+        .filter(Boolean);
+      const preferredHandoff =
+        atsCandidates.find((c) => /faculty/i.test(c.title) && !/staff/i.test(c.title)) ||
+        atsCandidates[0] ||
+        null;
+
+      const handoff = preferredHandoff || (await detectAtsHandoff(page));
       if (handoff && ATS_HANDOFF_SCRAPERS[handoff.platform]) {
         console.log(`↪️  ${campusName}: generic page hands off to ${handoff.platform}`);
         try {

@@ -61,20 +61,30 @@ export function getPositionType(title) {
 // else falls back to the single-category logic to avoid over-tagging.
 export function getPositionTypes(title) {
   const t = (title || '').toLowerCase()
+  const isAdjunct = t.includes('adjunct')
   if (/professor/.test(t)) {
     // "all ranks" / "open rank" spans the full professor ladder
     if (/\b(all ranks|open rank|any rank|all levels|various ranks)\b/.test(t)) {
-      return ['Assistant Professor', 'Associate Professor', 'Professor']
+      const ranks = ['Assistant Professor', 'Associate Professor', 'Professor']
+      if (isAdjunct) ranks.push('Adjunct')
+      return ranks
     }
     const ranks = []
     // Accept abbreviations too: "Asst/Assoc Professor" → Assistant + Associate.
     if (/\b(?:assistant|asst)\b/.test(t)) ranks.push('Assistant Professor')
     if (/\b(?:associate|assoc)\b/.test(t)) ranks.push('Associate Professor')
     if (/\bfull professor\b/.test(t)) ranks.push('Professor')
-    if (ranks.length) return ranks
+    if (ranks.length) {
+      if (isAdjunct) ranks.push('Adjunct')
+      return ranks
+    }
   }
-  // Single-category titles keep the existing exclusive priority.
-  return [getPositionType(t)]
+  // Single-category titles keep the existing exclusive priority, but a title
+  // mentioning "adjunct" alongside another status (e.g. "Adjunct, Clinical X")
+  // should still surface under Adjunct even though it isn't the top match.
+  const primary = getPositionType(t)
+  if (isAdjunct && primary !== 'Adjunct') return [primary, 'Adjunct']
+  return [primary]
 }
 
 function stripDateTextFromTitle(value) {
