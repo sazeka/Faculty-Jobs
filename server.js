@@ -2874,10 +2874,29 @@ const IL_CAMPUSES = [
     type: "csod",
     url: "https://illinois.csod.com/ux/ats/careersite/1/home?c=illinois&cfdd[0][id]=276&cfdd[0][options][0]=849",
   },
+  // NEIU has no single faculty jobs board — postings are split across each
+  // college's own page (the site's own "Faculty Employment Opportunities" hub
+  // just links out to these four; scraping the hub itself only finds those
+  // four link tiles, not the real postings behind them).
+  {
+    campus: "Northeastern Illinois University",
+    type: "generic",
+    url: "https://www.neiu.edu/academics/colleges-departments/arts-and-sciences/administrative-resources/faculty-employment-opportunities",
+  },
+  {
+    campus: "Northeastern Illinois University",
+    type: "generic",
+    url: "https://www.neiu.edu/academics/colleges-departments/business-and-technology/about-us/faculty-employment-opportunities",
+  },
   {
     campus: "Northeastern Illinois University",
     type: "generic",
     url: "https://www.neiu.edu/academics/colleges-departments/education/employment-opportunities",
+  },
+  {
+    campus: "Northeastern Illinois University",
+    type: "generic",
+    url: "https://www.neiu.edu/libraries/about-neiu-libraries/neiu-libraries-jobs",
   },
   {
     campus: "Knox College",
