@@ -6,6 +6,16 @@ import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxon
 // closeDate values are date-only, so a UTC slice is the right granularity.
 const TODAY_ISO = new Date().toISOString().slice(0, 10)
 
+// A datePosted older than this looks like a bad scrape (e.g. a source exposing
+// a page-creation date instead of an actual posting date) rather than a
+// trustworthy "posted long ago" signal, so it shouldn't outrank a job that was
+// merely first seen without a parsed date at all.
+const STALE_DATE_CUTOFF_ISO = (() => {
+  const d = new Date()
+  d.setUTCMonth(d.getUTCMonth() - 12)
+  return d.toISOString().slice(0, 10)
+})()
+
 export const DISCIPLINE_RULES = [
   { label: 'Arts & Music',            terms: ['art', 'music', 'theatre', 'theater', 'dance', 'film', 'studio', 'visual art', 'fine art', 'performing', 'sculpture', 'painting', 'ceramics', 'graphic design', 'illustration', 'photography'] },
   { label: 'Biological Sciences',     terms: ['biology', 'biolog', 'botany', 'zoology', 'ecology', 'genetics', 'genomics', 'neuroscience', 'biochemistry', 'microbiology', 'molecular', 'cell biology', 'evolutionary', 'anatomy', 'physiology', 'marine biology', 'wildlife'] },
@@ -464,11 +474,15 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     } else if (filtersRef.value.sortBy === 'state') {
       out.sort((a, b) => (a.state || '').localeCompare(b.state || ''))
     } else if (filtersRef.value.sortBy === 'recent') {
-      // Most recent POSTED first: jobs with a real source posting date
-      // (datePosted, from JSON-LD/API/listing) rank above those without, newest
-      // posting date at the very top. Jobs with no posting date follow, ordered
-      // by firstSeen (when our scrape first saw the listing). When a search query
-      // is active, keep relevance primary so the best match isn't buried.
+      // Most recent POSTED first: jobs with a trustworthy source posting date
+      // (datePosted, from JSON-LD/API/listing, no older than
+      // STALE_DATE_CUTOFF_ISO) rank above those without, newest posting date at
+      // the very top. Jobs with no usable posting date follow, ordered by
+      // firstSeen (when our scrape first saw the listing) — this also catches
+      // datePosted values so old they're more likely a bad scrape (e.g. a
+      // page-creation date) than a real "posted a year+ ago" signal, so they
+      // don't bury a listing that was genuinely first seen today. When a search
+      // query is active, keep relevance primary so the best match isn't buried.
       const hasQuery = Boolean(clean(filtersRef.value.q))
       out.sort((a, b) => {
         if (hasQuery) {
@@ -476,9 +490,11 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
           if (s) return s
         }
         const ad = a.datePosted || '', bd = b.datePosted || ''
-        // A real posting date always ranks above a job that has none.
-        if (Boolean(ad) !== Boolean(bd)) return ad ? -1 : 1
-        if (ad && bd) {
+        const aUsable = Boolean(ad) && ad >= STALE_DATE_CUTOFF_ISO
+        const bUsable = Boolean(bd) && bd >= STALE_DATE_CUTOFF_ISO
+        // A trustworthy posting date always ranks above a job that has none.
+        if (aUsable !== bUsable) return aUsable ? -1 : 1
+        if (aUsable && bUsable) {
           if (ad !== bd) return bd.localeCompare(ad) // newest posted first
         } else {
           const af = a.firstSeen || '', bf = b.firstSeen || ''
