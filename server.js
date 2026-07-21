@@ -2831,8 +2831,8 @@ const MI_CAMPUSES = [
 const IL_CAMPUSES = [
   {
     campus: "Northwestern University",
-    type: "generic",
-    url: "https://www.northwestern.edu/hr/careers/",
+    type: "peoplesoft-fluid",
+    url: "https://careers.northwestern.edu/psc/hrnu_er/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB&Action=U&FOCUS=Applicant&SiteId=1&",
   },
   {
     campus: "University of Chicago",
@@ -7888,6 +7888,7 @@ async function scrapePaAll(context) {
         if (type === "interfolio-links") return await scrapeInterfolioLinksFromPageAs(url, campus, "PA");
         if (type === "lafayette-faculty") return await scrapeLafayetteFacultyPageAs(url, campus, "PA");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "PA");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "PA");
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -8274,8 +8275,124 @@ async function scrapePeopleSoftAs(context, startUrl, campusName, sourceName) {
   }
 }
 
+// PeopleSoft "Fluid" Candidate Gateway (Oracle's modern responsive recruiting
+// UI, e.g. Northwestern). Unlike the classic layout scrapePeopleSoftAs targets,
+// this one needs real interaction, not just a DOM scrape of the landing page:
+//   1. The landing/search URL's first load is often gated behind a cookie
+//      check; a second visit in the same session succeeds.
+//   2. That page then shows a "recent searches" shortcut list, not real
+//      postings — every item is internally labeled "Search Results" regardless
+//      of what it actually searched for, so it's meaningless as scraped text.
+//      The real results grid only appears after clicking through
+//      "Explore Jobs"/"View All Jobs".
+//   3. The grid itself only renders ~50 rows at a time and lazy-loads more as
+//      its own internal scrollable container (not the window) is scrolled.
+//   4. Rows have no real per-job href at all — clicking one fires a postback
+//      that doesn't change the URL. Field ids are Oracle's standard Candidate
+//      Gateway names (SCH_JOB_TITLE$N, HRS_APP_JBSCH_I_HRS_JOB_OPENING_ID$N,
+//      etc.), stable enough across tenants to read directly; a working,
+//      publicly-indexed direct-link format was confirmed by finding a real
+//      Northwestern posting URL via web search and reverse-engineering it:
+//      the same .GBL component the search page lives on, with
+//      Page=HRS_APP_JBPST_FL and JobOpeningId swapped in.
+async function scrapePeopleSoftFluidAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1500);
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(2000);
 
+    // "Explore Jobs" (a header button) often exists alongside "View All Jobs"
+    // (a nav item) but only expands the nav menu rather than submitting a
+    // search — "View All Jobs" is the one that actually lands on the results
+    // grid, so try it first and only fall back to the others if it's absent.
+    // The click must be a real Playwright action (not a raw DOM el.click()
+    // inside page.evaluate()) with waitForNavigation armed BEFORE it fires, or
+    // the postback's navigation can complete before anything is listening.
+    let target = page.getByText("View All Jobs", { exact: true }).first();
+    if ((await target.count().catch(() => 0)) === 0) {
+      target = page
+        .locator("a, button")
+        .filter({ hasText: /^(explore jobs|search jobs|browse jobs)$/i })
+        .first();
+    }
+    if ((await target.count().catch(() => 0)) === 0) return [];
 
+    await Promise.all([
+      page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 20_000 }).catch(() => {}),
+      target.click({ timeout: 10_000 }).catch(() => {}),
+    ]);
+    await page.waitForTimeout(2500);
+
+    let lastCount = -1;
+    for (let i = 0; i < 40; i++) {
+      const count = await page
+        .evaluate(() => {
+          let grid = document.getElementById("SCH_JOB_TITLE$0");
+          while (grid && !(/ps_box-grid/.test(grid.className || "") && /scrollable/.test(grid.className || ""))) {
+            grid = grid.parentElement;
+          }
+          if (grid) grid.scrollTop = grid.scrollHeight;
+          return document.querySelectorAll('[id^="SCH_JOB_TITLE$"]').length;
+        })
+        .catch(() => 0);
+      if (count === lastCount) break;
+      lastCount = count;
+      await page.waitForTimeout(1200);
+    }
+
+    const rows = await page
+      .evaluate(() => {
+        const val = (id) => {
+          const el = document.getElementById(id);
+          return el ? el.textContent.trim() : null;
+        };
+        const out = [];
+        const total = document.querySelectorAll('[id^="SCH_JOB_TITLE$"]').length;
+        for (let i = 0; i < total; i++) {
+          const title = val(`SCH_JOB_TITLE$${i}`);
+          const jobId = val(`HRS_APP_JBSCH_I_HRS_JOB_OPENING_ID$${i}`);
+          if (!title || !jobId) continue;
+          out.push({
+            title,
+            jobId,
+            location: val(`LOCATION$${i}`),
+            department: val(`HRS_APP_JBSCH_I_HRS_DEPT_DESCR$${i}`),
+          });
+        }
+        return out;
+      })
+      .catch(() => []);
+
+    let base;
+    try {
+      const u = new URL(page.url());
+      base = `${u.origin}${u.pathname}`;
+    } catch {
+      return [];
+    }
+    const siteIdMatch = /[?&]SiteId=([^&]+)/i.exec(startUrl);
+    const siteId = siteIdMatch ? siteIdMatch[1] : "1";
+
+    return rows
+      .map((r) => ({
+        title: normalizeJobTitle(r.title),
+        url: `${base}?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=${siteId}&JobOpeningId=${r.jobId}&PostingSeq=1`,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: r.location,
+        description: null,
+        department: r.department,
+        specialization: r.department,
+      }))
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
 
 // PeopleAdmin variant: append department/organization to title when available (used for NCCU)
 async function scrapePeopleAdminWithDept(context, startUrl, campusName, sourceName) {
@@ -8497,6 +8614,8 @@ async function scrapeIlAll(context) {
         if (type === "knox-faculty") return await scrapeKnoxFacultyJobs(context, url, campus, "IL");
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "IL");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "IL");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IL");
+        if (type === "peoplesoft-fluid") return await scrapePeopleSoftFluidAs(context, url, campus, "IL");
 
         return [];
       } catch (e) {
@@ -8779,6 +8898,7 @@ async function scrapeClaremontAll(context) {
         if (type === "cmc") return await scrapeClaremontCmc(context, url, campus);
         if (type === "workday") return await scrapeClaremontWorkday(context, url, campus);
         if (type === "pomona") return await scrapePomonaFacultyJobs(context, url, campus);
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "Claremont");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} Claremont scrape failed:`, e?.message || e);
@@ -10314,12 +10434,36 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
 
     const evalResult = await safeEvaluate(page, () => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      // Career pages are often edited by pasting a link copied out of an Outlook
+      // (or Google) email, which wraps the real destination in a tracking
+      // redirect — unwrap those before any pattern matching sees the URL, or a
+      // real ATS link never gets recognized as one.
+      const unwrapTrackingRedirect = (u) => {
+        try {
+          const parsed = new URL(u);
+          if (/\.safelinks\.protection\.outlook\.com$/i.test(parsed.hostname)) {
+            const inner = parsed.searchParams.get("url");
+            if (inner) return decodeURIComponent(inner);
+          }
+          if (/^(www\.)?google\.com$/i.test(parsed.hostname) && parsed.pathname === "/url") {
+            const inner = parsed.searchParams.get("q") || parsed.searchParams.get("url");
+            if (inner) return decodeURIComponent(inner);
+          }
+        } catch {}
+        return u;
+      };
       const abs = (href) => {
-        try { return new URL(href, location.href).toString(); } catch { return null; }
+        try { return unwrapTrackingRedirect(new URL(href, location.href).toString()); } catch { return null; }
       };
       const isLikelyJobPath = (u) =>
         /\/(job|jobs|career|careers|employment|positions?|vacanc(y|ies)|opening|openings|requisitions?)\b/i.test(u) ||
         /job(id|_id|openingid|req|requisition|posting)/i.test(u);
+      // Duplicates the ATS_HANDOFF_PATTERNS hostnames (that list lives in outer
+      // Node scope and isn't reachable from inside this browser-evaluated
+      // closure) — used only to rescue a generic "here"/"apply" CTA link whose
+      // title carries no faculty signal but whose target obviously is an ATS.
+      const looksLikeAtsUrl = (u) =>
+        /myworkdayjobs\.com|myworkdaysite\.com|pageuppeople\.com|taleo\.net|peopleadmin\.com|schooljobs\.com|csod\.com|paycomonline\.net|icims\.com|interfolio\.com|workforcenow\.adp\.com/i.test(u);
 
       const out = [];
       const seen = new Set();
@@ -10345,9 +10489,21 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (/twitter\.com|x\.com|facebook\.com|instagram\.com|linkedin\.com|youtube\.com|tiktok\.com/i.test(url)) continue;
         if (/\/events?\b|\/news\b|\/stories?\b|\/blog\b|\/calendar\b|\/alumni\b/i.test(url)) continue;
         if (/\/directory\b|\/faculty-staff\b|\/our-faculty\b|\/faculty-profiles\b|\/people\b/i.test(url)) continue;
-        if (/\/faculty(?:\/|$|\?)/i.test(url) && !isLikelyJobPath(url)) continue;
+        // Bare "/faculty" or "/faculty/" with NOTHING after it is a directory
+        // landing page ("meet our faculty"). Anchored to end-of-path so it
+        // doesn't also catch a specific posting slug that just happens to live
+        // under a "/faculty/" path segment (e.g. some colleges' own career
+        // board puts every posting at "/hr/faculty/<slug>").
+        if (/\/faculty\/?($|\?)/i.test(url) && !isLikelyJobPath(url)) continue;
 
         let title = clean(a.textContent) || clean(a.getAttribute("aria-label")) || clean(a.getAttribute("title"));
+
+        // Independent of title quality: if this anchor's (unwrapped) target is
+        // itself a known ATS board, stash it as a hand-off candidate even when
+        // the visible text is a generic "here"/"apply"/"click here" CTA — common
+        // when the career page was authored by pasting a link out of an email.
+        if (looksLikeAtsUrl(url)) tileUrls.push({ title: title || "", url });
+
         if (!title || title.length < 10) continue;
 
         // Skip navigation elements
