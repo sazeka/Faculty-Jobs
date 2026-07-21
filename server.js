@@ -10336,6 +10336,14 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (/^["'“].+["'”]$/.test(title)) continue;
         if (/thank\s+a\s+professor|faculty\s+spotlight|student\s+spotlight|alumni\s+spotlight|testimonial/i.test(title)) continue;
         if (/^(faculty|staff|faculty jobs|employment|careers?)$/i.test(title)) continue;
+        // Category tiles like "Faculty Positions" / "Faculty Openings" link to a job
+        // board, not a specific posting — they pass isFacultyRelated above (contain
+        // "faculty" + "position"/"opening") but aren't real jobs. Skip them so the
+        // ATS API-probe/hand-off fallback below (gated on filtered.length === 0) can
+        // still run and pull the real postings instead of stopping at this one tile.
+        if (/^(faculty|staff)\s+(positions?|openings?|jobs?|opportunities|vacancies)$/i.test(title)) continue;
+        if (/^(open|current|available)\s+(faculty\s+)?(positions?|openings?|vacancies)$/i.test(title)) continue;
+        if (/^(career|employment)\s+opportunities$/i.test(title)) continue;
         if (/^(view details|learn more|read more|click here)$/i.test(title)) continue;
 
         // Look for faculty-related keywords in title.
