@@ -10517,6 +10517,10 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (/\/(login|logout|search|home|about|contact|privacy|terms|faq|help)(?:\/|$|\?|\.)/i.test(url)) continue;
         if (/twitter\.com|x\.com|facebook\.com|instagram\.com|linkedin\.com|youtube\.com|tiktok\.com/i.test(url)) continue;
         if (/\/events?\b|\/news\b|\/newsroom\b|\/stories?\b|\/blog\b|\/calendar\b|\/alumni\b/i.test(url)) continue;
+        // Some sites run their news section on its own subdomain instead of a
+        // "/news" path (e.g. "whatsnew.fdu.edu"), which the path-based check
+        // above can't see.
+        if (/^(https?:\/\/)(news|whatsnew|newsroom)\./i.test(url)) continue;
         if (/\/directory\b|\/faculty-staff\b|\/our-faculty\b|\/faculty-profiles\b|\/people\b/i.test(url)) continue;
         // Bare "/faculty" or "/faculty/" with NOTHING after it is a directory
         // landing page ("meet our faculty"). Anchored to end-of-path so it
@@ -10534,6 +10538,12 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (looksLikeAtsUrl(url)) tileUrls.push({ title: title || "", url });
 
         if (!title || title.length < 10) continue;
+        // A real job posting's title is always a proper heading — a title
+        // starting with a lowercase letter is a sentence fragment bleeding
+        // through from body/policy text (e.g. a definitions page describing
+        // "department chair, program director, or academic coordinator"
+        // duties), not an actual posting.
+        if (/^[a-z]/.test(title)) continue;
 
         // Skip navigation elements
         if (/^(menu|search|login|home|back|next|previous|submit|apply|click|more|view)$/i.test(title)) continue;
@@ -10575,6 +10585,9 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // "postdoc" without being a posting itself.
         if (/\b(search|hiring)\s+(guide|handbook|toolkit|resources?)\b/i.test(title)) continue;
         if (/appreciation\s+week|training\s+program\b/i.test(title)) continue;
+        // Administrative forms/pages that reference "instructor"/"faculty" as a
+        // role being reviewed, not hired for (e.g. a course-evaluation form).
+        if (/\b(instructor|faculty|course)\s+evaluations?\b/i.test(title)) continue;
 
         // Look for faculty-related keywords in title.
         // "faculty" alone is too noisy on generic pages, so require hiring context.
