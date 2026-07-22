@@ -10543,7 +10543,7 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // ATS API-probe/hand-off fallback below (gated on filtered.length === 0) can
         // still run and pull the real postings instead of stopping at this one tile.
         // Their URL is stashed in tileUrls in case it's itself the ATS hand-off link.
-        if (/^(faculty|staff)\s+(positions?|openings?|jobs?|opportunities|vacancies)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
+        if (/^(faculty(\s+(and|&)\s+staff)?|staff(\s+(and|&)\s+faculty)?)\s+(positions?|openings?|jobs?|opportunities|vacancies)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/^(open|current|available)\s+(faculty\s+)?(positions?|openings?|vacancies)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/^(career|employment)\s+opportunities$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/^(view|see|browse|explore)\s+(our\s+|all\s+)*(open\s+)?(faculty(\s+(and|&)\s+staff)?|staff(\s+(and|&)\s+faculty)?)\s+(jobs|positions|openings)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
