@@ -10205,7 +10205,13 @@ function normalizePostedDate(raw) {
 
 function mapApiJobs(rows, campusName, sourceName) {
   return rows
-    .filter((j) => j.title && j.url && !omitAdjunct(j.title))
+    // Shared by every ATS API-probe scrapeGenericJobPage tries (Oracle Cloud,
+    // FIU, ADP, CSOD, Paycom) before falling to the DOM/hand-off path — none of
+    // these APIs are faculty-scoped by default, so without this a board that
+    // lists every open req (facilities, athletics, coaches, ...) comes back
+    // as if it were all "Faculty" category (same gap fixed for Oracle CX's
+    // dedicated scraper earlier, but that's a separate code path from here).
+    .filter((j) => j.title && j.url && looksFacultyish(j.title) && !omitAdjunct(j.title))
     .map((j) => {
       // API feeds (Oracle/ADP/csod/Paycom/Jibe) skip the DOM path, so normalize
       // titles here too — strips leading requisition numbers ("131520-Title"), etc.
@@ -10510,7 +10516,7 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // "/about-felician-university/careers-at-felician/psycprof2/".
         if (/\/(login|logout|search|home|about|contact|privacy|terms|faq|help)(?:\/|$|\?|\.)/i.test(url)) continue;
         if (/twitter\.com|x\.com|facebook\.com|instagram\.com|linkedin\.com|youtube\.com|tiktok\.com/i.test(url)) continue;
-        if (/\/events?\b|\/news\b|\/stories?\b|\/blog\b|\/calendar\b|\/alumni\b/i.test(url)) continue;
+        if (/\/events?\b|\/news\b|\/newsroom\b|\/stories?\b|\/blog\b|\/calendar\b|\/alumni\b/i.test(url)) continue;
         if (/\/directory\b|\/faculty-staff\b|\/our-faculty\b|\/faculty-profiles\b|\/people\b/i.test(url)) continue;
         // Bare "/faculty" or "/faculty/" with NOTHING after it is a directory
         // landing page ("meet our faculty"). Anchored to end-of-path so it
