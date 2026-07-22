@@ -1660,6 +1660,16 @@ const NY_SUNY_CAMPUSES = [
   },
   { campus: "Binghamton University (SUNY)", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=Binghamton%20University&position_type=Faculty" },
   { campus: "University at Albany (SUNY)", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=University%20at%20Albany&position_type=Faculty" },
+  // Previously only reachable via the SUNY-system landing page's own link text
+  // ("Faculty Vacancy Announcements"), which is a category tile pointing at
+  // this exact board, not a real posting — scrapeInterviewExchangeAs already
+  // fans out into an interviewexchange site's category links when the landing
+  // page itself has no real postings inline, which is exactly this site's shape.
+  {
+    campus: "SUNY Empire State College",
+    type: "interviewexchange",
+    url: "https://esc.interviewexchange.com/static/clients/397ESM1/index.jsp?catid=802",
+  },
 ];
 
 const SUNY_CAMPUS_HINTS = [
@@ -6852,11 +6862,20 @@ async function scrapePrincetonFaculty(context, campusName, sourceName) {
 
         const out = [];
 
-        // Princeton AHIRE lists jobs with links containing "listingId"
+        // Princeton AHIRE lists jobs with links containing "listingId", but the
+        // anchor's own text is always just the generic "Apply" button label —
+        // the real title lives in a sibling "span.jobTitle" within the same
+        // row/container, which the old anchor-text-only check couldn't see
+        // (every row matched, ".textContent === 'Apply'" got filtered, and
+        // *every* row came up empty, silently falling through two levels of
+        // fallback to a much looser generic-link scan that grabbed unrelated
+        // nav chrome instead).
         const links = document.querySelectorAll('a[href*="listingId"]');
         for (const a of links) {
           const href = abs(a.getAttribute("href"));
-          const title = clean(a.textContent);
+          const container = a.closest("tr, div, li, article") || a.parentElement;
+          const titleEl = container?.querySelector(".jobTitle");
+          const title = clean(titleEl?.textContent) || clean(a.textContent);
           if (!href || !title || title.length < 6) continue;
           if (/^(apply|more|details|view)$/i.test(title)) continue;
           out.push({ title, url: href });
@@ -9750,6 +9769,12 @@ async function scrapeNySunyMain(context) {
         // Skip navigation and placeholder links
         if (/search|home|back|return|login|logout|help|privacy|contact/i.test(title)) continue;
         if (/positions?\s+available\s+(on\s+)?campus|available\s+on\s+campus\s+web/i.test(title)) continue;
+        // Same category-tile problem as the generic scraper (fixed there
+        // separately): a per-campus link on this SUNY-system landing page
+        // reading e.g. "Faculty Vacancy Announcements" points at that campus's
+        // own job *board*, not a specific posting, but passes the bare
+        // faculty-keyword check above just like a real title would.
+        if (/^(faculty|staff)\s+(vacancy\s+announcements?|positions?|openings?|jobs?|opportunities|vacancies)$/i.test(title)) continue;
 
         if (seen.has(url)) continue;
         seen.add(url);
@@ -9791,6 +9816,7 @@ async function scrapeNySuny(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NY");
         if (type === "interfolio") return await scrapeInterfolioAs(context, url, campus, "NY");
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "NY");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "NY");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} SUNY scrape failed:`, e?.message || e);
