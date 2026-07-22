@@ -10520,8 +10520,11 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // Some sites run their news section on its own subdomain instead of a
         // "/news" path (e.g. "whatsnew.fdu.edu"), which the path-based check
         // above can't see.
-        if (/^(https?:\/\/)(news|whatsnew|newsroom)\./i.test(url)) continue;
-        if (/\/directory\b|\/faculty-staff\b|\/our-faculty\b|\/faculty-profiles\b|\/people\b/i.test(url)) continue;
+        if (/^(https?:\/\/)(news|whatsnew|newsroom|magazine)\./i.test(url)) continue;
+        // "-directory" as a compound segment (e.g. "/casc-directory/") is just
+        // as much a staff directory as a bare "/directory/" segment — the
+        // original check required "directory" to be the whole segment.
+        if (/\/directory\b|-directory\b|\/faculty-staff\b|\/our-faculty\b|\/faculty-profiles\b|\/people\b/i.test(url)) continue;
         // Bare "/faculty" or "/faculty/" with NOTHING after it is a directory
         // landing page ("meet our faculty"). Anchored to end-of-path so it
         // doesn't also catch a specific posting slug that just happens to live
@@ -10559,10 +10562,24 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // ATS API-probe/hand-off fallback below (gated on filtered.length === 0) can
         // still run and pull the real postings instead of stopping at this one tile.
         // Their URL is stashed in tileUrls in case it's itself the ATS hand-off link.
-        if (/^(faculty(\s+(and|&)\s+staff)?|staff(\s+(and|&)\s+faculty)?)\s+(positions?|openings?|jobs?|opportunities|vacancies)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
-        if (/^(open|current|available)\s+(faculty\s+)?(positions?|openings?|vacancies)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
+        // Generalized after repeatedly finding new wordings of the same tile
+        // ("Faculty Job Listings", "Search Faculty Jobs", "Current Faculty Job
+        // Postings", "Faculty & Staff Jobs at ACC", "Full-Time Faculty and Staff
+        // Positions", ...) — verified against a corpus of every real title
+        // currently sourced through this scraper with zero false positives,
+        // including real titles that carry a trailing department tag mentioning
+        // "faculty"/"staff" (e.g. "... — COEDU Dean's Office").
+        if (
+          /^(view|see|search|browse|explore|find)?\s*(all\s+|our\s+|current\s+|available\s+|open\s+|full-time\s+)*(faculty|staff)(\s*(&|and)\s*(faculty|staff|teaching))?\s+(and\s+staff\s+|and\s+teaching\s+)?(job\s+)?(job|jobs|position|positions|opening|openings|opportunit(?:y|ies)|vacanc(?:y|ies)(\s+announcements?)?|posting|postings|listing|listings|announcements?)(\s+(at|for)\s+[a-z0-9.&' ]+)?(\s*[–-]\s*(full-time|part-time))?\s*$/i.test(
+            title
+          )
+        ) {
+          tileUrls.push({ title, url });
+          continue;
+        }
+        if (/^(faculty\s+search|instructor\s+application|staff\s*(&|and)\s*instructor\s+directory|faculty\s+professor\s+opportunities)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
+        if (/^(view|see|search|browse|explore|find)\s+(all\s+|our\s+)*(open\s+)?(instructor|faculty|staff)\s+position\s+opportunities$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/^(career|employment)\s+opportunities$/i.test(title)) { tileUrls.push({ title, url }); continue; }
-        if (/^(view|see|browse|explore)\s+(our\s+|all\s+)*(open\s+)?(faculty(\s+(and|&)\s+staff)?|staff(\s+(and|&)\s+faculty)?)\s+(jobs|positions|openings)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         // Board-index tiles worded as a page title/banner rather than a plain
         // category label, e.g. "Faculty & Research Jobs @ Lehigh" (the board's
         // own homepage) or "Other Faculty Openings including Interdisciplinary
@@ -10570,11 +10587,23 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (/^faculty\s*(&|and)\s*research\s+jobs\b/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/faculty\s+openings?\s+including\b/i.test(title)) { tileUrls.push({ title, url }); continue; }
         if (/^(view details|learn more|read more|click here)$/i.test(title)) continue;
+        // A trailing ellipsis means the extracted text was truncated body/news
+        // copy, not a title (real job titles are never cut off this way).
+        if (/(…|\.\.\.)\s*$/.test(title)) continue;
         // "dean" alone is in the faculty-keyword list below (a real "Dean of X"
         // opening is a legitimate job), but nav chrome referencing the dean's
-        // office/newsletter as a person/unit — not a posting — also contains the
-        // word. Skip those specific phrasings before the keyword check runs.
-        if (/dean(?:'s)?\s+(office|message|corner|update|welcome|newsletter)|office\s+of\s+the\s+dean|dean\s+of\s+students\s+office/i.test(title)) continue;
+        // office/newsletter/welcome-message as a person/unit — not a posting —
+        // also contains the word. Anchored to the whole title (optionally with
+        // a trailing " – Department" tag) so it can't also catch a real title
+        // that happens to carry a "Dean's Office" department attribution
+        // elsewhere (verified against the same corpus as above).
+        if (
+          /^dean('?s)?\s+(office|message|corner|update|welcome|newsletter)(\s*[–-]\s*[a-z0-9 &']+)?$|^office\s+of\s+the\s+dean\b|^(message|welcome)\s+from\s+the\s+dean$|^dean\s+of\s+[a-z'’ ]{0,30}(office|affairs)$/i.test(
+            title
+          )
+        ) {
+          continue;
+        }
         // A bare "Dean of the Faculty" / "Dean of Students" (etc.) with nothing
         // else is almost always the standing administrative office's own landing
         // page (bio, org chart, "meet the dean"), not a job posting — a real
