@@ -4776,7 +4776,6 @@ function uniqByUrl(items) {
 function omitAdjunct(title) {
   const t = String(title || "").toLowerCase();
   return (
-    /adjunct/i.test(t) ||
     /\bper\s*course\b/i.test(t) ||
     /part[\s-]?time/i.test(t) ||
     /parttime/i.test(t) ||
@@ -7371,7 +7370,6 @@ async function scrapeNjRutgers(context, startUrl, campusName) {
 
           let title = clean(a.textContent);
           if (!title || title.length < 4) continue;
-          if (/adjunct/i.test(title)) continue;
 
           const container = a.closest("tr") || a.closest("li") || a.closest("div") || null;
           const dept = deptFromContainer(container);
@@ -12631,7 +12629,7 @@ async function scrapeUmsystemHrsJobs(context, startUrl, campusName, sourceName) 
 
     const jobs = (items || [])
       .filter((j) => /faculty/i.test(j.jobFamily) || looksFacultyish(j.title))
-      .filter((j) => !omitAdjunct(j.title) && !/\badjunct\b/i.test(j.jobFamily))
+      .filter((j) => !omitAdjunct(j.title))
       .map((j) => ({
         title: clean(j.title),
         url: `${startUrl}#${encodeURIComponent(j.jobId || j.title)}`,
