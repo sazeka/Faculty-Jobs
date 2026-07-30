@@ -180,12 +180,20 @@ function applyPostQualityGates(data) {
 }
 
 function canonicalizeJobUrls(data) {
-  if (!data || !Array.isArray(data.jobs)) return { data, changed: 0, removedInvalid: 0 };
+  if (!data || !Array.isArray(data.jobs)) {
+    return { data, changed: 0, removedInvalid: 0, duplicateCount: 0, sampleDuplicates: [] };
+  }
 
   const out = [];
-  const seen = new Set();
+  // Map (not Set) so a collision can report which job it collided with —
+  // the previous Set-based version silently dropped duplicates with zero
+  // visibility into what was lost or why (e.g. two distinct listings whose
+  // URLs canonicalize to the same value).
+  const seen = new Map();
   let changed = 0;
   let removedInvalid = 0;
+  let duplicateCount = 0;
+  const sampleDuplicates = [];
 
   for (const job of data.jobs) {
     const current = job?.url || null;
@@ -195,8 +203,19 @@ function canonicalizeJobUrls(data) {
       continue;
     }
     if (next !== current) changed += 1;
-    if (seen.has(next)) continue;
-    seen.add(next);
+    if (seen.has(next)) {
+      duplicateCount += 1;
+      if (sampleDuplicates.length < 200) {
+        const kept = seen.get(next);
+        sampleDuplicates.push({
+          canonicalUrl: next,
+          dropped: { title: job?.title || null, college: job?.college || null, source: job?.source || null, originalUrl: current },
+          keptInstead: { title: kept?.title || null, college: kept?.college || null, source: kept?.source || null, originalUrl: kept?.url || null },
+        });
+      }
+      continue;
+    }
+    seen.set(next, job);
     out.push({ ...job, url: next });
   }
 
@@ -204,6 +223,8 @@ function canonicalizeJobUrls(data) {
     data: { ...data, jobs: out, count: out.length },
     changed,
     removedInvalid,
+    duplicateCount,
+    sampleDuplicates,
   };
 }
 
@@ -225,6 +246,24 @@ function canonicalizeJobUrls(data) {
   if (canonicalized.changed > 0 || canonicalized.removedInvalid > 0) {
     console.log(
       `🔗 Canonicalized job URLs: ${canonicalized.changed} updated, ${canonicalized.removedInvalid} invalid removed`
+    );
+  }
+  if (canonicalized.duplicateCount > 0) {
+    console.log(`🧬 Canonicalization collapsed ${canonicalized.duplicateCount} duplicate-URL job(s) (see generated/job-url-dedup-report.json)`);
+    const dedupReportPath = path.join(__dirname, "..", "generated", "job-url-dedup-report.json");
+    fs.mkdirSync(path.dirname(dedupReportPath), { recursive: true });
+    fs.writeFileSync(
+      dedupReportPath,
+      `${JSON.stringify(
+        {
+          generatedAt: new Date().toISOString(),
+          duplicateCount: canonicalized.duplicateCount,
+          sampleDuplicates: canonicalized.sampleDuplicates,
+        },
+        null,
+        2
+      )}\n`,
+      "utf8"
     );
   }
 
