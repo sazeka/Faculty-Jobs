@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import { scrapeAllJobsStandalone, callLocalSummarizer, getSystemGroup, normalizeJobTitle } from "../server.js";
-import { canonicalizeUrl } from "./lib/url-normalization.js";
+import { canonicalizeUrl, inferPlatformFromUrl } from "./lib/url-normalization.js";
 import { shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from "./lib/scrape-guard.js";
 import { preserveEnrichment } from "./lib/enrichment-merge.js";
 
@@ -107,7 +107,18 @@ function isLikelyJobUrl(url) {
   const u = String(url || "");
   if (!/^https?:\/\//i.test(u)) return false;
   if (/^(?:tel|mailto|sms):/i.test(u)) return false;
-  if (/\/faculty(?:\/|$|\?)/i.test(u) && !/\/(job|jobs|career|careers|employment|positions?|openings?|vacanc(y|ies))\b/i.test(u)) {
+  // Known ATS platforms (Workday, Taleo, PeopleAdmin, ...) legitimately use "/faculty"
+  // as a category or site-slug segment (e.g. Taleo's "/careersection/faculty/jobsearch.ftl",
+  // a Workday site literally named ".../faculty") — the counter-check below requires an
+  // exact "career"/"job" word, which doesn't match inside "careersection" or "jobsearch"
+  // (no word boundary), so real ATS job-search URLs were being misclassified as faculty
+  // directory/profile pages. Only apply this heuristic to generic .edu URLs, where a bare
+  // "/faculty" path is much more likely to actually be a staff directory page.
+  if (
+    inferPlatformFromUrl(u) === "generic" &&
+    /\/faculty(?:\/|$|\?)/i.test(u) &&
+    !/\/(job|jobs|career|careers|employment|positions?|openings?|vacanc(y|ies))\b/i.test(u)
+  ) {
     return false;
   }
   if (/\/(directory|people|our-faculty|faculty-profiles?|faculty-staff)\b/i.test(u)) return false;

@@ -153,8 +153,8 @@ function mergeInstitutionRows(configured, overridesMap) {
   for (const c of configured) {
     const key = normalizeNameKey(c.name);
     const ov = overridesMap.get(key);
-    const homepage_url = canonicalizeUrl(ov?.homepage_url || c.url);
-    const career_url = canonicalizeUrl(ov?.career_url || c.url);
+    const homepage_url = canonicalizeUrl(ov?.homepage_url || c.career_url);
+    const career_url = canonicalizeUrl(ov?.career_url || c.career_url);
     rows.push({
       name: c.name,
       platform_type: clean(ov?.platform_type || c.platform_type || inferPlatformFromUrl(career_url) || "generic"),
