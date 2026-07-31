@@ -2,6 +2,27 @@
   "updatedAt": "2026-07-18T22:59:50.038Z",
   "overrides": [
     {
+      "name": "Albany College of Pharmacy and Health Sciences",
+      "homepage_url": "https://www.acphs.edu/",
+      "career_url": "https://www.acphs.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to their employment page, which hands off to an ADP portal. Verified live: 4 postings, several faculty-titled (Principal Faculty PA Program, Assistant Professor Pharmacy Practice, Adjunct Instructor Life Sciences, Instructor Hematology)."
+    },
+    {
+      "name": "Albany Medical College",
+      "homepage_url": "https://www.amc.edu/",
+      "career_url": "https://www.albanymed.org/careers/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the affiliated health system's careers page hands off to Workday and includes faculty postings for the medical college. Verified live: 1 faculty posting (Assistant Professor, non-tenure track Biostatistician/Quantitative Epidemiologist)."
+    },
+    {
+      "name": "Albertus Magnus College",
+      "homepage_url": "https://www.albertus.edu/",
+      "career_url": "https://www.albertus.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a faculty-directory URL that the isLikelyJobUrl fix correctly still rejects (genuinely a directory page, not job search); the real employment page is at /employment/ and hands off to Paycom. Verified live: 4 postings including 1 faculty (Clinical Adjunct Instructor, Nursing Program)."
+    },
+    {
       "name": "Alaska Christian College",
       "homepage_url": "https://alaskacc.edu/",
       "career_url": "https://alaskacc.edu/about/employment/",
@@ -1848,6 +1869,104 @@
       "career_url": "https://benedict.edu/about-benedict/administration/office-of-human-resources/#",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+    },
+    {
+      "name": "Albany Technical College",
+      "homepage_url": "https://www.albanytech.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4901&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Real postings live on Team Georgia Careers (careers.georgia.gov), agency-filtered to Albany Technical College — NOT on the tcsg.edu system-wide feed the TCSG scraper reads (that feed showed only non-faculty postings for this college at check time). Discovered via manual research; verified live (2 faculty postings, e.g. Biology Instructor BCHT, of 4 total openings)."
+    },
+    {
+      "name": "Athens Technical College",
+      "homepage_url": "https://www.athenstech.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4906&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Own site's Employment page (and a HireBridge portal it links to) list HR info/work-study only, no faculty; real faculty postings live on Team Georgia Careers agency-filtered to this college. Discovered via manual research; verified live (6 faculty postings, e.g. Adjunct Instructor - Surgical Technology, of 10 total openings)."
+    },
+    {
+      "name": "Central Georgia Technical College",
+      "homepage_url": "https://www.centralgatech.edu/",
+      "career_url": "https://www.easyhrweb.com/JC_Central_GA/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). College uses its own EasyHRWeb JobCenter (not the tcsg.edu system-wide feed, which showed 0 for this college at check time). Discovered via manual research; verified live (Full Time Faculty categories with current openings: Arts & Sciences 3, Corrections 3, Health Technology 11, Public Services 1, Technical/Trade/Industrial 6, plus 50 Part Time/Adjunct Faculty openings)."
+    },
+    {
+      "name": "Columbus Technical College",
+      "homepage_url": "https://www.columbustech.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4931&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). College's own JazzHR-hosted page (columbustechnicalcollege.applytojob.com) currently shows no open positions; real current postings are on Team Georgia Careers agency-filtered to this college. Discovered via manual research; verified live (10 faculty postings, e.g. Associate Degree Nursing Technical Instructor, of 18 total openings)."
+    },
+    {
+      "name": "Georgia Northwestern Technical College",
+      "homepage_url": "https://www.gntc.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4936&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Discovered via manual research; verified live (3 faculty postings, e.g. English Instructor, Economics Adjunct Faculty, of 7 total openings) on Team Georgia Careers agency-filtered to this college."
+    },
+    {
+      "name": "Lanier Technical College",
+      "homepage_url": "https://www.laniertech.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4956&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Discovered via manual research; verified live (16 faculty postings across nursing, welding, machining, psychology, cosmetology, etc., of 24 total openings) on Team Georgia Careers agency-filtered to this college."
+    },
+    {
+      "name": "North Georgia Technical College",
+      "homepage_url": "https://northgatech.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4971&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). College's own Employment page links to Team Georgia Careers for external applicants (and a Taleo portal for internal state employees, deliberately not used here per this codebase's Taleo exclusion policy). Discovered via manual research; verified live (10 faculty postings, e.g. Welding Instructor, Electrical Systems Instructor, of 12 total openings)."
+    },
+    {
+      "name": "Oconee Fall Line Technical College",
+      "homepage_url": "https://www.oftc.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4891&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Discovered via manual research; verified live (4 faculty postings, e.g. Instructor Math, Biology Instructor, of 7 total openings) on Team Georgia Careers agency-filtered to this college."
+    },
+    {
+      "name": "Ogeechee Technical College",
+      "homepage_url": "https://www.ogeecheetech.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4991&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Own site's Employment page explicitly instructs applicants to select this college on the Team Georgia Careers agency dropdown. Discovered via manual research; verified live (7 faculty postings, e.g. Adjunct Biology Instructor, Funeral Service Instructor, of 19 total openings)."
+    },
+    {
+      "name": "Savannah Technical College",
+      "homepage_url": "https://www.savannahtech.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4976&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Discovered via manual research; verified live (13+ faculty postings, e.g. Biology Instructor, Mathematics Instructor, of 24 total openings) on Team Georgia Careers agency-filtered to this college."
+    },
+    {
+      "name": "South Georgia Technical College",
+      "homepage_url": "https://www.southgatech.edu/",
+      "career_url": "https://www.easyhrweb.com/JC_SouthGATech/joblistings/joblistings.aspx",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). College uses its own EasyHRWeb JobCenter; Team Georgia Careers showed 0 current openings for this college at check time. Discovered via manual research; verified live (4 Adjunct faculty openings, of 5 total openings)."
+    },
+    {
+      "name": "Southern Crescent Technical College",
+      "homepage_url": "https://www.sctech.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4946&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Discovered via manual research; verified live (~9 faculty postings, e.g. Instructor Adult Education, Adj. Instructor Surgical Technology, of 20 total openings) on Team Georgia Careers agency-filtered to this college."
+    },
+    {
+      "name": "Southern Regional Technical College",
+      "homepage_url": "https://southernregional.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4966&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Own site's Employment page links directly to this Team Georgia Careers agency-filtered URL. Discovered via manual research; verified live (4 faculty postings, e.g. Technical Faculty - Welding and Joining Technology, of 8 total openings)."
+    },
+    {
+      "name": "West Georgia Technical College",
+      "homepage_url": "https://www.westgatech.edu/",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4921&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All&search_api_fulltext=",
+      "platform_type": "generic",
+      "notes": "Was pointing at the homepage (0 jobs). Own site's Career Opportunities page links directly to this Team Georgia Careers agency-filtered URL. Discovered via manual research; verified live (14 faculty postings, e.g. Instructor Precision Manufacturing and Maintenance, Pharmacy Instructor, of 17 total openings)."
     }
   ]
 }
