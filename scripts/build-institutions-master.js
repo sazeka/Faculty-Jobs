@@ -190,6 +190,13 @@ function main() {
   for (const [college, count] of jobCountByCollege.entries()) {
     const key = normalizeNameKey(college);
     if (seen.has(key)) continue;
+    // Mark seen now, not just for `configured` rows above — otherwise the
+    // preserved-snapshot pass below doesn't know this institution was already
+    // handled here and pushes a second, stale record for the same name (e.g. a
+    // USG/TCSG/CSU-system campus with real jobs from a shared aggregator scraper
+    // gets a correct "covered" entry here AND a leftover "missing" entry below,
+    // carried over from before it ever had job attribution).
+    seen.add(key);
     const prev = existingMap.get(key) || {};
     const urls = buildUrls(college, prev?.career_url, prev);
 
