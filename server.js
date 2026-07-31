@@ -3431,6 +3431,26 @@ const GA_CAMPUSES = [
   { campus: "Albany State University", type: "generic", url: "https://www.asurams.edu/human-resources/employmentopp/employment.php" },
   { campus: "Augusta Technical College", type: "generic", url: "https://www.augustatech.edu/faculty/jobs" },
   { campus: "University of North Georgia", type: "generic", url: "https://ung.edu/human-resources/employment-opportunities/index.php" },
+  // These 14 TCSG member colleges are deliberately NOT covered by scrapeTcsgFaculty's
+  // tcsg.edu system-wide feed for one of two reasons: at discovery time that feed
+  // showed 0 or non-faculty-only postings for them (real faculty openings live on
+  // Team Georgia Careers, careers.georgia.gov, agency-filtered per college), or the
+  // college runs its own independent EasyHRWeb JobCenter instead. See
+  // data/career-url-overrides.json for per-college verification notes/counts.
+  { campus: "Albany Technical College", type: "generic", url: "https://www.albanytech.edu/" },
+  { campus: "Athens Technical College", type: "generic", url: "https://www.athenstech.edu/" },
+  { campus: "Central Georgia Technical College", type: "generic", url: "https://www.centralgatech.edu/" },
+  { campus: "Columbus Technical College", type: "generic", url: "https://www.columbustech.edu/" },
+  { campus: "Georgia Northwestern Technical College", type: "generic", url: "https://www.gntc.edu/" },
+  { campus: "Lanier Technical College", type: "generic", url: "https://www.laniertech.edu/" },
+  { campus: "North Georgia Technical College", type: "generic", url: "https://northgatech.edu/" },
+  { campus: "Oconee Fall Line Technical College", type: "generic", url: "https://www.oftc.edu/" },
+  { campus: "Ogeechee Technical College", type: "generic", url: "https://www.ogeecheetech.edu/" },
+  { campus: "Savannah Technical College", type: "generic", url: "https://www.savannahtech.edu/" },
+  { campus: "South Georgia Technical College", type: "generic", url: "https://www.southgatech.edu/" },
+  { campus: "Southern Crescent Technical College", type: "generic", url: "https://www.sctech.edu/" },
+  { campus: "Southern Regional Technical College", type: "generic", url: "https://southernregional.edu/" },
+  { campus: "West Georgia Technical College", type: "generic", url: "https://www.westgatech.edu/" },
 ];
 
 // AL (Alabama)
