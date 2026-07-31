@@ -7199,8 +7199,13 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
         const u = new URL(startUrl);
         if (/^wd\d+\.myworkdaysite\.com$/i.test(u.host)) {
           const parts = u.pathname.split("/").filter(Boolean);
-          if (parts[0] === "recruiting" && parts[1] && parts[2]) {
-            apiUrl = `https://${u.host}/wday/cxs/${parts[1]}/${parts[2]}/jobs`;
+          // Some myworkdaysite.com URLs carry a locale segment before "recruiting"
+          // (e.g. Penn's "/en-US/recruiting/upenn/careers-at-penn") — search for it
+          // instead of assuming it's parts[0], or the locale-prefixed form silently
+          // fails to parse and falls through to the much less reliable browser scrape.
+          const recruitingIdx = parts.indexOf("recruiting");
+          if (recruitingIdx !== -1 && parts[recruitingIdx + 1] && parts[recruitingIdx + 2]) {
+            apiUrl = `https://${u.host}/wday/cxs/${parts[recruitingIdx + 1]}/${parts[recruitingIdx + 2]}/jobs`;
           }
         }
       } catch {}
