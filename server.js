@@ -5634,52 +5634,84 @@ async function scrapeCsuFaculty(context) {
   });
 }
 
+// CSU campuses' own materials (job postings, "about" text) write their names in the
+// comma style ("California State University, Bakersfield"), but IPEDS — and every
+// other institution name in this dataset (institutions-master.json, server.js campus
+// configs, policy-rules.json) — uses the hyphenated form ("California State
+// University-Bakersfield"). Returning the comma form here made these campuses
+// invisible to coverage tracking despite having real, current jobs: the job-count
+// lookup in build-institutions-master.js matches by exact name, and the two forms
+// never matched. Always resolve to the IPEDS/canonical hyphenated form.
 function mapCsuLocationToCampus(location) {
   if (!location) return null;
   const key = clean(String(location));
   const byLocation = {
-    "Bakersfield": "California State University, Bakersfield",
-    "Channel Islands": "California State University Channel Islands",
-    "Chico": "California State University, Chico",
-    "Dominguez Hills": "California State University, Dominguez Hills",
-    "East Bay": "California State University, East Bay",
-    "Fresno": "California State University, Fresno",
-    "Fullerton": "California State University, Fullerton",
-    "Humboldt": "Cal Poly Humboldt",
-    "Long Beach": "California State University, Long Beach",
-    "Los Angeles": "California State University, Los Angeles",
+    "Bakersfield": "California State University-Bakersfield",
+    "Channel Islands": "California State University-Channel Islands",
+    "Chico": "California State University-Chico",
+    "Dominguez Hills": "California State University-Dominguez Hills",
+    "East Bay": "California State University-East Bay",
+    "Fresno": "California State University-Fresno",
+    "Fullerton": "California State University-Fullerton",
+    "Humboldt": "California State Polytechnic University-Humboldt",
+    "Long Beach": "California State University-Long Beach",
+    "Los Angeles": "California State University-Los Angeles",
     "Maritime Academy": "California State University Maritime Academy",
-    "Monterey Bay": "California State University, Monterey Bay",
-    "Northridge": "California State University, Northridge",
-    "Pomona": "California State Polytechnic University, Pomona",
-    "Sacramento": "California State University, Sacramento",
-    "San Bernardino": "California State University, San Bernardino",
+    "Monterey Bay": "California State University-Monterey Bay",
+    "Northridge": "California State University-Northridge",
+    "Pomona": "California State Polytechnic University-Pomona",
+    "Sacramento": "California State University-Sacramento",
+    "San Bernardino": "California State University-San Bernardino",
     "San Diego": "San Diego State University",
     "San Francisco": "San Francisco State University",
     "San Jose": "San Jose State University",
     "San José": "San Jose State University",
-    "San Luis Obispo": "California Polytechnic State University, San Luis Obispo",
-    "San Marcos": "California State University San Marcos",
+    "San Luis Obispo": "California Polytechnic State University-San Luis Obispo",
+    "San Marcos": "California State University-San Marcos",
     "Sonoma": "Sonoma State University",
-    "Stanislaus": "California State University, Stanislaus",
+    "Stanislaus": "California State University-Stanislaus",
   };
   return byLocation[key] || null;
 }
 
+// Same canonical-name goal as mapCsuLocationToCampus, but matched out of free text
+// (a job posting's "about" section) rather than a structured location field — so the
+// patterns look for the comma form campuses actually use in prose, then map each hit
+// to the same IPEDS canonical name. The previous version returned the raw regex
+// capture directly with an open-ended character class, which both kept the wrong
+// (comma) name AND occasionally swallowed trailing address text into the "name"
+// (e.g. "California State University, Stanislaus One University Circle Turlock").
 function inferCsuCampusFromText(text) {
   if (!text) return null;
   const cleaned = clean(String(text));
   const patterns = [
-    /\b(California State University Channel Islands)\b/i,
-    /\b(California State University,\s*[A-Za-z .'-]+)\b/i,
-    /\b(California State University San Marcos)\b/i,
-    /\b(California State Polytechnic University,\s*[A-Za-z .'-]+)\b/i,
-    /\b(California Polytechnic State University,\s*San Luis Obispo)\b/i,
-    /\b(San Diego State University|San Francisco State University|San Jose State University|Sonoma State University|Cal Poly Humboldt)\b/i,
+    [/\bCalifornia State University Channel Islands\b/i, "California State University-Channel Islands"],
+    [/\bCalifornia State University,\s*Bakersfield\b/i, "California State University-Bakersfield"],
+    [/\bCalifornia State University,\s*Chico\b/i, "California State University-Chico"],
+    [/\bCalifornia State University,\s*Dominguez Hills\b/i, "California State University-Dominguez Hills"],
+    [/\bCalifornia State University,\s*East Bay\b/i, "California State University-East Bay"],
+    [/\bCalifornia State University,\s*Fresno\b/i, "California State University-Fresno"],
+    [/\bCalifornia State University,\s*Fullerton\b/i, "California State University-Fullerton"],
+    [/\bCalifornia State University,\s*Long Beach\b/i, "California State University-Long Beach"],
+    [/\bCalifornia State University,\s*Los Angeles\b/i, "California State University-Los Angeles"],
+    [/\bCalifornia State University Maritime Academy\b/i, "California State University Maritime Academy"],
+    [/\bCalifornia State University,\s*Monterey Bay\b/i, "California State University-Monterey Bay"],
+    [/\bCalifornia State University,\s*Northridge\b/i, "California State University-Northridge"],
+    [/\bCalifornia State University,\s*Sacramento\b/i, "California State University-Sacramento"],
+    [/\bCalifornia State University,\s*San Bernardino\b/i, "California State University-San Bernardino"],
+    [/\bCalifornia State University San Marcos\b/i, "California State University-San Marcos"],
+    [/\bCalifornia State University,\s*Stanislaus\b/i, "California State University-Stanislaus"],
+    [/\bCalifornia State Polytechnic University,\s*Pomona\b/i, "California State Polytechnic University-Pomona"],
+    [/\bCalifornia State Polytechnic University,\s*Humboldt\b/i, "California State Polytechnic University-Humboldt"],
+    [/\bCalifornia Polytechnic State University,\s*San Luis Obispo\b/i, "California Polytechnic State University-San Luis Obispo"],
+    [/\bSan Diego State University\b/i, "San Diego State University"],
+    [/\bSan Francisco State University\b/i, "San Francisco State University"],
+    [/\bSan Jose State University\b/i, "San Jose State University"],
+    [/\bSonoma State University\b/i, "Sonoma State University"],
+    [/\bCal Poly Humboldt\b/i, "California State Polytechnic University-Humboldt"],
   ];
-  for (const re of patterns) {
-    const m = cleaned.match(re);
-    if (m && m[1]) return clean(m[1]);
+  for (const [re, canonical] of patterns) {
+    if (re.test(cleaned)) return canonical;
   }
   return null;
 }
