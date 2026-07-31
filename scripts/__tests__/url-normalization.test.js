@@ -6,6 +6,22 @@ test("canonicalizeUrl upgrades to https and strips hash", () => {
   assert.equal(canonicalizeUrl("http://example.com/jobs#top"), "https://example.com/jobs");
 });
 
+test("canonicalizeUrl preserves a job-identifying hash fragment", () => {
+  // PeopleSoft/HRS scrapers (e.g. UMN) fabricate per-job URLs by appending
+  // "#<jobId>" to a shared search-page URL, since the ATS exposes no real
+  // per-job link. Stripping the hash collapses every posting from that
+  // school onto one URL, so the dedup pass in scrape-to-json.js silently
+  // discards all but one — only common navigation anchors get stripped.
+  const base = "https://hr.myu.umn.edu/psc/hrprd/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL";
+  assert.equal(canonicalizeUrl(`${base}#374515`), `${base}#374515`);
+  assert.equal(canonicalizeUrl(`${base}#375089`), `${base}#375089`);
+  assert.notEqual(canonicalizeUrl(`${base}#374515`), canonicalizeUrl(`${base}#375089`));
+  assert.equal(
+    canonicalizeUrl("https://example.com/search#Associate%20Professor%20of%20Biology"),
+    "https://example.com/search#Associate%20Professor%20of%20Biology"
+  );
+});
+
 test("canonicalizeUrl strips tracking params but keeps real ones", () => {
   assert.equal(
     canonicalizeUrl("https://x.com/j?utm_source=email&id=5&fbclid=abc"),

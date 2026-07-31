@@ -15,6 +15,16 @@ const TRACKING_QUERY_KEYS = new Set([
   "mkt_tok",
 ]);
 
+// Same-page scroll anchors we actually want stripped as noise. Several PeopleSoft/HRS
+// scrapers (server.js, e.g. the UMN scraper) fabricate a per-job "virtual URL" by
+// appending "#<jobId-or-title>" to a shared search-page URL, because the ATS never
+// exposes real per-job links — that fragment is the ONLY thing distinguishing one
+// posting from another, so blanket-stripping every hash collapsed all of a school's
+// listings onto one canonical URL and silently deduped away every job but one.
+const BENIGN_HASH_FRAGMENTS = new Set([
+  "top", "main", "content", "main-content", "header", "footer", "nav", "navigation", "skip", "skip-to-content", "body",
+]);
+
 export function canonicalizeUrl(input, { stripQuery = true } = {}) {
   const raw = clean(input);
   if (!raw) return null;
@@ -34,7 +44,10 @@ export function canonicalizeUrl(input, { stripQuery = true } = {}) {
   if (!/^https?:$/i.test(parsed.protocol)) return null;
 
   parsed.protocol = "https:";
-  parsed.hash = "";
+  const fragment = parsed.hash.replace(/^#/, "").toLowerCase();
+  if (!fragment || BENIGN_HASH_FRAGMENTS.has(fragment)) {
+    parsed.hash = "";
+  }
 
   if (stripQuery) {
     for (const key of [...parsed.searchParams.keys()]) {
