@@ -1603,7 +1603,13 @@ const AZ_CAMPUSES = [
   {
     campus: "Northern Arizona University",
     type: "nau-search",
-    url: "https://careers.nau.edu/jobs/search?page=1&category_uids%5B%5D=16877518cdbd46262a1b4a995c2a65c2&query=",
+    // Was scoped to a single category_uids filter that's now empty (site's category
+    // taxonomy shifted) — real faculty postings (e.g. Clinical Professor roles) live
+    // under other categories like "Health Services" and were invisible to this feed.
+    // Search unfiltered instead; scrapeNauSearch has no internal faculty check, so
+    // this relies on the downstream global looksFacultyish filter, same as every
+    // other wide-net "generic" feed.
+    url: "https://careers.nau.edu/jobs/search?page=1&query=",
   },
   {
     campus: "University of Arizona",
