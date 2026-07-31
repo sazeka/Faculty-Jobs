@@ -3711,6 +3711,11 @@ function resolveCareerUrlOverride(campusName, fallbackUrl) {
   return override?.career_url || fallbackUrl;
 }
 
+function resolveCareerUrlOverridePlatform(campusName) {
+  const key = clean(campusName || "").toLowerCase();
+  return CAREER_OVERRIDES.get(key)?.platform_type || null;
+}
+
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
@@ -10483,12 +10488,22 @@ async function scrapePaycomApi(context, careerUrl, campusName, sourceName) {
 }
 
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
+  const effectiveUrl = resolveCareerUrlOverride(campusName, startUrl);
+  const overridePlatform = resolveCareerUrlOverridePlatform(campusName);
+  if (effectiveUrl !== startUrl) {
+    console.log(`↪️  ${campusName} override URL applied`);
+  }
+  // A career-url override can repoint an institution at a different ATS than its
+  // static server.js `type` (e.g. a "generic" campus whose real career page turned
+  // out to be an ADP WorkforceNow portal). ADP's listings only load via a
+  // client-side API call the page never renders into the DOM, so generic scraping
+  // silently returns nothing — dispatch straight to the specialized handler instead.
+  if (overridePlatform === "adp") {
+    return await scrapeAdpApi(effectiveUrl, campusName, sourceName);
+  }
+
   const page = await context.newPage();
   try {
-    const effectiveUrl = resolveCareerUrlOverride(campusName, startUrl);
-    if (effectiveUrl !== startUrl) {
-      console.log(`↪️  ${campusName} override URL applied`);
-    }
     await gotoWithRetry(page, effectiveUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
