@@ -10493,19 +10493,40 @@ async function scrapePaycomApi(context, careerUrl, campusName, sourceName) {
   return mapApiJobs(rows, campusName, sourceName);
 }
 
+// A career-url override can repoint an institution at a different ATS than its
+// static server.js `type` — e.g. American Baptist College, Chatham University, and
+// Colby College are all configured "generic" but were later discovered to really
+// live on ADP/Workday portals. Those platforms' listings only load via a
+// client-side API call the page never renders into static HTML, so generic DOM
+// scraping silently returns nothing regardless of what's actually posted.
+// Dispatch straight to the matching specialized handler instead.
+//
+// Taleo is deliberately NOT in this table: Oracle's terms prohibit scraping it at
+// all (see data/policy-rules.json), and those jobs get discarded post-hoc by the
+// policy-exclusion filter anyway — routing to the real Taleo scraper would mean
+// actively querying a site we've committed not to scrape, for a result we'd throw
+// away either way.
+const OVERRIDE_PLATFORM_DISPATCH = {
+  adp: (context, url, campusName, sourceName) => scrapeAdpApi(url, campusName, sourceName),
+  workday: (context, url, campusName, sourceName) => scrapeWorkdayAs(context, url, campusName, sourceName),
+  schooljobs: (context, url, campusName, sourceName) => scrapeSchoolJobsAs(context, url, campusName, sourceName),
+  governmentjobs: (context, url, campusName, sourceName) => scrapeSchoolJobsAs(context, url, campusName, sourceName),
+  peopleadmin: (context, url, campusName, sourceName) => scrapePeopleAdminAs(context, url, campusName, sourceName),
+  csod: (context, url, campusName, sourceName) => scrapeCsodAs(context, url, campusName, sourceName),
+  icims: (context, url, campusName, sourceName) => scrapeIcimsAs(context, url, campusName, sourceName),
+  oracle: (context, url, campusName, sourceName) => scrapeOracleCxAs(context, url, campusName, sourceName),
+  interviewexchange: (context, url, campusName, sourceName) => scrapeInterviewExchangeAs(context, url, campusName, sourceName),
+};
+
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
   const effectiveUrl = resolveCareerUrlOverride(campusName, startUrl);
   const overridePlatform = resolveCareerUrlOverridePlatform(campusName);
   if (effectiveUrl !== startUrl) {
     console.log(`↪️  ${campusName} override URL applied`);
   }
-  // A career-url override can repoint an institution at a different ATS than its
-  // static server.js `type` (e.g. a "generic" campus whose real career page turned
-  // out to be an ADP WorkforceNow portal). ADP's listings only load via a
-  // client-side API call the page never renders into the DOM, so generic scraping
-  // silently returns nothing — dispatch straight to the specialized handler instead.
-  if (overridePlatform === "adp") {
-    return await scrapeAdpApi(effectiveUrl, campusName, sourceName);
+  const dispatch = overridePlatform && OVERRIDE_PLATFORM_DISPATCH[overridePlatform];
+  if (dispatch) {
+    return await dispatch(context, effectiveUrl, campusName, sourceName);
   }
 
   const page = await context.newPage();
