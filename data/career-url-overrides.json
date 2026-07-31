@@ -1,6 +1,1357 @@
 {
-  "updatedAt": "2026-07-18T22:59:50.038Z",
+  "updatedAt": "2026-07-31T20:48:34.771Z",
   "overrides": [
+    {
+      "name": "Albright College",
+      "homepage_url": "https://www.albright.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=c4e80d96-7749-44bb-aa20-2c7594475725&ccId=19000101_000001&source=CC2&lang=en_US&selectedMenuKey=CurrentOpenings",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage (via /home); the Human Resources page links to their ADP Workforce Now recruiting portal. Verified live: 24 postings, several PT Faculty adjunct roles (Adjunct of History, Theatre, Fashion, Art/Drawing, Art/Digital Video, Chemistry, Environmental & Earth Sciences, Public Health)."
+    },
+    {
+      "name": "Allegany College of Maryland",
+      "homepage_url": "https://www.allegany.edu/",
+      "career_url": "https://www.schooljobs.com/careers/allegany",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the bare homepage; homepage links to their NEOGOV/schooljobs career page. Verified live: 5 postings, 1 faculty-titled (Nurse Managed Wellness Clinic Director, 12-Month Faculty)."
+    },
+    {
+      "name": "Allegheny College",
+      "homepage_url": "https://allegheny.edu/",
+      "career_url": "https://alleghenycollege-ibwwjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to their Oracle Fusion Cloud Recruiting portal (not Taleo -- a different Oracle product, so not excluded). Verified live: 15 total openings, filterable by category including FACULTY (1)."
+    },
+    {
+      "name": "Alma College",
+      "homepage_url": "https://www.alma.edu/",
+      "career_url": "https://www.schooljobs.com/careers/alma",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the bare homepage; homepage links to their NEOGOV/schooljobs career page. Verified live: 9 postings (Assistant Controller, Assistant Director roles, Assistant Men's Lacrosse Coach, etc.) -- none currently faculty-titled, but this is real, correct infrastructure vs. a homepage that will never show anything."
+    },
+    {
+      "name": "Alvin Community College",
+      "homepage_url": "https://www.alvincollege.edu/",
+      "career_url": "https://www.schooljobs.com/careers/alvincollege",
+      "platform_type": "schooljobs",
+      "notes": "Configured career_url was a /jobs landing page with 0 scrapeable listings; it links to their real NEOGOV/schooljobs career page. Verified live: 98 postings, dozens of Adjunct faculty listings across many disciplines (Accounting, Arts, Nursing/ADN, Astronomy, Automotive Technology, Biology, Business Administration, Business Management, Chemistry, Communications, and more)."
+    },
+    {
+      "name": "American College of Financial Services",
+      "homepage_url": "https://www.theamericancollege.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0EC6D26D6ACC066E0F0E668BFD94D104",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to their Paycom recruiting portal (renders via JS, needs networkidle wait to see results). Verified live: 2 postings, both faculty-related (Instructional Designer & Developer Consultant; Adjunct Instructor, Master of Science in Financial Planning Program)."
+    },
+    {
+      "name": "Andrews University",
+      "homepage_url": "https://www.andrews.edu/",
+      "career_url": "https://www.andrews.edu/admres/jobs/show/faculty",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/admres/jobs) is a tab-selector shell with no content until a tab is chosen; the Faculty Job Listings tab at /admres/jobs/show/faculty has real content. Verified live: about 10 current faculty postings (Physical Education Instructor, English Instructor, Faculty-Architecture, Faculty-Leadership & Educational Admin x2, Faculty-Accounting, Faculty-Business Administration, Occupational Therapy Doctoral Capstone Coordinator, Faculty-School of Education, Faculty-Social Work, Faculty-Visual Art Communication & Design)."
+    },
+    {
+      "name": "Appalachian School of Law",
+      "homepage_url": "https://www.asl.edu/",
+      "career_url": "https://www.asl.edu/faculty-2/hiring/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to a dedicated Faculty & Staff > Hiring page. Verified live: real, correct dedicated hiring page, but explicitly states 'There are no open positions at this time' -- kept since it's genuine infrastructure that will surface postings when they open, unlike the homepage."
+    },
+    {
+      "name": "Arizona Board of Regents",
+      "homepage_url": "https://www.azregents.edu/",
+      "career_url": "https://www.azregents.edu/career-opportunities",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to a dedicated Career Opportunities page. Verified live: real dedicated page but currently 'No openings at this time'. Note: ABOR is a system coordinating board, not a teaching institution, so it is unlikely to ever post faculty positions -- low priority but a genuine improvement over the homepage."
+    },
+    {
+      "name": "Anne Arundel Community College",
+      "homepage_url": "https://www.aacc.edu/",
+      "career_url": "https://careers.aacc.edu/jobs/search",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/employment) is a landing page with 0 scrapeable listings; it links to their real ClinchTalent-hosted career site at careers.aacc.edu. Verified live: dozens of postings, several faculty-titled (Instructor/Assistant Professor - Nursing; Part-Time Faculty in Dance, Business, Mathematics, Art History/Architectural History, Printmaking, Animation, Psychology, Visual Arts, and Continuing Education Fitness Instructor)."
+    },
+    {
+      "name": "American College of the Building Arts",
+      "homepage_url": "https://acba.edu/",
+      "career_url": "https://acba.edu/career-opportunities",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to a dedicated Career Opportunities page. Verified live: real, correct dedicated page with a 'Current Openings' section, but currently empty -- kept since it's genuine infrastructure vs. a homepage that will never show anything."
+    },
+    {
+      "name": "Appalachian College of Pharmacy",
+      "homepage_url": "https://www.acp.edu/",
+      "career_url": "https://www.acp.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to a dedicated Employment page. Verified live: real, correct dedicated page with an 'Open Position(s)' section, but currently empty -- kept since it's genuine infrastructure vs. a homepage that will never show anything."
+    },
+    {
+      "name": "Assumption University",
+      "homepage_url": "https://www.assumption.edu/",
+      "career_url": "https://recruiting.paylocity.com/recruiting/jobs/All/f76cb02a-754f-43db-a7c2-5ce37cc9ae48/Assumption-University-Faculty",
+      "platform_type": "generic",
+      "notes": "Configured career_url was the HR landing page with 0 scrapeable listings; that page links to a Paylocity Faculty-specific job board (separate from their Staff board). Verified live: 10 of 10 postings, all faculty-titled (Adjunct Faculty of Psychology, Mathematics, Biology, English, Philosophy, Theology; Visiting Assistant Professor of Biology; Professor of Practice Nursing; Nursing Clinical Instructor Adjunct; Assistant Professor of Practice in Accounting)."
+    },
+    {
+      "name": "Augsburg University",
+      "homepage_url": "https://www.augsburg.edu/",
+      "career_url": "https://careers.smartrecruiters.com/AugsburgUniversity-MinneapolisMN/faculty",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/employment) is a landing page with 0 scrapeable listings; it links to a SmartRecruiters Faculty-specific job board (separate from Staff board). Verified live: multiple faculty postings (Non-Tenure Track Visiting Instructor in Education, FNP Faculty, and several Adjunct Faculty roles in Psychology, Entrepreneurship, Management, Marketing, Accounting, and Management Information Systems)."
+    },
+    {
+      "name": "Arkansas Colleges of Health Education",
+      "homepage_url": "https://achehealth.edu/",
+      "career_url": "https://recruiting.paylocity.com/recruiting/jobs/All/966a7ab2-15b9-4608-8364-32d0b75d2c2b/Arkansas-Colleges-of-Health-Education",
+      "platform_type": "generic",
+      "notes": "Configured career_url is a landing page with 0 scrapeable listings; it links to their Paylocity recruiting portal. Verified live: 14 postings, several faculty-titled (Assistant/Associate Professor of Obstetrics & Gynecology; Principal Faculty of Physician Associate Practice; Chair of the Department of Primary Care; Assistant/Associate Professor of Family Medicine/Internal Medicine/Pediatrics; Assistant/Associate/Professor of OMM; Adjunct Instructor roles in Population Health and Physical Therapy)."
+    },
+    {
+      "name": "Arkansas Northeastern College",
+      "homepage_url": "https://www.anc.edu/",
+      "career_url": "https://www.anc.edu/jobs",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/academics/faculty-jobs) shows no content; the real employment listing page is at /jobs (linked from that page). Verified live: real postings, nearly all instructor-titled (Associate Degree Nursing Instructor, Adult Education Instructor, EMT Instructor, Paramedic Instructor, ADN Clinical Instructor, Practical Nursing Clinical Instructor, ADN Adjunct Instructors, Nursing Assistant Instructor, Electrical Apprenticeship Program Instructor)."
+    },
+    {
+      "name": "Arkansas State University-Beebe",
+      "homepage_url": "https://www.asub.edu/",
+      "career_url": "https://jobs.asub.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=4&435=&query_organizational_tier_3_id%5B%5D=any&commit=Search",
+      "platform_type": "generic",
+      "notes": "Configured career_url (bare jobs.asub.edu/) shows a search shell with no results until a filter is applied; the Faculty position-type filter (linked from that page) has real content. Verified live: 12 faculty postings (Part-Time Oral Communications Instructor, Part-Time Music Instructor, Instructor of Nursing, and others)."
+    },
+    {
+      "name": "Art Academy of Cincinnati",
+      "homepage_url": "https://www.artacademy.edu/",
+      "career_url": "https://workforcenow.cloud.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=150d0044-7af0-4927-8f81-f24fc4a68331&ccId=19000101_000001&lang=en_US",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to their ADP Workforce Now recruiting portal. Verified live: 5 postings, 1 faculty-related (Liberal Arts Adjunct)."
+    },
+    {
+      "name": "Autry Technology Center",
+      "homepage_url": "https://autrytech.edu/",
+      "career_url": "https://autrytech.tedk12.com/hire/index.aspx",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to their TedK12/PowerSchool Applicant Tracking career site. Verified live: 5 postings, mostly instructor/adjunct roles (Substitute for Shop Classes; Cosmetology Substitute; EMS & Firefighter Part-Time Instructors; Part-Time Instructor)."
+    },
+    {
+      "name": "Averett University",
+      "homepage_url": "https://www.averett.edu/",
+      "career_url": "https://www.averett.edu/about-us/employment-opportunities/traditional-faculty-employment-opportunities/",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/employment-opportunities) is a general landing page with 0 scrapeable listings; the Traditional Faculty Employment Opportunities sub-page (linked from it) has real content. Verified live: 5 tenure-track faculty postings (Assistant Professor of Nursing, Chemistry, Health and Sports Science, Sociology & Criminal Justice; Nursing Clinical and Simulation Coordinator)."
+    },
+    {
+      "name": "Arkansas Tech University",
+      "homepage_url": "https://www.atu.edu/",
+      "career_url": "https://www.governmentjobs.com/careers/atu/Faculty",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the bare homepage; the HR page links to a NEOGOV/governmentjobs Faculty-specific job board (separate from Staff board). Verified live: real, correct dedicated page but currently 'No jobs at this time' -- kept since it's genuine infrastructure vs. a homepage that will never show anything."
+    },
+    {
+      "name": "Arkansas State University Mid-South",
+      "homepage_url": "https://asumidsouth.edu/",
+      "career_url": "https://asumidsouth.edu/about/careers/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to a dedicated Careers page (note: the /employment-opportunities/ URL listed on the ASU System site 404s, but /about/careers/ is live). Verified live: real postings (e.g., Associate Vice Chancellor for Human Resources, Associate Vice Chancellor for Workforce Innovation) though none currently faculty-titled -- real infrastructure vs. a homepage that will never show anything."
+    },
+    {
+      "name": "Bard College",
+      "homepage_url": "https://www.bard.edu/",
+      "career_url": "https://www.bard.edu/humanresources/employment/",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/employment) redirects to a generic HR landing menu with 0 scrapeable listings; the real listings live at /humanresources/employment/ (uses Interfolio for most searches but lists postings directly on this page). Verified live: real faculty postings including English Language Instructor and multiple Part-Time Undergraduate Faculty positions (Core Division; Humanities & Practicing Arts Division)."
+    },
+    {
+      "name": "Barry University",
+      "homepage_url": "https://www.barry.edu/",
+      "career_url": "https://barryu.wd5.myworkdayjobs.com/BarryU/jobs",
+      "platform_type": "workday",
+      "notes": "Configured career_url (my.barry.edu/faculty/jobs) is a bare nav shell; the HR page links to their Workday portal. Verified live: 72 postings, several faculty-titled (Adjunct Faculty School of Psychology, Adjunct Faculty Peripheral Vascular Disease, Assistant/Associate Professor Physician Assistant Program, Adjunct Faculty Mathematical Sciences, Physician Assistant Lab Instructor, Adjunct Faculty Organizational Leadership Program)."
+    },
+    {
+      "name": "Bastyr University",
+      "homepage_url": "https://bastyr.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=35ECA37F07A12A40C9F79168AFFA3433",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to their Paycom recruiting portal. Verified live: 20 postings, several Adjunct Faculty (Counseling & Health Psychology Clinical Supervisor, Adjunct Faculty - Counseling and Health Psychology)."
+    },
+    {
+      "name": "Bates College",
+      "homepage_url": "https://www.bates.edu/",
+      "career_url": "https://www.bates.edu/dof/current-faculty-job-postings/",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/employment) is a general HR landing page with 0 scrapeable listings; the Dean of the Faculty office maintains a separate Current Faculty Job Postings page (linked from Employment). Verified live: 3 tenure-track faculty postings (Professor of Africana, Assistant Professor of Biology - Marine Biology, Assistant Professor of Physics)."
+    },
+    {
+      "name": "Baton Rouge Community College",
+      "homepage_url": "https://www.mybrcc.edu/",
+      "career_url": "https://mybrcc.edu/about-brcc/human-resources/employment_opportunities.php",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to a dedicated Employment Opportunities page. Verified live: extensive real listings, many Adjunct Faculty and Instructor roles (Adjunct Faculty - Medical Assistant, Economics, Accounting, Philosophy, Political Science, Criminal Justice, Psychology, Business, Health Sciences; Instructor - Welding, Construction Management, Criminal Justice, Business)."
+    },
+    {
+      "name": "Bay de Noc Community College",
+      "homepage_url": "https://www.baycollege.edu/",
+      "career_url": "https://careers.baycollege.edu/postings/search?utf8=&query=&query_v0_posted_at_date=&1460%5B%5D=3&query_organizational_tier_3_id%5B%5D=any&commit=Search",
+      "platform_type": "generic",
+      "notes": "Configured career_url (bare careers.baycollege.edu) shows an unfiltered search shell; the Faculty position-type filter (linked from that page) has real content. Verified live: 7 faculty postings, all Adjunct instructors (Wildland and Rural Fire Control Instructor, Nursing Instructor at three campus locations)."
+    },
+    {
+      "name": "Bay Mills Community College",
+      "homepage_url": "https://bmcc.edu/",
+      "career_url": "https://bmcc.bamboohr.com/careers",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to their BambooHR careers page. Verified live: real postings including several Adjunct Faculty (Construction Adjunct Instructor, English Adjunct Instructor, Native Language Adjunct Instructor)."
+    },
+    {
+      "name": "Barstow Community College",
+      "homepage_url": "https://www.barstow.edu/",
+      "career_url": "https://www.schooljobs.com/careers/barstowcc",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the bare homepage; homepage links to their NEOGOV/schooljobs career page. Verified live: 53 postings (first page shown was mostly Accounting Technician / Clerical substitute-pool listings; faculty share of the full 53 not individually confirmed, but this is real, correct infrastructure vs. a homepage that will never show anything)."
+    },
+    {
+      "name": "Bates Technical College",
+      "homepage_url": "https://www.batestech.edu/",
+      "career_url": "https://www.schooljobs.com/careers/batesctc",
+      "platform_type": "schooljobs",
+      "notes": "Configured career_url (/human-resources/employment) is a landing page with 0 scrapeable listings; it links to their NEOGOV/schooljobs career page. Verified live: 34 postings, with a dedicated Faculty/Higher Education category (e.g., Administrative Medical Assistant/Certified Medical Assistant - Adjunct Pool)."
+    },
+    {
+      "name": "Bowling Green State University-Main Campus",
+      "homepage_url": "https://www.bgsu.edu/",
+      "career_url": "https://www.schooljobs.com/careers/bgsu/faculty",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the HR careers landing page (0 jobs shown directly); that page links to a schooljobs.com/governmentjobs.com (NEOGOV) portal with a dedicated faculty-only filter. Verified live: 3 faculty postings (Assistant Teaching Professor; Assistant Teaching Professor - Nursing; Assistant/Associate Teaching Professor - Nursing)."
+    },
+    {
+      "name": "Big Sandy Community and Technical College",
+      "homepage_url": "https://bigsandy.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/big-sandy",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to their KCTCS-system careers portal filtered to the Big Sandy campus (same pattern already used for Bluegrass CTC in this file). Verified live: real, current postings including a Part-time Line Worker Instructor and other campus-specific openings."
+    },
+    {
+      "name": "California College of the Arts",
+      "homepage_url": "https://www.cca.edu/",
+      "career_url": "https://cca.wd5.myworkdayjobs.com/CCA/jobs",
+      "platform_type": "workday",
+      "notes": "Was pointing at the jobs landing page on cca.edu (0 jobs shown directly, only links out); route to their Workday careers site. Verified live: 2 current openings (Studio Operations Manager - Digital Fabrications; Industry Professional Advisor), neither faculty-titled at time of check, but this is the correct real ATS (the site also separately links an 'Explore instructor position opportunities' Workday URL for CCA_YPCE, suggesting faculty reqs post here when open)."
+    },
+    {
+      "name": "California Institute of the Arts",
+      "homepage_url": "https://calarts.edu/",
+      "career_url": "https://calarts.edu/employment",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to their real employment page, which explicitly separates 'Academic Listings' from 'Non-Academic Listings'. Verified live: page correctly reads 'There are currently no academic listings' as of this check (0 faculty openings right now) but is the correct, real infrastructure so future faculty postings will be picked up."
+    },
+    {
+      "name": "Belanger School of Nursing",
+      "homepage_url": "https://www.ellismedicine.org/school-of-nursing",
+      "career_url": "https://ellismedicinecareers.hctsportals.com/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the nursing-school info page (0 jobs); it links to Ellis Medicine's (the parent health system) HealthcareSource careers portal. Verified live: real, current openings exist (e.g. Cardiovascular Tech, Associate Nurse roles) but none were faculty-titled at time of check -- categories are hospital/clinical (Nursing, Clinical Non-Nursing, etc.) rather than academic; included because it is genuinely the institution's own hiring infrastructure and better than a dead-end info page, but faculty-postings yield may stay low."
+    },
+    {
+      "name": "Capital University",
+      "homepage_url": "https://www.capital.edu/",
+      "career_url": "https://capital.applicantpro.com/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; homepage links to an ApplicantPro job board. Verified live: 20 postings, several faculty-titled (Assistant Professor in Systematic and Constructive Theology, Executive Professor of Business, Instructor of Nursing, several part-time Instructor pool postings)."
+    },
+    {
+      "name": "Capitol Technology University",
+      "homepage_url": "https://www.captechu.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=199260cf-4b15-410c-9970-1d94a408c2d5&ccId=19000101_000001&type=MP&lang=en_US",
+      "platform_type": "generic",
+      "notes": "The configured /faculty-and-staff/employment page is a generic benefits blurb with no listings; it links out to an ADP Workforce Now recruiting portal. Verified live: 5 openings including Administrative Faculty and Adjunct - English."
+    },
+    {
+      "name": "Carl Albert State College",
+      "homepage_url": "https://carlalbert.edu/",
+      "career_url": "https://carlalbert.edu/about-casc/job-openings/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the real job-openings page is linked from it. Verified live: 5 current postings (Food Service Asst, Asst Wrestling Coach, Campus Police, Financial Aid Counselor, Grad Assistant) - none faculty-titled right now, but this is the real, correctly-functioning employment page, a clear improvement over the homepage."
+    },
+    {
+      "name": "Carolina Christian College",
+      "homepage_url": "https://www.carolina.edu/",
+      "career_url": "https://www.carolina.edu/employment-opportunities",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real employment page linked from it. Verified live: 1 current posting (Head Coach-Men's and Women's Cross-Country) - not faculty, but a real, current listing on the correct page."
+    },
+    {
+      "name": "Carolina College of Biblical Studies",
+      "homepage_url": "https://ccbs.edu/",
+      "career_url": "https://ccbs.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/faculty/jobs) 404s; real employment page found via homepage nav. Verified live: currently recruiting for 4 teaching positions (Biblical Studies, Leadership, Ministry/Professional Studies, and a Biblical Counseling Professor)."
+    },
+    {
+      "name": "Carroll College",
+      "homepage_url": "https://www.carroll.edu/",
+      "career_url": "https://www.carroll.edu/faculty-staff-positions",
+      "platform_type": "generic",
+      "notes": "Configured /employment redirects to a landing page with no listings; the real listings are one level deeper at /faculty-staff-positions. Verified live: 3 current faculty positions (Founding Director of the M.Ed. Leadership Program, Part-Time Clinical Nursing Faculty, Principal Faculty for Physician Assistant Program)."
+    },
+    {
+      "name": "Carroll Community College",
+      "homepage_url": "https://www.carrollcc.edu/",
+      "career_url": "https://www.carrollcc.edu/about/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real jobs page linked from it. Verified live: a large slate of current adjunct faculty postings (Chemistry, Computer Graphics, Mathematics, Nursing x2, Sociology, Visual Arts, and several Workforce & Business Continuing Ed adjunct roles)."
+    },
+    {
+      "name": "Carroll University",
+      "homepage_url": "https://www.carrollu.edu/",
+      "career_url": "https://secure4.saashr.com/ta/6153588.careers?CareersSearch",
+      "platform_type": "generic",
+      "notes": "Configured /employment page is a landing page with no listings; it links to a SaaShr (Ascentis) careers portal. Verified live: 9 current adjunct faculty postings (Art, Graphic Design, Nursing, English, Leadership & Org. Development, Physical Therapy, Exercise Science, Communication, General Education)."
+    },
+    {
+      "name": "Carson-Newman University",
+      "homepage_url": "https://www.cn.edu/",
+      "career_url": "https://www.cn.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Configured career_url is a narrow 'faculty employment application' info page with no listings; the real employment search is at /employment/, linked from the same page. Verified live: 22 results, several faculty (Adjunct Instructor of Communication/English/Exercise Science/Mathematics, Assistant/Associate Professor of Family & Consumer Sciences, Assistant Professor of Accounting/Chemistry/Finance)."
+    },
+    {
+      "name": "Casa Loma College-Los Angeles",
+      "homepage_url": "https://www.casalomacollege.edu/",
+      "career_url": "https://casalomacollege.edu/careers-2/",
+      "platform_type": "generic",
+      "notes": "Same institution/shared careers page as the Aurora, CO campus record (the LA-area campus is in Sherman Oaks, CA). Configured /faculty/jobs 404s; real page is /careers-2/, verified live with current instructor-titled openings."
+    },
+    {
+      "name": "Cascadia College",
+      "homepage_url": "https://www.cascadia.edu/",
+      "career_url": "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=300",
+      "platform_type": "generic",
+      "notes": "Configured /faculty/jobs 404s; the college's real employment page links to this ctclink (PeopleSoft, shared WA state community/technical college HR system) job search, scoped to Cascadia College via SiteId=300. Verified live after clicking 'View All Jobs': 48 postings, including a Quarterly Part-Time Associate Faculty - Atmospheric Sciences role. Note: this ctclink page loads only a search shell on initial page view; a click/search step is needed to populate listings, so a scraper would need to handle that."
+    },
+    {
+      "name": "Casper College",
+      "homepage_url": "https://www.caspercollege.edu/",
+      "career_url": "https://www.schooljobs.com/careers/caspercollege",
+      "platform_type": "schooljobs",
+      "notes": "Configured HR landing page links out to this NEOGOV/schooljobs portal instead of hosting listings itself. Verified live: faculty posting present (Adjunct Faculty - World Languages (Spanish)) among current openings."
+    },
+    {
+      "name": "Catawba College",
+      "homepage_url": "https://www.catawba.edu/",
+      "career_url": "https://www.catawba.edu/jobs/",
+      "platform_type": "generic",
+      "notes": "Configured /careers page is a Career Services (student-facing) hub with no employment listings; the actual employment page is /jobs/. Verified live: current openings include Adjunct Teaching Instructors - Chemistry (Job 26008)."
+    },
+    {
+      "name": "Catholic Theological Union at Chicago",
+      "homepage_url": "https://www.ctu.edu/",
+      "career_url": "https://ctu.edu/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real jobs page linked from nav. Verified live: 1 current posting (Director of Mission & Ministry) - not faculty, but a real, correctly functioning jobs page."
+    },
+    {
+      "name": "Cayuga County Community College",
+      "homepage_url": "https://www.cayuga-cc.edu/",
+      "career_url": "https://cayuga.interviewexchange.com/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the HR page links to this InterviewExchange portal. Verified live: current postings include Adjunct Faculty - Geology and Adjunct Faculty - Physics."
+    },
+    {
+      "name": "Cecil College",
+      "homepage_url": "https://www.cecil.edu/",
+      "career_url": "https://www.cecil.edu/about-us/employment",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the real employment page embeds a JobScore widget (not captured by a simple text scrape without waiting for the iframe). Verified live via the widget: many current faculty/instructor postings (Adjunct Faculty in Anatomy & Physiology, Equine Studies, Landscape Design, Nursing Clinical, Physical Science; Adjunct Instructor in English, Mathematics, Paramedic/EMT, Physics; plus CDL/Diesel/Electrical/Solar instructor roles)."
+    },
+    {
+      "name": "Cedarville University",
+      "homepage_url": "https://www.cedarville.edu/",
+      "career_url": "https://www.cedarville.edu/offices/human-resources",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; University Human Resources page lists postings directly. Verified live: 2 current faculty postings (Assistant/Associate Professor of Visual Communication Design; Assistant/Associate Professor of Management)."
+    },
+    {
+      "name": "Central Baptist College",
+      "homepage_url": "https://www.cbc.edu/",
+      "career_url": "https://www.cbc.edu/jobs",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/academics/faculty-jobs) is a directory-style page that just links out to /jobs, the real listings page. Verified live: current faculty postings include Accounting Faculty, Adjunct Faculty, Business Adjunct Faculty, Mathematics Faculty, and Physical Science Adjunct."
+    },
+    {
+      "name": "Central Christian College of the Bible",
+      "homepage_url": "https://centralbible.edu/",
+      "career_url": "https://centralbible.edu/about-central/employment",
+      "platform_type": "generic",
+      "notes": "The institution has rebranded as Central Bible University and moved off the configured cccb.edu domain to centralbible.edu (old domain now redirects there). Verified live on the new domain's employment page: 1 current opening (Lang Resident Director) - not faculty, but a real, live listings page on the institution's current domain."
+    },
+    {
+      "name": "Central College",
+      "homepage_url": "https://central.edu/",
+      "career_url": "https://central.edu/job-seekers/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real job-seekers page linked from nav, with explicit Administrative/Staff and Faculty sections. Verified live: several administrative/staff openings; faculty section explicitly states 'No faculty openings at this time' - real, current infrastructure, just no faculty posting right now."
+    },
+    {
+      "name": "Central Community College",
+      "homepage_url": "https://cccneb.edu/",
+      "career_url": "https://centralcc.peopleadmin.com/postings/search",
+      "platform_type": "generic",
+      "notes": "Configured /employment/ page is a landing page ('VIEW ALL OPEN POSTINGS') linking to this PeopleAdmin search instead of hosting listings itself. Verified live: 3 postings including a Part-Time Evening GED Instructor role."
+    },
+    {
+      "name": "Central Methodist University-College of Liberal Arts and Sciences",
+      "homepage_url": "https://www.centralmethodist.edu/",
+      "career_url": "https://www.centralmethodist.edu/about/offices/human-resources/jobs-fayette/index-faculty.html",
+      "platform_type": "generic",
+      "notes": "Same institution/domain as the College of Graduate and Extended Studies record. Was pointing at the bare homepage; real Faculty Employment Opportunities page verified live with 3 current faculty postings (Nursing Faculty, Adjunct - Microsoft Office Instructor, Adjunct-Nursing Faculty)."
+    },
+    {
+      "name": "Centenary College of Louisiana",
+      "homepage_url": "https://www.centenary.edu/",
+      "career_url": "https://www.centenary.edu/directories/offices-services-directory/human-resources/job-opportunities/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Job Opportunities page found via HR nav. Verified live: current postings include Administrative Assistant to the Dean of Health Sciences, Assistant Athletic Trainer, and others - no faculty-titled posting visible at check time, but a real, live listings page."
+    },
+    {
+      "name": "Central New Mexico Community College",
+      "homepage_url": "https://www.cnm.edu/",
+      "career_url": "https://chess.wd1.myworkdayjobs.com/CNMJOBS",
+      "platform_type": "workday",
+      "notes": "Configured career_url is a CNM-hosted landing page ('Apply for Jobs at CNM') that just links to this Workday site instead of hosting listings. Verified live: 63 postings, several faculty (Part Time Instructor - Carpentry, Psychology, Machine Tool Technology, History, Aviation Maintenance Technology)."
+    },
+    {
+      "name": "Central Pennsylvania Institute of Science and Technology",
+      "homepage_url": "https://cpi.edu/",
+      "career_url": "https://cpi.edu/company/cpi/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the real 'CPI Employment' page (distinct from the student/alumni job board at /jobs/, which lists external employer openings, not CPI's own) is at /company/cpi/. Verified live: 2 current postings (Instructor - Computer Systems Networking and Telecommunications; Assistant Instructor - Diesel Technology Programs)."
+    },
+    {
+      "name": "Central Piedmont Community College",
+      "homepage_url": "https://www.cpcc.edu/",
+      "career_url": "https://www.schooljobs.com/careers/cpcc",
+      "platform_type": "schooljobs",
+      "notes": "Configured employment-opportunities page is a landing page linking to this NEOGOV/schooljobs portal instead of hosting listings. Verified live: faculty postings present (FT Instructor, Nursing (9 month position); Part Time Math Instructor Assistant)."
+    },
+    {
+      "name": "Centralia College",
+      "homepage_url": "https://www.centralia.edu/",
+      "career_url": "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=120",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the 'Jobs @ CC' link goes to this ctclink (shared WA state community/technical college HR system) search, scoped to Centralia via SiteId=120. Verified live after 'View All Jobs': 8 postings including Construction Trades Assistant Professor (Full-time, Tenure-track) and Adjunct Nursing Instructor. Note: page loads only a search shell initially; a search/click step is needed to populate listings."
+    },
+    {
+      "name": "Centre College",
+      "homepage_url": "https://www.centre.edu/",
+      "career_url": "https://www.centre.edu/about/employment-centre",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Employment at Centre page linked from nav. Verified live: page explicitly states 'Faculty postings are currently on hold. They will resume May 1, 2026' with separate View Faculty/Staff Positions links - real, correctly functioning employment infrastructure, just paused for faculty at check time."
+    },
+    {
+      "name": "Chabot College",
+      "homepage_url": "https://www.chabotcollege.edu/",
+      "career_url": "https://clpccd.peopleadmin.com/postings/search",
+      "platform_type": "generic",
+      "notes": "Configured /employment page is a landing page linking to this district-wide (Chabot-Las Positas CCD) PeopleAdmin search instead of hosting listings. Verified live: 4 current postings, with an explicit Faculty position-type filter category available."
+    },
+    {
+      "name": "Chadron State College",
+      "homepage_url": "https://www.csc.edu/",
+      "career_url": "https://www.csc.edu/hr/job-opportunities/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Job Opportunities page linked from nav. Verified live: current faculty posting (Education Faculty-Literacy/Reading Specialist)."
+    },
+    {
+      "name": "Charles R Drew University of Medicine and Science",
+      "homepage_url": "https://www.cdrewu.edu/",
+      "career_url": "https://recruiting2.ultipro.com/CHA1037CHRS/JobBoard/7fb6ae1e-e3f6-44ac-8694-2577af27ab6b/?q=&o=postedDateDesc&w=&wc=&we=&wpst=",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the 'Employment' link goes to this Ultipro/UKG recruiting portal. Verified live: 47 openings, heavily faculty (multiple Assistant Professor postings, Adjunct Assistant/Associate Professor roles across Health & Life Sciences, Physician Assistant, Radiology Technology, Genetic Counseling, plus several College of Medicine/Nursing open-rank faculty positions)."
+    },
+    {
+      "name": "Charleston Southern University",
+      "homepage_url": "https://www.charlestonsouthern.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=9B25CFBC4D1E53FBF3D00067C7C0E531",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the Careers office page links to this Paycom recruiting portal. Verified live: 39 postings, many faculty (Adjunct Professor of American Sign Language, Adjunct Professor of Spanish, Adjunct Professor of Mathematics, Tenure Track Assistant/Associate Professor of Geology)."
+    },
+    {
+      "name": "Charter Oak State College",
+      "homepage_url": "https://www.charteroak.edu/",
+      "career_url": "https://www.charteroak.edu/aboutus/employment.php",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Employment Opportunities page linked from nav. Verified live: 2 current postings, 1 faculty (Adjunct Faculty - Bachelor of Social Work)."
+    },
+    {
+      "name": "Cheyney University of Pennsylvania",
+      "homepage_url": "https://cheyney.edu/",
+      "career_url": "https://www.schooljobs.com/careers/cheyneyedu",
+      "platform_type": "schooljobs",
+      "notes": "Configured employment-opportunities page is a landing page ('CLICK HERE TO VIEW OUR CURRENT JOB OPENINGS') linking to this NEOGOV/schooljobs portal. Verified live: many faculty postings (Adjunct Business/Early Childhood Education/Mathematics/Organic Chemistry/English Instructor pools, Assistant Professor of Business-Accounting Emphasis, Assistant Professor of Music and Band Director)."
+    },
+    {
+      "name": "Chief Dull Knife College",
+      "homepage_url": "https://www.cdkc.edu/",
+      "career_url": "https://www.cdkc.edu/faculty-staff/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real employment page linked from nav. Verified live: real, correctly functioning employment page ('Current Openings' section), though no positions were listed at check time."
+    },
+    {
+      "name": "Chipola College",
+      "homepage_url": "https://www.chipola.edu/",
+      "career_url": "https://www.chipola.edu/about/administrative-offices/human-resources/job-openings/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Job Openings page linked from nav. Verified live: 6 postings, 3 faculty (Instructor - HVAC/R, Instructor - Chemistry, Instructor - Physics, plus Instructor - Information Technology/Cyber Security)."
+    },
+    {
+      "name": "Chippewa Valley Technical College",
+      "homepage_url": "https://www.cvtc.edu/",
+      "career_url": "https://careers-cvtc.icims.com/",
+      "platform_type": "icims",
+      "notes": "Was pointing at the bare homepage; the 'Employment' link goes to this iCIMS portal. The intro page itself renders almost no text outside its embedded search iframe, but the iframe content (verified by rendering it directly) lists numerous Adjunct Faculty category listings (Academic Services/Adult Education, Agriculture, Architecture & Construction, Business/Finance/Hospitality, General Education/Liberal Arts, Health Sciences, Human Services & Education, Information Technology, and more)."
+    },
+    {
+      "name": "Christopher Newport University",
+      "homepage_url": "https://cnu.edu/",
+      "career_url": "https://jobs.cnu.edu/",
+      "platform_type": "generic",
+      "notes": "Configured career_url (cnu.edu/hr/employment/) is a landing page linking to this PeopleAdmin site instead of hosting listings. Verified live: real, correctly functioning ATS with an explicit 'Full-time instructional faculty' position-type category, though no specific posting titles rendered in the default view."
+    },
+    {
+      "name": "Cisco College",
+      "homepage_url": "https://www.cisco.edu/",
+      "career_url": "https://www.cisco.edu/about/offices/human-resources/employment",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Employment page linked from nav. Verified live: heavily faculty-titled postings (Child Development/Education Professor, Government Professor, Associate Degree Nursing Clinical Professor, History Professor, Vocational Nursing Program Professor, plus several Adjunct/Clinical Professor and Instructor roles)."
+    },
+    {
+      "name": "City Vision University",
+      "homepage_url": "https://www.cityvision.edu/",
+      "career_url": "https://cityvisionuniversity.applytojob.com/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the 'Job Openings' link goes to this ApplyToJob portal. Verified live: 2 current faculty postings (Adjunct Faculty in Addiction Counseling; Adjunct Faculty in Nonprofit Management), both remote."
+    },
+    {
+      "name": "Claremont Lincoln University",
+      "homepage_url": "https://claremontlincoln.edu/",
+      "career_url": "https://claremontlincoln.edu/careers-at-clu/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Careers page linked from nav. Verified live: real, correctly functioning careers page describing part-time teaching/scholar-practitioner roles, though no specific posting was listed at check time."
+    },
+    {
+      "name": "Clark College",
+      "homepage_url": "https://www.clark.edu/",
+      "career_url": "https://www.schooljobs.com/careers/clarkcollege",
+      "platform_type": "schooljobs",
+      "notes": "Configured /about/jobs-and-employment page is a landing directory linking out to per-category schooljobs.com pages (Staff/Faculty/Admin/PT-Hrly) instead of hosting listings. Verified live on the base schooljobs.com portal: 36 jobs, several faculty (Part-time Advanced Manufacturing Professor, Allied Health Professors, Anthropology Professor, BASHS Professor, Biology Professor)."
+    },
+    {
+      "name": "Clark State College",
+      "homepage_url": "https://www.clarkstate.edu/",
+      "career_url": "https://www.clarkstate.edu/community/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Employment page linked from nav, with a distinct 'Adjunct Faculty Positions' section. Verified live: real, correctly functioning employment page with separate Full/Part-Time and Adjunct Faculty listings sections."
+    },
+    {
+      "name": "Clarke University",
+      "homepage_url": "https://www.clarke.edu/",
+      "career_url": "https://clarke.applicantpool.com/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the 'EMPLOYMENT OPPORTUNITIES' link goes to this ApplicantPool portal. Verified live: 14 postings, several faculty (Business Adjunct Faculty, Nursing Adjunct Instructors, Nursing Faculty, Organic Chemistry Adjunct)."
+    },
+    {
+      "name": "Clarkson College",
+      "homepage_url": "https://www.clarksoncollege.edu/",
+      "career_url": "https://nebraskamed.wd5.myworkdayjobs.com/en-US/Clarkson",
+      "platform_type": "workday",
+      "notes": "Configured /about/employment-opportunities page is a landing page linking to this Nebraska Medicine-hosted Workday site (Clarkson College is affiliated with Nebraska Medicine). Verified live: 13 postings, heavily faculty (Nurse Aide Instructor, Professional Development Instructor, Undergraduate Mental Health Nursing Adjunct Faculty, Undergraduate Nursing Med/Surg Adjunct Faculty, and open-rank clinical faculty roles)."
+    },
+    {
+      "name": "Clarkson University",
+      "homepage_url": "https://www.clarkson.edu/",
+      "career_url": "https://careerhub-clarkson.icims.com/",
+      "platform_type": "icims",
+      "notes": "Was pointing at the bare homepage; the Human Resources page's 'Career Opportunities' link goes to this iCIMS portal. The intro page itself shows little text, but its embedded search iframe (verified by rendering it directly) lists postings including Visiting Assistant Professor of Engineering Science."
+    },
+    {
+      "name": "Clatsop Community College",
+      "homepage_url": "https://www.clatsopcc.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=e43f1cd5-3b22-4590-ab84-adfbf606d8c7&ccId=19000101_000001&lang=en_US",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the HR page's 'Current Job Openings' link goes to this ADP Workforce Now portal. Verified live: 10 postings including a Part Time Faculty Pool listing and a PTF Phys Ed posting."
+    },
+    {
+      "name": "Clear Creek Baptist Bible College",
+      "homepage_url": "https://ccbbc.edu/",
+      "career_url": "https://ccbbc.edu/careers",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Careers page linked from nav. Verified live: real, correctly functioning careers page, though it explicitly states 'There are no positions available at this time.'"
+    },
+    {
+      "name": "Cleary University",
+      "homepage_url": "https://www.cleary.edu/",
+      "career_url": "https://recruitingbypaycor.com/career/CareerHome.action?clientId=8a7883d096d0d55a019731393c7f56d9",
+      "platform_type": "generic",
+      "notes": "Configured /employment page embeds this Paycor recruiting widget rather than hosting listings itself. Verified live: many faculty postings (multiple Adjunct Faculty in-person course sections in Business/Finance/Management/Marketing/Operations/Philosophy, plus Director of the Center for Emerging Technology & Associate Professor and similar Director/Associate Professor roles)."
+    },
+    {
+      "name": "Cleveland Institute of Art",
+      "homepage_url": "https://www.cia.edu/",
+      "career_url": "https://www.cia.edu/about-us/careers-at-cia/",
+      "platform_type": "generic",
+      "notes": "Configured /faculty/jobs page 404s (redirects to an error page); the real 'Work at CIA' page embeds a Paycor recruiting widget. Verified live via the embedded widget: current postings include Adjunct Faculty - Art History, Visual Culture, Media Studies and Adjunct Faculty - Visual Culture."
+    },
+    {
+      "name": "Cleveland State University",
+      "homepage_url": "https://www.csuohio.edu/",
+      "career_url": "https://hrjobs.csuohio.edu/postings/search",
+      "platform_type": "generic",
+      "notes": "Configured career_url is on the correct PeopleAdmin ATS domain but hard-filters to query_position_type_id[]=1 (Staff only), which structurally excludes Faculty postings even though they exist on the same site. Verified live on the unfiltered search: 90 postings total, including several Faculty-type postings (Assistant Professor, Law College; Part-Time Single Term Instructor, Mathematics and Statistics; Visiting Assistant College Lecturer, Music Therapy). Recommend switching to the unfiltered (or Faculty-filtered) search URL."
+    },
+    {
+      "name": "Cloud County Community College",
+      "homepage_url": "https://www.cloud.edu/",
+      "career_url": "https://www.cloud.edu/about/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Employment page linked from nav. Verified live: current faculty posting (Part-Time Music Instructor & Choir Director at Geary County Campus)."
+    },
+    {
+      "name": "Coahoma Community College",
+      "homepage_url": "https://www.coahomacc.edu/",
+      "career_url": "https://www.coahomacc.edu/employee-services/jobs/index.html",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Job Opportunities page linked from nav. Verified live: many instructor postings (Adjunct Paramedic Instructor, Adjunct Voice Instructor, EMT Adjunct Instructor, MIBEST Instructor, Paramedic Program Clinical Coordinator/Instructor, Practical Nursing Instructor)."
+    },
+    {
+      "name": "Coastline Community College",
+      "homepage_url": "https://www.coastline.edu/",
+      "career_url": "https://www.schooljobs.com/careers/cccd",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the bare homepage; Coastline is one of three colleges under the Coast Community College District, which shares a single NEOGOV/schooljobs job portal (linked from the homepage's Employment link). Verified live: same shared portal as Coast CCD District Office, with faculty postings including Instructor, Physical Therapy Assisting & Program Director."
+    },
+    {
+      "name": "Columbia Gorge Community College",
+      "homepage_url": "https://www.cgcc.edu/",
+      "career_url": "https://recruiting.paylocity.com/recruiting/jobs/All/d6da5049-ed7e-41df-9e44-8603a60cc6e2/Columbia-Gorge-Community-College",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic \"Jobs at CGCC\" landing page (0 jobs shown directly); route to their Paylocity recruiting portal (linked from that page but not scraped itself). Verified live: 8 postings, 3 instructor-titled (Small Business Advisor/Instructor, Adjunct Instructor Pool, Clinical Nursing Instructor - part-time)."
+    },
+    {
+      "name": "Columbus College of Art & Design",
+      "homepage_url": "https://www.ccad.edu/",
+      "career_url": "https://ccad.applicantpro.com/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage (0 jobs); route to their ApplicantPro job board. Verified live: 4 postings, 2 adjunct faculty (Adjunct Instructor - Philosophy, Adjunct Instructor - Marketing and Fundraising for the Arts)."
+    },
+    {
+      "name": "Community College of Baltimore County",
+      "homepage_url": "https://www.ccbcmd.edu/",
+      "career_url": "https://www.schooljobs.com/careers/ccbcmd/fulltimefaculty",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at ccbcmd.edu/jobs, a landing page with category buttons but no listed postings; route directly to the Full-Time Faculty search on their NEOGOV/schooljobs portal (linked from that page). Verified live: 5 jobs found, all faculty (Aviation Faculty 10-Month, Civil-Survey Engineering Faculty, Digital Media Production Faculty, Nursing Faculty Medical-Surgical, Nursing Program Director)."
+    },
+    {
+      "name": "Community College of Denver",
+      "homepage_url": "https://www.ccd.edu/",
+      "career_url": "https://www.schooljobs.com/careers/ccd",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the bare homepage; route to their NEOGOV/schooljobs portal. Verified live: real ATS infrastructure confirmed but 0 current openings (\"No jobs at this time\") - kept since it's clearly the correct portal for any future postings."
+    },
+    {
+      "name": "Concordia University-Chicago",
+      "homepage_url": "https://www.cuchicago.edu/",
+      "career_url": "https://cuchicago.applicantpro.com/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic employment landing page (0 jobs shown); route to their ApplicantPro job board (linked from that page but not scraped itself). Verified live: 15 postings, 3 faculty (Adjunct Faculty - English Composition, Adjunct Faculty - Nursing, Assistant/Associate Professor of Health Science and Human Performance)."
+    },
+    {
+      "name": "Copper Mountain Community College",
+      "homepage_url": "https://www.cmccd.edu/",
+      "career_url": "https://www.schooljobs.com/careers/cmccd",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the bare homepage; route to their NEOGOV/schooljobs portal. Verified live: 18 jobs found, 7 instructor-titled (Adult Education, Astronomy, Chemistry, CIS, Construction Trades, EMT, and Noncredit ESL instructors, all part-time faculty)."
+    },
+    {
+      "name": "Commonwealth University of Pennsylvania",
+      "homepage_url": "https://www.commonwealthu.edu/",
+      "career_url": "https://commonwealthu.peopleadmin.com/postings/search",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to their PeopleAdmin job board covering the merged Bloomsburg/Lock Haven/Mansfield campuses. Verified live: 62 postings, including faculty (Instructor - Mathematics AY 2026/27) among staff and coaching roles."
+    },
+    {
+      "name": "Community College of Beaver County",
+      "homepage_url": "https://www.ccbc.edu/",
+      "career_url": "https://ccbc.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the real employment page (linked from the homepage) lists current openings directly in HTML with Dayforce apply links. Verified live: about 12 postings, with 8 faculty (Adjunct Faculty - Professional Piloting, Air Traffic Control, Rad Tech, Nursing, Vet Tech, Nursing Clinical Obstetrics, Biology, Mathematics, plus Full-Time Faculty - Nursing)."
+    },
+    {
+      "name": "Contra Costa College",
+      "homepage_url": "https://www.contracosta.edu/",
+      "career_url": "https://www.4cdcareers.net/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; Contra Costa College is one of three colleges under the Contra Costa Community College District, which shares a single PeopleAdmin job portal (4cdcareers.net). Verified live: 16 faculty postings in the Faculty Positions search, including one specific to Contra Costa College (Adjunct Instructor (TEMPORARY) - FAMA Studio Art) alongside Los Medanos College and Diablo Valley College postings."
+    },
+    {
+      "name": "Covenant College",
+      "homepage_url": "https://www.covenant.edu/",
+      "career_url": "https://covenant.workbrightats.com/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic employment page (0 jobs shown); route to their WorkBright ATS job board (linked from that page but not scraped itself). Verified live: 8 postings, 3 faculty (Adjunct Faculty - College Algebra, Tenure Track Faculty - Business and Sport Management, Visiting Assistant Professor in Spanish)."
+    },
+    {
+      "name": "Concordia University-Saint Paul",
+      "homepage_url": "https://www.csp.edu/",
+      "career_url": "https://recruitingbypaycor.com/career/CareerHome.action?clientId=8a7883d0838c33b10183aa4f3eb00892",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to their Paycor recruiting portal. Verified live: about 28 postings, 9 faculty-titled (Contracted Faculty of Practice adjuncts in Biology/Microbiology, Business Management, Calculus PSEO, Kinesiology dissertation advising, MAT K-6, Ceramics, Nursing, Diagnostic Medical Sonography, plus a Tenure-Track Faculty in Doctoral Education and a Full-Time Faculty of Practice in Diagnostic Medical Sonography)."
+    },
+    {
+      "name": "College of the Canyons",
+      "homepage_url": "https://www.canyons.edu/",
+      "career_url": "https://www.schooljobs.com/careers/canyons/academic",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the bare homepage; the college's own Jobs at COC page (canyons.edu) links to this NEOGOV/schooljobs Academic Positions search. Verified live: multiple pages of adjunct instructor postings (Accounting, Administration of Justice, American Sign Language, Animation, Anthropology, Architecture, Art, Astronomy, Automotive Technology, and more)."
+    },
+    {
+      "name": "Cottey College",
+      "homepage_url": "https://www.cottey.edu/",
+      "career_url": "https://cottey.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the real employment page (linked from the homepage) lists current openings directly in HTML with HR Alliance apply links. Verified live: 0 faculty openings at this time (\"There are no open faculty positions at this time\") but real Administrative, Staff, and Athletics postings confirm correct infrastructure - kept for future faculty postings."
+    },
+    {
+      "name": "College of the Mainland",
+      "homepage_url": "https://www.com.edu/",
+      "career_url": "https://jobs.com.edu/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to their PeopleAdmin job board (linked from the homepage). Verified live: 116 postings, at least 11 faculty (Adjunct Instructor of Cosmetology, Vocational Nursing Adjunct Faculty, Adjunct - Welding, Adjunct Dramatic Arts Instructor, Adjunct Instructor - EMS Skills Lab, Medical Assisting Program Coordinator/Faculty, Adjunct Instructor - CNA, Radiologic Technology, Sterile Processing, Dental Assistant, and Faculty - Philosophy)."
+    },
+    {
+      "name": "Collins Career Technical Center",
+      "homepage_url": "https://www.collins-cc.edu/",
+      "career_url": "https://jobs.collins-cc.edu/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to their easy.jobs-powered job board (custom domain jobs.collins-cc.edu). Verified live: 6 postings, 3 teaching-related (Driver's Education Instructor, Substitute Teacher, Math Teacher)."
+    },
+    {
+      "name": "Colorado State University-System Office",
+      "homepage_url": "https://www.csusystem.edu/",
+      "career_url": "https://csusystem.edu/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to the System Office's own Careers page, which aggregates postings from CSU Fort Collins, CSU Pueblo, CSU Global, and CSU Spur. Verified live: 1 current System Office posting (Office and Policy Coordinator - Office of General Counsel, Pueblo), non-faculty but confirms correct infrastructure."
+    },
+    {
+      "name": "College of Southern Idaho",
+      "homepage_url": "https://www.csi.edu/",
+      "career_url": "https://csi-openhire.silkroad.com/epostings/index.cfm?fuseaction=app.allpositions&company_id=17127&version=1",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage. The homepage's \"Employment / HR\" link leads to an HR page whose real openings are hosted on a SilkRoad OpenHire ATS (a separate, student-only \"Eagle Jobs\" board also linked from HR is NOT this - that one is for student internships/part-time jobs, not CSI employment, and was avoided). Verified live: 18 postings, 6 instructor-titled (ELA Instructor, Photography and General Education Instructor, Registered Nursing Instructor x2, Workforce AI & Applied Technology Instructor, Workforce Business/Leadership Instructor, Workforce Electrical Apprenticeship Instructor)."
+    },
+    {
+      "name": "Colgate University",
+      "homepage_url": "https://www.colgate.edu/",
+      "career_url": "https://www.colgate.edu/jobs-colgate",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to their own Jobs at Colgate page, which links out to Staff and Faculty Opportunities sections. Verified live: at least 1 current faculty posting (Tenure Track Assistant Professor in International Relations, Political Science)."
+    },
+    {
+      "name": "Connors State College",
+      "homepage_url": "https://connorsstate.edu/",
+      "career_url": "https://jobs.okstate.edu/connors-state-college-home",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; Connors State is part of the Oklahoma State University/A&M system and uses a shared career-pages.com-based portal, filtered specifically to the \"Connors (CSC)\" department (not other OSU system schools). Verified live: 1 current faculty posting (PTA Program Chair, Muskogee)."
+    },
+    {
+      "name": "College of Athens",
+      "homepage_url": "https://collegeofathens.edu/",
+      "career_url": "https://collegeofathens.edu/coa-employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the college's own CoA Employment page lists genuine, current CoA openings directly in HTML (Staff Positions, Teaching Faculty Positions). Note: this is distinct from the college's separate 'Community Job Board' page (a bulletin board for outside job listings), which was NOT used, to avoid misattributing other organizations' jobs. Verified live: 1 evergreen Part-Time Instructor Positions call plus 3 staff/work-study openings, all specific to College of Athens itself."
+    },
+    {
+      "name": "Crown College",
+      "homepage_url": "https://www.crown.edu/",
+      "career_url": "https://secure5.entertimeonline.com/ta/CBIZ20706.careers?CareersSearch",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to their EnterTimeOnline/CBIZ ATS job board (linked from the homepage's Careers page). Verified live: 27 postings, 3 faculty (Faculty in Residence - Worship Ministry, On Campus Adjunct, Visiting Professor of Biochemistry)."
+    },
+    {
+      "name": "Culinary Institute of America",
+      "homepage_url": "https://www.ciachef.edu/",
+      "career_url": "https://recruiting.ultipro.com/CUL1001CLNRY/JobBoard/5d1a692d-cf6b-4b4f-8652-c60b25898609/?q=&o=postedDateDesc",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the homepage's Careers at CIA page links out to separate UKG/Ultipro job boards per campus (New York, California, Texas, Remote) - this override uses the main Hyde Park, NY campus board. Verified live: 33 postings, 12 faculty-titled (Spanish Faculty, Baking & Pastry Chef Instructor, Culinary Chef Instructor, Dining Room Service Faculty, Culinary Science Instructor, Elementary Spanish Adjunct, Introduction to Gastronomy Adjunct, College Writing Adjunct, Intro to Math Adjunct, Intro to Hospitality Adjunct, Dean - School of Culinary Arts, Associate Dean - Culinary Initiatives and Innovation)."
+    },
+    {
+      "name": "Culver-Stockton College",
+      "homepage_url": "https://www.culver.edu/",
+      "career_url": "https://culver.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the real employment page (linked from the homepage) lists current openings directly in HTML. Verified live: about 24 postings, 2 faculty (Adjunct Instructor of Physics, Assistant Professor of Physical Education)."
+    },
+    {
+      "name": "Curry College",
+      "homepage_url": "https://www.curry.edu/",
+      "career_url": "https://curry.interviewexchange.com/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic HR/employment landing page; that page's real 'Faculty and Staff Opportunities' link hands off to Interview Exchange. Verified live: many faculty postings (Associate Lecturer Finance, Assistant Professor ASN Nursing (Special Appointment), Part-Time Nursing Faculty, Part-Time Faculty Exercise Science, Adjunct Lecturer Sport and Recreation Management, and more - 15+ faculty-titled postings)."
+    },
+    {
+      "name": "Curtis Institute of Music",
+      "homepage_url": "https://www.curtis.edu/",
+      "career_url": "https://www.curtis.edu/about/administration/work-at-curtis/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Careers at Curtis page found via site navigation. Verified live: real infrastructure but 'There are no open positions at this time' - 0 current openings, kept so future postings are picked up."
+    },
+    {
+      "name": "D'Youville University",
+      "homepage_url": "https://www.dyu.edu/",
+      "career_url": "https://dyouville-university.prismhr-hire.com/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; hands off to a PrismHR recruiting portal. Verified live: real postings including 'College of Osteopathic Medicine - Chair, Primary Care' (academic leadership role); no rank-and-file teaching faculty posting visible at time of check."
+    },
+    {
+      "name": "Dakota College at Bottineau",
+      "homepage_url": "https://www.dakotacollege.edu/",
+      "career_url": "https://www.dakotacollege.edu/explore-dcb/employment",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real employment page lists current postings directly in a table. Verified live: includes 1 faculty posting (Nursing Faculty - Bottineau Campus) among current openings."
+    },
+    {
+      "name": "Dallas Baptist University",
+      "homepage_url": "https://www.dbu.edu/",
+      "career_url": "https://recruiting.adp.com/srccar/public/RTI.home?c=1174615&d=DBUCareerSite",
+      "platform_type": "generic",
+      "notes": "Was pointing at a site-search results page (0 jobs); the real HR page links to this ADP recruiting portal. Verified live: real ADP infrastructure with current postings including Adjunct Faculty (Undergraduate Teaching)."
+    },
+    {
+      "name": "Dallas Theological Seminary",
+      "homepage_url": "https://www.dts.edu/",
+      "career_url": "https://www.dts.edu/employment",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real employment page hands off to Paycom. Verified live: faculty postings including Counseling Ministries Professor and Missiology and Intercultural Ministries Faculty."
+    },
+    {
+      "name": "Danville Community College",
+      "homepage_url": "https://danville.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query=&query_organizational_tier_2_id%5B%5D=3690&commit=Search",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic careers landing page (no jobs shown directly); the real listing is the VCCS system-wide jobs board filtered to Danville CC's organizational tier (tier id 3690). Verified live: 4 postings specific to Danville CC (e.g., Adjunct Workforce Trainers)."
+    },
+    {
+      "name": "Daytona State College",
+      "homepage_url": "https://www.daytonastate.edu/",
+      "career_url": "https://www.schooljobs.com/careers/daytonastate/faculty",
+      "platform_type": "schooljobs",
+      "notes": "Configured career_url 404'd; the real Career Opportunities page links to a dedicated Faculty category on schooljobs.com. Verified live: 4 postings including Faculty, Aviation Maintenance."
+    },
+    {
+      "name": "Delaware County Community College",
+      "homepage_url": "https://www.dccc.edu/",
+      "career_url": "https://www.schooljobs.com/careers/dccc",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the bare homepage; real employment page links to schooljobs.com. Verified live: 36 postings, many adjunct faculty (Adjunct Advanced Manufacturing Technology, Adjunct Allied Health, Adjunct Anatomy & Physiology, Adjunct Automotive, Adjunct Biology, Adjunct Carpentry, Adjunct Chemistry Instructors, and more)."
+    },
+    {
+      "name": "Delgado Community College",
+      "homepage_url": "https://www.dcc.edu/",
+      "career_url": "https://careers.lctcs.edu/?colleges=DCC",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Careers at Delgado page links to the Louisiana Community & Technical College System (LCTCS) board filtered to Delgado (DCC). Verified live: 29 postings specific to DCC (e.g., Instructor of Culinary Arts, Assistant Baseball Coach - Pitching)."
+    },
+    {
+      "name": "DePaul University",
+      "homepage_url": "https://www.depaul.edu/",
+      "career_url": "https://academics.depaul.edu/faculty-jobs/Pages/full-time.aspx",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Employment page links to a dedicated Faculty Jobs portal. Verified live: numerous tenure-track and term faculty postings (Assistant Professor Criminology, Assistant Professor Law, Assistant Professor Nursing BSN, Term Faculty in Anthropology/Economics/Counseling & Special Education, and more)."
+    },
+    {
+      "name": "DHARMA REALM BUDDHIST UNIVERSITY",
+      "homepage_url": "https://www.drbu.edu/",
+      "career_url": "https://www.drbu.edu/hr/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real HR page lists current openings directly. Verified live: 3 postings including Visiting Teaching Fellow, 2026-27 (faculty-adjacent role)."
+    },
+    {
+      "name": "Dine College",
+      "homepage_url": "https://www.dinecollege.edu/",
+      "career_url": "https://dinecollege.isolvedhire.com/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic careers landing page; hands off to isolved Hire. Verified live: 12 postings, several faculty (Assistant/Associate/Professor in Biology/Human Biology, Business Administration Faculty) plus Dean postings for multiple schools."
+    },
+    {
+      "name": "Divine Mercy University",
+      "homepage_url": "https://www.divinemercy.edu/",
+      "career_url": "https://recruiting.paylocity.com/Recruiting/Jobs/All/81ea7622-fbf5-4e47-9dd1-361ca717571c",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; hands off to Paylocity. Verified live: 9 postings, 3 faculty-titled (Online Adjunct Faculty - CMHC, Full-time CMHC Faculty Position, Full-Time Clinical Psychology Faculty Position)."
+    },
+    {
+      "name": "Divine Word College",
+      "homepage_url": "https://www.dwci.edu/",
+      "career_url": "https://www.dwci.edu/academics/employment-opportunities",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real employment page lists current openings directly. Verified live: 2 faculty postings (Music Instructor, ESL Adjunct Faculty Pool) among 3 total openings."
+    },
+    {
+      "name": "Dongguk University Los Angeles",
+      "homepage_url": "https://www.dula.edu/",
+      "career_url": "https://dula.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real employment page lists current openings as forum-style posts. Verified live: a few real, current openings (e.g., Dean of Academic Affairs, Academic Coordinator Assistant); no rank-and-file teaching-faculty posting visible at time of check."
+    },
+    {
+      "name": "Dordt University",
+      "homepage_url": "https://www.dordt.edu/",
+      "career_url": "https://ibmxjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/jobs?lastSelectedFacet=CATEGORIES&selectedCategoriesFacet=300000008610535",
+      "platform_type": "oracle",
+      "notes": "Was pointing at the bare homepage; real Job Openings page links to their Oracle Cloud recruiting site's Faculty category. Verified live: real infrastructure, but 0 open jobs in that category at time of check - kept so future faculty postings are picked up."
+    },
+    {
+      "name": "Drury University",
+      "homepage_url": "https://www.drury.edu/",
+      "career_url": "https://www.drury.edu/academic-affairs/open-faculty-positions/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic HR jobs page; the real dedicated Open Faculty Positions page is linked from there. Verified live: 6 faculty postings (Assistant Professor of Architecture, Open Rank/Tenure-Track Faculty in Electrical Engineering, Visiting Assistant Professor of Accounting, Visiting Assistant Professor in Architectural History, Visiting Assistant Professor in Architectural Design & Representation, Principal Faculty - Physician Assistant Program)."
+    },
+    {
+      "name": "Duquesne University",
+      "homepage_url": "https://www.duq.edu/",
+      "career_url": "https://apply.interfolio.com/11181/positions",
+      "platform_type": "interfolio",
+      "notes": "Configured faculty/jobs URL 404'd; real 'Work at DU' page links to Interfolio. Verified live: 35 total postings across many departments/schools, many adjunct/faculty roles (e.g., Adjunct - Accounting, postings across College of Osteopathic Medicine, Nursing, Law, Physical Therapy)."
+    },
+    {
+      "name": "Eastern Mennonite University",
+      "homepage_url": "https://emu.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/portal/864CD5F3AB350C8D2A97891D7F3F4860/career-page",
+      "platform_type": "generic",
+      "notes": "Was pointing at a student career-services landing page; the real HR careers page links to Paycom. Verified live: 58 postings including faculty (e.g., Adjunct Faculty)."
+    },
+    {
+      "name": "Eastern New Mexico University Ruidoso Branch Community College",
+      "homepage_url": "https://www.ruidoso.enmu.edu/",
+      "career_url": "https://www.schooljobs.com/careers/enmu/transferjobs",
+      "platform_type": "schooljobs",
+      "notes": "Configured faculty/jobs URL 404'd; real employment page links to schooljobs.com filtered to the Ruidoso campus. Verified live: 5 postings, 2 explicitly faculty (Resource Faculty - Career & Technical; Resource Faculty for Business & Information Systems)."
+    },
+    {
+      "name": "Eastern Wyoming College",
+      "homepage_url": "https://ewc.wy.edu/",
+      "career_url": "https://ewc.wy.edu/our-team/jobs-at-ewc/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Jobs at EWC page lists current postings directly via PeopleAdmin. Verified live: real, current posting confirmed (Chief Financial Officer (CFO) and Associate Vice President (AVP)); no faculty-titled posting visible among the postings sampled at time of check."
+    },
+    {
+      "name": "Edward Via College of Osteopathic Medicine",
+      "homepage_url": "https://www.vcom.edu/",
+      "career_url": "https://www.vcom.edu/employment/job-listings",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real Employment page links to a dedicated Job Listings page with a 'Teaching Faculty Positions' filter category. Verified live: real, current posting confirmed (Administrative Assistant for Family Medicine, Rural Primary Care & OB-GYN); no teaching-faculty posting visible in the sample seen."
+    },
+    {
+      "name": "El Paso Community College",
+      "homepage_url": "https://www.epcc.edu/",
+      "career_url": "https://www.schooljobs.com/careers/epcc/",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at a generic HR landing page; the 'EPCC Jobs Posting Database' link there goes to schooljobs.com. Verified live: 173 postings; sample includes instructional roles (3D Printing Instructor - Continuing Education) though no explicit 'Professor/Faculty' title in the first page sampled."
+    },
+    {
+      "name": "Elgin Community College",
+      "homepage_url": "https://elgin.edu/",
+      "career_url": "https://elgin-community-college.career-pages.com/ecc-careers-elgin-community-college",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real 'Jobs at ECC' link goes to a career-pages.com board. Verified live: 107 total postings with a dedicated 'Faculty Jobs' category containing 24 postings."
+    },
+    {
+      "name": "Elizabethtown Community and Technical College",
+      "homepage_url": "https://elizabethtown.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/elizabethtown-jobs",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real 'Job Seekers' link goes to the KCTCS system board, filtered here to Elizabethtown-only postings. Verified live: 32 postings for this college, including a 'Faculty' category (2 items) and 'Adjunct Faculty' category (13 items) - e.g., Adjunct Faculty - Electrical Construction."
+    },
+    {
+      "name": "Elmhurst University",
+      "homepage_url": "https://www.elmhurst.edu/",
+      "career_url": "https://apply.workable.com/elmhurst-edu/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; real jobs link found in site search results goes to Workable. Verified live: current posting confirmed (K-12 Classroom Music Adjunct, for Elmhurst's Learning and Success Academy)."
+    },
+    {
+      "name": "Elon University",
+      "homepage_url": "https://www.elon.edu/",
+      "career_url": "https://jobs.elon.edu/jobs/search",
+      "platform_type": "generic",
+      "notes": "Was pointing at a Careers overview page with no listings shown directly; the 'View Jobs' link on that page goes to Elon's own job board. Verified live: real, current postings across categories including Academic Affairs (10 items); no explicitly faculty-titled posting in the sample seen (mostly staff/administrative)."
+    },
+    {
+      "name": "Emerson College",
+      "homepage_url": "https://emerson.edu/",
+      "career_url": "https://emerson.wd5.myworkdayjobs.com/en-US/Emerson_College_ft_faculty",
+      "platform_type": "workday",
+      "notes": "Was pointing at the HR Careers overview page (which has separate staff/faculty Workday links but no listings itself); this is the dedicated faculty Workday board. Verified live: 2 faculty postings (Contemporary Ethics, Environmental Ethics and Political Philosophy - Marlboro Institute; Affiliated (Part-Time) Faculty Member - Languages of the Stage, Dept of Performing Arts)."
+    },
+    {
+      "name": "Empire State University",
+      "homepage_url": "https://sunyempire.edu/",
+      "career_url": "https://esc.interviewexchange.com/static/clients/397ESM1/index.jsp?catid=802",
+      "platform_type": "generic",
+      "notes": "Was pointing at a student career-services page; the real Employment Opportunities page's 'Explore Faculty Positions' link goes to this Interview Exchange category. Verified live: real, current faculty-related postings (Adjunct Instructors; Field Supervisor - Teacher Education)."
+    },
+    {
+      "name": "Emporia State University",
+      "homepage_url": "https://www.emporia.edu/",
+      "career_url": "https://hr.hornet365.com/open-positions",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the real 'Work at Emporia State' page's 'Join Hornet Nation' link goes to this HR board titled 'Faculty + Staff Open Positions'. Verified live: real, current postings sampled (Associate Director of Student Engagement, Assistant Athletic Trainer, Head of Public Services); no explicitly faculty-titled posting in the sample seen."
+    },
+    {
+      "name": "Enterprise State Community College",
+      "homepage_url": "https://escc.edu/",
+      "career_url": "https://schooljobs.com/careers/accs/enterprise/promotionaljobs",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at a Career Coach/advising sub-page; the real Employment Opportunities page links to this Enterprise-specific schooljobs.com category for part-time faculty/adjunct positions. Verified live: 17 postings, adjunct faculty roles (AMT/AVT Substitute/Adjunct Instructor, Automotive Adjunct Instructor)."
+    },
+    {
+      "name": "Edward Waters University",
+      "homepage_url": "https://www.ew.edu/",
+      "career_url": "https://www.higheredjobs.com/institution/search.cfm?University=Edward%20Waters%20University&suggest=3",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the 'JOBS @ EWU' link on that homepage goes to this HigherEdJobs search filtered specifically to Edward Waters University (not a shared bulletin board - results are scoped by the University query parameter). Verified live: 8 current postings specific to EWU (Assistant Baseball Coach, Director of Career Exploration & Graduate Pathways, Executive Administrative Assistant/Purchasing Coordinator, etc.); no explicitly faculty-titled posting in the sample seen."
+    },
+    {
+      "name": "Essex County College",
+      "homepage_url": "https://www.essex.edu/",
+      "career_url": "https://essex.peopleadmin.com/postings/search",
+      "platform_type": "generic",
+      "notes": "Was pointing at a directory sub-page; real Employment Opportunities page links to this PeopleAdmin board. Verified live: 20 open postings with Position Type filters for Faculty and Adjunct Faculty; individual titles not fully enumerated in this check but real, current infrastructure confirmed."
+    },
+    {
+      "name": "Excelsior University",
+      "homepage_url": "https://www.excelsior.edu/",
+      "career_url": "https://www.excelsior.edu/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to /jobs/ which lists real openings directly (native WordPress-based board, not a third-party ATS). Verified live: ~10 postings, 1 loosely faculty-adjacent (Department Chair, Computer Technology Programs); no strictly tenure-track titles at time of check."
+    },
+    {
+      "name": "Fairleigh Dickinson University-Florham Campus",
+      "homepage_url": "https://www.fdu.edu/",
+      "career_url": "https://jobs.fdu.edu/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to FDU's shared careers portal (same one already used for the FDU-Metropolitan Campus override), which lists 'Faculty Positions' as a category spanning all three FDU campuses (Florham, Metropolitan, Vancouver). Category landing confirmed real; specific current faculty count not verified beyond the category list."
+    },
+    {
+      "name": "Fitchburg State University",
+      "homepage_url": "https://www.fitchburgstate.edu/",
+      "career_url": "https://fitchburg.interviewexchange.com/static/clients/500FSM1/index.jsp",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to Fitchburg State's InterviewExchange job board (linked from the homepage as 'Employment'). Confirmed real ATS with 'Adjunct Faculty' and 'Contract/Hourly Faculty & Librarians' categories; specific current count not verified beyond category list."
+    },
+    {
+      "name": "Farmingdale State College",
+      "homepage_url": "https://www.farmingdale.edu/",
+      "career_url": "https://farmingdale.interviewexchange.com/static/clients/383FAM1/index.jsp",
+      "platform_type": "generic",
+      "notes": "Was pointing at an HR employment-opportunities page with no embedded listing; route to Farmingdale's InterviewExchange board (linked as 'Search Available Positions'). Confirmed real ATS with a 'Faculty' category; specific current count not verified beyond category list."
+    },
+    {
+      "name": "Fayetteville Technical Community College",
+      "homepage_url": "https://www.faytechcc.edu/",
+      "career_url": "https://faytechcc.peopleadmin.com/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to FTCC's PeopleAdmin portal (linked from the homepage as 'Employment Opportunities'). Confirmed real ATS with 'Full Time Faculty' and 'Part Time Faculty' categories; specific current count not verified beyond category list."
+    },
+    {
+      "name": "Florida Institute of Technology-Online",
+      "homepage_url": "https://www.fit.edu/",
+      "career_url": "https://floridatech.wd5.myworkdayjobs.com/FloridaTechCareers",
+      "platform_type": "workday",
+      "notes": "Was pointing at an /employment/ page that only listed categories with no embedded jobs; route to Florida Tech's Workday board (linked as 'View Current Openings and Apply'). Verified live: 53 total postings, 4 clearly faculty/adjunct (ABA Online Adjunct Faculty; 2x Adjunct - MSE; Adjunct Faculty - MCE)."
+    },
+    {
+      "name": "Fresno Pacific University",
+      "homepage_url": "https://www.fresno.edu/",
+      "career_url": "https://fresnoedu.attract.neoed.com/fresno-pacific-university-yP",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to FPU's NEOED careers board (linked as 'Careers'). Verified live: 12 postings, several adjunct faculty (Adjunct Faculty in Administrative Services, Art, Criminology, Earth Science/Geology)."
+    },
+    {
+      "name": "Frederick Community College",
+      "homepage_url": "https://www.frederick.edu/",
+      "career_url": "https://jobs.frederick.edu/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to FCC's dedicated careers portal (linked as 'Work at FCC'). Confirmed real ATS with 'Full-time Faculty & Instructional Staff' and 'Adjunct Faculty' categories; specific current count not verified beyond category list."
+    },
+    {
+      "name": "Fuller Theological Seminary",
+      "homepage_url": "https://www.fuller.edu/",
+      "career_url": "https://fuller.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to Fuller's employment page, which has a distinct 'FACULTY POSITIONS' section separate from staff. Confirmed real infrastructure; specific current faculty-posting count not verified beyond category list."
+    },
+    {
+      "name": "Luther College",
+      "homepage_url": "https://www.luther.edu/",
+      "career_url": "https://go.jobflows.co/LutherCollege",
+      "platform_type": "generic",
+      "notes": "Was pointing at an HR careers landing page with no embedded listing; route to Luther's JobFlows board (linked as 'Open Positions'). Verified live: 9 postings, 1 faculty (Visiting Assistant Professor of Music, vocal coaching and collaborative piano)."
+    },
+    {
+      "name": "Macalester College",
+      "homepage_url": "https://www.macalester.edu/",
+      "career_url": "https://www.macalester.edu/provost/positions-2/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic HR jobs landing page; route to the Provost's Office 'Faculty Openings' page (linked from that page), a manually-maintained faculty-specific listing distinct from Macalester's Workday staff board. Verified live: page loads correctly but explicitly states 'No positions currently available' for tenure-track faculty at time of check — kept as it is the correct, dedicated faculty-postings page."
+    },
+    {
+      "name": "Miami University-Middletown",
+      "homepage_url": "https://miamioh.edu/",
+      "career_url": "https://miamioh.wd5.myworkdayjobs.com/miamioh-faculty",
+      "platform_type": "workday",
+      "notes": "Was pointing at a generic /jobs-and-careers/ landing page; route to Miami University's dedicated Faculty Workday board (linked as 'Open Faculty Positions'). Verified live: 45 postings, essentially all faculty-titled (Visiting Assistant Professor/Instructor in various departments, Assistant/Associate Professor, Ohio Eminent Scholar in Structural Biology). Caveat: this board is shared system-wide across Miami's Oxford main campus and regional campuses (Hamilton, Middletown) with no campus filter, so most postings are likely for Oxford rather than Middletown specifically."
+    },
+    {
+      "name": "Middlebury Institute of International Studies at Monterey",
+      "homepage_url": "https://www.middlebury.edu/institute",
+      "career_url": "https://apply.workable.com/middleburycollege",
+      "platform_type": "generic",
+      "notes": "Was pointing at the Institute's homepage; route to Middlebury's Workable careers board (linked as 'Employment'). Verified live: 'Faculty' category shows 8 open positions at time of check. Caveat: board is shared across all Middlebury College/Institute campuses and schools, not filtered to the Monterey Institute specifically."
+    },
+    {
+      "name": "Florida SouthWestern State College",
+      "homepage_url": "https://www.fsw.edu/",
+      "career_url": "https://jobs.silkroad.com/FSWSC/fswsccareerssilkroadcom/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a /careers landing page with only social-media/Handshake links and no embedded listing; route to FSW's SilkRoad careers board. Verified live: real, paginated listing (5 pages of results, e.g. Student Success Advisor I); no clearly faculty-titled posting visible in the sample reviewed, but confirmed genuine working ATS infrastructure."
+    },
+    {
+      "name": "Frank Phillips College",
+      "homepage_url": "https://www.fpctx.edu/",
+      "career_url": "https://fpctx.edu/jobs/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to FPC's own /jobs/ page, which embeds real current openings directly (native site listing, not a third-party ATS). Verified live: ~17 postings, several faculty/instructor-titled (Geology Instructor, Physics Instructor, Adjunct - Diesel Technology Instructor, CDL - Class A Instructor, Bus Driving Instructor, Welding Instructor)."
+    },
+    {
+      "name": "Fairmont State University",
+      "homepage_url": "https://www.fairmontstate.edu/",
+      "career_url": "https://www.fairmontstatejobs.com/",
+      "platform_type": "generic",
+      "notes": "Configured career_url (/faculty/jobs) now 404s; the real employment portal is fairmontstatejobs.com, linked from the Faculty & Staff page as 'Job Opportunities'. Confirmed real ATS with a distinct Faculty Positions category; specific current count not verified beyond category list."
+    },
+    {
+      "name": "Franciscan Missionaries of Our Lady University",
+      "homepage_url": "https://www.franu.edu/",
+      "career_url": "https://eqtm.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/fmolhs-careers/jobs?keyword=franu&lastSelectedFacet=LOCATIONS&mode=location&selectedLocationsFacet=300000004524509%3B300000004524395",
+      "platform_type": "generic",
+      "notes": "Was pointing at a page stating jobs are posted on the parent health system's site; route to FMOL Health's Oracle Cloud recruiting portal, pre-filtered by keyword=franu to avoid pulling in unrelated FMOLHS hospital postings. Verified live: 10 postings for FranU specifically, 2 faculty (FranU Nursing Instructor PRN; FranU Assistant Professor Physician Assistant)."
+    },
+    {
+      "name": "Florida Polytechnic University",
+      "homepage_url": "https://floridapoly.edu/",
+      "career_url": "https://flpoly.wd1.myworkdayjobs.com/External-Faculty",
+      "platform_type": "workday",
+      "notes": "Was pointing at the bare homepage; route to Florida Poly's dedicated Faculty Workday board (linked from the Careers page as 'Faculty Positions', kept separate from the Staff board). Verified live: 18 postings, ALL faculty-titled (Visiting Assistant Professor Chemistry; Open-Rank Faculty in Electrical/Computer/Cybersecurity Engineering, Computer Science, Mechanical Engineering; several Adjunct Faculty postings across departments)."
+    },
+    {
+      "name": "Fox Valley Technical College",
+      "homepage_url": "https://www.fvtc.edu/",
+      "career_url": "https://fvtc.wd1.myworkdayjobs.com/FVTC",
+      "platform_type": "workday",
+      "notes": "Configured career_url (/academics/faculty-jobs) is actually a generic academics page with no listings; route to FVTC's Workday board (linked from the Careers-at-FVTC page). Verified live: 68 postings, several adjunct instructor faculty (Microbiology, Chemistry, Anatomy & Physiology, Biology, Spanish, Agribusiness/Agronomy, Horticulture, Veterinary Technician, etc.)."
+    },
+    {
+      "name": "Finger Lakes Community College",
+      "homepage_url": "https://www.flcc.edu/",
+      "career_url": "https://www.flcc.edu/jobs/staff/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to FLCC's Faculty & Staff Positions listing (linked from /jobs/ as 'FACULTY & STAFF POSITIONS'). Verified live: real listing UI, 1 clearly faculty posting (Computing Sciences Faculty PRODiG+ CC) among several staff/other roles."
+    },
+    {
+      "name": "Foothill-De Anza Community College District",
+      "homepage_url": "https://www.fhda.edu/",
+      "career_url": "https://www.schooljobs.com/careers/fhda/Faculty",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at a /jobs info page (the district's actual ATS is Taleo, which is excluded per Oracle's ToS); route instead to the district's SchoolJobs/NEOGOV Faculty-filtered board, also linked from the same page. Verified live: 123 faculty-specific postings (e.g., Instructor, Veterinary Technology). This entry represents the two-college district itself (Foothill + De Anza), so a district-wide portal is the correct scope here, not a misattribution case."
+    },
+    {
+      "name": "Northwest Nazarene University",
+      "homepage_url": "https://www.nnu.edu/",
+      "career_url": "https://recruiting.paylocity.com/recruiting/jobs/All/dc628dad-def7-40c4-a8e8-46445f141a37/Northwest-Nazarene-University-Inc",
+      "platform_type": "generic",
+      "notes": "Was pointing at an /employment/ page whose only real links were static individual adjunct-application subpages; route to NNU's Paylocity recruiting board, also linked from that page as 'See Current Openings' (a second, distinct 'NNU-Health-Inc' Paylocity board also exists and was excluded to stay scoped to the university itself). Verified live: 16 postings, 2 faculty (Assistant/Associate Professor of Electrical Engineering; Access Services Librarian - Faculty)."
+    },
+    {
+      "name": "Francis Marion University",
+      "homepage_url": "https://www.fmarion.edu/",
+      "career_url": "https://www.fmarion.edu/availablepositions/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; route to FMU's own /availablepositions/ page, which embeds real current openings directly via a WordPress job-listing plugin (its RSS feed confirms full-time-faculty/part-time-faculty categories exist). Verified live: real listing UI with multiple current postings (Chemistry Laboratory Manager, Administrative Assistant, Benefits and Leave Coordinator, etc.); no clearly faculty-titled posting visible in the sample reviewed at time of check, though the category structure confirms faculty postings do appear here when open."
+    },
+    {
+      "name": "Fletcher Technical Community College",
+      "homepage_url": "https://www.fletcher.edu/",
+      "career_url": "https://careers.lctcs.edu/?colleges=Fletcher+Technical+Community+College",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic HR employment page with no embedded listing; route to the Louisiana Community & Technical College System's shared careers portal, pre-filtered by college=Fletcher Technical Community College (avoids pulling in other LCTCS colleges' postings). Verified live: 25 postings filtered to Fletcher specifically, including faculty-titled roles (Radiologic Technology Clinical Coordinator/Instructor)."
+    },
+    {
+      "name": "Whitworth University",
+      "homepage_url": "https://www.whitworth.edu/",
+      "career_url": "https://www.schooljobs.com/careers/whitworth/faculty",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the general careers landing page; that page links out to a NEOGOV/schooljobs board split into separate staff and faculty boards. Routed to the faculty-specific board. Verified live: real ATS infrastructure with search/filter UI confirmed; 0 current faculty openings at time of check."
+    },
+    {
+      "name": "Palo Alto College",
+      "homepage_url": "https://www.alamo.edu/pac/",
+      "career_url": "https://alamo.csod.com/ats/careersite/search.aspx?site=18&c=alamo",
+      "platform_type": "csod",
+      "notes": "Was pointing at the bare homepage (alamo.edu/pac); routed to Palo Alto College's dedicated Cornerstone OnDemand faculty job feed, reached via the college's own /employees/employment/ page. Page is explicitly headed 'Faculty Jobs at Palo Alto College' and is a distinct per-college site id from the combined Alamo Colleges District board (verified San Antonio College's equivalent site id shows different, SAC-labeled content, confirming these are genuinely per-college feeds, not a shared/misattributed board). Verified real infrastructure; 0 current listings visible at time of check."
+    },
+    {
+      "name": "San Antonio College",
+      "homepage_url": "https://www.alamo.edu/sac/",
+      "career_url": "https://alamo.csod.com/ats/careersite/search.aspx?site=12&c=alamo",
+      "platform_type": "csod",
+      "notes": "Was pointing at the bare homepage; routed to San Antonio College's dedicated Cornerstone OnDemand faculty job feed, reached via the college's own careers-and-employment page. Page is explicitly headed 'Faculty Jobs at San Antonio College' - a distinct per-college site id, not the combined Alamo Colleges District board (cross-checked against Palo Alto College's differently-labeled feed). Verified real infrastructure; 0 current listings visible at time of check."
+    },
+    {
+      "name": "Remington College-Cleveland Campus",
+      "homepage_url": "https://www.remingtoncollege.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027237045_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
+      "platform_type": "adp",
+      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed, found via the site's 'work-at-remington' page listing per-campus links (same cid as the existing Memphis/Nashville overrides, campus-specific ccId). Verified live: real infrastructure confirmed ('Current Openings (0 of 0)'); 0 current postings at time of check."
+    },
+    {
+      "name": "Remington College-Dallas Campus",
+      "homepage_url": "https://www.remingtoncollege.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027207438_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
+      "platform_type": "adp",
+      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 1 current posting (Student Financial Service Advisor, Dallas TX) - not faculty-titled but confirms real, campus-specific infrastructure."
+    },
+    {
+      "name": "Remington College-Fort Worth Campus",
+      "homepage_url": "https://www.remingtoncollege.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027237235_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
+      "platform_type": "adp",
+      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 1 current posting (Student Financial Service Advisor, Fort Worth/North Richland Hills TX)."
+    },
+    {
+      "name": "Remington College-Lafayette Campus",
+      "homepage_url": "https://www.remingtoncollege.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027239359_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
+      "platform_type": "adp",
+      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 1 current posting (Lab Assistant Program Chair, Lafayette LA - an academic-leadership role)."
+    },
+    {
+      "name": "Remington College-Mobile Campus",
+      "homepage_url": "https://www.remingtoncollege.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027241028_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
+      "platform_type": "adp",
+      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 3 current postings including 2 faculty-ish roles (Instructor - Medical Assistant; Medical Assistant Program Chair) plus an Externship Coordinator role."
+    },
+    {
+      "name": "Remington College-Online Dallas",
+      "homepage_url": "https://www.remingtoncollege.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027234110_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
+      "platform_type": "adp",
+      "notes": "Was pointing at a campus location landing page (0 jobs); routed to the dedicated ADP WorkforceNow recruitment feed for the Online/Dallas location listed on the site's careers page. Verified live: 1 current posting (Restaurant Hotel Retail Management - Program Chair, an academic-leadership role)."
+    },
+    {
+      "name": "Remington College-Shreveport Campus",
+      "homepage_url": "https://www.remingtoncollege.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027242374_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
+      "platform_type": "adp",
+      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: real infrastructure confirmed ('Current Openings (0 of 0)'); 0 current postings at time of check."
+    },
+    {
+      "name": "William Rainey Harper College",
+      "homepage_url": "https://www.harpercollege.edu/",
+      "career_url": "https://jobs.harpercollege.edu/",
+      "platform_type": "oracle",
+      "notes": "Was pointing at the bare homepage (index.php, 0 jobs); jobs.harpercollege.edu redirects to Harper's Oracle Cloud HCM careers portal. Verified live: 126 open postings, including faculty listings (Adjunct Faculty Librarian; Adjunct Faculty Credit - Mathematics)."
+    },
+    {
+      "name": "Winston-Salem State University",
+      "homepage_url": "https://www.wssu.edu/",
+      "career_url": "https://jobs.wssu.edu/postings/search",
+      "platform_type": "generic",
+      "notes": "Was pointing at www.wssu.edu/faculty/jobs, a generic navigation page with no listings; routed to the actual PeopleAdmin-style postings search (linked from the site's employment-opportunities page as 'Faculty Positions'). Verified live: 5 current faculty postings (e.g. 2026-2027 Marketing Instructor; Assistant/Associate Professor Undergraduate Nursing Adult Health; Clinical Assistant Professor - Undergraduate Nursing)."
+    },
+    {
+      "name": "West Virginia State University",
+      "homepage_url": "https://wvstateu.edu/",
+      "career_url": "https://wvstateu.edu/human-resources/career-opportunities/faculty-job-listings/",
+      "platform_type": "generic",
+      "notes": "Was pointing at an unrelated news/event page (faculty-and-staff-opening-week-schedule-of-events); routed to the dedicated Faculty Job Listings page under Human Resources > Career Opportunities. Verified live: 4 faculty postings (Term Assistant or Associate Professor of Economics; Clinical Nursing Instructor; LPN to BSN Instructor and Coordinator; Instructor of English)."
+    },
+    {
+      "name": "Springfield College-Regional, Online, and Continuing Education",
+      "homepage_url": "https://springfield.edu/",
+      "career_url": "https://www.schooljobs.com/careers/springfieldcollege",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at an online-programs marketing page (0 jobs); routed to Springfield College's NEOGOV/schooljobs board, linked from the HR page as 'Current Job Opportunities'. Verified live: 41 total postings, including faculty (e.g. Adjunct Faculty for Counseling Department)."
+    },
+    {
+      "name": "Presbyterian College",
+      "homepage_url": "https://www.presby.edu/",
+      "career_url": "https://www.presby.edu/about/offices-and-services/human-resources/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the general Human Resources landing page (0 jobs); routed to the actual Employment/openings subpage. Verified live: multiple postings including 2 faculty (Adjunct Instructor - French; Assistant Professor of Occupational Therapy)."
+    },
+    {
+      "name": "St. Mary's College of Maryland",
+      "homepage_url": "https://www.smcm.edu/",
+      "career_url": "https://www.smcm.edu/human-resources/employment-opportunities/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a generic /hr landing page (0 jobs); routed to the Employment Opportunities subpage (real listings, applications routed through Interfolio for faculty roles). Verified live: 5 faculty postings (Assistant Professor of Psychology; Assistant Professor and Internship Coordinator in Counseling and Clinical Psychology; Assistant Professor of Developmental Biology; Assistant Professor of Economics; Assistant Professor of Anthropology)."
+    },
+    {
+      "name": "Southwestern College (KS)",
+      "homepage_url": "https://www.sckans.edu/",
+      "career_url": "https://www.sckans.edu/about/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a faculty-jobs URL that renders mostly navigation chrome with no visible listings; routed to the actual Employment At SC page, which lists postings directly in page text. Verified live: 6 faculty postings (Affiliate Pharmacology Instructor - Physician Associate Program; Affiliate Anatomy Instructor - Physician Associate Program; Full-Time Faculty Member - Doctor of Medical Science Program; Director of the BSN Nursing Program; Nursing Clinical Resource Instructor; Assistant Professor of Communication; Assistant Professor of Nursing)."
+    },
+    {
+      "name": "University of Cincinnati",
+      "homepage_url": "https://www.uc.edu/",
+      "career_url": "https://jobs.uc.edu/go/Faculty/7912200/",
+      "platform_type": "generic",
+      "notes": "Was pointing at jobs.uc.edu/faculty-employment, a landing page with no visible listings; routed to the Faculty job-category search results (linked from the site's 'viewalljobs' page). Verified live: 170 faculty/instructor postings (e.g. Assistant Professor of Biology - UC Clermont College; multiple Adjunct Instructor roles across departments)."
+    },
+    {
+      "name": "Saint Michael's College",
+      "homepage_url": "https://www.smcvt.edu/",
+      "career_url": "https://egqw.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_13/jobs",
+      "platform_type": "oracle",
+      "notes": "Was pointing at a different Oracle Cloud HCM site (CX_2) that is purely a marketing landing page; routed to the college's actual jobs-listing site (CX_13), linked from CX_2 as 'Employment Opportunities'. Verified real infrastructure; page correctly renders 'no jobs available' rather than blank/error - 0 current openings at time of check."
+    },
+    {
+      "name": "University of Dayton",
+      "homepage_url": "https://udayton.edu/",
+      "career_url": "https://employment.udayton.edu/",
+      "platform_type": "generic",
+      "notes": "Was pointing at a careers landing page (0 jobs); routed to the actual employment listings site, linked from that page as 'VIEW STAFF AND FACULTY JOBS'. Verified live: multiple real current postings with open/close dates (mix of staff and research roles visible at time of check; faculty and staff share the same listing board)."
+    },
+    {
+      "name": "University of Puget Sound",
+      "homepage_url": "https://www.pugetsound.edu/",
+      "career_url": "https://www2.pugetsound.jobs/psc/HR92PRD/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U&FOCUS=Applicant&siteid=3",
+      "platform_type": "generic",
+      "notes": "Was pointing at the general HR employment-opportunities page, which only surfaced a single non-faculty iCIMS listing; routed to the PeopleSoft 'FACULTY POSITIONS' board linked from that same page. Verified live: 2 faculty postings (Visiting Assistant Professor - Biology; Affiliate Artist in Applied Oboe)."
+    },
+    {
+      "name": "Wright State University",
+      "homepage_url": "https://www.wright.edu/",
+      "career_url": "https://jobs.wright.edu/postings/search",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare PeopleAdmin-style homepage (jobs.wright.edu/, 0 jobs shown); routed to the postings search results page, linked from that homepage as 'Search Jobs'. Verified live: 71 postings, including real faculty listings (Assistant Professor/Associate Professor - Accounting; Instructor/Lecturer - Accounting)."
+    },
     {
       "name": "Albany College of Pharmacy and Health Sciences",
       "homepage_url": "https://www.acphs.edu/",
