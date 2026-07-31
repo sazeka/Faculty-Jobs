@@ -3722,6 +3722,50 @@ function resolveCareerUrlOverridePlatform(campusName) {
   return CAREER_OVERRIDES.get(key)?.platform_type || null;
 }
 
+// Every *_CAMPUSES array above is a static literal: campuses with a non-"generic"
+// type dispatch straight to their specialized scraper using the HARDCODED url,
+// never consulting career-url-overrides.json at all (only scrapeGenericJobPage
+// does that). So when a Workday tenant migrates, a PeopleAdmin site gets replaced
+// by Workday, etc., and a corrected URL gets discovered into the overrides file,
+// institutions configured with a specific type keep silently scraping the stale
+// URL forever — confirmed live for Furman University and Mount Holyoke College
+// (dead Workday tenants, "Workday is currently unavailable"), Northern Kentucky
+// University (PeopleAdmin URL redirects to a generic HR page; real listings are
+// on Workday now), and William & Mary (same PeopleAdmin-was-replaced-by-Workday
+// pattern). Mutate every array in place once overrides are loaded so every
+// dispatch path — not just the generic one — sees the corrected data.
+//
+// If the override's platform differs from this campus's static type, route
+// through "generic" rather than swapping to the override's exact platform: every
+// state's dispatch chain already has a "generic" branch (scrapeGenericJobPage),
+// which resolves this SAME override again and dispatches to the true specialized
+// handler via OVERRIDE_PLATFORM_DISPATCH — so nothing is lost, and we never risk
+// introducing a type a given state's chain has no branch for.
+function applyCareerUrlOverridesInPlace(campuses) {
+  for (const c of campuses) {
+    const key = clean(c?.campus || "").toLowerCase();
+    const override = CAREER_OVERRIDES.get(key);
+    if (!override) continue;
+    const overridePlatform = override.platform_type || c.type;
+    c.type = overridePlatform === c.type ? c.type : "generic";
+    c.url = override.career_url || c.url;
+  }
+}
+
+for (const campuses of [
+  CT_PRIVATE_CAMPUSES, UMASS_CAMPUSES, MA_PRIVATE_CAMPUSES, UC_CAMPUSES, CA_PRIVATE_CAMPUSES,
+  NJ_CAMPUSES, NJ_PRIVATE_CAMPUSES, CLAREMONT_CAMPUSES, PA_CAMPUSES, PA_PRIVATE_CAMPUSES,
+  NC_CAMPUSES, VA_CAMPUSES, SC_CAMPUSES, DE_CAMPUSES, MD_CAMPUSES, RI_CAMPUSES, RI_PRIVATE_CAMPUSES,
+  NH_CAMPUSES, AZ_CAMPUSES, NY_SUNY_CAMPUSES, NY_PRIVATE_CAMPUSES, OR_CAMPUSES, WA_CAMPUSES,
+  ME_CAMPUSES, VT_CAMPUSES, MN_CAMPUSES, ND_CAMPUSES, SD_CAMPUSES, NE_CAMPUSES, IA_CAMPUSES,
+  WY_CAMPUSES, MT_CAMPUSES, WI_CAMPUSES, CO_CAMPUSES, OH_CAMPUSES, NM_CAMPUSES, NV_CAMPUSES,
+  UT_CAMPUSES, MI_CAMPUSES, IL_CAMPUSES, ID_CAMPUSES, IN_CAMPUSES, WV_CAMPUSES, TX_CAMPUSES,
+  FL_CAMPUSES, GA_CAMPUSES, AL_CAMPUSES, MS_CAMPUSES, LA_CAMPUSES, AR_CAMPUSES, KS_CAMPUSES,
+  OK_CAMPUSES, MO_CAMPUSES, KY_CAMPUSES, TN_CAMPUSES, AK_CAMPUSES, HI_CAMPUSES,
+]) {
+  applyCareerUrlOverridesInPlace(campuses);
+}
+
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
