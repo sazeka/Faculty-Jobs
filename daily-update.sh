@@ -113,7 +113,14 @@ if [[ $SCRAPED -eq 1 ]]; then
     invoke_step "Enrich" "$NPM_CMD" run agent:enrich -- --max 1500 --batch-size 6 || true
 
     log_section "Step 4/8 - Backfill descriptions + posting dates (datePosted)"
-    invoke_step "Descriptions" "$NPM_CMD" run agent:descriptions -- --max 2000 --concurrency 8 || true
+    # This step hung for 5 days straight on 2026-07-27 (a page.evaluate() call
+    # with no bound, since fixed in agent-job-descriptions.js) — nothing here
+    # protected against it, and daily-update.sh has no other watchdog, so the
+    # stuck systemd service blocked every subsequent nightly run until someone
+    # manually intervened. A normal run takes ~15 minutes (checked across 5
+    # successful runs); 45 minutes is a generous multiple that still bounds a
+    # hang instead of letting it block the pipeline indefinitely.
+    invoke_step "Descriptions" timeout 2700 "$NPM_CMD" run agent:descriptions -- --max 2000 --concurrency 8 || true
 
     log_section "Step 5/8 - Build frontend"
     BUILT=1

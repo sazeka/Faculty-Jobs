@@ -58,6 +58,24 @@ const TIMEOUT_MS = Math.max(8000, Number(args["timeout-ms"] || 30000));
 const MIN_LEN = Math.max(80, Number(args["min-len"] || 200));
 const MAX_LEN = 6000;
 
+// page.goto/waitForLoadState below all carry their own timeout, but
+// page.evaluate() doesn't — Playwright never bounds it, so a page whose
+// renderer wedges (an unhandled alert(), a broken CDP round-trip, a crashed
+// frame) hangs this call forever. Since every worker shares one
+// Promise.all(workers), ONE stuck evaluate() blocks the entire batch
+// indefinitely — this is exactly what stalled the Jetson's nightly run for 5
+// days (2026-07-27 onward) with zero further log output. Racing it against a
+// timer turns that into an ordinary caught error the existing try/catch
+// already handles as "no description found for this job," and the worker
+// moves on to the next one.
+function withTimeout(promise, ms, label) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
 function readJson(p) {
   try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return null; }
 }
@@ -162,8 +180,9 @@ async function main() {
         } else {
           await page.waitForTimeout(1500);
         }
-        const result = await page.evaluate(
-          ([minLen, maxLen]) => {
+        const result = await withTimeout(
+          page.evaluate(
+            ([minLen, maxLen]) => {
             const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
             // schema.org JobPosting.datePosted (posting date) + validThrough
             // (application deadline) — embedded for Google for Jobs SEO. Walk
@@ -294,6 +313,9 @@ async function main() {
             return { desc: findDesc(), ...findJobDates(), openDate: findLabeledOpenDate(), close: findLabeledCloseDate() };
           },
           [MIN_LEN, MAX_LEN]
+          ),
+          20000,
+          "page.evaluate"
         );
         desc = result?.desc || "";
         // JSON-LD datePosted wins; fall back to a labeled "Open Date" field.
