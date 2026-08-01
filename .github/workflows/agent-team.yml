@@ -40,6 +40,7 @@ jobs:
 
       - name: Run data-health agent (remove dead listings, strip HTML titles, baseline check)
         run: npm run agent:data-health
+        continue-on-error: true
 
       - name: Track job presence and purge expired listings
         run: npm run agent:job-presence

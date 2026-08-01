@@ -1,0 +1,57 @@
+name: Pipeline heartbeat
+
+# Deliberately separate from agent-team.yml, which also runs agent:alert-issues
+# but at the end of a long chain of steps with no continue-on-error on some of
+# them (e.g. "Run data-health agent") — an earlier failure there stops the job
+# before it ever reaches the alert-issues step. This workflow does nothing but
+# checkout + the one check, so it can't be taken out by an unrelated failure
+# elsewhere in the pipeline.
+#
+# Also independent of jobs.json's own staleness field on purpose: that field
+# can be refreshed by a manual scrape.yml run while the Jetson's actual
+# unattended pipeline is down underneath it — see agent-alert-issues.js's
+# checkJetsonHeartbeat() for the incident that motivated this (2026-07-27,
+# 5 days undetected).
+#
+# Runs every 6 hours so an outage is caught within hours, not days.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+permissions:
+  issues: write
+
+concurrency:
+  group: pipeline-heartbeat
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          # The heartbeat check reads git log for the last "Daily scrape
+          # update" commit — a shallow checkout would make that look
+          # identical to "pipeline is down" and the check deliberately
+          # stays silent rather than risk a false alert, so it needs real
+          # history to do anything useful at all.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Check alert conditions (heartbeat + existing checks)
+        run: npm run agent:alert-issues
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
