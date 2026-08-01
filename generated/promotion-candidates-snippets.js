@@ -1,5 +1,5 @@
 // Candidate campus config entries generated from institutions-master
-// Generated: 2026-07-25T14:58:22.429Z
+// Generated: 2026-08-01T14:55:50.400Z
 
 // AL (2)
 const CANDIDATES = [
@@ -7,41 +7,49 @@ const CANDIDATES = [
   { campus: "Chattahoochee Valley Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/jobs/newprint/4482590" },
 ];
 
-// CA (3)
+// AR (1)
 const CANDIDATES = [
-  { campus: "American River College", type: "schooljobs", url: "https://www.schooljobs.com/careers/losriosccd/jobs/5203260/english-assistant-professor" },
-  { campus: "California Institute of Integral Studies", type: "interviewexchange", url: "https://ciis.interviewexchange.com/static/clients/529CIM1" },
-  { campus: "Folsom Lake College", type: "schooljobs", url: "https://www.schooljobs.com/careers/losriosccd" },
+  { campus: "Arkansas Tech University", type: "schooljobs", url: "https://www.governmentjobs.com/careers/atu/Faculty" },
 ];
 
-// CT (2)
+// CA (6)
+const CANDIDATES = [
+  { campus: "American River College", type: "schooljobs", url: "https://www.schooljobs.com/careers/losriosccd/jobs/5203260/english-assistant-professor" },
+  { campus: "Barstow Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/barstowcc" },
+  { campus: "Cabrillo College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cabrilloedu" },
+  { campus: "Copper Mountain Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cmccd" },
+  { campus: "Folsom Lake College", type: "schooljobs", url: "https://www.schooljobs.com/careers/losriosccd" },
+  { campus: "Foothill-De Anza Community College District", type: "schooljobs", url: "https://www.schooljobs.com/careers/fhda/Faculty" },
+];
+
+// CO (1)
+const CANDIDATES = [
+  { campus: "Community College of Denver", type: "schooljobs", url: "https://www.schooljobs.com/careers/ccd" },
+];
+
+// CT (1)
 const CANDIDATES = [
   { campus: "Connecticut College", type: "peopleadmin", url: "https://conncoll.peopleadmin.com/postings/search" },
-  { campus: "University of Bridgeport", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=A1640D81A59AFDAFC5501F5B06EF1B08" },
 ];
 
 // FL (3)
 const CANDIDATES = [
+  { campus: "Daytona State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/daytonastate/faculty" },
   { campus: "Eckerd College", type: "interviewexchange", url: "https://eckerd.exacthire.com/" },
   { campus: "Florida Gateway College", type: "schooljobs", url: "https://www.schooljobs.com/careers/fgcedu" },
-  { campus: "New College of Florida", type: "schooljobs", url: "https://www.schooljobs.com/careers/ncfl" },
 ];
 
-// GA (2)
+// GA (1)
 const CANDIDATES = [
-  { campus: "Kennesaw State University", type: "peopleadmin", url: "https://kennesaw.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search" },
   { campus: "Spelman College", type: "peopleadmin", url: "https://spelman.peopleadmin.com/postings/search?commit=Search&query_position_type_id%5B%5D=3&sort=225+asc&utf8=%E2%9C%93" },
 ];
 
-// IL (7)
+// IL (4)
 const CANDIDATES = [
   { campus: "Aurora University", type: "schooljobs", url: "https://www.schooljobs.com/careers/aurorauniversity?jobType[0]=Full-Time%20Faculty&sort=PositionTitle%7CAscending" },
-  { campus: "College of DuPage", type: "csod", url: "https://cod.csod.com/ux/ats/careersite/4/home?c=cod" },
   { campus: "Governors State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/govst" },
-  { campus: "Southern Illinois University Edwardsville", type: "interfolio", url: "https://apply.interfolio.com/69563/positions" },
   { campus: "University of Illinois Springfield", type: "csod", url: "https://uis.csod.com/ux/ats/careersite/1/home?c=uis" },
   { campus: "University of Illinois Urbana-Champaign", type: "csod", url: "https://illinois.csod.com/ux/ats/careersite/1/home?c=illinois&cfdd[0][id]=276&cfdd[0][options][0]=849" },
-  { campus: "Western Illinois University", type: "interviewexchange", url: "https://wiu.interviewexchange.com/static/clients/467WIM1/index.jsp?c=1098" },
 ];
 
 // IN (1)
@@ -49,69 +57,67 @@ const CANDIDATES = [
   { campus: "Ball State University", type: "peopleadmin", url: "https://bsu.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search" },
 ];
 
-// KY (1)
+// MA (3)
 const CANDIDATES = [
-  { campus: "Bellarmine University", type: "interviewexchange", url: "https://bellarmine.interviewexchange.com/static/clients/459BMM1/index.jsp" },
-];
-
-// MA (5)
-const CANDIDATES = [
-  { campus: "Babson College", type: "peopleadmin", url: "https://babson.peopleadmin.com/postings/search?query=&query_posted_at=&query_position_type_id=2&query_organizational_tier_3_id=any&commit=Search" },
-  { campus: "Cape Cod Community College", type: "interviewexchange", url: "https://capecod.interviewexchange.com/static/clients/470CCM1/index.jsp;jsessionid=D7B817EED47381B2C5A08E3F538D4EB5;jsessionid=2E2FB86EF203E255B5590EC9F09035DF" },
-  { campus: "Clark University", type: "interviewexchange", url: "https://clarku.interviewexchange.com/static/clients/569CUM1/index.jsp" },
+  { campus: "Babson College", type: "peopleadmin", url: "https://www.babson.edu/" },
   { campus: "College of the Holy Cross", type: "jobvite", url: "https://jobs.jobvite.com/holycross/jobs" },
-  { campus: "Emmanuel College", type: "interviewexchange", url: "https://emmanuel.interviewexchange.com/static/clients/13EM1/listJobs.jsp;jsessionid=47B469F5FF02B2ECA11624165C411A0F" },
+  { campus: "Springfield College-Regional, Online, and Continuing Education", type: "schooljobs", url: "https://www.schooljobs.com/careers/springfieldcollege" },
 ];
 
 // MD (1)
 const CANDIDATES = [
-  { campus: "Goucher College", type: "interviewexchange", url: "https://goucher.interviewexchange.com/static/clients/436GCM1/index.jsp" },
+  { campus: "Allegany College of Maryland", type: "schooljobs", url: "https://www.schooljobs.com/careers/allegany" },
 ];
 
-// ME (1)
+// MI (3)
 const CANDIDATES = [
-  { campus: "Husson University", type: "schooljobs", url: "https://www.schooljobs.com/careers/husson" },
-];
-
-// MI (1)
-const CANDIDATES = [
+  { campus: "Alma College", type: "schooljobs", url: "https://www.schooljobs.com/careers/alma" },
   { campus: "Davenport University", type: "csod", url: "https://davenport.csod.com/ux/ats/careersite/15/home/requisition/2850?c=davenport" },
+  { campus: "Delta College", type: "schooljobs", url: "https://www.schooljobs.com/careers/deltacollege/faculty" },
 ];
 
-// NC (4)
+// NC (5)
 const CANDIDATES = [
   { campus: "Alamance Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/alamanceccedu?jobType[0]=Full-Time%20Exempt&jobType[1]=Full-Time%20Non-Exempt&sort=PositionTitle%7CAscending" },
   { campus: "Appalachian State University", type: "peopleadmin", url: "https://www.appstate.edu/employment" },
+  { campus: "Caldwell Community College and Technical Institute", type: "schooljobs", url: "https://www.schooljobs.com/careers/cccti" },
   { campus: "Central Carolina Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/ccccedu" },
   { campus: "College of the Albemarle", type: "schooljobs", url: "https://www.governmentjobs.com/careers/albemarleedu" },
 ];
 
-// NH (1)
-const CANDIDATES = [
-  { campus: "Rivier University", type: "schooljobs", url: "https://www.schooljobs.com/careers/rivieredu" },
-];
-
-// NJ (3)
+// NJ (1)
 const CANDIDATES = [
   { campus: "Atlantic Cape Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/atlanticcape" },
-  { campus: "Ramapo College of New Jersey", type: "schooljobs", url: "https://www.schooljobs.com/careers/ramapo?keywords=faculty" },
-  { campus: "Rider University", type: "schooljobs", url: "https://www.schooljobs.com/careers/rideru?keywords=faculty" },
 ];
 
-// NY (2)
+// NY (5)
 const CANDIDATES = [
+  { campus: "Clarkson University", type: "icims", url: "https://careerhub-clarkson.icims.com/" },
   { campus: "Iona University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/F28471DFA0F4183976163E181A695BE1/career-page" },
   { campus: "Manhattan University", type: "schooljobs", url: "https://www.schooljobs.com/careers/manhattanedu/FTFaculty" },
+  { campus: "Stony Brook University", type: "interfolio", url: "https://apply.interfolio.com/15355/positions" },
+  { campus: "University at Albany", type: "interfolio", url: "https://apply.interfolio.com/search" },
 ];
 
-// PA (1)
+// OR (1)
 const CANDIDATES = [
-  { campus: "East Stroudsburg University of Pennsylvania", type: "csod", url: "https://esu.csod.com/ux/ats/careersite/6/home?c=esu" },
+  { campus: "Chemeketa Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/chemeketacc" },
+];
+
+// PA (2)
+const CANDIDATES = [
+  { campus: "Delaware County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/dccc" },
+  { campus: "East Stroudsburg University", type: "csod", url: "https://esu.csod.com/ux/ats/careersite/1/home/requisition/8301?c=esu" },
 ];
 
 // RI (1)
 const CANDIDATES = [
-  { campus: "Salve Regina University", type: "interviewexchange", url: "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp" },
+  { campus: "Providence College", type: "schooljobs", url: "https://www.schooljobs.com/careers/providencecollege/faculty" },
+];
+
+// SC (1)
+const CANDIDATES = [
+  { campus: "Central Carolina Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cctech/jobs/4939638/automotive-tech-instructor?jobType[0]=Full-Time%20Faculty&jobType[1]=Full-Time%20Staff&sort=PositionTitle%7CAscending&pagetype=jobOpportunitiesJobs" },
 ];
 
 // TN (1)
@@ -119,27 +125,19 @@ const CANDIDATES = [
   { campus: "Cumberland University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/DEB43C3FD051B594AA4F4829C8587DC3/career-page" },
 ];
 
-// TX (1)
+// TX (4)
 const CANDIDATES = [
+  { campus: "Alvin Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/alvincollege" },
   { campus: "Laredo College", type: "schooljobs", url: "https://www.schooljobs.com/careers/laredoedu?examType%5B0%5D=Faculty&sort=PostingDate%7CDescending" },
+  { campus: "Palo Alto College", type: "csod", url: "https://alamo.csod.com/ats/careersite/search.aspx?site=18&c=alamo" },
+  { campus: "San Antonio College", type: "csod", url: "https://alamo.csod.com/ats/careersite/search.aspx?site=12&c=alamo" },
 ];
 
-// Unknown (7)
+// Unknown (3)
 const CANDIDATES = [
   { campus: "Cheyney University", type: "schooljobs", url: "https://www.schooljobs.com/careers/cheyneyedu?category[0]=Faculty&jobType[0]=Full-Time&sort=PositionTitle%7CAscending" },
-  { campus: "East Stroudsburg University", type: "csod", url: "https://esu.csod.com/ux/ats/careersite/1/home/requisition/8301?c=esu" },
   { campus: "Kutztown University", type: "schooljobs", url: "https://www.schooljobs.com/careers/kutztownedu/promotionaljobs?jobType[0]=Tenure%20Track&sort=PostingDate%7CDescending" },
-  { campus: "Southern Illinois University Carbondale", type: "schooljobs", url: "https://www.schooljobs.com/careers/siu" },
   { campus: "The Citadel", type: "schooljobs", url: "https://www.schooljobs.com/careers/citadel?keywords=faculty" },
-  { campus: "University of Texas at El Paso", type: "interviewexchange", url: "https://utep.interviewexchange.com/static/clients/533UTM1/index.jsp" },
-  { campus: "West Chester University", type: "schooljobs", url: "https://www.schooljobs.com/careers/wcupa?keywords=faculty%20" },
-];
-
-// UT (3)
-const CANDIDATES = [
-  { campus: "Southern Utah University", type: "schooljobs", url: "https://www.schooljobs.com/careers/suu" },
-  { campus: "Utah Tech University", type: "schooljobs", url: "https://www.schooljobs.com/careers/utahtech" },
-  { campus: "Utah Valley University", type: "schooljobs", url: "https://www.schooljobs.com/careers/uvu" },
 ];
 
 // VA (1)
@@ -147,8 +145,20 @@ const CANDIDATES = [
   { campus: "Virginia Commonwealth University", type: "csod", url: "https://vcu.csod.com/ux/ats/careersite/1/home?c=vcu" },
 ];
 
-// WA (1)
+// WA (3)
 const CANDIDATES = [
-  { campus: "Columbia Basin College", type: "schooljobs", url: "https://www.schooljobs.com/careers/columbiabasin/facultypositions" },
+  { campus: "Bates Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/batesctc" },
+  { campus: "Clark College", type: "schooljobs", url: "https://www.schooljobs.com/careers/clarkcollege" },
+  { campus: "Whitworth University", type: "schooljobs", url: "https://www.schooljobs.com/careers/whitworth/faculty" },
+];
+
+// WI (1)
+const CANDIDATES = [
+  { campus: "Chippewa Valley Technical College", type: "icims", url: "https://careers-cvtc.icims.com/" },
+];
+
+// WY (1)
+const CANDIDATES = [
+  { campus: "Casper College", type: "schooljobs", url: "https://www.schooljobs.com/careers/caspercollege" },
 ];
 
