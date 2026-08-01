@@ -19,31 +19,41 @@ const logScrapeResult = ({ campus, source, count }) => {
 function normalizeCollegeName(name) {
   if (!name) return name;
 
-  // Known mappings for CUNY and other colleges
+  // Known mappings for CUNY and other colleges. Values must be IPEDS's exact
+  // INSTNM for each campus (cross-checked against hd2024.csv) — every other
+  // institution name in this dataset (institutions-master.json, IPEDS,
+  // policy-rules.json) uses that canonical form, and build-institutions-master.js
+  // matches jobs to institutions by exact name. A bare "Hunter College" instead
+  // of IPEDS's "CUNY Hunter College" is the same silent-misattribution bug fixed
+  // for CSU: it never matches the real IPEDS row (which then sits at 0 jobs /
+  // "missing" forever) and instead spins up a duplicate, unitid-less identity
+  // that soaks up the real job count.
   const knownNames = {
-    'BARUCH': 'Baruch College',
-    'HUNTER': 'Hunter College',
-    'Hunter': 'Hunter College',
-    'BROOKLYN': 'Brooklyn College',
-    'Brooklyn': 'Brooklyn College',
-    'QUEENS': 'Queens College',
-    'Queens': 'Queens College',
-    'CITY COLLEGE': 'City College',
-    'COLLEGE OF STATEN ISLAND': 'College of Staten Island',
-    'JOHN JAY': 'John Jay College',
-    'GRADUATE CENTER': 'Graduate Center',
+    'BARUCH': 'CUNY Bernard M Baruch College',
+    'HUNTER': 'CUNY Hunter College',
+    'Hunter': 'CUNY Hunter College',
+    'BROOKLYN': 'CUNY Brooklyn College',
+    'Brooklyn': 'CUNY Brooklyn College',
+    'QUEENS': 'CUNY Queens College',
+    'Queens': 'CUNY Queens College',
+    'CITY COLLEGE': 'CUNY City College',
+    'COLLEGE OF STATEN ISLAND': 'College of Staten Island CUNY',
+    'JOHN JAY': 'CUNY John Jay College of Criminal Justice',
+    'GRADUATE CENTER': 'CUNY Graduate School and University Center',
     'CUNY SCHOOL': 'CUNY School of Professional Studies',
     'CUNY Advanced': 'CUNY Advanced Science Research Center',
-    'Bronx': 'Bronx Community College',
-    'BRONX': 'Bronx Community College',
-    'BMCC': 'Borough of Manhattan Community College',
-    'HOSTOS': 'Hostos Community College',
-    'KINGSBOROUGH': 'Kingsborough Community College',
-    'LAGUARDIA': 'LaGuardia Community College',
-    'LEHMAN': 'Lehman College',
-    'MEDGAR EVERS': 'Medgar Evers College',
-    'YORK COLLEGE': 'York College',
-    'QUEENSBOROUGH': 'Queensborough Community College',
+    'Bronx': 'CUNY Bronx Community College',
+    'BRONX': 'CUNY Bronx Community College',
+    'BMCC': 'CUNY Borough of Manhattan Community College',
+    'HOSTOS': 'CUNY Hostos Community College',
+    'KINGSBOROUGH': 'CUNY Kingsborough Community College',
+    'LAGUARDIA': 'CUNY LaGuardia Community College',
+    'LEHMAN': 'CUNY Lehman College',
+    'MEDGAR EVERS': 'CUNY Medgar Evers College',
+    'YORK COLLEGE': 'CUNY York College',
+    'QUEENSBOROUGH': 'CUNY Queensborough Community College',
+    'New York City College': 'CUNY New York City College of Technology',
+    'School of Law': 'CUNY School of Law',
   };
 
   const upper = name.toUpperCase().trim();
@@ -814,7 +824,10 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "College of the Canyons", type: "generic", url: "https://www.canyons.edu/" },
   { campus: "College of the Desert", type: "generic", url: "https://www.collegeofthedesert.edu/" },
   { campus: "College of the Redwoods", type: "generic", url: "https://www.redwoods.edu/" },
-  { campus: "College of the Sequoias", type: "generic", url: "https://www.schooljobs.com/careers/cos" },
+  // schooljobs.com is a client-rendered SPA; "generic" only reads anchors once on
+  // page 1 without the platform's own pagination — "schooljobs" already exists
+  // and handles both.
+  { campus: "College of the Sequoias", type: "schooljobs", url: "https://www.schooljobs.com/careers/cos" },
   { campus: "College of the Siskiyous", type: "generic", url: "https://www.siskiyous.edu/" },
   { campus: "Compton College", type: "generic", url: "https://www.compton.edu/" },
   { campus: "Concordia University-Irvine", type: "generic", url: "https://www.cui.edu/" },
@@ -892,7 +905,11 @@ const NJ_CAMPUSES = [
   },
   {
     campus: "Stockton University",
-    type: "generic",
+    // NJ_CAMPUSES is dispatched via scrapeNjPublic, which only recognizes a
+    // fixed set of type strings (taleo/workday/rutgers/csod/schooljobs/
+    // stockton) — anything else, including "generic", short-circuits to [].
+    // A dedicated scrapeNjStockton already targets this exact ATS.
+    type: "stockton",
     url: "https://employment.stockton.edu/jobs/search",
   },
   {
@@ -931,6 +948,13 @@ const NJ_PRIVATE_CAMPUSES = [
   { campus: "County College of Morris", type: "generic", url: "https://www.ccm.edu/" },
   { campus: "Drew University", type: "generic", url: "https://www.drew.edu/" },
   { campus: "Essex County College", type: "generic", url: "https://www.essex.edu/directory/employment-opportunities" },
+  // NOT switched to jobs.fdu.edu/postings/search like the main FDU entry above:
+  // that board has no per-campus filter (checked live — "Metropolitan"/"Florham"
+  // only appear inside individual posting titles, e.g. "... (Metropolitan
+  // Campus)", not a URL facet), and it's the exact same board the main
+  // "Fairleigh Dickinson University" entry already scrapes — pointing both
+  // campus entries at it too would triple-count every posting across 3 campus
+  // identities instead of fixing anything. Left broken rather than risking that.
   { campus: "Fairleigh Dickinson University-Florham Campus", type: "generic", url: "https://www.fdu.edu/" },
   { campus: "Fairleigh Dickinson University-Metropolitan Campus", type: "generic", url: "https://jobs.fdu.edu/" },
   { campus: "Felician University", type: "generic", url: "https://felician.edu/about-felician-university/careers-at-felician/" },
@@ -1082,7 +1106,11 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Eastern University", type: "generic", url: "https://www.eastern.edu/about/offices-centers/human-resources/employment-opportunities" },
   { campus: "Geisinger Commonwealth School of Medicine", type: "generic", url: "https://www.geisinger.edu/education" },
   { campus: "Harcum College", type: "generic", url: "https://www.harcum.edu/s/1044/edu/start.aspx" },
-  { campus: "Saint Joseph's University - Lancaster", type: "generic", url: "https://jobs.sju.edu/" },
+  // jobs.sju.edu canonicalizes to a raw Workday tenant with 0 static anchors — a
+  // pure JS SPA shell "generic" can't read. Using the direct myworkdayjobs.com
+  // URL (rather than the custom domain) lets scrapeWorkdayApi's own URL-pattern
+  // match hit its API path instead of falling back to the slower browser scrape.
+  { campus: "Saint Joseph's University - Lancaster", type: "workday", url: "https://sju.wd1.myworkdayjobs.com/SJU" },
   { campus: "University of Pittsburgh-Titusville", type: "generic", url: "https://www.titusville.pitt.edu/home" },
   { campus: "Joseph F McCloskey School of Nursing", type: "generic", url: "https://www.lvhn.org/education/joseph-f-mccloskey-school-nursing" },
   { campus: "Reading Hospital School of Health Sciences", type: "generic", url: "https://reading.towerhealth.org/academics/health-sciences/" },
@@ -1292,13 +1320,20 @@ const VA_CAMPUSES = [
   },
   {
     campus: "Old Dominion University",
+    // Unfiltered default view returns Staff/Admin postings only. Unlike NAU/CSU/
+    // EMU (stale filter to remove), this one needs a filter ADDED — id 1 is
+    // "Teaching and Research Faculty" on the site's own dropdown, confirmed live
+    // to return 28+ real faculty postings.
     type: "generic",
-    url: "https://jobs.odu.edu/postings/search",
+    url: "https://jobs.odu.edu/postings/search?query_position_type_id%5B%5D=1&commit=Search",
   },
   {
     campus: "James Madison University",
-    type: "peopleadmin",
-    url: "https://joblink.jmu.edu/postings/search",
+    // joblink.jmu.edu (PeopleAdmin) is fully decommissioned — JMU migrated to
+    // PageUp. New URL/type confirmed live with categorized postings including
+    // Instructional Faculty.
+    type: "pageup",
+    url: "https://jobs.jmu.edu/jobs/search",
   },
   {
     campus: "University of Richmond",
@@ -1364,8 +1399,10 @@ const SC_CAMPUSES = [
   },
   {
     campus: "Coastal Carolina University",
+    // query_position_type_id=2 is "FTE Staff" on this site's own <select>; id 3
+    // is Faculty. Same stale/wrong-filter bug class as NAU/CSU/EMU/Auburn.
     type: "peopleadmin",
-    url: "https://jobs.coastal.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id=2&commit=Search",
+    url: "https://jobs.coastal.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id=3&commit=Search",
   },
   {
     campus: "Winthrop University",
@@ -1407,7 +1444,9 @@ const SC_CAMPUSES = [
   { campus: "Citadel Military College of South Carolina", type: "generic", url: "https://citadel.edu/" },
   { campus: "Claflin University", type: "generic", url: "https://www.claflin.edu/" },
   { campus: "Clinton College", type: "generic", url: "https://www.clintoncollege.edu/about/employment" },
-  { campus: "Coker University", type: "generic", url: "https://www.coker.edu/offices-services/careers/faculty-jobs" },
+  // The faculty-jobs page's only real link is "Current Openings" -> an isolvedhire
+  // ATS host not in ATS_HANDOFF_PATTERNS — point directly at it instead.
+  { campus: "Coker University", type: "generic", url: "https://coker.isolvedhire.com/iframe/mobile/" },
   { campus: "Columbia International University", type: "generic", url: "https://ciu.edu/about/employment" },
   { campus: "Converse University", type: "generic", url: "https://www.converse.edu/careers/faculty" },
   { campus: "Denmark Technical College", type: "generic", url: "https://www.denmarktech.edu/" },
@@ -1566,7 +1605,9 @@ const NH_CAMPUSES = [
   },
   {
     campus: "Saint Anselm College",
-    type: "generic",
+    // URL is already a raw Workday tenant — a pure JS SPA shell with 0 static
+    // anchors "generic" can't read.
+    type: "workday",
     url: "https://anselm.wd1.myworkdayjobs.com/Anselm",
   },
   {
@@ -1628,9 +1669,14 @@ const AZ_CAMPUSES = [
   { campus: "Arizona State University Campus Immersion", type: "generic", url: "https://www.asu.edu/" },
   { campus: "Arizona State University Digital Immersion", type: "generic", url: "https://www.asu.edu/" },
   { campus: "Arizona Western College", type: "generic", url: "https://www.azwestern.edu/" },
-  { campus: "Central Arizona College", type: "generic", url: "https://centralaz.edu/faculty-staff/hr/employment-services/" },
+  // The configured URL is an HR qualifications/policy page with no job links at
+  // all — the real board is a schooljobs.com (NEOGOV) tenant.
+  { campus: "Central Arizona College", type: "generic", url: "https://www.schooljobs.com/careers/centralaz" },
   { campus: "Chandler-Gilbert Community College", type: "generic", url: "https://www.cgc.maricopa.edu/" },
-  { campus: "Cochise County Community College District", type: "generic", url: "https://www.schooljobs.com/careers/cochisecollege" },
+  // schooljobs.com is a client-rendered SPA; "generic" only reads anchors once on
+  // page 1 without the platform's own pagination — "schooljobs" already exists
+  // and handles both.
+  { campus: "Cochise County Community College District", type: "schooljobs", url: "https://www.schooljobs.com/careers/cochisecollege" },
   { campus: "Coconino Community College", type: "generic", url: "https://www.coconino.edu/jobs" },
   { campus: "Community Christian College", type: "generic", url: "https://www.cccollege.edu/" },
   { campus: "Dine College", type: "generic", url: "https://www.dinecollege.edu/careers" },
@@ -1646,29 +1692,33 @@ const NY_SUNY_MAIN = {
   url: "https://www.suny.edu/careers/employment/index.cfm?s=y",
 };
 
+// campus names below are IPEDS's exact INSTNM for each institution (no "(SUNY)"
+// suffix) — see the note on normalizeCollegeName's knownNames for why an
+// unmatched name here creates a duplicate, unitid-less identity that silently
+// steals the real institution's job count and leaves it looking "missing".
 const NY_SUNY_CAMPUSES = [
   {
-    campus: "Stony Brook University (SUNY)",
+    campus: "Stony Brook University",
     type: "interfolio-inst",
     url: "https://apply.interfolio.com/15355/positions",
   },
   {
-    campus: "University at Buffalo (SUNY)",
+    campus: "University at Buffalo",
     type: "peopleadmin",
     url: "https://www.ubjobs.buffalo.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
   },
   {
-    campus: "University at Albany (SUNY)",
+    campus: "University at Albany",
     type: "interfolio",
     url: "https://apply.interfolio.com/search",
   },
   {
-    campus: "Binghamton University (SUNY)",
+    campus: "Binghamton University",
     type: "interfolio",
     url: "https://apply.interfolio.com/search",
   },
-  { campus: "Binghamton University (SUNY)", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=Binghamton%20University&position_type=Faculty" },
-  { campus: "University at Albany (SUNY)", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=University%20at%20Albany&position_type=Faculty" },
+  { campus: "Binghamton University", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=Binghamton%20University&position_type=Faculty" },
+  { campus: "University at Albany", type: "interfolio", url: "https://apply.interfolio.com/search#q=&institution_name=University%20at%20Albany&position_type=Faculty" },
   // Previously only reachable via the SUNY-system landing page's own link text
   // ("Faculty Vacancy Announcements"), which is a category tile pointing at
   // this exact board, not a real posting — scrapeInterviewExchangeAs already
@@ -1682,10 +1732,10 @@ const NY_SUNY_CAMPUSES = [
 ];
 
 const SUNY_CAMPUS_HINTS = [
-  { campus: "University at Albany (SUNY)", patterns: [/albany/i, /albany\.edu/i] },
-  { campus: "Binghamton University (SUNY)", patterns: [/binghamton/i, /binghamton\.edu/i] },
-  { campus: "University at Buffalo (SUNY)", patterns: [/\bbuffalo\b/i, /buffalo\.edu/i] },
-  { campus: "Stony Brook University (SUNY)", patterns: [/stony\s*brook/i, /stonybrook\.edu/i] },
+  { campus: "University at Albany", patterns: [/albany/i, /albany\.edu/i] },
+  { campus: "Binghamton University", patterns: [/binghamton/i, /binghamton\.edu/i] },
+  { campus: "University at Buffalo", patterns: [/\bbuffalo\b/i, /buffalo\.edu/i] },
+  { campus: "Stony Brook University", patterns: [/stony\s*brook/i, /stonybrook\.edu/i] },
   { campus: "SUNY Buffalo State University", patterns: [/buffalo\s*state/i, /buffalostate\.edu/i] },
   { campus: "SUNY Cobleskill", patterns: [/cobleskill/i] },
   { campus: "SUNY Alfred State College", patterns: [/alfred\s*state/i, /alfredstate/i] },
@@ -1744,8 +1794,8 @@ function inferSunyCampusFromText(title, url) {
   try {
     const host = new URL(url || "").hostname.toLowerCase();
     const hostMap = {
-      "www.ubjobs.buffalo.edu": "University at Buffalo (SUNY)",
-      "ubjobs.buffalo.edu": "University at Buffalo (SUNY)",
+      "www.ubjobs.buffalo.edu": "University at Buffalo",
+      "ubjobs.buffalo.edu": "University at Buffalo",
       "careers.upstate.edu": "SUNY Upstate Medical University",
       "jobs.buffalostate.edu": "SUNY Buffalo State University",
       "jobs.cortland.edu": "SUNY Cortland",
@@ -1753,15 +1803,15 @@ function inferSunyCampusFromText(title, url) {
       "jobs.geneseo.edu": "SUNY Geneseo",
       "niagaracc-suny.peopleadmin.com": "SUNY Niagara",
       "fitnyc.interviewexchange.com": "SUNY Fashion Institute of Technology",
-      "farmingdale.interviewexchange.com": "Farmingdale State College (SUNY)",
+      "farmingdale.interviewexchange.com": "Farmingdale State College",
       "morrisville.interviewexchange.com": "SUNY Morrisville",
       "sunypoly.interviewexchange.com": "SUNY Polytechnic Institute",
       "sunydutchess.interviewexchange.com": "SUNY Dutchess Community College",
       "sccc.interviewexchange.com": "SUNY Schenectady County Community College",
       "oneonta.interviewexchange.com": "SUNY Oneonta",
       "oswego.interviewexchange.com": "SUNY Oswego",
-      "binghamton.interviewexchange.com": "Binghamton University (SUNY)",
-      "albany.interviewexchange.com": "University at Albany (SUNY)",
+      "binghamton.interviewexchange.com": "Binghamton University",
+      "albany.interviewexchange.com": "University at Albany",
       "sunywcc.interviewexchange.com": "SUNY Westchester Community College",
       "occc.interviewexchange.com": "SUNY Orange County Community College",
       "esc.interviewexchange.com": "SUNY Empire State College",
@@ -1963,7 +2013,10 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Erie Community College", type: "generic", url: "https://www.ecc.edu/" },
   { campus: "Excelsior University", type: "generic", url: "https://www.excelsior.edu/" },
   { campus: "Farmingdale State College", type: "generic", url: "https://www.farmingdale.edu/human-resources/employment-opportunities.shtml" },
-  { campus: "Fashion Institute of Technology", type: "generic", url: "https://www.fitnyc.edu/" },
+  // Was pointing at the bare marketing homepage. Real ATS is InterviewExchange
+  // (54 current openings incl. Adjunct Faculty Pool) — same type already used
+  // for Goucher College.
+  { campus: "Fashion Institute of Technology", type: "interviewexchange", url: "https://fitnyc.interviewexchange.com/" },
   { campus: "Finger Lakes Community College", type: "generic", url: "https://www.flcc.edu/" },
   { campus: "Finger Lakes Health College of Nursing & Health Sciences", type: "generic", url: "https://www.flhcon.edu/" },
 ];
@@ -2095,7 +2148,10 @@ const WA_CAMPUSES = [
   },
   {
     campus: "Gonzaga University",
-    type: "generic",
+    // Real ATS is a paginated PageUp Angular SPA (secure.dc4.pageuppeople.com) —
+    // confirmed live with ~22 postings incl. 3 Faculty. "pageup" already exists
+    // and handles this platform's pagination/cookie-banner.
+    type: "pageup",
     url: "https://employment.gonzaga.edu/",
   },
   {
@@ -2507,7 +2563,9 @@ const WI_CAMPUSES = [
   { campus: "Carthage College", type: "generic", url: "https://carthage.applicantpro.com/jobs" },
   { campus: "Chippewa Valley Technical College", type: "generic", url: "https://www.cvtc.edu/" },
   { campus: "College of Menominee Nation", type: "generic", url: "https://www.menominee.edu/" },
-  { campus: "Concordia University-Wisconsin", type: "generic", url: "https://www.cuw.edu/search.html?query=faculty-employment" },
+  // Was the sitewide search results page (4,196 hits: blog posts, PDFs, unrelated
+  // content), not a job list. Real ATS is ApplicantPro.
+  { campus: "Concordia University-Wisconsin", type: "generic", url: "https://cuw.applicantpro.com/jobs/" },
   { campus: "Edgewood College", type: "generic", url: "https://www.edgewood.edu/employment/" },
   { campus: "Fox Valley Technical College", type: "generic", url: "https://www.fvtc.edu/academics/faculty-jobs" },
 ];
@@ -2563,7 +2621,9 @@ const CO_CAMPUSES = [
   { campus: "Colorado Mountain College", type: "generic", url: "https://coloradomtn.edu/" },
   { campus: "Colorado Northwestern Community College", type: "generic", url: "https://www.cncc.edu/about/human-resources/career-opportunities" },
   { campus: "Colorado State University Global", type: "generic", url: "https://csuglobal.edu/" },
-  { campus: "Colorado State University Pueblo", type: "generic", url: "https://www.csupueblo.edu/human-resources/employment" },
+  // Was a category-description landing page with no postings/ATS links. Real
+  // listings + Workday hand-off link live one page deeper.
+  { campus: "Colorado State University Pueblo", type: "generic", url: "https://www.csupueblo.edu/human-resources/employment/current-opportunities.html" },
   { campus: "Colorado State University-Fort Collins", type: "generic", url: "https://hr.colostate.edu/prospective-employees" },
   { campus: "Colorado State University-System Office", type: "generic", url: "https://www.csusystem.edu/" },
   { campus: "Community College of Aurora", type: "generic", url: "https://www.ccaurora.edu/" },
@@ -2598,7 +2658,10 @@ const OH_CAMPUSES = [
   {
     campus: "Cleveland State University",
     type: "peopleadmin",
-    url: "https://hrjobs.csuohio.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+    // query_position_type_id[]=1 filters to Staff only, structurally excluding every
+    // Faculty posting that exists on this exact same board under a different filter
+    // value — dropped to rely on the downstream looksFacultyish filter instead.
+    url: "https://hrjobs.csuohio.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&commit=Search",
   },
   {
     campus: "Wright State University",
@@ -2660,7 +2723,11 @@ const OH_CAMPUSES = [
   { campus: "Antioch University", type: "generic", url: "https://www.antioch.edu/employment" },
   { campus: "Antioch University-System Administration", type: "generic", url: "https://www.antioch.edu/employment" },
   { campus: "Art Academy of Cincinnati", type: "generic", url: "https://www.artacademy.edu/" },
-  { campus: "Ashland University", type: "generic", url: "https://jobs.ashland.edu/" },
+  // Was the bare portal landing page. This is a white-labeled PeopleAdmin
+  // instance on a custom domain — ATS-detection only recognizes the literal
+  // peopleadmin.com hostname, so hand-off never fired. query_position_type_id[]=3
+  // confirmed live as "Faculty Jobs" (id 4 = "Adjunct Faculty").
+  { campus: "Ashland University", type: "peopleadmin", url: "https://jobs.ashland.edu/postings/search?query_position_type_id%5B%5D=3&commit=Search" },
   { campus: "Athenaeum of Ohio", type: "generic", url: "https://www.athenaeum.edu/" },
   { campus: "Aultman College of Nursing and Health Sciences", type: "generic", url: "https://www.aultmancollege.edu/" },
   { campus: "Baldwin Wallace University", type: "generic", url: "https://www.bw.edu/about/hr/employment" },
@@ -2671,7 +2738,8 @@ const OH_CAMPUSES = [
   { campus: "Bryant & Stratton College-Parma", type: "generic", url: "https://www.bryantstratton.edu/" },
   { campus: "Capital University", type: "generic", url: "https://www.capital.edu/" },
   { campus: "Cedarville University", type: "generic", url: "https://www.cedarville.edu/" },
-  { campus: "Central Ohio Technical College", type: "generic", url: "https://jobs.cotc.edu/" },
+  // Was the home/landing page (just a "Search Jobs" link, no listings inline).
+  { campus: "Central Ohio Technical College", type: "generic", url: "https://jobs.cotc.edu/postings/search" },
   { campus: "Central State University", type: "generic", url: "https://www.centralstate.edu/" },
   { campus: "Cincinnati College of Mortuary Science", type: "generic", url: "https://www.ccms.edu/academics/faculty-jobs" },
   { campus: "Cincinnati State Technical and Community College", type: "generic", url: "https://www.cincinnatistate.edu/news/faculty-assisted-at-healthcare-careers-camp-for-high-school-students" },
@@ -2787,7 +2855,11 @@ const MI_CAMPUSES = [
   {
     campus: "Eastern Michigan University",
     type: "nau-search",
-    url: "https://careers.emich.edu/jobs/search?page=1&employment_type_uids%5B%5D=e287a25700cc5e02041e575342cc273a&query=",
+    // employment_type_uids matched none of the live site's 4 current filter option
+    // values (verified against the page's own checkbox markup) — a stale ID from a
+    // past taxonomy change, same shape as the Northern Arizona University fix.
+    // Unfiltered relies on the downstream global looksFacultyish filter instead.
+    url: "https://careers.emich.edu/jobs/search?page=1&query=",
   },
   {
     campus: "Michigan Technological University",
@@ -3456,7 +3528,9 @@ const GA_CAMPUSES = [
 // AL (Alabama)
 const AL_CAMPUSES = [
   { campus: "University of Alabama", type: "generic", url: "https://careers.ua.edu/faculty/jobs" },
-  { campus: "Auburn University", type: "peopleadmin", url: "https://www.auemployment.com/postings/search?query=&query_position_type_id%5B%5D=2&commit=Search" },
+  // query_position_type_id[]=2 is "Non-Faculty" on this site's own filter
+  // dropdown; id 6 is Faculty. Same stale/wrong-filter bug class as NAU/CSU/EMU.
+  { campus: "Auburn University", type: "peopleadmin", url: "https://www.auemployment.com/postings/search?query=&query_position_type_id%5B%5D=6&commit=Search" },
   { campus: "University of Alabama at Birmingham", type: "peopleadmin", url: "https://uab.peopleadmin.com/postings/search" },
   { campus: "University of South Alabama", type: "generic", url: "https://www.southalabama.edu/departments/academicaffairs/facultyposition.html" },
   { campus: "Spring Hill College", type: "generic", url: "https://www.shc.edu/about-spring-hill-jesuit-college/spring-hill-college-jobs/" },
@@ -3465,7 +3539,11 @@ const AL_CAMPUSES = [
   { campus: "Alabama College of Osteopathic Medicine", type: "generic", url: "https://www.acom.edu/" },
   { campus: "Alabama State University", type: "generic", url: "https://www.alasu.edu/" },
   { campus: "Amridge University", type: "generic", url: "https://www.amridgeuniversity.edu/" },
-  { campus: "Athens State University", type: "generic", url: "https://www.athens.edu/about/offices/human-resources/employment-opportunities" },
+  // Was the bare HR landing page. This is a white-labeled PeopleAdmin instance
+  // on a custom domain — ATS-detection only recognizes the literal
+  // peopleadmin.com hostname, so hand-off never fired. 366[]=1 confirmed live
+  // as the Faculty filter.
+  { campus: "Athens State University", type: "peopleadmin", url: "https://jobs.athens.edu/postings/search?366%5B%5D=1&commit=Search" },
   { campus: "Auburn University at Montgomery", type: "generic", url: "https://www.aum.edu/" },
   { campus: "Bevill State Community College", type: "generic", url: "https://www.bscc.edu/" },
   { campus: "Bishop State Community College", type: "generic", url: "https://www.bishop.edu/" },
@@ -9431,7 +9509,16 @@ async function scrapeClaremontCmc(context, startUrl, campusName) {
         const a = r.querySelector("a[href]");
         if (!a) continue;
 
-        const title = clean(a.textContent) || clean(r.querySelector("td")?.textContent);
+        // Every row's anchor text is a generic "View" CTA (confirmed live: all
+        // 9 of CMC's real open positions were being mistitled "View" and
+        // dropped by the length<10 filter downstream) — the real title lives
+        // in the row's own <td> instead. `||` only ever reached that fallback
+        // when the anchor text was empty, which it never was.
+        let title = clean(a.textContent);
+        const rowTitle = clean(r.querySelector("td")?.textContent);
+        if (!title || title.length < 10 || /^(view|apply|details|more|apply now)$/i.test(title)) {
+          title = rowTitle || title;
+        }
         const url = abs(a.getAttribute("href"));
         if (!title || !url) continue;
 
@@ -10634,6 +10721,17 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
   try {
     await gotoWithRetry(page, effectiveUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
+    // Some widgets (JazzHR/ApplicantPool cards) only populate via a client-side
+    // AJAX call after mount, and some pages hop through a client-side redirect
+    // to a second app on another domain (e.g. an isolvedhire board) that then
+    // renders its own content — both can miss the fixed 2000ms wait above on a
+    // slow load (observed on George Fox University and Christian Theological
+    // Seminary). This only ever adds patience on top of the existing wait and
+    // no-ops instantly once a job-like anchor is already present, so pages that
+    // were already fast are unaffected.
+    await page
+      .waitForSelector('a[href*="/job"], a[href*="/jobs"], a[href*="isolvedhire.com"]', { timeout: 6000 })
+      .catch(() => {});
 
     const evalResult = await safeEvaluate(page, () => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
@@ -10687,8 +10785,12 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // Skip navigation and common non-job links. Matched as a whole path
         // segment (not a bare substring) — "about" must be its own segment
         // ("/about/") so it doesn't kill compound segments like
-        // "/about-felician-university/careers-at-felician/psycprof2/".
-        if (/\/(login|logout|search|home|about|contact|privacy|terms|faq|help)(?:\/|$|\?|\.)/i.test(url)) continue;
+        // "/about-felician-university/careers-at-felician/psycprof2/". A bare
+        // "/about/" segment still isn't itself a job page even so — but some
+        // sites host their real listings at "/about/employment-opportunities/"
+        // (Baptist University of the Americas), so exempt it when a later
+        // segment is clearly job-related.
+        if (/\/(login|logout|search|home|about|contact|privacy|terms|faq|help)(?:\/|$|\?|\.)/i.test(url) && !isLikelyJobPath(url)) continue;
         if (/twitter\.com|x\.com|facebook\.com|instagram\.com|linkedin\.com|youtube\.com|tiktok\.com/i.test(url)) continue;
         if (/\/events?\b|\/news\b|\/newsroom\b|\/stories?\b|\/blog\b|\/calendar\b|\/alumni\b/i.test(url)) continue;
         // Some sites run their news section on its own subdomain instead of a
@@ -10713,6 +10815,40 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // the visible text is a generic "here"/"apply"/"click here" CTA — common
         // when the career page was authored by pasting a link out of an email.
         if (looksLikeAtsUrl(url)) tileUrls.push({ title: title || "", url });
+
+        // Some listing widgets (JazzHR/ApplicantPool cards, WordPress/Bootstrap
+        // accordion toggles) put the real job title in a sibling/ancestor
+        // heading or accordion-toggle element and leave the anchor itself as a
+        // generic CTA ("+ View details", "Read More...", "More Info", "Apply",
+        // "Job Description", "Download the full Job Description") — verified
+        // live across Alfred University, Andrew College, University of
+        // Jamestown, Eastern Oklahoma State College, Eastern Shore Community
+        // College, Emmaus Bible College, Spring Hill College, Columbia-Greene
+        // Community College, and Crowder College, each losing a real posting
+        // this way. When the anchor's own text looks like that kind of CTA
+        // rather than a title, look one card-container up for a heading/toggle
+        // before giving up on this anchor entirely.
+        if (
+          !title ||
+          title.length < 10 ||
+          /^\+?\s*(menu|search|login|home|back|next|previous|submit|apply(\s+now)?|click(\s+here)?|more|view|view\s+details?|learn\s+more\.*|read\s+more\.*|more\s+info(rmation)?|job\s+(description|sheet|posting)|download(\s+the)?(\s+full)?\s+job(\s+(description|sheet|posting))?)\.*$/i.test(
+            title
+          ) ||
+          /(…|\.\.\.)\s*$/.test(title)
+        ) {
+          const card = a.closest(
+            "li, article, tr, [class*='job' i], [class*='position' i], [class*='listing' i], [class*='card' i], [class*='posting' i], [class*='accordion' i]"
+          );
+          const headingEl = card?.querySelector(
+            "h1, h2, h3, h4, h5, h6, [class*='job-title' i], [class*='jobtitle' i], [class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i]"
+          );
+          const headingText = headingEl ? clean(headingEl.textContent) : "";
+          if (headingText && headingText.length >= 10 && !/^[a-z]/.test(headingText)) {
+            title = headingText;
+          } else {
+            continue;
+          }
+        }
 
         if (!title || title.length < 10) continue;
         // A real job posting's title is always a proper heading — a title
@@ -10802,10 +10938,19 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // "position"/"opening"/"opportunity", so require that context instead of
         // matching the bare word.
         const isFacultyRelated =
-          /\b(professor|lecturer|instructor|department\s+chair|chairperson)\b/i.test(title) ||
+          /\b(professors?|lecturers?|instructors?|department\s+chairs?|chairpersons?)\b/i.test(title) ||
           /\bdean\s+of\b/i.test(title) ||
           /\bpost[\s-]?doc(?:toral)?\b/i.test(title) && /\b(fellow|scholar|associate|research(?:er)?|scientist|position|positions|opening|openings|opportunit(?:y|ies))\b/i.test(title) ||
-          /\bfaculty\b/i.test(title) && /\b(position|positions|opening|openings|job|jobs|hiring|appointment|search)\b/i.test(title);
+          // Was requiring "faculty" to co-occur with a hiring-context word
+          // (position/opening/job/...), but by this point every noisy bare-
+          // "faculty" case (senate, directory, dean's office, category tiles,
+          // spotlights) has already been filtered out by the specific checks
+          // above — so a bare "faculty" surviving to here is almost always a
+          // real title with a department tag and no hiring-context word at all
+          // ("Faculty | Philosophy", "FT Faculty Department of Nursing",
+          // "Science Faculty (Biotech)"). Matches looksFacultyish's own bare
+          // \bfaculty\b bar, which the rest of this codebase already trusts.
+          /\bfaculty\b/i.test(title);
 
         if (!isFacultyRelated) continue;
 
@@ -10825,6 +10970,47 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         seen.add(url);
 
         out.push({ title, url });
+      }
+
+      // Some pages have no <a href> anywhere near the title at all — a Bootstrap/
+      // WordPress accordion toggle is a plain <button>, not a link (Colorado
+      // Northwestern Community College, Baker University, Allen County Community
+      // College all do this), or a schema.org JobPosting row's only <a> has no
+      // href attribute (Garrett College). The anchor-based scan above can never
+      // find these since it only iterates `a[href]`. Only runs when that scan
+      // found nothing, so a page that already works via inline anchors is never
+      // affected by this — same "gate on empty results" pattern as the ATS
+      // hand-off fallback below.
+      if (out.length === 0) {
+        const candidates = document.querySelectorAll(
+          "[class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i], button[class*='accordion' i], [itemprop='title']"
+        );
+        for (const el of candidates) {
+          const title = clean(el.textContent);
+          if (!title || title.length < 10 || title.length > 120) continue;
+          if (/^[a-z]/.test(title)) continue;
+          if (
+            !(
+              /\b(professors?|lecturers?|instructors?|department\s+chairs?|chairpersons?)\b/i.test(title) ||
+              /\bfaculty\b/i.test(title)
+            )
+          ) {
+            continue;
+          }
+          const container =
+            el.closest("li, article, tr, [class*='job' i], [class*='position' i], [class*='listing' i], [class*='accordion' i]") ||
+            el;
+          // No per-job URL exists in this markup shape — link to whatever real
+          // document/anchor is nearest (a PDF "job sheet", an ATS apply link),
+          // falling back to the listing page itself rather than dropping the
+          // posting entirely.
+          const nearbyLink = container.querySelector('a[href$=".pdf" i], a[href*="job" i], a[href*="apply" i], a[href]');
+          const jobUrl = (nearbyLink && abs(nearbyLink.getAttribute("href"))) || location.href;
+          const dedupeKey = `${jobUrl}::${title}`;
+          if (seen.has(dedupeKey)) continue;
+          seen.add(dedupeKey);
+          out.push({ title, url: jobUrl });
+        }
       }
 
       return { jobs: out, tileUrls };
@@ -11020,6 +11206,16 @@ async function scrapePeopleClickAs(context, startUrl, campusName, sourceName) {
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 90_000 });
     await page.waitForTimeout(3000);
+
+    // A plain GET on this URL renders the search *criteria form*, not results —
+    // PeopleClick only shows results after the Search button is submitted (POST
+    // back to the same path). Without this, the anchor scan below always saw an
+    // empty form (confirmed live on MIT's client_mit board, id "sp-searchButton").
+    // Gated with .catch so boards that already land on results (button absent)
+    // are unaffected.
+    await page.click("#sp-searchButton, button[value='Search'][type='submit']", { timeout: 5000 }).catch(() => {});
+    await page.waitForLoadState("domcontentloaded", { timeout: 15_000 }).catch(() => {});
+    await page.waitForTimeout(2000);
 
     let jobs = await safeEvaluate(page, () => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
@@ -11316,6 +11512,12 @@ async function scrapePageUpAs(context, startUrl, campusName, sourceName) {
     for (let safety = 0; safety < 80; safety++) {
       await gotoWithRetry(page, currentUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
       await page.waitForTimeout(1200);
+      // PageUp's bot-challenge/cookie-banner can delay the real listing past the
+      // fixed 1200ms wait on some tenants (observed on Rowan University) — this
+      // only ever adds patience (never shortens the existing wait) and no-ops
+      // instantly once the selector is already present, so tenants that were
+      // already fast are unaffected.
+      await page.waitForSelector('a[href*="/job/"], a[href*="/jobs/"]', { timeout: 8000 }).catch(() => {});
 
       const batch = await safeEvaluate(page, () => {
         const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
@@ -13769,9 +13971,13 @@ async function scrapeTaleoAs(context, startUrl, campusName, sourceName) {
 async function scrapeCuBoulder(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
-    // Go to faculty jobs page
-    await gotoWithRetry(page, "https://jobs.colorado.edu/jobs/SearchJobs?employmentType=Faculty", { waitUntil: "networkidle", timeout: 60_000 });
-    await page.waitForTimeout(3000);
+    // Go to faculty jobs page. "networkidle" never fires here — the site keeps
+    // background polling/analytics requests alive — so gotoWithRetry timed out
+    // before the listing ever rendered. domcontentloaded + an explicit wait for
+    // the listing content is the pattern used by every other JS-rendered scraper
+    // in this file; this site was the sole "networkidle" holdout that mattered.
+    await gotoWithRetry(page, "https://jobs.colorado.edu/jobs/SearchJobs?employmentType=Faculty", { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(5000);
 
     const jobs = await safeEvaluate(page, () => {
       const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
