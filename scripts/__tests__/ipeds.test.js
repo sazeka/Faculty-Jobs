@@ -9,6 +9,7 @@ import {
   isDegreeGrantingBySector,
   mapIpedsRows,
   buildLookupByName,
+  parseIalias,
 } from "../lib/ipeds.js";
 
 test("toInt parses ints and rejects junk", () => {
@@ -81,4 +82,40 @@ test("buildLookupByName keys case-insensitively", () => {
   const lookup = buildLookupByName([{ name: "Big State University", state: "OH" }]);
   assert.equal(lookup.get("big state university").state, "OH");
   assert.equal(lookup.has("nope"), false);
+});
+
+test("parseIalias splits on pipe, 2+ spaces, and semicolon but not a single space", () => {
+  assert.deepEqual(parseIalias("UCI  UC Irvine"), ["UCI", "UC Irvine"]);
+  assert.deepEqual(parseIalias("AUM||Auburn University at Montgomery|Auburn Montgomery"), [
+    "AUM",
+    "Auburn University at Montgomery",
+    "Auburn Montgomery",
+  ]);
+  assert.deepEqual(parseIalias("Foo; Bar"), ["Foo", "Bar"]);
+  assert.deepEqual(parseIalias("Single Alias"), ["Single Alias"]);
+  assert.deepEqual(parseIalias(""), []);
+});
+
+test("buildLookupByName falls back to an unambiguous alias", () => {
+  const lookup = buildLookupByName([
+    { name: "University of California-Berkeley", unitid: 1, aliases: ["UC Berkeley"], state: "CA" },
+  ]);
+  assert.equal(lookup.get("uc berkeley").unitid, 1);
+});
+
+test("buildLookupByName never lets an alias shadow a real INSTNM", () => {
+  const lookup = buildLookupByName([
+    { name: "University of Alabama", unitid: 1, aliases: [] },
+    { name: "UA", unitid: 2, aliases: ["University of Alabama"] },
+  ]);
+  // "UA"'s alias collides with a real institution's own name — must not overwrite it.
+  assert.equal(lookup.get("university of alabama").unitid, 1);
+});
+
+test("buildLookupByName drops an alias that's ambiguous across institutions", () => {
+  const lookup = buildLookupByName([
+    { name: "Tech College A", unitid: 1, aliases: ["Tech"] },
+    { name: "Tech College B", unitid: 2, aliases: ["Tech"] },
+  ]);
+  assert.equal(lookup.has("tech"), false);
 });

@@ -115,6 +115,17 @@ export function isDegreeGrantingBySector(sectorCode) {
   return null;
 }
 
+// IPEDS's IALIAS column packs multiple alternate names into one field with an
+// inconsistent delimiter — usually "|", sometimes 2+ spaces, occasionally ";".
+// A single space is never a delimiter (aliases are themselves multi-word), so
+// splitting on any of the other three and dropping empties is safe.
+export function parseIalias(raw) {
+  return String(raw || "")
+    .split(/\s*\|\s*|\s{2,}|\s*;\s*/)
+    .map((a) => clean(a))
+    .filter(Boolean);
+}
+
 // Map raw CSV rows → normalized institution metadata, dropping for-profits and
 // deduplicating by unitid (preferred) or normalized name.
 export function mapIpedsRows(rows) {
@@ -135,6 +146,10 @@ export function mapIpedsRows(rows) {
     mapped.push({
       unitid,
       name,
+      // Raw field, not firstField()'s clean()-ed version — clean() collapses
+      // runs of whitespace to one space, which destroys the 2+-space delimiter
+      // parseIalias relies on to split multi-alias values.
+      aliases: parseIalias(row.IALIAS ?? row.ialias ?? ""),
       state: firstField(row, ["STABBR", "stabbr", "STATE", "state"]) || null,
       sector: sectorRaw ? toInt(sectorRaw) : null,
       level: mapLevel(levelRaw),
@@ -152,11 +167,37 @@ export function mapIpedsRows(rows) {
 }
 
 // Build a normalized-name → metadata lookup for joining against the master,
-// where most records have no unitid and must match on name.
+// where most records have no unitid and must match on name. Falls back to
+// IALIAS (e.g. "UC Berkeley" for "University of California-Berkeley") for
+// names that don't match any INSTNM directly — otherwise institutions whose
+// scraper/config uses a common short name instead of IPEDS's full legal name
+// silently lose unitid/state/control/level enrichment. An alias is only
+// trusted when it resolves to exactly one institution: never let an alias
+// override a real INSTNM slot (that would misattribute a different real
+// institution), and never use an alias that's ambiguous across institutions
+// (same "no silent false attribution" rule the TCSG/USG slug matchers use).
 export function buildLookupByName(mappedRows) {
   const byName = new Map();
   for (const r of mappedRows) {
     byName.set(key(r.name), r);
   }
+
+  const aliasCandidates = new Map(); // aliasKey -> Set of distinct institutions
+  for (const r of mappedRows) {
+    for (const alias of r.aliases || []) {
+      const aliasKey = key(alias);
+      if (!aliasKey || byName.has(aliasKey)) continue; // never shadow a real INSTNM
+      if (!aliasCandidates.has(aliasKey)) aliasCandidates.set(aliasKey, new Set());
+      aliasCandidates.get(aliasKey).add(r.unitid ? `id:${r.unitid}` : `name:${key(r.name)}`);
+    }
+  }
+  for (const r of mappedRows) {
+    for (const alias of r.aliases || []) {
+      const aliasKey = key(alias);
+      if (!aliasKey || byName.has(aliasKey)) continue;
+      if (aliasCandidates.get(aliasKey)?.size === 1) byName.set(aliasKey, r);
+    }
+  }
+
   return byName;
 }
