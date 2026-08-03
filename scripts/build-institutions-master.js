@@ -143,7 +143,17 @@ function main() {
       quarantined_career_url: isQuarantined ? row.career_url : null,
     };
 
-    if (isQuarantined) {
+    // The quarantine flag comes from a separate, shallow link-health checker
+    // (plain HTTP fetch, no JS rendering) — it can disagree with the real
+    // Playwright-based scraper, which doesn't consult quarantine state at all
+    // and reads server.js's own hardcoded url directly. A URL the real scraper
+    // just pulled real jobs from is empirically not broken this run, no matter
+    // what the shallow checker thinks — forcing coverage_status to "missing"
+    // here regardless of last_seen_job_count was hiding institutions with
+    // active, real coverage (confirmed: Kennesaw State, Farmingdale State
+    // College, SUNY System, Brigham Young University, and Columbia University
+    // all showed real non-zero job counts while still reporting "missing").
+    if (isQuarantined && !(row.last_seen_job_count > 0)) {
       merged.career_url = null;
       if (merged.coverage_status === "covered") merged.coverage_status = "missing";
       merged.notes = clean(`${merged.notes || ""} Quarantined due to repeated broken career link checks.`) || null;
