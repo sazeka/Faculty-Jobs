@@ -10863,6 +10863,21 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (/faculty\s+(and|&)\s+staff\s+directory|faculty\s+directory|our\s+faculty|meet\s+the\s+faculty|faculty\s+profiles?/i.test(title)) continue;
         if (/^faculty\s*&\s*staff$/i.test(title)) continue;
         if (/faculty\s+association|faculty\s+senate|faculty\s+development|info\s+for\s+faculty\s+and\s+staff/i.test(title)) continue;
+        // "Faculty Resources"/"Faculty Resource Center" is a standing info hub
+        // (handbooks, forms, IT help), not a posting or even a job-board tile —
+        // same family as the directory/profile exclusions above.
+        if (/^faculty\s+resources?(\s+center)?$/i.test(title)) continue;
+        // A generic file-download widget (WordPress/Elementor "download this
+        // file" block) that hasn't been given a friendly label renders its raw
+        // target as the link text — e.g. "Download File:
+        // https://.../2026-Faculty-Video.mp4?_=1" (Eastern Wyoming College).
+        // The word "faculty" living inside that filename was enough to pass
+        // isFacultyRelated below and get published as a fake job titled after a
+        // URL. A real job title is never a literal URL or a bare attachment
+        // filename, regardless of what page it was found on.
+        if (/^download(\s+(this\s+)?file)?\s*:?\s*https?:\/\//i.test(title)) continue;
+        if (/https?:\/\//i.test(title)) continue;
+        if (/\.(mp4|mov|avi|wmv|pdf|docx?|xlsx?|pptx?|zip|jpe?g|png|gif)(\?\S*)?$/i.test(title)) continue;
         if (/^["'“].+["'”]$/.test(title)) continue;
         if (/thank\s+a\s+professor|faculty\s+spotlight|student\s+spotlight|alumni\s+spotlight|testimonial/i.test(title)) continue;
         if (/^(faculty|staff|faculty jobs|employment|careers?)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
@@ -14267,8 +14282,26 @@ async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
     });
 
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
-    // Let the SPA hydrate and fire its XHRs
-    await page.waitForTimeout(2500);
+    // Wait for the SPA to actually fire its job-search XHR instead of guessing a
+    // fixed delay. Verified live against the Univ. of Wyoming tenant 2026-08-03:
+    // the request normally lands ~2.2-2.4s after navigation — a hair under the
+    // old fixed 2500ms wait — so any extra latency (slow network, a busier
+    // scrape run) pushed it past the deadline and silently starved this source
+    // down to 0 real jobs (the DOM fallback in path 3 then picked up stale nav
+    // links instead). A capped explicit wait removes that race in both
+    // directions: it returns as soon as the request fires, and tolerates far
+    // more delay than a fixed guess ever could.
+    await page
+      .waitForRequest(
+        (req) => {
+          const rt = req.resourceType();
+          if (rt !== "xhr" && rt !== "fetch") return false;
+          const u = req.url();
+          return !!u && u.includes("/hcmRestApi/") && /recruitingCEJobRequisitions/i.test(u);
+        },
+        { timeout: 15_000 }
+      )
+      .catch(() => {});
 
     // 1) Best case: reuse the exact API URL the site itself called (most reliable).
     let jobs = [];
@@ -14304,6 +14337,33 @@ async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
           const json = await res.json().catch(() => null);
           if (oracleCxExtractRequisitionList(json).length > 0) apiRespondedWithData = true;
           jobs = oracleCxJsonToJobs(json, campusName, sourceName, pickedUrl.toString());
+
+          // The site's own page size (commonly 25) is often smaller than
+          // TotalJobsCount — without paging through, results beyond the first
+          // page are silently dropped (29-job WY tenant: page 1 returns only
+          // 25). Keep requesting subsequent offsets off the same finder= URL
+          // until we've covered TotalJobsCount, capped well above any real
+          // per-campus faculty posting count as a runaway-loop backstop.
+          let pageInfo = oracleCxExtractPaginationInfo(json);
+          let fetched = pageInfo ? pageInfo.offset + pageInfo.limit : Infinity;
+          for (let guard = 0; pageInfo && fetched < pageInfo.total && guard < 40; guard++) {
+            const nextUrl = new URL(pickedUrl.toString());
+            const finder = nextUrl.searchParams.get("finder") || "";
+            const nextOffset = fetched;
+            const withoutOffset = finder.replace(/,?offset=\d+/i, "");
+            nextUrl.searchParams.set("finder", `${withoutOffset},offset=${nextOffset}`);
+
+            const nextRes = await context.request.get(nextUrl.toString(), { timeout: 60_000 }).catch(() => null);
+            if (!nextRes || !nextRes.ok()) break;
+            const nextJson = await nextRes.json().catch(() => null);
+            const nextJobs = oracleCxJsonToJobs(nextJson, campusName, sourceName, nextUrl.toString());
+            if (!nextJobs.length) break;
+            jobs = jobs.concat(nextJobs);
+
+            pageInfo = oracleCxExtractPaginationInfo(nextJson);
+            if (!pageInfo) break;
+            fetched = pageInfo.offset + pageInfo.limit;
+          }
         }
       } catch {}
     }
@@ -14563,6 +14623,23 @@ function oracleCxExtractRequisitionList(json) {
   }
 
   return [];
+}
+
+// A `findReqs` response's pagination lives on the search-description object
+// (items[0].Offset/Limit/TotalJobsCount), not the top-level items[]/count/offset
+// fields (those describe the 1-element items wrapper, not the requisitions) —
+// verified against the live Univ. of Wyoming tenant 2026-08-03, where the
+// wrapper's own count/offset/limit (1/0/200) look plausible but are unrelated,
+// and the requisition page size (25) silently truncated a 29-job result set.
+function oracleCxExtractPaginationInfo(json) {
+  const items = Array.isArray(json?.items) ? json.items : null;
+  const withList = items?.find((x) => x && Array.isArray(x.requisitionList));
+  if (!withList) return null;
+  const offset = Number(withList.Offset);
+  const limit = Number(withList.Limit);
+  const total = Number(withList.TotalJobsCount);
+  if (!Number.isFinite(offset) || !Number.isFinite(limit) || !Number.isFinite(total)) return null;
+  return { offset, limit, total };
 }
 
 async function fetchOracleCxRequisitions(context, baseUrl, { q, site, origin, campusName, sourceName, onRawFound }) {
