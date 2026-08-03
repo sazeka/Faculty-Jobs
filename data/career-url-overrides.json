@@ -1900,10 +1900,10 @@
     },
     {
       "name": "Old Dominion University",
-      "homepage_url": "https://jobs.odu.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id=2&commit=Search",
-      "career_url": "https://jobs.odu.edu/postings/search",
+      "homepage_url": "https://jobs.odu.edu/postings/search",
+      "career_url": "https://jobs.odu.edu/postings/search?query_position_type_id%5B%5D=1&commit=Search",
       "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+      "notes": "Unfiltered default view returns Staff/Admin postings only, not the 2 faculty postings agent-career-discovery's own note claims — id 1 (\"Teaching and Research Faculty\" on the site's own dropdown) is the real Faculty filter, confirmed live to return 28+ real faculty postings. This override previously pointed at the unfiltered URL, which would have overridden a correct base-config URL fix (career-url-overrides.json's career_url always wins over the campus config's own url in resolveCareerUrlOverride) — updated 2026-08-03 after that exact regression was found."
     },
     {
       "name": "University of Nebraska Medical Center",

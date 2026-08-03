@@ -827,7 +827,7 @@ const CA_PRIVATE_CAMPUSES = [
   // schooljobs.com is a client-rendered SPA; "generic" only reads anchors once on
   // page 1 without the platform's own pagination — "schooljobs" already exists
   // and handles both.
-  { campus: "College of the Sequoias", type: "generic", url: "https://www.schooljobs.com/careers/cos" },
+  { campus: "College of the Sequoias", type: "schooljobs", url: "https://www.schooljobs.com/careers/cos" },
   { campus: "College of the Siskiyous", type: "generic", url: "https://www.siskiyous.edu/" },
   { campus: "Compton College", type: "generic", url: "https://www.compton.edu/" },
   { campus: "Concordia University-Irvine", type: "generic", url: "https://www.cui.edu/" },
@@ -909,7 +909,7 @@ const NJ_CAMPUSES = [
     // fixed set of type strings (taleo/workday/rutgers/csod/schooljobs/
     // stockton) — anything else, including "generic", short-circuits to [].
     // A dedicated scrapeNjStockton already targets this exact ATS.
-    type: "generic",
+    type: "stockton",
     url: "https://employment.stockton.edu/jobs/search",
   },
   {
@@ -1110,7 +1110,7 @@ const PA_PRIVATE_CAMPUSES = [
   // pure JS SPA shell "generic" can't read. Using the direct myworkdayjobs.com
   // URL (rather than the custom domain) lets scrapeWorkdayApi's own URL-pattern
   // match hit its API path instead of falling back to the slower browser scrape.
-  { campus: "Saint Joseph's University - Lancaster", type: "generic", url: "https://jobs.sju.edu/" },
+  { campus: "Saint Joseph's University - Lancaster", type: "workday", url: "https://sju.wd1.myworkdayjobs.com/SJU" },
   { campus: "University of Pittsburgh-Titusville", type: "generic", url: "https://www.titusville.pitt.edu/home" },
   { campus: "Joseph F McCloskey School of Nursing", type: "generic", url: "https://www.lvhn.org/education/joseph-f-mccloskey-school-nursing" },
   { campus: "Reading Hospital School of Health Sciences", type: "generic", url: "https://reading.towerhealth.org/academics/health-sciences/" },
@@ -1325,14 +1325,14 @@ const VA_CAMPUSES = [
     // "Teaching and Research Faculty" on the site's own dropdown, confirmed live
     // to return 28+ real faculty postings.
     type: "generic",
-    url: "https://jobs.odu.edu/postings/search",
+    url: "https://jobs.odu.edu/postings/search?query_position_type_id%5B%5D=1&commit=Search",
   },
   {
     campus: "James Madison University",
     // joblink.jmu.edu (PeopleAdmin) is fully decommissioned — JMU migrated to
     // PageUp. New URL/type confirmed live with categorized postings including
     // Instructional Faculty.
-    type: "generic",
+    type: "pageup",
     url: "https://jobs.jmu.edu/jobs/search",
   },
   {
@@ -1401,7 +1401,7 @@ const SC_CAMPUSES = [
     campus: "Coastal Carolina University",
     // query_position_type_id=2 is "FTE Staff" on this site's own <select>; id 3
     // is Faculty. Same stale/wrong-filter bug class as NAU/CSU/EMU/Auburn.
-    type: "generic",
+    type: "peopleadmin",
     url: "https://jobs.coastal.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id=3&commit=Search",
   },
   {
@@ -1607,7 +1607,7 @@ const NH_CAMPUSES = [
     campus: "Saint Anselm College",
     // URL is already a raw Workday tenant — a pure JS SPA shell with 0 static
     // anchors "generic" can't read.
-    type: "generic",
+    type: "workday",
     url: "https://anselm.wd1.myworkdayjobs.com/Anselm",
   },
   {
@@ -1676,7 +1676,7 @@ const AZ_CAMPUSES = [
   // schooljobs.com is a client-rendered SPA; "generic" only reads anchors once on
   // page 1 without the platform's own pagination — "schooljobs" already exists
   // and handles both.
-  { campus: "Cochise County Community College District", type: "generic", url: "https://www.schooljobs.com/careers/cochisecollege" },
+  { campus: "Cochise County Community College District", type: "schooljobs", url: "https://www.schooljobs.com/careers/cochisecollege" },
   { campus: "Coconino Community College", type: "generic", url: "https://www.coconino.edu/jobs" },
   { campus: "Community Christian College", type: "generic", url: "https://www.cccollege.edu/" },
   { campus: "Dine College", type: "generic", url: "https://dinecollege.isolvedhire.com/jobs" },
@@ -1699,7 +1699,7 @@ const NY_SUNY_MAIN = {
 const NY_SUNY_CAMPUSES = [
   {
     campus: "Stony Brook University",
-    type: "interfolio",
+    type: "interfolio-inst",
     url: "https://apply.interfolio.com/15355/positions",
   },
   {
@@ -2151,7 +2151,7 @@ const WA_CAMPUSES = [
     // Real ATS is a paginated PageUp Angular SPA (secure.dc4.pageuppeople.com) —
     // confirmed live with ~22 postings incl. 3 Faculty. "pageup" already exists
     // and handles this platform's pagination/cookie-banner.
-    type: "generic",
+    type: "pageup",
     url: "https://employment.gonzaga.edu/",
   },
   {
@@ -2727,7 +2727,7 @@ const OH_CAMPUSES = [
   // instance on a custom domain — ATS-detection only recognizes the literal
   // peopleadmin.com hostname, so hand-off never fired. query_position_type_id[]=3
   // confirmed live as "Faculty Jobs" (id 4 = "Adjunct Faculty").
-  { campus: "Ashland University", type: "generic", url: "https://jobs.ashland.edu/postings/search?query_position_type_id%5B%5D=3&commit=Search" },
+  { campus: "Ashland University", type: "peopleadmin", url: "https://jobs.ashland.edu/postings/search?query_position_type_id%5B%5D=3&commit=Search" },
   { campus: "Athenaeum of Ohio", type: "generic", url: "https://www.athenaeum.edu/" },
   { campus: "Aultman College of Nursing and Health Sciences", type: "generic", url: "https://www.aultmancollege.edu/" },
   { campus: "Baldwin Wallace University", type: "generic", url: "https://www.bw.edu/about/hr/employment" },
@@ -2854,7 +2854,7 @@ const MI_CAMPUSES = [
   },
   {
     campus: "Eastern Michigan University",
-    type: "generic",
+    type: "nau-search",
     // employment_type_uids matched none of the live site's 4 current filter option
     // values (verified against the page's own checkbox markup) — a stale ID from a
     // past taxonomy change, same shape as the Northern Arizona University fix.
@@ -3527,10 +3527,10 @@ const GA_CAMPUSES = [
 
 // AL (Alabama)
 const AL_CAMPUSES = [
-  { campus: "University of Alabama", type: "generic", url: "https://careers.ua.edu/faculty/jobs" },
+  { campus: "University of Alabama", type: "peopleadmin", url: "https://careers.ua.edu/faculty/jobs" },
   // query_position_type_id[]=2 is "Non-Faculty" on this site's own filter
   // dropdown; id 6 is Faculty. Same stale/wrong-filter bug class as NAU/CSU/EMU.
-  { campus: "Auburn University", type: "generic", url: "https://www.auemployment.com/postings/search?query=&query_position_type_id%5B%5D=6&commit=Search" },
+  { campus: "Auburn University", type: "peopleadmin", url: "https://www.auemployment.com/postings/search?query=&query_position_type_id%5B%5D=6&commit=Search" },
   { campus: "University of Alabama at Birmingham", type: "peopleadmin", url: "https://uab.peopleadmin.com/postings/search" },
   { campus: "University of South Alabama", type: "generic", url: "https://www.southalabama.edu/departments/academicaffairs/facultyposition.html" },
   { campus: "Spring Hill College", type: "generic", url: "https://www.shc.edu/about-spring-hill-jesuit-college/spring-hill-college-jobs/" },
@@ -3543,7 +3543,7 @@ const AL_CAMPUSES = [
   // on a custom domain — ATS-detection only recognizes the literal
   // peopleadmin.com hostname, so hand-off never fired. 366[]=1 confirmed live
   // as the Faculty filter.
-  { campus: "Athens State University", type: "generic", url: "https://jobs.athens.edu/postings/search?366%5B%5D=1&commit=Search" },
+  { campus: "Athens State University", type: "peopleadmin", url: "https://jobs.athens.edu/postings/search?366%5B%5D=1&commit=Search" },
   { campus: "Auburn University at Montgomery", type: "generic", url: "https://www.aum.edu/" },
   { campus: "Bevill State Community College", type: "generic", url: "https://www.bscc.edu/" },
   { campus: "Bishop State Community College", type: "generic", url: "https://www.bishop.edu/" },

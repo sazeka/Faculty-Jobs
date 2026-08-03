@@ -156,8 +156,23 @@ function main() {
         const original = outText.slice(openBrace, closeComma + 2);
         // Only update if the object contains exactly this campus name (sanity check)
         if (original.includes(needle)) {
+          // Never let the probe's platform-type guess downgrade an existing
+          // specialized type back to "generic". The probe's classifier defaults
+          // to "generic" whenever it doesn't recognize a URL's ATS signature —
+          // including URLs that are already correctly configured with a specific
+          // scraper (e.g. a myworkdayjobs.com URL it doesn't happen to detect as
+          // Workday). Unconditionally trusting it here silently reverted ~13
+          // previously-fixed institutions in one run (2026-08-02) back to
+          // "workday"/"pageup"/"schooljobs"/"peopleadmin"/"stockton"/"nau-search"
+          // → "generic", several of whose dispatchers hard-fail (return []) on
+          // an unrecognized type rather than falling back to generic parsing.
+          // Only apply the probe's guess when there's nothing specific to lose.
+          const existingTypeMatch = original.match(/type:\s*"([^"]*)"/);
+          const existingType = existingTypeMatch ? existingTypeMatch[1] : "";
+          const typeToApply = existingType && existingType !== "generic" ? existingType : item.platform_type;
+
           let next = original;
-          next = next.replace(/(type:\s*")[^"]*(")/, `$1${escapeJs(item.platform_type)}$2`);
+          next = next.replace(/(type:\s*")[^"]*(")/, `$1${escapeJs(typeToApply)}$2`);
           next = next.replace(/(url:\s*")[^"]*(")/, `$1${escapeJs(item.career_url)}$2`);
           if (next !== original) {
             outText = outText.slice(0, openBrace) + next + outText.slice(closeComma + 2);
