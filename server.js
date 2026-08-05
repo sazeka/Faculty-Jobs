@@ -1439,7 +1439,13 @@ const SC_CAMPUSES = [
   { campus: "Anderson University", type: "generic", url: "https://www.andersonuniversity.edu/" },
   { campus: "Benedict College", type: "generic", url: "https://www.benedict.edu/" },
   { campus: "Bob Jones University", type: "generic", url: "https://bju.careers/bju-faculty" },
-  { campus: "Central Carolina Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cctech/jobs/4939638/automotive-tech-instructor?jobType[0]=Full-Time%20Faculty&jobType[1]=Full-Time%20Staff&sort=PositionTitle%7CAscending&pagetype=jobOpportunitiesJobs" },
+  // Was pinned to one specific job posting instead of the board itself.
+  { campus: "Central Carolina Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cctech" },
+  // "generic" is correct here, not a type mismatch — scrapeGenericJobPage's
+  // internal scrapePaycomApi() probe auto-detects and handles Paycom URLs
+  // before falling back to DOM scraping. scrapeScAll's own dispatcher (unlike
+  // some others) has no "paycom" case at all, so setting type: "paycom" here
+  // would silently return [] instead of using that working auto-detection.
   { campus: "Charleston Southern University", type: "generic", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=9B25CFBC4D1E53FBF3D00067C7C0E531" },
   { campus: "Citadel Military College of South Carolina", type: "generic", url: "https://citadel.edu/" },
   { campus: "Claflin University", type: "generic", url: "https://www.claflin.edu/" },
@@ -2196,9 +2202,10 @@ const WA_CAMPUSES = [
   { campus: "City University of Seattle", type: "generic", url: "https://www.cityu.edu/" },
   { campus: "Clark College", type: "schooljobs", url: "https://www.schooljobs.com/careers/clarkcollege" },
   { campus: "Clover Park Technical College", type: "generic", url: "https://www.cptc.edu/careers" },
-  { campus: "Columbia Basin College", type: "schooljobs", url: "https://www.schooljobs.com/careers/columbiabasin/facultypositions" },
+  // The /facultypositions suffix now 404s; the bare board still works.
+  { campus: "Columbia Basin College", type: "schooljobs", url: "https://www.schooljobs.com/careers/columbiabasin" },
   { campus: "Cornish College of the Arts", type: "generic", url: "https://www.cornish.edu/" },
-  { campus: "Edmonds College", type: "generic", url: "https://www.edmonds.edu/" },
+  { campus: "Edmonds College", type: "generic", url: "https://www.edmonds.edu/about-edmonds/job-opportunities/" },
   { campus: "Everett Community College", type: "generic", url: "https://www.everettcc.edu/faculty/jobs" },
   { campus: "Faith International University", type: "generic", url: "https://www.faithiu.edu/" },
 ];
@@ -2676,7 +2683,7 @@ const OH_CAMPUSES = [
   {
     campus: "Case Western Reserve University",
     type: "generic",
-    url: "https://case.edu/jobs/",
+    url: "https://case.edu/hr/careers",
   },
   {
     campus: "University of Dayton",
@@ -3046,7 +3053,7 @@ const IL_CAMPUSES = [
   { campus: "College of Lake County", type: "generic", url: "https://www.clcillinois.edu/" },
   { campus: "Columbia College Chicago", type: "generic", url: "https://www.colum.edu/faculty/jobs" },
   { campus: "Concordia University-Chicago", type: "generic", url: "https://cuchicago.applicantpro.com/jobs" },
-  { campus: "Danville Area Community College", type: "generic", url: "https://dacc.edu/faculty/jobs" },
+  { campus: "Danville Area Community College", type: "generic", url: "https://dacc.edu/hr/employment" },
   { campus: "DePaul University", type: "generic", url: "https://www.depaul.edu/" },
   { campus: "Dominican University", type: "generic", url: "https://www.dom.edu/" },
   { campus: "East-West University", type: "generic", url: "https://www.eastwest.edu/" },
@@ -3399,7 +3406,9 @@ const FL_CAMPUSES = [
   },
   {
     campus: "Eckerd College",
-    type: "interviewexchange",
+    // URL is an ExactHire ATS (a React/MUI SPA), not InterviewExchange — a
+    // dedicated scrapeExactHireAs already handles this platform.
+    type: "exacthire",
     url: "https://eckerd.exacthire.com/",
   },
   {
@@ -6726,6 +6735,7 @@ async function scrapeCaPrivate(context) {
         if (type === "usc-jobs") return await scrapeUscJobsAs(url, campus, "CA Private");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CA Private");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CA Private");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "CA Private");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CA Private");
         return [];
       } catch (e) {
@@ -7935,6 +7945,7 @@ async function scrapeVaAll(context) {
         if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "VA");
         if (type === "vt-search") return await scrapeKeywordSearchJobsAs(context, url, campus, "VA", { queryParam: "query", pathPattern: "/jobs/" });
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "VA");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "VA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "VA");
         if (type === "enusfilter") {
           const page = await context.newPage();
@@ -10058,6 +10069,7 @@ async function scrapeNyPrivate(context) {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "NY");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NY");
         if (type === "saashr") return await scrapeSaasHrApi(url, campus, "NY");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "NY");
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -12585,6 +12597,7 @@ async function scrapeWaAll(context) {
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "WA");
         if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "WA");
         if (type === "interfolio-links") return await scrapeInterfolioLinksFromPageAs(url, campus, "WA");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "WA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "WA");
         return [];
       } catch (e) {
