@@ -1961,7 +1961,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Samaritan Hospital School of Nursing", type: "generic", url: "https://www.sphp.com/careers/schools-of-nursing/samaritan-hospital-school-of-nursing" },
   { campus: "St. Peter's Hospital College of Nursing", type: "generic", url: "https://www.sphp.com/careers/schools-of-nursing/" },
   { campus: "CVPH Medical Center School of Radiologic Technology", type: "generic", url: "https://www.cvph.org/Residency-and-Education/School-of-Radiology/" },
-  { campus: "Memorial Hospital School of Radiation Therapy Technology", type: "generic", url: "https://www.mskcc.org/mskcc/html/13431.cfm" },
+  { campus: "Memorial Hospital School of Radiation Therapy Technology", type: "generic", url: "https://www.mskcc.org/hcp-education-training/school-radiation-therapy" },
   { campus: "Mesivta Torah Vodaath Rabbinical Seminary", type: "generic", url: "https://independentrabbinicalcolleges.org/index.html" },
   { campus: "Montefiore School of Nursing", type: "generic", url: "https://montefiorenewrochelle.org/school-of-nursing" },
   { campus: "Pomeroy College of Nursing at Crouse Hospital", type: "generic", url: "https://www.crouse.org/nursing" },
@@ -2429,7 +2429,7 @@ const NE_CAMPUSES = [
     url: "https://www.doane.edu/offices-services/human-resources/careers",
   },
   { campus: "Bryan College of Health Sciences", type: "generic", url: "https://www.bryanhealthcollege.edu/bcohs/" },
-  { campus: "CHI Health School of Radiologic Technology", type: "generic", url: "https://www.chihealth.com/school-of-radiologic-technology" },
+  { campus: "CHI Health School of Radiologic Technology", type: "generic", url: "https://www.chihealth.com/careers" },
   { campus: "Bellevue University", type: "generic", url: "https://www.bellevue.edu/" },
   { campus: "Central Community College", type: "generic", url: "https://cccneb.edu/employment/" },
   { campus: "Chadron State College", type: "generic", url: "https://www.csc.edu/hr/job-opportunities" },
@@ -3049,7 +3049,7 @@ const IL_CAMPUSES = [
   { campus: "NorthShore University HealthSystem School of Nurse Anesthesia", type: "generic", url: "https://www.northshore.org/academics/other-programs/school-of-nurse-anesthesia/" },
   { campus: "St. John's College-Department of Nursing", type: "generic", url: "https://www.hshs.org/stjohnscollege/" },
   { campus: "Adler University", type: "generic", url: "https://www.adler.edu/about/careers" },
-  { campus: "American Islamic College", type: "generic", url: "https://aicusa.edu/faculty/jobs" },
+  { campus: "American Islamic College", type: "generic", url: "https://aicusa.edu/about/employment" },
   { campus: "Augustana College", type: "generic", url: "https://www.augustana.edu/jobs" },
   { campus: "Aurora University", type: "schooljobs", url: "https://www.schooljobs.com/careers/aurorauniversity?jobType[0]=Full-Time%20Faculty&sort=PositionTitle%7CAscending" },
   { campus: "Benedictine University", type: "generic", url: "https://www.benedictine.edu/jobs" },
@@ -3361,7 +3361,7 @@ const TX_CAMPUSES = [
   { campus: "East Texas A&M University", type: "generic", url: "https://www.etamu.edu/human-resources/employment" },
   { campus: "East Texas Baptist University", type: "generic", url: "https://www.etbu.edu/info-for/faculty-and-staff/human-resources/employment-opportunities-etbu" },
   { campus: "El Paso Community College", type: "generic", url: "https://www.epcc.edu/" },
-  { campus: "Episcopal Theological Seminary of the Southwest", type: "generic", url: "https://www.ssw.edu/" },
+  { campus: "Episcopal Theological Seminary of the Southwest", type: "generic", url: "https://ssw.edu/alumni/jobs/" },
   { campus: "Frank Phillips College", type: "generic", url: "https://fpctx.edu/jobs" },
 ];
 
@@ -3477,7 +3477,7 @@ const FL_CAMPUSES = [
   { campus: "Florida Agricultural and Mechanical University", type: "generic", url: "https://www.famu.edu/" },
   { campus: "Florida College", type: "generic", url: "https://floridacollege.edu/careers" },
   { campus: "Florida Gateway College", type: "schooljobs", url: "https://www.schooljobs.com/careers/fgcedu" },
-  { campus: "Florida Gulf Coast University", type: "generic", url: "https://www.fgcu.edu/" },
+  { campus: "Florida Gulf Coast University", type: "generic", url: "https://www.fgcu.edu/jobs/" },
   { campus: "Florida Institute of Technology", type: "generic", url: "https://www.fit.edu/employment" },
   { campus: "Florida Institute of Technology-Online", type: "generic", url: "https://www.fit.edu/employment" },
   { campus: "Florida Memorial University", type: "generic", url: "https://www.fmuniv.edu/" },
@@ -3523,7 +3523,7 @@ const GA_CAMPUSES = [
   { campus: "Fort Valley State University", type: "generic", url: "https://fvsu.applicantpro.com/jobs" },
   { campus: "Kennesaw State University", type: "peopleadmin", url: "https://kennesaw.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search" },
   { campus: "Albany State University", type: "generic", url: "https://www.asurams.edu/human-resources/employmentopp/employment.php" },
-  { campus: "Augusta Technical College", type: "generic", url: "https://www.augustatech.edu/faculty/jobs" },
+  { campus: "Augusta Technical College", type: "generic", url: "https://www.easyhrweb.com/JC_AugustaTech/JobListings/joblistings.aspx" },
   { campus: "University of North Georgia", type: "generic", url: "https://ung.edu/human-resources/employment-opportunities/index.php" },
   // These 14 TCSG member colleges are deliberately NOT covered by scrapeTcsgFaculty's
   // tcsg.edu system-wide feed for one of two reasons: at discovery time that feed
@@ -3597,7 +3597,9 @@ const LA_CAMPUSES = [
   { campus: "Louisiana State University", type: "workday", url: "https://lsu.wd1.myworkdayjobs.com/LSU?Job_Profiles=7a9995fc77aa101fe03ed2adb83abd3b&Job_Profiles=7a9995fc77aa101fe03fb0edd613be1b&Job_Profiles=7a9995fc77aa101fe03ea5230b41bd10&Job_Profiles=7a9995fc77aa101fe03c558ab5c0bac4&Job_Profiles=7a9995fc77aa101fe03fb8c46670be23&Job_Profiles=7a9995fc77aa101fe03fa8fe7ecdbe13&Job_Profiles=48b1ff5a2bae01637b1270c77c372403" },
   { campus: "Louisiana Tech University", type: "workday", url: "https://ulsltu.wd503.myworkdayjobs.com/LATECHCareers" },
   { campus: "Dillard University", type: "generic", url: "https://www.dillard.edu/human-resources/" },
-  { campus: "Baton Rouge General Medical Center School of Nursing & School of Radiologic Technology", type: "generic", url: "https://www.brgeneral.org/medical-education/school-of-nursing/%20OR%20school%20of%20radiologic%20technology" },
+  // URL had a stray "%20OR%20school%20of%20radiologic%20technology" baked
+  // into the path (looks like a malformed multi-page search query).
+  { campus: "Baton Rouge General Medical Center School of Nursing & School of Radiologic Technology", type: "generic", url: "https://www.brgeneral.org/about/careers" },
   { campus: "Remington College-Baton Rouge Campus", type: "generic", url: "https://www.remingtoncollege.edu/baton-rouge-career-college" },
   { campus: "Remington College-Lafayette Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/lafayette/" },
   { campus: "Remington College-Shreveport Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/shreveport/" },
