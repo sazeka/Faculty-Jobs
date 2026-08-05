@@ -528,8 +528,12 @@ const CT_URL = "https://www.ct.edu/hr/jobs";
 const CT_PRIVATE_CAMPUSES = [
   {
     campus: "Yale University",
+    // Was pointing at an entirely unrelated institution (Cleveland Clinic
+    // School of Health Professions) — a copy-paste error, not a stale link.
+    // Real board is the Provost's Office listing site (plain Drupal 7, static
+    // anchors, no dedicated scraper needed) with Interfolio apply links.
     type: "generic",
-    url: "https://www.clevelandclinic.org/sodi",
+    url: "https://academicpositions.yale.edu/",
   },
   {
     campus: "University of Connecticut",
@@ -1315,8 +1319,11 @@ const VA_CAMPUSES = [
   },
   {
     campus: "Virginia Commonwealth University",
-    type: "csod",
-    url: "https://vcu.csod.com/ux/ats/careersite/1/home?c=vcu",
+    // Old CSOD tenant confirmed dead (its own API reports totalCount: 0, and
+    // the page banners "transitioning to a new application system"). VCU
+    // migrated to PageUp on a custom domain, same platform as Toledo.
+    type: "pageup",
+    url: "https://vcujobs.com/jobs/search",
   },
   {
     campus: "Old Dominion University",
@@ -1343,7 +1350,7 @@ const VA_CAMPUSES = [
   {
     campus: "Washington and Lee University",
     type: "generic",
-    url: "https://my.wlu.edu/human-resources/employment-opportunities",
+    url: "https://www.wlu.edu/employment-opportunities/faculty-positions",
   },
   {
     campus: "Hollins University",
@@ -1431,8 +1438,10 @@ const SC_CAMPUSES = [
   },
   { campus: "University of South Carolina-Lancaster", type: "generic", url: "https://www.sc.edu/faculty-employment" },
   { campus: "University of South Carolina-Salkehatchie", type: "generic", url: "https://sc.edu/faculty-employment" },
-  { campus: "University of South Carolina-Sumter", type: "generic", url: "https://www.sc.edu/faculty-employment" },
-  { campus: "University of South Carolina-Union", type: "generic", url: "https://www.sc.edu/faculty-employment" },
+  // Was a dead 404. Real applicant system is uscjobs.sc.edu (PeopleAdmin),
+  // filterable by campus via query_organizational_tier_1_id.
+  { campus: "University of South Carolina-Sumter", type: "peopleadmin", url: "https://uscjobs.sc.edu/postings/search?query_organizational_tier_1_id%5B%5D=1313" },
+  { campus: "University of South Carolina-Union", type: "peopleadmin", url: "https://uscjobs.sc.edu/postings/search?query_organizational_tier_1_id%5B%5D=1314" },
   { campus: "Aiken Technical College", type: "generic", url: "https://www.atc.edu/" },
   { campus: "Allen University", type: "generic", url: "https://allenuniversity.edu/au-employment" },
   { campus: "American College of the Building Arts", type: "generic", url: "https://acba.edu/" },
@@ -1669,7 +1678,9 @@ const AZ_CAMPUSES = [
     url: "https://info.prescott.edu/job-openings/",
   },
   { campus: "Ottawa University-Surprise", type: "generic", url: "https://www.ottawa.edu/ouaz/home" },
-  { campus: "Western Maricopa Education Center", type: "generic", url: "https://www.west-mec.edu/adult-students" },
+  // Was pointing at an adult-student program page, not employment. Real ATS
+  // is Frontline/AppliTrack (no dedicated scraper type exists for it).
+  { campus: "Western Maricopa Education Center", type: "generic", url: "https://www.applitrack.com/westmec/onlineapp/" },
   { campus: "Arizona Board of Regents", type: "generic", url: "https://www.azregents.edu/" },
   { campus: "Arizona Christian University", type: "generic", url: "https://azcu.edu/careers#section-academic" },
   { campus: "Arizona State University Campus Immersion", type: "generic", url: "https://www.asu.edu/" },
@@ -2649,8 +2660,10 @@ const OH_CAMPUSES = [
   },
   {
     campus: "University of Toledo",
-    type: "workday",
-    url: "https://utoledo.wd1.myworkdayjobs.com/UTJobs",
+    // Old Workday tenant now 500s on every request — Toledo migrated to
+    // PageUp (same URL pattern already used for Seton Hall/Rowan).
+    type: "pageup",
+    url: "https://careers.utoledo.edu/cw/en-us/listing/",
   },
   {
     campus: "Ohio University",
@@ -3032,7 +3045,7 @@ const IL_CAMPUSES = [
   { campus: "Lincoln Trail College", type: "generic", url: "https://iecc.edu/jobs" },
   { campus: "The Chicago School at Chicago", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/careers" },
   { campus: "Wabash Valley College", type: "generic", url: "https://iecc.edu/jobs" },
-  { campus: "William Rainey Harper College", type: "generic", url: "https://www.harpercollege.edu/index.php" },
+  { campus: "William Rainey Harper College", type: "generic", url: "https://jobs.harpercollege.edu/" },
   { campus: "NorthShore University HealthSystem School of Nurse Anesthesia", type: "generic", url: "https://www.northshore.org/academics/other-programs/school-of-nurse-anesthesia/" },
   { campus: "St. John's College-Department of Nursing", type: "generic", url: "https://www.hshs.org/stjohnscollege/" },
   { campus: "Adler University", type: "generic", url: "https://www.adler.edu/about/careers" },
@@ -11653,48 +11666,71 @@ async function scrapePageUpAs(context, startUrl, campusName, sourceName) {
 }
 
 // iCIMS scraper (used by NYU and others)
+// iCIMS uses various selectors for job listings; shared closure so both the
+// top-level page and any nested iframes (see below) are scanned identically.
+function extractIcimsJobsInPage() {
+  const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+  const abs = (href) => {
+    try { return new URL(href, location.href).toString(); } catch { return null; }
+  };
+
+  const out = [];
+  const seen = new Set();
+
+  const selectors = [
+    'a[href*="/jobs/"]',
+    '.iCIMS_JobsTable a',
+    '.job-title a',
+    '[class*="JobTitle"] a',
+    'a[title]'
+  ];
+
+  for (const sel of selectors) {
+    for (const a of Array.from(document.querySelectorAll(sel))) {
+      const url = abs(a.getAttribute("href"));
+      if (!url) continue;
+      if (!/\/jobs\/\d+/i.test(url) && !/job-/i.test(url)) continue;
+
+      const title = clean(a.textContent) || clean(a.getAttribute("title"));
+      if (!title || title.length < 4) continue;
+      if (/search|home|back|return|login|logout|help/i.test(title)) continue;
+
+      if (seen.has(url)) continue;
+      seen.add(url);
+      out.push({ title, url });
+    }
+  }
+  return out;
+}
+
 async function scrapeIcimsAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
     await page.waitForTimeout(2000);
 
-    // iCIMS pages often have job cards with links
-    const jobs = await safeEvaluate(page, () => {
-      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-      const abs = (href) => {
-        try { return new URL(href, location.href).toString(); } catch { return null; }
-      };
-
-      const out = [];
-      const seen = new Set();
-
-      // iCIMS uses various selectors for job listings
-      const selectors = [
-        'a[href*="/jobs/"]',
-        '.iCIMS_JobsTable a',
-        '.job-title a',
-        '[class*="JobTitle"] a',
-        'a[title]'
-      ];
-
-      for (const sel of selectors) {
-        for (const a of Array.from(document.querySelectorAll(sel))) {
-          const url = abs(a.getAttribute("href"));
-          if (!url) continue;
-          if (!/\/jobs\/\d+/i.test(url) && !/job-/i.test(url)) continue;
-
-          const title = clean(a.textContent) || clean(a.getAttribute("title"));
-          if (!title || title.length < 4) continue;
-          if (/search|home|back|return|login|logout|help/i.test(title)) continue;
-
-          if (seen.has(url)) continue;
-          seen.add(url);
-          out.push({ title, url });
-        }
+    // Some iCIMS tenants (confirmed: Utah State) render the job list inside a
+    // nested <iframe>, not the top-level document — querySelectorAll against
+    // just `page` always saw 0 results for those, even though the real list
+    // was one frame down the whole time. Scan the main frame AND every nested
+    // iframe, merging results (deduped by url) rather than assuming one or
+    // the other is where the content lives.
+    const seenUrls = new Set();
+    const jobs = [];
+    const framesToScan = [page, ...page.frames().filter((f) => f !== page.mainFrame())];
+    for (const frame of framesToScan) {
+      let batch;
+      try {
+        batch = await safeEvaluate(frame, extractIcimsJobsInPage);
+      } catch {
+        continue; // a cross-origin or detached frame may refuse evaluation
       }
-      return out;
-    });
+      for (const j of batch || []) {
+        if (seenUrls.has(j.url)) continue;
+        seenUrls.add(j.url);
+        jobs.push(j);
+      }
+    }
 
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length}`);
@@ -13113,6 +13149,7 @@ async function scrapeOhAll(context) {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OH");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OH");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "OH");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OH");
         return [];
       } catch (e) {
