@@ -62,6 +62,16 @@ jobs:
       - name: Verify policy integrity (post-scrape)
         run: npm run verify:policy
 
+      # The earlier "Build coverage + exclusions artifacts" step runs before
+      # the scrape on purpose (verify:policy:pre --skip-jobs-check just needs
+      # a fresh exclusions list, not final numbers) — but that means the
+      # coverage-report.json/institutions-master.json committed at the end of
+      # this workflow were, until now, always built from the OLD jobs.json,
+      # never reflecting the scrape this same run just did. Rebuild once more
+      # now that public/jobs.json is current.
+      - name: Rebuild coverage + institutions artifacts (post-scrape)
+        run: npm run build:coverage
+
       - name: Rebuild web data chunks from updated jobs.json
         run: |
           node scripts/sync-web-data-files.js
