@@ -474,8 +474,8 @@
       "name": "Charleston Southern University",
       "homepage_url": "https://www.charlestonsouthern.edu/",
       "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=9B25CFBC4D1E53FBF3D00067C7C0E531",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; the Careers office page links to this Paycom recruiting portal. Verified live: 39 postings, many faculty (Adjunct Professor of American Sign Language, Adjunct Professor of Spanish, Adjunct Professor of Mathematics, Tenure Track Assistant/Associate Professor of Geology)."
+      "platform_type": "paycom",
+      "notes": "Was pointing at the bare homepage; the Careers office page links to this Paycom recruiting portal. URL uses the '?clientkey=' jobs-listing format (no /portal/ segment), which scrapeGenericJobPage's own paycomonline.net API handoff (scrapePaycomApi) can't parse -- it only recognizes /portal/<ID>/ URLs, so it silently returned 0. Same bug shape as Bastyr University (round 2): platform_type was 'generic' so it never reached the browser-based Paycom scraper. Changed platform_type to 'paycom' to route through scrapePaycomAs via OVERRIDE_PLATFORM_DISPATCH. Verified live: 39 postings, many faculty (Adjunct Professor of American Sign Language, Adjunct Professor of Spanish, Adjunct Professor of Mathematics, Tenure Track Assistant/Associate Professor of Geology, Tenure Track Assistant Professor of Psychology)."
     },
     {
       "name": "Charter Oak State College",
@@ -1138,9 +1138,9 @@
     {
       "name": "Fairmont State University",
       "homepage_url": "https://www.fairmontstate.edu/",
-      "career_url": "https://www.fairmontstatejobs.com/",
-      "platform_type": "generic",
-      "notes": "Configured career_url (/faculty/jobs) now 404s; the real employment portal is fairmontstatejobs.com, linked from the Faculty & Staff page as 'Job Opportunities'. Confirmed real ATS with a distinct Faculty Positions category; specific current count not verified beyond category list."
+      "career_url": "https://www.fairmontstatejobs.com/postings/search",
+      "platform_type": "peopleadmin",
+      "notes": "Configured career_url (/faculty/jobs) now 404s; the real employment portal is fairmontstatejobs.com (a PeopleAdmin site), linked from the Faculty & Staff page as 'Job Opportunities'. The landing page's own 'Faculty Positions' filtered link (query_position_type_id[]=3) is a dead end -- it structurally excludes every current adjunct-tagged posting and returns 0. platform_type was 'generic' so it fell through to plain DOM scraping of the un-rendered landing page too. Retagged to 'peopleadmin' (routes through OVERRIDE_PLATFORM_DISPATCH to the existing scrapePeopleAdminAs, same pattern as Bastyr University's paycom fix in round 2) and pointed at the unfiltered /postings/search results. Verified live: 44 postings, 9 real current faculty (Flight Instructors, Dual Enrollment Adjuncts, and Adjunct Faculty pools for the Colleges of Science & Technology, Nursing, Education, Liberal Arts, and Business & Aviation)."
     },
     {
       "name": "Franciscan Missionaries of Our Lady University",

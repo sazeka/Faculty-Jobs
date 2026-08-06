@@ -787,7 +787,18 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "The Chicago School at Los Angeles", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/careers" },
   { campus: "The Chicago School at San Diego", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/careers" },
   { campus: "Trinity Law School", type: "generic", url: "https://www.tiu.edu/law" },
-  { campus: "Art Center College of Design", type: "generic", url: "https://www.artcenter.edu/" },
+  // Was pointing at the bare homepage. Real employment page is
+  // /about/employment.html, which itself hands off to a Cornerstone OnDemand
+  // (CSOD) career site (artcenter.csod.com/ux/ats/careersite/7/home?c=artcenter)
+  // -- confirmed institution-specific (not a shared tenant) with real current
+  // postings including "Part Time Shop Instructor II - second shift". BUT the
+  // existing CSOD handler (scrapeCsodAs/scrapeNjCsod, shared with many other
+  // institutions) returns 0 for this tenant's UI -- verified live that plain
+  // anchor scraping of that CSOD page finds the postings fine, so this is a
+  // gap in the shared CSOD scraper's markup assumptions for this "ux/ats"
+  // skin, not a bad URL. Documented, not patched (shared function). Still an
+  // improvement over the homepage even though the handoff currently yields 0.
+  { campus: "Art Center College of Design", type: "generic", url: "https://www.artcenter.edu/about/employment.html" },
   { campus: "Azusa Pacific University", type: "generic", url: "https://jobs.apu.edu/" },
   { campus: "Bakersfield College", type: "generic", url: "https://www.bakersfieldcollege.edu/" },
   { campus: "Barstow Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/barstowcc" },
@@ -1400,7 +1411,16 @@ const VA_CAMPUSES = [
     url: "https://jobs.vccs.edu/postings/search?query=&query_organizational_tier_1_id%5B%5D=3687&commit=Search",
   },
   { campus: "Bluefield University", type: "generic", url: "https://www.bluefield.edu/employment" },
-  { campus: "Bon Secours Memorial College of Nursing", type: "generic", url: "https://www.bsmcon.edu/" },
+  // Was pointing at the bare homepage. Real page is /employment-opportunities,
+  // which lists openings specifically for BSMCON (vs. its two sister Bon
+  // Secours institutions on the same page). Verified live: currently only
+  // "Director, Financial Aid" is posted for BSMCON (not faculty) -- real
+  // per-institution openings would show here when they exist. The page also
+  // links to "Careers at Bon Secours" for system-wide Bon Secours health
+  // system openings -- deliberately NOT wired, same misattribution-risk shape
+  // as Capital Health School of Radiologic Technology (round 9): that board
+  // covers the whole hospital system, not just this college.
+  { campus: "Bon Secours Memorial College of Nursing", type: "generic", url: "https://www.bsmcon.edu/employment-opportunities" },
   { campus: "Bon Secours St Mary's Hospital School of Medical Imaging", type: "generic", url: "https://smhsomi.edu/" },
   { campus: "Bridgewater College", type: "generic", url: "https://www.bridgewater.edu/careers" },
   { campus: "Brightpoint Community College", type: "generic", url: "https://www.brightpoint.edu/index.php/about/employment-opportunities" },
@@ -2280,7 +2300,13 @@ const WA_CAMPUSES = [
   { campus: "Big Bend Community College", type: "generic", url: "https://www.bigbend.edu/about-us/jobs-at-bbcc.html" },
   { campus: "Cascadia College", type: "generic", url: "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=300" },
   { campus: "Centralia College", type: "generic", url: "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=120" },
-  { campus: "City University of Seattle", type: "generic", url: "https://www.cityu.edu/" },
+  // Was pointing at the bare homepage. Homepage's "Career Opportunities" link
+  // (cityu.edu/jobs/) hands off to their InterviewExchange ATS (tenant
+  // 447CSM1, institution-specific, not a shared/system-wide board). Verified
+  // live (two fresh page loads): real current posting "Full-time Teaching
+  // Faculty". Existing scrapeInterviewExchangeAs function reused (already
+  // dispatched for many other interviewexchange-hosted schools).
+  { campus: "City University of Seattle", type: "interviewexchange", url: "https://cityu.interviewexchange.com/static/clients/447CSM1/index.jsp" },
   { campus: "Clark College", type: "schooljobs", url: "https://www.schooljobs.com/careers/clarkcollege" },
   { campus: "Clover Park Technical College", type: "generic", url: "https://www.cptc.edu/careers" },
   // The /facultypositions suffix now 404s; the bare board still works.
@@ -2606,7 +2632,14 @@ const IA_CAMPUSES = [
   { campus: "Des Moines University-Osteopathic Medical Center", type: "generic", url: "https://careers.dmu.edu/en-us/listing" },
   { campus: "Divine Word College", type: "generic", url: "https://www.dwci.edu/" },
   { campus: "Dordt University", type: "oracle-cx", url: "https://ibmxjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/jobs?lastSelectedFacet=CATEGORIES&selectedCategoriesFacet=300000008610535" },
-  { campus: "Eastern Iowa Community College District", type: "generic", url: "https://eicc.edu/faculty/jobs" },
+  // Was pointing at a soft-404 ("Page Not Found") on eicc.edu. Real ATS is
+  // their own PeopleAdmin instance (eicc.peopleadmin.com), linked from
+  // eicc.edu/about/career/. Verified live (two fresh page loads): 47
+  // postings, many real faculty/adjunct (Adjunct Faculty - Political
+  // Science, Adjunct Faculty - Education, Adjunct Faculty - American Sign
+  // Language, Faculty - Economics, Faculty - Accounting). IA dispatcher
+  // already has a "peopleadmin" case (used elsewhere) -- reused directly.
+  { campus: "Eastern Iowa Community College District", type: "peopleadmin", url: "https://eicc.peopleadmin.com/postings/search" },
   { campus: "Ellsworth Community College", type: "generic", url: "https://ecc.iavalley.edu/" },
   { campus: "Emmaus Bible College", type: "generic", url: "https://www.emmaus.edu/careers" },
   { campus: "Faith Baptist Bible College and Theological Seminary", type: "generic", url: "https://faith.edu/careers" },
@@ -3101,7 +3134,18 @@ const MI_CAMPUSES = [
   { campus: "Calvin Theological Seminary", type: "generic", url: "https://calvinseminary.edu/employment" },
   { campus: "Calvin University", type: "generic", url: "https://www.calvin.edu/" },
   { campus: "Cleary University", type: "generic", url: "https://www.cleary.edu/" },
-  { campus: "College for Creative Studies", type: "generic", url: "https://www.ccsdetroit.edu/faculty/jobs" },
+  // Was pointing at a literal 404 ("No Results Found"). Real page is
+  // /about-us/jobs-at-ccs/, with real current postings ("Adjunct
+  // Instructors, Subject Matter Experts, Business Studies", "Adjunct
+  // Faculty, Liberal Arts- Sustainability/Politics/AI Literacy"). BUT the
+  // page is Divi-builder markup: each posting's real title lives in an
+  // <h3 class="et_pb_module_header"> sibling, while the anchor itself just
+  // says "Explore" -- the shared generic scraper's sibling-heading rescue
+  // only looks inside li/article/card/etc. containers, and Divi's
+  // et_pb_module/et_pb_column wrappers match none of those, so the rescue
+  // never fires. Documented, not patched (shared logic) -- still a real
+  // improvement over the 404 even though titles aren't extracted yet.
+  { campus: "College for Creative Studies", type: "generic", url: "https://www.ccsdetroit.edu/about-us/jobs-at-ccs/" },
   { campus: "Concordia University Ann Arbor", type: "generic", url: "https://www.cuaa.edu/" },
   { campus: "Cornerstone University", type: "generic", url: "https://www.cornerstone.edu/" },
   { campus: "Cranbrook Academy of Art", type: "generic", url: "https://cranbrookart.edu/" },
@@ -3368,7 +3412,15 @@ const IN_CAMPUSES = [
   // 4 postings incl. "Adjunct Instructor - Composition".
   { campus: "Calumet College of Saint Joseph", type: "generic", url: "https://recruiting.paylocity.com/recruiting/jobs/All/d3b73b32-f518-47ab-82f7-ac57a8a45ce4/Calumet-College" },
   { campus: "Christian Theological Seminary", type: "generic", url: "https://www.cts.edu/careers" },
-  { campus: "Concordia Theological Seminary", type: "generic", url: "https://ctsfw.edu/" },
+  // Was pointing at the bare homepage. Real employment page
+  // (ctsfw.edu/about/who-we-are/employment/) links to this institution-
+  // specific Paylocity recruiting tenant. Verified live: currently "Sorry,
+  // there are currently no jobs matching this criteria" -- genuinely 0 open
+  // postings right now, but this is the correct, working, institution-
+  // scoped ATS (same platform/pattern as Freed-Hardeman University, already
+  // scraped fine as "generic" with no special dispatch needed) so future
+  // postings will be picked up once they're listed.
+  { campus: "Concordia Theological Seminary", type: "generic", url: "https://recruiting.paylocity.com/recruiting/jobs/All/07aeeac2-22ba-48be-81e4-96e31b9ef75b/Concordia-Theological-Seminary" },
   { campus: "Franklin College", type: "generic", url: "https://franklincollege.edu/about/key-offices/office-of-human-resources/employment-opportunities" },
 ];
 
@@ -3672,7 +3724,18 @@ const FL_CAMPUSES = [
   { campus: "Baptist University of Florida", type: "generic", url: "https://www.buf.edu/" },
   { campus: "Barry University", type: "generic", url: "https://my.barry.edu/faculty/jobs" },
   { campus: "Beacon College", type: "generic", url: "https://www.beaconcollege.edu/" },
-  { campus: "Bethune-Cookman University", type: "generic", url: "https://www.cookman.edu/" },
+  // Was pointing at the bare homepage. Real page (hr/job-opportunities.html)
+  // embeds a cross-origin Paycor iframe (recruitingbypaycor.com) with real
+  // current faculty postings ("Assistant Professor-Mass Communications",
+  // "Assistant/Associate Professor of Accounting", "Assistant Professor of
+  // Exceptional Student Education", several Adjunct Instructor pool
+  // postings) -- confirmed live inside the iframe. The shared generic
+  // scraper only reads the top-level document, not cross-origin iframes, and
+  // no Paycor-specific scraper exists in this codebase (same shape as Cairn
+  // University-Langhorne, same Paycor platform). Documented, not patched
+  // (would require a new scraper) -- still a real improvement over the
+  // homepage even though the postings aren't extracted yet.
+  { campus: "Bethune-Cookman University", type: "generic", url: "https://www.cookman.edu/hr/job-opportunities.html" },
   { campus: "Broward College", type: "generic", url: "https://www.broward.edu/error/404.html?requestUrl=/faculty/jobs" },
   { campus: "Chipola College", type: "generic", url: "https://www.chipola.edu/about/administrative-offices/human-resources/job-openings" },
   { campus: "College of Central Florida", type: "generic", url: "https://www.cf.edu/" },
@@ -3802,7 +3865,16 @@ const AL_CAMPUSES = [
   // as the Faculty filter.
   { campus: "Athens State University", type: "peopleadmin", url: "https://jobs.athens.edu/postings/search?366%5B%5D=1&commit=Search" },
   { campus: "Auburn University at Montgomery", type: "generic", url: "https://www.aum.edu/" },
-  { campus: "Bevill State Community College", type: "generic", url: "https://www.bscc.edu/" },
+  // Was pointing at the bare homepage. Real ATS is SchoolJobs/NEOGOV, scoped
+  // to Bevill State within the Alabama Community College System tenant
+  // (schooljobs.com/careers/accs/bevillstatecc). The main (full-time)
+  // postings page has only 1 non-faculty opening right now, but the
+  // "Part-Time Faculty/Adjunct Positions" sub-page has 18 real current
+  // adjunct instructor postings (Adjunct Art/Automotive/Biology/Business/
+  // English/History/Mathematics/Music Instructor, etc.) -- verified live.
+  // AL dispatcher already has a "schooljobs" case (used elsewhere) --
+  // reused directly.
+  { campus: "Bevill State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/bevillstatecc/promotionaljobs" },
   { campus: "Bishop State Community College", type: "generic", url: "https://www.bishop.edu/" },
   { campus: "Central Alabama Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/cacc" },
   { campus: "Chattahoochee Valley Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/jobs/newprint/4482590" },
@@ -12937,6 +13009,10 @@ async function scrapeWaAll(context) {
         if (type === "interfolio-links") return await scrapeInterfolioLinksFromPageAs(url, campus, "WA");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "WA");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "WA");
+        // No existing WA dispatch case for "interviewexchange" (function
+        // scrapeInterviewExchangeAs already exists and is dispatched by many
+        // other states) -- added for City University of Seattle.
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "WA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "WA");
         return [];
       } catch (e) {
