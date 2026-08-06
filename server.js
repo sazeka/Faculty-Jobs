@@ -1265,7 +1265,7 @@ const NC_CAMPUSES = [
   { campus: "Asheville-Buncombe Technical Community College", type: "generic", url: "https://abtech.edu/employment" },
   { campus: "Barton College", type: "generic", url: "https://www.barton.edu/" },
   { campus: "Beaufort County Community College", type: "generic", url: "https://jobs.beaufortccc.edu/postings/search" },
-  { campus: "Belmont Abbey College", type: "generic", url: "https://www.belmontabbeycollege.edu/" },
+  { campus: "Belmont Abbey College", type: "generic", url: "https://belmontabbeycollege.edu/about-us/employment/" },
   { campus: "Bennett College", type: "generic", url: "https://www.bennett.edu/faculty/jobs" },
   { campus: "Bladen Community College", type: "generic", url: "https://bladencc.edu/" },
   { campus: "Brevard College", type: "generic", url: "https://brevard.edu/employment-opportunities" },
@@ -2331,7 +2331,7 @@ const MN_CAMPUSES = [
   { campus: "Hazelden Betty Ford Graduate School", type: "generic", url: "https://www.hazeldenbettyford.org/education/graduate-school-addiction-studies" },
   { campus: "Adler Graduate School", type: "generic", url: "https://www.alfredadler.edu/about/employment-opportunities" },
   { campus: "Alexandria Technical & Community College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545ed292bdd0000" },
-  { campus: "Anoka Technical College", type: "generic", url: "https://www.anokatech.edu/" },
+  { campus: "Anoka Technical College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545edc2d07b0000" },
   { campus: "Anoka-Ramsey Community College", type: "generic", url: "https://www.anokaramsey.edu/" },
   { campus: "Augsburg University", type: "generic", url: "https://www.augsburg.edu/employment" },
   { campus: "Bemidji State University", type: "generic", url: "https://www.bemidjistate.edu/offices/human-resources/prospective-employees" },
@@ -2474,7 +2474,7 @@ const IA_CAMPUSES = [
   { campus: "Mercy-St Luke's School of Radiologic Technology", type: "generic", url: "https://www.mercycare.org/employment/students/school-of-radiologic-technology/" },
   { campus: "UnityPoint Health-Des Moines School of Radiologic Technology", type: "generic", url: "https://www.unitypoint.org/join-our-team/medical-education-and-career-growth/school-of-radiologic-technology---des-moines-area-hospitals" },
   { campus: "Allen College", type: "generic", url: "https://www.allencollege.edu/" },
-  { campus: "Briar Cliff University", type: "generic", url: "https://www.briarcliff.edu/" },
+  { campus: "Briar Cliff University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=b598cb69-0393-4ebc-902c-696995eb5395&ccId=19000101_000001&lang=en_US" },
   { campus: "Buena Vista University", type: "generic", url: "https://www.bvu.edu/" },
   { campus: "Central College", type: "generic", url: "https://central.edu/job-seekers" },
   { campus: "Clarke University", type: "generic", url: "https://clarke.applicantpool.com/jobs" },
@@ -3175,7 +3175,7 @@ const IN_CAMPUSES = [
   },
   { campus: "Marian University-Ancilla", type: "generic", url: "https://www.marian.edu/faculty/jobs" },
   { campus: "Trine University-Regional/Non-Traditional Campuses", type: "generic", url: "https://www.trine.edu/human-resources/careers/index.aspx/faculty" },
-  { campus: "Anabaptist Mennonite Biblical Seminary", type: "generic", url: "https://www.ambs.edu/" },
+  { campus: "Anabaptist Mennonite Biblical Seminary", type: "generic", url: "https://www.ambs.edu/employment" },
   { campus: "Bethany Theological Seminary", type: "generic", url: "https://www.bethanyseminary.edu/" },
   { campus: "Calumet College of Saint Joseph", type: "generic", url: "https://www.ccsj.edu/" },
   { campus: "Christian Theological Seminary", type: "generic", url: "https://www.cts.edu/careers" },
@@ -3457,7 +3457,7 @@ const FL_CAMPUSES = [
   { campus: "Academy for Five Element Acupuncture", type: "generic", url: "https://acupuncturist.edu/employment/" },
   { campus: "Academy for Nursing and Health Occupations", type: "generic", url: "https://www.anho.edu/" },
   { campus: "AdventHealth University", type: "generic", url: "https://jobs.adventhealth.com/job-search-results?department%5B%5D=AdventHealth%20University" },
-  { campus: "Albizu University-Miami", type: "generic", url: "https://www.albizu.edu/" },
+  { campus: "Albizu University-Miami", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=89df2234-abda-481d-9d9f-d75161691110&ccId=9200493117153_2&type=JS&lang=en_US" },
   { campus: "Ana G. Mendez University", type: "generic", url: "https://jobs.agmu.edu/home" },
   { campus: "Atlantic Institute of Oriental Medicine", type: "generic", url: "https://www.atom.edu/faculty/jobs" },
   { campus: "Atlantic Technical College", type: "generic", url: "https://www.atlantictechnicalcollege.edu/" },
@@ -3515,7 +3515,7 @@ const GA_CAMPUSES = [
   { campus: "Agnes Scott College", type: "generic", url: "https://www.agnesscott.edu/" },
   { campus: "Andrew College", type: "generic", url: "https://www.andrewcollege.edu/employment-opportunities" },
   { campus: "Atlanta's John Marshall Law School", type: "generic", url: "https://www.johnmarshall.edu/" },
-  { campus: "Berry College", type: "generic", url: "https://www.berry.edu/faculty/jobs" },
+  { campus: "Berry College", type: "interviewexchange", url: "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp" },
   { campus: "Beulah Heights University", type: "generic", url: "https://www.beulah.edu/" },
   { campus: "Brenau University", type: "generic", url: "https://www.brenau.edu/" },
   { campus: "Brewton-Parker College", type: "generic", url: "https://www.bpc.edu/" },
@@ -3659,7 +3659,7 @@ const KS_CAMPUSES = [
   { campus: "Barclay College", type: "generic", url: "https://www.barclaycollege.edu/" },
   { campus: "Barton County Community College", type: "generic", url: "https://bartonccc.agilehr.com/careers" },
   { campus: "Benedictine College", type: "generic", url: "https://www.benedictine.edu/jobs" },
-  { campus: "Bethel College-North Newton", type: "generic", url: "https://www.bethelks.edu/" },
+  { campus: "Bethel College-North Newton", type: "generic", url: "https://forms.bethelks.edu/about/who-we-are/career-opportunities/current-position-openings" },
   { campus: "Butler Community College", type: "generic", url: "https://employment.butlercc.edu/postings/search" },
   { campus: "Central Christian College of Kansas", type: "generic", url: "https://centralchristian.edu/about-ccck/employment" },
   { campus: "Cleveland University-Kansas City", type: "generic", url: "https://www.cleveland.edu/" },
@@ -3724,7 +3724,7 @@ const MO_CAMPUSES = [
   { campus: "Urshan Graduate School of Theology", type: "generic", url: "https://urshan.edu/ugst" },
   { campus: "A T Still University of Health Sciences", type: "generic", url: "https://www.atsu.edu/employment" },
   { campus: "Aquinas Institute of Theology", type: "generic", url: "https://www.ai.edu/" },
-  { campus: "Avila University", type: "generic", url: "https://www.avila.edu/" },
+  { campus: "Avila University", type: "adp", url: "https://workforcenow.cloud.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=f2ab6114-2e48-45a8-8ffc-c90819d5d7ff&ccId=19000101_000001&lang=en_US" },
   { campus: "Barnes-Jewish College Goldfarb School of Nursing", type: "generic", url: "https://www.barnesjewishcollege.edu/resources/nursing-careers" },
   { campus: "Bolivar Technical College", type: "generic", url: "https://www.bolivarcollege.edu/" },
   { campus: "Calvary University", type: "generic", url: "https://www.calvary.edu/employment/" },
@@ -5057,12 +5057,19 @@ async function gotoWithRetry(page, url, { retries = 3, settleMs = 1500, ...gotoO
 export function looksFacultyish(title) {
   const s = String(title || "").toLowerCase();
   // Strict filter: only true faculty positions
-  // Must contain professor, lecturer, instructor, or faculty
+  // Must contain professor, lecturer, instructor, faculty, or adjunct.
+  // "Adjunct" alone (e.g. "Accounting Adjunct", "Spanish Adjunct") was missing
+  // here -- titles that don't also say professor/instructor/lecturer/faculty
+  // were silently dropped even though Adjunct is a tracked, first-class
+  // category on the site (found via Adrian College / Belmont Abbey while
+  // investigating the generic-scraper long tail, 2026-08-06). omitAdjunct()
+  // still filters part-time/temp/per-course language separately below.
   return (
     s.includes("professor") ||
     s.includes("lecturer") ||
     s.includes("instructor") ||
-    /\bfaculty\b/.test(s)
+    /\bfaculty\b/.test(s) ||
+    /\badjunct\b/.test(s)
   );
 }
 
@@ -12845,6 +12852,7 @@ async function scrapeIaAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "IA");
         if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "IA");
         if (type === "adp-career-center") return await scrapeAdpCareerCenterAs(context, url, campus, "IA");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "IA");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "IA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IA");
         return [];
@@ -13483,6 +13491,7 @@ async function scrapeGaAll(context) {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "GA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "GA");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "GA");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "GA");
         if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "GA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "GA");
@@ -13624,6 +13633,7 @@ async function scrapeMoAll(context) {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MO");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MO");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "MO");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MO");
         if (type === "umsystem-hrs") return await scrapeUmsystemHrsJobs(context, url, campus, "MO");
         return [];
@@ -13916,6 +13926,7 @@ async function scrapeFlAll(context) {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "FL");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "FL");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "FL");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "FL");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "FL");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "FL");
