@@ -361,9 +361,9 @@
     {
       "name": "Cecil College",
       "homepage_url": "https://www.cecil.edu/",
-      "career_url": "https://www.cecil.edu/about-us/employment",
+      "career_url": "https://widgets.jobscore.com/jobs/cecilcollege/widget_iframe?font_family=Open%20Sans&font_size=16px&link_text_color=%23006838&group_by=department&show_social_sharing=bottom&parent_url=https%3A%2F%2Fwww.cecil.edu%2Fabout-us%2Femployment&widget_id=js_widget_iframe_1",
       "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; the real employment page embeds a JobScore widget (not captured by a simple text scrape without waiting for the iframe). Verified live via the widget: many current faculty/instructor postings (Adjunct Faculty in Anatomy & Physiology, Equine Studies, Landscape Design, Nursing Clinical, Physical Science; Adjunct Instructor in English, Mathematics, Paramedic/EMT, Physics; plus CDL/Diesel/Electrical/Solar instructor roles)."
+      "notes": "Was pointing at the real employment page itself, which embeds a JobScore widget inside a cross-origin <iframe> (widgets.jobscore.com) -- generic scraping of that parent page can never read cross-origin iframe content, which is why this stayed at 0 despite the URL 'looking' correct. Corrected (2026-08-06) to the iframe's own src URL directly, which loads fine standalone with real per-job <a href> anchors (unlike the Paycor iframe cases that bounce a direct navigation back to the parent). Verified live via two fresh loads of the widget URL directly: many current faculty/instructor postings (Adjunct Faculty in Anatomy & Physiology, Equine Studies, Landscape Design, Nursing Clinical, Physical Science; Adjunct Instructor in Mathematics, Paramedic/EMT, Physics; Nursing Clinical Lab Instructor; plus CDL/Diesel/Electrical/Solar instructor roles)."
     },
     {
       "name": "Cedarville University",
@@ -725,9 +725,9 @@
     {
       "name": "College of the Mainland",
       "homepage_url": "https://www.com.edu/",
-      "career_url": "https://jobs.com.edu/",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; route to their PeopleAdmin job board (linked from the homepage). Verified live: 116 postings, at least 11 faculty (Adjunct Instructor of Cosmetology, Vocational Nursing Adjunct Faculty, Adjunct - Welding, Adjunct Dramatic Arts Instructor, Adjunct Instructor - EMS Skills Lab, Medical Assisting Program Coordinator/Faculty, Adjunct Instructor - CNA, Radiologic Technology, Sterile Processing, Dental Assistant, and Faculty - Philosophy)."
+      "career_url": "https://jobs.com.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id=3&435=&query_organizational_tier_3_id=any&commit=Search",
+      "platform_type": "peopleadmin",
+      "notes": "This entry previously pointed at the bare jobs.com.edu homepage tagged 'generic' and claimed 116 postings verified live -- re-checked live (2026-08-06) and that homepage has no listing at all, just two nav links ('Faculty' / 'Staff') to real search-results pages; the prior claim appears to have never matched what the URL actually renders. Corrected to the Faculty-filtered PeopleAdmin search-results page directly, and platform_type corrected from 'generic' to 'peopleadmin' since this override was silently overwriting server.js's own peopleadmin fix back to 'generic' via applyCareerUrlOverridesInPlace. Verified live (two fresh page loads): 80 real current faculty/adjunct postings (Adjunct Anatomy & Physiology Instructor, Adjunct English Instructor, Assistant Professor of Theatre Design and Technology, Radiologic Technology Adjunct Instructor, etc.)."
     },
     {
       "name": "Collins Career Technical Center",
@@ -1146,8 +1146,8 @@
       "name": "Franciscan Missionaries of Our Lady University",
       "homepage_url": "https://www.franu.edu/",
       "career_url": "https://eqtm.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/fmolhs-careers/jobs?keyword=franu&lastSelectedFacet=LOCATIONS&mode=location&selectedLocationsFacet=300000004524509%3B300000004524395",
-      "platform_type": "generic",
-      "notes": "Was pointing at a page stating jobs are posted on the parent health system's site; route to FMOL Health's Oracle Cloud recruiting portal, pre-filtered by keyword=franu to avoid pulling in unrelated FMOLHS hospital postings. Verified live: 10 postings for FranU specifically, 2 faculty (FranU Nursing Instructor PRN; FranU Assistant Professor Physician Assistant)."
+      "platform_type": "oracle-cx",
+      "notes": "Was pointing at a page stating jobs are posted on the parent health system's site; route to FMOL Health's Oracle Cloud recruiting portal, pre-filtered by keyword=franu to avoid pulling in unrelated FMOLHS hospital postings. platform_type corrected from 'generic' to 'oracle-cx' (2026-08-06): this SPA renders every job card with no per-job <a href> at all, which the generic scraper can never extract regardless of URL -- same shape as University of Puget Sound. This entry's 'generic' platform_type was also silently overwriting server.js's own 'oracle-cx' fix back to 'generic' via applyCareerUrlOverridesInPlace. Verified live (two fresh page loads): 11 postings for FranU specifically, 3 faculty (FranU Nursing Instructor PRN; FranU Assistant Professor Physician Assistant; a Clinical Coordinator role)."
     },
     {
       "name": "Florida Polytechnic University",
@@ -1315,7 +1315,7 @@
       "homepage_url": "https://www.sckans.edu/",
       "career_url": "https://www.sckans.edu/about/employment/",
       "platform_type": "generic",
-      "notes": "Was pointing at a faculty-jobs URL that renders mostly navigation chrome with no visible listings; routed to the actual Employment At SC page, which lists postings directly in page text. Verified live: 6 faculty postings (Affiliate Pharmacology Instructor - Physician Associate Program; Affiliate Anatomy Instructor - Physician Associate Program; Full-Time Faculty Member - Doctor of Medical Science Program; Director of the BSN Nursing Program; Nursing Clinical Resource Instructor; Assistant Professor of Communication; Assistant Professor of Nursing)."
+      "notes": "Was pointing at a faculty-jobs URL that renders mostly navigation chrome with no visible listings; routed to the actual Employment At SC page, which lists postings directly in page text. URL/platform_type re-confirmed correct (2026-08-06) -- but the prior note's '6 faculty postings' count was wrong: re-checked live and only 'Affiliate Pharmacology Instructor' / 'Affiliate Anatomy Instructor' (Physician Associate Program) and a 'Founding Principal Faculty' PA-program search are actually still open; 'Full-Time Faculty Member - DMSc', 'Director of the BSN Nursing Program', 'Nursing Clinical Resource Instructor', 'Assistant Professor of Communication', and 'Assistant Professor of Nursing' all sit under the page's own separate 'Filled/Closed Faculty Positions' heading. Not a scraper bug either way, since none of these titles -- open or closed -- are real `<a href>` links; every one is a plain <h5 class=\"toggle-text-heading\"> with no per-posting href, a WordPress toggle-widget shape the shared generic scraper's accordion-fallback selector list doesn't cover (only matches classes containing 'accordion', not 'toggle') -- same family of gap as the wp-block-accordion widget already handled at College of the Atlantic, just a different WP plugin's class name. Documented, not patched (shared scraper logic)."
     },
     {
       "name": "University of Cincinnati",

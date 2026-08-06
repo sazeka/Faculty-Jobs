@@ -728,7 +728,12 @@ const MA_PRIVATE_CAMPUSES = [
   { campus: "Cape Cod Community College", type: "interviewexchange", url: "https://capecod.interviewexchange.com/static/clients/470CCM1/index.jsp;jsessionid=D7B817EED47381B2C5A08E3F538D4EB5;jsessionid=2E2FB86EF203E255B5590EC9F09035DF" },
   { campus: "Clark University", type: "interviewexchange", url: "https://clarku.interviewexchange.com/static/clients/569CUM1/index.jsp" },
   { campus: "College of Our Lady of the Elms", type: "generic", url: "https://www.elms.edu/" },
-  { campus: "Conway School of Landscape Design", type: "generic", url: "https://www.csld.edu/" },
+  // Was pointing at the bare homepage, which has no employment/careers link
+  // anywhere in its nav. Real "Job Openings" page found via web search (not
+  // linked from the homepage nav) -- confirmed live. Verified live (two
+  // fresh page loads): genuinely 0 faculty postings right now -- only a
+  // "Summer Intern Position: Strategic Projects Internship" listed.
+  { campus: "Conway School of Landscape Design", type: "generic", url: "https://csld.edu/people/job-openings/" },
   { campus: "Curry College", type: "interviewexchange", url: "https://curry.interviewexchange.com/" },
   { campus: "Dean College", type: "generic", url: "https://www.dean.edu/about-dean/leadership/administration/office-of-human-resources" },
   { campus: "Eastern Nazarene College", type: "generic", url: "https://www.enc.edu/" },
@@ -822,7 +827,13 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "California Institute of Advanced Management", type: "generic", url: "https://ciam.edu/employment-opportunities/" },
   { campus: "California Institute of Integral Studies", type: "interviewexchange", url: "https://ciis.interviewexchange.com/static/clients/529CIM1" },
   { campus: "California Institute of the Arts", type: "generic", url: "https://calarts.edu/employment" },
-  { campus: "California Jazz Conservatory", type: "generic", url: "https://www.cjc.edu/faculty/jobs" },
+  // Was pointing at "cjc.edu/faculty/jobs" -- the entire cjc.edu domain now
+  // 404s/redirects into the rebranded jazzschool.org site. Its real "Careers"
+  // page (linked from the footer) is here. Verified live (two fresh page
+  // loads): genuinely 0 faculty postings right now -- only two staff roles
+  // listed (Director of Education; Program Administrator), neither
+  // faculty/adjunct/instructor-titled.
+  { campus: "California Jazz Conservatory", type: "generic", url: "https://jazzschool.org/about/careers/" },
   { campus: "California Lutheran University", type: "generic", url: "https://www.callutheran.edu/offices/human-resources/employment" },
   // California Polytechnic State University-San Luis Obispo, Cal Poly Humboldt,
   // and Cal Poly Pomona are CSU members already covered by mapCsuLocationToCampus
@@ -1509,7 +1520,22 @@ const VA_CAMPUSES = [
   { campus: "Danville Community College", type: "generic", url: "https://jobs.vccs.edu/postings/search?query=&query_organizational_tier_2_id%5B%5D=3690&commit=Search" },
   { campus: "Divine Mercy University", type: "generic", url: "https://www.divinemercy.edu/" },
   { campus: "Eastern Mennonite University", type: "generic", url: "https://www.paycomonline.net/v4/ats/web.php/portal/864CD5F3AB350C8D2A97891D7F3F4860/career-page" },
-  { campus: "Eastern Shore Community College", type: "generic", url: "https://es.vccs.edu/about/employment-opportunities" },
+  // The employment-opportunities page itself lists real openings (including
+  // "Nursing Clinical Instructor"), but every job's own <a href> is a
+  // generic "Details and application information" CTA that the shared
+  // scraper's card-rescue can't match to the real heading (the CTA-rescue
+  // regex doesn't cover this exact phrase) -- the real title never gets
+  // extracted from that wrapper page. Its own "VCCS Jobs Site" link hands
+  // off to this institution-specific PeopleAdmin tier-2 org facet (id 3691),
+  // where the real title lives directly in the anchor text instead. VA
+  // dispatcher already has a "peopleadmin" case -- reused directly.
+  // Verified live (two fresh page loads): 2 postings, 1 real faculty
+  // posting ("Nursing Clinical Instructor").
+  {
+    campus: "Eastern Shore Community College",
+    type: "peopleadmin",
+    url: "https://jobs.vccs.edu/postings/search?query=&query_organizational_tier_2_id%5B%5D=3691&commit=Search",
+  },
   { campus: "Eastern Virginia Medical School", type: "generic", url: "https://www.evms.edu/" },
   { campus: "Edward Via College of Osteopathic Medicine", type: "generic", url: "https://www.vcom.edu/employment/job-listings" },
   { campus: "Emory & Henry University", type: "generic", url: "https://www.emoryhenry.edu/human-resources/employment-opportunities/" },
@@ -1695,7 +1721,22 @@ const MD_CAMPUSES = [
   { campus: "Bowie State University", type: "generic", url: "https://www.bowiestate.edu/" },
   { campus: "Capitol Technology University", type: "generic", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=199260cf-4b15-410c-9970-1d94a408c2d5&ccId=19000101_000001&type=MP&lang=en_US" },
   { campus: "Carroll Community College", type: "generic", url: "https://www.carrollcc.edu/about/jobs" },
-  { campus: "Cecil College", type: "generic", url: "https://www.cecil.edu/about-us/employment" },
+  // The employment page itself embeds a JobScore widget in a cross-origin
+  // <iframe> (widgets.jobscore.com) that generic scraping of the parent
+  // page can never read. Unlike the Paycor iframe cases (Chowan University,
+  // Crowley's Ridge College, round 13) that actively bounce a direct
+  // top-level navigation back to the parent, this JobScore widget URL loads
+  // fine on its own with real per-job <a href> anchors -- pointed directly
+  // at the iframe's own src instead of the wrapper page. Verified live (two
+  // fresh page loads): real current adjunct faculty postings (Adjunct
+  // Faculty, Anatomy & Physiology; Equine Studies; Landscape Design;
+  // Nursing Clinical; Physical Science with Lab; Adjunct Instructor,
+  // Mathematics/Paramedic-EMT/Physics; Nursing Clinical Lab Instructor).
+  {
+    campus: "Cecil College",
+    type: "generic",
+    url: "https://widgets.jobscore.com/jobs/cecilcollege/widget_iframe?font_family=Open%20Sans&font_size=16px&link_text_color=%23006838&group_by=department&show_social_sharing=bottom&parent_url=https%3A%2F%2Fwww.cecil.edu%2Fabout-us%2Femployment&widget_id=js_widget_iframe_1",
+  },
   { campus: "Chesapeake College", type: "generic", url: "https://www.chesapeake.edu/" },
   { campus: "College of Southern Maryland", type: "generic", url: "https://www.csmd.edu/employment" },
   { campus: "Community College of Baltimore County", type: "generic", url: "https://www.ccbcmd.edu/jobs" },
@@ -2506,10 +2547,20 @@ const VT_CAMPUSES = [
     type: "generic",
     url: "https://www.middlebury.edu/college/academics/academic-affairs/faculty/prospective-faculty/open-positions",
   },
+  // The "Employment Opportunities" page is pure HR policy text (EEO
+  // statement, background-check policy, benefits for spouses/partners,
+  // etc.) with no job listings anywhere on it, nor any link to the real
+  // board. Real ATS (found via web search, not linked from this page or
+  // /human-resources) is this institution-specific Trakstar Hire tenant,
+  // with real per-job <a href> anchors -- generic scraping works fine once
+  // pointed here. Verified live (two fresh page loads): 10 real current
+  // postings, genuinely 0 faculty-titled among them right now (Associate
+  // Director of Residence Life, Director of Health Services, Registered
+  // Nurse, Sponsored Research Administrator, etc.).
   {
     campus: "Bennington College",
     type: "generic",
-    url: "https://www.bennington.edu/employment-opportunities",
+    url: "https://bennington.hire.trakstar.com/",
   },
   {
     campus: "Saint Michael's College",
@@ -2581,7 +2632,21 @@ const MN_CAMPUSES = [
   { campus: "Bethany Global University", type: "generic", url: "https://bethanygu.edu/" },
   { campus: "Bethany Lutheran College", type: "generic", url: "https://blc.edu/campus-life/campus-services/human-resources/bethany-jobs" },
   { campus: "Bethlehem College & Seminary", type: "generic", url: "https://bcsmn.edu/" },
-  { campus: "Central Lakes College-Brainerd", type: "generic", url: "https://www.clcmn.edu/" },
+  // Was pointing at the bare homepage. Real ATS is the single Workday
+  // tenant shared across the entire 33-college/university Minnesota State
+  // system (161 openings total, unscoped misattribution risk) -- but its
+  // "Institution" facet (id a7c1912089511000d545eab9a9bb0004, "CU0301
+  // Central Lakes College", found via the tenant's own /wday/cxs/.../jobs
+  // facet listing) genuinely scopes to this campus specifically. MN
+  // dispatcher already has a "workday" case -- reused directly. Verified
+  // live (two fresh page loads): 1 open posting right now (MnSCU
+  // Administrator 8: Vice President of Administrative Services) --
+  // genuinely 0 faculty postings at this time.
+  {
+    campus: "Central Lakes College-Brainerd",
+    type: "workday",
+    url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545eab9a9bb0004",
+  },
   { campus: "College of Saint Benedict", type: "generic", url: "https://csbsju.edu/" },
   { campus: "Concordia College at Moorhead", type: "generic", url: "https://www.concordiacollege.edu/" },
   { campus: "Concordia University-Saint Paul", type: "generic", url: "https://www.csp.edu/" },
@@ -2664,7 +2729,21 @@ const SD_CAMPUSES = [
     type: "generic",
     url: "https://www.usiouxfalls.edu/about/employment",
   },
-  { campus: "Black Hills State University", type: "generic", url: "https://www.bhsu.edu/" },
+  // Was pointing at the bare homepage. BHSU's own "Employment" nav link
+  // hands off to the shared SD Board of Regents PeopleAdmin tenant (same
+  // system as the separate "South Dakota Board of Regents" entry above,
+  // which already infers per-posting college via inferSdborCampusFromDetail)
+  // but with its own "Institution" org-tier facet
+  // (query_organizational_tier_1_id=1252) applied directly, genuinely
+  // scoped to BHSU specifically. SD dispatcher already has a "peopleadmin"
+  // case -- reused directly. Verified live (two fresh page loads): 14
+  // postings, real faculty titles (Adjunct, Biology; Instructor, Operations
+  // Management/Business Analytics; Instructor, Multi-Media Journalism).
+  {
+    campus: "Black Hills State University",
+    type: "peopleadmin",
+    url: "https://yourfuture.sdbor.edu/postings/search?query=&query_v0_posted_at_date=&435=&query_organizational_tier_1_id%5B%5D=1252&225=&commit=Search",
+  },
   { campus: "Dakota Wesleyan University", type: "generic", url: "https://www.dwu.edu/academics/faculty-jobs" },
 ];
 
@@ -3865,7 +3944,18 @@ const TX_CAMPUSES = [
   { campus: "Clarendon College", type: "generic", url: "https://www.clarendoncollege.edu/" },
   { campus: "Coastal Bend College", type: "generic", url: "https://www.coastalbend.edu/" },
   { campus: "College of Biblical Studies-Houston", type: "generic", url: "https://cbshouston.edu/" },
-  { campus: "College of the Mainland", type: "generic", url: "https://jobs.com.edu/" },
+  // Was pointing at the bare PeopleAdmin homepage, which only has a "Faculty"
+  // nav link to the real search-results page, not a listing itself -- routed
+  // directly to that Faculty-filtered search results page. TX dispatcher
+  // already has a "peopleadmin" case -- reused directly. Verified live (two
+  // fresh page loads): 80 real current faculty/adjunct postings (Adjunct
+  // Anatomy & Physiology Instructor, Adjunct English Instructor, Assistant
+  // Professor of Theatre Design and Technology, etc.).
+  {
+    campus: "College of the Mainland",
+    type: "peopleadmin",
+    url: "https://jobs.com.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id=3&435=&query_organizational_tier_3_id=any&commit=Search",
+  },
   { campus: "Collin County Community College District", type: "generic", url: "https://www.collin.edu/hr/employment" },
   { campus: "Commonwealth Institute of Funeral Service", type: "generic", url: "https://www.commonwealth.edu/" },
   { campus: "Concordia University Texas", type: "generic", url: "https://www.concordia.edu/" },
@@ -4243,7 +4333,23 @@ const LA_CAMPUSES = [
   { campus: "Delgado Community College", type: "generic", url: "https://careers.lctcs.edu/?colleges=DCC" },
   { campus: "Digital Media Institute", type: "generic", url: "https://www.dmi.edu/" },
   { campus: "Fletcher Technical Community College", type: "generic", url: "https://careers.lctcs.edu/?colleges=Fletcher+Technical+Community+College" },
-  { campus: "Franciscan Missionaries of Our Lady University", type: "generic", url: "https://eqtm.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/fmolhs-careers/jobs?keyword=franu&lastSelectedFacet=LOCATIONS&mode=location&selectedLocationsFacet=300000004524509%3B300000004524395" },
+  // URL was already correct -- a real Oracle Cloud CX page pre-filtered by
+  // keyword=franu with location facets applied, genuinely scoped to FranU
+  // specifically (every job title prefixed "FranU ...", location Baton
+  // Rouge, LA) rather than an unscoped FMOL Health System-wide board -- but
+  // type: "generic" only reads real <a href> job links, and this SPA
+  // renders every job card with no per-job href of its own (only 8 total
+  // page links, none pointing at a job). Same "right URL, wrong type" shape
+  // as University of Puget Sound (round 13). LA dispatcher had no
+  // "oracle-cx" case yet -- added above (function already existed, used by
+  // TX). Verified live (two fresh page loads): 11 open jobs, 3 real faculty
+  // postings (FranU Nursing Instructor PRN, FranU Assistant Professor
+  // Physician Assistant, and a Clinical Coordinator role).
+  {
+    campus: "Franciscan Missionaries of Our Lady University",
+    type: "oracle-cx",
+    url: "https://eqtm.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/fmolhs-careers/jobs?keyword=franu&lastSelectedFacet=LOCATIONS&mode=location&selectedLocationsFacet=300000004524509%3B300000004524395",
+  },
 ];
 
 // AR (Arkansas)
@@ -4423,7 +4529,14 @@ const MO_CAMPUSES = [
   // Operations Specialist) -- real infrastructure, not a coverage bug.
   { campus: "Concordia Seminary", type: "generic", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=7B3368F639C1C383CE30B8FEBA882F60&fromClientSide=true" },
   { campus: "Cottey College", type: "generic", url: "https://cottey.edu/employment" },
-  { campus: "Covenant Theological Seminary", type: "generic", url: "https://www.covenantseminary.edu/" },
+  // Was pointing at the bare homepage; the nav's "Jobs" link goes to the
+  // real institution-specific positions page (full-time + part-time
+  // sections listed directly in page text, plus a separate ministry-jobs
+  // database for outside churches/students, not CTS's own hiring). Verified
+  // live (two fresh page loads): genuinely 0 faculty/instructor postings
+  // right now -- only "Associate Dean of Students" (full-time) and "Grounds
+  // Maintenance" (part-time) currently listed.
+  { campus: "Covenant Theological Seminary", type: "generic", url: "https://www.covenantseminary.edu/jobs" },
   { campus: "Cox College", type: "generic", url: "https://coxcollege.edu/" },
   { campus: "Crowder College", type: "generic", url: "https://www.crowder.edu/employment" },
   { campus: "Culver-Stockton College", type: "generic", url: "https://culver.edu/employment" },
@@ -4467,7 +4580,17 @@ const KY_CAMPUSES = [
   { campus: "Clear Creek Baptist Bible College", type: "generic", url: "https://ccbbc.edu/careers" },
   { campus: "Eastern Kentucky University", type: "generic", url: "https://careers.eku.edu/jobs/search" },
   { campus: "Elizabethtown Community and Technical College", type: "generic", url: "https://elizabethtown.kctcs.edu/" },
-  { campus: "Frontier Nursing University", type: "generic", url: "https://www.frontier.edu/" },
+  // Was pointing at the bare homepage. Careers menu's "Faculty" page links
+  // to this institution-specific ADP Workforce Now recruitment portal
+  // (cid/ccId scoped to FNU). KY dispatcher had no "adp" case yet -- added
+  // above. Verified live (two fresh page loads): 3 open postings, including
+  // "Future Faculty position interest-CV Submission" and "Psychiatric
+  // Mental Health NP Regional Clinical [Faculty]".
+  {
+    campus: "Frontier Nursing University",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=6402b8ee-59dd-44df-9062-65b5c6f1338c&ccId=9200072699685_2&lang=en_US",
+  },
 ];
 
 // TN (Tennessee)
@@ -4496,7 +4619,14 @@ const TN_CAMPUSES = [
 // AK (Alaska)
 const AK_CAMPUSES = [
   { campus: "University of Alaska System", type: "generic", url: "https://careers.alaska.edu/jobs/search/faculty-jobs" },
-  { campus: "Alaska Bible College", type: "generic", url: "https://www.akbible.edu/faculty/jobs" },
+  // "/faculty/jobs" actually redirects to the faculty bio/directory page (a
+  // list of current faculty members with their degrees), not job postings.
+  // The real "Employment & Volunteer" page (linked from the homepage
+  // footer) lists current openings directly in page text, including
+  // "Adjunct Faculty" roles (General Education/Science, Bible/Ministry).
+  // Verified live (two fresh page loads): real adjunct faculty openings
+  // present, though listed as plain text with no per-posting href.
+  { campus: "Alaska Bible College", type: "generic", url: "https://www.akbible.edu/employment" },
   { campus: "Alaska Christian College", type: "generic", url: "https://alaskacc.edu/about/employment" },
   { campus: "Alaska Pacific University", type: "generic", url: "https://www.alaskapacific.edu/about/employment#openings" },
 ];
@@ -14277,6 +14407,10 @@ async function scrapeLaAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "LA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "LA");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "LA");
+        // No existing LA dispatch case for "oracle-cx" (function scrapeOracleCxAs
+        // already exists and is dispatched by TX) -- added for Franciscan
+        // Missionaries of Our Lady University.
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "LA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "LA");
         return [];
       } catch (e) {
@@ -14384,6 +14518,10 @@ async function scrapeKyAll(context) {
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "KY");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "KY");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "KY");
+        // No existing KY dispatch case for "adp" (function scrapeAdpAs already
+        // exists and is dispatched by other states) -- added for Frontier
+        // Nursing University.
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "KY");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "KY");
         return [];
       } catch (e) {
