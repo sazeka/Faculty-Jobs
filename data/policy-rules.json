@@ -624,6 +624,55 @@
       "sources": [
         "https://www.cccollege.edu/"
       ]
+    },
+    "City University of Seattle": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): joins the other 15 InterviewExchange/Hirezon-WAF-blocked institutions -- confirmed live via direct request (3x) that cityu.interviewexchange.com returns the identical Hirezon WAF 403 as the rest of the platform, despite this being the institution's genuine, correctly-identified careers page.",
+      "sources": [
+        "https://cityu.interviewexchange.com/static/clients/447CSM1/index.jsp"
+      ]
+    },
+    "Associated Beth Rivkah Schools": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/careers, /jobs, /employment, /employment-opportunities all 404).",
+      "sources": [
+        "https://www.bethrivkah.edu/"
+      ]
+    },
+    "Bakke Graduate University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (all common careers-page paths 404, no nav link).",
+      "sources": [
+        "https://www.bgu.edu/"
+      ]
+    },
+    "Digital Media Institute": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.dmi.edu/"
+      ]
+    },
+    "Bethany Global University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://bethanygu.edu/"
+      ]
+    },
+    "Blessing Rieman College of Nursing and Health Sciences": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no College-specific careers page exists; the only path is Blessing Health System's shared, unscoped hospital-wide job board, same misattribution-risk shape as the already-excluded Barnes-Jewish College Goldfarb School of Nursing and Cabarrus College of Health Sciences.",
+      "sources": [
+        "https://www.brcn.edu/"
+      ]
+    },
+    "Central Methodist University-College of Graduate and Extended Studies": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): duplicate division record -- the sibling \"Central Methodist University-College of Liberal Arts and Sciences\" record is already correctly covered (career_url verified, 3 current jobs) and is the same institution's actual hiring page.",
+      "sources": [
+        "https://www.centralmethodist.edu/about/offices/human-resources/jobs-fayette/index-faculty.html"
+      ]
     }
   }
 }
