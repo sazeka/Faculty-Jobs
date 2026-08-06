@@ -673,6 +673,27 @@
       "sources": [
         "https://www.centralmethodist.edu/about/offices/human-resources/jobs-fayette/index-faculty.html"
       ]
+    },
+    "Arkansas State University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): real careers page is hosted on Oracle Taleo, which the repo excludes platform-wide (Oracle ToS prohibits robots/scrapers) -- see the \"taleo\" platformRule above. platform_type is mislabeled \"generic\" in institutions-master.json so the automatic platform rule doesn't catch it; excluding by name instead.",
+      "sources": [
+        "https://phe.tbe.taleo.net/phe02/ats/careers/v2/jobSearch?org=ARKASTAT2"
+      ]
+    },
+    "Arkansas State University-Mountain Home": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): same as the primary Arkansas State University record -- real careers page is hosted on Oracle Taleo, platform-wide-excluded, mislabeled \"generic\" in institutions-master.json.",
+      "sources": [
+        "https://phe.tbe.taleo.net/phe02/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=58&org=ARKASTAT2"
+      ]
+    },
+    "Arkansas State University Three Rivers": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): same as the primary Arkansas State University record -- real careers page is hosted on Oracle Taleo, platform-wide-excluded, mislabeled \"generic\" in institutions-master.json.",
+      "sources": [
+        "https://www.asutr.edu/"
+      ]
     }
   }
 }
