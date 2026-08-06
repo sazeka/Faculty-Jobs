@@ -694,6 +694,55 @@
       "sources": [
         "https://www.asutr.edu/"
       ]
+    },
+    "Colorado State University-System Office": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): system governance office, not a degree-granting campus -- its own careers page just aggregates postings from the three real member campuses (Colorado State University-Fort Collins, -Pueblo, -Global), each of which is already tracked individually with its own scraper entry. Same duplicate-coverage pattern as Arizona Board of Regents / Arkansas State University System, though an earlier career-url-overrides.json entry had called this \"verified working\" -- that only confirmed reachability, not that scraping it wouldn't double-count postings already attributed to the member campuses.",
+      "sources": [
+        "https://csusystem.edu/jobs/"
+      ]
+    },
+    "Board of Trustees-Mississippi State Institutions of Higher Learning": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): system governance office, not a degree-granting campus -- confirmed live its own careers page lists only internal system-office administrative jobs (Manager of Internal Audit, Emergency and Safety Officer), not member-university faculty positions.",
+      "sources": [
+        "https://www.mississippi.edu/contact-us/careers"
+      ]
+    },
+    "Be'er Yaakov Talmudic Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/careers, /employment, /jobs, /about all 404).",
+      "sources": [
+        "https://www.byts.edu/"
+      ]
+    },
+    "Baptist Missionary Association Theological Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation, including a full sitemap crawl.",
+      "sources": [
+        "https://www.bmats.edu/"
+      ]
+    },
+    "Boston Baptist College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation, including a full sitemap crawl.",
+      "sources": [
+        "https://www.boston.edu/"
+      ]
+    },
+    "Baptist Health College Little Rock": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no institution-specific careers page found; the parent Baptist Health system's own careers page is itself broken (soft-404).",
+      "sources": [
+        "https://www.bhclr.edu/"
+      ]
+    },
+    "Commonwealth Technical Institute": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): a PA Department of Labor & Industry vocational-rehabilitation training program, not an independently-hiring institution -- the only discoverable hiring channel is Pennsylvania's fully shared statewide civil-service job board.",
+      "sources": [
+        "https://www.dli.pa.gov/Individuals/Disability-Services/CTI-HGAC/Pages/Home.aspx"
+      ]
     }
   }
 }

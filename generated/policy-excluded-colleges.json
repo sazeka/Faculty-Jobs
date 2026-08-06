@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-06T16:38:47.621Z",
+  "generatedAt": "2026-08-06T17:06:18.141Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 62,
+  "count": 69,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -28,15 +28,20 @@
     "Associated Beth Rivkah Schools",
     "Atlantic Institute of Oriental Medicine",
     "Bakke Graduate University",
+    "Baptist Health College Little Rock",
+    "Baptist Missionary Association Theological Seminary",
     "Baptist University of Florida",
     "Barnes-Jewish College Goldfarb School of Nursing",
+    "Be'er Yaakov Talmudic Seminary",
     "Bellarmine University",
     "Berry College",
     "Beth Medrash Govoha",
     "Bethany Global University",
     "Blessing Rieman College of Nursing and Health Sciences",
     "Bloomfield College of Montclair State University",
+    "Board of Trustees-Mississippi State Institutions of Higher Learning",
     "Bolivar Technical College",
+    "Boston Baptist College",
     "Bristol Community College",
     "Byzantine Catholic Seminary of Saints Cyril and Methodius",
     "Cabarrus College of Health Sciences",
@@ -47,6 +52,8 @@
     "Central Methodist University-College of Graduate and Extended Studies",
     "City University of Seattle",
     "Clark University",
+    "Colorado State University-System Office",
+    "Commonwealth Technical Institute",
     "Community Christian College",
     "CU Anschutz",
     "CU Denver",
@@ -275,6 +282,24 @@
       ]
     },
     {
+      "college": "Baptist Health College Little Rock",
+      "platform_type": "generic",
+      "career_url": "https://www.bhclr.edu/",
+      "reason": "Excluded (2026-08-06): no institution-specific careers page found; the parent Baptist Health system's own careers page is itself broken (soft-404).",
+      "sources": [
+        "https://www.bhclr.edu/"
+      ]
+    },
+    {
+      "college": "Baptist Missionary Association Theological Seminary",
+      "platform_type": "generic",
+      "career_url": "https://www.bmats.edu/",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation, including a full sitemap crawl.",
+      "sources": [
+        "https://www.bmats.edu/"
+      ]
+    },
+    {
       "college": "Baptist University of Florida",
       "platform_type": "generic",
       "career_url": "https://www.buf.edu/",
@@ -290,6 +315,15 @@
       "reason": "Excluded (2026-08-06): the only careers link on the College's site routes to BJC HealthCare's system-wide clinical job board (bjccareers.org), unscoped to the College specifically -- keyword-filtering by \"goldfarb\" returns unrelated hospital roles, not a discoverable School-specific faculty listing.",
       "sources": [
         "https://www.barnesjewishcollege.edu/resources/nursing-careers"
+      ]
+    },
+    {
+      "college": "Be'er Yaakov Talmudic Seminary",
+      "platform_type": "generic",
+      "career_url": "https://www.byts.edu/",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/careers, /employment, /jobs, /about all 404).",
+      "sources": [
+        "https://www.byts.edu/"
       ]
     },
     {
@@ -347,12 +381,30 @@
       ]
     },
     {
+      "college": "Board of Trustees-Mississippi State Institutions of Higher Learning",
+      "platform_type": "generic",
+      "career_url": "https://www.mississippi.edu/",
+      "reason": "Excluded (2026-08-06): system governance office, not a degree-granting campus -- confirmed live its own careers page lists only internal system-office administrative jobs (Manager of Internal Audit, Emergency and Safety Officer), not member-university faculty positions.",
+      "sources": [
+        "https://www.mississippi.edu/contact-us/careers"
+      ]
+    },
+    {
       "college": "Bolivar Technical College",
       "platform_type": "generic",
       "career_url": "https://www.bolivarcollege.edu/",
       "reason": "Excluded (2026-08-06): no institution-run careers page found after live investigation; only a generic site-search result page exists, not a real jobs board.",
       "sources": [
         "https://www.bolivarcollege.edu/"
+      ]
+    },
+    {
+      "college": "Boston Baptist College",
+      "platform_type": "generic",
+      "career_url": "https://www.boston.edu/",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation, including a full sitemap crawl.",
+      "sources": [
+        "https://www.boston.edu/"
       ]
     },
     {
@@ -444,6 +496,24 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://clarku.interviewexchange.com/static/clients/569CUM1/index.jsp"
+      ]
+    },
+    {
+      "college": "Colorado State University-System Office",
+      "platform_type": "generic",
+      "career_url": "https://csusystem.edu/jobs",
+      "reason": "Excluded (2026-08-06): system governance office, not a degree-granting campus -- its own careers page just aggregates postings from the three real member campuses (Colorado State University-Fort Collins, -Pueblo, -Global), each of which is already tracked individually with its own scraper entry. Same duplicate-coverage pattern as Arizona Board of Regents / Arkansas State University System, though an earlier career-url-overrides.json entry had called this \"verified working\" -- that only confirmed reachability, not that scraping it wouldn't double-count postings already attributed to the member campuses.",
+      "sources": [
+        "https://csusystem.edu/jobs/"
+      ]
+    },
+    {
+      "college": "Commonwealth Technical Institute",
+      "platform_type": "generic",
+      "career_url": "https://www.dli.pa.gov/Individuals/Disability-Services/CTI-HGAC/Pages/Home.aspx",
+      "reason": "Excluded (2026-08-06): a PA Department of Labor & Industry vocational-rehabilitation training program, not an independently-hiring institution -- the only discoverable hiring channel is Pennsylvania's fully shared statewide civil-service job board.",
+      "sources": [
+        "https://www.dli.pa.gov/Individuals/Disability-Services/CTI-HGAC/Pages/Home.aspx"
       ]
     },
     {
