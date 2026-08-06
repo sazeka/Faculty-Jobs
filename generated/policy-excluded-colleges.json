@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-06T03:00:53.681Z",
+  "generatedAt": "2026-08-06T10:41:59.305Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 36,
+  "count": 37,
   "colleges": [
     "Academy for Jewish Religion California",
     "Adelphi University",
@@ -13,6 +13,7 @@
     "Allegheny Wesleyan College",
     "Anna Maria College",
     "Appalachian Bible College",
+    "Arizona Board of Regents",
     "Arkansas Baptist College",
     "Bellarmine University",
     "Berry College",
@@ -108,6 +109,15 @@
       "reason": "Excluded (2026-08-06): no HR/employment page found after live investigation -- only a student-employment page exists, no faculty/staff hiring page.",
       "sources": [
         "https://abc.edu/"
+      ]
+    },
+    {
+      "college": "Arizona Board of Regents",
+      "platform_type": "generic",
+      "career_url": "https://www.azregents.edu/career-opportunities",
+      "reason": "Excluded (2026-08-06): system governance office overseeing Arizona's public universities (ASU, U of Arizona, NAU), not a degree-granting campus itself -- same pattern as the CSU Chancellor's Office record. The universities it governs are already tracked individually under their own names.",
+      "sources": [
+        "https://www.azregents.edu/career-opportunities"
       ]
     },
     {
