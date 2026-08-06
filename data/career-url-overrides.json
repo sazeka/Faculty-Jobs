@@ -173,8 +173,8 @@
       "name": "Bastyr University",
       "homepage_url": "https://bastyr.edu/",
       "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=35ECA37F07A12A40C9F79168AFFA3433",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; homepage links to their Paycom recruiting portal. Verified live: 20 postings, several Adjunct Faculty (Counseling & Health Psychology Clinical Supervisor, Adjunct Faculty - Counseling and Health Psychology)."
+      "platform_type": "paycom",
+      "notes": "URL was already correct (their Paycom recruiting portal) but platform_type was tagged \"generic\", so scrapeGenericJobPage fell through to plain DOM anchor scraping, which can't read Paycom's SPA-rendered job cards -- 0 results despite the right URL. Retagged platform_type to \"paycom\" so it dispatches to the existing scrapePaycomAs scraper instead. Verified live (2026-08-06, two fresh page loads): 20 postings, several real Adjunct Faculty (Adjunct Faculty - Counseling & Health Psychology - Clinical Supervisor, Adjunct Faculty - Counseling and Health Psychology, Adjunct Faculty - Naturopathic Medicine, Adjunct Faculty - Midwifery Department)."
     },
     {
       "name": "Bates College",
@@ -1642,9 +1642,9 @@
     {
       "name": "Ana G. Mendez University",
       "homepage_url": "https://www.agmu.edu/",
-      "career_url": "https://jobs.agmu.edu/home",
+      "career_url": "https://jobs.agmu.edu/page-jobs-category?lang=en-us&cat=Facultad",
       "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+      "notes": "Was pointing at the /home landing page, which only shows category tiles with counts (e.g. \"Faculty -- 35 Available positions\") and no per-posting links at all -- the generic scraper had nothing to extract. Routed to the Faculty category page directly, which lists the actual postings as real anchors. Verified live (2026-08-06): 20+ real current Faculty postings across FL and PR campuses (e.g. \"Part Time Faculty - Humanities Professor\", \"Full Time Faculty US - Family Nurse Practitioner\", \"Part Time Faculty - Social Work\")."
     },
     {
       "name": "Abilene Christian University-Undergraduate Online",

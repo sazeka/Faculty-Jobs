@@ -1130,7 +1130,11 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Alvernia University", type: "generic", url: "https://www.alvernia.edu/faculty-staff/human-resources/employment-opportunities" },
   { campus: "American College of Financial Services", type: "generic", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0EC6D26D6ACC066E0F0E668BFD94D104" },
   { campus: "Arcadia University", type: "generic", url: "https://arcadia.isolvedhire.com/jobsearch?job_board_classification=faculty" },
-  { campus: "ASPIRA City College", type: "generic", url: "https://aspiracitycollege.edu/" },
+  // Was pointing at the bare homepage. Real employment page just says
+  // "email your resume to hrdept@aspirapa.org" -- no job board/anchors at
+  // all. Routed to it anyway for correctness, but it will structurally never
+  // produce a link-based posting for the generic scraper to catch.
+  { campus: "ASPIRA City College", type: "generic", url: "https://aspiracitycollege.edu/employment-opportunities/" },
   { campus: "Bryn Athyn College of the New Church", type: "generic", url: "https://www.brynathyn.edu/" },
   { campus: "Bryn Mawr College", type: "generic", url: "https://www.brynmawr.edu/" },
   { campus: "Bucks County Community College", type: "generic", url: "https://www.bucks.edu/employment" },
@@ -2332,7 +2336,13 @@ const MN_CAMPUSES = [
   { campus: "Adler Graduate School", type: "generic", url: "https://www.alfredadler.edu/about/employment-opportunities" },
   { campus: "Alexandria Technical & Community College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545ed292bdd0000" },
   { campus: "Anoka Technical College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545edc2d07b0000" },
-  { campus: "Anoka-Ramsey Community College", type: "generic", url: "https://www.anokaramsey.edu/" },
+  // Was pointing at the bare homepage. Real ATS is the MN State Workday
+  // tenant (same pattern as Alexandria Technical & Community College / Anoka
+  // Technical College above). Verified live (two fresh page loads): filters
+  // correctly to Anoka-Ramsey, 4 real current postings -- none faculty-titled
+  // today (Lab Assistant, Executive Assistant), so this stays at 0, but any
+  // future faculty posting will now be caught.
+  { campus: "Anoka-Ramsey Community College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545c44873db0001" },
   { campus: "Augsburg University", type: "generic", url: "https://www.augsburg.edu/employment" },
   { campus: "Bemidji State University", type: "generic", url: "https://www.bemidjistate.edu/offices/human-resources/prospective-employees" },
   { campus: "Bethany Global University", type: "generic", url: "https://bethanygu.edu/" },
@@ -2634,7 +2644,15 @@ const CO_CAMPUSES = [
   { campus: "Adams State University", type: "generic", url: "https://www.adams.edu/hr/employment" },
   { campus: "Aims Community College", type: "generic", url: "https://www.aims.edu/" },
   { campus: "Arapahoe Community College", type: "generic", url: "https://www.arapahoe.edu/about-acc/employment-acc" },
-  { campus: "Casa Loma College - Aurora", type: "generic", url: "https://www.casalomacollege.edu/faculty/jobs" },
+  // Was 404ing (no /faculty/jobs page exists). Real careers page is
+  // /careers-2/ (same URL already used for the Casa Loma College-Los Angeles
+  // record). Verified live: real postings exist ("Leadership and Management
+  // Instructor", "Adjunct Faculty", "Adjunct Faculty - General Education")
+  // but titles live in a <strong> inside a preceding sibling <p>, not inside
+  // the anchor's own card ancestor -- the CTA-link's text ("See more
+  // details") points to an external Indeed listing instead of a same-page
+  // detail, so the generic scraper's heading-lookup fallback can't reach it.
+  { campus: "Casa Loma College - Aurora", type: "generic", url: "https://casalomacollege.edu/careers-2/" },
   { campus: "Colorado Christian University", type: "generic", url: "https://www.ccu.edu/jobs/" },
   { campus: "Colorado Mesa University", type: "generic", url: "https://www.coloradomesa.edu/" },
   { campus: "Colorado Mountain College", type: "generic", url: "https://coloradomtn.edu/" },
@@ -2920,7 +2938,13 @@ const MI_CAMPUSES = [
   { campus: "Adrian College", type: "generic", url: "https://www.adrian.edu/about/human-resources/employment-opportunities" },
   { campus: "Albion College", type: "generic", url: "https://www.albion.edu/offices/human-resources/jobs/" },
   { campus: "Alma College", type: "schooljobs", url: "https://www.schooljobs.com/careers/alma" },
-  { campus: "Alpena Community College", type: "generic", url: "https://www.alpenacc.edu/" },
+  // Was pointing at the bare homepage. Real ATS is AppOne; routed to the
+  // browse-by-category page which lists real anchors the generic scraper can
+  // read. Verified live (2026-08-06): 14 real current postings, but every
+  // teaching title is "Part Time Instructor..." which omitAdjunct's part-time
+  // filter still excludes (by design) -- so this stays at 0 today, but any
+  // future full-time faculty posting will now be caught.
+  { campus: "Alpena Community College", type: "generic", url: "https://www.appone.com/Branding/ReqTemplate/BrowseAllJobsbyCategory.asp?Type=REQ&FromID=1&ClientID=4804&B_ID=44&JobCode=0&CountryID=3&LanguageID=2&servervar=alpenacc.appone.com" },
   { campus: "Andrews University", type: "generic", url: "https://www.andrews.edu/admres/jobs" },
   { campus: "Aquinas College", type: "generic", url: "https://www.aquinas.edu/" },
   { campus: "Baker College", type: "generic", url: "https://www.baker.edu/" },
@@ -3177,7 +3201,12 @@ const IN_CAMPUSES = [
   { campus: "Trine University-Regional/Non-Traditional Campuses", type: "generic", url: "https://www.trine.edu/human-resources/careers/index.aspx/faculty" },
   { campus: "Anabaptist Mennonite Biblical Seminary", type: "generic", url: "https://www.ambs.edu/employment" },
   { campus: "Bethany Theological Seminary", type: "generic", url: "https://www.bethanyseminary.edu/" },
-  { campus: "Calumet College of Saint Joseph", type: "generic", url: "https://www.ccsj.edu/" },
+  // Was pointing at the bare homepage; real ATS is Paylocity (already handled
+  // fine by the generic scraper when pointed directly at it, same pattern as
+  // Arkansas Colleges of Health Education / Freed-Hardeman University /
+  // Northwest Nazarene University). Verified live (two fresh page loads):
+  // 4 postings incl. "Adjunct Instructor - Composition".
+  { campus: "Calumet College of Saint Joseph", type: "generic", url: "https://recruiting.paylocity.com/recruiting/jobs/All/d3b73b32-f518-47ab-82f7-ac57a8a45ce4/Calumet-College" },
   { campus: "Christian Theological Seminary", type: "generic", url: "https://www.cts.edu/careers" },
   { campus: "Concordia Theological Seminary", type: "generic", url: "https://ctsfw.edu/" },
   { campus: "Franklin College", type: "generic", url: "https://franklincollege.edu/about/key-offices/office-of-human-resources/employment-opportunities" },
@@ -3210,15 +3239,16 @@ const WV_CAMPUSES = [
     type: "generic",
     url: "https://www.wvwc.edu/jobs?faculty",
   },
-  {
-    campus: "Bethany College (WV)",
-    type: "generic",
-    url: "https://www.bethanywv.edu/about/employment",
-  },
   { campus: "Mercer County Technical Education Center", type: "generic", url: "https://mercercountyschools.sites.thrillshare.com/o/mctec" },
   { campus: "West Virginia University Hospital Departments of Rad Tech and Nutrition", type: "generic", url: "https://wvumedicine.org/radtech" },
   { campus: "Appalachian Bible College", type: "generic", url: "https://abc.edu/" },
-  { campus: "Bethany College", type: "generic", url: "https://www.bethanywv.edu/about/employment" },
+  // Was pointing at the about/employment page, which only links out (no
+  // per-posting anchors of its own). Real per-posting listing lives on
+  // HigherEdJobs (same pattern already used for Edward Waters University).
+  // Verified live: 3 real current postings (Head Softball Coach, Plumber,
+  // First Year Advisor/Learning Specialist) -- none faculty-titled today, so
+  // this stays at 0, but future faculty postings will now be caught.
+  { campus: "Bethany College", type: "generic", url: "https://www.higheredjobs.com/institution/search.cfm?aID=2641" },
   { campus: "Blue Ridge Community and Technical College", type: "generic", url: "https://www.blueridgectc.edu/" },
   { campus: "Bluefield State University", type: "generic", url: "https://bluefieldstate.edu/" },
   { campus: "BridgeValley Community & Technical College", type: "generic", url: "https://www.bridgevalley.edu/" },
@@ -3518,7 +3548,16 @@ const GA_CAMPUSES = [
   { campus: "Berry College", type: "interviewexchange", url: "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp" },
   { campus: "Beulah Heights University", type: "generic", url: "https://www.beulah.edu/" },
   { campus: "Brenau University", type: "generic", url: "https://www.brenau.edu/" },
-  { campus: "Brewton-Parker College", type: "generic", url: "https://www.bpc.edu/" },
+  // Was pointing at the bare homepage. Real employment page (found via the
+  // "Employment" footer link) has genuine current faculty openings (e.g.
+  // "Assistant/Associate Professor of English / Humanities", "...of
+  // Chemistry", "...of Kinesiology") but they're rendered as FAQ-accordion
+  // <h3> headings with no <a href> per posting -- same anchor-blind-spot
+  // shape as Centenary College of Louisiana below. Routed to the real page
+  // anyway so it's at least the correct page (matches Belmont Abbey/
+  // Anabaptist Mennonite precedent), but the generic scraper still can't
+  // extract these titles.
+  { campus: "Brewton-Parker College", type: "generic", url: "https://bpc.edu/about-bpc/information/employment/" },
   { campus: "Clark Atlanta University", type: "generic", url: "https://www.cau.edu/" },
   { campus: "College of Athens", type: "generic", url: "https://collegeofathens.edu/coa-employment" },
   { campus: "Columbia Theological Seminary", type: "generic", url: "https://www.ctsnet.edu/careers" },
@@ -3566,7 +3605,11 @@ const AL_CAMPUSES = [
   { campus: "Alabama A & M University", type: "schooljobs", url: "https://www.schooljobs.com/careers/aamu" },
   { campus: "Alabama College of Osteopathic Medicine", type: "generic", url: "https://www.acom.edu/" },
   { campus: "Alabama State University", type: "schooljobs", url: "https://www.governmentjobs.com/careers/alasu" },
-  { campus: "Amridge University", type: "generic", url: "https://www.amridgeuniversity.edu/" },
+  // Was pointing at the bare homepage. Real employment page is a rolling
+  // "email your CV to facultycareers@..." call with no job board/anchors at
+  // all -- routed to it anyway for correctness, but it will structurally
+  // never produce a link-based posting for the generic scraper to catch.
+  { campus: "Amridge University", type: "generic", url: "https://www.amridgeuniversity.edu/about/employment/" },
   // Was the bare HR landing page. This is a white-labeled PeopleAdmin instance
   // on a custom domain — ATS-detection only recognizes the literal
   // peopleadmin.com hostname, so hand-off never fired. 366[]=1 confirmed live
@@ -3589,7 +3632,11 @@ const MS_CAMPUSES = [
   { campus: "Delta State University", type: "peopleadmin", url: "https://deltastate.peopleadmin.com/postings/search" },
   { campus: "Millsaps College", type: "generic", url: "https://millsaps.edu/offices/human-resources/employment-opportunities/" },
   { campus: "Alcorn State University", type: "generic", url: "https://www.schooljobs.com/careers/alcornstateuniversity" },
-  { campus: "Belhaven University", type: "generic", url: "https://www.belhaven.edu/" },
+  // Was pointing at the bare homepage. Real employment page lists real
+  // postings as PDF anchors. Verified live (direct scraper run, twice): 2
+  // real current faculty postings ("Assistant/Associate Professor of
+  // Counseling", "Adjunct Faculty - DBA").
+  { campus: "Belhaven University", type: "generic", url: "https://www.belhaven.edu/about/contact/employment.html" },
   { campus: "Blue Mountain Christian University", type: "generic", url: "https://www.bmc.edu/" },
   { campus: "Board of Trustees-Mississippi State Institutions of Higher Learning", type: "generic", url: "https://www.mississippi.edu/" },
   { campus: "Coahoma Community College", type: "generic", url: "https://www.coahomacc.edu/" },
@@ -3759,7 +3806,12 @@ const KY_CAMPUSES = [
   { campus: "Alice Lloyd College", type: "generic", url: "https://www.alc.edu/" },
   { campus: "Asbury Theological Seminary", type: "generic", url: "https://asburyseminary.edu/info/employment" },
   { campus: "Asbury University", type: "generic", url: "https://www.asbury.edu/" },
-  { campus: "Ashland Community and Technical College", type: "generic", url: "https://ashland.kctcs.edu/" },
+  // Was pointing at the bare homepage. Real ATS is PageUp (careers.kctcs.edu,
+  // KCTCS system-wide tenant filtered to Ashland). Verified live (two fresh
+  // page loads): real current Adjunct Faculty postings (Adjunct Faculty Arts
+  // and Sciences, Adjunct Industrial Maintenance Instructor, Part-time
+  // Adjunct Nursing Clinical Instructor).
+  { campus: "Ashland Community and Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/ashland-jobs" },
   { campus: "Bellarmine University", type: "interviewexchange", url: "https://bellarmine.interviewexchange.com/static/clients/459BMM1/index.jsp" },
   { campus: "Berea College", type: "generic", url: "https://www.berea.edu/" },
   { campus: "Big Sandy Community and Technical College", type: "generic", url: "https://bigsandy.kctcs.edu/" },
@@ -10751,6 +10803,13 @@ const OVERRIDE_PLATFORM_DISPATCH = {
   icims: (context, url, campusName, sourceName) => scrapeIcimsAs(context, url, campusName, sourceName),
   oracle: (context, url, campusName, sourceName) => scrapeOracleCxAs(context, url, campusName, sourceName),
   interviewexchange: (context, url, campusName, sourceName) => scrapeInterviewExchangeAs(context, url, campusName, sourceName),
+  // Bastyr University's override entry already had the correct Paycom URL but
+  // was tagged platform_type "generic", so it fell through to plain DOM anchor
+  // scraping -- which can't handle Paycom's SPA-rendered job cards (confirmed
+  // 0 results despite the URL being right). Reuses the existing scrapePaycomAs
+  // function (already dispatched elsewhere for CT/NJ/NY/ME/TN) via this same
+  // override-platform mechanism instead of inventing a new one.
+  paycom: (context, url, campusName, sourceName) => scrapePaycomAs(context, url, campusName, sourceName),
 };
 
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
@@ -13655,6 +13714,7 @@ async function scrapeKyAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "KY");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "KY");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "KY");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "KY");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "KY");
         return [];
       } catch (e) {
