@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-06T17:06:18.141Z",
+  "generatedAt": "2026-08-06T17:58:17.928Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 69,
+  "count": 76,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -27,6 +27,7 @@
     "Ascent College",
     "Associated Beth Rivkah Schools",
     "Atlantic Institute of Oriental Medicine",
+    "Bais HaMedrash and Mesivta of Baltimore",
     "Bakke Graduate University",
     "Baptist Health College Little Rock",
     "Baptist Missionary Association Theological Seminary",
@@ -37,9 +38,12 @@
     "Berry College",
     "Beth Medrash Govoha",
     "Bethany Global University",
+    "Bethesda University",
+    "Bethlehem College & Seminary",
     "Blessing Rieman College of Nursing and Health Sciences",
     "Bloomfield College of Montclair State University",
     "Board of Trustees-Mississippi State Institutions of Higher Learning",
+    "Boise Bible College",
     "Bolivar Technical College",
     "Boston Baptist College",
     "Bristol Community College",
@@ -50,6 +54,7 @@
     "Cape Cod Community College",
     "Cayuga County Community College",
     "Central Methodist University-College of Graduate and Extended Studies",
+    "Charlotte Christian College and Theological Seminary",
     "City University of Seattle",
     "Clark University",
     "Colorado State University-System Office",
@@ -62,9 +67,11 @@
     "Emmanuel College",
     "Fashion Institute of Technology",
     "Fitchburg State University",
+    "Fred W Eberle Technical Center",
     "Goucher College",
     "New Jersey City University",
     "Salve Regina University",
+    "South Dakota Board of Regents",
     "Southern Methodist University",
     "The College of New Jersey",
     "Towson University",
@@ -273,6 +280,15 @@
       ]
     },
     {
+      "college": "Bais HaMedrash and Mesivta of Baltimore",
+      "platform_type": "generic",
+      "career_url": "https://www.bhmb.edu/",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.bhmb.edu/"
+      ]
+    },
+    {
       "college": "Bakke Graduate University",
       "platform_type": "generic",
       "career_url": "https://www.bgu.edu/",
@@ -363,6 +379,24 @@
       ]
     },
     {
+      "college": "Bethesda University",
+      "platform_type": "generic",
+      "career_url": "https://www.buc.edu/academics/faculty-jobs",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (all guessed paths are soft-404s: \"This page has not been generated\").",
+      "sources": [
+        "https://www.buc.edu/"
+      ]
+    },
+    {
+      "college": "Bethlehem College & Seminary",
+      "platform_type": "generic",
+      "career_url": "https://bcsmn.edu/",
+      "reason": "Excluded (2026-08-06): the site's \"Job Board\" is explicitly career-placement services for students/alumni seeking jobs at other organizations (churches, ministries), not the institution's own hiring page -- no internal hiring page found.",
+      "sources": [
+        "https://bcsmn.edu/"
+      ]
+    },
+    {
       "college": "Blessing Rieman College of Nursing and Health Sciences",
       "platform_type": "generic",
       "career_url": "https://www.brcn.edu/",
@@ -387,6 +421,15 @@
       "reason": "Excluded (2026-08-06): system governance office, not a degree-granting campus -- confirmed live its own careers page lists only internal system-office administrative jobs (Manager of Internal Audit, Emergency and Safety Officer), not member-university faculty positions.",
       "sources": [
         "https://www.mississippi.edu/contact-us/careers"
+      ]
+    },
+    {
+      "college": "Boise Bible College",
+      "platform_type": "generic",
+      "career_url": "https://www.boisebible.edu/",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.boisebible.edu/"
       ]
     },
     {
@@ -478,6 +521,15 @@
       "reason": "Excluded (2026-08-06): duplicate division record -- the sibling \"Central Methodist University-College of Liberal Arts and Sciences\" record is already correctly covered (career_url verified, 3 current jobs) and is the same institution's actual hiring page.",
       "sources": [
         "https://www.centralmethodist.edu/about/offices/human-resources/jobs-fayette/index-faculty.html"
+      ]
+    },
+    {
+      "college": "Charlotte Christian College and Theological Seminary",
+      "platform_type": "generic",
+      "career_url": "https://www.charlottechristian.edu/",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found after live investigation -- the homepage's own \"Career Path\" footer link is miswired to the privacy-policy page, and every guessed path 404s.",
+      "sources": [
+        "https://www.charlottechristian.edu/"
       ]
     },
     {
@@ -591,6 +643,15 @@
       ]
     },
     {
+      "college": "Fred W Eberle Technical Center",
+      "platform_type": "generic",
+      "career_url": "https://fetc.edu/",
+      "reason": "Excluded (2026-08-06): no stable careers page exists; postings occasionally appear only as one-off WordPress news articles with no durable listing page to point at.",
+      "sources": [
+        "https://fetc.edu/"
+      ]
+    },
+    {
       "college": "Goucher College",
       "platform_type": "interviewexchange",
       "career_url": "https://goucher.interviewexchange.com/static/clients/436GCM1/index.jsp",
@@ -616,6 +677,15 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp"
+      ]
+    },
+    {
+      "college": "South Dakota Board of Regents",
+      "platform_type": "generic",
+      "career_url": "https://yourfuture.sdbor.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search",
+      "reason": "Excluded (2026-08-06): governance office, not a degree-granting campus -- but unlike other excluded board/system-office records, this one IS the real, live ATS for the SD state university system, and server.js already has special-case logic (inferSdborCampusFromDetail) that correctly attributes its postings to the separately-tracked member campuses (South Dakota State University, University of South Dakota, South Dakota School of Mines and Technology, Northern State University, Dakota State University -- all confirmed \"covered\" with real job counts). By design, zero jobs are ever attributed to the Board of Regents record itself; do not remove the SDBOR entry from server.js, it is load-bearing for the member-campus attribution -- only this institution record is excluded.",
+      "sources": [
+        "https://yourfuture.sdbor.edu/postings/search"
       ]
     },
     {

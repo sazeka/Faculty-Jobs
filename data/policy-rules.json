@@ -743,6 +743,55 @@
       "sources": [
         "https://www.dli.pa.gov/Individuals/Disability-Services/CTI-HGAC/Pages/Home.aspx"
       ]
+    },
+    "South Dakota Board of Regents": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): governance office, not a degree-granting campus -- but unlike other excluded board/system-office records, this one IS the real, live ATS for the SD state university system, and server.js already has special-case logic (inferSdborCampusFromDetail) that correctly attributes its postings to the separately-tracked member campuses (South Dakota State University, University of South Dakota, South Dakota School of Mines and Technology, Northern State University, Dakota State University -- all confirmed \"covered\" with real job counts). By design, zero jobs are ever attributed to the Board of Regents record itself; do not remove the SDBOR entry from server.js, it is load-bearing for the member-campus attribution -- only this institution record is excluded.",
+      "sources": [
+        "https://yourfuture.sdbor.edu/postings/search"
+      ]
+    },
+    "Bethesda University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (all guessed paths are soft-404s: \"This page has not been generated\").",
+      "sources": [
+        "https://www.buc.edu/"
+      ]
+    },
+    "Charlotte Christian College and Theological Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found after live investigation -- the homepage's own \"Career Path\" footer link is miswired to the privacy-policy page, and every guessed path 404s.",
+      "sources": [
+        "https://www.charlottechristian.edu/"
+      ]
+    },
+    "Fred W Eberle Technical Center": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no stable careers page exists; postings occasionally appear only as one-off WordPress news articles with no durable listing page to point at.",
+      "sources": [
+        "https://fetc.edu/"
+      ]
+    },
+    "Bais HaMedrash and Mesivta of Baltimore": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.bhmb.edu/"
+      ]
+    },
+    "Bethlehem College & Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): the site's \"Job Board\" is explicitly career-placement services for students/alumni seeking jobs at other organizations (churches, ministries), not the institution's own hiring page -- no internal hiring page found.",
+      "sources": [
+        "https://bcsmn.edu/"
+      ]
+    },
+    "Boise Bible College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.boisebible.edu/"
+      ]
     }
   }
 }
