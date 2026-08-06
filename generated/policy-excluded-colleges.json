@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-06T11:30:01.320Z",
+  "generatedAt": "2026-08-06T12:20:16.564Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 42,
+  "count": 49,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -12,18 +12,25 @@
     "Agora University",
     "Aiken Technical College",
     "Allegheny Wesleyan College",
+    "American Academy of Dramatic Arts-Los Angeles",
     "Anna Maria College",
+    "Antioch University-System Administration",
     "Appalachian Bible College",
     "Arizona Board of Regents",
     "Arizona State University Campus Immersion",
     "Arizona State University Digital Immersion",
     "Arkansas Baptist College",
+    "Arkansas State University System",
     "Ascent College",
+    "Atlantic Institute of Oriental Medicine",
     "Barnes-Jewish College Goldfarb School of Nursing",
     "Bellarmine University",
     "Berry College",
     "Beth Medrash Govoha",
+    "Bloomfield College of Montclair State University",
+    "Bolivar Technical College",
     "Bristol Community College",
+    "Cabarrus College of Health Sciences",
     "California Institute of Integral Studies",
     "California Institute of Technology",
     "Cape Cod Community College",
@@ -106,6 +113,16 @@
       ]
     },
     {
+      "college": "American Academy of Dramatic Arts-Los Angeles",
+      "platform_type": "generic",
+      "career_url": "https://www.aada.edu/",
+      "reason": "Excluded (2026-08-06): LA campus closure was announced in 2024 effective the 2025-26 school year; confirmed independently via ABC7 Los Angeles and Deadline reporting. The institution's own site nav now shows only the New York campus. No longer degree-granting/hiring at this location.",
+      "sources": [
+        "https://abc7.com/post/los-angeles-campus-american-academy-dramatic-arts-close/15102792/",
+        "https://deadline.com/2024/07/american-academy-of-dramatic-arts-school-los-angeles-campus-closing-1236017937/"
+      ]
+    },
+    {
       "college": "Anna Maria College",
       "platform_type": "generic",
       "career_url": "https://www.annamaria.edu/",
@@ -114,6 +131,15 @@
         "https://www.insidehighered.com/news/quick-takes/2026/04/23/anna-maria-college-announces-closure",
         "https://www.nbcboston.com/news/local/anna-maria-college-closing-at-end-of-this-semester/3938857/",
         "https://wbjournal.com/article/anna-maria-files-for-bankruptcy-blames-closure-on-falling-enrollment/"
+      ]
+    },
+    {
+      "college": "Antioch University-System Administration",
+      "platform_type": "generic",
+      "career_url": "https://www.antioch.edu/employment",
+      "reason": "Excluded (2026-08-06): duplicate record of the primary \"Antioch University\" entry (identical antioch.edu/employment URL, confirmed in server.js) -- not an independently-hiring entity.",
+      "sources": [
+        "https://www.antioch.edu/employment"
       ]
     },
     {
@@ -164,12 +190,30 @@
       ]
     },
     {
+      "college": "Arkansas State University System",
+      "platform_type": "generic",
+      "career_url": "https://www.asusystem.edu/",
+      "reason": "Excluded (2026-08-06): system governance/administrative office, not a degree-granting campus -- confirmed live its own homepage just lists the individually-tracked member campuses (Arkansas State University, ASU-Beebe, ASU-Mountain Home, ASU-Newport, ASU Mid-South, ASU Three Rivers), each already present as its own record. Same pattern as Arizona Board of Regents / CSU Chancellor's Office.",
+      "sources": [
+        "https://www.asusystem.edu/"
+      ]
+    },
+    {
       "college": "Ascent College",
       "platform_type": "generic",
       "career_url": "https://ascent.edu/faculty/jobs",
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/faculty/jobs 404s, no careers/employment link discoverable from the homepage).",
       "sources": [
         "https://ascent.edu/"
+      ]
+    },
+    {
+      "college": "Atlantic Institute of Oriental Medicine",
+      "platform_type": "generic",
+      "career_url": "https://www.atom.edu/faculty/jobs",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.atom.edu/"
       ]
     },
     {
@@ -209,12 +253,39 @@
       ]
     },
     {
+      "college": "Bloomfield College of Montclair State University",
+      "platform_type": "generic",
+      "career_url": "https://www.bloomfield.edu/",
+      "reason": "Excluded (2026-08-06): absorbed into Montclair State University -- confirmed live, bloomfield.edu now redirects to montclair.edu/academics/schools-colleges/bloomfield-college. The primary \"Montclair State University\" record already covers it.",
+      "sources": [
+        "https://www.bloomfield.edu/"
+      ]
+    },
+    {
+      "college": "Bolivar Technical College",
+      "platform_type": "generic",
+      "career_url": "https://www.bolivarcollege.edu/",
+      "reason": "Excluded (2026-08-06): no institution-run careers page found after live investigation; only a generic site-search result page exists, not a real jobs board.",
+      "sources": [
+        "https://www.bolivarcollege.edu/"
+      ]
+    },
+    {
       "college": "Bristol Community College",
       "platform_type": "interviewexchange",
       "career_url": "https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp;jsessionid=3C23F471BF242A30472AA845F1FFDA86",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp"
+      ]
+    },
+    {
+      "college": "Cabarrus College of Health Sciences",
+      "platform_type": "generic",
+      "career_url": "https://cabarruscollege.edu/",
+      "reason": "Excluded (2026-08-06): the College's own employment page explicitly states hiring is \"managed through Atrium Health Cabarrus' Department of Human Resources\" -- an unscoped system-wide hospital job board, not a College-specific listing (same shape as the already-excluded Barnes-Jewish College Goldfarb School of Nursing).",
+      "sources": [
+        "https://cabarruscollege.edu/about-us/employment"
       ]
     },
     {
