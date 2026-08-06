@@ -6525,6 +6525,8 @@ async function scrapeMaPrivate(context) {
         if (type === "smith-interfolio") return await scrapeSmithInterfolioPage(url, campus, "MA");
         if (type === "academicjobsonline") return await scrapeAcademicJobsOnlineAs(context, url, campus, "MA");
         if (type === "peopleclick") return await scrapePeopleClickAs(context, url, campus, "MA");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MA");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "MA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MA");
         return [];
       } catch (e) {
@@ -6751,6 +6753,7 @@ async function scrapeCaPrivate(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CA Private");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CA Private");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "CA Private");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "CA Private");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CA Private");
         return [];
       } catch (e) {
@@ -7935,6 +7938,7 @@ if (type === "peopleadmin-dept") return await scrapePeopleAdminWithDept(context,
 if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NC");
 if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "NC");
 if (type === "duke-search") return await scrapeKeywordSearchJobsAs(context, url, campus, "NC", { queryParam: "q", pathPattern: "/job/" });
+if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NC");
 if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NC");
 
         return [];
@@ -8018,6 +8022,7 @@ async function scrapeDeAll(context) {
 if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "DE");
 if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "DE");
 if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "DE");
+if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "DE");
 if (type === "enusfilter") {
   const page = await context.newPage();
   try {
@@ -8052,6 +8057,7 @@ async function scrapeMdAll(context) {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "MD");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MD");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "MD");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MD");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MD");
         return [];
       } catch (e) {
@@ -8184,6 +8190,7 @@ async function scrapeMiAll(context) {
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "MI");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MI");
         if (type === "kzoo-faculty") return await scrapeKzooFacultyJobs(context, url, campus, "MI");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MI");
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -12856,6 +12863,7 @@ async function scrapeWyAll(context) {
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "WY");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "WY");
         if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "WY");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "WY");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "WY");
         return [];
       } catch (e) {
@@ -13086,6 +13094,7 @@ async function scrapeWiAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "WI");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "WI");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "WI");
+        if (type === "icims") return await scrapeIcimsAs(context, url, campus, "WI");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "WI");
         return [];
       } catch (e) {
@@ -13135,6 +13144,7 @@ async function scrapeCoAll(context) {
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "CO");
         if (type === "cu-boulder") return await scrapeCuBoulder(context, url, campus, "CO");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CO");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "CO");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CO");
         return [];
       } catch (e) {
@@ -13486,6 +13496,7 @@ async function scrapeAlAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "AL");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "AL");
         if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "AL");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "AL");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "AL");
         return [];
       } catch (e) {
@@ -13543,6 +13554,7 @@ async function scrapeArAll(context) {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "AR");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "AR");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "AR");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "AR");
         return [];
       } catch (e) {
@@ -13644,6 +13656,7 @@ async function scrapeTnAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "TN");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "TN");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "TN");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "TN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "TN");
         return [];
       } catch (e) {
@@ -13862,6 +13875,7 @@ async function scrapeTxAll(context) {
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "TX");
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "TX");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "TX");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "TX");
         if (type === "nau-search") {
           const base = await scrapeNauSearch(context, url, campus, "TX");
           return await enrichEnUsJobCardsFromDetails(context, base, {
