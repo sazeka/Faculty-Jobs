@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-06T19:22:39.913Z",
+  "generatedAt": "2026-08-06T23:52:19.188Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 78,
+  "count": 80,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -56,6 +56,8 @@
     "Cayuga County Community College",
     "Central Methodist University-College of Graduate and Extended Studies",
     "Charlotte Christian College and Theological Seminary",
+    "Cincinnati College of Mortuary Science",
+    "City Colleges of Chicago-District Office",
     "City University of Seattle",
     "Clark University",
     "Colorado State University-System Office",
@@ -541,6 +543,24 @@
       "reason": "Excluded (2026-08-06): no usable careers/employment page found after live investigation -- the homepage's own \"Career Path\" footer link is miswired to the privacy-policy page, and every guessed path 404s.",
       "sources": [
         "https://www.charlottechristian.edu/"
+      ]
+    },
+    {
+      "college": "Cincinnati College of Mortuary Science",
+      "platform_type": "generic",
+      "career_url": "https://www.ccms.edu/academics/faculty-jobs",
+      "reason": "Excluded (2026-08-06): the configured /academics/faculty-jobs path redirects to the generic Academics page (dead), and the institution's real \"Job Board\" only aggregates external funeral-home apprentice/licensee listings from other employers -- no discoverable CCMS-specific faculty hiring page exists.",
+      "sources": [
+        "https://www.ccms.edu/"
+      ]
+    },
+    {
+      "college": "City Colleges of Chicago-District Office",
+      "platform_type": "generic",
+      "career_url": "https://www.ccc.edu/",
+      "reason": "Excluded (2026-08-06): system governance/administrative office, not a degree-granting campus -- confirmed all 7 individual City Colleges of Chicago campuses (Harold Washington, Harry S Truman, Kennedy-King, Malcolm X, Olive-Harvey, Richard J Daley, Wilbur Wright) are already tracked separately with their own entries in server.js.",
+      "sources": [
+        "https://www.ccc.edu/"
       ]
     },
     {
