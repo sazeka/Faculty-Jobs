@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-06T11:27:28.447Z",
+  "generatedAt": "2026-08-06T11:30:01.320Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 41,
+  "count": 42,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -16,6 +16,7 @@
     "Appalachian Bible College",
     "Arizona Board of Regents",
     "Arizona State University Campus Immersion",
+    "Arizona State University Digital Immersion",
     "Arkansas Baptist College",
     "Ascent College",
     "Barnes-Jewish College Goldfarb School of Nursing",
@@ -138,6 +139,16 @@
       "platform_type": "generic",
       "career_url": "https://www.asu.edu/",
       "reason": "Excluded (2026-08-06): a duplicate IPEDS record for ASU's \"Campus Immersion\" delivery mode, not an independently-hiring entity -- ASU's own scraper entry (type \"asu-table\", scrapeAsuFacultyPositionsTable, pointed at facultypositions.asu.edu) already covers the university-wide faculty feed regardless of delivery mode. \"Campus Immersion\"/\"Digital Immersion\" are ASU's marketing terms for how a program is delivered, not separate HR/hiring units.",
+      "sources": [
+        "https://www.asu.edu/",
+        "https://facultypositions.asu.edu/"
+      ]
+    },
+    {
+      "college": "Arizona State University Digital Immersion",
+      "platform_type": "generic",
+      "career_url": "https://www.asu.edu/",
+      "reason": "Excluded (2026-08-06): same duplicate-delivery-mode pattern as Arizona State University Campus Immersion (see that entry) -- a duplicate IPEDS record for ASU's \"Digital Immersion\" delivery mode, not an independently-hiring entity. ASU's own scraper entry already covers the university-wide faculty feed regardless of delivery mode.",
       "sources": [
         "https://www.asu.edu/",
         "https://facultypositions.asu.edu/"
