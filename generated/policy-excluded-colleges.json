@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-06T17:58:17.928Z",
+  "generatedAt": "2026-08-06T19:22:39.913Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 76,
+  "count": 78,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -36,6 +36,7 @@
     "Be'er Yaakov Talmudic Seminary",
     "Bellarmine University",
     "Berry College",
+    "Beth Hamedrash Shaarei Yosher Institute",
     "Beth Medrash Govoha",
     "Bethany Global University",
     "Bethesda University",
@@ -63,6 +64,7 @@
     "CU Anschutz",
     "CU Denver",
     "Curry College",
+    "Delaware Technical Community College-Central Office",
     "Digital Media Institute",
     "Emmanuel College",
     "Fashion Institute of Technology",
@@ -361,6 +363,15 @@
       ]
     },
     {
+      "college": "Beth Hamedrash Shaarei Yosher Institute",
+      "platform_type": "generic",
+      "career_url": "https://bhsy.edu/faculty/jobs",
+      "reason": "Excluded (2026-08-06): tiny 4-page single-page site (Home/About/Net Price Calculator/Student Portal only) with no discoverable careers page after live investigation -- every guessed path renders the same homepage.",
+      "sources": [
+        "https://bhsy.edu/"
+      ]
+    },
+    {
       "college": "Beth Medrash Govoha",
       "platform_type": "generic",
       "career_url": "https://bmg.edu/",
@@ -604,6 +615,15 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://curry.interviewexchange.com/"
+      ]
+    },
+    {
+      "college": "Delaware Technical Community College-Central Office",
+      "platform_type": "generic",
+      "career_url": "https://www.dtcc.edu/about/employment",
+      "reason": "Excluded (2026-08-06): a sector-0 administrative-unit IPEDS record (unitid 130882), not an independently-hiring campus -- real coverage already lives under the separately-tracked \"Delaware Technical Community College\" record (peopleadmin, 4 current jobs, covered).",
+      "sources": [
+        "https://www.dtcc.edu/about/employment"
       ]
     },
     {
