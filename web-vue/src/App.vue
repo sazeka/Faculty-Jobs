@@ -563,13 +563,14 @@ onMounted(async () => {
                   · {{ excludedColleges.count }} institutions
                 </span>
               </div>
-              <p style="margin-bottom: 16px;">A small number of institutions use Oracle Taleo, whose terms of service explicitly prohibit automated data collection. Faculty Atlas respects these restrictions. Workday institutions are covered via Workday's public job-search JSON API rather than HTML scraping. Jobs from Oracle Taleo institutions will not appear in the catalog.</p>
+              <p style="margin-bottom: 16px;">A small number of institutions use Oracle Taleo, whose terms of service explicitly prohibit automated data collection. Faculty Atlas respects these restrictions. Workday institutions are covered via Workday's public job-search JSON API rather than HTML scraping. Jobs from Oracle Taleo institutions will not appear in the catalog. A separate group of institutions run on InterviewExchange, whose WAF returns a hard 403 to our scraper regardless of the request's origin — confirmed from a cloud server, a residential connection, and a commercial VPN alike — so those are excluded until that access issue is resolved. Hover any row below for the specific reason.</p>
 
               <div v-if="excludedColleges" class="fa-excluded-grid">
                 <div
                   v-for="item in excludedColleges.items"
                   :key="item.college"
                   class="fa-excluded-row"
+                  :title="item.reason"
                 >
                   <span class="fa-display" style="font-size: 15px; flex: 1;">{{ item.college }}</span>
                   <span class="fa-tag" style="cursor: default; font-size: 9px; flex-shrink: 0;">{{ item.platform_type }}</span>
