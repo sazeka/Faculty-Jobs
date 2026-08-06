@@ -1342,8 +1342,8 @@
       "name": "University of Puget Sound",
       "homepage_url": "https://www.pugetsound.edu/",
       "career_url": "https://www2.pugetsound.jobs/psc/HR92PRD/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U&FOCUS=Applicant&siteid=3",
-      "platform_type": "generic",
-      "notes": "Was pointing at the general HR employment-opportunities page, which only surfaced a single non-faculty iCIMS listing; routed to the PeopleSoft 'FACULTY POSITIONS' board linked from that same page. Verified live: 2 faculty postings (Visiting Assistant Professor - Biology; Affiliate Artist in Applied Oboe)."
+      "platform_type": "peoplesoft-hrs",
+      "notes": "Was pointing at the general HR employment-opportunities page, which only surfaced a single non-faculty iCIMS listing; routed to the PeopleSoft 'FACULTY POSITIONS' board linked from that same page. platform_type corrected from 'generic' to 'peoplesoft-hrs' (2026-08-06): this PeopleSoft HRS 'Explore Jobs' page renders titles as plain <span id=\"SCH_JOB_TITLE$N\"> with an onclick postback, no real <a href>, which the generic scraper can never extract regardless of URL -- same shape as Central Washington University. Verified live: raw extraction correctly finds the current single posting (Affiliate Artist in Applied Oboe, School of Music); 0 after the shared strict faculty-keyword title filter right now (no professor/lecturer/instructor/faculty/adjunct in the title), but a real Professor/Instructor/Lecturer posting will now be picked up correctly."
     },
     {
       "name": "Wright State University",
@@ -2405,9 +2405,9 @@
     {
       "name": "Embry-Riddle Aeronautical University-Daytona Beach",
       "homepage_url": "https://daytonabeach.erau.edu/",
-      "career_url": "https://careers.erau.edu/benefits",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (4 faculty postings)."
+      "career_url": "https://embryriddle.wd1.myworkdayjobs.com/External?locations=ac0092a9a0de019c86717943ff093d57",
+      "platform_type": "workday",
+      "notes": "Was pointing at the 'Benefits' info subpage of careers.erau.edu (not a listing page). Real ATS is the single Workday tenant shared across every ERAU campus (138 total openings, unscoped misattribution risk) -- its own 'locations' facet genuinely scopes to Daytona Beach specifically (id ac0092a9a0de019c86717943ff093d57, 81 of 138). Verified live: 15 real, Daytona-Beach-scoped faculty postings, each titled '..., Daytona Beach Campus'."
     },
     {
       "name": "Embry-Riddle Aeronautical University-Prescott",

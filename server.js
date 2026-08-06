@@ -1193,7 +1193,21 @@ const PA_PRIVATE_CAMPUSES = [
     type: "peopleadmin",
     url: "https://commonwealthu.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1846%5B%5D=2&435=&commit=Search",
   },
-  { campus: "Community College of Allegheny County", type: "generic", url: "https://www.ccac.edu/" },
+  // Was pointing at the bare homepage -- no /employment, /careers, /jobs, or
+  // /hr path exists (all 404). The "Working at CCAC" page links to
+  // ccacjobs.com, which redirects to this Cornerstone OnDemand (CSOD)
+  // tenant's "Faculty, Counselors, Librarians, and Educational Technicians"
+  // category (site=7), scoped separately from Staff/Adjunct-pool categories.
+  // PA dispatcher already has a "csod" case -- reused directly. Verified
+  // live (two fresh page loads): 8 real, current full-time faculty postings
+  // after the shared adjunct/temp filter (Instructor - Accounting, Instructor
+  // - Biology, Instructor - Nursing x3, Program Director and Instructor for
+  // Medical Laboratory Technician Program, etc.).
+  {
+    campus: "Community College of Allegheny County",
+    type: "csod",
+    url: "https://ccac.csod.com/ats/careersite/search.aspx?site=7&c=ccac",
+  },
   { campus: "Community College of Beaver County", type: "generic", url: "https://ccbc.edu/employment" },
   { campus: "Community College of Philadelphia", type: "generic", url: "https://www.ccp.edu/about-ccp/news-events/career-opportunities" },
   { campus: "Curtis Institute of Music", type: "generic", url: "https://www.curtis.edu/about/administration/work-at-curtis" },
@@ -1337,7 +1351,20 @@ const NC_CAMPUSES = [
   { campus: "Central Carolina Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/ccccedu" },
   { campus: "Central Piedmont Community College", type: "generic", url: "https://www.cpcc.edu/about-central-piedmont/administrative-offices/human-resources/employment-opportunities" },
   { campus: "Charlotte Christian College and Theological Seminary", type: "generic", url: "https://www.charlottechristian.edu/" },
-  { campus: "Chowan University", type: "generic", url: "https://www.chowan.edu/" },
+  // Was pointing at the bare homepage. Real page (about/offices/human-resources/)
+  // embeds a cross-origin Paycor iframe (recruitingbypaycor.com) with real
+  // current faculty postings ("Assistant Professor of Criminal Justice",
+  // "Assistant Professor of Sport Science") -- confirmed live by reading the
+  // iframe's own content directly (same platform/shape as Bethune-Cookman
+  // University and Cairn University-Langhorne). Unlike Bethune-Cookman's
+  // iframe, this one actively bounces a direct top-level navigation straight
+  // back to the parent wrapper page (same behavior as Ellsworth Community
+  // College's Paycor iframe, round 12) -- not even reachable by pointing the
+  // URL straight at the iframe's src. Documented, not patched (would require
+  // a new scraper that can read cross-origin iframe content, which no
+  // dispatch path here does) -- still a real improvement over the bare
+  // homepage even though the postings aren't extracted yet.
+  { campus: "Chowan University", type: "generic", url: "https://www.chowan.edu/about/offices/human-resources/" },
   { campus: "Cleveland Community College", type: "generic", url: "https://www.clevelandcc.edu/" },
   { campus: "Coastal Carolina Community College", type: "generic", url: "https://coastalcarolina.edu/about/employment-opportunities" },
   { campus: "College of the Albemarle", type: "schooljobs", url: "https://www.governmentjobs.com/careers/albemarleedu" },
@@ -1466,7 +1493,13 @@ const VA_CAMPUSES = [
     type: "peopleadmin",
     url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7889&query_position_type_id%5B%5D=9&commit=Search",
   },
-  { campus: "Bryant & Stratton College-Virginia Beach", type: "generic", url: "https://www.bryantstratton.edu/" },
+  // Same shared UltiPro/UKG board as sibling Bryant & Stratton campuses
+  // (Parma round 12, Wauwatosa round 12) -- "?q=virginia+beach" scopes to
+  // this campus (10 results, e.g. "Academic Advisor" in Hampton, VA, the
+  // Hampton Roads/Virginia Beach area). Same card-based-SPA-no-anchor
+  // limitation as the sibling campuses -- URL updated for correctness, not
+  // a working scraper fix.
+  { campus: "Bryant & Stratton College-Virginia Beach", type: "generic", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=virginia+beach&o=postedDateDesc" },
   {
     campus: "Central Virginia Community College",
     type: "peopleadmin",
@@ -1569,7 +1602,17 @@ const SC_CAMPUSES = [
   { campus: "Converse University", type: "generic", url: "https://converse.isolvedhire.com/jobs/" },
   { campus: "Denmark Technical College", type: "generic", url: "https://www.denmarktech.edu/" },
   { campus: "Erskine College", type: "generic", url: "https://www.erskine.edu/" },
-  { campus: "Florence-Darlington Technical College", type: "generic", url: "https://www.fdtc.edu/" },
+  // Was pointing at the bare homepage. The "Careers & Staff Directory" page's
+  // "Search Our Current Job Openings" accordion reveals a link to this
+  // institution-specific schooljobs.com (NEOGOV) board. SC dispatcher
+  // already has a "schooljobs" case -- reused directly. Verified live (two
+  // fresh page loads): 59 real postings, including "Adjunct Automotive
+  // Instructor" and "Adjunct Biology Instructor".
+  {
+    campus: "Florence-Darlington Technical College",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/fdtc",
+  },
   { campus: "Francis Marion University", type: "generic", url: "https://www.fmarion.edu/" },
 ];
 
@@ -2315,9 +2358,22 @@ const WA_CAMPUSES = [
     type: "pageup",
     url: "https://employment.gonzaga.edu/",
   },
+  // URL was already correct (real PeopleSoft HRS "Explore Jobs" results
+  // page), but type: "generic" only reads real <a href> job links -- this
+  // is the same PeopleSoft HRS shape as Central Washington University
+  // above (and UMN/UT System): titles render as plain
+  // <span id="SCH_JOB_TITLE$N"> with an onclick postback, no real href, so
+  // the old link-pattern scraper could never match anything here regardless
+  // of URL. Switched to the existing "peoplesoft-hrs" dispatch case.
+  // Verified live (two fresh page loads): the raw extraction correctly
+  // finds the current single posting ("Affiliate Artist in Applied Oboe",
+  // School of Music) -- genuinely 0 after the shared strict faculty-keyword
+  // filter (no professor/lecturer/instructor/faculty/adjunct in the title)
+  // right now, but the infrastructure is now correctly wired to pick up a
+  // real Professor/Instructor/Lecturer posting whenever one is listed.
   {
     campus: "University of Puget Sound",
-    type: "generic",
+    type: "peoplesoft-hrs",
     url: "https://www2.pugetsound.jobs/psc/HR92PRD/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U&FOCUS=Applicant&siteid=3",
   },
   {
@@ -2406,7 +2462,15 @@ const ME_CAMPUSES = [
   },
   { campus: "Maine Media College", type: "generic", url: "https://www.mainemedia.edu/life-at-mmwc/employment-opportunities" },
   { campus: "Central Maine Community College", type: "generic", url: "https://www.cmcc.edu/" },
-  { campus: "College of the Atlantic", type: "generic", url: "https://www.coa.edu/" },
+  // Was pointing at the bare homepage. Real page (human-resources/careers/)
+  // lists postings as WordPress accordion <button class="wp-block-accordion-
+  // heading__toggle">, not <a href> -- already correctly picked up by the
+  // shared generic scraper's existing accordion-fallback (matches its
+  // button[class*='accordion' i] selector) once pointed at the right page,
+  // no code change needed. Verified live (two fresh page loads): 3 real
+  // current faculty postings (Faculty Member in Agroecology, Faculty Member
+  // in Chemistry, Faculty Member in Field Ecology).
+  { campus: "College of the Atlantic", type: "generic", url: "https://www.coa.edu/human-resources/careers/" },
   { campus: "Eastern Maine Community College", type: "generic", url: "https://www.emcc.edu/discover-emcc/emcc/employment" },
   {
     campus: "University of New England",
@@ -2566,7 +2630,21 @@ const ND_CAMPUSES = [
   { campus: "Bismarck State College", type: "generic", url: "https://bismarckstate.edu/employment/JobOpenings/" },
   { campus: "Cankdeska Cikana Community College", type: "generic", url: "https://www.littlehoop.edu/" },
   { campus: "Dakota College at Bottineau", type: "generic", url: "https://www.dakotacollege.edu/explore-dcb/employment" },
-  { campus: "Dickinson State University", type: "generic", url: "https://dickinsonstate.edu/about/employment/open-positions/index.html" },
+  // Was pointing at the wrapper "Open Positions" page (contact info + tabs,
+  // no listing of its own). Its "All Others" tab links to this real,
+  // already-Dickinson-State-scoped table (backed by NDUS's shared PeopleSoft
+  // HRS system, same platform as Dakota College at Bottineau) with real
+  // per-row <a href> to NDUS job-detail pages -- 30 real current postings,
+  // including faculty titles ("Assistant Professor of Nursing", "Assistant
+  // Professor of Business", "Assistant Professor of Computer Science",
+  // "Theatre Adjunct Instructor/Club Advisor"). Documented, not patched:
+  // titles live in a plain <td> next to each row's generic "MORE INFO &
+  // APPLY" anchor, same "no heading to rescue from" shape found at Dakota
+  // College at Bottineau (round 12) -- the shared generic scraper's
+  // CTA-rescue only looks for a heading/accordion-toggle element, never a
+  // sibling table cell. URL updated anyway for correctness/specificity over
+  // the old wrapper page.
+  { campus: "Dickinson State University", type: "generic", url: "http://www2.dsu.nodak.edu/jobopenings/regular.aspx" },
 ];
 
 // SD (South Dakota)
@@ -2752,7 +2830,23 @@ const MT_CAMPUSES = [
   { campus: "Blackfeet Community College", type: "generic", url: "https://bfcc.edu/About/employment" },
   { campus: "Chief Dull Knife College", type: "generic", url: "https://www.cdkc.edu/faculty-staff/employment" },
   { campus: "Dawson Community College", type: "generic", url: "https://www.dawson.edu/" },
-  { campus: "Flathead Valley Community College", type: "generic", url: "https://www.fvcc.edu/" },
+  // Was pointing at the bare homepage. The "Careers at FVCC" page's "View
+  // Faculty & Staff Job Openings" link goes to this institution-specific
+  // Paycom tenant. Not left as "generic": same Paycom-SPA truncated-title
+  // shape as Brazosport College (TX) / Copiah-Lincoln Community College (MS)
+  // / Cowley County Community College (KS) -- the shared generic scraper's
+  // inline extraction rejects every card and its ATS-handoff fallback grabs
+  // a single job's detail URL instead of the listing root. Calling
+  // scrapePaycomAs directly avoids both. MT dispatcher had no "paycom" case
+  // yet -- added above. Verified live (two fresh page loads): 9 real
+  // postings after the shared adjunct/part-time filter, including "Adjunct
+  // Instructor, Culinary" and "Adjunct Instructor, Clinical Skills
+  // Instructor, Medical Assisting".
+  {
+    campus: "Flathead Valley Community College",
+    type: "paycom",
+    url: "https://www.paycomonline.net/v4/ats/web.php/portal/23D9610C7FF62DF6DF80223B0B1ED6E3/career-page",
+  },
   { campus: "Fort Peck Community College", type: "generic", url: "https://www.fpcc.edu/" },
 ];
 
@@ -2907,7 +3001,24 @@ const CO_CAMPUSES = [
   { campus: "Colorado State University Pueblo", type: "generic", url: "https://www.csupueblo.edu/human-resources/employment/current-opportunities.html" },
   { campus: "Colorado State University-Fort Collins", type: "generic", url: "https://hr.colostate.edu/prospective-employees" },
   { campus: "Colorado State University-System Office", type: "generic", url: "https://csusystem.edu/jobs" },
-  { campus: "Community College of Aurora", type: "generic", url: "https://www.ccaurora.edu/" },
+  // Was pointing at the bare homepage. The "Careers at CCA" page's "Staff and
+  // Faculty Careers at CCA" link hands off to CCCS's (Colorado Community
+  // College System, all 13 system colleges) shared PageUp board -- unscoped
+  // by default (every CO city listed as a facet). Its own "Campus" dropdown
+  // facet genuinely scopes to CCA's own "CentreTech Campus" (facet uid
+  // 65e8dd318abe77b929bb1e7392bda66a), confirmed by reading the results
+  // table directly: every row explicitly tagged "Campus: CentreTech Campus".
+  // (The separate "CCA State Classified Positions" governmentjobs.com link
+  // is a different, non-academic state-classified-staff board -- 0 faculty
+  // titles -- so not used here.) CO dispatcher already has a "pageup" case
+  // -- reused directly. Verified live (two fresh runs of the real dispatch
+  // path): 3 real, CentreTech-Campus-scoped postings, incl. "Nursing Faculty
+  // 9-Month" and "Criminal Justice Instructor".
+  {
+    campus: "Community College of Aurora",
+    type: "pageup",
+    url: "https://hr.cccs.edu/jobs/search/cc-of-aurora-search-page?dropdown_field_2_uids%5B%5D=65e8dd318abe77b929bb1e7392bda66a",
+  },
   { campus: "Community College of Denver", type: "schooljobs", url: "https://www.schooljobs.com/careers/ccd" },
   { campus: "Denver Seminary", type: "generic", url: "https://www.denverseminary.edu/" },
   { campus: "Fort Lewis College", type: "generic", url: "https://www.fortlewis.edu/administrative-offices/human-resources/careers" },
@@ -3249,7 +3360,10 @@ const MI_CAMPUSES = [
   // Professor of American Political Thought, Government, and History,
   // Dean-School of Education & Human Services).
   { campus: "Cornerstone University", type: "generic", url: "https://www.cornerstone.edu/about/employment/employment-applications/" },
-  { campus: "Cranbrook Academy of Art", type: "generic", url: "https://cranbrookart.edu/" },
+  // Was pointing at the bare homepage; real employment page linked from nav.
+  // Verified live: real infrastructure but "There are no open positions at
+  // this time" -- 0 current openings, not a coverage bug.
+  { campus: "Cranbrook Academy of Art", type: "generic", url: "https://cranbrookart.edu/employment-opportunities/" },
   { campus: "Davenport University", type: "csod", url: "https://davenport.csod.com/ux/ats/careersite/15/home/requisition/2850?c=davenport" },
   { campus: "Delta College", type: "schooljobs", url: "https://www.schooljobs.com/careers/deltacollege/faculty" },
   { campus: "Ecumenical Theological Seminary", type: "generic", url: "https://www.etseminary.edu/faculty/jobs" },
@@ -3401,7 +3515,19 @@ const IL_CAMPUSES = [
   { campus: "Bradley University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=df6f93d4-2277-4999-ac63-88a55668ffd3&ccId=9200110706773_2&type=JS&lang=en_US" },
   { campus: "Carl Sandburg College", type: "generic", url: "https://www.sandburg.edu/about/administration/employment-human-resources.html" },
   { campus: "Catholic Theological Union at Chicago", type: "generic", url: "https://ctu.edu/jobs" },
-  { campus: "Chicago Theological Seminary", type: "generic", url: "https://www.ctschicago.edu/" },
+  // Was pointing at the bare homepage -- no self-hosted careers/employment
+  // page exists anywhere on ctschicago.edu (confirmed: /employment,
+  // /careers, /jobs, and several /about/* variants all 404; the WordPress
+  // sitemap's own "jobs" custom-post-type feed is a community job board CTS
+  // runs for outside churches/ministries seeking pastors, not CTS's own
+  // hiring -- "Senior Minister", "Pastor", "Chaplain" postings for other
+  // congregations, last updated 2024). Real (if currently empty) listing
+  // lives on HigherEdJobs (same University= convention already used for
+  // Edward Waters University / American Academy of Dramatic Arts above).
+  // Verified live: real infrastructure ("Chicago Theological Seminary"
+  // search criteria correctly applied) but "No matching positions found" --
+  // 0 current openings, not a coverage bug.
+  { campus: "Chicago Theological Seminary", type: "generic", url: "https://www.higheredjobs.com/institution/search.cfm?University=Chicago+Theological+Seminary&suggest=3" },
   { campus: "City Colleges of Chicago-District Office", type: "generic", url: "https://www.ccc.edu/" },
   { campus: "College of DuPage", type: "csod", url: "https://cod.csod.com/ux/ats/careersite/4/home?c=cod" },
   { campus: "College of Lake County", type: "generic", url: "https://www.clcillinois.edu/" },
@@ -3711,7 +3837,27 @@ const TX_CAMPUSES = [
   { campus: "Baptist University of the Americas", type: "generic", url: "https://www.bua.edu/about/employment-opportunities" },
   { campus: "Baylor College of Medicine", type: "generic", url: "https://www.bcm.edu/" },
   { campus: "Blinn College District", type: "generic", url: "https://www.blinn.edu/" },
-  { campus: "Brazosport College", type: "generic", url: "https://www.brazosport.edu/" },
+  // Was pointing at the bare homepage. Homepage links to "Employment
+  // Opportunities" (employment.brazosport.edu), which redirects to this
+  // institution-specific Paycom tenant. Not left as "generic": the Paycom
+  // SPA's job cards mash the title + employment-type + full description
+  // into one anchor's textContent ending in "..." (a truncated blurb), which
+  // trips the shared generic scraper's truncated-title rejection on every
+  // single card; the ATS-handoff fallback that kicks in afterward has no
+  // paycom-specific URL normalizer (unlike workday's), so it hands off to
+  // whichever single job's *detail* URL it grabbed first instead of the
+  // listing root, and scrapePaycomAs then finds 0 postings on that one-job
+  // page. Calling scrapePaycomAs directly against the listing URL avoids
+  // both problems (it has its own smarter title-splitting logic). TX
+  // dispatcher had no "paycom" case yet -- added below. Verified live (two
+  // fresh page loads): 9 real postings after the shared adjunct/part-time
+  // filter, including "ADN FACULTY" (full-time) and "FFACULTY - INDUSTRIAL &
+  // COMMERCIAL CONSTRUCTION MANAGEMENT FACULTY" (full-time).
+  {
+    campus: "Brazosport College",
+    type: "paycom",
+    url: "https://www.paycomonline.net/v4/ats/web.php/portal/C3B2B056DC3ED5A1D17132585A7FF495/career-page",
+  },
   { campus: "Brite Divinity School", type: "generic", url: "https://www.brite.edu/" },
   { campus: "Central Texas College", type: "generic", url: "https://www.ctcd.edu/" },
   { campus: "Christ Mission College", type: "generic", url: "https://cmctx.edu/" },
@@ -3869,7 +4015,27 @@ const FL_CAMPUSES = [
   // Computer Science Instructor, Aerospace Technology Instructor, etc.).
   { campus: "Eastern Florida State College", type: "generic", url: "https://webapps.easternflorida.edu/hr/employment-opportunities.cfm" },
   { campus: "Edward Waters University", type: "generic", url: "https://www.higheredjobs.com/institution/search.cfm?University=Edward%20Waters%20University&suggest=3" },
-  { campus: "Embry-Riddle Aeronautical University-Daytona Beach", type: "generic", url: "https://careers.erau.edu/benefits" },
+  // Was pointing at the "Benefits" info subpage of careers.erau.edu (not a
+  // listing page at all). The real ATS is a single Workday tenant
+  // (embryriddle.wd1.myworkdayjobs.com/External) shared across every ERAU
+  // campus (Daytona Beach, Prescott, Worldwide, plus assorted global
+  // detachments) -- 138 total openings, an unscoped misattribution risk if
+  // pointed at directly. Its own API supports a real "locations" facet,
+  // confirmed via the /wday/cxs/.../jobs POST response's facet list
+  // ("Daytona Beach, FL" = id ac0092a9a0de019c86717943ff093d57, 81 of the
+  // 138). scrapeWorkdayAs (already dispatched by FL) parses facets straight
+  // out of the URL's query string via scrapeWorkdayApi, so a bare
+  // "?locations=<id>" query param is enough -- no new scraper code needed.
+  // Verified live (two fresh runs of the real dispatch path): 15 real,
+  // Daytona-Beach-scoped faculty postings (e.g. "Tenure Track Assistant/
+  // Associate Professor of Mechanical Engineering, Daytona Beach Campus",
+  // "Assistant Professor and Director of Flight Operations, Daytona Beach
+  // Campus"), every title explicitly tagged "Daytona Beach Campus".
+  {
+    campus: "Embry-Riddle Aeronautical University-Daytona Beach",
+    type: "workday",
+    url: "https://embryriddle.wd1.myworkdayjobs.com/External?locations=ac0092a9a0de019c86717943ff093d57",
+  },
   { campus: "Embry-Riddle Aeronautical University-Worldwide", type: "generic", url: "https://worldwide.erau.edu/" },
   { campus: "Everglades University", type: "generic", url: "https://www.evergladesuniversity.edu/faculty-employment" },
   { campus: "Flagler College", type: "generic", url: "https://www.flagler.edu/" },
@@ -4029,7 +4195,24 @@ const MS_CAMPUSES = [
   { campus: "Blue Mountain Christian University", type: "generic", url: "https://www.bmc.edu/jobs-at-bmcu" },
   { campus: "Board of Trustees-Mississippi State Institutions of Higher Learning", type: "generic", url: "https://www.mississippi.edu/" },
   { campus: "Coahoma Community College", type: "generic", url: "https://www.coahomacc.edu/" },
-  { campus: "Copiah-Lincoln Community College", type: "generic", url: "https://www.colin.edu/employees-jobs/human-resources" },
+  // Was pointing at the HR contact-info page (no listings of its own). The
+  // parent "Employees/Jobs" page's "Jobs/Employment" link goes to this
+  // institution-specific Paycom tenant. Not left as "generic": same shape as
+  // Brazosport College (TX) -- the Paycom SPA's job-card anchors mash title +
+  // employment-type + truncated description into one textContent ending in
+  // "...", which trips the shared generic scraper's truncated-title
+  // rejection on every card, and the ATS-handoff fallback that follows has
+  // no paycom URL normalizer so it grabs a single job's detail URL instead
+  // of the listing root. Calling scrapePaycomAs directly avoids both. MS
+  // dispatcher had no "paycom" case yet -- added above. Verified live (two
+  // fresh page loads): 10 real postings after the shared adjunct/part-time
+  // filter, including "Career and Technical Education LPN Instructor Pool -
+  // Adjunct" and two "Workforce Plumbing Instructor" postings.
+  {
+    campus: "Copiah-Lincoln Community College",
+    type: "paycom",
+    url: "https://www.paycomonline.net/v4/ats/web.php/portal/1F33F8BBDC686BCE369D823D8B8EF3B4/career-page",
+  },
   { campus: "East Central Community College", type: "generic", url: "https://www.eccc.edu/" },
   { campus: "East Mississippi Community College", type: "generic", url: "https://www.eastms.edu/about/employment" },
 ];
@@ -4124,7 +4307,22 @@ const KS_CAMPUSES = [
   // "generic"). Verified live (two fresh page loads): real faculty postings
   // (Adjunct Faculty - Generic, Clinical Nursing Instructor - Adjunct).
   { campus: "Colby Community College", type: "generic", url: "https://colbycc.apscareerportal.com/jobs?locale=en-US" },
-  { campus: "Cowley County Community College", type: "generic", url: "https://www.cowley.edu/" },
+  // Was pointing at the bare homepage. The "Work at Cowley" page's "Cowley
+  // Job Listings" button goes to this institution-specific Paycom tenant.
+  // Not left as "generic": same Paycom-SPA truncated-title shape as
+  // Brazosport College (TX) / Copiah-Lincoln Community College (MS) -- the
+  // shared generic scraper's inline extraction rejects every card and its
+  // ATS-handoff fallback grabs a single job's detail URL instead of the
+  // listing root. Calling scrapePaycomAs directly avoids both. KS
+  // dispatcher had no "paycom" case yet -- added above. Verified live (two
+  // fresh page loads): 8 real postings after the shared adjunct/part-time
+  // filter, including "Wind Energy Technology Instructor (Adjunct)" and four
+  // department-specific Adjunct pool postings.
+  {
+    campus: "Cowley County Community College",
+    type: "paycom",
+    url: "https://www.paycomonline.net/v4/ats/web.php/portal/D735C44B01F6404D0C91B262228D396A/career-page",
+  },
   { campus: "Dodge City Community College", type: "generic", url: "https://dc3.edu/employment-page" },
   { campus: "Donnelly College", type: "generic", url: "https://www.donnelly.edu/staff/careers" },
   { campus: "Emporia State University", type: "generic", url: "https://www.emporia.edu/" },
@@ -4163,7 +4361,14 @@ const OK_CAMPUSES = [
   { campus: "College of the Muscogee Nation", type: "generic", url: "https://cmn.edu/" },
   { campus: "Community Care College", type: "generic", url: "https://www.communitycarecollege.edu/" },
   { campus: "Connors State College", type: "generic", url: "https://jobs.okstate.edu/connors-state-college-home" },
-  { campus: "East Central University", type: "generic", url: "https://www.ecok.edu/" },
+  // Was pointing at the bare homepage. The "Job Opportunities" HR page hands
+  // off to this institution-specific BambooHR board (same platform already
+  // used verbatim by Bay Mills Community College). Already correctly
+  // extracted by the shared generic scraper once pointed at the right page,
+  // no code change needed. Verified live (two fresh page loads): 2 real
+  // current faculty postings (Adjunct Instructors - College of Liberal Arts
+  // and Social Sciences; Instructor of Geographic Information Systems).
+  { campus: "East Central University", type: "generic", url: "https://ecokedu.bamboohr.com/careers" },
   { campus: "Eastern Oklahoma State College", type: "generic", url: "https://www.eosc.edu/about/human-resources/employment-opportunities" },
   { campus: "Family of Faith Christian University", type: "generic", url: "https://www.familyoffaith.edu/" },
 ];
@@ -13643,6 +13848,10 @@ async function scrapeMtAll(context) {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MT");
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "MT");
+        // No existing MT dispatch case for "paycom" (function scrapePaycomAs
+        // already exists and is dispatched by MA/ME/NY/TX/MS/KS) -- added
+        // for Flathead Valley Community College.
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "MT");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MT");
         return [];
       } catch (e) {
@@ -14044,6 +14253,10 @@ async function scrapeMsAll(context) {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MS");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MS");
+        // No existing MS dispatch case for "paycom" (function scrapePaycomAs
+        // already exists and is dispatched by MA/ME/NY/TX) -- added for
+        // Copiah-Lincoln Community College.
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "MS");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MS");
         return [];
       } catch (e) {
@@ -14104,6 +14317,10 @@ async function scrapeKsAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "KS");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "KS");
         if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "KS");
+        // No existing KS dispatch case for "paycom" (function scrapePaycomAs
+        // already exists and is dispatched by MA/ME/NY/TX/MS) -- added for
+        // Cowley County Community College.
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "KS");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "KS");
         return [];
       } catch (e) {
@@ -14410,6 +14627,10 @@ async function scrapeTxAll(context) {
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "TX");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "TX");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "TX");
+        // No existing TX dispatch case for "paycom" (function scrapePaycomAs
+        // already exists and is dispatched by MA/ME/NY) -- added for
+        // Brazosport College.
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "TX");
         if (type === "nau-search") {
           const base = await scrapeNauSearch(context, url, campus, "TX");
           return await enrichEnUsJobCardsFromDetails(context, base, {
