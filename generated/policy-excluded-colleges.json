@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-06T12:20:16.564Z",
+  "generatedAt": "2026-08-06T13:32:12.972Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 49,
+  "count": 52,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -23,6 +23,7 @@
     "Arkansas State University System",
     "Ascent College",
     "Atlantic Institute of Oriental Medicine",
+    "Baptist University of Florida",
     "Barnes-Jewish College Goldfarb School of Nursing",
     "Bellarmine University",
     "Berry College",
@@ -30,12 +31,14 @@
     "Bloomfield College of Montclair State University",
     "Bolivar Technical College",
     "Bristol Community College",
+    "Byzantine Catholic Seminary of Saints Cyril and Methodius",
     "Cabarrus College of Health Sciences",
     "California Institute of Integral Studies",
     "California Institute of Technology",
     "Cape Cod Community College",
     "Cayuga County Community College",
     "Clark University",
+    "Community Christian College",
     "CU Anschutz",
     "CU Denver",
     "Curry College",
@@ -217,6 +220,15 @@
       ]
     },
     {
+      "college": "Baptist University of Florida",
+      "platform_type": "generic",
+      "career_url": "https://www.buf.edu/",
+      "reason": "Excluded (2026-08-06): no self-hosted careers page anywhere in site nav after live investigation; /jobs is an unrelated church-ministry placement board (a Softr app), and the legacy Jenzabar employee portal (mybcf.baptistcollege.edu) times out (dead).",
+      "sources": [
+        "https://www.buf.edu/"
+      ]
+    },
+    {
       "college": "Barnes-Jewish College Goldfarb School of Nursing",
       "platform_type": "generic",
       "career_url": "https://www.barnesjewishcollege.edu/resources/nursing-careers",
@@ -280,6 +292,15 @@
       ]
     },
     {
+      "college": "Byzantine Catholic Seminary of Saints Cyril and Methodius",
+      "platform_type": "generic",
+      "career_url": "https://www.bcs.edu/",
+      "reason": "Excluded (2026-08-06): no employment/careers/jobs link anywhere in the site nav after live investigation, confirmed via web search too.",
+      "sources": [
+        "https://www.bcs.edu/"
+      ]
+    },
+    {
       "college": "Cabarrus College of Health Sciences",
       "platform_type": "generic",
       "career_url": "https://cabarruscollege.edu/",
@@ -332,6 +353,15 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://clarku.interviewexchange.com/static/clients/569CUM1/index.jsp"
+      ]
+    },
+    {
+      "college": "Community Christian College",
+      "platform_type": "generic",
+      "career_url": "https://www.cccollege.edu/",
+      "reason": "Excluded (2026-08-06): no employment/careers link anywhere on the site after live investigation (small sports-focused Bible college; only a student-employment page exists), confirmed via web search too.",
+      "sources": [
+        "https://www.cccollege.edu/"
       ]
     },
     {
