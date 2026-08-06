@@ -2186,7 +2186,12 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Binghamton University", type: "generic", url: "https://www.binghamton.edu/" },
   { campus: "Boricua College", type: "generic", url: "https://www.boricuacollege.edu/careers" },
   { campus: "Brooklyn Law School", type: "generic", url: "https://www.brooklaw.edu/" },
-  { campus: "Bryant & Stratton College-Albany", type: "generic", url: "https://www.bryantstratton.edu/" },
+  // Same shared UltiPro/UKG board as sibling Bryant & Stratton campuses
+  // (Parma/Wauwatosa round 12, Virginia Beach round 13) -- "?q=albany"
+  // scopes to this campus. Same card-based-SPA-no-anchor limitation as the
+  // sibling campuses -- URL updated for correctness, not a working scraper
+  // fix.
+  { campus: "Bryant & Stratton College-Albany", type: "generic", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=albany&o=postedDateDesc" },
   { campus: "Bryant & Stratton College-Buffalo", type: "generic", url: "https://www.bryantstratton.edu/" },
   { campus: "Bryant & Stratton College-Greece", type: "generic", url: "https://www.bryantstratton.edu/" },
   { campus: "Bryant & Stratton College-Online", type: "generic", url: "https://www.bryantstratton.edu/" },
