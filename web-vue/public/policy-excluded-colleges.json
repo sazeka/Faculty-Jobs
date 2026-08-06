@@ -1,13 +1,22 @@
 {
-  "generatedAt": "2026-08-06T02:04:29.261Z",
+  "generatedAt": "2026-08-06T03:00:53.681Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 27,
+  "count": 36,
   "colleges": [
+    "Academy for Jewish Religion California",
     "Adelphi University",
+    "Agora University",
+    "Aiken Technical College",
+    "Allegheny Wesleyan College",
+    "Anna Maria College",
+    "Appalachian Bible College",
+    "Arkansas Baptist College",
     "Bellarmine University",
+    "Berry College",
+    "Beth Medrash Govoha",
     "Bristol Community College",
     "California Institute of Integral Studies",
     "California Institute of Technology",
@@ -36,6 +45,15 @@
   ],
   "items": [
     {
+      "college": "Academy for Jewish Religion California",
+      "platform_type": "generic",
+      "career_url": "https://www.ajrca.edu/faculty/jobs",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (checked homepage, /faculty/jobs, /careers, /employment -- all 404 or absent from nav).",
+      "sources": [
+        "https://www.ajrca.edu/"
+      ]
+    },
+    {
       "college": "Adelphi University",
       "platform_type": "taleo",
       "career_url": "https://phf.tbe.taleo.net/phf02/ats/careers/v2/searchResults?org=ADELPHI&cws=43",
@@ -46,12 +64,86 @@
       ]
     },
     {
+      "college": "Agora University",
+      "platform_type": "generic",
+      "career_url": "https://www.agora.edu/",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation; small online-only institution with no discoverable HR presence.",
+      "sources": [
+        "https://www.agora.edu/"
+      ]
+    },
+    {
+      "college": "Aiken Technical College",
+      "platform_type": "generic",
+      "career_url": "https://www.atc.edu/",
+      "reason": "Excluded (2026-08-06): no institution-run careers page found after live investigation; the only jobs-related link on the site is \"College Central Network,\" a third-party student job board, not the college's own hiring page.",
+      "sources": [
+        "https://www.atc.edu/"
+      ]
+    },
+    {
+      "college": "Allegheny Wesleyan College",
+      "platform_type": "generic",
+      "career_url": "https://awc.edu/faculty/jobs",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (full footer nav has no HR/Careers link).",
+      "sources": [
+        "https://awc.edu/"
+      ]
+    },
+    {
+      "college": "Anna Maria College",
+      "platform_type": "generic",
+      "career_url": "https://www.annamaria.edu/",
+      "reason": "Excluded (2026-08-06): institution ceased academic operations at the end of the Spring 2026 semester and filed for Chapter 11 bankruptcy (board vote authorizing the filing on 2026-05-08), citing multi-year enrollment declines. No longer hiring.",
+      "sources": [
+        "https://www.insidehighered.com/news/quick-takes/2026/04/23/anna-maria-college-announces-closure",
+        "https://www.nbcboston.com/news/local/anna-maria-college-closing-at-end-of-this-semester/3938857/",
+        "https://wbjournal.com/article/anna-maria-files-for-bankruptcy-blames-closure-on-falling-enrollment/"
+      ]
+    },
+    {
+      "college": "Appalachian Bible College",
+      "platform_type": "generic",
+      "career_url": "https://abc.edu/",
+      "reason": "Excluded (2026-08-06): no HR/employment page found after live investigation -- only a student-employment page exists, no faculty/staff hiring page.",
+      "sources": [
+        "https://abc.edu/"
+      ]
+    },
+    {
+      "college": "Arkansas Baptist College",
+      "platform_type": "generic",
+      "career_url": "https://www.arkansasbaptist.edu/",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (Resources and Administration sections checked, no HR/jobs link).",
+      "sources": [
+        "https://www.arkansasbaptist.edu/"
+      ]
+    },
+    {
       "college": "Bellarmine University",
       "platform_type": "interviewexchange",
       "career_url": "https://bellarmine.interviewexchange.com/static/clients/459BMM1/index.jsp",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://bellarmine.interviewexchange.com/static/clients/459BMM1/index.jsp"
+      ]
+    },
+    {
+      "college": "Berry College",
+      "platform_type": "generic",
+      "career_url": "https://www.berry.edu/faculty/jobs",
+      "reason": "Excluded (2026-08-06): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node -- not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp"
+      ]
+    },
+    {
+      "college": "Beth Medrash Govoha",
+      "platform_type": "generic",
+      "career_url": "https://bmg.edu/",
+      "reason": "Excluded (2026-08-06): no employment/about page found anywhere on the institution's minimal site after live investigation.",
+      "sources": [
+        "https://bmg.edu/"
       ]
     },
     {

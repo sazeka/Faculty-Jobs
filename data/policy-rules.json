@@ -444,6 +444,71 @@
       "sources": [
         "https://wiu.interviewexchange.com/static/clients/467WIM1/index.jsp"
       ]
+    },
+    "Berry College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node -- not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp"
+      ]
+    },
+    "Anna Maria College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): institution ceased academic operations at the end of the Spring 2026 semester and filed for Chapter 11 bankruptcy (board vote authorizing the filing on 2026-05-08), citing multi-year enrollment declines. No longer hiring.",
+      "sources": [
+        "https://www.insidehighered.com/news/quick-takes/2026/04/23/anna-maria-college-announces-closure",
+        "https://www.nbcboston.com/news/local/anna-maria-college-closing-at-end-of-this-semester/3938857/",
+        "https://wbjournal.com/article/anna-maria-files-for-bankruptcy-blames-closure-on-falling-enrollment/"
+      ]
+    },
+    "Academy for Jewish Religion California": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (checked homepage, /faculty/jobs, /careers, /employment -- all 404 or absent from nav).",
+      "sources": [
+        "https://www.ajrca.edu/"
+      ]
+    },
+    "Allegheny Wesleyan College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (full footer nav has no HR/Careers link).",
+      "sources": [
+        "https://awc.edu/"
+      ]
+    },
+    "Agora University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation; small online-only institution with no discoverable HR presence.",
+      "sources": [
+        "https://www.agora.edu/"
+      ]
+    },
+    "Arkansas Baptist College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (Resources and Administration sections checked, no HR/jobs link).",
+      "sources": [
+        "https://www.arkansasbaptist.edu/"
+      ]
+    },
+    "Appalachian Bible College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no HR/employment page found after live investigation -- only a student-employment page exists, no faculty/staff hiring page.",
+      "sources": [
+        "https://abc.edu/"
+      ]
+    },
+    "Aiken Technical College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no institution-run careers page found after live investigation; the only jobs-related link on the site is \"College Central Network,\" a third-party student job board, not the college's own hiring page.",
+      "sources": [
+        "https://www.atc.edu/"
+      ]
+    },
+    "Beth Medrash Govoha": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no employment/about page found anywhere on the institution's minimal site after live investigation.",
+      "sources": [
+        "https://bmg.edu/"
+      ]
     }
   }
 }
