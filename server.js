@@ -1421,7 +1421,14 @@ const VA_CAMPUSES = [
   // as Capital Health School of Radiologic Technology (round 9): that board
   // covers the whole hospital system, not just this college.
   { campus: "Bon Secours Memorial College of Nursing", type: "generic", url: "https://www.bsmcon.edu/employment-opportunities" },
-  { campus: "Bon Secours St Mary's Hospital School of Medical Imaging", type: "generic", url: "https://smhsomi.edu/" },
+  // Was pointing at the bare homepage. Real page is /employment-opportunities,
+  // same shared shape as sister institution Bon Secours Memorial College of
+  // Nursing (round 5): lists real per-institution openings when they exist,
+  // currently "SOMI does not have any current employment opportunities at
+  // this time" (genuinely 0). The page also links to "Careers at Bon
+  // Secours" for system-wide Bon Secours health-system openings --
+  // deliberately NOT wired, same misattribution-risk shape as BSMCON.
+  { campus: "Bon Secours St Mary's Hospital School of Medical Imaging", type: "generic", url: "https://www.smhsomi.edu/employment-opportunities" },
   { campus: "Bridgewater College", type: "generic", url: "https://www.bridgewater.edu/careers" },
   { campus: "Brightpoint Community College", type: "generic", url: "https://www.brightpoint.edu/index.php/about/employment-opportunities" },
   { campus: "Bryant & Stratton College-Virginia Beach", type: "generic", url: "https://www.bryantstratton.edu/" },
@@ -1517,7 +1524,14 @@ const SC_CAMPUSES = [
   // ATS host not in ATS_HANDOFF_PATTERNS — point directly at it instead.
   { campus: "Coker University", type: "generic", url: "https://coker.isolvedhire.com/iframe/mobile/" },
   { campus: "Columbia International University", type: "generic", url: "https://ciu.edu/about/employment" },
-  { campus: "Converse University", type: "generic", url: "https://www.converse.edu/careers/faculty" },
+  // Configured URL (/careers/faculty) is actually a WordPress "Faculty"
+  // blog/news archive, not a jobs page. Real ATS is an institution-specific
+  // isolvedhire.com tenant, linked from the homepage as "Employment
+  // Opportunities". Verified live (two fresh page loads): real faculty
+  // postings (Adjunct Instructor in Interior Design, Adjunct Instructor of
+  // 3D/Sculpture, Adjunct Instructor of Statistics, Assistant Professor of
+  // Accounting).
+  { campus: "Converse University", type: "generic", url: "https://converse.isolvedhire.com/jobs/" },
   { campus: "Denmark Technical College", type: "generic", url: "https://www.denmarktech.edu/" },
   { campus: "Erskine College", type: "generic", url: "https://www.erskine.edu/" },
   { campus: "Florence-Darlington Technical College", type: "generic", url: "https://www.fdtc.edu/" },
@@ -2184,7 +2198,17 @@ const OR_CAMPUSES = [
   { campus: "Pacific Northwest College of Art", type: "workday", url: "https://willamette.wd501.myworkdayjobs.com/WillametteUniversityJobs" },
   { campus: "Mount Angel Seminary", type: "generic", url: "https://www.mountangelabbey.org/seminary" },
   { campus: "Blue Mountain Community College", type: "generic", url: "https://www.bluecc.edu/" },
-  { campus: "Bushnell University", type: "generic", url: "https://www.bushnell.edu/careers" },
+  // The /careers page's "Open Positions" button is a Divi text module (no
+  // real href) that JS-navigates to this Paycor recruiting portal -- a full
+  // top-level page (not a cross-origin iframe, unlike the Bethune-Cookman/
+  // Cairn Paycor cases), so plain generic DOM scraping works fine once
+  // pointed here directly. Verified live (two fresh page loads): real
+  // faculty postings (Adjunct Arts & Sciences Faculty Pool, Adjunct Nursing
+  // Faculty, Full-time Nursing Faculty (Accelerated Baccalaureate),
+  // Professor of CMHC/CMHC Director/CACREP Liaison, Adjunct Counseling
+  // Faculty Pool, Adjunct School of Business Leadership & Technology
+  // Faculty).
+  { campus: "Bushnell University", type: "generic", url: "https://recruitingbypaycor.com/career/CareerHome.action?clientId=8a7883d0821e1a630182266519e502b6" },
   { campus: "Central Oregon Community College", type: "generic", url: "https://www.cocc.edu/" },
   { campus: "Chemeketa Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/chemeketacc" },
   { campus: "Clackamas Community College", type: "generic", url: "https://www.clackamas.edu/faculty/jobs" },
@@ -2308,7 +2332,12 @@ const WA_CAMPUSES = [
   // dispatched for many other interviewexchange-hosted schools).
   { campus: "City University of Seattle", type: "interviewexchange", url: "https://cityu.interviewexchange.com/static/clients/447CSM1/index.jsp" },
   { campus: "Clark College", type: "schooljobs", url: "https://www.schooljobs.com/careers/clarkcollege" },
-  { campus: "Clover Park Technical College", type: "generic", url: "https://www.cptc.edu/careers" },
+  // Configured URL redirects to the HR landing page, which only points
+  // onward to the real ATS in prose ("See our job openings on the NeoGov
+  // website"). Real board is this institution-specific SchoolJobs/NeoGov
+  // tenant, linked as "Careers at CPTC". WA dispatcher already has a
+  // "schooljobs" case (used elsewhere) -- reused directly.
+  { campus: "Clover Park Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cptc" },
   // The /facultypositions suffix now 404s; the bare board still works.
   { campus: "Columbia Basin College", type: "schooljobs", url: "https://www.schooljobs.com/careers/columbiabasin" },
   { campus: "Cornish College of the Arts", type: "generic", url: "https://www.cornish.edu/" },
@@ -2740,7 +2769,16 @@ const WI_CAMPUSES = [
   // can't match without patching shared logic. Routed to the real page
   // anyway for correctness.
   { campus: "Bellin College", type: "generic", url: "https://www.bellincollege.edu/about/employment-at-bellin-college/" },
-  { campus: "Blackhawk Technical College", type: "generic", url: "https://www.blackhawk.edu/About-Us/Employment" },
+  // Was pointing at the HR landing page itself. Real ATS is this
+  // institution-specific iCIMS tenant, linked as "Administrative Openings"
+  // (WI dispatcher already has an "icims" case, used for Chippewa Valley
+  // Technical College -- reused directly). NOT independently verified
+  // working: every attempt from this environment (and, identically, against
+  // the already-wired Chippewa Valley tenant) hit an iCIMS "Human
+  // Verification" bot-check (HTTP 405) instead of the job list, so this is
+  // the same "wire for correctness, let the reviewer confirm" treatment as
+  // InterviewExchange, not a verified fix.
+  { campus: "Blackhawk Technical College", type: "icims", url: "https://careers-blackhawk.icims.com/" },
   { campus: "Bryant & Stratton College-Wauwatosa", type: "generic", url: "https://www.bryantstratton.edu/" },
   { campus: "Carroll University", type: "generic", url: "https://www.carrollu.edu/employment" },
   { campus: "Carthage College", type: "generic", url: "https://carthage.applicantpro.com/jobs" },
@@ -3147,7 +3185,17 @@ const MI_CAMPUSES = [
   // improvement over the 404 even though titles aren't extracted yet.
   { campus: "College for Creative Studies", type: "generic", url: "https://www.ccsdetroit.edu/about-us/jobs-at-ccs/" },
   { campus: "Concordia University Ann Arbor", type: "generic", url: "https://www.cuaa.edu/" },
-  { campus: "Cornerstone University", type: "generic", url: "https://www.cornerstone.edu/" },
+  // Was pointing at the bare homepage. Real page is
+  // /about/employment/employment-applications/, a ClearCompany-powered
+  // listing rendered as real same-domain anchors (not a cross-origin
+  // embed), linked from the HR page as "Careers at CU". Verified live (two
+  // fresh page loads): real faculty postings (Exercise Science
+  // Affiliate/Adjunct Faculty, Marketing - Adjunct/Affiliate Faculty,
+  // Computer Science Adjunct Faculty, Assistant/Associate Professor of
+  // Computer Science, Assistant/Associate Professor of Engineering,
+  // Professor of American Political Thought, Government, and History,
+  // Dean-School of Education & Human Services).
+  { campus: "Cornerstone University", type: "generic", url: "https://www.cornerstone.edu/about/employment/employment-applications/" },
   { campus: "Cranbrook Academy of Art", type: "generic", url: "https://cranbrookart.edu/" },
   { campus: "Davenport University", type: "csod", url: "https://davenport.csod.com/ux/ats/careersite/15/home/requisition/2850?c=davenport" },
   { campus: "Delta College", type: "schooljobs", url: "https://www.schooljobs.com/careers/deltacollege/faculty" },
@@ -3291,7 +3339,13 @@ const IL_CAMPUSES = [
   // real current "Adjunct Faculty Positions" opening.
   { campus: "Blackburn College", type: "generic", url: "https://blackburn.edu/jobs/" },
   { campus: "Blessing Rieman College of Nursing and Health Sciences", type: "generic", url: "https://www.brcn.edu/" },
-  { campus: "Bradley University", type: "generic", url: "https://www.bradley.edu/" },
+  // Was pointing at the bare homepage. Real HR page links to three separate
+  // ADP recruitment categories (faculty/non-faculty/student-worker); this is
+  // the faculty-specific one. IL dispatcher had no "adp" case yet even
+  // though scrapeAdpAs/scrapeAdpApi already exist and are dispatched
+  // elsewhere (e.g. FL) -- added one below, following FL's exact call
+  // convention.
+  { campus: "Bradley University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=df6f93d4-2277-4999-ac63-88a55668ffd3&ccId=9200110706773_2&type=JS&lang=en_US" },
   { campus: "Carl Sandburg College", type: "generic", url: "https://www.sandburg.edu/about/administration/employment-human-resources.html" },
   { campus: "Catholic Theological Union at Chicago", type: "generic", url: "https://ctu.edu/jobs" },
   { campus: "Chicago Theological Seminary", type: "generic", url: "https://www.ctschicago.edu/" },
@@ -3738,7 +3792,18 @@ const FL_CAMPUSES = [
   { campus: "Bethune-Cookman University", type: "generic", url: "https://www.cookman.edu/hr/job-opportunities.html" },
   { campus: "Broward College", type: "generic", url: "https://www.broward.edu/error/404.html?requestUrl=/faculty/jobs" },
   { campus: "Chipola College", type: "generic", url: "https://www.chipola.edu/about/administrative-offices/human-resources/job-openings" },
-  { campus: "College of Central Florida", type: "generic", url: "https://www.cf.edu/" },
+  // Was pointing at the bare homepage. Real page is /about-cf/.../work-at-cf/,
+  // which hands off to an institution-specific ADP career site
+  // (myjobs.adp.com/collegeofcentralfloridaexternalcs/ -- a newer ADP product
+  // than workforcenow.adp.com; confirmed real and institution-specific, with
+  // "Recently Posted Jobs" rendering live). Documented, not patched: every
+  // job card on this newer ADP UI renders with no real <a href> at all (only
+  // 3-4 unrelated policy/privacy anchors exist on the whole page), and the
+  // existing scrapeAdpApi only recognizes workforcenow.adp.com URLs, so
+  // neither generic DOM scraping nor the existing ADP handoff can extract
+  // postings from this UI yet. Still a real improvement over the homepage
+  // even though the handoff currently yields 0.
+  { campus: "College of Central Florida", type: "generic", url: "https://myjobs.adp.com/collegeofcentralfloridaexternalcs/" },
   { campus: "Daytona State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/daytonastate/faculty" },
   { campus: "Doral College", type: "generic", url: "https://doral.edu/" },
   { campus: "Dragon Rises College of Oriental Medicine", type: "generic", url: "https://www.dragonrises.edu/" },
@@ -3981,7 +4046,14 @@ const KS_CAMPUSES = [
   { campus: "Cleveland University-Kansas City", type: "generic", url: "https://www.cleveland.edu/" },
   { campus: "Cloud County Community College", type: "generic", url: "https://www.cloud.edu/about/employment" },
   { campus: "Coffeyville Community College", type: "generic", url: "https://www.coffeyville.edu/human-resources/job-openings" },
-  { campus: "Colby Community College", type: "generic", url: "https://www.colbycc.edu/about/employment" },
+  // The configured page's real job list is embedded via a cross-origin
+  // <iframe src="https://colbycc.apscareerportal.com/?embed=1">, unreadable
+  // by the shared generic scraper. Navigating directly to the underlying
+  // APS Career Portal (AppOne) URL as its own top-level page works fine
+  // (same platform/pattern already used for Clarendon College, type
+  // "generic"). Verified live (two fresh page loads): real faculty postings
+  // (Adjunct Faculty - Generic, Clinical Nursing Instructor - Adjunct).
+  { campus: "Colby Community College", type: "generic", url: "https://colbycc.apscareerportal.com/jobs?locale=en-US" },
   { campus: "Cowley County Community College", type: "generic", url: "https://www.cowley.edu/" },
   { campus: "Dodge City Community College", type: "generic", url: "https://dc3.edu/employment-page" },
   { campus: "Donnelly College", type: "generic", url: "https://www.donnelly.edu/staff/careers" },
@@ -4058,7 +4130,14 @@ const MO_CAMPUSES = [
   { campus: "Central Methodist University-College of Graduate and Extended Studies", type: "generic", url: "https://www.centralmethodist.edu/" },
   { campus: "Central Methodist University-College of Liberal Arts and Sciences", type: "generic", url: "https://www.centralmethodist.edu/about/offices/human-resources/jobs-fayette/index-faculty.html" },
   { campus: "City Vision University", type: "generic", url: "https://www.cityvision.edu/" },
-  { campus: "College of the Ozarks", type: "generic", url: "https://www.cofo.edu/academics/faculty-jobs" },
+  // Configured URL (/academics/faculty-jobs) just renders the homepage.
+  // Real page is /jobs, linked from the nav as "Human Resources". Verified
+  // live: real current postings with faculty-containing anchor text
+  // (Faculty Position in Computer Science, Adjunct Faculty in Agriculture/
+  // Biology/Chemistry/Computer Science/Physics, Adjunct Faculty in Applied
+  // Nutrition, Adjunct Faculty in Engineering, Adjunct Faculty in Political
+  // Science, Adjunct Faculty in Studio Art, Adjunct Faculty in Theatre).
+  { campus: "College of the Ozarks", type: "generic", url: "https://www.cofo.edu/jobs" },
   { campus: "Conception Seminary College", type: "generic", url: "https://www.conception.edu/" },
   { campus: "Concordia Seminary", type: "generic", url: "https://www.csl.edu/" },
   { campus: "Cottey College", type: "generic", url: "https://cottey.edu/employment" },
@@ -9212,6 +9291,10 @@ async function scrapeIlAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IL");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "IL");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "IL");
+        // No existing IL dispatch case for "adp" (function scrapeAdpAs already
+        // exists and is dispatched by several other states) -- added for
+        // Bradley University.
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "IL");
 
         if (type === "enusfilter") {
           const page = await context.newPage();
