@@ -11851,7 +11851,16 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
           // ("Faculty | Philosophy", "FT Faculty Department of Nursing",
           // "Science Faculty (Biotech)"). Matches looksFacultyish's own bare
           // \bfaculty\b bar, which the rest of this codebase already trusts.
-          /\bfaculty\b/i.test(title);
+          /\bfaculty\b/i.test(title) ||
+          // Bare "adjunct" (e.g. "Adjunct: Biology", "Adjunct Faculty,
+          // Anatomy & Physiology") with no professor/instructor/lecturer/
+          // faculty word alongside it. This is a separate copy of the same
+          // gap already fixed in looksFacultyish() (round 6, Adrian College/
+          // Belmont Abbey) -- this function runs inside page.evaluate()'s
+          // browser context, so it can't call that outer Node function and
+          // needed its own copy of the fix. Found via DeSales University
+          // while investigating the generic-scraper long tail (2026-08-06).
+          /\badjunct\b/i.test(title);
 
         if (!isFacultyRelated) continue;
 
