@@ -11710,6 +11710,13 @@ async function scrapeIcimsAs(context, startUrl, campusName, sourceName) {
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
     await page.waitForTimeout(2000);
+    // Purely additive: waits for the iframe itself to exist before extracting,
+    // on top of (never instead of) the fixed 2000ms wait above. Verified live
+    // against Utah State's tenant that the iframe's own content can still be
+    // mid-render at the 2000ms mark under slower/CI network conditions even
+    // though the frame element itself already exists by then — this fixes
+    // that race without slowing down tenants that were already fast.
+    await page.waitForSelector('iframe', { timeout: 8000 }).catch(() => {});
 
     // Some iCIMS tenants (confirmed: Utah State) render the job list inside a
     // nested <iframe>, not the top-level document — querySelectorAll against
