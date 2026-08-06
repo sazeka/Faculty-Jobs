@@ -516,6 +516,35 @@
       "sources": [
         "https://www.azregents.edu/career-opportunities"
       ]
+    },
+    "Arizona State University Campus Immersion": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): a duplicate IPEDS record for ASU's \"Campus Immersion\" delivery mode, not an independently-hiring entity -- ASU's own scraper entry (type \"asu-table\", scrapeAsuFacultyPositionsTable, pointed at facultypositions.asu.edu) already covers the university-wide faculty feed regardless of delivery mode. \"Campus Immersion\"/\"Digital Immersion\" are ASU's marketing terms for how a program is delivered, not separate HR/hiring units.",
+      "sources": [
+        "https://www.asu.edu/",
+        "https://facultypositions.asu.edu/"
+      ]
+    },
+    "Acupuncture and Integrative Medicine College-Berkeley": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers page found after live investigation -- the site's only \"Career Opportunities\" page is an alumni bulletin board of external clinic job/rental listings, not the college's own hiring page; /employment and /faculty both 404.",
+      "sources": [
+        "https://www.aimc.edu/"
+      ]
+    },
+    "Barnes-Jewish College Goldfarb School of Nursing": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): the only careers link on the College's site routes to BJC HealthCare's system-wide clinical job board (bjccareers.org), unscoped to the College specifically -- keyword-filtering by \"goldfarb\" returns unrelated hospital roles, not a discoverable School-specific faculty listing.",
+      "sources": [
+        "https://www.barnesjewishcollege.edu/resources/nursing-careers"
+      ]
+    },
+    "Ascent College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/faculty/jobs 404s, no careers/employment link discoverable from the homepage).",
+      "sources": [
+        "https://ascent.edu/"
+      ]
     }
   }
 }

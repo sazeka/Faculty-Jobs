@@ -1,12 +1,13 @@
 {
-  "generatedAt": "2026-08-06T10:41:59.305Z",
+  "generatedAt": "2026-08-06T11:27:28.447Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 37,
+  "count": 41,
   "colleges": [
     "Academy for Jewish Religion California",
+    "Acupuncture and Integrative Medicine College-Berkeley",
     "Adelphi University",
     "Agora University",
     "Aiken Technical College",
@@ -14,7 +15,10 @@
     "Anna Maria College",
     "Appalachian Bible College",
     "Arizona Board of Regents",
+    "Arizona State University Campus Immersion",
     "Arkansas Baptist College",
+    "Ascent College",
+    "Barnes-Jewish College Goldfarb School of Nursing",
     "Bellarmine University",
     "Berry College",
     "Beth Medrash Govoha",
@@ -52,6 +56,15 @@
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (checked homepage, /faculty/jobs, /careers, /employment -- all 404 or absent from nav).",
       "sources": [
         "https://www.ajrca.edu/"
+      ]
+    },
+    {
+      "college": "Acupuncture and Integrative Medicine College-Berkeley",
+      "platform_type": "generic",
+      "career_url": "https://www.aimc.edu/",
+      "reason": "Excluded (2026-08-06): no usable careers page found after live investigation -- the site's only \"Career Opportunities\" page is an alumni bulletin board of external clinic job/rental listings, not the college's own hiring page; /employment and /faculty both 404.",
+      "sources": [
+        "https://www.aimc.edu/"
       ]
     },
     {
@@ -121,12 +134,40 @@
       ]
     },
     {
+      "college": "Arizona State University Campus Immersion",
+      "platform_type": "generic",
+      "career_url": "https://www.asu.edu/",
+      "reason": "Excluded (2026-08-06): a duplicate IPEDS record for ASU's \"Campus Immersion\" delivery mode, not an independently-hiring entity -- ASU's own scraper entry (type \"asu-table\", scrapeAsuFacultyPositionsTable, pointed at facultypositions.asu.edu) already covers the university-wide faculty feed regardless of delivery mode. \"Campus Immersion\"/\"Digital Immersion\" are ASU's marketing terms for how a program is delivered, not separate HR/hiring units.",
+      "sources": [
+        "https://www.asu.edu/",
+        "https://facultypositions.asu.edu/"
+      ]
+    },
+    {
       "college": "Arkansas Baptist College",
       "platform_type": "generic",
       "career_url": "https://www.arkansasbaptist.edu/",
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (Resources and Administration sections checked, no HR/jobs link).",
       "sources": [
         "https://www.arkansasbaptist.edu/"
+      ]
+    },
+    {
+      "college": "Ascent College",
+      "platform_type": "generic",
+      "career_url": "https://ascent.edu/faculty/jobs",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/faculty/jobs 404s, no careers/employment link discoverable from the homepage).",
+      "sources": [
+        "https://ascent.edu/"
+      ]
+    },
+    {
+      "college": "Barnes-Jewish College Goldfarb School of Nursing",
+      "platform_type": "generic",
+      "career_url": "https://www.barnesjewishcollege.edu/resources/nursing-careers",
+      "reason": "Excluded (2026-08-06): the only careers link on the College's site routes to BJC HealthCare's system-wide clinical job board (bjccareers.org), unscoped to the College specifically -- keyword-filtering by \"goldfarb\" returns unrelated hospital roles, not a discoverable School-specific faculty listing.",
+      "sources": [
+        "https://www.barnesjewishcollege.edu/resources/nursing-careers"
       ]
     },
     {
