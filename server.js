@@ -649,10 +649,19 @@ const MA_PRIVATE_CAMPUSES = [
     type: "generic",
     url: "https://www.bu.edu/hr/careers/faculty/",
   },
+  // Was pointing at the student Career Center (Student Affairs) -- a
+  // careers-services page for BC students to find external jobs/
+  // internships, not BC's own hiring page. bc.edu/jobs redirects to a CSOD
+  // career site whose "Faculty Positions" link in turn points to this real
+  // Provost's Office "Faculty Openings" gateway page. Verified live (two
+  // fresh page loads): 17 real faculty postings (Assistant Professor of
+  // Special Education, Tenured/Tenure-Track Faculty Position in Management
+  // and Organization, Assistant Professor in American Public Law, etc.),
+  // each with a real Interfolio apply-link anchor.
   {
     campus: "Boston College",
     type: "generic",
-    url: "https://www.bc.edu/content/bc-web/offices/studentaffairs/sites/careers.html",
+    url: "https://www.bc.edu/content/bc-web/academics/sites/office-of-provost/faculty-gateway/faculty-openings.html",
   },
   {
     campus: "Northeastern University",
@@ -1172,7 +1181,18 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Chatham University", type: "generic", url: "https://www.chatham.edu/" },
   { campus: "Chestnut Hill College", type: "generic", url: "https://www.chc.edu/careers-at-chc/employment-opportunities" },
   { campus: "Cheyney University of Pennsylvania", type: "generic", url: "https://cheyney.edu/human-resources/employment-opportunities" },
-  { campus: "Commonwealth University of Pennsylvania", type: "generic", url: "https://www.commonwealthu.edu/" },
+  // Was pointing at the bare homepage. Homepage links to their PeopleAdmin
+  // career site; the site itself categorizes postings into tiles (Faculty/
+  // Staff/Coach/Temporary Pools) -- this is the Faculty-filtered search.
+  // PA dispatcher already has a "peopleadmin" case -- reused directly.
+  // Verified live (two fresh page loads): 2 real faculty postings (Assistant
+  // Professor (Tenure Track) - Physician Associate Studies, Assistant
+  // Professor (Tenure Track) - Speech-Language Pathology).
+  {
+    campus: "Commonwealth University of Pennsylvania",
+    type: "peopleadmin",
+    url: "https://commonwealthu.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1846%5B%5D=2&435=&commit=Search",
+  },
   { campus: "Community College of Allegheny County", type: "generic", url: "https://www.ccac.edu/" },
   { campus: "Community College of Beaver County", type: "generic", url: "https://ccbc.edu/employment" },
   { campus: "Community College of Philadelphia", type: "generic", url: "https://www.ccp.edu/about-ccp/news-events/career-opportunities" },
@@ -1430,7 +1450,22 @@ const VA_CAMPUSES = [
   // deliberately NOT wired, same misattribution-risk shape as BSMCON.
   { campus: "Bon Secours St Mary's Hospital School of Medical Imaging", type: "generic", url: "https://www.smhsomi.edu/employment-opportunities" },
   { campus: "Bridgewater College", type: "generic", url: "https://www.bridgewater.edu/careers" },
-  { campus: "Brightpoint Community College", type: "generic", url: "https://www.brightpoint.edu/index.php/about/employment-opportunities" },
+  // Was pointing at Brightpoint's own employment page, which itself hands off
+  // to the VCCS-wide (all 23 Virginia community colleges) PeopleAdmin board
+  // in prose only ("only accepts online applications submitted through VCCS
+  // Careers"). That board supports a "College" organizational-tier facet
+  // (query_organizational_tier_1_id[]=7889 = Brightpoint specifically) plus a
+  // Faculty position-type facet (query_position_type_id[]=9) -- real,
+  // institution-specific scoping, not a blind system-wide handoff. VA
+  // dispatcher already has a "peopleadmin" case -- reused directly. Verified
+  // live (two fresh page loads): 2 postings scoped to "College - Brightpoint
+  // Community College" (Nursing 9-month Faculty (F0069), Vice President of
+  // Finance and Administration).
+  {
+    campus: "Brightpoint Community College",
+    type: "peopleadmin",
+    url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7889&query_position_type_id%5B%5D=9&commit=Search",
+  },
   { campus: "Bryant & Stratton College-Virginia Beach", type: "generic", url: "https://www.bryantstratton.edu/" },
   {
     campus: "Central Virginia Community College",
@@ -2779,7 +2814,14 @@ const WI_CAMPUSES = [
   // the same "wire for correctness, let the reviewer confirm" treatment as
   // InterviewExchange, not a verified fix.
   { campus: "Blackhawk Technical College", type: "icims", url: "https://careers-blackhawk.icims.com/" },
-  { campus: "Bryant & Stratton College-Wauwatosa", type: "generic", url: "https://www.bryantstratton.edu/" },
+  // Same shared UltiPro/UKG board as sibling Bryant & Stratton College-Parma
+  // (round 12) -- "?q=wauwatosa" scopes to this campus specifically (9
+  // results, incl. "Associate Professor - Nursing" and "Adjunct Professor -
+  // Nursing" -- confirmed via manual read of the page). NOT wired as a
+  // working fix for the same reason: card-based SPA with no per-job <a
+  // href>, shared generic scraper yields 0. URL updated anyway for
+  // correctness/specificity over the old bare homepage.
+  { campus: "Bryant & Stratton College-Wauwatosa", type: "generic", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=wauwatosa&o=postedDateDesc" },
   { campus: "Carroll University", type: "generic", url: "https://www.carrollu.edu/employment" },
   { campus: "Carthage College", type: "generic", url: "https://carthage.applicantpro.com/jobs" },
   { campus: "Chippewa Valley Technical College", type: "icims", url: "https://careers-cvtc.icims.com/" },
@@ -2988,7 +3030,18 @@ const OH_CAMPUSES = [
   { campus: "Bluffton University", type: "generic", url: "https://www.bluffton.edu/employment" },
   { campus: "Bowling Green State University-Firelands", type: "generic", url: "https://www.bgsu.edu/firelands/employment" },
   { campus: "Bowling Green State University-Main Campus", type: "generic", url: "https://www.bgsu.edu/human-resources/careers" },
-  { campus: "Bryant & Stratton College-Parma", type: "generic", url: "https://www.bryantstratton.edu/" },
+  // Was pointing at the bare chain-wide homepage. Real ATS is a single
+  // shared UltiPro/UKG board covering all 8 Bryant & Stratton branches
+  // (191 total openings); its own text search ("?q=parma") genuinely scopes
+  // results down to this campus specifically (9 results, incl. "Adjunct
+  // Professor Various" -- confirmed via manual read of the page, not the
+  // scraper). NOT wired as a working fix: this UltiPro board renders job
+  // cards with no real per-job <a href> at all (every visible <a> on the
+  // page is nav chrome/browser-download links), so the shared generic
+  // scraper still yields 0 -- same card-based-SPA-no-anchor shape as other
+  // UltiPro/UKG Recruiting tenants seen this round. URL updated anyway for
+  // correctness/specificity over the old bare homepage.
+  { campus: "Bryant & Stratton College-Parma", type: "generic", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=parma&o=postedDateDesc" },
   { campus: "Capital University", type: "generic", url: "https://www.capital.edu/" },
   { campus: "Cedarville University", type: "generic", url: "https://www.cedarville.edu/" },
   // Was the home/landing page (just a "Search Jobs" link, no listings inline).
@@ -3807,7 +3860,14 @@ const FL_CAMPUSES = [
   { campus: "Daytona State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/daytonastate/faculty" },
   { campus: "Doral College", type: "generic", url: "https://doral.edu/" },
   { campus: "Dragon Rises College of Oriental Medicine", type: "generic", url: "https://www.dragonrises.edu/" },
-  { campus: "Eastern Florida State College", type: "generic", url: "https://www.easternflorida.edu/" },
+  // Was pointing at the bare homepage. Real HR job-opportunities page embeds
+  // its actual listing via a same-origin-adjacent <iframe> pointing at this
+  // webapps subdomain; pointed directly at the iframe's own URL instead of
+  // the wrapper page. Verified live (two fresh page loads): 20 real
+  // postings, nearly all faculty/instructor-titled (Adjunct Faculty -
+  // Mathematics, Nursing Instructor, Aviation Maintenance Instructor,
+  // Computer Science Instructor, Aerospace Technology Instructor, etc.).
+  { campus: "Eastern Florida State College", type: "generic", url: "https://webapps.easternflorida.edu/hr/employment-opportunities.cfm" },
   { campus: "Edward Waters University", type: "generic", url: "https://www.higheredjobs.com/institution/search.cfm?University=Edward%20Waters%20University&suggest=3" },
   { campus: "Embry-Riddle Aeronautical University-Daytona Beach", type: "generic", url: "https://careers.erau.edu/benefits" },
   { campus: "Embry-Riddle Aeronautical University-Worldwide", type: "generic", url: "https://worldwide.erau.edu/" },
@@ -4022,7 +4082,17 @@ const AR_CAMPUSES = [
   { campus: "Arkansas State University-Newport", type: "generic", url: "https://www.asun.edu/" },
   { campus: "Arkansas Tech University", type: "schooljobs", url: "https://www.governmentjobs.com/careers/atu/Faculty" },
   { campus: "Baptist Health College Little Rock", type: "generic", url: "https://www.bhclr.edu/" },
-  { campus: "Black River Technical College", type: "generic", url: "https://www.blackrivertech.edu/" },
+  // Was pointing at the bare homepage. Real page is /employment, a real
+  // "Current Openings" table with per-posting titles (Paramedic Program
+  // Director - Faculty, Industrial Automation Instructor, Math Instructor,
+  // Adjunct Welding Technology, etc.) each linked via a real <a href>. NOT
+  // wired as a working fix: every posting's anchor target is hosted under
+  // /news/<slug> (the college posts openings as WordPress "news" articles),
+  // and the shared generic scraper explicitly excludes any /news\b path as
+  // non-job noise -- so this whole page's real postings are filtered out by
+  // that shared exclusion. URL updated anyway for correctness/specificity
+  // over the old bare homepage.
+  { campus: "Black River Technical College", type: "generic", url: "https://www.blackrivertech.edu/employment" },
   { campus: "Central Baptist College", type: "generic", url: "https://www.cbc.edu/jobs" },
   { campus: "Champion Christian College", type: "generic", url: "https://www.champion.edu/careers" },
   { campus: "Crowley's Ridge College", type: "generic", url: "https://crc.edu/careers" },
@@ -4139,7 +4209,14 @@ const MO_CAMPUSES = [
   // Science, Adjunct Faculty in Studio Art, Adjunct Faculty in Theatre).
   { campus: "College of the Ozarks", type: "generic", url: "https://www.cofo.edu/jobs" },
   { campus: "Conception Seminary College", type: "generic", url: "https://www.conception.edu/" },
-  { campus: "Concordia Seminary", type: "generic", url: "https://www.csl.edu/" },
+  // Was pointing at the bare homepage; the /about/careers/ page's "Search
+  // careers" button links to this institution-specific Paycom tenant
+  // (clientkey unique to Concordia Seminary, not a shared board). Generic
+  // scraper already hands this off to the Paycom probe. Verified live: real
+  // ATS, genuinely 0 faculty-titled openings right now (2 current postings,
+  // both staff roles: Coordinator Health/Wellness/HR Part-Time, Enrollment
+  // Operations Specialist) -- real infrastructure, not a coverage bug.
+  { campus: "Concordia Seminary", type: "generic", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=7B3368F639C1C383CE30B8FEBA882F60&fromClientSide=true" },
   { campus: "Cottey College", type: "generic", url: "https://cottey.edu/employment" },
   { campus: "Covenant Theological Seminary", type: "generic", url: "https://www.covenantseminary.edu/" },
   { campus: "Cox College", type: "generic", url: "https://coxcollege.edu/" },
