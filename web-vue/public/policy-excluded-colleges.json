@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-07T07:15:25.351Z",
+  "generatedAt": "2026-08-07T15:40:32.525Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 81,
+  "count": 93,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -54,6 +54,7 @@
     "California Institute of Technology",
     "Cape Cod Community College",
     "Cayuga County Community College",
+    "CBD College",
     "Central Methodist University-College of Graduate and Extended Studies",
     "Charlotte Christian College and Theological Seminary",
     "Cincinnati College of Mortuary Science",
@@ -63,21 +64,32 @@
     "Colorado State University-System Office",
     "Commonwealth Technical Institute",
     "Community Christian College",
+    "Contra Costa Community College District Office",
     "CU Anschutz",
     "CU Denver",
     "Curry College",
     "Delaware Technical Community College-Central Office",
     "Digital Media Institute",
+    "Downey Adult School",
     "Emmanuel College",
+    "Epic Bible College & Graduate School",
     "Family of Faith Christian University",
     "Fashion Institute of Technology",
     "Fitchburg State University",
+    "Flagler Technical College",
+    "Fort Myers Technical College",
     "Fred W Eberle Technical Center",
     "Goucher College",
+    "H W Brewster Technical College",
+    "Los Angeles County College of Nursing and Allied Health",
     "New Jersey City University",
+    "Orange Technical College-East Campus",
+    "Orange Technical College-West Campus",
+    "Riveroak Technical College",
     "Salve Regina University",
     "South Dakota Board of Regents",
     "Southern Methodist University",
+    "Suncoast Technical College",
     "The College of New Jersey",
     "Towson University",
     "UCCS",
@@ -529,6 +541,15 @@
       ]
     },
     {
+      "college": "CBD College",
+      "platform_type": "generic",
+      "career_url": "https://www.cbd.edu/",
+      "reason": "Excluded (2026-08-07): no careers/employment page discoverable anywhere on the site after live investigation (checked nav, footer, About, and common guessed paths) -- flagged during Bucket B round 17.",
+      "sources": [
+        "https://www.cbd.edu/"
+      ]
+    },
+    {
       "college": "Central Methodist University-College of Graduate and Extended Studies",
       "platform_type": "generic",
       "career_url": "https://www.centralmethodist.edu/",
@@ -610,6 +631,15 @@
       ]
     },
     {
+      "college": "Contra Costa Community College District Office",
+      "platform_type": "generic",
+      "career_url": "https://www.4cd.edu/",
+      "reason": "Excluded (2026-08-07): non-independent governance/district-office record (4cd.edu), same shape as other already-excluded district-office records -- not a hiring campus in its own right (the district's actual campuses, e.g. Contra Costa College and Diablo Valley College, are separately covered). Flagged during Bucket B round 17.",
+      "sources": [
+        "https://www.4cd.edu/"
+      ]
+    },
+    {
       "college": "CU Anschutz",
       "platform_type": "taleo",
       "career_url": "https://cu.taleo.net/careersection/cu_ext_amc/moresearch.ftl?lang=en#mainContent",
@@ -657,12 +687,30 @@
       ]
     },
     {
+      "college": "Downey Adult School",
+      "platform_type": "generic",
+      "career_url": "https://www.das.edu/",
+      "reason": "Excluded (2026-08-07): a Downey Unified School District (dusd.net) K-12 adult-education program, not an independent degree-granting postsecondary institution with its own hiring page -- no employment link anywhere on site. Flagged during Bucket B round 17.",
+      "sources": [
+        "https://www.das.edu/"
+      ]
+    },
+    {
       "college": "Emmanuel College",
       "platform_type": "interviewexchange",
       "career_url": "https://emmanuel.interviewexchange.com/static/clients/13EM1/listJobs.jsp;jsessionid=47B469F5FF02B2ECA11624165C411A0F",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://emmanuel.interviewexchange.com/static/clients/13EM1/listJobs.jsp"
+      ]
+    },
+    {
+      "college": "Epic Bible College & Graduate School",
+      "platform_type": "generic",
+      "career_url": "https://epic.edu/",
+      "reason": "Excluded (2026-08-07): no careers/employment page discoverable anywhere on the site after live investigation -- flagged during Bucket B round 17.",
+      "sources": [
+        "https://epic.edu/"
       ]
     },
     {
@@ -693,6 +741,24 @@
       ]
     },
     {
+      "college": "Flagler Technical College",
+      "platform_type": "generic",
+      "career_url": "https://flaglertech.edu/",
+      "reason": "Excluded (2026-08-07): flaglertech.edu is explicitly a Flagler Schools (K-12 district) site, not an independent degree-granting postsecondary institution. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://flaglertech.edu/"
+      ]
+    },
+    {
+      "college": "Fort Myers Technical College",
+      "platform_type": "generic",
+      "career_url": "https://www.fortmyerstech.edu/",
+      "reason": "Excluded (2026-08-07): a Lee County Public Schools technical center; its \"Job Postings\" link is a student placement service, not an HR hiring board. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.fortmyerstech.edu/"
+      ]
+    },
+    {
       "college": "Fred W Eberle Technical Center",
       "platform_type": "generic",
       "career_url": "https://fetc.edu/",
@@ -711,6 +777,24 @@
       ]
     },
     {
+      "college": "H W Brewster Technical College",
+      "platform_type": "generic",
+      "career_url": "https://www.hillsboroughschools.org/Brewster",
+      "reason": "Excluded (2026-08-07): a Hillsborough County Public Schools (hillsboroughschools.org) technical center, same non-independent shape as the already-excluded Erwin Technical College. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.hillsboroughschools.org/Brewster"
+      ]
+    },
+    {
+      "college": "Los Angeles County College of Nursing and Allied Health",
+      "platform_type": "generic",
+      "career_url": "https://dhs.lacounty.gov/college-of-nursing-and-allied-health",
+      "reason": "Excluded (2026-08-07): a specialized program under LA County Department of Health Services (county government), not an independent institution -- its only \"Careers\" link is the whole county's general careers portal, with no program-specific faculty hiring page. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://dhs.lacounty.gov/college-of-nursing-and-allied-health/"
+      ]
+    },
+    {
       "college": "New Jersey City University",
       "platform_type": "taleo",
       "career_url": "https://phe.tbe.taleo.net/phe03/ats/careers/v2/searchResults?org=NJCU&cws=41",
@@ -718,6 +802,33 @@
       "sources": [
         "https://www.oracle.com/legal/terms.html",
         "https://www.oracle.com/human-capital-management/taleo/"
+      ]
+    },
+    {
+      "college": "Orange Technical College-East Campus",
+      "platform_type": "generic",
+      "career_url": "https://www.orangetechcollege.net/campuses/east_campus",
+      "reason": "Excluded (2026-08-07): orangetechcollege.net's own page states it is run by Orange County Public Schools across 7 campuses -- a K-12-district-operated technical center, not an independent postsecondary institution. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.orangetechcollege.net/campuses/east_campus"
+      ]
+    },
+    {
+      "college": "Orange Technical College-West Campus",
+      "platform_type": "generic",
+      "career_url": "https://www.orangetechcollege.net/campuses/west_campus",
+      "reason": "Excluded (2026-08-07): same Orange County Public Schools system as Orange Technical College-East Campus. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.orangetechcollege.net/campuses/west_campus"
+      ]
+    },
+    {
+      "college": "Riveroak Technical College",
+      "platform_type": "generic",
+      "career_url": "https://rtc.suwannee.k12.fl.us/o/rtc",
+      "reason": "Excluded (2026-08-07): a Suwannee County Schools (rtc.suwannee.k12.fl.us) technical center, not an independent postsecondary institution. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://rtc.suwannee.k12.fl.us/o/rtc"
       ]
     },
     {
@@ -746,6 +857,15 @@
       "sources": [
         "https://www.oracle.com/legal/terms.html",
         "https://www.oracle.com/human-capital-management/taleo/"
+      ]
+    },
+    {
+      "college": "Suncoast Technical College",
+      "platform_type": "generic",
+      "career_url": "https://www.sarasotacountyschools.net/o/stcsmc",
+      "reason": "Excluded (2026-08-07): a Sarasota County Schools (sarasotacountyschools.net) technical center, not an independent postsecondary institution. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.sarasotacountyschools.net/o/stcsmc"
       ]
     },
     {
