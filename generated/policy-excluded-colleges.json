@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T00:25:38.840Z",
+  "generatedAt": "2026-08-07T00:56:41.045Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
@@ -359,7 +359,7 @@
     {
       "college": "Berry College",
       "platform_type": "generic",
-      "career_url": "https://www.berry.edu/faculty/jobs",
+      "career_url": "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp",
       "reason": "Excluded (2026-08-06): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node -- not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp"
@@ -567,7 +567,7 @@
     {
       "college": "City University of Seattle",
       "platform_type": "generic",
-      "career_url": "https://www.cityu.edu/",
+      "career_url": "https://cityu.interviewexchange.com/static/clients/447CSM1/index.jsp",
       "reason": "Excluded (2026-08-06): joins the other 15 InterviewExchange/Hirezon-WAF-blocked institutions -- confirmed live via direct request (3x) that cityu.interviewexchange.com returns the identical Hirezon WAF 403 as the rest of the platform, despite this being the institution's genuine, correctly-identified careers page.",
       "sources": [
         "https://cityu.interviewexchange.com/static/clients/447CSM1/index.jsp"
