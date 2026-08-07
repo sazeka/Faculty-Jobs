@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-06T23:52:19.188Z",
+  "generatedAt": "2026-08-07T00:25:38.840Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 80,
+  "count": 81,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -69,6 +69,7 @@
     "Delaware Technical Community College-Central Office",
     "Digital Media Institute",
     "Emmanuel College",
+    "Family of Faith Christian University",
     "Fashion Institute of Technology",
     "Fitchburg State University",
     "Fred W Eberle Technical Center",
@@ -662,6 +663,15 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://emmanuel.interviewexchange.com/static/clients/13EM1/listJobs.jsp"
+      ]
+    },
+    {
+      "college": "Family of Faith Christian University",
+      "platform_type": "generic",
+      "career_url": "https://www.familyoffaith.edu/",
+      "reason": "Excluded (2026-08-06): no employment/careers/jobs page discoverable anywhere on the site after live investigation (all common paths 404, no such nav link exists).",
+      "sources": [
+        "https://www.familyoffaith.edu/"
       ]
     },
     {
