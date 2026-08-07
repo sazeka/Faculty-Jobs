@@ -56,6 +56,18 @@ const API_KEY     = process.env.ANTHROPIC_API_KEY;
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'localhost:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
 const USE_OLLAMA  = process.env.USE_CLAUDE !== '1';
+// A hung/overloaded backend (e.g. Ollama swapping a 7B model on an 8GB
+// Jetson, or thrashing under memory pressure) can accept the connection and
+// then just never respond -- that isn't a connection-level failure, so
+// req.on('error') never fires for it. With no timeout, the request promise
+// (and the whole daily-update.sh pipeline, which has no shell-level guard on
+// this step either) hangs forever. Same bug class as the 2026-07-27 5-day
+// hang already fixed in agent-job-descriptions.js -- that fix never made it
+// to this file. Ollama gets a generous budget since local inference on
+// constrained hardware is genuinely slow; Claude's hosted API should never
+// need anywhere close to this.
+const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS || 180_000);
+const CLAUDE_TIMEOUT_MS = Number(process.env.CLAUDE_TIMEOUT_MS || 60_000);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -214,6 +226,9 @@ function callClaude(batch) {
         });
       }
     );
+    req.setTimeout(CLAUDE_TIMEOUT_MS, () => {
+      req.destroy(new Error(`Claude request timed out after ${CLAUDE_TIMEOUT_MS / 1000}s`));
+    });
     req.on('error', reject);
     req.write(body);
     req.end();
@@ -257,6 +272,9 @@ function callOllama(batch) {
         });
       }
     );
+    req.setTimeout(OLLAMA_TIMEOUT_MS, () => {
+      req.destroy(new Error(`Ollama request timed out after ${OLLAMA_TIMEOUT_MS / 1000}s`));
+    });
     req.on('error', reject);
     req.write(body);
     req.end();

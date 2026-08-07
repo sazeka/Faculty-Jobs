@@ -110,7 +110,15 @@ if [[ $SCRAPED -eq 1 ]]; then
     invoke_step "Job presence" "$NPM_CMD" run agent:job-presence || true
 
     log_section "Step 3/8 - Enrich new jobs (discipline/positionType/tenureTrack via local Ollama)"
-    invoke_step "Enrich" "$NPM_CMD" run agent:enrich -- --max 1500 --batch-size 6 || true
+    # A hung/overloaded Ollama server (e.g. swapping a 7B model under memory
+    # pressure on an 8GB Jetson) used to be able to hang this step forever --
+    # agent-job-enrichment.js's raw http.request() calls had no timeout, so a
+    # connection that got accepted but never answered would never reject.
+    # That's now fixed at the request level (OLLAMA_TIMEOUT_MS), but this
+    # shell-level backstop matches the Descriptions step below in case some
+    # other unbounded path turns up later — same lesson as the 2026-07-27
+    # 5-day hang. 1800s (30 min) is a generous multiple of a normal run.
+    invoke_step "Enrich" timeout 1800 "$NPM_CMD" run agent:enrich -- --max 1500 --batch-size 6 || true
 
     log_section "Step 4/8 - Backfill descriptions + posting dates (datePosted)"
     # This step hung for 5 days straight on 2026-07-27 (a page.evaluate() call
