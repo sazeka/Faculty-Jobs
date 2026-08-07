@@ -820,16 +820,118 @@ const CA_PRIVATE_CAMPUSES = [
     url: "https://www.schooljobs.com/careers/whccd",
     locationFilter: "Coalinga",
   },
-  { campus: "Lemoore College", type: "generic", url: "https://www.westhillscollege.com/lemoore/" },
-  { campus: "Loma Linda University", type: "generic", url: "https://www.llu.edu/index.html" },
+  // Same shared West Hills CCD schooljobs tenant as Coalinga College above --
+  // scoped via locationFilter instead of a URL facet (platform has none).
+  // Verified live: the board's first <ul class="list-meta"> <li> is the
+  // location line for every card (confirmed via a raw querySelectorAll dump
+  // across 6 real cards: "Lemoore College, CA" / "Coalinga College, CA" is
+  // always element [0]) -- matches the same extraction scrapeNjSchoolJobs
+  // already uses. Real Lemoore-tagged postings exist ("Adjunct Head Coach -
+  // Women's Wrestling", Lemoore College, CA) though most of the district's
+  // large "Part-Time (Adjunct) Faculty - <subject>" pool postings are tagged
+  // "District Office - Coalinga, CA" instead of a specific campus, so they
+  // won't match this filter (same as they wouldn't misattribute to Coalinga
+  // either -- that filter matches them only because "Coalinga" is a literal
+  // substring of "District Office - Coalinga, CA").
+  {
+    campus: "Lemoore College",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/whccd",
+    locationFilter: "Lemoore",
+  },
+  // Was pointing at the bare llu.edu homepage. Real ATS is Loma Linda
+  // University Health's Oracle Cloud (CX) recruiting site, shared with the
+  // health system but scoped here to a "faculty" keyword search since Oracle
+  // CX's own UI facets (Nursing/Healthcare Clinical Support/etc.) don't
+  // expose a plain "Faculty" bucket. Verified live (two fresh loads): 15
+  // real postings under the keyword filter including "Associate
+  // Professor-PhD", "Assistant Professor-PhD (NN)", "Assoc Professor-PhD",
+  // "Assistant Professor-PA", "Assistant Professor-NP", all Loma Linda, CA.
+  { campus: "Loma Linda University", type: "oracle-cx", url: "https://egln.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX/jobs?keyword=faculty" },
+  // Specialized health-sciences program operated directly under LA County
+  // Dept. of Health Services (a county government department, not an
+  // independent degree-granting institution) -- its only "Careers" link goes
+  // to the whole county DHS careers portal, not anything program-specific.
+  // Likely a policy-exclusion candidate rather than a scraper fix; left as-is.
   { campus: "Los Angeles County College of Nursing and Allied Health", type: "generic", url: "https://dhs.lacounty.gov/college-of-nursing-and-allied-health/" },
+  // Real ATS is Middlebury College's shared Workable board (apply.workable.com/
+  // middleburycollege), covering every Middlebury campus/school system-wide.
+  // Confirmed the HINT's concern live via Workable's own POST /api/v3/.../jobs
+  // API: of the 8 postings in the "Faculty" department bucket, all 8 are
+  // Vermont Language Schools summer instructor roles (Chinese/Arabic/German/
+  // Japanese/Korean/Hebrew/Russian), none Monterey-tagged. Separately checked
+  // all 111 total postings district-wide for any Monterey-tagged posting
+  // regardless of department: 11 exist, but zero are in the Faculty
+  // department and none are genuine faculty roles (all Student-worker/Staff).
+  // Workable's location facet ("Monterey, California" is a real option in
+  // the account's own /jobs/filters response) is UI-driven, not a URL query
+  // param -- ?location=... on page load does not change the POST body the
+  // page itself sends, so there's no URL-based way to scope it, and no
+  // dedicated Workable scraper exists in this codebase to call the JSON API
+  // directly. Documented, not patched: even a perfect scope would show 0
+  // right now anyway. Left as the shared board URL rather than misattributing
+  // the whole system's Faculty count to Monterey.
   { campus: "Middlebury Institute of International Studies at Monterey", type: "generic", url: "https://apply.workable.com/middleburycollege" },
-  { campus: "Moorpark College", type: "generic", url: "https://www.moorparkcollege.edu/index.shtml" },
+  // Was pointing at the bare campus homepage. Real ATS is Ventura County
+  // CCD's shared NEOGOV/schooljobs tenant (covers Moorpark, Oxnard, and
+  // Ventura Colleges plus the District Administrative Center) -- scoped via
+  // locationFilter the same way as the West Hills CCD board above (no URL
+  // facet on this platform). Verified live (raw ul.list-meta dump confirms
+  // the first <li> is the location line, same shape as West Hills CCD):
+  // real Moorpark-tagged faculty posting "Instructor in Biotechnology
+  // (Part-Time Pool)", Moorpark College (Moorpark CA), CA, Part-Time
+  // Faculty. Most of the district's "Instructor in <subject> (Part-Time
+  // Pool)" postings are tagged "Districtwide (Ventura County CA), CA"
+  // instead of a specific campus, so they correctly won't match this filter.
+  {
+    campus: "Moorpark College",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/vcccd",
+    locationFilter: "Moorpark",
+  },
   { campus: "Sanford Burnham Prebys Medical Discovery Institute", type: "generic", url: "https://www.sbpdiscovery.org/education/graduate-school" },
-  { campus: "Santiago Canyon College", type: "generic", url: "https://www.sccollege.edu/faculty/jobs" },
+  // "/faculty/jobs" 404s ("this page has a new home"). Real board is Rancho
+  // Santiago CCD's own Faculty and Academic Administrative Opportunities
+  // NEOGOV/schooljobs sub-board (a separate tenant path from the district's
+  // general Classified Staff board) -- RSCCD has only two colleges (Santa
+  // Ana College and Santiago Canyon College) plus the District Office, and
+  // every SCC posting's location line reads "Orange, CA" (SCC's home city)
+  // vs. SAC's "Santa Ana, CA", so locationFilter: "Orange" cleanly scopes to
+  // this campus. Verified live: real posting "PT POOL - Ethnic Studies
+  // Instructor", Orange, CA, Division: SCC Arts Humanities and Social
+  // Sciences, Category: PT POOL - Instructor.
+  {
+    campus: "Santiago Canyon College",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/rsccd/transferjobs",
+    locationFilter: "Orange",
+  },
   { campus: "The Chicago School at Anaheim", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/locations/" },
-  { campus: "The Chicago School at Los Angeles", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/careers" },
-  { campus: "The Chicago School at San Diego", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/careers" },
+  // Real ATS is a single Workday tenant (tcsedsystem.wd1.myworkdayjobs.com/
+  // TCSPP) shared across every Chicago School campus (Anaheim, LA, San
+  // Diego, Chicago, Dallas, Nursing, Xavier University of Louisiana) -- 72
+  // openings unscoped. Its own facet list exposes per-campus location IDs
+  // (confirmed via the page's own /wday/cxs/.../jobs POST response), so
+  // scoped with a bare "?locations=<id>" query param the same way as
+  // Embry-Riddle-Daytona Beach above. Verified live: LA facet (id
+  // 0cec31c3016301fde4ca6f18e1496e00) returns 15 real postings including
+  // "Adjunct Faculty - Clinical Psychology - Los Angeles Campus" and
+  // "Department Faculty - Clinical Psychology - Child/Adolescent or
+  // Pediatric Psychology, Los Angeles Location".
+  {
+    campus: "The Chicago School at Los Angeles",
+    type: "workday",
+    url: "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=0cec31c3016301fde4ca6f18e1496e00",
+  },
+  // Same shared Workday tenant as LA above, San Diego's own facet id
+  // (confirmed via the same /wday/cxs/.../jobs facet list). Verified live:
+  // 2 real postings -- "Adjunct Faculty - MFT - San Diego Campus" and
+  // "Adjunct Faculty - Applied Behavior Analysis - San Diego Campus".
+  {
+    campus: "The Chicago School at San Diego",
+    type: "workday",
+    url: "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=0cec31c3016301fc5c1ae144e1498800",
+  },
   { campus: "Trinity Law School", type: "generic", url: "https://www.tiu.edu/law" },
   // Was pointing at the bare homepage. Real employment page is
   // /about/employment.html, which itself hands off to a Cornerstone OnDemand
@@ -986,12 +1088,42 @@ const CA_PRIVATE_CAMPUSES = [
   // Current Openings" right now (only Classified postings currently open).
   { campus: "El Camino Community College District", type: "generic", url: "https://www.elcamino.edu/departments/human-resources/employment-opportunities.php" },
   { campus: "Epic Bible College & Graduate School", type: "generic", url: "https://epic.edu/" },
-  { campus: "Evergreen Valley College", type: "generic", url: "https://www.evc.edu/jobs" },
+  // Was pointing at the EVC-only "Jobs & Career Center" student-services page
+  // (Handshake/work-study/co-op links only, no HR listing). Real ATS is the
+  // San Jose-Evergreen CCD's shared PeopleAdmin instance (covers Evergreen
+  // Valley College, San Jose City College, and the District Office). This
+  // tenant has no numeric Location facet field (unlike Chabot/Contra Costa
+  // CCD elsewhere in this file) -- confirmed via a DOM dump of every
+  // <select>/<input> on the search form -- but its free-text "Keywords"
+  // search genuinely full-text-matches each posting's own Location column
+  // server-side, not just the title, so query="Evergreen Valley College"
+  // cleanly scopes to this campus alone. Verified live (two fresh loads):
+  // 7 of 7 results tagged "Evergreen Valley College", including a real
+  // faculty posting ("COUNSELOR, UMOJA/AFFIRM", Category: Faculty).
+  {
+    campus: "Evergreen Valley College",
+    type: "peopleadmin",
+    url: "https://sjeccd.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=Evergreen+Valley+College&commit=Search",
+  },
   { campus: "Feather River Community College District", type: "generic", url: "https://www.frc.edu/" },
-  { campus: "Fielding Graduate University", type: "generic", url: "https://www.fielding.edu/" },
+  // Was pointing at the bare fielding.edu homepage. Real "Apply For Jobs"
+  // link hands off to a single-institution ADP Workforce Now board (a JSON
+  // API, no browser rendering needed). Verified live via the raw API
+  // response: 3 postings, 2 real faculty titles ("Doctoral Faculty,
+  // Clinical Psychology (Greater Chicago Area)", "Doctoral Faculty, Clinical
+  // Psychology (Seattle, Washington)") plus a non-faculty "General Online
+  // Application" placeholder.
+  {
+    campus: "Fielding Graduate University",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=371bf4c2-8681-458c-8b35-722b1fc8d540&ccId=19000101_000001&type=MP&lang=en_US",
+  },
   { campus: "Folsom Lake College", type: "schooljobs", url: "https://www.schooljobs.com/careers/losriosccd" },
   { campus: "Foothill College", type: "generic", url: "https://foothill.edu/employment/" },
   { campus: "Foothill-De Anza Community College District", type: "schooljobs", url: "https://www.schooljobs.com/careers/fhda/Faculty" },
+  // Confirmed real, correctly-functioning page (verified live, two fresh
+  // loads): "We currently do not have any employment opportunities at this
+  // time." Genuinely 0 openings right now, not a bug.
   { campus: "Franciscan School of Theology", type: "generic", url: "https://www.fst.edu/about/employment-opportunities" },
   { campus: "Fresno City College", type: "generic", url: "https://www.fresnocitycollege.edu/" },
   { campus: "Fresno Pacific University", type: "generic", url: "https://www.fresno.edu/" },
@@ -1107,6 +1239,13 @@ const CLAREMONT_CAMPUSES = [
     type: "generic",
     url: "https://www.cgu.edu/employment-opportunities/faculty-jobs/",
   },
+  // Already correctly wired (real single-institution page, real anchors
+  // with real titles) -- verified live: 4 current postings, at least 2
+  // clearly pass the faculty-keyword filter ("William J. Kenan Endowed
+  // Chair Tenured Professor in Media Industries and Digital Technologies",
+  // "Visiting Lecturer in Psychology - Fall 2026"). institutions-master.json's
+  // missing/generic labels are simply stale here, same as Northern Arizona
+  // University in round 17.
   { campus: "Scripps College", type: "generic", url: "https://www.scrippscollege.edu/hr/faculty" },
   {
     campus: "Claremont McKenna College",
@@ -4169,12 +4308,44 @@ const FL_CAMPUSES = [
   },
   { campus: "Jacksonville University", type: "generic", url: "https://www.ju.edu/humanresources/employment-opportunities.php" },
   { campus: "Polytechnic University of Puerto Rico-Miami", type: "generic", url: "https://www.pupr.edu/miami/" },
-  { campus: "Polytechnic University of Puerto Rico-Orlando", type: "generic", url: "https://www.pupr.edu/orlando" },
+  // Was pointing at the bare pupr.edu/orlando campus homepage. Real ATS
+  // (found via the main pupr.edu HR page's "Employment Opportunities"
+  // Elementor tab) is a single ADP Workforce Now board explicitly shared
+  // across "Polytechnic University, Miami Campus" and "Polytechnic
+  // University, Orlando Campus" -- scoped via scrapeAdpApi's new
+  // locationFilter param. ADP's own requisitionLocations field is mostly
+  // empty for this tenant (confirmed via a raw API dump), but the campus is
+  // baked into the title text itself for at least the current faculty
+  // posting, so locationFilter matches against title+location combined.
+  // Verified live: real posting "PROFESSOR - ORLANDO" among 9 total
+  // postings district-wide.
+  {
+    campus: "Polytechnic University of Puerto Rico-Orlando",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=5388a0c5-18fe-449e-b500-098740269275&ccId=19000101_000001&type=JS&lang=en_US",
+    locationFilter: "Orlando",
+  },
   { campus: "Erwin Technical College", type: "generic", url: "https://www.hillsboroughschools.org/erwin" },
+  // hillsboroughschools.org domain -- a Hillsborough County Public Schools
+  // (K-12 district) adult/career-technical center, same shape as Erwin
+  // Technical College above and Downey Adult School (round 17 exclusion).
+  // Likely a policy-exclusion candidate rather than a scraper fix.
   { campus: "H W Brewster Technical College", type: "generic", url: "https://www.hillsboroughschools.org/Brewster" },
+  // orangetechcollege.net's own "Campuses Home" page states this is run
+  // directly by Orange County Public Schools (a K-12 district) across 7
+  // local campuses (Apopka/Avalon/East/Eatonville/Main/South/West) -- same
+  // non-independent CTE-center shape as the Hillsborough/Suwannee/Sarasota
+  // technical colleges in this batch. Likely policy-exclusion candidates
+  // (both East and West Campus) rather than scraper fixes.
   { campus: "Orange Technical College-East Campus", type: "generic", url: "https://www.orangetechcollege.net/campuses/east_campus" },
   { campus: "Orange Technical College-West Campus", type: "generic", url: "https://www.orangetechcollege.net/campuses/west_campus" },
+  // rtc.suwannee.k12.fl.us domain -- a Suwannee County School District (K-12)
+  // technical center. Likely a policy-exclusion candidate rather than a
+  // scraper fix.
   { campus: "Riveroak Technical College", type: "generic", url: "https://rtc.suwannee.k12.fl.us/o/rtc" },
+  // sarasotacountyschools.net domain -- a Sarasota County Schools (K-12)
+  // technical center. Likely a policy-exclusion candidate rather than a
+  // scraper fix.
   { campus: "Suncoast Technical College", type: "generic", url: "https://www.sarasotacountyschools.net/o/stcsmc" },
   { campus: "Academy for Five Element Acupuncture", type: "generic", url: "https://acupuncturist.edu/employment/" },
   { campus: "Academy for Nursing and Health Occupations", type: "generic", url: "https://www.anho.edu/" },
@@ -4225,6 +4396,12 @@ const FL_CAMPUSES = [
   // Mathematics, Nursing Instructor, Aviation Maintenance Instructor,
   // Computer Science Instructor, Aerospace Technology Instructor, etc.).
   { campus: "Eastern Florida State College", type: "generic", url: "https://webapps.easternflorida.edu/hr/employment-opportunities.cfm" },
+  // Real, working, University-scoped HigherEdJobs search (already correctly
+  // wired). Verified live (two fresh loads): 9 real postings with real
+  // anchors, but none currently faculty-titled (Grant/Budget Analyst,
+  // Accounting Coordinator, Assistant Baseball Coach, Director of Career
+  // Exploration, Athletic Trainer, etc.) -- genuinely 0 faculty openings
+  // right now, not a bug.
   { campus: "Edward Waters University", type: "generic", url: "https://www.higheredjobs.com/institution/search.cfm?University=Edward%20Waters%20University&suggest=3" },
   // Was pointing at the "Benefits" info subpage of careers.erau.edu (not a
   // listing page at all). The real ATS is a single Workday tenant
@@ -4249,18 +4426,79 @@ const FL_CAMPUSES = [
   },
   { campus: "Embry-Riddle Aeronautical University-Worldwide", type: "generic", url: "https://worldwide.erau.edu/" },
   { campus: "Everglades University", type: "generic", url: "https://evergladesuniversity.isolvedhire.com" },
-  { campus: "Flagler College", type: "generic", url: "https://www.flagler.edu/" },
+  // Was pointing at the bare flagler.edu homepage. Real "Faculty Job
+  // Openings" link (from the HR page) hands off to a single-institution
+  // Interfolio board (apply.interfolio.com/11601/positions) -- the existing
+  // "interfolio-inst" type/scraper already handles this exact URL shape via
+  // Interfolio's own public JSON API (logic.interfolio.com/byc-search/...),
+  // no browser rendering needed. Verified live: 4 real postings, 3 adjunct/
+  // professor-titled ("Adjunct Business Administration, Management, Business
+  // Admin, International", "Adjunct Professor of Criminology", "Adjunct
+  // Professor, Computer Information Systems").
+  { campus: "Flagler College", type: "interfolio-inst", url: "https://apply.interfolio.com/11601/positions" },
+  // flaglertech.edu's homepage is explicitly a Flagler Schools (Flagler
+  // County Public Schools, a K-12 district) site -- "Flagler Palm Coast High
+  // School", "Flagler Schools families", county school-board budget notices.
+  // Likely a policy-exclusion candidate rather than a scraper fix.
   { campus: "Flagler Technical College", type: "generic", url: "https://flaglertech.edu/" },
   { campus: "Florida Agricultural and Mechanical University", type: "generic", url: "https://www.famu.edu/" },
+  // Real, correctly-functioning page with genuine current postings
+  // ("Professor of Mechanical Engineering", "Dual Enrollment Adjunct
+  // Faculty" -- verified live) -- but every posting renders as a WordPress
+  // accordion (`<h3 class="accordion__item__title">` inside a
+  // `<div class="accordion__thumb">`) with no `<a href>` anywhere nearby.
+  // The shared generic scraper's no-anchor accordion fallback only
+  // recognizes `accordion-trigger`/`accordion__toggle`/`accordion-button`/
+  // `accordion-header`/button[class*=accordion] class patterns, none of
+  // which match this site's `accordion__item__title` naming -- a new,
+  // narrower shared-scraper gap than the fully anchor-less pure-text cases
+  // documented in earlier rounds (Alaska Bible College, Spring Hill
+  // College). Documented, not patched (touches the shared function used by
+  // every "generic" institution) -- URL is already correct.
   { campus: "Florida College", type: "generic", url: "https://floridacollege.edu/careers" },
   { campus: "Florida Gateway College", type: "schooljobs", url: "https://www.schooljobs.com/careers/fgcedu" },
   { campus: "Florida Gulf Coast University", type: "generic", url: "https://www.fgcu.edu/jobs/" },
   { campus: "Florida Institute of Technology", type: "generic", url: "https://www.fit.edu/employment" },
   { campus: "Florida Institute of Technology-Online", type: "workday", url: "https://floridatech.wd5.myworkdayjobs.com/FloridaTechCareers" },
-  { campus: "Florida Memorial University", type: "generic", url: "https://www.fmuniv.edu/" },
+  // Was pointing at the bare fmuniv.edu homepage. Real "Employment
+  // Opportunities" link (from the Office of Human Resources page) hands off
+  // to a single-institution Paycom board. Verified live: 40 total postings,
+  // several real faculty titles ("INSTRUCTOR OF HISTORY", "ADJUNCT
+  // INSTRUCTOR OF MUSIC | STEEL DRUM", "ADJUNCT INSTRUCTOR OF ENGLISH",
+  // "ADJUNCT INSTRUCTOR OF COMMUNICATIONS", "ADJUNCT INSTRUCTOR OF THEATRE
+  // ARTS").
+  {
+    campus: "Florida Memorial University",
+    type: "paycom",
+    url: "https://www.paycomonline.net/v4/ats/web.php/portal/3A7F245516E9EFA544C4D6ECB8AB8287/career-page",
+  },
   { campus: "Florida Polytechnic University", type: "generic", url: "https://floridapoly.edu/" },
-  { campus: "Florida SouthWestern State College", type: "generic", url: "https://jobs.silkroad.com/FSWSC/fswsccareerssilkroadcom" },
+  // Real, working SilkRoad ATS (confirmed genuine infrastructure), but page
+  // 1 (the bare URL) only shows Administrative/Management categories --
+  // real faculty postings live on page 2's "Faculty" and "Faculty (temp) -
+  // Adjuncts" categories, and the shared generic scraper doesn't paginate
+  // this platform. SilkRoad already has no dedicated scraper type in this
+  // repo, but Cameron University elsewhere in this file proves "generic"
+  // already handles a SilkRoad tenant scoped via its own
+  // "?SelectedCategory=<id>" query param (a real server-side filter, not a
+  // client-only widget) -- found this tenant's own category id (36329 =
+  // "Faculty") via the page's own category-header element IDs
+  // ("Jobs_PagedJobList_Category__36329"). Verified live (two fresh loads):
+  // exactly 2 real postings, "Professor, Early Childhood Education" and
+  // "Professor, Nursing (Lee)".
+  {
+    campus: "Florida SouthWestern State College",
+    type: "generic",
+    url: "https://jobs.silkroad.com/FSWSC/fswsccareerssilkroadcom?SelectedCategory=36329",
+  },
   { campus: "Florida State College at Jacksonville", type: "generic", url: "https://www.fscj.edu/" },
+  // "Job Postings" link is College Central Network, a student job-placement
+  // service (not an employee/HR careers board) -- and fortmyerstech.edu
+  // (Lee County Schools' Fleetforce CDL note, "School Board of Lee County"
+  // link) confirms this is a Lee County Public Schools (K-12 district)
+  // technical center, same non-independent CTE shape as the other technical
+  // colleges in this batch. Likely a policy-exclusion candidate rather than
+  // a scraper fix.
   { campus: "Fort Myers Technical College", type: "generic", url: "https://www.fortmyerstech.edu/" },
 ];
 
@@ -4306,6 +4544,13 @@ const GA_CAMPUSES = [
   { campus: "Emmanuel University", type: "generic", url: "https://www.ec.edu/" },
   { campus: "Emory University", type: "generic", url: "https://www.emory.edu/" },
   { campus: "Emory University-Oxford College", type: "generic", url: "https://www.oxford.emory.edu/resources/human-resources/careers.html" },
+  // Already correctly wired (real single-institution ApplicantPro board,
+  // real anchors per posting) -- verified live: 74 total postings, many
+  // real faculty titles ("Adjunct Instructor - Biology", "Assistant
+  // Professor of Reading", "Lecturer of Political Science", "Department
+  // Chair of Nursing", "Assistant/Associate Professor of Agribusiness and
+  // Applied Economics"). institutions-master.json's missing/generic labels
+  // are simply stale here, same as Northern Arizona University in round 17.
   { campus: "Fort Valley State University", type: "generic", url: "https://fvsu.applicantpro.com/jobs" },
   { campus: "Kennesaw State University", type: "peopleadmin", url: "https://kennesaw.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search" },
   { campus: "Albany State University", type: "generic", url: "https://www.asurams.edu/human-resources/employmentopp/employment.php" },
@@ -7732,6 +7977,12 @@ async function scrapeCaPrivate(context) {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "CA Private", locationFilter || null);
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "CA Private");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "CA Private");
+        // No existing CA Private dispatch case for "adp" or "oracle-cx" (both
+        // functions already existed, used elsewhere) -- added while wiring
+        // Fielding Graduate University (adp) and Loma Linda University
+        // (oracle-cx) during the generic-scraper long tail investigation.
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "CA Private", locationFilter || null);
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "CA Private");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CA Private");
         return [];
       } catch (e) {
@@ -11596,11 +11847,11 @@ async function scrapeFiuApi(campusName, sourceName) {
 // ATS hand-off wrapper: matches the (context, url, campusName, sourceName)
 // signature every other ATS_HANDOFF_SCRAPERS entry uses; scrapeAdpApi itself
 // needs no browser context since it hits the public ADP feed directly.
-async function scrapeAdpAs(context, url, campusName, sourceName) {
-  return await scrapeAdpApi(url, campusName, sourceName);
+async function scrapeAdpAs(context, url, campusName, sourceName, locationFilter = null) {
+  return await scrapeAdpApi(url, campusName, sourceName, locationFilter);
 }
 
-async function scrapeAdpApi(careersUrl, campusName, sourceName) {
+async function scrapeAdpApi(careersUrl, campusName, sourceName, locationFilter = null) {
   let u;
   try { u = new URL(careersUrl); } catch { return []; }
   if (!/workforcenow\.adp\.com$/i.test(u.hostname)) return [];
@@ -11635,7 +11886,19 @@ async function scrapeAdpApi(careersUrl, campusName, sourceName) {
     }
     skip += 50;
   }
-  return mapApiJobs(rows, campusName, sourceName);
+  // Scope a shared multi-campus ADP tenant to one campus. Unlike the
+  // Paycom/schooljobs locationFilter elsewhere in this file, ADP's own
+  // requisitionLocations field is inconsistently populated across tenants
+  // (confirmed via a raw API dump for Polytechnic University of Puerto
+  // Rico's shared Miami/Orlando tenant: most rows return no location at
+  // all), but the campus is often baked directly into the title instead
+  // (e.g. "PROFESSOR - ORLANDO") -- so match against title+location
+  // combined rather than location alone. No-op (unfiltered, same as every
+  // existing caller) when locationFilter isn't passed.
+  const scoped = locationFilter
+    ? rows.filter((r) => `${r.title} ${r.location || ""}`.toLowerCase().includes(locationFilter.toLowerCase()))
+    : rows;
+  return mapApiJobs(scoped, campusName, sourceName);
 }
 
 // Cornerstone (csod) and Paycom modern career sites gate their JSON APIs behind a
@@ -14996,11 +15259,14 @@ async function scrapeFlAll(context) {
   const results = await mapWithConcurrency(
     FL_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "FL");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "FL");
-        if (type === "adp") return await scrapeAdpAs(context, url, campus, "FL");
+        // locationFilter threaded through (added for Polytechnic University
+        // of Puerto Rico-Orlando's shared Miami/Orlando ADP tenant) -- no-op
+        // for every existing FL caller that doesn't set it.
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "FL", locationFilter || null);
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "FL");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "FL");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "FL");
@@ -15012,6 +15278,11 @@ async function scrapeFlAll(context) {
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "FL");
         if (type === "flsouthern-portal") return await scrapeFloridaSouthernPortal(context, url, campus, "FL");
         if (type === "fiu-api") return await scrapeFiuApi(campus, "FL");
+        // No existing FL dispatch case for "interfolio-inst" (function
+        // scrapeInterfolioInstitution already existed, used by other states)
+        // -- added while wiring Flagler College during the generic-scraper
+        // long tail investigation.
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "FL");
         if (type === "nau-search") {
           const base = await scrapeNauSearch(context, url, campus, "FL");
           return await enrichEnUsJobCardsFromDetails(context, base, {

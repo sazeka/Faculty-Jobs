@@ -1124,9 +1124,9 @@
     {
       "name": "Florida SouthWestern State College",
       "homepage_url": "https://www.fsw.edu/",
-      "career_url": "https://jobs.silkroad.com/FSWSC/fswsccareerssilkroadcom/",
+      "career_url": "https://jobs.silkroad.com/FSWSC/fswsccareerssilkroadcom?SelectedCategory=36329",
       "platform_type": "generic",
-      "notes": "Was pointing at a /careers landing page with only social-media/Handshake links and no embedded listing; route to FSW's SilkRoad careers board. Verified live: real, paginated listing (5 pages of results, e.g. Student Success Advisor I); no clearly faculty-titled posting visible in the sample reviewed, but confirmed genuine working ATS infrastructure."
+      "notes": "Was pointing at a /careers landing page with only social-media/Handshake links and no embedded listing; route to FSW's SilkRoad careers board. Round 18 update: bare page-1 URL only shows Administrative/Management categories -- real faculty postings live on page 2's 'Faculty' category, and the generic scraper doesn't paginate this platform. Scoped via SilkRoad's own '?SelectedCategory=<id>' query param (same mechanism already proven by the Cameron University record in server.js), category id 36329 = 'Faculty' (found via the page's own category-header element IDs). Verified live: 2 real postings, 'Professor, Early Childhood Education' and 'Professor, Nursing (Lee)'."
     },
     {
       "name": "Frank Phillips College",
@@ -2545,9 +2545,9 @@
     {
       "name": "The Chicago School at Los Angeles",
       "homepage_url": "https://www.thechicagoschool.edu/in-the-community/locations",
-      "career_url": "https://www.thechicagoschool.edu/in-the-community/careers/#",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings)."
+      "career_url": "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=0cec31c3016301fde4ca6f18e1496e00",
+      "platform_type": "workday",
+      "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings). Round 18 update: the bare careers page hands off to a single Workday tenant (tcsedsystem.wd1.myworkdayjobs.com/TCSPP) shared across every Chicago School campus (72 openings unscoped) -- scoped to this campus's own facet id via a '?locations=<id>' query param (same mechanism as Embry-Riddle-Daytona Beach in server.js). Verified live: 15 real postings including 'Adjunct Faculty - Clinical Psychology - Los Angeles Campus'. Kept in sync with server.js's own type/url here so this override doesn't silently revert that fix back to platform_type 'generic' (the round-14 lesson)."
     },
     {
       "name": "The College of New Jersey",
@@ -2811,9 +2811,9 @@
     {
       "name": "The Chicago School at San Diego",
       "homepage_url": "https://www.thechicagoschool.edu/in-the-community/locations",
-      "career_url": "https://www.thechicagoschool.edu/in-the-community/careers/",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings)."
+      "career_url": "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=0cec31c3016301fc5c1ae144e1498800",
+      "platform_type": "workday",
+      "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings). Round 18 update: same shared Workday tenant as The Chicago School at Los Angeles, scoped to San Diego's own facet id via '?locations=<id>'. Verified live: 2 real postings, 'Adjunct Faculty - MFT - San Diego Campus' and 'Adjunct Faculty - Applied Behavior Analysis - San Diego Campus'. Kept in sync with server.js's own type/url here so this override doesn't silently revert that fix back to platform_type 'generic'."
     },
     {
       "name": "University of Hawaii System",
