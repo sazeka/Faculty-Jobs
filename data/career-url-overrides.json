@@ -452,9 +452,9 @@
     {
       "name": "Chabot College",
       "homepage_url": "https://www.chabotcollege.edu/",
-      "career_url": "https://clpccd.peopleadmin.com/postings/search",
-      "platform_type": "generic",
-      "notes": "Configured /employment page is a landing page linking to this district-wide (Chabot-Las Positas CCD) PeopleAdmin search instead of hosting listings. Verified live: 4 current postings, with an explicit Faculty position-type filter category available."
+      "career_url": "https://clpccd.peopleadmin.com/postings/search?1240%5B%5D=2",
+      "platform_type": "peopleadmin",
+      "notes": "Configured /employment page is a landing page linking to this district-wide (Chabot-Las Positas CCD) PeopleAdmin search instead of hosting listings. Scoped to Chabot's own Location facet (1240[]=2) so postings aren't misattributed across the shared district board (Chabot-Las Positas CCD also covers Las Positas College and two district offices). Verified live: facet genuinely filters server-side (1 of the district's 3 current postings is Chabot-specific: \"Children's Center Cook\"; 0 currently Faculty-titled at this specific campus). platform_type corrected from generic to peopleadmin to match server.js and avoid the applyCareerUrlOverridesInPlace silent-revert bug documented in round 14."
     },
     {
       "name": "Chadron State College",
@@ -690,9 +690,9 @@
     {
       "name": "Contra Costa College",
       "homepage_url": "https://www.contracosta.edu/",
-      "career_url": "https://www.4cdcareers.net/",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; Contra Costa College is one of three colleges under the Contra Costa Community College District, which shares a single PeopleAdmin job portal (4cdcareers.net). Verified live: 16 faculty postings in the Faculty Positions search, including one specific to Contra Costa College (Adjunct Instructor (TEMPORARY) - FAMA Studio Art) alongside Los Medanos College and Diablo Valley College postings."
+      "career_url": "https://www.4cdcareers.net/postings/search?449%5B%5D=3",
+      "platform_type": "peopleadmin",
+      "notes": "Was pointing at the bare homepage; Contra Costa College is one of three colleges under the Contra Costa Community College District, which shares a single PeopleAdmin job portal (4cdcareers.net). Scoped to Contra Costa College's own Location facet (449[]=3) instead of the unscoped district-wide search so postings aren't misattributed across Diablo Valley College / Los Medanos College / Brentwood / San Ramon / District Office. Verified live: facet genuinely filters server-side (8 CCC-specific postings, including 2 real faculty: Adjunct Instructor (TEMPORARY) - FAMA Studio Art and ...FAMA Art History). platform_type corrected from generic to peopleadmin to match server.js and avoid the applyCareerUrlOverridesInPlace silent-revert bug documented in round 14."
     },
     {
       "name": "Covenant College",

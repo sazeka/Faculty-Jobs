@@ -787,9 +787,39 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "American Jewish University", type: "generic", url: "https://aju.edu/careers" },
   { campus: "American River College", type: "schooljobs", url: "https://www.schooljobs.com/careers/losriosccd/jobs/5203260/english-assistant-professor" },
   { campus: "Antelope Valley Community College District", type: "generic", url: "https://www.avc.edu/about/administration/human-resources/employment/full-time-faculty-positions" },
-  { campus: "Antioch University-Los Angeles", type: "generic", url: "https://www.antioch.edu/employment" },
-  { campus: "Antioch University-Santa Barbara", type: "generic", url: "https://www.antioch.edu/employment" },
-  { campus: "Coalinga College", type: "generic", url: "https://www.westhillscollege.com/coalinga/" },
+  // Was pointing at the bare university-wide employment page, which lists
+  // every campus's postings together (New England, Seattle, LA, Santa
+  // Barbara, Online, GSLC) with no per-campus attribution in the generic
+  // scraper's anchor-based view. The page's own WP Job Manager widget
+  // supports a native ?search_location= facet that really filters
+  // server-side ("Search completed. Found 8 matching records." for Los
+  // Angeles, all correctly LA-tagged) -- scoped each campus to its own
+  // facet URL instead of the shared page, same principle as the
+  // district-wide PeopleAdmin Work Location facet scoping used elsewhere.
+  // Verified live: LA facet returns 8 real postings (currently all Staff/
+  // Work-Study, 0 Faculty-titled right now); SB facet returns 3 (same, 0
+  // Faculty-titled right now) -- correct, real infrastructure, genuinely no
+  // faculty opening at either specific campus at check time (the system
+  // does have current Faculty postings, e.g. "Teaching Faculty, Clinical
+  // Psychology" / "Core Faculty, Clinical Psychology", but both are
+  // New England-tagged, not LA/SB).
+  { campus: "Antioch University-Los Angeles", type: "generic", url: "https://www.antioch.edu/employment/?search_location=Los+Angeles" },
+  { campus: "Antioch University-Santa Barbara", type: "generic", url: "https://www.antioch.edu/employment/?search_location=Santa+Barbara" },
+  // Was pointing at the bare campus homepage. Real ATS is the West Hills
+  // Community College District's shared NEOGOV/schooljobs tenant (covers
+  // Coalinga College, Lemoore College, and the District Office) -- this
+  // platform has no URL-facet for location like PeopleAdmin does, so scoped
+  // via scrapeSchoolJobsAs's locationFilter param instead (reads each job
+  // card's own "Coalinga College, CA" / "Lemoore College, CA" location line).
+  // Verified live: 93 postings district-wide, including a Coalinga-specific
+  // real faculty posting ("Part-time (Adjunct) Faculty – Non-Credit GED
+  // (High School Equivalency)", Coalinga College, CA, Category: Education).
+  {
+    campus: "Coalinga College",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/whccd",
+    locationFilter: "Coalinga",
+  },
   { campus: "Lemoore College", type: "generic", url: "https://www.westhillscollege.com/lemoore/" },
   { campus: "Loma Linda University", type: "generic", url: "https://www.llu.edu/index.html" },
   { campus: "Los Angeles County College of Nursing and Allied Health", type: "generic", url: "https://dhs.lacounty.gov/college-of-nursing-and-allied-health/" },
@@ -852,8 +882,22 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "CBD College", type: "generic", url: "https://www.cbd.edu/" },
   { campus: "Cerritos College", type: "generic", url: "https://www.cerritos.edu/" },
   { campus: "Cerro Coso Community College", type: "generic", url: "https://cerrocoso.edu/" },
-  { campus: "Chabot College", type: "generic", url: "https://clpccd.peopleadmin.com/postings/search" },
-  { campus: "Chaffey College", type: "generic", url: "https://www.chaffey.edu/faculty/jobs" },
+  // Was pointing at the unscoped district-wide search (Chabot-Las Positas
+  // CCD shares one PeopleAdmin instance across Chabot College, Las Positas
+  // College, and two district offices). Scoped to Chabot's own Location
+  // facet (1240[]=2) so postings aren't misattributed across the shared
+  // district board -- verified live the facet genuinely filters server-side
+  // (1 of the district's 3 current postings is Chabot-specific: "Children's
+  // Center Cook"; 0 currently Faculty-titled at this specific campus).
+  { campus: "Chabot College", type: "peopleadmin", url: "https://clpccd.peopleadmin.com/postings/search?1240%5B%5D=2" },
+  // "/faculty/jobs" 404s. Real ATS is NEOGOV/schooljobs; the main careers
+  // board's "Current Openings" list is mostly Short-Term Worker/Classified
+  // postings with a separate "CLICK HERE for Adjunct Faculty Opportunities"
+  // link to a promotionaljobs sub-board holding the actual faculty pool.
+  // Verified live: 50 real postings, e.g. "African American Studies (and/or
+  // Black Studies/Africana) Ethnic Studies), Part-Time Faculty Pool" and
+  // "American Sign Language, Part-Time Faculty Pool", both Category: Faculty.
+  { campus: "Chaffey College", type: "schooljobs", url: "https://www.schooljobs.com/careers/chaffey/promotionaljobs" },
   { campus: "Chapman University", type: "generic", url: "https://www.chapman.edu/faculty-staff/human-resources/jobs/index.aspx" },
   { campus: "Charles R Drew University of Medicine and Science", type: "generic", url: "https://www.cdrewu.edu/" },
   { campus: "Church Divinity School of the Pacific", type: "generic", url: "https://www.cdsp.edu/" },
@@ -866,9 +910,29 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Coastline Community College", type: "generic", url: "https://www.coastline.edu/" },
   { campus: "College of Alameda", type: "generic", url: "https://alameda.edu/" },
   { campus: "College of Marin", type: "generic", url: "https://www.marin.edu/" },
+  // Real ATS found: the San Mateo County CCD's shared InterviewExchange
+  // tenant (smccd.interviewexchange.com), with Full-Time Faculty (catid=2081)
+  // and Part-Time Faculty (catid=2082) category links from the district HR
+  // page. NOT wired: unlike the PeopleAdmin (Chabot/Contra Costa CCD) and
+  // schooljobs (West Hills CCD) shared boards elsewhere in this file, this
+  // tenant has no campus-level facet at all (only a coarse "United
+  // States-CA" state filter) -- every posting checked (incl. detail pages)
+  // carries just "San Mateo, CA" / a generic HR department, with no way to
+  // tell College of San Mateo apart from Skyline College or Cañada College,
+  // the other two colleges in this district. Wiring the shared URL here
+  // would misattribute the whole district's postings to this one campus
+  // (the Bemidji State misattribution lesson) -- left as bare homepage
+  // pending either a better facet discovery or a policy decision. Separately
+  // NOT verified against the InterviewExchange-WAF-blocked precedent from
+  // rounds 1/5/6/10 (loaded fine for this investigation, but that has been
+  // an intermittent/environment-dependent block historically).
   { campus: "College of San Mateo", type: "generic", url: "https://www.collegeofsanmateo.edu/" },
   { campus: "College of the Canyons", type: "generic", url: "https://www.canyons.edu/" },
-  { campus: "College of the Desert", type: "generic", url: "https://www.collegeofthedesert.edu/" },
+  // Was pointing at the bare homepage. Real careers page links to their
+  // NEOGOV/schooljobs recruiting portal (single-institution tenant, not a
+  // shared district board). Verified live: 7 postings, 1 faculty-titled
+  // ("Economics Instructor, part-time", Category: Instructor).
+  { campus: "College of the Desert", type: "schooljobs", url: "https://www.schooljobs.com/careers/collegeofthedesertca" },
   { campus: "College of the Redwoods", type: "generic", url: "https://www.redwoods.edu/" },
   // schooljobs.com is a client-rendered SPA; "generic" only reads anchors once on
   // page 1 without the platform's own pagination — "schooljobs" already exists
@@ -877,25 +941,50 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "College of the Siskiyous", type: "generic", url: "https://www.siskiyous.edu/" },
   { campus: "Compton College", type: "generic", url: "https://www.compton.edu/" },
   { campus: "Concordia University-Irvine", type: "generic", url: "https://www.cui.edu/" },
-  { campus: "Contra Costa College", type: "generic", url: "https://www.4cdcareers.net/" },
+  // Was pointing at the bare 4cdcareers.net homepage. Contra Costa CCD
+  // shares a single PeopleAdmin instance across Contra Costa College,
+  // Diablo Valley College, Los Medanos College, Brentwood/San Ramon
+  // campuses, and the District Office -- scoped to Contra Costa College's
+  // own Location facet (449[]=3) instead of the unscoped district-wide
+  // search. Verified live: facet genuinely filters server-side (8 of the
+  // district's current postings are CCC-specific, including 2 real faculty
+  // postings: "Adjunct Instructor (TEMPORARY) – FAMA Studio Art" and
+  // "...FAMA Art History").
+  { campus: "Contra Costa College", type: "peopleadmin", url: "https://www.4cdcareers.net/postings/search?449%5B%5D=3" },
   { campus: "Contra Costa Community College District Office", type: "generic", url: "https://www.4cd.edu/" },
   { campus: "Copper Mountain Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cmccd" },
   { campus: "Cosumnes River College", type: "generic", url: "https://www.crc.losrios.edu/" },
   { campus: "Crafton Hills College", type: "generic", url: "https://www.craftonhills.edu/" },
-  { campus: "Cuesta College", type: "generic", url: "https://www.cuesta.edu/" },
+  // Was pointing at the bare homepage. Real ATS is NEOGOV/schooljobs
+  // (single-institution tenant). Verified live: 26 postings, several
+  // faculty-titled ("Automotive Technology Part-Time Instructor Pool",
+  // "Aviation Maintenance Part-Time Instructor Pool").
+  { campus: "Cuesta College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cuesta" },
   { campus: "Cuyamaca College", type: "generic", url: "https://www.cuyamaca.edu/" },
   { campus: "Cypress College", type: "generic", url: "https://www.cypresscollege.edu/" },
   { campus: "Daybreak University", type: "generic", url: "https://daybreak.edu/" },
   { campus: "De Anza College", type: "generic", url: "https://www.deanza.edu/" },
   { campus: "DHARMA REALM BUDDHIST UNIVERSITY", type: "generic", url: "https://www.drbu.edu/hr" },
-  { campus: "Diablo Valley College", type: "generic", url: "https://www.dvc.edu/" },
+  // Same shared Contra Costa CCD PeopleAdmin instance as Contra Costa
+  // College above -- scoped to Diablo Valley College's own Location facet
+  // (449[]=4). Verified live: 5 DVC-specific postings, 4 real faculty
+  // ("Chemistry Adjunct Instructor (TEMPORARY)", "Music Adjunct Instructor
+  // – Applied Low Brass (TEMPORARY)", "Engineering Adjunct Instructor
+  // (TEMPORARY)", "Electronics Adjunct Instructor (TEMPORARY)").
+  { campus: "Diablo Valley College", type: "peopleadmin", url: "https://www.4cdcareers.net/postings/search?449%5B%5D=4" },
   { campus: "Dominican School of Philosophy & Theology", type: "generic", url: "https://www.dspt.edu/employment" },
   { campus: "Dominican University of California", type: "generic", url: "https://www.dominican.edu/" },
   { campus: "Dongguk University Los Angeles", type: "generic", url: "https://www.dula.edu/" },
   { campus: "Downey Adult School", type: "generic", url: "https://www.das.edu/" },
   { campus: "East Los Angeles College", type: "generic", url: "https://www.elac.edu/" },
   { campus: "EDvance College", type: "generic", url: "https://edvance.edu/" },
-  { campus: "El Camino Community College District", type: "generic", url: "https://www.elcamino.edu/" },
+  // Was pointing at the bare homepage. Real employment page lists current
+  // openings directly (own site, not an ATS handoff), broken out by
+  // category including "Teaching or Counseling (Part-Time Temporary)" and
+  // "Teaching or Counseling (Full-Time Tenure Track)". Verified live:
+  // real, correctly functioning page, but both faculty categories show "No
+  // Current Openings" right now (only Classified postings currently open).
+  { campus: "El Camino Community College District", type: "generic", url: "https://www.elcamino.edu/departments/human-resources/employment-opportunities.php" },
   { campus: "Epic Bible College & Graduate School", type: "generic", url: "https://epic.edu/" },
   { campus: "Evergreen Valley College", type: "generic", url: "https://www.evc.edu/jobs" },
   { campus: "Feather River Community College District", type: "generic", url: "https://www.frc.edu/" },
@@ -1855,7 +1944,12 @@ const AZ_CAMPUSES = [
     // under other categories like "Health Services" and were invisible to this feed.
     // Search unfiltered instead; scrapeNauSearch has no internal faculty check, so
     // this relies on the downstream global looksFacultyish filter, same as every
-    // other wide-net "generic" feed.
+    // other wide-net "generic" feed. Re-verified 2026-08-07: already correctly
+    // wired and dispatched (scrapeAzAll has a "nau-search" case); institutions-
+    // master.json's "generic"/"missing" labels for this record are simply
+    // stale from before that earlier fix. Live check found only 5 total open
+    // reqs system-wide right now, none faculty-titled -- genuinely 0 current
+    // faculty openings, not a bug.
     url: "https://careers.nau.edu/jobs/search?page=1&query=",
   },
   {
@@ -1868,7 +1962,21 @@ const AZ_CAMPUSES = [
     type: "generic",
     url: "https://info.prescott.edu/job-openings/",
   },
-  { campus: "Ottawa University-Surprise", type: "generic", url: "https://www.ottawa.edu/ouaz/home" },
+  // Was pointing at the bare Surprise-campus homepage (no employment info at
+  // all). Real careers page (ottawa.edu/careers) links to a single
+  // university-wide Paycom tenant covering every Ottawa University campus
+  // (Ottawa KS, Surprise AZ, Overland Park KS, Brookfield WI, online) --
+  // scoped to just this campus via scrapePaycomAs's locationFilter param so
+  // the whole system's job count isn't misattributed to Surprise alone.
+  // Verified live: 58 total postings system-wide, including one specific to
+  // this campus ("Adjunct Instructor - Adult Professional & Graduate
+  // Studies - Surprise Arizona").
+  {
+    campus: "Ottawa University-Surprise",
+    type: "paycom",
+    url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=AB201C499D53A5D603D5BE296513B383",
+    locationFilter: "Surprise",
+  },
   // Was pointing at an adult-student program page, not employment. Real ATS
   // is Frontline/AppliTrack (no dedicated scraper type exists for it).
   { campus: "Western Maricopa Education Center", type: "generic", url: "https://www.applitrack.com/westmec/onlineapp/" },
@@ -4243,6 +4351,15 @@ const AL_CAMPUSES = [
   { campus: "Auburn University", type: "icims", url: "https://jobs.auburn.edu/auburn/jobs?tags2=Faculty" },
   { campus: "University of Alabama at Birmingham", type: "peopleadmin", url: "https://uab.peopleadmin.com/postings/search" },
   { campus: "University of South Alabama", type: "generic", url: "https://www.southalabama.edu/departments/academicaffairs/facultyposition.html" },
+  // Real, correctly-reached page -- lists current openings directly,
+  // including real faculty postings ("Adjunct Instructor–English (Pool)",
+  // "Adjunct Instructor – Psychology (Pool)", "Adjunct Instructor Chemistry
+  // FA26"). Same "shared-scraper gap" shape as Alaska Bible College/Black
+  // River Technical College elsewhere in this file, and already noted by
+  // name in the generic scraper's own CTA-anchor-lookup comment: every
+  // title on this page is plain text with no per-posting href at all (not
+  // even a CTA link), so there's nothing for the anchor-based scraper to
+  // find. Documented, not patched (would need a dedicated custom scraper).
   { campus: "Spring Hill College", type: "generic", url: "https://www.shc.edu/about-spring-hill-jesuit-college/spring-hill-college-jobs/" },
   { campus: "Remington College-Mobile Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/mobile/" },
   { campus: "Alabama A & M University", type: "schooljobs", url: "https://www.schooljobs.com/careers/aamu" },
@@ -5909,7 +6026,14 @@ export function looksFacultyish(title) {
     s.includes("lecturer") ||
     s.includes("instructor") ||
     /\bfaculty\b/.test(s) ||
-    /\badjunct\b/.test(s)
+    /\badjunct\b/.test(s) ||
+    // "Teaching Fellow" (e.g. "Visiting Teaching Fellow, 2026-27") is a real
+    // faculty-track teaching appointment at small colleges (found at Dharma
+    // Realm Buddhist University while investigating the generic-scraper long
+    // tail, 2026-08-07) -- distinct from a plain "Fellow" (which is too
+    // noisy/ambiguous on its own, e.g. research fellowships), so requires
+    // "teaching" immediately alongside it.
+    /\bteaching\s+fellows?\b/.test(s)
   );
 }
 
@@ -7598,15 +7722,16 @@ async function scrapeCaPrivate(context) {
   const results = await mapWithConcurrency(
     CA_PRIVATE_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "CA Private");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "CA Private");
         if (type === "usc-jobs") return await scrapeUscJobsAs(url, campus, "CA Private");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CA Private");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CA Private");
-        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "CA Private");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "CA Private", locationFilter || null);
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "CA Private");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "CA Private");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CA Private");
         return [];
       } catch (e) {
@@ -8665,7 +8790,7 @@ const jobs = allJobs.length > 0 ? allJobs : await page.evaluate(() => {
 
 // SchoolJobs pagination sometimes uses javascript:void(0) for Next.
 // We click and wait for results signature to change.
-async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "NJ") {
+async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "NJ", locationFilter = null) {
   const page = await context.newPage();
   try {
     const jobs = [];
@@ -8691,7 +8816,18 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "
           const title = clean(a.textContent);
           if (!url || !title || title.length < 4) continue;
           if (!/\/jobs\/\d+/i.test(url)) continue;
-          out.push({ title, url });
+          // NEOGOV/schooljobs list items render the campus location as the
+          // first <li> inside the card's <ul class="list-meta"> (e.g.
+          // "Coalinga College, CA") -- captured so a shared multi-campus
+          // district board (one schooljobs tenant covering every campus,
+          // no native URL-facet for location on this platform unlike
+          // PeopleAdmin) can be scoped to a single campus by the caller
+          // instead of misattributing the whole district's job count to one
+          // campus record (established Bemidji State misattribution lesson).
+          const card = a.closest("li.list-item, li");
+          const metaLi = card ? card.querySelector("ul.list-meta li") : null;
+          const location_ = metaLi ? clean(metaLi.textContent) : "";
+          out.push({ title, url, location: location_ });
         }
         return out;
       });
@@ -8708,7 +8844,14 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "
       await page.waitForTimeout(900);
     }
 
-    const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+    // Scope down to one campus's postings when this schooljobs tenant is
+    // shared district-wide. No-op (unfiltered, same as before) for every
+    // existing caller that doesn't pass locationFilter.
+    const scoped = locationFilter
+      ? jobs.filter((j) => (j.location || "").toLowerCase().includes(locationFilter.toLowerCase()))
+      : jobs;
+
+    const filtered = scoped.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
     return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
   } finally {
@@ -9079,8 +9222,8 @@ async function scrapeMiAll(context) {
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
-async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName) {
-  const items = await scrapeNjSchoolJobs(context, startUrl, campusName, sourceName);
+async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName, locationFilter = null) {
+  const items = await scrapeNjSchoolJobs(context, startUrl, campusName, sourceName, locationFilter);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
 
@@ -10726,10 +10869,11 @@ async function scrapeJobDetail(context, url) {
 
 
 async function scrapeAzAll(context) {
-  const tasks = AZ_CAMPUSES.map(({ campus, type, url }) =>
+  const tasks = AZ_CAMPUSES.map(({ campus, type, url, locationFilter }) =>
     (async () => {
       try {
         if (type === "asu-table") return await scrapeAsuFacultyPositionsTable(context, campus, url);
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "AZ", locationFilter || null);
         if (type === "nau-search") {
           const base = await scrapeNauSearch(context, url, campus, "AZ");
           return await enrichEnUsJobCardsFromDetails(context, base, {
@@ -10972,7 +11116,7 @@ async function scrapeNyPrivate(context) {
 }
 
 // Paycom scraper (JS-rendered career portal)
-async function scrapePaycomAs(context, startUrl, campusName, sourceName) {
+async function scrapePaycomAs(context, startUrl, campusName, sourceName, locationFilter = null) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -11018,13 +11162,38 @@ async function scrapePaycomAs(context, startUrl, campusName, sourceName) {
         if (seen.has(url)) continue;
         seen.add(url);
 
-        out.push({ title, url });
+        // Paycom job cards render THREE <p> descendants in a fixed order:
+        // [0] position type (e.g. "Full Time" / "Adjunct Instructor
+        // (Seasonal as needed)"), [1] location (e.g. "Ottawa University -
+        // Surprise, Arizona - Surprise, AZ 85374"), [2] description excerpt.
+        // a.querySelector("p") returns [0], NOT the location -- verified
+        // live against 10 real cards on Ottawa University's board
+        // (2026-08-07) that [0] is always the type line and [1] is always
+        // the location line, so index into querySelectorAll explicitly.
+        // Captured so a shared multi-campus Paycom tenant (one clientkey
+        // covering every campus system-wide) can be scoped to a single
+        // campus's postings by the caller instead of misattributing the
+        // whole system's job count to one campus record (same principle as
+        // the district-wide PeopleAdmin scoping done elsewhere -- established
+        // Bemidji State misattribution lesson).
+        const locationP = a.querySelectorAll("p")[1];
+        const location_ = locationP ? clean(locationP.textContent) : "";
+
+        out.push({ title, url, location: location_ });
       }
 
       return out;
     });
 
-    const filtered = jobs.filter((j) => !omitAdjunct(j.title));
+    // Scope down to one campus's postings when this Paycom tenant is shared
+    // system-wide across multiple campuses (see the capture comment above).
+    // Left as-is (no filtering) for every existing caller that doesn't pass
+    // locationFilter, so this is purely additive.
+    const scoped = locationFilter
+      ? jobs.filter((j) => (j.location || "").toLowerCase().includes(locationFilter.toLowerCase()))
+      : jobs;
+
+    const filtered = scoped.filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length}`);
 
     return filtered.map((j) => ({
@@ -11873,7 +12042,13 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
           // browser context, so it can't call that outer Node function and
           // needed its own copy of the fix. Found via DeSales University
           // while investigating the generic-scraper long tail (2026-08-06).
-          /\badjunct\b/i.test(title);
+          /\badjunct\b/i.test(title) ||
+          // "Teaching Fellow" (e.g. "Visiting Teaching Fellow, 2026-27") --
+          // same addition as looksFacultyish(), same "separate copy needed
+          // inside page.evaluate()" reason. Found via Dharma Realm Buddhist
+          // University while investigating the generic-scraper long tail
+          // (2026-08-07).
+          /\bteaching\s+fellows?\b/i.test(title);
 
         if (!isFacultyRelated) continue;
 
