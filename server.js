@@ -735,7 +735,7 @@ const MA_PRIVATE_CAMPUSES = [
   // "Summer Intern Position: Strategic Projects Internship" listed.
   { campus: "Conway School of Landscape Design", type: "generic", url: "https://csld.edu/people/job-openings/" },
   { campus: "Curry College", type: "interviewexchange", url: "https://curry.interviewexchange.com/" },
-  { campus: "Dean College", type: "generic", url: "https://www.dean.edu/about-dean/leadership/administration/office-of-human-resources" },
+  { campus: "Dean College", type: "interviewexchange", url: "https://dean.interviewexchange.com/static/clients/546DCM1/index.jsp" },
   { campus: "Eastern Nazarene College", type: "generic", url: "https://www.enc.edu/" },
   { campus: "Emerson College", type: "workday", url: "https://emerson.wd5.myworkdayjobs.com/en-US/Emerson_College_ft_faculty" },
   { campus: "Emmanuel College", type: "interviewexchange", url: "https://emmanuel.interviewexchange.com/static/clients/13EM1/listJobs.jsp;jsessionid=47B469F5FF02B2ECA11624165C411A0F" },
@@ -845,7 +845,7 @@ const CA_PRIVATE_CAMPUSES = [
   // produced duplicate postings under a second campus-name spelling (e.g. East Bay
   // appeared as both "California State University, East Bay" and "...-East Bay").
   // Removed so CSU is system-only — see the "never per-campus for CSU members" rule.
-  { campus: "California University of Science and Medicine", type: "generic", url: "https://www.cusm.edu/" },
+  { campus: "California University of Science and Medicine", type: "generic", url: "https://www.cusm.edu/careers.php" },
   { campus: "California Western School of Law", type: "generic", url: "https://www.cwsl.edu/careers" },
   { campus: "Canada College", type: "generic", url: "https://canadacollege.edu/" },
   { campus: "Casa Loma College-Los Angeles", type: "generic", url: "https://casalomacollege.edu/careers-2" },
@@ -1149,7 +1149,7 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Albright College", type: "generic", url: "https://www.albright.edu/home/" },
   { campus: "Citizens School of Nursing", type: "generic", url: "https://www.ahn.org/education/citizens-school-nursing" },
   { campus: "Commonwealth Technical Institute", type: "generic", url: "https://www.dli.pa.gov/Individuals/Disability-Services/CTI-HGAC/Pages/Home.aspx" },
-  { campus: "Eastern University", type: "generic", url: "https://www.eastern.edu/about/offices-centers/human-resources/employment-opportunities" },
+  { campus: "Eastern University", type: "schooljobs", url: "https://www.schooljobs.com/careers/easternpa" },
   { campus: "Geisinger Commonwealth School of Medicine", type: "generic", url: "https://www.geisinger.edu/education" },
   { campus: "Harcum College", type: "generic", url: "https://www.harcum.edu/s/1044/edu/start.aspx" },
   // jobs.sju.edu canonicalizes to a raw Workday tenant with 0 static anchors — a
@@ -1539,7 +1539,7 @@ const VA_CAMPUSES = [
   { campus: "Eastern Virginia Medical School", type: "generic", url: "https://www.evms.edu/" },
   { campus: "Edward Via College of Osteopathic Medicine", type: "generic", url: "https://www.vcom.edu/employment/job-listings" },
   { campus: "Emory & Henry University", type: "generic", url: "https://www.emoryhenry.edu/human-resources/employment-opportunities/" },
-  { campus: "Ferrum College", type: "generic", url: "https://www.ferrum.edu/" },
+  { campus: "Ferrum College", type: "generic", url: "https://ferrumcollege.applytojob.com/apply" },
 ];
 
 // SC (South Carolina) - major public research + private liberal arts
@@ -1668,7 +1668,11 @@ const DE_CAMPUSES = [
     url: "https://phh.tbe.taleo.net/phh02/ats/careers/v2/searchResults?org=WILMU&cws=51",
   },
   { campus: "Delaware Technical Community College-Central Office", type: "generic", url: "https://www.dtcc.edu/about/employment" },
-  { campus: "Delaware Technical Community College-Terry", type: "generic", url: "https://www.dtcc.edu/about/employment" },
+  {
+    campus: "Delaware Technical Community College-Terry",
+    type: "peopleadmin",
+    url: "https://dtcc.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&709%5B%5D=5&commit=Search",
+  },
 ];
 
 // MD (Maryland) - major research universities + liberal arts colleges
@@ -2931,7 +2935,7 @@ const MT_CAMPUSES = [
     type: "paycom",
     url: "https://www.paycomonline.net/v4/ats/web.php/portal/23D9610C7FF62DF6DF80223B0B1ED6E3/career-page",
   },
-  { campus: "Fort Peck Community College", type: "generic", url: "https://www.fpcc.edu/" },
+  { campus: "Fort Peck Community College", type: "generic", url: "https://www.fpcc.edu/about" },
 ];
 
 // WI (Wisconsin)
@@ -3003,7 +3007,7 @@ const WI_CAMPUSES = [
   { campus: "Carroll University", type: "generic", url: "https://www.carrollu.edu/employment" },
   { campus: "Carthage College", type: "generic", url: "https://carthage.applicantpro.com/jobs" },
   { campus: "Chippewa Valley Technical College", type: "icims", url: "https://careers-cvtc.icims.com/" },
-  { campus: "College of Menominee Nation", type: "generic", url: "https://www.menominee.edu/" },
+  { campus: "College of Menominee Nation", type: "generic", url: "https://www.menominee.edu/about-cmn/career-opportunities" },
   // Was the sitewide search results page (4,196 hits: blog posts, PDFs, unrelated
   // content), not a job list. Real ATS is ApplicantPro.
   { campus: "Concordia University-Wisconsin", type: "generic", url: "https://cuw.applicantpro.com/jobs" },
@@ -3106,7 +3110,11 @@ const CO_CAMPUSES = [
   { campus: "Community College of Denver", type: "schooljobs", url: "https://www.schooljobs.com/careers/ccd" },
   { campus: "Denver Seminary", type: "generic", url: "https://www.denverseminary.edu/" },
   { campus: "Fort Lewis College", type: "generic", url: "https://www.fortlewis.edu/administrative-offices/human-resources/careers" },
-  { campus: "Front Range Community College", type: "generic", url: "https://www.frontrange.edu/faculty/jobs" },
+  {
+    campus: "Front Range Community College",
+    type: "pageup",
+    url: "https://hr.cccs.edu/jobs/search/front-range-cc-search-page?page=1&category_uids%5B%5D=8b81a67d3b6575ca9967476028f13b8a&query=",
+  },
 ];
 
 // OH (Ohio)
@@ -3244,7 +3252,7 @@ const OH_CAMPUSES = [
   { campus: "Central State University", type: "generic", url: "https://www.centralstate.edu/" },
   { campus: "Cincinnati College of Mortuary Science", type: "generic", url: "https://www.ccms.edu/academics/faculty-jobs" },
   { campus: "Cincinnati State Technical and Community College", type: "generic", url: "https://www.cincinnatistate.edu/news/faculty-assisted-at-healthcare-careers-camp-for-high-school-students" },
-  { campus: "Clark State College", type: "generic", url: "https://www.clarkstate.edu/community/employment" },
+  { campus: "Clark State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/clarkstate" },
   { campus: "Cleveland Institute of Art", type: "generic", url: "https://www.cia.edu/about-us/careers-at-cia" },
   { campus: "Cleveland Institute of Music", type: "generic", url: "https://www.cim.edu/" },
   { campus: "Collins Career Technical Center", type: "generic", url: "https://jobs.collins-cc.edu/" },
@@ -3663,7 +3671,7 @@ const ID_CAMPUSES = [
   { campus: "Brigham Young University-Idaho", type: "generic", url: "https://www.byui.edu/human-resources/employment" },
   { campus: "College of Eastern Idaho", type: "generic", url: "https://www.cei.edu/" },
   { campus: "College of Southern Idaho", type: "generic", url: "https://www.csi.edu/" },
-  { campus: "College of Western Idaho", type: "generic", url: "https://cwi.edu/" },
+  { campus: "College of Western Idaho", type: "pageup", url: "https://careers.cwi.edu/cw/en-us/listing/" },
 ];
 
 // IN (Indiana)
@@ -3962,7 +3970,7 @@ const TX_CAMPUSES = [
     url: "https://jobs.com.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id=3&435=&query_organizational_tier_3_id=any&commit=Search",
   },
   { campus: "Collin County Community College District", type: "generic", url: "https://www.collin.edu/hr/employment" },
-  { campus: "Commonwealth Institute of Funeral Service", type: "generic", url: "https://www.commonwealth.edu/" },
+  { campus: "Commonwealth Institute of Funeral Service", type: "generic", url: "https://commonwealth.edu/commonwealth-careers/" },
   { campus: "Concordia University Texas", type: "generic", url: "https://www.concordia.edu/" },
   { campus: "Criswell College", type: "generic", url: "https://www.criswell.edu/" },
   { campus: "Dallas Baptist University", type: "generic", url: "https://recruiting.adp.com/srccar/public/RTI.home?c=1174615&d=DBUCareerSite" },
@@ -4132,7 +4140,7 @@ const FL_CAMPUSES = [
     url: "https://embryriddle.wd1.myworkdayjobs.com/External?locations=ac0092a9a0de019c86717943ff093d57",
   },
   { campus: "Embry-Riddle Aeronautical University-Worldwide", type: "generic", url: "https://worldwide.erau.edu/" },
-  { campus: "Everglades University", type: "generic", url: "https://www.evergladesuniversity.edu/faculty-employment" },
+  { campus: "Everglades University", type: "generic", url: "https://evergladesuniversity.isolvedhire.com" },
   { campus: "Flagler College", type: "generic", url: "https://www.flagler.edu/" },
   { campus: "Flagler Technical College", type: "generic", url: "https://flaglertech.edu/" },
   { campus: "Florida Agricultural and Mechanical University", type: "generic", url: "https://www.famu.edu/" },
@@ -4309,7 +4317,7 @@ const MS_CAMPUSES = [
     url: "https://www.paycomonline.net/v4/ats/web.php/portal/1F33F8BBDC686BCE369D823D8B8EF3B4/career-page",
   },
   { campus: "East Central Community College", type: "generic", url: "https://www.eccc.edu/" },
-  { campus: "East Mississippi Community College", type: "generic", url: "https://www.eastms.edu/about/employment" },
+  { campus: "East Mississippi Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/eastmisscc" },
 ];
 
 // LA (Louisiana)
@@ -4437,7 +4445,7 @@ const KS_CAMPUSES = [
   { campus: "Dodge City Community College", type: "generic", url: "https://dc3.edu/employment-page" },
   { campus: "Donnelly College", type: "generic", url: "https://www.donnelly.edu/staff/careers" },
   { campus: "Emporia State University", type: "generic", url: "https://www.emporia.edu/" },
-  { campus: "Flint Hills Technical College", type: "generic", url: "https://www.fhtc.edu/" },
+  { campus: "Flint Hills Technical College", type: "generic", url: "https://my.fhtc.edu/ICS/Careers/" },
   { campus: "Fort Hays State University", type: "generic", url: "https://www.fhsu.edu/career/faculty/" },
   { campus: "Fort Hays State University-Northwest Kansas Technical College", type: "generic", url: "https://www.fhnw.edu/careers" },
   { campus: "Fort Hays Tech North Central", type: "generic", url: "https://www.fhtechnc.edu/" },
@@ -4546,7 +4554,7 @@ const MO_CAMPUSES = [
   { campus: "Crowder College", type: "generic", url: "https://www.crowder.edu/employment" },
   { campus: "Culver-Stockton College", type: "generic", url: "https://culver.edu/employment" },
   { campus: "Drury University", type: "generic", url: "https://www.drury.edu/academic-affairs/open-faculty-positions" },
-  { campus: "East Central College", type: "generic", url: "https://www.eastcentral.edu/" },
+  { campus: "East Central College", type: "generic", url: "https://www.eastcentral.edu/hr/employment-opportunities/" },
   { campus: "Eden Theological Seminary", type: "generic", url: "https://www.eden.edu/" },
   { campus: "Evangel University", type: "generic", url: "https://www.evangel.edu/" },
   { campus: "Evangel University-College of Online Learning", type: "generic", url: "https://www.evangel.edu/" },
@@ -4560,7 +4568,7 @@ const KY_CAMPUSES = [
   { campus: "Murray State University", type: "peopleadmin", url: "https://www.murraystatejobs.com/postings/search" },
   { campus: "Morehead State University", type: "peopleadmin", url: "https://moreheadstate.peopleadmin.com/postings/search" },
   { campus: "Gateway Community and Technical College", type: "generic", url: "https://gateway.kctcs.edu/index.aspx" },
-  { campus: "Hopkinsville Community College", type: "generic", url: "https://hopkinsville.kctcs.edu/index.aspx" },
+  { campus: "Hopkinsville Community College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/hopkinsville-jobs" },
   { campus: "Alice Lloyd College", type: "generic", url: "https://www.alc.edu/" },
   { campus: "Asbury Theological Seminary", type: "generic", url: "https://asburyseminary.edu/info/employment" },
   { campus: "Asbury University", type: "generic", url: "https://www.asbury.edu/" },
@@ -14048,6 +14056,7 @@ async function scrapeOhAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OH");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "OH");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "OH");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "OH");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OH");
         return [];
       } catch (e) {
@@ -14158,6 +14167,7 @@ async function scrapeIdAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "ID");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "ID");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "ID");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "ID");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "ID");
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "ID");
         if (type === "enusfilter") {
@@ -14401,6 +14411,10 @@ async function scrapeMsAll(context) {
         // already exists and is dispatched by MA/ME/NY/TX) -- added for
         // Copiah-Lincoln Community College.
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "MS");
+        // No existing MS dispatch case for "schooljobs" (function
+        // scrapeSchoolJobsAs already exists) -- added for East Mississippi
+        // Community College (governmentjobs.com is the same NEOGOV platform).
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MS");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MS");
         return [];
       } catch (e) {

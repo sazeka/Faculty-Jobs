@@ -550,9 +550,9 @@
     {
       "name": "Clark State College",
       "homepage_url": "https://www.clarkstate.edu/",
-      "career_url": "https://www.clarkstate.edu/community/employment/",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; real Employment page linked from nav, with a distinct 'Adjunct Faculty Positions' section. Verified live: real, correctly functioning employment page with separate Full/Part-Time and Adjunct Faculty listings sections."
+      "career_url": "https://www.schooljobs.com/careers/clarkstate",
+      "platform_type": "schooljobs",
+      "notes": "Round 10: the /community/employment/ page (previous override target) is just a landing page whose 'Available Positions' buttons hand off to schooljobs.com -- it has no per-job anchors itself, so the generic scraper found 0. Real listings live on schooljobs.com/careers/clarkstate (Full/Part-Time, 18 postings) with a separate /promotionaljobs tab for Adjunct Faculty. Changed platform_type to schooljobs. Verified live: postings include 'Instructional Faculty & Program Coordinator, Medical Imaging', 'Instructional Faculty & Program Coordinator, Occupational Therapy Assistant', 'Instructional Faculty, Engineering Technology - Laser Material Processing (LMP)'."
     },
     {
       "name": "Clarke University",
@@ -1446,9 +1446,9 @@
     {
       "name": "Dean College",
       "homepage_url": "https://www.dean.edu",
-      "career_url": "https://www.dean.edu/about-dean/leadership/administration/office-of-human-resources",
-      "platform_type": "generic",
-      "notes": "Homepage generic scrape missed stable employment endpoint; route to HR office page."
+      "career_url": "https://dean.interviewexchange.com/static/clients/546DCM1/index.jsp",
+      "platform_type": "interviewexchange",
+      "notes": "Round 10: HR office page (previous override target) has no per-job anchors -- its 'Employment Opportunities → Learn More' link hands off to dean.interviewexchange.com. Changed platform_type to interviewexchange for correctness. NOT verified live -- interviewexchange.com returned HTTP 403 'Hirezon / Interview Exchange - WAF' on direct fetch, consistent with rounds 1/5/6 precedent of this platform being bot-walled from this environment."
     },
     {
       "name": "Auburn University at Montgomery",
