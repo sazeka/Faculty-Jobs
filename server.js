@@ -3711,9 +3711,29 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  // Was correctly wired as "peoplesoft-fluid" back on 2026-07-21 (commit
+  // a97b6fa6, 27 real faculty postings surfaced), but an automated weekly
+  // "institution discovery" re-probe (commit cbd6f368, 2026-07-25) silently
+  // reset the type to "generic" -- the probe's platform classifier defaults
+  // to "generic" whenever it doesn't recognize a URL's ATS signature, and at
+  // the time it unconditionally trusted that guess over whatever type was
+  // already configured. That exact bug was found and fixed on 2026-08-03
+  // (commit 6cd8c30b: apply-promotion-candidates-to-server.js now never lets
+  // the probe downgrade an existing specialized type back to "generic"),
+  // which also restored 14 other institutions it had reverted -- but
+  // Northwestern wasn't among the ones that remediation pass caught, so it
+  // sat silently broken for another 4 days until this round found it.
+  // Re-verified live 2026-08-07 (round 19): the PeopleSoft Fluid Candidate
+  // Gateway still works with the exact mechanism scrapePeopleSoftFluidAs
+  // implements (cookie-priming double load, then "View All Jobs") -- landed
+  // on "485 jobs found" with a Faculty facet showing 170, incl. real
+  // postings "Assistant Professor in Economics" and "Assistant Professor of
+  // Modern Japanese History". Restored to "peoplesoft-fluid". Worth a
+  // separate audit for any other pre-2026-08-03 casualties of this same
+  // now-fixed bug that the original remediation pass also missed.
   {
     campus: "Northwestern University",
-    type: "generic",
+    type: "peoplesoft-fluid",
     url: "https://careers.northwestern.edu/psc/hrnu_er/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB&Action=U&FOCUS=Applicant&SiteId=1&",
   },
   {
