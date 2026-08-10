@@ -124,8 +124,8 @@
       "name": "Art Academy of Cincinnati",
       "homepage_url": "https://www.artacademy.edu/",
       "career_url": "https://workforcenow.cloud.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=150d0044-7af0-4927-8f81-f24fc4a68331&ccId=19000101_000001&lang=en_US",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; homepage links to their ADP Workforce Now recruiting portal. Verified live: 5 postings, 1 faculty-related (Liberal Arts Adjunct)."
+      "platform_type": "adp",
+      "notes": "Was pointing at the bare homepage; homepage links to their ADP Workforce Now recruiting portal. Verified live via direct API call: 5 postings, 1 faculty-related (Liberal Arts Adjunct). platform_type corrected from generic to adp -- the URL is on the workforcenow.cloud.adp.com variant, which scrapeAdpApi's hostname check didn't recognize until this round's shared-code fix (Bucket B round 22)."
     },
     {
       "name": "Autry Technology Center",
@@ -368,9 +368,9 @@
     {
       "name": "Cedarville University",
       "homepage_url": "https://www.cedarville.edu/",
-      "career_url": "https://www.cedarville.edu/offices/human-resources",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; University Human Resources page lists postings directly. Verified live: 2 current faculty postings (Assistant/Associate Professor of Visual Communication Design; Assistant/Associate Professor of Management)."
+      "career_url": "https://www.dayforcehcm.com/api/Cedarville/V1/JobFeeds",
+      "platform_type": "dayforce",
+      "notes": "The University Human Resources page (https://www.cedarville.edu/offices/human-resources) only ever renders its 5 most-recent postings client-side by fetching this same Dayforce HCM JobFeeds JSON API -- routed directly to that API instead (Bucket B round 22). Plain JSON GET, no browser needed. Verified live via direct call: 57 total postings, 30+ Faculty/Adjunct Faculty-titled, e.g. \"Faculty: School of Pharmacy - Assistant/Associate/Full Professor of Pharmacy Practice\", \"Adjunct Faculty: School of Nursing - Residential and Online\"."
     },
     {
       "name": "Central Baptist College",
@@ -3196,9 +3196,9 @@
     {
       "name": "Ohio University-Lancaster Campus",
       "homepage_url": "https://www.ohio.edu/lancaster",
-      "career_url": "https://www.ohiouniversityjobs.com/postings/search",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+      "career_url": "https://www.ohiouniversityjobs.com/postings/search?1228%5B%5D=5&commit=Search",
+      "platform_type": "peopleadmin",
+      "notes": "The unscoped /postings/search URL mixed in every Athens-campus posting too (same misattribution shape as Bemidji State, round 9) -- rescoped to the real Campus facet (1228[]=5 = Lancaster) confirmed via the search form's own <select> options (Bucket B round 22). Verified live: real postings incl. \"School of Nursing Adjunct Clinical Faculty Lancaster Campus, Beginning Fall 2026 (POOL POSTING)\" and \"Adjunct Instructor of Biological Sciences, Beginning Fall Semester 2026 and/or Spring 2027 (POOL POSTING)\"."
     },
     {
       "name": "St. John's College (Santa Fe)",

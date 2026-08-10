@@ -2466,7 +2466,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Belanger School of Nursing", type: "generic", url: "https://ellismedicinecareers.hctsportals.com/" },
   { campus: "Elmezzi Graduate School of Molecular Medicine", type: "generic", url: "https://www.northwell.edu/education-and-resources/elmezzi-graduate-school-of-molecular-medicine" },
   { campus: "Samaritan Hospital School of Nursing", type: "generic", url: "https://www.sphp.com/careers/schools-of-nursing/samaritan-hospital-school-of-nursing" },
-  { campus: "St. Peter's Hospital College of Nursing", type: "generic", url: "https://www.sphp.com/careers/schools-of-nursing/" },
+  { campus: "St. Peter's Hospital College of Nursing", type: "trinity-health-search", url: "https://jobs.trinity-health.org/stpetershealthpartners/search-results?keywords=instructor", titleFilter: "St Peters" },
   { campus: "CVPH Medical Center School of Radiologic Technology", type: "generic", url: "https://www.cvph.org/Residency-and-Education/School-of-Radiology/" },
   { campus: "Memorial Hospital School of Radiation Therapy Technology", type: "generic", url: "https://www.mskcc.org/hcp-education-training/school-radiation-therapy" },
   { campus: "Mesivta Torah Vodaath Rabbinical Seminary", type: "generic", url: "https://independentrabbinicalcolleges.org/index.html" },
@@ -2478,8 +2478,8 @@ const NY_PRIVATE_CAMPUSES = [
   // itself a faculty title, so 0 current faculty openings, but the scoping
   // is real).
   { campus: "Montefiore School of Nursing", type: "vizirecruiter", url: "https://vizi.vizirecruiter.com/Montefiore-New-Rochelle-4725/vizis.json", jobFamilyFilter: "School Of Nursing" },
-  { campus: "Pomeroy College of Nursing at Crouse Hospital", type: "generic", url: "https://www.crouse.org/nursing" },
-  { campus: "School of Professional Horticulture, New York Botanical Garden", type: "generic", url: "https://www.nybg.org/about/work-with-us/employment" },
+  { campus: "Pomeroy College of Nursing at Crouse Hospital", type: "healthcaresource", url: "https://pm.healthcaresource.com/CS/crouse/#/results?whereControl=radius&what=instructor&radiusDistance=25&radiusUnit=mi", departmentFilter: "College of Nursing" },
+  { campus: "School of Professional Horticulture, New York Botanical Garden", type: "jobvite", url: "https://jobs.jobvite.com/nybg/jobs" },
   { campus: "The Ailey School", type: "generic", url: "https://ailey.org/training" },
   { campus: "Academy for Jewish Religion", type: "generic", url: "https://ajr.edu/jobs/faculty" },
   { campus: "Albany College of Pharmacy and Health Sciences", type: "generic", url: "https://www.acphs.edu/" },
@@ -3564,19 +3564,56 @@ const OH_CAMPUSES = [
   },
   { campus: "Cleveland Clinic Health System-School of Diagnostic Imaging", type: "generic", url: "https://www.clevelandclinic.org/sodi" },
   { campus: "Kent State University at Ashtabula", type: "generic", url: "https://www.kent.edu/employment" },
-  { campus: "Kent State University at East Liverpool", type: "generic", url: "https://www.kent.edu/employment" },
-  { campus: "Kent State University at Geauga", type: "generic", url: "https://www.kent.edu/employment" },
-  { campus: "Kent State University at Salem", type: "generic", url: "https://www.kent.edu/employment" },
-  { campus: "Kent State University at Stark", type: "generic", url: "https://www.kent.edu/employment" },
+  // These 5 all pointed at the same bare https://www.kent.edu/employment
+  // homepage. Real ATS is a PageUp instance at jobs.kent.edu (linked via a
+  // "SEE CURRENT OPENINGS" button -> https://jobslist.kent.edu/en-us/listing/,
+  // which redirects there); its /jobs/search page supports a plain full-text
+  // `?query=<term>` param that behaves as an AND-match across job content
+  // (confirmed live: query=Stark and query=Salem and query=East+Liverpool
+  // each correctly return "No results found" rather than false-matching on
+  // a generic word, and a broader query="Campus" alone over-matches almost
+  // every posting -- so the bare campus name, not "<campus> Campus", is the
+  // right query). Scoped each of these 5 regional campuses to its own query.
+  // Independently re-verified live: query=Geauga -> 1 real current faculty
+  // posting ("Faculty Non-Tenure Track-9 Mo", CATS - Nursing Technology -
+  // Geauga Campus, "seeking candidates for a non-tenure track faculty
+  // position to teach undergraduate medical-surgical nursing"); the other 4
+  // genuinely have 0 current postings on this correctly-scoped board today
+  // (confirmed via the site's own Home Organization/Dept facet counts, which
+  // show 0 items under any Stark/Salem/East Liverpool department right now).
+  // Kent State at Ashtabula and at Trumbull have the exact same underlying
+  // bug (Ashtabula still on the bare homepage; Trumbull on kent.edu/trumbull)
+  // but are NOT in this batch, so left untouched -- flagged for a follow-up.
+  { campus: "Kent State University at East Liverpool", type: "pageup", url: "https://jobs.kent.edu/jobs/search?query=East%20Liverpool" },
+  { campus: "Kent State University at Geauga", type: "pageup", url: "https://jobs.kent.edu/jobs/search?query=Geauga" },
+  { campus: "Kent State University at Salem", type: "pageup", url: "https://jobs.kent.edu/jobs/search?query=Salem" },
+  { campus: "Kent State University at Stark", type: "pageup", url: "https://jobs.kent.edu/jobs/search?query=Stark" },
   { campus: "Kent State University at Trumbull", type: "generic", url: "https://www.kent.edu/trumbull" },
-  { campus: "Kent State University at Tuscarawas", type: "generic", url: "https://www.kent.edu/employment" },
+  { campus: "Kent State University at Tuscarawas", type: "pageup", url: "https://jobs.kent.edu/jobs/search?query=Tuscarawas" },
   { campus: "Miami University-Hamilton", type: "generic", url: "https://miamioh.edu/human-resources/jobs-and-careers" },
   { campus: "Miami University-Middletown", type: "generic", url: "https://miamioh.edu/human-resources/jobs-and-careers" },
   { campus: "Ohio University-Chillicothe Campus", type: "generic", url: "https://www.ohio.edu/chillicothe/" },
-  { campus: "Ohio University-Eastern Campus", type: "generic", url: "https://www.ohio.edu/eastern/" },
-  { campus: "Ohio University-Lancaster Campus", type: "generic", url: "https://www.ohiouniversityjobs.com/postings/search" },
-  { campus: "Ohio University-Southern Campus", type: "generic", url: "https://www.ohio.edu/southern/" },
-  { campus: "Ohio University-Zanesville Campus", type: "generic", url: "https://www.ohio.edu/zanesville/" },
+  // Eastern/Southern/Zanesville each pointed at their own bare campus
+  // homepage; Lancaster already pointed at the shared ohiouniversityjobs.com
+  // (PeopleAdmin, white-labeled domain) board's UNSCOPED /postings/search --
+  // which mixes in every Athens-campus posting too, the same misattribution
+  // shape as Bemidji State (round 9). The real board supports a "Campus"
+  // facet (`1228[]=<id>`: Eastern=4, Lancaster=5, Southern=6, Zanesville=7)
+  // confirmed via the search form's own raw <select> options. Independently
+  // re-verified all 4, scoped, live: Eastern -> "School of Nursing Adjunct
+  // Clinical Faculty, Eastern Campus...(POOL POSTING)" + "Adjunct Instructor
+  // of Biological Sciences..."; Southern -> "Adjunct Instructor of English,
+  // Beginning Fall Semester 2026 (POOL POSTING)" + "School of Nursing Adjunct
+  // Clinical Faculty, Southern Campus..."; Zanesville -> "School of Nursing
+  // Adjunct Clinical Faculty, Zanesville Campus..." (x2, Fall 2026 and AY
+  // 2025-26 pool postings); Lancaster -> "School of Nursing Adjunct Clinical
+  // Faculty Lancaster Campus..." + "Adjunct Instructor of Biological
+  // Sciences...". Ohio University-Chillicothe Campus has the same
+  // bare-homepage bug but is NOT in this batch -- left untouched.
+  { campus: "Ohio University-Eastern Campus", type: "peopleadmin", url: "https://www.ohiouniversityjobs.com/postings/search?1228%5B%5D=4&commit=Search" },
+  { campus: "Ohio University-Lancaster Campus", type: "peopleadmin", url: "https://www.ohiouniversityjobs.com/postings/search?1228%5B%5D=5&commit=Search" },
+  { campus: "Ohio University-Southern Campus", type: "peopleadmin", url: "https://www.ohiouniversityjobs.com/postings/search?1228%5B%5D=6&commit=Search" },
+  { campus: "Ohio University-Zanesville Campus", type: "peopleadmin", url: "https://www.ohiouniversityjobs.com/postings/search?1228%5B%5D=7&commit=Search" },
   { campus: "Remington College-Cleveland Campus", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027237045_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter" },
   { campus: "Firelands Regional Medical Center School of Nursing", type: "generic", url: "https://www.firelands.com/schoolofnursing" },
   { campus: "Rabbinical College Telshe", type: "generic", url: "https://independentrabbinicalcolleges.org/index.html" },
@@ -3586,7 +3623,7 @@ const OH_CAMPUSES = [
   { campus: "Antioch College", type: "generic", url: "https://antiochcollege.edu/about/employment/faculty-staff-jobs" },
   { campus: "Antioch University", type: "generic", url: "https://www.antioch.edu/employment" },
   { campus: "Antioch University-System Administration", type: "generic", url: "https://www.antioch.edu/employment" },
-  { campus: "Art Academy of Cincinnati", type: "generic", url: "https://workforcenow.cloud.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=150d0044-7af0-4927-8f81-f24fc4a68331&ccId=19000101_000001&lang=en_US" },
+  { campus: "Art Academy of Cincinnati", type: "adp", url: "https://workforcenow.cloud.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=150d0044-7af0-4927-8f81-f24fc4a68331&ccId=19000101_000001&lang=en_US" },
   // Was the bare portal landing page. This is a white-labeled PeopleAdmin
   // instance on a custom domain — ATS-detection only recognizes the literal
   // peopleadmin.com hostname, so hand-off never fired. query_position_type_id[]=3
@@ -3624,7 +3661,7 @@ const OH_CAMPUSES = [
   // correctness/specificity over the old bare homepage.
   { campus: "Bryant & Stratton College-Parma", type: "generic", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=parma&o=postedDateDesc" },
   { campus: "Capital University", type: "generic", url: "https://capital.applicantpro.com/jobs" },
-  { campus: "Cedarville University", type: "generic", url: "https://www.cedarville.edu/offices/human-resources" },
+  { campus: "Cedarville University", type: "dayforce", url: "https://www.dayforcehcm.com/api/Cedarville/V1/JobFeeds" },
   // Was the home/landing page (just a "Search Jobs" link, no listings inline).
   { campus: "Central Ohio Technical College", type: "generic", url: "https://jobs.cotc.edu/postings/search" },
   { campus: "Central State University", type: "generic", url: "https://www.centralstate.edu/" },
@@ -3632,14 +3669,14 @@ const OH_CAMPUSES = [
   { campus: "Cincinnati State Technical and Community College", type: "generic", url: "https://www.cincinnatistate.edu/news/faculty-assisted-at-healthcare-careers-camp-for-high-school-students" },
   { campus: "Clark State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/clarkstate" },
   { campus: "Cleveland Institute of Art", type: "generic", url: "https://www.cia.edu/about-us/careers-at-cia" },
-  { campus: "Cleveland Institute of Music", type: "generic", url: "https://www.cim.edu/" },
+  { campus: "Cleveland Institute of Music", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=5d850f7a-f425-4e69-a9ac-d57b449b5da6&ccId=9200626414802_2&lang=en_US" },
   { campus: "Collins Career Technical Center", type: "generic", url: "https://jobs.collins-cc.edu/" },
   { campus: "Columbus College of Art & Design", type: "generic", url: "https://ccad.applicantpro.com/jobs" },
   { campus: "Columbus State Community College", type: "generic", url: "https://www.cscc.edu/" },
   { campus: "Cuyahoga Community College District", type: "generic", url: "https://www.tri-c.edu/administrative-departments/human-resources/careers.html" },
   { campus: "Defiance College", type: "generic", url: "https://www.defiance.edu/employment-opportunities" },
   { campus: "Eastern Gateway Community College", type: "generic", url: "https://www.egcc.edu/" },
-  { campus: "Edison State Community College", type: "generic", url: "https://www.edisonohio.edu/" },
+  { campus: "Edison State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/edisonohioedu/promotionaljobs" },
   { campus: "Franciscan University of Steubenville", type: "generic", url: "https://www.franciscan.edu/" },
   { campus: "Franklin University", type: "generic", url: "https://www.franklin.edu/" },
 ];
@@ -10039,6 +10076,164 @@ async function scrapePeopleAdminHttpFallback(startUrl, campusName, sourceName) {
   }
 }
 
+// Trinity Health-family Phenom-based hospital career sites (e.g.
+// jobs.trinity-health.org/<facility>/search-results?keywords=...). Real ATS
+// discovered for St. Peter's Hospital College of Nursing (NY): the college's
+// own page (sphp.com/careers/schools-of-nursing) is pure program-info with no
+// jobs content, but the parent St. Peter's Health Partners system's own
+// Phenom-hosted board has real per-instructor postings findable via keyword
+// search -- confirmed live: `?keywords=instructor` returns 4 results including
+// "Nursing Adjunct Per diem Instructor for Saturdays only -St Peters
+// School/College of Nursing" and a same-network "...for Samaritan
+// School/College of Nursing" posting (Samaritan Hospital School of Nursing is
+// a separate school on the same shared board, not this record) -- titleFilter
+// scopes to the target school only, same "shared multi-tenant board, scope by
+// substring" shape as the Bemidji State/iecc-campus/ultipro-ukg precedents
+// elsewhere in this file. Each posting anchor's accessible name is
+// "<title> Job ID is <id>" -- stripped back to the real title.
+async function scrapeTrinityHealthSearchAs(context, searchUrl, campusName, sourceName, titleFilter = null) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, searchUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForSelector('a[href*="/job/"]', { timeout: 15_000 }).catch(() => {});
+    await page.waitForTimeout(1200);
+
+    const jobs = [];
+    const seen = new Set();
+
+    for (let pageNum = 0; pageNum < 20; pageNum++) {
+      const batch = await safeEvaluate(page, () => {
+        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        const abs = (href) => {
+          try { return new URL(href, location.href).toString(); } catch { return null; }
+        };
+        const out = [];
+        for (const a of Array.from(document.querySelectorAll('a[href*="/job/"]'))) {
+          const url = abs(a.getAttribute("href"));
+          if (!url || !/\/job\/[\w-]+/i.test(url)) continue;
+          let title = clean(a.textContent) || clean(a.getAttribute("aria-label") || "");
+          title = title.replace(/\s*Job ID is\s*[\w-]+\s*$/i, "").trim();
+          if (!title || title.length < 4) continue;
+          out.push({ title, url });
+        }
+        return out;
+      });
+
+      for (const j of batch) {
+        if (!j?.url || seen.has(j.url)) continue;
+        seen.add(j.url);
+        jobs.push(j);
+      }
+
+      const next = page.locator('button[aria-label="View next page" i], button:has-text("Next")').first();
+      if ((await next.count().catch(() => 0)) === 0) break;
+      if (!(await next.isVisible().catch(() => false)) || (await next.isDisabled().catch(() => false))) break;
+      await next.click({ timeout: 5000 }).catch(() => {});
+      await page.waitForTimeout(1200);
+    }
+
+    const scoped = titleFilter
+      ? jobs.filter((j) => j.title.toLowerCase().includes(titleFilter.toLowerCase()))
+      : jobs;
+
+    const out = scoped
+      .map((j) => ({
+        title: normalizeJobTitle(j.title),
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      }))
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${out.length} (Trinity Health Phenom search)`);
+    return out;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Trinity Health search scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// HealthcareSource/symplr career sites (pm.healthcaresource.com/CS/<tenant>) --
+// a hash-routed SPA. A prior round (Aultman College of Nursing and Health
+// Sciences) documented this platform as unreachable ("no URL-parameter
+// search"), but Pomeroy College of Nursing at Crouse Hospital's tenant
+// (pm.healthcaresource.com/CS/crouse) DOES honor a `#/results?what=<keyword>`
+// hash query directly on a cold navigation -- confirmed live, loaded twice:
+// `#/results?whereControl=radius&what=instructor&radiusDistance=25&radiusUnit=mi`
+// returns 4 results, 3 in the "College of Nursing - 163" department ("Adjunct
+// Instructor - Med/Surg", two "Instructor College of Nursing" postings).
+// Real per-job links are `#/job/<id>` hash fragments (not full URLs) -- each
+// card is a heading (`<a href="#/job/id">Title</a>`) followed by sibling text
+// nodes for department/location/etc.; departmentFilter scopes to one
+// department by checking the card's full text since job counts/depts vary
+// per hospital-system tenant.
+async function scrapeHealthcareSourceAs(context, searchUrl, campusName, sourceName, departmentFilter = null) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, searchUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForSelector('a[href^="#/job/"]', { timeout: 15_000 }).catch(() => {});
+    await page.waitForTimeout(1500);
+
+    // "Load More" appends additional results client-side (no URL change).
+    for (let i = 0; i < 10; i++) {
+      const btn = page.locator('button:has-text("Load More")').first();
+      if ((await btn.count().catch(() => 0)) === 0) break;
+      if (!(await btn.isVisible().catch(() => false))) break;
+      await btn.click({ timeout: 5000 }).catch(() => {});
+      await page.waitForTimeout(900);
+    }
+
+    const rows = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const out = [];
+      const seen = new Set();
+      for (const a of Array.from(document.querySelectorAll('a[href^="#/job/"]'))) {
+        const heading = a.closest("h1, h2, h3, h4, h5, h6");
+        if (!heading) continue;
+        const title = clean(a.textContent);
+        if (!title || title.length < 4) continue;
+        const url = new URL(a.getAttribute("href"), location.href.split("#")[0]).toString();
+        if (seen.has(url)) continue;
+        seen.add(url);
+        const card = heading.parentElement || heading;
+        const cardText = clean(card.innerText || "");
+        out.push({ title, url, cardText });
+      }
+      return out;
+    });
+
+    const scoped = departmentFilter
+      ? rows.filter((j) => j.cardText.toLowerCase().includes(departmentFilter.toLowerCase()))
+      : rows;
+
+    const out = scoped
+      .map((j) => ({
+        title: normalizeJobTitle(j.title),
+        url: j.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      }))
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${out.length} (HealthcareSource/symplr)`);
+    return out;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} HealthcareSource scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
 
 async function scrapePeopleSoftAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
@@ -11717,7 +11912,7 @@ async function scrapeNyPrivate(context) {
   const results = await mapWithConcurrency(
     NY_PRIVATE_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter, jobFamilyFilter }) => {
+    async ({ campus, type, url, locationFilter, jobFamilyFilter, titleFilter, departmentFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NY");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NY");
@@ -11737,6 +11932,8 @@ async function scrapeNyPrivate(context) {
         if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "NY", locationFilter || null);
         if (type === "silc-accordion") return await scrapeSilcAccordionAs(context, url, campus, "NY");
         if (type === "vizirecruiter") return await scrapeViziRecruiterApi(url, campus, "NY", jobFamilyFilter || null);
+        if (type === "trinity-health-search") return await scrapeTrinityHealthSearchAs(context, url, campus, "NY", titleFilter || null);
+        if (type === "healthcaresource") return await scrapeHealthcareSourceAs(context, url, campus, "NY", departmentFilter || null);
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -12411,7 +12608,14 @@ async function scrapeAdpAs(context, url, campusName, sourceName, locationFilter 
 async function scrapeAdpApi(careersUrl, campusName, sourceName, locationFilter = null) {
   let u;
   try { u = new URL(careersUrl); } catch { return []; }
-  if (!/workforcenow\.adp\.com$/i.test(u.hostname)) return [];
+  // Accepts both the standard workforcenow.adp.com tenant hosting and the
+  // "cloud" variant (workforcenow.cloud.adp.com) -- same REST API shape,
+  // confirmed via a direct API call against Art Academy of Cincinnati's
+  // cloud-hosted tenant (5 job-requisitions returned identically to the
+  // non-cloud shape). The old exact-suffix check silently zeroed out every
+  // institution on the cloud variant, including Avila University (MO),
+  // already configured with type "adp" and a cloud URL before this fix.
+  if (!/^workforcenow(?:\.cloud)?\.adp\.com$/i.test(u.hostname)) return [];
   const cid = u.searchParams.get("cid");
   const ccId = u.searchParams.get("ccId");
   const lang = u.searchParams.get("lang") || "en_US";
@@ -15118,6 +15322,7 @@ async function scrapeOhAll(context) {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "OH");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "OH");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "OH");
+        if (type === "dayforce") return await scrapeDayforceApi(url, campus, "OH");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OH");
         return [];
       } catch (e) {
@@ -16264,6 +16469,44 @@ async function scrapeViziRecruiterApi(apiUrl, campusName, sourceName, jobFamilyF
     return jobs;
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} ViziRecruiter API failed:`, e?.message || e);
+    return [];
+  }
+}
+
+// Dayforce HCM JobFeeds API (used by Cedarville University's real ATS,
+// discovered via the university's own HR page, which loads this same
+// endpoint client-side to render only its 5 most-recent postings). Plain
+// JSON GET, no browser needed, no auth -- fetch() follows the one redirect
+// this endpoint issues automatically. Independently re-verified live via a
+// direct call: 57 total postings, 30+ Faculty/Adjunct Faculty-titled, e.g.
+// "Faculty: School of Pharmacy - Assistant/Associate/Full Professor of
+// Pharmacy Practice", "Adjunct Faculty: School of Nursing - Residential and
+// Online".
+async function scrapeDayforceApi(apiUrl, campusName, sourceName) {
+  try {
+    const resp = await fetch(apiUrl, { signal: AbortSignal.timeout(30_000) });
+    if (!resp.ok) throw new Error(`API returned ${resp.status}`);
+    const items = await resp.json();
+    if (!Array.isArray(items)) throw new Error("Unexpected response shape");
+
+    const jobs = items
+      .map((j) => ({
+        title: clean(j.Title || ""),
+        url: j.JobDetailsUrl || null,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: j.Description ? j.Description.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().substring(0, 2000) : null,
+      }))
+      .filter((j) => j.title && j.url)
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (Dayforce API)`);
+    return uniqByUrl(jobs);
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Dayforce API failed:`, e?.message || e);
     return [];
   }
 }
