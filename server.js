@@ -1135,7 +1135,16 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Franciscan School of Theology", type: "generic", url: "https://www.fst.edu/about/employment-opportunities" },
   { campus: "Fresno City College", type: "generic", url: "https://www.fresnocitycollege.edu/" },
   { campus: "Fresno Pacific University", type: "generic", url: "https://www.fresno.edu/" },
-  { campus: "Fuller Theological Seminary", type: "generic", url: "https://www.fuller.edu/" },
+  // Real ATS is this ADP tenant's dedicated FACULTY POSITIONS ccId (distinct
+  // from the general/staff ccId on the same cid) -- verified live via a
+  // direct API call: 12 real postings, e.g. "Affiliate Faculty for Korean
+  // Studies Center Programs", "Tenure-Track Neuropsychology Faculty Hire",
+  // "Chair of Faith and Public Life".
+  {
+    campus: "Fuller Theological Seminary",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=13be2684-36b2-47da-8d06-44b4fbf9a5fc&ccId=2663578062_1725&lang=en_US",
+  },
   { campus: "California State University-Fresno", type: "generic", url: "https://adminfinance.fresnostate.edu/hr/jobs" },
   { campus: "California State University-Northridge", type: "generic", url: "https://www.csun.edu/hr/careers" },
   { campus: "California State University-San Marcos", type: "generic", url: "https://www.csusm.edu/careers" },
@@ -1529,10 +1538,19 @@ const NC_CAMPUSES = [
     type: "peopleadmin",
     url: "https://employment.uncsa.edu/postings/search?query_position_type_id=3",
   },
+  // Confirmed live: the "742=" param in the old URL was dead weight (no
+  // facet uses that id), not the cause of 0 results. The "1594[]=2" Faculty
+  // job-category facet is correct and well-formed but genuinely returns 0
+  // right now -- UNCW's ~15 current faculty-adjacent postings are all
+  // categorized under the separate "Temporary" job-category facet instead
+  // (titled "Temporary Faculty (...)"), which are correctly excluded here
+  // by the same omitAdjunct "temporary" rule this codebase already applies
+  // to every other institution's temp/part-time postings. Genuinely 0
+  // current tenure-track/permanent Faculty-category postings, not a bug.
   {
     campus: "UNC Wilmington",
     type: "peopleadmin",
-    url: "https://jobs.uncw.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1594%5B%5D=2&742=&commit=Search",
+    url: "https://jobs.uncw.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1594%5B%5D=2&commit=Search",
   },
   {
     campus: "Western Carolina University",
@@ -1619,7 +1637,17 @@ const NC_CAMPUSES = [
   { campus: "Davidson-Davie Community College", type: "generic", url: "https://www.davidsondavie.edu/mission-vision-values/employment" },
   { campus: "Durham Technical Community College", type: "generic", url: "https://www.durhamtech.edu/" },
   { campus: "Edgecombe Community College", type: "generic", url: "https://www.schooljobs.com/careers/edgecombeedu" },
-  { campus: "Fayetteville Technical Community College", type: "generic", url: "https://faytechcc.peopleadmin.com/" },
+  // Real ATS is this PeopleAdmin portal's own "Full Time Faculty" category
+  // search URL (the bare portal root is just a landing page requiring a
+  // category click, which the generic scraper's handoff detection couldn't
+  // resolve on its own). Verified live: 8 real postings, e.g.
+  // "IT/Cybersecurity Instructor (10 month)", "Medical Sonography
+  // Instructor", "Welding Instructor".
+  {
+    campus: "Fayetteville Technical Community College",
+    type: "peopleadmin",
+    url: "https://faytechcc.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=2&443%5B%5D=1&commit=Search",
+  },
   { campus: "Forsyth Technical Community College", type: "generic", url: "https://www.forsythtech.edu/" },
 ];
 
@@ -3098,10 +3126,16 @@ const IA_CAMPUSES = [
     type: "interfolio-inst",
     url: "https://apply.interfolio.com/11893/positions",
   },
+  // Real ATS is Luther's JobFlows board (linked as "Open Positions" from
+  // this HR landing page, which has no embedded listing itself). Already
+  // functionally fixed via career-url-overrides.json (verified live via
+  // direct scrapeGenericJobPage run: 1 real posting, "Assistant Professor
+  // of Biology (tenure-eligible)") -- syncing the base entry here too so
+  // it doesn't read as broken/stale on its own.
   {
     campus: "Luther College",
     type: "generic",
-    url: "https://www.luther.edu/offices/hr/careers",
+    url: "https://go.jobflows.co/LutherCollege",
   },
   { campus: "Mercy-St Luke's School of Radiologic Technology", type: "generic", url: "https://www.mercycare.org/employment/students/school-of-radiologic-technology/" },
   { campus: "UnityPoint Health-Des Moines School of Radiologic Technology", type: "generic", url: "https://www.unitypoint.org/join-our-team/medical-education-and-career-growth/school-of-radiologic-technology---des-moines-area-hospitals" },
@@ -3995,6 +4029,12 @@ const ID_CAMPUSES = [
     type: "csod",
     url: "https://isu.csod.com/ux/ats/careersite/5/home?c=isu",
   },
+  // URL was already correct -- the real bug was in scrapeGenericJobPage's
+  // shared AJAX-patience wait (see its own comment), which this
+  // ApplicantPro/isolved board's nav "Jobs" link short-circuited before the
+  // real posting list ever rendered. Fixed globally there; verified live
+  // after the fix: 13 real faculty postings, e.g. "Adjunct Instructor for
+  // Business", "Assistant Professor", "Instructor of Diesel Technology".
   {
     campus: "Lewis-Clark State College",
     type: "generic",
@@ -5062,7 +5102,22 @@ const MO_CAMPUSES = [
   { campus: "Drury University", type: "generic", url: "https://www.drury.edu/academic-affairs/open-faculty-positions" },
   { campus: "East Central College", type: "generic", url: "https://www.eastcentral.edu/hr/employment-opportunities" },
   { campus: "Eden Theological Seminary", type: "generic", url: "https://www.eden.edu/faculty/jobs" },
-  { campus: "Evangel University", type: "generic", url: "https://www.evangel.edu/" },
+  // CORRECTED (Bucket B round 20): was pointing at the bare homepage, which
+  // relied on a career-url-overrides.json entry that (see that file's own
+  // note) was a name-collision misattribution to a Nigerian university of
+  // the same name. Real ATS is Evangel's own ADP tenant (linked from its
+  // open-positions page) -- using "adp" directly (rather than "generic",
+  // which also picked up non-posting noise like a PDF instructions link and
+  // the employee portal tile) since mapApiJobs already filters to
+  // faculty-titled reqs. Verified live via direct API call: of 20 total
+  // reqs, 8 are faculty-titled, e.g. "Faculty - College of Online Learning",
+  // "AGTS Adjunct Faculty for Black Church Studies", "Adjunct Faculty -
+  // JRLC", "Seminary Adjunct Faculty".
+  {
+    campus: "Evangel University",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=f349d37e-0872-42cb-bcca-bc23d939ff50&ccId=19000101_000001&lang=en_US",
+  },
   { campus: "Evangel University-College of Online Learning", type: "generic", url: "https://www.evangel.edu/" },
   { campus: "Evangel University-James River Assembly of God Church", type: "generic", url: "https://www.evangel.edu/" },
   { campus: "Fontbonne University", type: "generic", url: "https://www.fontbonne.edu/" },
@@ -12312,8 +12367,32 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
     // Seminary). This only ever adds patience on top of the existing wait and
     // no-ops instantly once a job-like anchor is already present, so pages that
     // were already fast are unaffected.
+    //
+    // The plain selector match above is satisfied instantly by a page's own
+    // "Jobs" nav link (its href is typically "/jobs" or "/jobs/") on
+    // ApplicantPro/isolved-hosted boards, which short-circuits the wait
+    // before the real AJAX-loaded posting list ever renders -- confirmed via
+    // a raw Playwright dump against Lewis-Clark State College's real board
+    // (lcsc.applicantpro.com/jobs): with only the nav-link-satisfied wait,
+    // 1 anchor total (just "Jobs"); with a `networkidle` wait instead, 32
+    // anchors including many real postings like "Adjunct Instructor for
+    // Business" and "Assistant Professor". Require either a numeric-ID job
+    // link (the real posting shape on these boards) or more than a
+    // small handful of matching anchors (nav chrome is never that many) so
+    // the nav link alone can't satisfy it -- still gated by the same 6s cap
+    // and non-blocking .catch(), so any page that already worked via the
+    // plain selector match is unaffected (a numeric-ID or multi-anchor page
+    // matches at least as fast as before).
     await page
-      .waitForSelector('a[href*="/job"], a[href*="/jobs"], a[href*="isolvedhire.com"]', { timeout: 6000 })
+      .waitForFunction(
+        () => {
+          const anchors = Array.from(
+            document.querySelectorAll('a[href*="/job"], a[href*="/jobs"], a[href*="isolvedhire.com"]')
+          );
+          return anchors.some((a) => /\/jobs?\/\d+/.test(a.href)) || anchors.length > 3;
+        },
+        { timeout: 6000 }
+      )
       .catch(() => {});
 
     const evalResult = await safeEvaluate(page, () => {
@@ -12419,12 +12498,44 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
           ) ||
           /(…|\.\.\.)\s*$/.test(title)
         ) {
-          const card = a.closest(
-            "li, article, tr, [class*='job' i], [class*='position' i], [class*='listing' i], [class*='card' i], [class*='posting' i], [class*='accordion' i]"
-          );
-          const headingEl = card?.querySelector(
-            "h1, h2, h3, h4, h5, h6, [class*='job-title' i], [class*='jobtitle' i], [class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i]"
-          );
+          // Element.closest() checks the element itself before any ancestor,
+          // and a CTA link's own class often contains "job" (e.g. JazzHR/
+          // Resumator's "resumator-job-link"), which matches the
+          // `[class*='job' i]` arm of this very selector -- so a single
+          // a.closest(...) call can return the anchor itself (no
+          // descendants to search) or, starting from its parent, a thin
+          // wrapper div one level up whose own class *also* matches (e.g.
+          // Resumator's "resumator-job-view-details") before ever reaching
+          // the real card that actually contains the heading. Verified live
+          // against the raw DOM at University of Jamestown's real Resumator
+          // widget: the CTA anchor sits inside two nested "*job*"-classed
+          // wrapper divs, and the real heading ("Assistant Professor of
+          // Clinical Counseling and Behavioral Health", in a sibling
+          // "resumator-job-title" div) only becomes reachable two levels up.
+          // Walk upward a bounded number of levels, checking each level's
+          // full subtree for a heading, instead of trusting a single
+          // closest() match to land on the right boundary.
+          //
+          // Known latent limitation: querySelector() on a wider ancestor
+          // returns the FIRST matching heading in that subtree in DOM order,
+          // not necessarily the one belonging to this specific anchor -- if
+          // some site's structure requires reaching hop 2+ before ANY
+          // heading is found at all (unlike University of Jamestown, where
+          // hop 1 always succeeds and the loop breaks immediately, so this
+          // never triggers there), and that wider ancestor also wraps
+          // sibling job cards, this would misattribute a neighboring
+          // posting's title to this one (the linked URL itself would still
+          // be correct, since it comes from `a` directly -- only the
+          // displayed title could be wrong). Not currently known to affect
+          // any configured institution; flagging for whoever debugs a
+          // wrong-title-right-link report on a CTA-fallback site next.
+          let headingEl = null;
+          for (let node = a.parentElement, hops = 0; node && hops < 5; node = node.parentElement, hops++) {
+            headingEl = node.querySelector(
+              "h1, h2, h3, h4, h5, h6, [class*='job-title' i], [class*='jobtitle' i], [class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i]"
+            );
+            if (headingEl) break;
+          }
           const headingText = headingEl ? clean(headingEl.textContent) : "";
           if (headingText && headingText.length >= 10 && !/^[a-z]/.test(headingText)) {
             title = headingText;
@@ -12595,8 +12706,17 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
       // affected by this — same "gate on empty results" pattern as the ATS
       // hand-off fallback below.
       if (out.length === 0) {
+        // "toggle-text-heading" (and sibling "toggle-title"/"toggle-heading"
+        // class names) covers a different WordPress toggle-widget plugin
+        // than the "accordion"-classed ones above -- same "heading with no
+        // per-posting href" shape, verified live against the raw DOM at
+        // Southwestern College (KS)'s real employment page: postings render
+        // as plain `<div class="toggle-text-heading">` elements (e.g.
+        // "Affiliate Pharmacology Instructor - Physician Associate
+        // Program"), which none of the "accordion"-only class matches below
+        // could ever catch.
         const candidates = document.querySelectorAll(
-          "[class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i], button[class*='accordion' i], [itemprop='title']"
+          "[class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i], button[class*='accordion' i], [itemprop='title'], [class*='toggle-text-heading' i], [class*='toggle-title' i], [class*='toggle-heading' i]"
         );
         for (const el of candidates) {
           const title = clean(el.textContent);

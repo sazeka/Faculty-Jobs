@@ -1061,9 +1061,9 @@
     {
       "name": "Fayetteville Technical Community College",
       "homepage_url": "https://www.faytechcc.edu/",
-      "career_url": "https://faytechcc.peopleadmin.com/",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; route to FTCC's PeopleAdmin portal (linked from the homepage as 'Employment Opportunities'). Confirmed real ATS with 'Full Time Faculty' and 'Part Time Faculty' categories; specific current count not verified beyond category list."
+      "career_url": "https://faytechcc.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=2&443%5B%5D=1&commit=Search",
+      "platform_type": "peopleadmin",
+      "notes": "UPDATED (Bucket B round 20): the bare portal root is just a landing page requiring a category click, which the generic-scraper handoff couldn't resolve to real postings on its own (0 jobs). Routed to the portal's own 'Full Time Faculty' category search URL and switched to the peopleadmin type. Verified live: 8 real postings, e.g. 'IT/Cybersecurity Instructor (10 month)', 'Medical Sonography Instructor', 'Welding Instructor'."
     },
     {
       "name": "Florida Institute of Technology-Online",
@@ -1089,9 +1089,9 @@
     {
       "name": "Fuller Theological Seminary",
       "homepage_url": "https://www.fuller.edu/",
-      "career_url": "https://fuller.edu/employment/",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; route to Fuller's employment page, which has a distinct 'FACULTY POSITIONS' section separate from staff. Confirmed real infrastructure; specific current faculty-posting count not verified beyond category list."
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=13be2684-36b2-47da-8d06-44b4fbf9a5fc&ccId=2663578062_1725&lang=en_US",
+      "platform_type": "adp",
+      "notes": "Employment page's 'FACULTY POSITIONS' link routes to a dedicated ADP ccId separate from staff. Verified live via direct API call: 12 real postings, e.g. 'Affiliate Faculty for Korean Studies Center Programs', 'Tenure-Track Neuropsychology Faculty Hire', 'Chair of Faith and Public Life'."
     },
     {
       "name": "Luther College",
@@ -1315,7 +1315,7 @@
       "homepage_url": "https://www.sckans.edu/",
       "career_url": "https://www.sckans.edu/about/employment/",
       "platform_type": "generic",
-      "notes": "Was pointing at a faculty-jobs URL that renders mostly navigation chrome with no visible listings; routed to the actual Employment At SC page, which lists postings directly in page text. URL/platform_type re-confirmed correct (2026-08-06) -- but the prior note's '6 faculty postings' count was wrong: re-checked live and only 'Affiliate Pharmacology Instructor' / 'Affiliate Anatomy Instructor' (Physician Associate Program) and a 'Founding Principal Faculty' PA-program search are actually still open; 'Full-Time Faculty Member - DMSc', 'Director of the BSN Nursing Program', 'Nursing Clinical Resource Instructor', 'Assistant Professor of Communication', and 'Assistant Professor of Nursing' all sit under the page's own separate 'Filled/Closed Faculty Positions' heading. Not a scraper bug either way, since none of these titles -- open or closed -- are real `<a href>` links; every one is a plain <h5 class=\"toggle-text-heading\"> with no per-posting href, a WordPress toggle-widget shape the shared generic scraper's accordion-fallback selector list doesn't cover (only matches classes containing 'accordion', not 'toggle') -- same family of gap as the wp-block-accordion widget already handled at College of the Atlantic, just a different WP plugin's class name. Documented, not patched (shared scraper logic)."
+      "notes": "Was pointing at a faculty-jobs URL that renders mostly navigation chrome with no visible listings; routed to the actual Employment At SC page, which lists postings directly in page text. URL/platform_type re-confirmed correct (2026-08-06) -- but the prior note's '6 faculty postings' count was wrong: re-checked live and only 'Affiliate Pharmacology Instructor' / 'Affiliate Anatomy Instructor' (Physician Associate Program) and a 'Founding Principal Faculty' PA-program search are actually still open. PATCHED (Bucket B round 20): every posting on this page is a plain `<div class=\"toggle-text-heading\">` with no per-posting href, a WordPress toggle-widget shape the shared generic scraper's accordion-fallback selector list didn't cover (only matched classes containing 'accordion', not 'toggle') -- same family of gap as the wp-block-accordion widget already handled at College of the Atlantic, just a different WP plugin's class name. Added 'toggle-text-heading'/'toggle-title'/'toggle-heading' to that fallback selector list (server.js, generic scraper). Re-verified live after the fix: 3 real postings, e.g. 'Affiliate Pharmacology Instructor - Physician Associate Program', 'Faculty Positions in Physician Associate Studies' (job URL falls back to the listing page itself, same as every other href-less toggle/accordion posting this fallback already handles)."
     },
     {
       "name": "University of Cincinnati",
@@ -2853,9 +2853,9 @@
     {
       "name": "Evangel University",
       "homepage_url": "https://www.evangel.edu/",
-      "career_url": "https://careersngr.com/jobs_at/evangel-university/",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (16 faculty postings)."
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=f349d37e-0872-42cb-bcca-bc23d939ff50&ccId=19000101_000001&lang=en_US",
+      "platform_type": "adp",
+      "notes": "CORRECTED (Bucket B round 20): the prior override here (careersngr.com/jobs_at/evangel-university) was a name-collision misattribution -- careersngr.com is a Nigerian job board, and its 'Evangel University' postings are all for Evangel University, Akaeze (Ebonyi State, Nigeria), a completely different institution that happens to share this Springfield, Missouri university's name. All 16 'verified' postings under the old override (e.g. 'Lecturer II (Nursing Science) at Evangel University, Akaeze') were fake data for this record. Routed to Evangel's own real ADP tenant instead (linked from its open-positions page). Verified live via direct API call: of 20 total reqs, 8 are faculty-titled, e.g. 'Faculty - College of Online Learning', 'AGTS Adjunct Faculty for Black Church Studies', 'Adjunct Faculty - JRLC', 'Seminary Adjunct Faculty'."
     },
     {
       "name": "Southern Utah University",
