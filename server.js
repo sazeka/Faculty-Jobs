@@ -40,6 +40,8 @@ function normalizeCollegeName(name) {
     'COLLEGE OF STATEN ISLAND': 'College of Staten Island CUNY',
     'JOHN JAY': 'CUNY John Jay College of Criminal Justice',
     'GRADUATE CENTER': 'CUNY Graduate School and University Center',
+    'GUTTMAN': 'CUNY Stella and Charles Guttman Community College',
+    'Guttman': 'CUNY Stella and Charles Guttman Community College',
     'CUNY SCHOOL': 'CUNY School of Professional Studies',
     'CUNY Advanced': 'CUNY Advanced Science Research Center',
     'Bronx': 'CUNY Bronx Community College',
@@ -2252,7 +2254,14 @@ const SUNY_CAMPUS_HINTS = [
   { campus: "SUNY Empire State College", patterns: [/\bsuny\s*esc\b/i, /empire\s*state\s*college/i, /esc\.interviewexchange\.com/i] },
   { campus: "SUNY Orange County Community College", patterns: [/\boccc\b/i, /orange\s+county\s+community\s+college/i] },
   { campus: "SUNY Westchester Community College", patterns: [/sunywcc/i, /westchester\s+community\s+college/i] },
-  { campus: "SUNY Erie Community College", patterns: [/ecc\.wd\d+\.myworkdayjobs\.com/i, /erie\s+community\s+college/i] },
+  // IPEDS's exact name for this institution is "Erie Community College" (no
+  // "SUNY " prefix) -- was "SUNY Erie Community College", which doesn't match
+  // any real institution row and creates the same duplicate, unitid-less
+  // identity documented on NY_SUNY_CAMPUSES above (confirmed live in
+  // institutions-master.json: the real "Erie Community College" row sat at
+  // 0 jobs/"missing" while a separate unitid-less "SUNY Erie Community
+  // College" row showed 6 jobs "covered").
+  { campus: "Erie Community College", patterns: [/ecc\.wd\d+\.myworkdayjobs\.com/i, /erie\s+community\s+college/i] },
   { campus: "SUNY Canton", patterns: [/canton/i, /employment\.canton\.edu/i] },
   { campus: "SUNY Ulster", patterns: [/suny\s*ulster|sunyulster/i] },
   { campus: "SUNY Jefferson Community College", patterns: [/suny\s*jefferson|sunyjefferson/i] },
@@ -2304,7 +2313,7 @@ function inferSunyCampusFromText(title, url) {
       "farmingdale.interviewexchange.com": "Farmingdale State College",
       "morrisville.interviewexchange.com": "SUNY Morrisville",
       "sunypoly.interviewexchange.com": "SUNY Polytechnic Institute",
-      "sunydutchess.interviewexchange.com": "SUNY Dutchess Community College",
+      "sunydutchess.interviewexchange.com": "Dutchess Community College",
       "sccc.interviewexchange.com": "SUNY Schenectady County Community College",
       "oneonta.interviewexchange.com": "SUNY Oneonta",
       "oswego.interviewexchange.com": "SUNY Oswego",
@@ -2339,10 +2348,27 @@ function inferSunyCampusFromText(title, url) {
 // NY Private Universities
 const NY_PRIVATE_CAMPUSES = [
   // Top 20 largest private universities in New York State
+  // Was pointing at "/faculty/jobs?challenge=<uuid>" -- that path 404s outright
+  // (confirmed on a fresh, cookie-less browser context: "The requested page
+  // does not exist or has moved"), and the "?challenge=<uuid>" query string
+  // isn't specific to that one URL at all -- it's a site-wide anti-bot token
+  // NYU's CDN auto-appends to every internal link once a browsing session has
+  // been "challenged" once, so a value captured from one session is neither
+  // stable nor reusable for another. The real, stable faculty jobs search
+  // lives at /about/careers-at-nyu/faculty-and-researchers.html (found via
+  // web search after the direct link disappeared from NYU's own faculty
+  // landing page nav) -- loads cleanly on a brand-new browser context with NO
+  // challenge param at all. A dedicated "nyu" scraper type/function
+  // (scrapeNyuFaculty) already existed in this file for exactly this page's
+  // shape (Interfolio-linked postings) but was never wired up -- switched
+  // from "generic" to "nyu". Verified live (two fresh loads, no challenge
+  // param): "Viewing 25 of 451 recent results", real per-posting anchors each
+  // with a distinct apply.interfolio.com/<id> URL, e.g. "Acting Assistant
+  // Professor of Lawyering" -> apply.interfolio.com/189573.
   {
     campus: "New York University",
-    type: "generic",
-    url: "https://www.nyu.edu/faculty/jobs?challenge=d06e90d7-4d8f-4b88-9d8c-10b73beb60f1",
+    type: "nyu",
+    url: "https://www.nyu.edu/about/careers-at-nyu/faculty-and-researchers.html",
   },
   {
     campus: "Columbia University",
@@ -2444,7 +2470,14 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "CVPH Medical Center School of Radiologic Technology", type: "generic", url: "https://www.cvph.org/Residency-and-Education/School-of-Radiology/" },
   { campus: "Memorial Hospital School of Radiation Therapy Technology", type: "generic", url: "https://www.mskcc.org/hcp-education-training/school-radiation-therapy" },
   { campus: "Mesivta Torah Vodaath Rabbinical Seminary", type: "generic", url: "https://independentrabbinicalcolleges.org/index.html" },
-  { campus: "Montefiore School of Nursing", type: "generic", url: "https://montefiorenewrochelle.org/school-of-nursing" },
+  // The program page itself has no jobs content -- real board is the parent
+  // hospital's (Montefiore New Rochelle) ViziRecruiter-hosted board, which
+  // has its own "MNR School Of Nursing" jobFamily tag distinct from the
+  // rest of the hospital's postings. Verified live via the raw JSON API: 1
+  // of 39 hospital-wide postings tagged for the School of Nursing (not
+  // itself a faculty title, so 0 current faculty openings, but the scoping
+  // is real).
+  { campus: "Montefiore School of Nursing", type: "vizirecruiter", url: "https://vizi.vizirecruiter.com/Montefiore-New-Rochelle-4725/vizis.json", jobFamilyFilter: "School Of Nursing" },
   { campus: "Pomeroy College of Nursing at Crouse Hospital", type: "generic", url: "https://www.crouse.org/nursing" },
   { campus: "School of Professional Horticulture, New York Botanical Garden", type: "generic", url: "https://www.nybg.org/about/work-with-us/employment" },
   { campus: "The Ailey School", type: "generic", url: "https://ailey.org/training" },
@@ -2486,17 +2519,51 @@ const NY_PRIVATE_CAMPUSES = [
   // sibling campuses -- URL updated for correctness, not a working scraper
   // fix.
   { campus: "Bryant & Stratton College-Albany", type: "generic", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=albany&o=postedDateDesc" },
-  { campus: "Bryant & Stratton College-Buffalo", type: "generic", url: "https://www.bryantstratton.edu/" },
-  { campus: "Bryant & Stratton College-Greece", type: "generic", url: "https://www.bryantstratton.edu/" },
-  { campus: "Bryant & Stratton College-Online", type: "generic", url: "https://www.bryantstratton.edu/" },
-  { campus: "Bryant & Stratton College-Syracuse North", type: "generic", url: "https://www.bryantstratton.edu/" },
+  // Same shared UltiPro/UKG board as the sibling Bryant & Stratton campuses
+  // above -- unlike those, this round found the actual fix: the real
+  // per-posting link lives on a Knockout-bound `<ukg-link>` custom element
+  // (not a plain `<a>`), which is why the generic scraper's `a[href]`
+  // selector found nothing here. Now uses the new dedicated `ultipro-ukg`
+  // scraper type. Verified live (two fresh loads): "?q=buffalo" -> "Showing
+  // 4 of 4 opportunities", all location-tagged "BUFFALO 110 Broadway...
+  // Buffalo, NY 14203", including a real faculty title, "Substitute
+  // Professor".
+  { campus: "Bryant & Stratton College-Buffalo", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=buffalo&o=postedDateDesc", locationFilter: "BUFFALO" },
+  // "?q=greece" -> "Showing 1 of 1 opportunities", location-tagged "GREECE
+  // 854 Long Pond Road, Rochester, NY 14612" -- real posting ("Tutor"), but
+  // not a faculty title, so 0 current faculty openings.
+  { campus: "Bryant & Stratton College-Greece", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=greece&o=postedDateDesc", locationFilter: "GREECE" },
+  // "?q=online" alone pulls in 37 results spanning many unrelated physical
+  // campuses (the word "online" also appears in titles taught out of
+  // Wauwatosa/Virginia Beach/etc.) -- locationFilter narrows to cards whose
+  // own location breadcrumb reads "ONLINE - NY" (200 Redtail, Orchard Park,
+  // NY), the delivery-mode campus's real facility tag. Verified live: 16 of
+  // the 37 are "ONLINE - NY"-tagged, including real faculty titles, e.g.
+  // "Online Adjunct Professor - Economics" and "Blended Remote Online
+  // Adjunct Professor - Math".
+  { campus: "Bryant & Stratton College-Online", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=online&o=postedDateDesc", locationFilter: "ONLINE - NY" },
+  // "?q=syracuse" -> "Showing 5 of 5 opportunities", location-tagged
+  // "SYRACUSE 953 James Street, Syracuse, NY 13203" (this tenant has no
+  // separate plain "Syracuse" campus to disambiguate from). Real faculty
+  // titles present, e.g. "Assistant Professor - Medical Assisting" and
+  // "Medical Assisting Adjunct Professor".
+  { campus: "Bryant & Stratton College-Syracuse North", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=syracuse&o=postedDateDesc", locationFilter: "SYRACUSE" },
   { campus: "Canisius University", type: "generic", url: "https://www.canisius.edu/" },
   { campus: "Cayuga County Community College", type: "interviewexchange", url: "https://cayuga.interviewexchange.com/" },
   { campus: "Central Yeshiva Tomchei Tmimim Lubavitz", type: "generic", url: "https://cyttl.edu/faculty/jobs" },
   { campus: "Clarkson University", type: "icims", url: "https://careerhub-clarkson.icims.com/" },
   { campus: "Clinton Community College", type: "generic", url: "https://www.clinton.edu/" },
   { campus: "Colgate Rochester Crozer Divinity School", type: "generic", url: "https://www.crcds.edu/" },
-  { campus: "Colgate University", type: "generic", url: "https://www.colgate.edu/jobs-colgate" },
+  // Was pointing at the "Jobs at Colgate" landing page, which only has two
+  // category tiles ("Staff Opportunities" / "Faculty Opportunities") and no
+  // real posting content of its own -- same "category tile" shape as the
+  // SUNY-system landing page problem documented elsewhere in this file.
+  // Routed directly to the Faculty Opportunities sub-page, which has the
+  // real inline postings -- rendered via a "SILC" accordion widget the
+  // generic scraper's own heading-walk fallback can't correctly resolve
+  // (see scrapeSilcAccordionAs for why), so this uses the new dedicated
+  // "silc-accordion" type instead.
+  { campus: "Colgate University", type: "silc-accordion", url: "https://www.colgate.edu/jobs-colgate/faculty-positions" },
   { campus: "College of Staten Island CUNY", type: "generic", url: "https://www.csi.cuny.edu/faculty-staff/human-resources/recruitment/jobs-csi" },
   { campus: "Columbia University in the City of New York", type: "generic", url: "https://www.columbia.edu/" },
   { campus: "Columbia-Greene Community College", type: "generic", url: "https://www.columbiagreene.edu/about/employment-opportunities" },
@@ -2526,10 +2593,25 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Dominican University New York", type: "generic", url: "https://www.duny.edu/human-resources/employment-opportunities" },
   { campus: "Dutchess Community College", type: "generic", url: "https://www.sunydutchess.edu/" },
   { campus: "Elim Bible Institute and College", type: "generic", url: "https://elim.edu/" },
-  { campus: "Elmira College", type: "generic", url: "https://www.elmira.edu/faculty/jobs" },
+  // Was pointing at "/faculty/jobs", which doesn't 404 but silently resolves
+  // to an unrelated academic department's faculty-bio page ("Actuarial and
+  // Financial Science Faculty"), not a careers page -- a CMS routing quirk,
+  // not a real careers URL. Routed to the college's real Faculty Positions
+  // page instead (About EC > Careers > Employment Opportunities > Faculty
+  // Positions). Verified live: real per-posting anchors, e.g.
+  // "Tenure-Track Faculty in Inclusive Special Education" and "Adjunct
+  // Instructor in Theatre".
+  { campus: "Elmira College", type: "generic", url: "https://www.elmira.edu/welcome-to-elmira/about-ec/careers/employment-opportunities/faculty-positions" },
   { campus: "Elyon College", type: "generic", url: "https://elyon.edu/" },
   { campus: "Empire State University", type: "generic", url: "https://sunyempire.edu/student-experience/career-services.html/faculty" },
-  { campus: "Erie Community College", type: "generic", url: "https://www.ecc.edu/" },
+  // Was pointing at the bare homepage (no jobs content, and its own "Apply
+  // Today" links are a STUDENT-admissions Workday site, a red herring, not
+  // the employee jobs board). Real HR page links to a dedicated
+  // Adjunct-Faculty-only Workday tenant, separate from the general-public
+  // staff tenant. Verified live via a direct API call: 5 real postings, e.g.
+  // "Adjunct Professor - Social Science - Sociology" and "Adjunct Professor
+  // - Automotive Technology".
+  { campus: "Erie Community College", type: "workday", url: "https://ecc.wd5.myworkdayjobs.com/AdjunctFacultyExternal" },
   { campus: "Excelsior University", type: "generic", url: "https://www.excelsior.edu/" },
   { campus: "Farmingdale State College", type: "generic", url: "https://www.farmingdale.edu/human-resources/employment-opportunities.shtml" },
   // Was pointing at the bare marketing homepage. Real ATS is InterviewExchange
@@ -6637,7 +6719,7 @@ async function scrapeCunyFaculty(context) {
 
             // Fallback: look for text that matches CUNY college names
             const cardText = card.textContent || "";
-            const collegeMatch = cardText.match(/(Borough of Manhattan|Bronx|Brooklyn|City College|College of Staten Island|Hostos|Hunter|John Jay|Kingsborough|LaGuardia|Lehman|Medgar Evers|New York City College|Queens|Queensborough|York College|Baruch|BMCC|Graduate Center|School of Law|School of Professional Studies|CUNY\s+\w+)/i);
+            const collegeMatch = cardText.match(/(Borough of Manhattan|Bronx|Brooklyn|City College|College of Staten Island|Guttman|Hostos|Hunter|John Jay|Kingsborough|LaGuardia|Lehman|Medgar Evers|New York City College|Queens|Queensborough|York College|Baruch|BMCC|Graduate Center|School of Law|School of Professional Studies|CUNY\s+\w+)/i);
             if (collegeMatch && !college) college = clean(collegeMatch[1]);
           }
 
@@ -11635,7 +11717,7 @@ async function scrapeNyPrivate(context) {
   const results = await mapWithConcurrency(
     NY_PRIVATE_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter, jobFamilyFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NY");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NY");
@@ -11652,6 +11734,9 @@ async function scrapeNyPrivate(context) {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NY");
         if (type === "saashr") return await scrapeSaasHrApi(url, campus, "NY");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "NY");
+        if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "NY", locationFilter || null);
+        if (type === "silc-accordion") return await scrapeSilcAccordionAs(context, url, campus, "NY");
+        if (type === "vizirecruiter") return await scrapeViziRecruiterApi(url, campus, "NY", jobFamilyFilter || null);
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -11765,6 +11850,171 @@ async function scrapePaycomAs(context, startUrl, campusName, sourceName, locatio
     }));
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// UltiPro/UKG "JobBoard" SPA (Bryant & Stratton College's shared multi-campus
+// tenant). Prior rounds (12/13, plus a later dedicated commit for -Albany)
+// documented this board as a "card-based-SPA-no-anchor limitation" — real
+// postings exist and the board's own `?q=<campus>` param genuinely scopes
+// them server-side, but the generic scraper's `a[href]` selector finds
+// nothing because Knockout.js renders each posting's link as a custom
+// `<ukg-link data-bind="attr:{href:...}">` element, not a plain `<a>` — it
+// carries a real `href` attribute, just not on an element the generic
+// scraper's selector looks at. Verified directly against the raw DOM
+// (getAttribute("href") on `.jobboard-opportunity-link`, a non-`<a>` custom
+// element) at Bryant & Stratton College-Buffalo's own `?q=buffalo` result
+// set: 4 of 4 cards had a real `/…/OpportunityDetail?opportunityId=…` href
+// and a location breadcrumb reading "BUFFALO 110 Broadway… Buffalo, NY
+// 14203", including one genuine faculty title ("Substitute Professor").
+//
+// The `?q=` param does full-text search across title AND location, which is
+// precise for a campus name that never appears inside an unrelated posting's
+// title (Buffalo, Greece, Albany, Parma, Wauwatosa, Virginia Beach, Syracuse
+// all verified this way) — but breaks down for a delivery-mode campus like
+// "Online", where the query term also matches many OTHER campuses' titles
+// (e.g. "Online Adjunct Professor" postings physically taught out of
+// Wauwatosa or Virginia Beach); `?q=online` alone pulled in 37 results
+// spanning at least 6 unrelated physical campuses. `locationFilter` is an
+// additional client-side check against each card's own location breadcrumb
+// text (e.g. "ONLINE - NY") so a shared/ambiguous query term can still be
+// scoped correctly. Optional/additive — omitted entirely for campuses whose
+// `?q=` term is already unambiguous.
+async function scrapeUltiproUkgAs(context, startUrl, campusName, sourceName, locationFilter = null) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(3000);
+    await page.waitForSelector(".jobboard-opportunity-link", { timeout: 15_000 }).catch(() => {});
+
+    const jobs = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const cards = Array.from(document.querySelectorAll('[data-automation="opportunity"]'));
+      const out = [];
+      for (const c of cards) {
+        const link = c.querySelector(".jobboard-opportunity-link");
+        if (!link) continue;
+        const title = clean(link.textContent);
+        const href = link.getAttribute("href");
+        if (!title || !href) continue;
+        let url;
+        try {
+          url = new URL(href, location.href).toString();
+        } catch {
+          continue;
+        }
+        out.push({ title, url, locationText: clean(c.textContent) });
+      }
+      return out;
+    });
+
+    const scoped = locationFilter
+      ? jobs.filter((j) => (j.locationText || "").toUpperCase().includes(locationFilter.toUpperCase()))
+      : jobs;
+
+    // This board mixes real academic postings with plenty of non-faculty
+    // roles (coaches, tutors, admissions/financial-aid/marketing staff) --
+    // verified live on Bryant & Stratton College-Buffalo's own "?q=buffalo"
+    // result set, where 3 of 4 results were "Assistant Men's Baseball Coach",
+    // "Assistant Coach-Men's Soccer", and "WNY Market Campus Tutor". Same
+    // keyword gate already used by the SUNY-system-main-page scraper
+    // (scrapeNySunyMain) for the same reason.
+    const facultyOnly = scoped.filter((j) => /professor|lecturer|instructor|\bfaculty\b/i.test(j.title));
+
+    const filtered = uniqByUrl(facultyOnly).filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} UltiPro/UKG listings scraped: ${filtered.length}`);
+
+    return filtered.map((j) => ({
+      title: j.title,
+      url: j.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} UltiPro/UKG scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// "SILC" accordion widget (Colgate University's Drupal theme, class prefix
+// `silc-accordion__`). Each posting is a `<button class="silc-accordion__
+// label">` (the real title) paired via aria-controls/aria-labelledby with a
+// SIBLING `<div class="silc-accordion__content">` holding the full posting
+// text and its real application link — not a descendant of the anchor's own
+// ancestor chain, so the generic scraper's ancestor-walk heading fallback
+// can't reach it (it stops at the first heading found while walking up from
+// the anchor, which lands on an unrelated in-page sub-heading like
+// "Application Materials" one hop before ever reaching the section that
+// contains the real title). Verified against the raw DOM at Colgate
+// University's own Faculty Positions page: 3 `.silc-accordion__section`
+// elements, each with a distinct title button and a distinct
+// apply.interfolio.com/<id> link inside its content compartment ("Tenure
+// Track Assistant Professor in International Relations, Political Science"
+// -> .../188692, "Tenure Track Assistant Professor in Paleoclimatology" ->
+// .../188708, "Tenure-Stream Assistant Professor in Geography" ->
+// .../189915).
+async function scrapeSilcAccordionAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1500);
+    await page.waitForSelector(".silc-accordion__section", { timeout: 15_000 }).catch(() => {});
+
+    const jobs = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const looksLikeAtsUrl = (u) =>
+        /myworkdayjobs\.com|myworkdaysite\.com|pageuppeople\.com|taleo\.net|peopleadmin\.com|schooljobs\.com|csod\.com|paycomonline\.net|icims\.com|interfolio\.com|workforcenow\.adp\.com/i.test(
+          u
+        );
+      const sections = Array.from(document.querySelectorAll(".silc-accordion__section"));
+      const out = [];
+      for (const s of sections) {
+        const btn = s.querySelector(".silc-accordion__label");
+        const title = btn ? clean(btn.textContent) : "";
+        if (!title || title.length < 10) continue;
+        const content = s.querySelector(".silc-accordion__content");
+        if (!content) continue;
+        const links = Array.from(content.querySelectorAll("a[href]"))
+          .map((a) => a.getAttribute("href"))
+          .filter(Boolean);
+        const abs = (href) => {
+          try {
+            return new URL(href, location.href).toString();
+          } catch {
+            return null;
+          }
+        };
+        const absLinks = links.map(abs).filter(Boolean);
+        const atsLink = absLinks.find((u) => looksLikeAtsUrl(u));
+        const url = atsLink || absLinks[0] || null;
+        if (!url) continue;
+        out.push({ title, url });
+      }
+      return out;
+    });
+
+    const filtered = uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+    console.log(`${campusName} ${sourceName} SILC accordion listings scraped: ${filtered.length}`);
+
+    return filtered.map((j) => ({
+      title: j.title,
+      url: j.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} SILC accordion scrape failed:`, e?.message || e);
     return [];
   } finally {
     await page.close().catch(() => {});
@@ -12342,6 +12592,7 @@ const OVERRIDE_PLATFORM_DISPATCH = {
   // function (already dispatched elsewhere for CT/NJ/NY/ME/TN) via this same
   // override-platform mechanism instead of inventing a new one.
   paycom: (context, url, campusName, sourceName) => scrapePaycomAs(context, url, campusName, sourceName),
+  "silc-accordion": (context, url, campusName, sourceName) => scrapeSilcAccordionAs(context, url, campusName, sourceName),
 };
 
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
@@ -15968,6 +16219,51 @@ async function scrapeSaasHrApi(apiUrl, campusName, sourceName) {
     return filtered;
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} SaaS HR API failed:`, e?.message || e);
+    return [];
+  }
+}
+
+// ViziRecruiter API (used by some hospital-system HR sites, e.g. Montefiore
+// New Rochelle's parent hospital board). Plain JSON GET, no browser needed --
+// each entry already carries a real per-posting `link` and a `jobFamily`
+// field the site's own UI itself filters by. Montefiore School of Nursing
+// (an accredited, degree-granting nursing school embedded in the hospital's
+// own site, not just a generic program blurb) has its own dedicated
+// "MNR School Of Nursing" jobFamily tag on this same hospital-wide board --
+// a real, working scoping mechanism verified directly against the raw JSON
+// (39 total postings hospital-wide, exactly 1 tagged "MNR School Of Nursing"
+// as of this check: "Student Services Assistant II", not itself a faculty
+// title, so 0 current faculty openings -- but the plumbing is real and will
+// surface a real faculty posting the next time the school hires one).
+async function scrapeViziRecruiterApi(apiUrl, campusName, sourceName, jobFamilyFilter = null) {
+  try {
+    const resp = await fetch(apiUrl, { signal: AbortSignal.timeout(30_000) });
+    if (!resp.ok) throw new Error(`API returned ${resp.status}`);
+    const items = await resp.json();
+    if (!Array.isArray(items)) throw new Error("Unexpected response shape");
+
+    const scoped = jobFamilyFilter
+      ? items.filter((j) => (j.jobFamily || "").toLowerCase().includes(jobFamilyFilter.toLowerCase()))
+      : items;
+
+    const jobs = scoped
+      .map((j) => ({
+        title: clean(j.title || ""),
+        url: j.link || null,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: j.location || null,
+        description: null,
+      }))
+      .filter((j) => j.title && j.url)
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (ViziRecruiter API)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} ViziRecruiter API failed:`, e?.message || e);
     return [];
   }
 }

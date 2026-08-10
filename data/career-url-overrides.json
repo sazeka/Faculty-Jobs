@@ -753,9 +753,9 @@
     {
       "name": "Colgate University",
       "homepage_url": "https://www.colgate.edu/",
-      "career_url": "https://www.colgate.edu/jobs-colgate",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; route to their own Jobs at Colgate page, which links out to Staff and Faculty Opportunities sections. Verified live: at least 1 current faculty posting (Tenure Track Assistant Professor in International Relations, Political Science)."
+      "career_url": "https://www.colgate.edu/jobs-colgate/faculty-positions",
+      "platform_type": "silc-accordion",
+      "notes": "The 'Jobs at Colgate' landing page this override previously pointed at only has two category tiles (Staff/Faculty Opportunities) and no real posting content itself -- corrected to the actual Faculty Opportunities sub-page. Real postings render via a 'SILC' accordion widget needing the dedicated silc-accordion scraper type (see server.js scrapeSilcAccordionAs). Verified live: 3 current faculty postings, e.g. Tenure Track Assistant Professor in International Relations, Political Science."
     },
     {
       "name": "Connors State College",
