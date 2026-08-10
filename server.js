@@ -742,7 +742,15 @@ const MA_PRIVATE_CAMPUSES = [
   { campus: "Endicott College", type: "generic", url: "https://www.endicott.edu/" },
   { campus: "Fisher College", type: "generic", url: "https://www.fisher.edu/careers" },
   { campus: "Fitchburg State University", type: "interviewexchange", url: "https://fitchburg.interviewexchange.com/static/clients/500FSM1/index.jsp" },
-  { campus: "Framingham State University", type: "generic", url: "https://www.framingham.edu/about-fsu/careers-fsu" },
+  // Was pointing at the bare careers landing page. Real ATS is
+  // InterviewExchange (linked as "Search Openings and Apply Now"). Wired for
+  // correctness; NOT verified live per the established
+  // InterviewExchange-is-blocked-by-WAF precedent from rounds 1/5/6.
+  {
+    campus: "Framingham State University",
+    type: "interviewexchange",
+    url: "https://framingham.interviewexchange.com/static/clients/353FSM1/listJobs.jsp",
+  },
   { campus: "Franklin W Olin College of Engineering", type: "generic", url: "https://www.olin.edu/" },
 ];
 
@@ -1951,7 +1959,14 @@ const MD_CAMPUSES = [
   { campus: "Bais HaMedrash and Mesivta of Baltimore", type: "generic", url: "https://www.bhmb.edu/" },
   { campus: "Baltimore City Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/bccc/fulltimefaculty" },
   { campus: "Bowie State University", type: "generic", url: "https://www.bowiestate.edu/" },
-  { campus: "Capitol Technology University", type: "generic", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=199260cf-4b15-410c-9970-1d94a408c2d5&ccId=19000101_000001&type=MP&lang=en_US" },
+  // URL was already correct (a real ADP Workforce Now tenant), but type was
+  // "generic" -- the generic HTML-anchor scraper can't read ADP's JS-heavy
+  // widget (confirmed live: page renders empty body text even after a wait),
+  // so this silently returned 0 despite a healthy-looking URL. Fixed to
+  // "adp" so it goes through the existing direct job-requisitions API
+  // instead. Verified live via that API: 2 current postings, incl.
+  // "Administrative Faculty".
+  { campus: "Capitol Technology University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=199260cf-4b15-410c-9970-1d94a408c2d5&ccId=19000101_000001&type=MP&lang=en_US" },
   { campus: "Carroll Community College", type: "generic", url: "https://www.carrollcc.edu/about/jobs" },
   // The employment page itself embeds a JobScore widget in a cross-origin
   // <iframe> (widgets.jobscore.com) that generic scraping of the parent
@@ -3838,12 +3853,64 @@ const IL_CAMPUSES = [
   { campus: "City Colleges of Chicago-Richard J Daley College", type: "generic", url: "https://www.ccc.edu/colleges/daley/pages/default.aspx" },
   { campus: "City Colleges of Chicago-Wilbur Wright College", type: "generic", url: "https://www.ccc.edu/colleges/wright/pages/default.aspx" },
   { campus: "Frontier Community College", type: "generic", url: "https://iecc.edu/jobs" },
-  { campus: "Lincoln Trail College", type: "generic", url: "https://iecc.edu/jobs" },
-  { campus: "The Chicago School at Chicago", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/careers" },
-  { campus: "Wabash Valley College", type: "generic", url: "https://iecc.edu/jobs" },
+  // Shared district-wide Illinois Eastern Community Colleges listings page
+  // (4 campuses + district office on one page). Scoped via the page's own
+  // per-campus <h3> header immediately preceding each campus's <ul> of
+  // postings (see scrapeIeccCampusJobs) -- verified live against the raw DOM:
+  // "Lincoln Trail College Campus, Robinson, IL" section has its own real
+  // posting "Nursing Instructor" (part-time), distinct filename/href from
+  // every other campus's postings.
+  {
+    campus: "Lincoln Trail College",
+    type: "iecc-campus",
+    url: "https://iecc.edu/jobs",
+    locationFilter: "Lincoln Trail College Campus",
+  },
+  // Real ATS is the same shared Workday tenant already established for The
+  // Chicago School at Los Angeles / San Diego (tcsedsystem.wd1.myworkdayjobs.com/
+  // TCSPP) -- confirmed via a direct POST to its /wday/cxs/tcsedsystem/TCSPP/jobs
+  // endpoint that "Chicago, IL" has its own facet id, distinct from the
+  // "The Chicago School - Chicago - 400 S Jefferson St" building-level facet.
+  // Scoped with the city-level facet. Verified live: 12 postings, all
+  // Chicago-tagged, incl. 8 real "Adjunct Faculty - <program> - Chicago
+  // Campus" titles (School Psychology, Forensic Psychology, Applied
+  // Behavior Analysis, Counseling Psychology, IO/Business Psychology,
+  // Counselor Education, BA Psychology, Clinical Psychology).
+  {
+    campus: "The Chicago School at Chicago",
+    type: "workday",
+    url: "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=0cec31c30163012adcba00e1e0494f00",
+  },
+  // Same shared IECC district-wide page as Lincoln Trail College above,
+  // scoped to Wabash Valley's own <h3> header. Verified live against the raw
+  // DOM: "Wabash Valley College Campus, Mt. Carmel, IL" section has its own
+  // real postings "Physical Therapist Assistant Program Instructor" (both
+  // full- and part-time listings) and "English as a Second Language
+  // Instructor" (part-time), each with a distinct WVC_-prefixed filename,
+  // not shared with Lincoln Trail College's LTC_-prefixed postings.
+  {
+    campus: "Wabash Valley College",
+    type: "iecc-campus",
+    url: "https://iecc.edu/jobs",
+    locationFilter: "Wabash Valley College Campus",
+  },
   { campus: "William Rainey Harper College", type: "generic", url: "https://jobs.harpercollege.edu/" },
   { campus: "NorthShore University HealthSystem School of Nurse Anesthesia", type: "generic", url: "https://www.northshore.org/academics/other-programs/school-of-nurse-anesthesia/" },
-  { campus: "St. John's College-Department of Nursing", type: "generic", url: "https://www.hshs.org/stjohnscollege/" },
+  // Was pointing at the college's own hshs.org landing page, which has no
+  // job listings of its own -- real hiring runs through parent system
+  // Hospital Sisters Health System's shared Workday tenant
+  // (hshs.wd1.myworkdayjobs.com/hshscareers). That tenant has its own
+  // "College of Nursing" jobFamily facet (confirmed via a direct POST to
+  // its /wday/cxs/hshs/hshscareers/jobs endpoint), scoped with this exact
+  // id, cleanly separating St. John's College faculty postings from the
+  // health system's ~300+ clinical/hospital postings. Verified live: 2
+  // real postings, both Springfield, IL -- "Assistant Professor" and
+  // "Academic Faculty-Adjunct".
+  {
+    campus: "St. John's College-Department of Nursing",
+    type: "workday",
+    url: "https://hshs.wd1.myworkdayjobs.com/hshscareers?jobFamily=e93b80864cb90101b5c01ffb33ea0000",
+  },
   { campus: "Adler University", type: "generic", url: "https://www.adler.edu/about/careers" },
   { campus: "American Islamic College", type: "generic", url: "https://aicusa.edu/about/employment" },
   { campus: "Augustana College", type: "generic", url: "https://www.augustana.edu/jobs" },
@@ -3859,7 +3926,16 @@ const IL_CAMPUSES = [
   // anyway since it's the closest thing to a real careers page this
   // institution has.
   { campus: "Bexley Hall Seabury Western Theological Seminary Federation, Inc.", type: "generic", url: "https://bexleyseabury.edu/job-opportunities" },
-  { campus: "Black Hawk College", type: "generic", url: "https://www.bhc.edu/careers" },
+  // Was pointing at the bare careers landing page (no per-posting anchors,
+  // just links out to the real ATS). Real board is a NEOGOV/schooljobs
+  // tenant, split into "Full-Time Faculty Jobs" and "Adjunct Faculty Jobs"
+  // sub-boards from that page -- used the unfiltered base board instead so
+  // both are covered by the existing looksFacultyish/omitAdjunct filters,
+  // same convention as other schooljobs entries. Verified live: 5 real
+  // full-time postings (e.g. "FT Nursing Faculty", "Full-time Court
+  // Reporting Faculty") plus 16 real adjunct postings (e.g. "Adjunct
+  // Faculty - Applied Music Instructor (Piano)").
+  { campus: "Black Hawk College", type: "schooljobs", url: "https://www.schooljobs.com/careers/bhcedu" },
   // Was pointing at the bare homepage. Real careers page is /jobs, linked
   // from the homepage. Verified live: real per-posting anchors, incl. a
   // real current "Adjunct Faculty Positions" opening.
@@ -4713,7 +4789,31 @@ const LA_CAMPUSES = [
   { campus: "Remington College-Baton Rouge Campus", type: "generic", url: "https://www.remingtoncollege.edu/baton-rouge-career-college" },
   { campus: "Remington College-Lafayette Campus", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027239359_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter" },
   { campus: "Remington College-Shreveport Campus", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027242374_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter" },
+  // Checked for the same shared-Workday-tenant fix applied to The Chicago
+  // School at Los Angeles / San Diego / Chicago (round 18/19): the tenant's
+  // own facet list (confirmed via a direct POST to
+  // /wday/cxs/tcsedsystem/TCSPP/jobs) has NO location entry for New Orleans
+  // or Xavier at all -- 0 of the tenant's 72 current postings are tagged to
+  // this campus. The Chicago School's own live "Campus Locations" page no
+  // longer even lists Xavier University of Louisiana among its campuses
+  // (Online, Anaheim, Chicago, Dallas, Los Angeles, Washington D.C. only),
+  // suggesting this partnership may no longer be active. Nothing to scope
+  // to -- left as the bare locations page rather than pointing at the
+  // unscoped shared tenant (which would misattribute other campuses'
+  // postings here). Documented, not patched.
   { campus: "The Chicago School at Xavier University of Louisiana", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/locations/" },
+  // Checked thoroughly: no self-hosted careers/employment/jobs page exists
+  // anywhere on lafayette.aie.edu or the parent aie.edu site (confirmed by
+  // reading every footer/nav link on both -- only "Career Pathways" pages,
+  // which are student-outcomes marketing content, not a hiring board).
+  // HigherEdJobs (the established fallback for institutions with no
+  // self-hosted board, e.g. Chicago Theological Seminary) has no listing
+  // for this institution either ("No matching positions found" against
+  // real search infrastructure). Real current openings do exist (a web
+  // search found "Game Art and Animation Instructor" and "Game Programming
+  // Instructor" postings) but only on third-party boards this codebase
+  // doesn't scrape (Indeed, ArtStation, Tallo, BeBee) -- documented, not
+  // patched; left at the bare homepage since there is no better URL.
   { campus: "Academy of Interactive Entertainment", type: "generic", url: "https://lafayette.aie.edu/" },
   { campus: "Baton Rouge Community College", type: "generic", url: "https://www.mybrcc.edu/" },
   { campus: "Bossier Parish Community College", type: "generic", url: "https://www.bpcc.edu/human-resources/employment-opportunities" },
@@ -4824,7 +4924,31 @@ const KS_CAMPUSES = [
     type: "paycom",
     url: "https://www.paycomonline.net/v4/ats/web.php/portal/D735C44B01F6404D0C91B262228D396A/career-page",
   },
-  { campus: "Dodge City Community College", type: "generic", url: "https://dc3.edu/employment-page" },
+  // Was pointing at the bare employment landing page (no per-posting
+  // anchors -- just a row of category icon-links to a shared ADP Workforce
+  // Now tenant, each icon wrapping a distinct ccId category: Staff,
+  // Part-Time, Faculty, Adjunct, Athletics, Student, Arizona -- confirmed by
+  // matching each <img> filename to its enclosing <a href>). Split into two
+  // entries for the Faculty and Adjunct category ccIds (scrapeAdpApi takes
+  // one ccId per URL, and this ADP tenant has no combined "all faculty"
+  // category). Verified live via the tenant's own job-requisitions API:
+  // Faculty ccId returns 1 real posting ("Faculty - Automotive Technology",
+  // Main Campus, Dodge City, KS); Adjunct ccId returns 8 real postings, all
+  // Dodge City, KS (e.g. "Part Time Nursing Instructor", "Adjunct
+  // Instructor - Allied Health/Nursing", "Adjunct Instructor -
+  // Mathematics/Sciences") -- confirming this tenant is NOT shared beyond
+  // Dodge City despite the "Arizona" category icon (that category's
+  // postings never appeared under Faculty/Adjunct in this check).
+  {
+    campus: "Dodge City Community College",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=fb38771a-5afe-4371-bf51-3936ebb49ef7&ccId=9200394770924_2&type=JS&lang=en_US",
+  },
+  {
+    campus: "Dodge City Community College",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=fb38771a-5afe-4371-bf51-3936ebb49ef7&ccId=9200394771142_2&type=JS&lang=en_US",
+  },
   { campus: "Donnelly College", type: "generic", url: "https://www.donnelly.edu/staff/careers" },
   { campus: "Emporia State University", type: "generic", url: "https://www.emporia.edu/" },
   { campus: "Flint Hills Technical College", type: "generic", url: "https://my.fhtc.edu/ICS/Careers/" },
@@ -4949,7 +5073,26 @@ const KY_CAMPUSES = [
   { campus: "Northern Kentucky University", type: "peopleadmin", url: "https://jobs.nku.edu/postings/search" },
   { campus: "Murray State University", type: "peopleadmin", url: "https://www.murraystatejobs.com/postings/search" },
   { campus: "Morehead State University", type: "peopleadmin", url: "https://moreheadstate.peopleadmin.com/postings/search" },
-  { campus: "Gateway Community and Technical College", type: "generic", url: "https://gateway.kctcs.edu/index.aspx" },
+  // Was pointing at the bare campus homepage. Real ATS is the same PageUp
+  // platform as Hopkinsville Community College above (careers.kctcs.edu),
+  // this campus's own "gateway-jobs" tenant scoped further with the site's
+  // own Faculty + Adjunct Faculty category facet (linked from the tenant's
+  // own "See all Faculty openings" button). The given HINT URL was a single
+  // job-detail page, not a real search/listing URL -- replaced with the
+  // proper category-scoped search URL instead. Verified live (raw DOM dump,
+  // not just the visually-rendered first card, since the results list is
+  // virtualized/lazy-rendered past the viewport): 7 real postings, all
+  // Gateway-tagged and Northern Kentucky-located (Florence/Edgewood/
+  // Covington/Fort Wright), matching the page's own "Adjunct Faculty (5) +
+  // Faculty (2)" category counts exactly with zero unaccounted-for entries
+  // -- e.g. "Adjunct Faculty - Electrical Construction", "Clinical Nursing
+  // Instructor Part-time", "Instructor - Interdisciplinary Early Childhood
+  // Education and Program Coordinator".
+  {
+    campus: "Gateway Community and Technical College",
+    type: "pageup",
+    url: "https://careers.kctcs.edu/jobs/search/gateway-jobs?page=1&query=&category_uids%5B%5D=7bf29a1b2c109f72dcf4f573996c912e&category_uids%5B%5D=23ff5099afa2deb8b85349a245f8b261",
+  },
   { campus: "Hopkinsville Community College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/hopkinsville-jobs" },
   { campus: "Alice Lloyd College", type: "generic", url: "https://www.alc.edu/" },
   { campus: "Asbury Theological Seminary", type: "generic", url: "https://asburyseminary.edu/info/employment" },
@@ -9325,6 +9468,10 @@ async function scrapeMdAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MD");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "MD");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MD");
+        // No existing MD dispatch case for "adp" (function scrapeAdpAs
+        // already exists and is dispatched by several other states) --
+        // added for Capitol Technology University.
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "MD");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MD");
         return [];
       } catch (e) {
@@ -10125,7 +10272,7 @@ async function scrapeIlAll(context) {
   const results = await mapWithConcurrency(
     IL_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IL");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "IL");
@@ -10153,6 +10300,15 @@ async function scrapeIlAll(context) {
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "IL");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IL");
         if (type === "peoplesoft-fluid") return await scrapePeopleSoftFluidAs(context, url, campus, "IL");
+        // No existing IL dispatch case for "workday" (function scrapeWorkdayAs
+        // already exists and is dispatched elsewhere, e.g. CA) -- added for
+        // St. John's College-Department of Nursing (shared HSHS Workday tenant).
+        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "IL");
+        // No existing IL dispatch case for "iecc-campus" (new dedicated
+        // scraper this round) -- added for Lincoln Trail College and Wabash
+        // Valley College, both sharing the same district-wide IECC listings
+        // page.
+        if (type === "iecc-campus") return await scrapeIeccCampusJobs(context, url, campus, "IL", locationFilter);
 
         return [];
       } catch (e) {
@@ -10548,6 +10704,82 @@ async function scrapeKnoxFacultyJobs(context, startUrl, campusName, sourceName) 
       }
       return out;
     });
+
+    const jobs = (items || [])
+      .map((x) => ({
+        title: normalizeJobTitle(x.title),
+        url: x.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: null,
+      }))
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Illinois Eastern Community Colleges (iecc.edu/jobs): a single district-wide
+// listings page shared by 4 campuses (Frontier, Lincoln Trail, Olney
+// Central, Wabash Valley) plus the district office, rendered as two
+// accordion panels ("Full-time Openings" / "Part-time Openings"), each a
+// single <div class="field--name-field-body"> containing a flat sequence of
+// <h3> campus-header / <ul> posting-list pairs (verified directly against
+// the raw DOM: exactly 2 such divs on the page, each with headers like
+// "Lincoln Trail College Campus, Robinson, IL" immediately followed by a
+// <ul> of that campus's own postings, each posting a real <a href> to a PDF).
+// A shared "Frontier, Olney Central, Lincoln Trail, Wabash Valley" header
+// also exists for postings not scoped to one campus -- deliberately
+// excluded here since attributing it to any single campus would be a guess.
+// campusHeaderPrefix scopes to one campus's own <ul> only (verified live:
+// Lincoln Trail's and Wabash Valley's own sections have zero overlapping
+// filenames, confirming clean separation, not shared-district
+// misattribution).
+async function scrapeIeccCampusJobs(context, startUrl, campusName, sourceName, campusHeaderPrefix) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(900);
+
+    const items = await safeEvaluate(page, (headerPrefix) => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); } catch { return null; }
+      };
+      const prefixLower = headerPrefix.toLowerCase();
+
+      const out = [];
+      const seen = new Set();
+      for (const container of Array.from(document.querySelectorAll(".field--name-field-body"))) {
+        let capturing = false;
+        for (const el of Array.from(container.children)) {
+          if (el.tagName === "H3") {
+            capturing = clean(el.textContent).toLowerCase().startsWith(prefixLower);
+            continue;
+          }
+          if (capturing && el.tagName === "UL") {
+            for (const a of Array.from(el.querySelectorAll("a[href]"))) {
+              const url = abs(a.getAttribute("href"));
+              const title = clean(a.textContent);
+              if (!url || !title || title.length < 3) continue;
+              if (seen.has(url)) continue;
+              seen.add(url);
+              out.push({ title, url });
+            }
+          }
+        }
+      }
+      return out;
+    }, campusHeaderPrefix);
 
     const jobs = (items || [])
       .map((x) => ({
@@ -14941,6 +15173,10 @@ async function scrapeKsAll(context) {
         // already exists and is dispatched by MA/ME/NY/TX/MS) -- added for
         // Cowley County Community College.
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "KS");
+        // No existing KS dispatch case for "adp" (function scrapeAdpAs
+        // already exists and is dispatched by several other states) --
+        // added for Dodge City Community College.
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "KS");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "KS");
         return [];
       } catch (e) {

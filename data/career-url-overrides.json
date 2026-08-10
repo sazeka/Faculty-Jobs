@@ -264,8 +264,8 @@
       "name": "Capitol Technology University",
       "homepage_url": "https://www.captechu.edu/",
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=199260cf-4b15-410c-9970-1d94a408c2d5&ccId=19000101_000001&type=MP&lang=en_US",
-      "platform_type": "generic",
-      "notes": "The configured /faculty-and-staff/employment page is a generic benefits blurb with no listings; it links out to an ADP Workforce Now recruiting portal. Verified live: 5 openings including Administrative Faculty and Adjunct - English."
+      "platform_type": "adp",
+      "notes": "The configured /faculty-and-staff/employment page is a generic benefits blurb with no listings; it links out to an ADP Workforce Now recruiting portal. Bucket B round 19 update: platform_type corrected from 'generic' to 'adp' -- the URL was already right, but 'generic' can't read ADP's JS-heavy widget (confirmed live: empty rendered body), so this override was silently keeping the fix broken every time it applied. Verified live via the tenant's own job-requisitions API: 2 current postings, incl. 'Administrative Faculty'. Kept in sync with server.js's own type/url here so this override doesn't revert to 'generic' (the round-14 lesson)."
     },
     {
       "name": "Carl Albert State College",
@@ -2475,9 +2475,9 @@
     {
       "name": "Gateway Community and Technical College",
       "homepage_url": "https://gateway.kctcs.edu/index.aspx",
-      "career_url": "https://careers.kctcs.edu/jobs/adjunct-faculty-diagnostic-medical-sonography-london-kentucky-united-states-russell-springs-somerset",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+      "career_url": "https://careers.kctcs.edu/jobs/search/gateway-jobs?page=1&query=&category_uids%5B%5D=7bf29a1b2c109f72dcf4f573996c912e&category_uids%5B%5D=23ff5099afa2deb8b85349a245f8b261",
+      "platform_type": "pageup",
+      "notes": "Bucket B round 19 update: the old career_url was a single job-detail page, not a real search/listing URL. Real ATS is the same PageUp platform as Hopkinsville Community College, scoped to this campus's own 'gateway-jobs' tenant plus the site's own Faculty + Adjunct Faculty category facet. Verified live (raw DOM dump, not just the visible first card): 7 real postings, all Gateway-tagged, matching the page's own category counts exactly. Kept in sync with server.js's own type/url here so this override doesn't silently revert the fix back to platform_type 'generic' (the round-14 lesson)."
     },
     {
       "name": "Laredo College",
@@ -2804,9 +2804,9 @@
     {
       "name": "The Chicago School at Chicago",
       "homepage_url": "https://www.thechicagoschool.edu/in-the-community/locations",
-      "career_url": "https://www.thechicagoschool.edu/in-the-community/careers/",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings)."
+      "career_url": "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=0cec31c30163012adcba00e1e0494f00",
+      "platform_type": "workday",
+      "notes": "Bucket B round 19 update: same shared Workday tenant as The Chicago School at Los Angeles / San Diego (round 18), scoped to Chicago's own facet id via '?locations=<id>' (confirmed via a direct POST to /wday/cxs/tcsedsystem/TCSPP/jobs). Verified live: 12 real postings, all Chicago-tagged, incl. 8 'Adjunct Faculty - <program> - Chicago Campus' titles. Kept in sync with server.js's own type/url here so this override doesn't silently revert the fix back to platform_type 'generic' (the round-14 lesson)."
     },
     {
       "name": "The Chicago School at San Diego",
