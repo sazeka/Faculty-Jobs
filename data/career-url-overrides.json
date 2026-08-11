@@ -327,8 +327,8 @@
       "name": "Cascadia College",
       "homepage_url": "https://www.cascadia.edu/",
       "career_url": "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=300",
-      "platform_type": "generic",
-      "notes": "Configured /faculty/jobs 404s; the college's real employment page links to this ctclink (PeopleSoft, shared WA state community/technical college HR system) job search, scoped to Cascadia College via SiteId=300. Verified live after clicking 'View All Jobs': 48 postings, including a Quarterly Part-Time Associate Faculty - Atmospheric Sciences role. Note: this ctclink page loads only a search shell on initial page view; a click/search step is needed to populate listings, so a scraper would need to handle that."
+      "platform_type": "peoplesoft-fluid",
+      "notes": "Configured /faculty/jobs 404s; the college's real employment page links to this ctclink (PeopleSoft, shared WA state community/technical college HR system) job search, scoped to Cascadia College via SiteId=300. Verified live after clicking 'View All Jobs': 48 postings, including a Quarterly Part-Time Associate Faculty - Atmospheric Sciences role. Note: this ctclink page loads only a search shell on initial page view; a click/search step is needed to populate listings, so a scraper would need to handle that. Bucket B round 24: platform_type synced from generic to peoplesoft-fluid to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 46 results after the 'View All Jobs' click, all correctly scoped, but all titled 'Quarterly Part Time Associate Faculty - <subject>' -- correctly excluded by the shared omitAdjunct filter, genuinely 0 current qualifying postings. Bucket B round 24: platform_type synced from generic to peoplesoft-fluid to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 46 results after the 'View All Jobs' click, all correctly scoped, but all titled 'Quarterly Part Time Associate Faculty - <subject>' -- correctly excluded by the shared omitAdjunct filter, genuinely 0 current qualifying postings."
     },
     {
       "name": "Casper College",
@@ -439,8 +439,8 @@
       "name": "Centralia College",
       "homepage_url": "https://www.centralia.edu/",
       "career_url": "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=120",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; the 'Jobs @ CC' link goes to this ctclink (shared WA state community/technical college HR system) search, scoped to Centralia via SiteId=120. Verified live after 'View All Jobs': 8 postings including Construction Trades Assistant Professor (Full-time, Tenure-track) and Adjunct Nursing Instructor. Note: page loads only a search shell initially; a search/click step is needed to populate listings."
+      "platform_type": "peoplesoft-fluid",
+      "notes": "Was pointing at the bare homepage; the 'Jobs @ CC' link goes to this ctclink (shared WA state community/technical college HR system) search, scoped to Centralia via SiteId=120. Verified live after 'View All Jobs': 8 postings including Construction Trades Assistant Professor (Full-time, Tenure-track) and Adjunct Nursing Instructor. Note: page loads only a search shell initially; a search/click step is needed to populate listings. Bucket B round 24: platform_type synced from generic to peoplesoft-fluid to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 9 results after the 'View All Jobs' click, 2 real faculty postings survive the filter -- 'Construction Trades Assistant Professor (Full-time, Tenure-track)' and 'Adjunct Nursing Instructor'. Bucket B round 24: platform_type synced from generic to peoplesoft-fluid to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 9 results after the 'View All Jobs' click, 2 real faculty postings survive the filter -- 'Construction Trades Assistant Professor (Full-time, Tenure-track)' and 'Adjunct Nursing Instructor'."
     },
     {
       "name": "Centre College",
@@ -929,8 +929,8 @@
       "name": "Eastern Mennonite University",
       "homepage_url": "https://emu.edu/",
       "career_url": "https://www.paycomonline.net/v4/ats/web.php/portal/864CD5F3AB350C8D2A97891D7F3F4860/career-page",
-      "platform_type": "generic",
-      "notes": "Was pointing at a student career-services landing page; the real HR careers page links to Paycom. Verified live: 58 postings including faculty (e.g., Adjunct Faculty)."
+      "platform_type": "paycom",
+      "notes": "Was pointing at a student career-services landing page; the real HR careers page links to Paycom. Bucket B round 24: platform_type synced from generic to paycom to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 64 postings including faculty (e.g., Adjunct Faculty, Adjunct Faculty - Psychology, Adjunct Faculty - Mathematics). Bucket B round 24: platform_type synced from generic to paycom to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 64 postings including faculty (e.g., Adjunct Faculty, Adjunct Faculty - Psychology, Adjunct Faculty - Mathematics)."
     },
     {
       "name": "Eastern New Mexico University Ruidoso Branch Community College",
@@ -1810,9 +1810,9 @@
     {
       "name": "Southwestern University",
       "homepage_url": "https://www.southwestern.edu/human-resources/career-opportunities",
-      "career_url": "https://www.southwestern.edu/human-resources/career-opportunities/#",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+      "career_url": "https://www.schooljobs.com/careers/southwestern",
+      "platform_type": "schooljobs",
+      "notes": "Bucket B round 24: was pointing at the HR \"Career Opportunities\" landing page (no real posting anchors); routed directly to the real NEOGOV schooljobs.com board and synced platform_type to schooljobs (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 10 postings, real faculty titles incl. \"Assistant Professor of Engineering - Tenure-track\"."
     },
     {
       "name": "University of Arkansas Hope-Texarkana",
@@ -2146,9 +2146,9 @@
     {
       "name": "Big Bend Community College",
       "homepage_url": "https://www.bigbend.edu/",
-      "career_url": "https://www.bigbend.edu/about-us/jobs-at-bbcc.html",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (9 faculty postings)."
+      "career_url": "https://www.schooljobs.com/careers/bigbend",
+      "platform_type": "schooljobs",
+      "notes": "Bucket B round 24: was pointing at the college's own \"Jobs at BBCC\" landing page (no real posting anchors); routed to the real NEOGOV schooljobs.com board and synced platform_type to schooljobs (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 19 real postings, e.g. \"Associate Faculty - Art\"."
     },
     {
       "name": "Bishop State Community College",
@@ -2370,9 +2370,9 @@
     {
       "name": "Denmark Technical College",
       "homepage_url": "https://www.denmarktech.edu/",
-      "career_url": "https://www.denmarktech.edu/about-dtc/jobs/",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+      "career_url": "https://www.schooljobs.com/careers/denmarktech",
+      "platform_type": "schooljobs",
+      "notes": "Bucket B round 24: was pointing at the intermediate \"About DTC > Jobs\" landing page (generic, 0 real posting anchors); routed directly to the real NEOGOV schooljobs.com board and synced platform_type to schooljobs (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 25 real postings, e.g. \"Adjunct Instructor - Workforce Development (Pool)\", \"Adjunct Instructor - Arts, Sciences, and Education (Pool)\"."
     },
     {
       "name": "Denver Seminary",
@@ -3175,9 +3175,9 @@
     {
       "name": "The Chicago School at Dallas",
       "homepage_url": "https://www.thechicagoschool.edu/in-the-community/locations",
-      "career_url": "https://www.thechicagoschool.edu/in-the-community/careers/",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings)."
+      "career_url": "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=b78332b6c6801001613e6d5a31ac0000",
+      "platform_type": "workday",
+      "notes": "Bucket B round 24: real ATS is the shared tcsedsystem.wd1.myworkdayjobs.com/TCSPP Workday tenant (same as LA/San Diego/Chicago campuses), scoped to the Plano, TX location facet (Dallas campus is physically in Plano). Synced platform_type to workday (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 9 real postings, e.g. \"Adjunct Faculty - Clinical PsyD - Dallas Campus\"."
     },
     {
       "name": "Capital Health School of Nursing",
@@ -3210,9 +3210,9 @@
     {
       "name": "The Chicago School-College of Nursing",
       "homepage_url": "https://www.thechicagoschool.edu/in-the-community/locations",
-      "career_url": "https://www.thechicagoschool.edu/in-the-community/careers/",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings)."
+      "career_url": "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=b78332b6c6801001613e6d5a31ac0000",
+      "platform_type": "workday",
+      "notes": "Bucket B round 24: shares the exact same Workday tenant and Plano/Dallas physical campus facet as The Chicago School at Dallas (formerly \"Dallas Nursing Institute\", acquired by TCS) -- no separate program-level facet exists, so a TX-only titleFilter=\"nursing\" post-processing step scopes it. Synced platform_type to workday (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 0 of the 9 Plano postings currently mention \"nursing\" in the title -- genuinely 0 current openings, correctly scoped."
     },
     {
       "name": "Benedict College",

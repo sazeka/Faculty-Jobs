@@ -1788,7 +1788,21 @@ const VA_CAMPUSES = [
     url: "https://www.hollins.edu/about/human-resources/employment-opportunities/",
   },
   { campus: "Centra College", type: "generic", url: "https://www.centrahealth.com/college" },
-  { campus: "Riverside College of Health Careers", type: "generic", url: "https://www.riversideonline.com/careers/college-of-health-careers" },
+  // Hospital-affiliated (Riverside Health), but per the established
+  // caveat (Hospital Sisters Health System round 19, Montefiore round 21,
+  // HealthcareSource/Trinity Health round 22) this one has a REAL per-
+  // program facet: parent system's Workday tenant
+  // (rivhs.wd1.myworkdayjobs.com/Non-ProviderRHS) has a dedicated
+  // "Riverside College of Health Careers - Newport News, Virginia"
+  // location facet, distinct from the hospital's other locations. Verified
+  // live: 7 postings, 4 real faculty titles -- "Contract Adjunct
+  // Clinical-Lab Instructor II", "Nurse Instructor Adjunct MS" (x2), "Nurse
+  // Instructor MSN".
+  {
+    campus: "Riverside College of Health Careers",
+    type: "workday",
+    url: "https://rivhs.wd1.myworkdayjobs.com/Non-ProviderRHS?locations=e4d5b5d44e4401f5fc3f03a8bf00c66f",
+  },
   { campus: "Agora University", type: "generic", url: "https://www.agora.edu/" },
   { campus: "Appalachian College of Pharmacy", type: "generic", url: "https://www.acp.edu/employment" },
   { campus: "Appalachian School of Law", type: "generic", url: "https://www.asl.edu/faculty-2/hiring" },
@@ -1825,7 +1839,11 @@ const VA_CAMPUSES = [
   // Secours" for system-wide Bon Secours health-system openings --
   // deliberately NOT wired, same misattribution-risk shape as BSMCON.
   { campus: "Bon Secours St Mary's Hospital School of Medical Imaging", type: "generic", url: "https://www.smhsomi.edu/employment-opportunities" },
-  { campus: "Bridgewater College", type: "generic", url: "https://www.bridgewater.edu/careers" },
+  // Real ATS is Paycom, linked from the "Current Job Openings" button on
+  // the college's own Careers page. Verified live: 6 postings, incl. real
+  // faculty title "Assistant Professor- Sport & Exercise Psychology"
+  // (full-time, nine-month, tenure-track).
+  { campus: "Bridgewater College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=16288201D4A1D6526C3A89AE4682CD7B" },
   // Was pointing at Brightpoint's own employment page, which itself hands off
   // to the VCCS-wide (all 23 Virginia community colleges) PeopleAdmin board
   // in prose only ("only accepts online applications submitted through VCCS
@@ -1842,13 +1860,17 @@ const VA_CAMPUSES = [
     type: "peopleadmin",
     url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7889&query_position_type_id%5B%5D=9&commit=Search",
   },
-  // Same shared UltiPro/UKG board as sibling Bryant & Stratton campuses
-  // (Parma round 12, Wauwatosa round 12) -- "?q=virginia+beach" scopes to
-  // this campus (10 results, e.g. "Academic Advisor" in Hampton, VA, the
-  // Hampton Roads/Virginia Beach area). Same card-based-SPA-no-anchor
-  // limitation as the sibling campuses -- URL updated for correctness, not
-  // a working scraper fix.
-  { campus: "Bryant & Stratton College-Virginia Beach", type: "generic", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=virginia+beach&o=postedDateDesc" },
+  // Bucket B round 24: real root cause found by round 21 for the sibling
+  // Buffalo/Greece/Online/Syracuse North campuses -- Knockout-bound
+  // `<ukg-link>` custom elements, invisible to the generic scraper's
+  // `a[href]` selector. Applied here too. "?q=virginia+beach" alone
+  // over-matches (verified live: 12 raw results including postings
+  // physically at RICHMOND - CHESTERFIELD, HAMPTON, and even AKRON, OH --
+  // the query text-searches title AND location loosely), so locationFilter
+  // is required (same as "Online"/"Syracuse North" in round 21). Verified
+  // live with locationFilter "VIRGINIA BEACH" + the faculty-keyword gate:
+  // exactly 1 real posting, "Adjunct Professor - Biology".
+  { campus: "Bryant & Stratton College-Virginia Beach", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=virginia+beach&o=postedDateDesc", locationFilter: "VIRGINIA BEACH" },
   {
     campus: "Central Virginia Community College",
     type: "peopleadmin",
@@ -1857,7 +1879,16 @@ const VA_CAMPUSES = [
   { campus: "Christopher Newport University", type: "generic", url: "https://jobs.cnu.edu/" },
   { campus: "Danville Community College", type: "generic", url: "https://jobs.vccs.edu/postings/search?query=&query_organizational_tier_2_id%5B%5D=3690&commit=Search" },
   { campus: "Divine Mercy University", type: "generic", url: "https://www.divinemercy.edu/" },
-  { campus: "Eastern Mennonite University", type: "generic", url: "https://www.paycomonline.net/v4/ats/web.php/portal/864CD5F3AB350C8D2A97891D7F3F4860/career-page" },
+  // Bucket B round 24: URL was already correct (a prior automated probe had
+  // already pointed this at the real Paycom board), but type was still
+  // "generic" -- this is a real Paycom ATS, not a plain HTML page, so the
+  // old link-pattern scraper found nothing. No existing VA dispatch case
+  // for "paycom" existed either (added one, see scrapeVaAll). Verified live
+  // (two fresh page loads): 64 real postings, incl. "Adjunct Faculty",
+  // "Adjunct Faculty - Psychology", "Adjunct Faculty - Counseling",
+  // "Adjunct Faculty - Mathematics", "Adjunct Faculty - Engineering",
+  // "Adjunct Faculty - Undergraduate Nursing", "Adjunct Faculty - VACA".
+  { campus: "Eastern Mennonite University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/864CD5F3AB350C8D2A97891D7F3F4860/career-page" },
   // The employment-opportunities page itself lists real openings (including
   // "Nursing Clinical Instructor"), but every job's own <a href> is a
   // generic "Details and application information" CTA that the shared
@@ -1930,7 +1961,12 @@ const SC_CAMPUSES = [
     url: "https://www.presby.edu/about/offices-and-services/human-resources/employment",
   },
   { campus: "University of South Carolina-Lancaster", type: "generic", url: "https://www.sc.edu/faculty-employment" },
-  { campus: "University of South Carolina-Salkehatchie", type: "generic", url: "https://sc.edu/faculty-employment" },
+  // Configured "/faculty-employment" 404s outright. Real ATS is
+  // uscjobs.sc.edu (PeopleAdmin), same shared USC system as -Sumter/-Union
+  // above, scoped via its own "USC Salkehatchie" organizational_tier_1_id.
+  // Verified live: 2 postings, incl. real faculty title "Instructor of
+  // English".
+  { campus: "University of South Carolina-Salkehatchie", type: "peopleadmin", url: "https://uscjobs.sc.edu/postings/search?query_organizational_tier_1_id%5B%5D=1312" },
   // Was a dead 404. Real applicant system is uscjobs.sc.edu (PeopleAdmin),
   // filterable by campus via query_organizational_tier_1_id.
   { campus: "University of South Carolina-Sumter", type: "peopleadmin", url: "https://uscjobs.sc.edu/postings/search?query_organizational_tier_1_id%5B%5D=1313" },
@@ -1964,7 +2000,11 @@ const SC_CAMPUSES = [
   // 3D/Sculpture, Adjunct Instructor of Statistics, Assistant Professor of
   // Accounting).
   { campus: "Converse University", type: "generic", url: "https://converse.isolvedhire.com/jobs" },
-  { campus: "Denmark Technical College", type: "generic", url: "https://www.denmarktech.edu/" },
+  // Was pointing at the bare homepage; the real "About DTC > Jobs" page
+  // links to a NEOGOV schooljobs.com board. Verified live: 25 real
+  // postings, e.g. "Adjunct Instructor - Workforce Development (Pool)",
+  // "Adjunct Instructor - Arts, Sciences, and Education (Pool)".
+  { campus: "Denmark Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/denmarktech" },
   { campus: "Erskine College", type: "generic", url: "https://www.erskine.edu/" },
   // Was pointing at the bare homepage. The "Careers & Staff Directory" page's
   // "Search Our Current Job Openings" accordion reveals a link to this
@@ -2916,9 +2956,31 @@ const WA_CAMPUSES = [
   // "Adjunct Faculty - Generic Application" and "I-BEST ... Adjunct
   // Instructor".
   { campus: "Bellingham Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/btc" },
-  { campus: "Big Bend Community College", type: "generic", url: "https://www.bigbend.edu/about-us/jobs-at-bbcc.html" },
-  { campus: "Cascadia College", type: "generic", url: "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=300" },
-  { campus: "Centralia College", type: "generic", url: "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=120" },
+  // Was pointing at the college's own "Jobs at BBCC" landing page (no real
+  // posting anchors); that page links to a NEOGOV schooljobs.com board.
+  // Verified live: 19 real postings, e.g. "Associate Faculty - Art".
+  { campus: "Big Bend Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/bigbend" },
+  // Bucket B round 24: this "ctclink" URL is the same PeopleSoft HRS Fluid
+  // Candidate Gateway product as Northwestern University (IL, round 19/24
+  // precedent) -- the page loads as an empty "Search Jobs" shell until its
+  // "View All Jobs" postback link (id "NAV_PB$0") is clicked; reused
+  // "peoplesoft-fluid"/scrapePeopleSoftFluidAs directly (WA had no existing
+  // dispatch case for it -- added one, see scrapeWaAll). Verified live: 46
+  // results load immediately after the click, all correctly scoped
+  // ("LocationCascadia College"), but every one is titled "Quarterly Part
+  // Time Associate Faculty - <subject>" (e.g. "...Atmospheric Sciences",
+  // "...Geology") -- correctly excluded by the shared omitAdjunct policy
+  // filter (matches "part time"), so genuinely 0 current QUALIFYING faculty
+  // postings on correctly-wired real infra (same "policy-excluded, not a
+  // bug" shape as Autry Technology Center, round 23).
+  { campus: "Cascadia College", type: "peoplesoft-fluid", url: "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=300" },
+  // Bucket B round 24: same ctclink/PeopleSoft HRS Fluid product and fix as
+  // Cascadia College above. Verified live: 9 results load immediately after
+  // the "View All Jobs" click, 2 real faculty postings survive the filter --
+  // "Construction Trades Assistant Professor (Full-time, Tenure-track)"
+  // (Shelton, WA -- a Centralia satellite site) and "Adjunct Nursing
+  // Instructor".
+  { campus: "Centralia College", type: "peoplesoft-fluid", url: "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=120" },
   // Was pointing at the bare homepage. Homepage's "Career Opportunities" link
   // (cityu.edu/jobs/) hands off to their InterviewExchange ATS (tenant
   // 447CSM1, institution-specific, not a shared/system-wide board). Verified
@@ -3467,14 +3529,17 @@ const WI_CAMPUSES = [
   // the same "wire for correctness, let the reviewer confirm" treatment as
   // InterviewExchange, not a verified fix.
   { campus: "Blackhawk Technical College", type: "icims", url: "https://careers-blackhawk.icims.com/" },
-  // Same shared UltiPro/UKG board as sibling Bryant & Stratton College-Parma
-  // (round 12) -- "?q=wauwatosa" scopes to this campus specifically (9
-  // results, incl. "Associate Professor - Nursing" and "Adjunct Professor -
-  // Nursing" -- confirmed via manual read of the page). NOT wired as a
-  // working fix for the same reason: card-based SPA with no per-job <a
-  // href>, shared generic scraper yields 0. URL updated anyway for
-  // correctness/specificity over the old bare homepage.
-  { campus: "Bryant & Stratton College-Wauwatosa", type: "generic", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=wauwatosa&o=postedDateDesc" },
+  // Bucket B round 24: same real root cause as sibling Buffalo/Greece/
+  // Online/Syracuse North/Virginia Beach campuses (round 21/24) -- Knockout-
+  // bound `<ukg-link>` custom elements invisible to the generic scraper's
+  // `a[href]` selector. "?q=wauwatosa" is unambiguous (verified live: all 9
+  // raw results carry WAUWATOSA in their own location breadcrumb, no
+  // locationFilter needed). Verified live with the faculty-keyword gate: 5
+  // real postings -- "Adjunct Professor - Nursing", "Continuing Education –
+  // Nurse Aide Instructor", "Adjunct Professor - English & Communications",
+  // "Adjunct Professor - Nursing (Pediatrics/OB)", "Adjunct Professor -
+  // Mathematics".
+  { campus: "Bryant & Stratton College-Wauwatosa", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=wauwatosa&o=postedDateDesc" },
   { campus: "Carroll University", type: "generic", url: "https://www.carrollu.edu/employment" },
   { campus: "Carthage College", type: "generic", url: "https://carthage.applicantpro.com/jobs" },
   { campus: "Chippewa Valley Technical College", type: "icims", url: "https://careers-cvtc.icims.com/" },
@@ -4476,10 +4541,16 @@ const TX_CAMPUSES = [
     type: "workday",
     url: "https://trinity.wd1.myworkdayjobs.com/en-US/Trinity_University?jobFamilyGroup=d065843291d601021156859e24a40000",
   },
+  // Was pointing at the HR "Career Opportunities" landing page (no real
+  // posting anchors, just a "View all Job Opportunities" button); routed
+  // directly to the real NEOGOV schooljobs.com board it links to. Verified
+  // live: 10 postings, real faculty titles incl. "Assistant Professor of
+  // Engineering - Tenure-track", "Assistant Professor/Instructor of
+  // Education (Survey of Exceptionalities)".
   {
     campus: "Southwestern University",
-    type: "generic",
-    url: "https://www.southwestern.edu/human-resources/career-opportunities/",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/southwestern",
   },
   {
     campus: "Texas State University",
@@ -4495,7 +4566,19 @@ const TX_CAMPUSES = [
   { campus: "Alamo Community College District Central Office", type: "generic", url: "https://alamo.edu/district/" },
   { campus: "Dallas College", type: "generic", url: "https://careers.dallascollege.edu/us/en/faculty-jobs" },
   { campus: "Laredo College", type: "schooljobs", url: "https://www.schooljobs.com/careers/laredoedu?examType%5B0%5D=Faculty&sort=PostingDate%7CDescending" },
-  { campus: "Northeast Lakeview College", type: "generic", url: "https://www.alamo.edu/nlc" },
+  // Bucket B round 24: same shared Alamo Colleges District CSOD tenant as
+  // San Antonio College/Palo Alto College below (alamo.csod.com) --
+  // "site=8" is NLC's own Faculty-scoped facet (confirmed via NLC's real
+  // Careers and Employment page, which links to "NLC Faculty Jobs" at this
+  // exact URL). This shared tenant's "Search Jobs" landing page shows NO
+  // results at all until its magnifying-glass search button is clicked --
+  // fixed in the shared scrapeNjCsod function (see comment there) since
+  // that also silently affected the already-wired San Antonio College and
+  // Palo Alto College. Verified live (search-button click applied): 39 real
+  // postings, e.g. "Adjunct Faculty (Accounting) NLC", "Adjunct Faculty
+  // (Anthropology) NLC", "Adjunct Faculty (Data Science and Artificial
+  // Intelligence) NLC".
+  { campus: "Northeast Lakeview College", type: "csod", url: "https://alamo.csod.com/ats/careersite/search.aspx?site=8&c=alamo" },
   { campus: "Northwest Vista College", type: "generic", url: "https://alamo.edu/nvc/" },
   { campus: "Palo Alto College", type: "csod", url: "https://alamo.csod.com/ats/careersite/search.aspx?site=18&c=alamo" },
   { campus: "Remington College-Dallas Campus", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027207438_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter" },
@@ -4504,10 +4587,64 @@ const TX_CAMPUSES = [
   { campus: "Remington College-North Houston Campus", type: "generic", url: "https://www.remingtoncollege.edu/locations/houston/greenspoint/" },
   { campus: "Remington College-Online Dallas", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027234110_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter" },
   { campus: "San Antonio College", type: "csod", url: "https://alamo.csod.com/ats/careersite/search.aspx?site=12&c=alamo" },
-  { campus: "Southwest College for the Deaf", type: "generic", url: "https://howardcollege.edu/swcd/" },
-  { campus: "St Philip's College", type: "generic", url: "https://www.alamo.edu/spc/" },
-  { campus: "The Chicago School at Dallas", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/careers" },
-  { campus: "The Chicago School-College of Nursing", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/careers" },
+  // SWCD is a program of Howard College; real ATS is a shared multi-campus
+  // "RunApplicant" board (runapplicant.com/Position/Index/4, embedded via
+  // iframe on Howard College's own /careers.html) with an
+  // `id="SWCD-BigSpringWrap"` container that correctly groups SWCD's own
+  // postings apart from Howard College's other campuses (Big Spring,
+  // Lamesa, San Angelo, District Positions) -- confirmed via raw DOM read.
+  // NOT fixed this round: every posting title renders as a
+  // `<button class="PositionNameCss">` (accordion toggle) paired with a
+  // separate "Apply Now" button carrying only a bare `data-positionid`
+  // attribute -- no `<a href>` and no discoverable static per-job detail
+  // URL (clicking "Apply Now" opens an in-page modal, not a navigable URL;
+  // tried several plausible `/Position/<verb>/<id>` paths directly, all
+  // 404). Routed the URL to the real board anyway (over the previous dead
+  // /swcd/ page) for correctness. Currently 0 faculty-titled postings in
+  // the SWCD-Big Spring group anyway (2 postings: "HVAC Electrician Tech
+  // II", "Part-time Activity Center Employee"), so this is a documented
+  // tooling limitation, not a fix, with no current effect either way.
+  { campus: "Southwest College for the Deaf", type: "generic", url: "https://runapplicant.com/Position/Index/4" },
+  // Bucket B round 24: same shared Alamo Colleges District CSOD tenant --
+  // "site=21" is SPC's own Faculty-scoped facet (confirmed via an
+  // `<area alt="Faculty postings">` image-map link on SPC's own jobs
+  // landing tile page). Same shared search-button-click fix as Northeast
+  // Lakeview College above. Verified live: 56 real postings, e.g. "Adjunct
+  // Faculty (Art) SPC", "Adjunct Faculty (Associate Degree Nursing Program)
+  // SPC", "Adjunct Faculty (Automative Technology) SPC".
+  { campus: "St Philip's College", type: "csod", url: "https://alamo.csod.com/ats/careersite/search.aspx?site=21&c=alamo" },
+  // Same shared Workday tenant (tcsedsystem.wd1.myworkdayjobs.com/TCSPP) as
+  // the LA/San Diego/Chicago campuses already fixed in prior rounds. The
+  // Chicago School at Dallas is physically located in Plano, TX (confirmed
+  // via the tenant's own facet list: "Plano, TX", id
+  // b78332b6c6801001613e6d5a31ac0000) -- scoped with the same
+  // "?locations=<id>" pattern. Verified live: 9 real postings, incl.
+  // "Department Faculty, Clinical Psychology - Dallas (Plano Campus)",
+  // "Adjunct Faculty - Clinical PsyD - Dallas Campus", "Department Chair –
+  // Clinical Psychology Program, Dallas Campus (Plano,TX)".
+  {
+    campus: "The Chicago School at Dallas",
+    type: "workday",
+    url: "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=b78332b6c6801001613e6d5a31ac0000",
+  },
+  // Same Workday tenant and Plano/Dallas physical campus as above -- "The
+  // Chicago School-College of Nursing" (formerly "Dallas Nursing
+  // Institute", acquired by TCS -- confirmed via the school's own site
+  // search results referencing "Nursing students at the Dallas Campus")
+  // shares the exact same physical location facet with no separate
+  // program-level facet available to split them apart in the ATS data
+  // itself. Added a TX-only titleFilter post-processing step (see
+  // scrapeTxAll) that keeps only postings whose title matches "nursing" --
+  // additive, does not touch the shared scrapeWorkdayAs function. Verified
+  // live: 0 of the 9 Plano postings currently mention "nursing" in the
+  // title, so genuinely 0 current openings for this program specifically,
+  // but the scoping is now correctly wired for when one appears.
+  {
+    campus: "The Chicago School-College of Nursing",
+    type: "workday",
+    url: "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=b78332b6c6801001613e6d5a31ac0000",
+    titleFilter: "nursing",
+  },
   { campus: "Covenant School of Nursing and Allied Health", type: "generic", url: "https://covenanthealth.org/cson" },
   { campus: "Abilene Christian University", type: "workday", url: "https://acu.wd108.myworkdayjobs.com/ACUCareers" },
   { campus: "Alvin Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/alvincollege" },
@@ -4582,11 +4719,61 @@ const TX_CAMPUSES = [
   },
   { campus: "Collin County Community College District", type: "generic", url: "https://www.collin.edu/hr/employment" },
   { campus: "Commonwealth Institute of Funeral Service", type: "generic", url: "https://commonwealth.edu/commonwealth-careers" },
-  { campus: "Concordia University Texas", type: "generic", url: "https://www.concordia.edu/" },
-  { campus: "Criswell College", type: "generic", url: "https://www.criswell.edu/" },
+  // Was pointing at the bare homepage. HR has separate "Faculty Positions"
+  // (currently 0 listed) and "Adjunct Faculty Positions" pages, both of
+  // which link real per-posting <a href> anchors directly to a Paycor
+  // (recruitingbypaycor.com) ATS -- no special scraper needed. Routed to
+  // the Adjunct page since it currently has real content. Verified live: 4
+  // postings, 1 survives the shared omitAdjunct/part-time filter --
+  // "Mathematics Adjunct Professor" (the other 3 are "Part-Time"-titled,
+  // correctly excluded by existing policy).
+  { campus: "Concordia University Texas", type: "generic", url: "https://www.concordia.edu/resources/human-resources/adjunct-faculty-positions/" },
+  // Was pointing at the bare homepage; real dedicated Employment page has
+  // real posting anchors (PDF job descriptions). Verified live: 1 current
+  // posting, "Director of Educational Technology" -- not faculty-titled, so
+  // genuinely 0 current faculty openings on correctly-wired real infra.
+  { campus: "Criswell College", type: "generic", url: "https://www.criswell.edu/employment/" },
+  // Bucket B round 24: URL already correct (redirects to a real, live ADP
+  // "myjobs.adp.com/dbucareers" career site -- confirmed live, real current
+  // postings incl. "Adjunct Faculty", "Financial Aid Counselor", "Systems
+  // Administrator"). NOT the same ADP product the existing "adp" type
+  // (scrapeAdpApi) handles -- that one speaks the older workforcenow.adp.com
+  // REST API (cid/ccId params); this is ADP's newer Angular "cx"/SDF
+  // web-component UI. Job titles render inside `<sdf-button role="button">`
+  // elements with NO `<a href>` at all (confirmed via raw DOM read -- title
+  // text lives only in an aria-label, the underlying requisition ID is kept
+  // in Angular component state, never written to the DOM), and clicking one
+  // opens an in-place panel without changing the URL. The real JSON search
+  // API (my.adp.com/.../job-requisitions/apply-custom-filters) 403s with
+  // "Missing Authentication Token" even from within the live page's own
+  // fetch() context -- it needs an app-level token beyond cookies that
+  // isn't reproducible from outside the SPA. Left as "generic" (yields 0,
+  // same as before) -- documented tooling limitation, not a viable fix this
+  // round.
   { campus: "Dallas Baptist University", type: "generic", url: "https://recruiting.adp.com/srccar/public/RTI.home?c=1174615&d=DBUCareerSite" },
-  { campus: "Dallas Christian College", type: "generic", url: "https://www.dallas.edu/" },
-  { campus: "Dallas Institute of Funeral Service", type: "generic", url: "https://www.dallasinstitute.edu/" },
+  // Was pointing at the bare homepage. Real Careers page embeds an
+  // apscareerportal.com (APS Payroll) ATS via iframe whose landing view
+  // renders position names as plain `<option>` filter-dropdown text (no
+  // anchors) -- routed past that to the ATS's own "/jobs" results list,
+  // which has real per-posting `<a href>` anchors the generic scraper can
+  // read directly. Verified live: 6 postings, 3 real faculty titles ("Business
+  // Legal Studies Adjunct Professor or Instructor-On-site/Hybrid", "College
+  // Mathematics Adjunct Professor or Instructor - On-site", "Developmental
+  // Math Adjunct Professor or Instructor - On-site").
+  { campus: "Dallas Christian College", type: "generic", url: "https://dallaschristiancollege.apscareerportal.com/jobs?locale=en-US" },
+  // Was pointing at the bare homepage. Real Career Services page links to a
+  // Paylocity board SHARED across all 3 Pierce Mortuary Colleges Inc
+  // sibling schools (Dallas Institute of Funeral Service, Mid-America
+  // College of Funeral Service, Gupton-Jones College of Funeral Service) --
+  // new dedicated scrapePaylocitySharedAs function + "paylocity-shared"
+  // type reads each posting's own "DALLAS"/"MID-AMERICA" location tag to
+  // avoid misattributing a sibling school's posting. Verified live: 2 total
+  // postings on the shared board -- "Academic Coordinator" (DALLAS, not
+  // faculty-titled) and "Full-Time Funeral Service Instructor"
+  // (MID-AMERICA, correctly excluded by the locationFilter) -- so genuinely
+  // 0 current faculty openings for this campus specifically on
+  // correctly-scoped real infra.
+  { campus: "Dallas Institute of Funeral Service", type: "paylocity-shared", url: "https://recruiting.paylocity.com/recruiting/jobs/All/aef0ebce-1684-4c34-9d19-5e97f0ed0071/Pierce-Mortuary-Colleges-Inc", locationFilter: "DALLAS" },
   { campus: "Dallas Theological Seminary", type: "generic", url: "https://www.dts.edu/" },
   { campus: "Del Mar College", type: "generic", url: "https://www.delmar.edu/" },
   { campus: "East Texas A&M University", type: "generic", url: "https://www.etamu.edu/human-resources/employment" },
@@ -9320,6 +9507,28 @@ async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
 
+    // Bucket B round 24: some CSOD tenants (confirmed: Alamo Colleges
+    // District's shared alamo.csod.com, used by San Antonio College, Palo
+    // Alto College, Northeast Lakeview College, St Philip's College) render
+    // a "Search Jobs" landing page with NO job results in the DOM at all
+    // until a magnifying-glass search button (id ending in "_btnSearch") is
+    // explicitly clicked -- confirmed via raw DOM read: zero JobDetails
+    // anchors exist pre-click even though the URL's own "site=<id>" facet
+    // scoping is already correct; post-click, 39 real postings appear for
+    // Northeast Lakeview College alone (e.g. "Adjunct Faculty (Accounting)
+    // NLC", "Adjunct Faculty (Anthropology) NLC"). Only fires as a fallback
+    // when no job-detail-shaped anchor is already present, so CSOD tenants
+    // that already show results immediately (most of them) are unaffected.
+    const hasJobAnchorsAlready =
+      (await page.locator('a[href*="JobDetails"], a[href*="/job/"]').count().catch(() => 0)) > 0;
+    if (!hasJobAnchorsAlready) {
+      const searchBtn = page.locator('a[id$="_btnSearch"], input[id$="_btnSearch"], button[id$="_btnSearch"]').first();
+      if ((await searchBtn.count().catch(() => 0)) > 0) {
+        await searchBtn.click({ timeout: 5000 }).catch(() => {});
+        await page.waitForTimeout(2000);
+      }
+    }
+
     // Try clicking on Faculty filter/category if present (UNM style)
     const facultyFilter = page.locator('a:has-text("Faculty"), button:has-text("Faculty"), [role="button"]:has-text("Faculty"), label:has-text("Faculty")').first();
     if ((await facultyFilter.count().catch(() => 0)) > 0 && (await facultyFilter.isVisible().catch(() => false))) {
@@ -9656,10 +9865,18 @@ async function scrapeVaAll(context) {
   const results = await mapWithConcurrency(
     VA_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "VA");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "VA");
+        // No existing VA dispatch case for "ultipro-ukg" (function
+        // scrapeUltiproUkgAs already exists and is dispatched by NY) --
+        // added for Bryant & Stratton College-Virginia Beach.
+        if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "VA", locationFilter || null);
+        // No existing VA dispatch case for "paycom" (function scrapePaycomAs
+        // already exists and is dispatched by CT/TX/NY/MA/ME) -- added for
+        // Eastern Mennonite University.
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "VA");
         if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "VA");
         if (type === "vt-search") return await scrapeKeywordSearchJobsAs(context, url, campus, "VA", { queryParam: "query", pathPattern: "/jobs/" });
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "VA");
@@ -10272,6 +10489,65 @@ async function scrapeTrinityHealthSearchAs(context, searchUrl, campusName, sourc
     return out;
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} Trinity Health search scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Shared Paylocity recruiting board covering multiple sibling institutions
+// under one parent company (confirmed: Pierce Mortuary Colleges Inc, shared
+// by Dallas Institute of Funeral Service, Mid-America College of Funeral
+// Service, Gupton-Jones College of Funeral Service) -- each posting's own
+// location tag (e.g. "DALLAS", "MID-AMERICA") lives in a sibling column, not
+// inside the title anchor's own text, so a locationFilter is required to
+// avoid misattributing one sibling's posting to another (same shape as the
+// Bemidji State/UltiPro-UKG precedents). Confirmed via raw DOM read: walking
+// up 3 ancestor levels from the title `<a>` reaches a
+// `div.row.job-listing-job-item` container whose own textContent includes
+// both the title and the location tag.
+async function scrapePaylocitySharedAs(context, startUrl, campusName, sourceName, locationFilter = null) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(2000);
+
+    const jobs = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const abs = (href) => {
+        try { return new URL(href, location.href).toString(); } catch { return null; }
+      };
+      const out = [];
+      for (const a of Array.from(document.querySelectorAll('a[href*="/Recruiting/Jobs/Details/"]'))) {
+        const url = abs(a.getAttribute("href"));
+        const title = clean(a.textContent);
+        if (!url || !title || title.length < 4) continue;
+        const container = a.closest(".job-listing-job-item") || a.closest("div.row") || a.parentElement;
+        out.push({ title, url, containerText: clean(container?.textContent || "") });
+      }
+      return out;
+    });
+
+    const scoped = locationFilter
+      ? jobs.filter((j) => (j.containerText || "").toUpperCase().includes(locationFilter.toUpperCase()))
+      : jobs;
+
+    const filtered = uniqByUrl(scoped)
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
+
+    console.log(`${campusName} ${sourceName} Paylocity (shared) listings scraped: ${filtered.length}`);
+    return filtered.map((j) => ({
+      title: normalizeJobTitle(j.title),
+      url: j.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: null,
+    }));
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Paylocity (shared) scrape failed:`, e?.message || e);
     return [];
   } finally {
     await page.close().catch(() => {});
@@ -14971,6 +15247,10 @@ async function scrapeWaAll(context) {
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "WA");
         if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "WA");
         if (type === "peoplesoft-hrs") return await scrapePeopleSoftHrsBasic(context, url, campus, "WA");
+        // No existing WA dispatch case for "peoplesoft-fluid" (function
+        // scrapePeopleSoftFluidAs already exists and is dispatched by IL) --
+        // added for Cascadia College and Centralia College (ctclink).
+        if (type === "peoplesoft-fluid") return await scrapePeopleSoftFluidAs(context, url, campus, "WA");
         if (type === "interfolio-links") return await scrapeInterfolioLinksFromPageAs(url, campus, "WA");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "WA");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "WA");
@@ -15423,12 +15703,16 @@ async function scrapeWiAll(context) {
   const results = await mapWithConcurrency(
     WI_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "WI");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "WI");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "WI");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "WI");
+        // No existing WI dispatch case for "ultipro-ukg" (function
+        // scrapeUltiproUkgAs already exists and is dispatched by NY/VA) --
+        // added for Bryant & Stratton College-Wauwatosa.
+        if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "WI", locationFilter || null);
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "WI");
         return [];
       } catch (e) {
@@ -16235,9 +16519,23 @@ async function scrapeTxAll(context) {
   const results = await mapWithConcurrency(
     TX_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter, titleFilter }) => {
       try {
-        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "TX");
+        if (type === "workday") {
+          const jobs = await scrapeWorkdayAs(context, url, campus, "TX");
+          // Optional post-filter (TX-only, additive): scopes a shared
+          // Workday facet down to postings whose title matches a keyword --
+          // used for The Chicago School-College of Nursing, which shares
+          // its physical Plano/Dallas campus facet (and therefore its raw
+          // job list) with The Chicago School at Dallas, with no separate
+          // program-level facet available to split them by ATS data alone.
+          return titleFilter ? jobs.filter((j) => new RegExp(titleFilter, "i").test(j.title)) : jobs;
+        }
+        // No existing TX dispatch case for "paylocity-shared" (function
+        // scrapePaylocitySharedAs already exists) -- added for Dallas
+        // Institute of Funeral Service (shared Pierce Mortuary Colleges Inc
+        // Paylocity board).
+        if (type === "paylocity-shared") return await scrapePaylocitySharedAs(context, url, campus, "TX", locationFilter || null);
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "TX");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "TX");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "TX");
