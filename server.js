@@ -962,7 +962,13 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Berkeley School of Theology", type: "generic", url: "https://www.bst.edu/" },
   { campus: "Bethesda University", type: "generic", url: "https://www.buc.edu/academics/faculty-jobs" },
   { campus: "Biola University", type: "generic", url: "https://www.biola.edu/" },
-  { campus: "Butte College", type: "generic", url: "https://www.butte.edu/careers" },
+  // Was pointing at "/careers" which redirects to a generic HR landing page
+  // with no job listings. The "Open Positions" accordion on the real Job
+  // Opportunities page (butte.edu/about/administration/human-resources/
+  // job-opportunities.html) links out to this NEOGOV/NEOED SchoolJobs
+  // instance. Verified live: 11 postings incl. "Associate Faculty Pool-All
+  // Disciplines" (Category: Faculty).
+  { campus: "Butte College", type: "schooljobs", url: "https://www.schooljobs.com/careers/buttecc" },
   { campus: "Cabrillo College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cabrilloedu" },
   { campus: "California Baptist University", type: "generic", url: "https://www.calbaptist.edu/" },
   { campus: "California College of the Arts", type: "workday", url: "https://cca.wd5.myworkdayjobs.com/CCA/jobs" },
@@ -1405,8 +1411,45 @@ const PA_PRIVATE_CAMPUSES = [
   // match hit its API path instead of falling back to the slower browser scrape.
   { campus: "Saint Joseph's University - Lancaster", type: "generic", url: "https://jobs.sju.edu/" },
   { campus: "University of Pittsburgh-Titusville", type: "generic", url: "https://www.titusville.pitt.edu/home" },
-  { campus: "Joseph F McCloskey School of Nursing", type: "generic", url: "https://www.lvhn.org/education/joseph-f-mccloskey-school-nursing" },
-  { campus: "Reading Hospital School of Health Sciences", type: "generic", url: "https://reading.towerhealth.org/academics/health-sciences/" },
+  // Was pointing at the school's own info page (no jobs content). Per the
+  // hospital-system-board caveat (Hospital Sisters Health System/St. John's
+  // College round 19, Montefiore round 21, Crouse/Trinity Health round 22):
+  // checked whether parent Lehigh Valley Health Network's own job board has
+  // a real per-school scoping mechanism before assuming exclusion. It does
+  // -- McCloskey School of Nursing is physically located on the LVH-
+  // Schuylkill campus (Pottsville, PA), and LVHN's Drupal-based jobs search
+  // (lvhn.org/jobs) supports a real, working combination of a full-text
+  // keyword ("keys=instructor") AND a county facet ("f[0]=county:Schuylkill
+  // County") that together scope precisely to this campus -- confirmed live:
+  // the unscoped county-only facet alone returns 89 mostly-unrelated
+  // Schuylkill-hospital jobs (Registered Nurse, Patient Care Technician,
+  // etc.), but adding the "instructor" keyword narrows to exactly 1 real
+  // posting, "Nurse Instructor" at Lehigh Valley Hospital-Schuylkill,
+  // Pottsville, PA (Job ID wd-JR126736). Known limitation: a nursing-faculty
+  // posting titled with "Professor" instead of "Instructor" (e.g. an
+  // "Adjunct Nursing Professor" posting also seen at this same campus but a
+  // different keyword) would not be caught by this specific query -- no
+  // single query combination found that reliably catches both without also
+  // catching unrelated hospital-wide postings.
+  { campus: "Joseph F McCloskey School of Nursing", type: "generic", url: "https://www.lvhn.org/jobs?keys=instructor&f%5B0%5D=county%3ASchuylkill%20County" },
+  // Was pointing at the school's own info page (no jobs content). Per the
+  // hospital-system-board caveat (Hospital Sisters Health System round 19,
+  // Montefiore round 21, Crouse/Trinity Health round 22): checked parent
+  // Tower Health's own job board (towercareers.org) for a real per-school
+  // facet before assuming exclusion. It has one -- a dedicated "School Of
+  // Health Services" Categories facet, confirmed real and working (the
+  // filter mechanism itself verified live against the populated "Nursing"
+  // category, 37 real results). "School Of Health Services" itself
+  // currently shows 0 results -- genuinely 0 current openings on a real,
+  // correctly-scoped facet, not a bug. Known limitation, documented rather
+  // than solved: this board's cards are an Angular Material
+  // `mat-expansion-panel` accordion with no h1-h6/semantic heading anywhere
+  // near the "Apply Now" button, so even if a posting appears here, the
+  // shared generic scraper likely still couldn't extract its title (same
+  // class of gap as Autry/Canadian Valley Technology Center's card-based-
+  // SPA limitation) -- not fixed here since there's currently no live
+  // posting to verify an extraction fix against.
+  { campus: "Reading Hospital School of Health Sciences", type: "generic", url: "https://www.towercareers.org/jobs?categories=School%20of%20Health%20Services" },
   { campus: "Talmudical Yeshiva of Philadelphia", type: "generic", url: "https://www.meterware.com/typ/Talmudical_Yeshiva_of_Philadelphia?C=N;O=D" },
   { campus: "UPMC Jameson School of Nursing", type: "generic", url: "https://www.upmc.com/healthcare-professionals/education/schools-of-nursing/campuses/jameson" },
   { campus: "UPMC Mercy School of Nursing", type: "generic", url: "https://www.upmc.com/mercyson" },
@@ -1416,7 +1459,13 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Western Pennsylvania Hospital School of Nursing", type: "generic", url: "https://www.ahn.org/health-care-professionals/education/nursing/schools/west-penn-hospital" },
   { campus: "Allegheny College", type: "generic", url: "https://allegheny.edu/" },
   { campus: "Alvernia University", type: "generic", url: "https://www.alvernia.edu/faculty-staff/human-resources/employment-opportunities" },
-  { campus: "American College of Financial Services", type: "generic", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0EC6D26D6ACC066E0F0E668BFD94D104" },
+  // Real board is a Paycom recruiting portal (JS-rendered, needs patience to
+  // load) -- switched from generic to the dedicated paycom scraper (added a
+  // missing PA dispatch case for it, see scrapePaAll). Verified live (two
+  // fresh loads): 2 postings, both faculty-related ("Instructional Designer
+  // & Developer Consultant"; "Adjunct Instructor Master of Science in
+  // Financial Planning (MSFP) Program").
+  { campus: "American College of Financial Services", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0EC6D26D6ACC066E0F0E668BFD94D104" },
   { campus: "Arcadia University", type: "generic", url: "https://arcadia.isolvedhire.com/jobsearch?job_board_classification=faculty" },
   // Was pointing at the bare homepage. Real employment page just says
   // "email your resume to hrdept@aspirapa.org" -- no job board/anchors at
@@ -1435,7 +1484,17 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Cairn University-Langhorne", type: "generic", url: "https://cairn.edu/hr/jobs" },
   { campus: "Carlow University", type: "generic", url: "https://www.carlow.edu/about/employment" },
   { campus: "Cedar Crest College", type: "generic", url: "https://www.cedarcrest.edu/about/human-resources" },
-  { campus: "Central Pennsylvania Institute of Science and Technology", type: "generic", url: "https://cpi.edu/company/cpi" },
+  // URL/type were already correct (a career-url-overrides.json entry
+  // already routes here). The real gap was in the shared generic scraper
+  // itself: this WP Job Manager "Company Custom Post" plugin puts each
+  // title in a bare `<strong>` with no heading tag/class at all next to an
+  // href-less "Apply for job" button -- fixed via a new last-resort
+  // strong/b recovery + a "Faculty/Staff Portal" nav-link false-positive
+  // exclusion (see scrapeGenericJobPage). Verified live (two fresh loads):
+  // 2 current postings, both real ("Instructor - Computer Systems
+  // Networking and Telecommunications"; "Assistant Instructor - Diesel
+  // Technology Programs").
+  { campus: "Central Pennsylvania Institute of Science and Technology", type: "generic", url: "https://cpi.edu/company/cpi/" },
   { campus: "Chatham University", type: "generic", url: "https://www.chatham.edu/" },
   { campus: "Chestnut Hill College", type: "generic", url: "https://www.chc.edu/careers-at-chc/employment-opportunities" },
   { campus: "Cheyney University of Pennsylvania", type: "schooljobs", url: "https://www.schooljobs.com/careers/cheyneyedu" },
@@ -1468,13 +1527,26 @@ const PA_PRIVATE_CAMPUSES = [
   },
   { campus: "Community College of Beaver County", type: "generic", url: "https://ccbc.edu/employment" },
   { campus: "Community College of Philadelphia", type: "generic", url: "https://www.ccp.edu/about-ccp/news-events/career-opportunities" },
-  { campus: "Curtis Institute of Music", type: "generic", url: "https://www.curtis.edu/about/administration/work-at-curtis" },
+  // Base entry was stale (no trailing slash) while a career-url-overrides.json
+  // entry already routes here with a trailing slash and has been silently in
+  // effect all along. Synced to match. Verified live (two fresh loads): real
+  // Careers at Curtis infrastructure, "There are no open positions at this
+  // time" -- 0 current openings, correctly-functioning real page.
+  { campus: "Curtis Institute of Music", type: "generic", url: "https://www.curtis.edu/about/administration/work-at-curtis/" },
   { campus: "Delaware County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/dccc" },
   { campus: "Delaware Valley University", type: "generic", url: "https://www.delval.edu/" },
   { campus: "DeSales University", type: "generic", url: "https://www.desales.edu/about/employment" },
   { campus: "Duquesne University", type: "generic", url: "https://www.duq.edu/faculty/jobs" },
   { campus: "East Stroudsburg University of Pennsylvania", type: "csod", url: "https://esu.csod.com/ux/ats/careersite/6/home?c=esu" },
-  { campus: "Elizabethtown College", type: "generic", url: "https://www.etown.edu/faculty-employment" },
+  // Was pointing at a 404'd URL. The real "Careers at Elizabethtown" hub
+  // page (etown.edu/offices/human-resources/careers.aspx) links to this
+  // Paylocity recruiting tenant, the same platform (handled fine by the
+  // generic scraper already) used by other institutions in this codebase.
+  // Verified live (two fresh loads): 13 total postings, 4 real faculty
+  // titles (e.g. "Assistant Teaching Professor of Engineering Mathematics",
+  // "Assistant or Associate Professor of Engineering", "Adjunct Instructor
+  // – Physical Chemistry").
+  { campus: "Elizabethtown College", type: "generic", url: "https://recruiting.paylocity.com/recruiting/jobs/All/fdb22ab4-b61f-498b-ac07-a242180665c7/Elizabethtown-College" },
   { campus: "Franklin and Marshall College", type: "generic", url: "https://www.fandm.edu/faculty/jobs" },
 ];
 
@@ -2696,7 +2768,17 @@ const OR_CAMPUSES = [
   },
 
   { campus: "Pacific Northwest College of Art", type: "workday", url: "https://willamette.wd501.myworkdayjobs.com/WillametteUniversityJobs" },
-  { campus: "Mount Angel Seminary", type: "generic", url: "https://www.mountangelabbey.org/seminary" },
+  // Was pointing at the Seminary's own info/mission page, which has no jobs
+  // content at all. The parent Mount Angel Abbey's real Employment page
+  // (linked from the seminary's homepage) lists current openings as real
+  // anchors to PDF job postings. Verified live (two fresh loads): 6 current
+  // postings (Grant Manager, Major Gifts Officer, Executive Assistant for
+  // Development, Executive Chef, Office and Special Projects Assistant,
+  // Custodian, Maintenance Technician), none faculty-titled right now --
+  // correctly excluded by this scraper's own faculty-keyword filter, so 0
+  // current faculty openings, but real, correctly-functioning infra now
+  // wired up.
+  { campus: "Mount Angel Seminary", type: "generic", url: "https://www.mountangelabbey.org/join-us/employment/" },
   { campus: "Blue Mountain Community College", type: "generic", url: "https://www.bluecc.edu/" },
   // The /careers page's "Open Positions" button is a Divi text module (no
   // real href) that JS-navigates to this Paycor recruiting portal -- a full
@@ -3223,7 +3305,18 @@ const IA_CAMPUSES = [
   { campus: "UnityPoint Health-Des Moines School of Radiologic Technology", type: "generic", url: "https://www.unitypoint.org/join-our-team/medical-education-and-career-growth/school-of-radiologic-technology---des-moines-area-hospitals" },
   { campus: "Allen College", type: "generic", url: "https://www.allencollege.edu/" },
   { campus: "Briar Cliff University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=b598cb69-0393-4ebc-902c-696995eb5395&ccId=19000101_000001&lang=en_US" },
-  { campus: "Buena Vista University", type: "generic", url: "https://www.bvu.edu/" },
+  // Was pointing at the bare homepage. The site is mid-redesign (its new
+  // "/en/resources/faculty--staff/" page is literally still Lorem-ipsum
+  // placeholder text; the old "/human-resources/job-openings" URL now
+  // redirects to the homepage). The real jobs board is still live and
+  // linked from "/en/resources/human-resources/"'s "Job Openings" button:
+  // a SaaSHR-hosted recruitment portal (same platform/type already used by
+  // an NY institution). Routed to its REST API endpoint directly. Verified
+  // live via direct API call: 6 total current postings, all Staff/PT Staff
+  // categories right now (e.g. "Assistant Track and Field and Cross Country
+  // Coach", "University Supervisor- Statewide") -- 0 current faculty
+  // openings, but real, correctly-functioning infra now wired up.
+  { campus: "Buena Vista University", type: "saashr", url: "https://secure4.saashr.com/ta/rest/ui/recruitment/companies/%7C6013429/job-requisitions" },
   { campus: "Central College", type: "generic", url: "https://central.edu/job-seekers" },
   { campus: "Clarke University", type: "generic", url: "https://clarke.applicantpool.com/jobs" },
   { campus: "Coe College", type: "generic", url: "https://www.coe.edu/" },
@@ -3532,19 +3625,35 @@ const OH_CAMPUSES = [
     type: "generic",
     url: "https://jobs.wright.edu/",
   },
+  // Base entry was stale ("/faculty-employment" is a landing page with no
+  // visible listings) while a career-url-overrides.json entry already
+  // routes this to the real Faculty job-category search results and has
+  // been silently in effect all along (same "stale base entry, already-
+  // working override" shape as Luther College in round 20). Synced to match
+  // the override for consistency. Verified live (two fresh loads): real
+  // SAP SuccessFactors board, 178 total postings, e.g. "Adjunct Instructor,
+  // Department of OBAIS, Information Systems, Lindner College of Business",
+  // "Assistant Professor, Clinical Geo, Department of Emergency Medicine".
   {
     campus: "University of Cincinnati",
     type: "generic",
-    url: "https://jobs.uc.edu/faculty-employment",
+    url: "https://jobs.uc.edu/go/Faculty/7912200/",
   },
   {
     campus: "Case Western Reserve University",
     type: "generic",
     url: "https://case.edu/hr/careers",
   },
+  // Real board is "Powered by PageUp" (real per-posting anchors at
+  // "/en-us/job/<id>/<slug>", the same platform already handled by the
+  // dedicated PageUp scraper elsewhere). Switched from generic to pageup
+  // for reliability. Verified live (two fresh loads): faculty and staff
+  // share the same board; facets show "Faculty Full Time 1" of ~98 total
+  // current postings (e.g. staff/UDRI research openings), consistent with
+  // the batch hint.
   {
     campus: "University of Dayton",
-    type: "generic",
+    type: "pageup",
     url: "https://employment.udayton.edu/",
   },
   {
@@ -5141,7 +5250,13 @@ const OK_CAMPUSES = [
   // have a real, stable link out to the ATS) rather than the ATS URL
   // directly, since neither produces results without patching shared logic.
   { campus: "Canadian Valley Technology Center", type: "generic", url: "https://www.cvtech.edu/employment-opportunities" },
-  { campus: "Carl Albert State College", type: "generic", url: "https://carlalbert.edu/about-casc/job-openings" },
+  // Was pointing at the bare homepage; a career-url-overrides.json entry
+  // already routes this to the real job-openings page (trailing slash) and
+  // has been silently in effect all along. Synced to match. Verified live
+  // (two fresh loads): real, correctly-functioning employment page, 8
+  // current postings (e.g. Financial Aid Counselor/Loan Coordinator, Asst.
+  // Wrestling Coach, Campus Police - P/T), none faculty-titled right now.
+  { campus: "Carl Albert State College", type: "generic", url: "https://carlalbert.edu/about-casc/job-openings/" },
   { campus: "College of the Muscogee Nation", type: "generic", url: "https://cmn.edu/" },
   { campus: "Community Care College", type: "generic", url: "https://www.communitycarecollege.edu/" },
   { campus: "Connors State College", type: "generic", url: "https://jobs.okstate.edu/connors-state-college-home" },
@@ -9741,6 +9856,10 @@ async function scrapePaAll(context) {
         if (type === "interfolio-links") return await scrapeInterfolioLinksFromPageAs(url, campus, "PA");
         if (type === "lafayette-faculty") return await scrapeLafayetteFacultyPageAs(url, campus, "PA");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "PA");
+        // No existing PA dispatch case for "paycom" (function scrapePaycomAs
+        // already exists and is dispatched by CT/CA Private/NJ/MS/NY) --
+        // added for American College of Financial Services.
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "PA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "PA");
         if (type === "enusfilter") {
           const page = await context.newPage();
@@ -12899,6 +13018,31 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (!/^https?:\/\//i.test(url)) continue;
         if (/^(?:tel|mailto|sms):/i.test(url)) continue;
 
+        // Drupal Views pager controls ("Next ››"/"‹‹ Previous"/numbered
+        // page links) are marked with rel="next"/"prev"/"last"/"first" and/or
+        // a "pager__..." class. Found on Team Georgia Careers
+        // (careers.georgia.gov, used by Savannah Technical College and
+        // several sibling TCSG colleges): a pager anchor's own text (e.g.
+        // "Page 2", "Next ››") is short enough to trip the CTA-fallback
+        // heading walk below, which then matches an unrelated ancestor whose
+        // class merely *contains* "job-title" (the card WRAPPER class
+        // "job-title-link", not a title-specific element) and grabs that
+        // wrapper's entire raw textContent as a bogus "job title" pointing at
+        // the pagination URL. Skipping pager controls outright is safe and
+        // narrow — no real job posting anchor is ever marked as pagination.
+        if (/^(?:next|prev|last|first)$/i.test(a.getAttribute("rel") || "")) continue;
+        if (/\bpager\b|pager__/i.test(a.className || "")) continue;
+        // Drupal taxonomy term pages (category tags like "Education" or
+        // location tags like "Savannah"/"Chatham") are never job postings
+        // themselves — same Team Georgia Careers page: each job card wraps
+        // its title anchor together with short category/location tag
+        // anchors, and those tag anchors' own short text ("Education",
+        // "Chatham") also trips the CTA-fallback heading walk below, which
+        // then (correctly) finds the card's real title but keeps the tag's
+        // own WRONG taxonomy-page URL, producing duplicate entries that
+        // link to a non-job category page instead of the real posting.
+        if (/\/taxonomy\/term\//i.test(url)) continue;
+
         // Skip navigation and common non-job links. Matched as a whole path
         // segment (not a bare substring) — "about" must be its own segment
         // ("/about/") so it doesn't kill compound segments like
@@ -12991,7 +13135,37 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
             );
             if (headingEl) break;
           }
-          const headingText = headingEl ? clean(headingEl.textContent) : "";
+          let headingText = headingEl ? clean(headingEl.textContent) : "";
+          // Recovery only, tried when the heading-selector loop above didn't
+          // produce a usable result — either it found nothing at any hop, or
+          // (seen live at Central Pennsylvania Institute of Science and
+          // Technology's cpi.edu) it broke early on a coincidental match a
+          // few hops up that isn't specific to this card at all (there, hop
+          // 3 hit the whole PAGE's own `<h1>About CPI</h1>`, which is too
+          // short to pass the length check below anyway, so the loop above
+          // never gets a chance to look further). Never overrides an
+          // already-usable heading (the check below still runs first), so
+          // any institution where the loop above already succeeds is
+          // completely unaffected. Some minimalist WordPress job-listing
+          // plugins (e.g. "Company Custom Post" for WP Job Manager, seen at
+          // cpi.edu) put the title in a bare `<strong>` with no
+          // distinguishing class or heading tag at all, sibling to an "Apply
+          // for job" button `<a>` that wraps only an `<input>` (no text, no
+          // aria-label). Verified live against the raw DOM:
+          // `<div class="gma_wpjmccp_single_job_listing"><span><strong>
+          // Instructor - Computer Systems Networking and Telecommunications
+          // </strong></span><a class="...ahref"><input value="Apply for
+          // job"></a></div>` — the immediate parent's own subtree has
+          // exactly one `<strong>`, which is the real title. Scoped to the
+          // immediate parent only (not the wider 5-hop walk) to keep this
+          // recovery attempt tightly bound to this specific card.
+          if (!(headingText && headingText.length >= 10 && !/^[a-z]/.test(headingText))) {
+            const strongEl = a.parentElement ? a.parentElement.querySelector("strong, b") : null;
+            const strongText = strongEl ? clean(strongEl.textContent) : "";
+            if (strongText && strongText.length >= 10 && !/^[a-z]/.test(strongText)) {
+              headingText = strongText;
+            }
+          }
           if (headingText && headingText.length >= 10 && !/^[a-z]/.test(headingText)) {
             title = headingText;
           } else {
@@ -13029,6 +13203,15 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         if (/\.(mp4|mov|avi|wmv|pdf|docx?|xlsx?|pptx?|zip|jpe?g|png|gif)(\?\S*)?$/i.test(title)) continue;
         if (/^["'“].+["'”]$/.test(title)) continue;
         if (/thank\s+a\s+professor|faculty\s+spotlight|student\s+spotlight|alumni\s+spotlight|testimonial/i.test(title)) continue;
+        // A site-nav login link like "Faculty/Staff Portal" or "Employee
+        // Portal" contains enough faculty-keyword signal to pass
+        // isFacultyRelated below and get published as a fake "job" pointing
+        // at a login page — found live at Central Pennsylvania Institute of
+        // Science and Technology (cpi.edu): "Faculty/Staff Portal" ->
+        // cpi-web.scansoftware.com/cafeweb/loginsso, a SIS/cafeteria-account
+        // SSO login, not a posting. A real job title is never itself a
+        // "...Portal" nav label.
+        if (/\bportal\s*$/i.test(title)) continue;
         if (/^(faculty|staff|faculty jobs|employment|careers?)$/i.test(title)) { tileUrls.push({ title, url }); continue; }
         // Category tiles like "Faculty Positions" / "Faculty Openings" link to a job
         // board, not a specific posting — they pass isFacultyRelated above (contain
@@ -14985,6 +15168,10 @@ async function scrapeIaAll(context) {
         if (type === "adp-career-center") return await scrapeAdpCareerCenterAs(context, url, campus, "IA");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "IA");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "IA");
+        // No existing IA dispatch case for "saashr" (function scrapeSaasHrApi
+        // already exists and is dispatched by NY) -- added for Buena Vista
+        // University.
+        if (type === "saashr") return await scrapeSaasHrApi(url, campus, "IA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IA");
         return [];
       } catch (e) {

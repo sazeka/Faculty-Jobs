@@ -40,8 +40,8 @@
       "name": "American College of Financial Services",
       "homepage_url": "https://www.theamericancollege.edu/",
       "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0EC6D26D6ACC066E0F0E668BFD94D104",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; homepage links to their Paycom recruiting portal (renders via JS, needs networkidle wait to see results). Verified live: 2 postings, both faculty-related (Instructional Designer & Developer Consultant; Adjunct Instructor, Master of Science in Financial Planning Program)."
+      "platform_type": "paycom",
+      "notes": "Was pointing at the bare homepage; homepage links to their Paycom recruiting portal (renders via JS, needs networkidle wait to see results). Verified live: 2 postings, both faculty-related (Instructional Designer & Developer Consultant; Adjunct Instructor, Master of Science in Financial Planning Program). PATCHED (Bucket B round 23): platform_type corrected from generic to paycom -- server.js had no PA dispatch case for \"paycom\" at all, added it (scrapePaAll)."
     },
     {
       "name": "Andrews University",
@@ -426,7 +426,7 @@
       "homepage_url": "https://cpi.edu/",
       "career_url": "https://cpi.edu/company/cpi/",
       "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; the real 'CPI Employment' page (distinct from the student/alumni job board at /jobs/, which lists external employer openings, not CPI's own) is at /company/cpi/. Verified live: 2 current postings (Instructor - Computer Systems Networking and Telecommunications; Assistant Instructor - Diesel Technology Programs)."
+      "notes": "Was pointing at the bare homepage; the real 'CPI Employment' page (distinct from the student/alumni job board at /jobs/, which lists external employer openings, not CPI's own) is at /company/cpi/. Verified live: 2 current postings (Instructor - Computer Systems Networking and Telecommunications; Assistant Instructor - Diesel Technology Programs). PATCHED (Bucket B round 23): the URL was already correct but the shared generic scraper couldn't extract this page's WP Job Manager 'Company Custom Post' cards (bare `<strong>` titles, no heading tag/class, next to an href-less Apply button) -- added a last-resort strong/b recovery plus a 'Faculty/Staff Portal' nav-link false-positive exclusion (server.js, scrapeGenericJobPage). Re-verified live after the fix: same 2 postings, correct titles and URLs."
     },
     {
       "name": "Central Piedmont Community College",
