@@ -2739,11 +2739,18 @@
       "notes": "kennesaw.peopleadmin.com is dead (connection refused/DNS failure) -- confirmed broken. KSU (part of University System of Georgia) migrated to the USG OneHCM/PeopleSoft careers portal, linked directly from KSU's own Faculty Openings HR page. Verified 208 total jobs incl. Assistant Professor of Architecture, Lecturer of Architecture, Lecturer of Software Engineering, Chair of the Dept of Computer Science, Assistant Professor of Information Systems and Security."
     },
     {
+      "name": "Kent State University",
+      "homepage_url": null,
+      "career_url": "https://jobs.kent.edu/",
+      "platform_type": "pageup",
+      "notes": "jobs.kent.edu/academics/faculty-jobs 404s. Confirmed live via headless browser (plain HTTP client sees an empty 202 shell -- this is a PageUp SPA that needs JS render time): base URL has FACULTY/STAFF/SERVICE & AFSCME/REGIONAL CAMPUSES category links. Confirmed PageUp via page source."
+    },
+    {
       "name": "Kenyon College",
       "homepage_url": "https://careers.kenyon.edu/postings/search",
-      "career_url": "https://careers.kenyon.edu/695/cw/en-us/subscribe/",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+      "career_url": "https://careers.kenyon.edu/",
+      "platform_type": "pageup",
+      "notes": "careers.kenyon.edu/695/cw/en-us/subscribe 404s (stale subscribe-page path). Confirmed live via headless browser: base URL (redirects to /jobs/search) shows department-filterable postings (Biology, Admissions, Accounting, etc). Confirmed PageUp via page source."
     },
     {
       "name": "Knox College",
@@ -2842,6 +2849,13 @@
       "career_url": "https://mtholyoke.wd504.myworkdayjobs.com/External",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+    },
+    {
+      "name": "New Mexico State University",
+      "homepage_url": null,
+      "career_url": "https://careers.nmsu.edu/",
+      "platform_type": "pageup",
+      "notes": "careers.nmsu.edu/faculty/jobs 404s. Confirmed live via headless browser: base URL (redirects to /jobs/search) shows a Category filter with Faculty (14 items), Post Doctoral (2 items), Temporary Faculty (5 items). Confirmed PageUp via page source."
     },
     {
       "name": "North Georgia Technical College",
