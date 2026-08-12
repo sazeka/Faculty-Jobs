@@ -10265,9 +10265,19 @@ async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
 
       const batch = await safeEvaluate(page, () => {
         const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+        // Some pages' own scripts reassign the global `URL` binding (seen live
+        // at Pacific Lutheran University's real PeopleAdmin instance:
+        // `new URL(...)` throws "URL is not a constructor" in that page's JS
+        // context), which silently turned every href into null here and zeroed
+        // out all 3 of PLU's genuine current postings with no visible error.
+        // An anchor element's own href-resolution algorithm does the identical
+        // job without touching the (possibly shadowed) `URL` global, so it's
+        // immune to this regardless of what the page itself has redefined.
         const abs = (href) => {
           try {
-            return new URL(href, location.href).toString();
+            const a = document.createElement("a");
+            a.href = href;
+            return a.href;
           } catch {
             return null;
           }
