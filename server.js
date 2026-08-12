@@ -13629,8 +13629,27 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // "Affiliate Pharmacology Instructor - Physician Associate
         // Program"), which none of the "accordion"-only class matches below
         // could ever catch.
+        //
+        // [class*='accordion' i][class*='title' i]: a broader net for
+        // accordion-title elements that don't happen to use any of the exact
+        // wordings above. Verified live against the raw DOM at Bellin
+        // College's real employment page: postings render as plain
+        // `<div class="accordion-item-title">Adjunct Faculty - General
+        // Education</div>` siblings of a separate `.accordion-item-content`
+        // -- "accordion-item-title" matches neither accordion-trigger/
+        // __toggle/-button/-header nor any toggle-* wording. Also covers the
+        // previously-documented-but-unpatched Florida College gap
+        // (`accordion__item__title`, a double-underscore variant of the same
+        // "accordion" + "title" combination) in the same pass, since both
+        // are instances of one underlying shape: any element whose class
+        // mentions both "accordion" and "title" is a title, regardless of
+        // the separator/wording between them. Chaining two `[class*=]`
+        // selectors on one element requires BOTH substrings to be present,
+        // not either -- narrow enough that it's very unlikely to also match
+        // an unrelated non-title accordion element (a toggle button/icon/
+        // panel wouldn't also have "title" in its class).
         const candidates = document.querySelectorAll(
-          "[class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i], button[class*='accordion' i], [itemprop='title'], [class*='toggle-text-heading' i], [class*='toggle-title' i], [class*='toggle-heading' i]"
+          "[class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i], button[class*='accordion' i], [itemprop='title'], [class*='toggle-text-heading' i], [class*='toggle-title' i], [class*='toggle-heading' i], [class*='accordion' i][class*='title' i]"
         );
         for (const el of candidates) {
           const title = clean(el.textContent);
