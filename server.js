@@ -13648,17 +13648,39 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         // not either -- narrow enough that it's very unlikely to also match
         // an unrelated non-title accordion element (a toggle button/icon/
         // panel wouldn't also have "title" in its class).
+        //
+        // [class*='field--name-node-title' i]: Drupal's default "Views"
+        // listing renders each result as a content-type teaser with the
+        // title in a bare, unlinked `<h2>` wrapped in a
+        // `field--name-node-title` div and nothing else nearby but a
+        // `mailto:` contact link -- no per-posting `<a href>` at all.
+        // Verified live against the raw DOM at Carolina University's real
+        // employment-opportunities page: 3 genuine current postings ("Dean
+        // of The Patterson School of Business", "Adjunct Faculty –
+        // Engineering and Engineering Management", "Adjunct Faculty"),
+        // none reachable via the anchor-based scan above since none of
+        // them link anywhere but a mailto: address.
         const candidates = document.querySelectorAll(
-          "[class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i], button[class*='accordion' i], [itemprop='title'], [class*='toggle-text-heading' i], [class*='toggle-title' i], [class*='toggle-heading' i], [class*='accordion' i][class*='title' i]"
+          "[class*='accordion-trigger' i], [class*='accordion__toggle' i], [class*='accordion-button' i], [class*='accordion-header' i], button[class*='accordion' i], [itemprop='title'], [class*='toggle-text-heading' i], [class*='toggle-title' i], [class*='toggle-heading' i], [class*='accordion' i][class*='title' i], [class*='field--name-node-title' i]"
         );
         for (const el of candidates) {
           const title = clean(el.textContent);
           if (!title || title.length < 10 || title.length > 120) continue;
           if (/^[a-z]/.test(title)) continue;
+          // Was only checking professor/lecturer/instructor/chair/bare-faculty --
+          // a narrower subset of the primary anchor-scan's isFacultyRelated above,
+          // missing the "dean of"/bare-adjunct/teaching-fellow clauses that path
+          // already safely uses. Verified live: Carolina University's real
+          // no-anchor listing (field--name-node-title, added above) includes
+          // "Dean of The Patterson School of Business", which this check was
+          // silently dropping despite it being a genuine, current posting.
           if (
             !(
               /\b(professors?|lecturers?|instructors?|department\s+chairs?|chairpersons?)\b/i.test(title) ||
-              /\bfaculty\b/i.test(title)
+              /\bfaculty\b/i.test(title) ||
+              /\bdean\s+of\b/i.test(title) ||
+              /\badjunct\b/i.test(title) ||
+              /\bteaching\s+fellows?\b/i.test(title)
             )
           ) {
             continue;
