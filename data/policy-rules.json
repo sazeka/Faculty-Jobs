@@ -27,12 +27,92 @@
     }
   ],
   "institutionOverrides": {
+    "Academy for Jewish Religion California": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (checked homepage, /faculty/jobs, /careers, /employment -- all 404 or absent from nav).",
+      "sources": [
+        "https://www.ajrca.edu/"
+      ]
+    },
+    "Acupuncture and Integrative Medicine College-Berkeley": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers page found after live investigation -- the site's only \"Career Opportunities\" page is an alumni bulletin board of external clinic job/rental listings, not the college's own hiring page; /employment and /faculty both 404.",
+      "sources": [
+        "https://www.aimc.edu/"
+      ]
+    },
+    "Agora University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation; small online-only institution with no discoverable HR presence.",
+      "sources": [
+        "https://www.agora.edu/"
+      ]
+    },
+    "Aiken Technical College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no institution-run careers page found after live investigation; the only jobs-related link on the site is \"College Central Network,\" a third-party student job board, not the college's own hiring page.",
+      "sources": [
+        "https://www.atc.edu/"
+      ]
+    },
+    "Allegheny Wesleyan College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (full footer nav has no HR/Careers link).",
+      "sources": [
+        "https://awc.edu/"
+      ]
+    },
+    "America Evangelical University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-12): no usable careers URL found on homepage, /careers, or via site search. Small evangelical graduate school.",
+      "sources": [
+        "https://www.aeu.edu/"
+      ]
+    },
+    "American Academy of Dramatic Arts-Los Angeles": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): LA campus closure was announced in 2024 effective the 2025-26 school year; confirmed independently via ABC7 Los Angeles and Deadline reporting. The institution's own site nav now shows only the New York campus. No longer degree-granting/hiring at this location.",
+      "sources": [
+        "https://abc7.com/post/los-angeles-campus-american-academy-dramatic-arts-close/15102792/",
+        "https://deadline.com/2024/07/american-academy-of-dramatic-arts-school-los-angeles-campus-closing-1236017937/"
+      ]
+    },
     "American University of Puerto Rico": {
       "action": "exclude",
       "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
       "sources": [
         "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
         "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Anna Maria College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): institution ceased academic operations at the end of the Spring 2026 semester and filed for Chapter 11 bankruptcy (board vote authorizing the filing on 2026-05-08), citing multi-year enrollment declines. No longer hiring.",
+      "sources": [
+        "https://www.insidehighered.com/news/quick-takes/2026/04/23/anna-maria-college-announces-closure",
+        "https://www.nbcboston.com/news/local/anna-maria-college-closing-at-end-of-this-semester/3938857/",
+        "https://wbjournal.com/article/anna-maria-files-for-bankruptcy-blames-closure-on-falling-enrollment/"
+      ]
+    },
+    "Antioch University-System Administration": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): duplicate record of the primary \"Antioch University\" entry (identical antioch.edu/employment URL, confirmed in server.js) -- not an independently-hiring entity.",
+      "sources": [
+        "https://www.antioch.edu/employment"
+      ]
+    },
+    "Appalachian Bible College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no HR/employment page found after live investigation -- only a student-employment page exists, no faculty/staff hiring page.",
+      "sources": [
+        "https://abc.edu/"
+      ]
+    },
+    "Arizona Board of Regents": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): system governance office overseeing Arizona's public universities (ASU, U of Arizona, NAU), not a degree-granting campus itself -- same pattern as the CSU Chancellor's Office record. The universities it governs are already tracked individually under their own names.",
+      "sources": [
+        "https://www.azregents.edu/career-opportunities"
       ]
     },
     "Arizona State University - ASU California Center - Broadway": {
@@ -51,6 +131,78 @@
         "https://nces.ed.gov/ipeds/use-the-data"
       ]
     },
+    "Arizona State University Campus Immersion": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): a duplicate IPEDS record for ASU's \"Campus Immersion\" delivery mode, not an independently-hiring entity -- ASU's own scraper entry (type \"asu-table\", scrapeAsuFacultyPositionsTable, pointed at facultypositions.asu.edu) already covers the university-wide faculty feed regardless of delivery mode. \"Campus Immersion\"/\"Digital Immersion\" are ASU's marketing terms for how a program is delivered, not separate HR/hiring units.",
+      "sources": [
+        "https://www.asu.edu/",
+        "https://facultypositions.asu.edu/"
+      ]
+    },
+    "Arizona State University Digital Immersion": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): same duplicate-delivery-mode pattern as Arizona State University Campus Immersion (see that entry) -- a duplicate IPEDS record for ASU's \"Digital Immersion\" delivery mode, not an independently-hiring entity. ASU's own scraper entry already covers the university-wide faculty feed regardless of delivery mode.",
+      "sources": [
+        "https://www.asu.edu/",
+        "https://facultypositions.asu.edu/"
+      ]
+    },
+    "Arkansas Baptist College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (Resources and Administration sections checked, no HR/jobs link).",
+      "sources": [
+        "https://www.arkansasbaptist.edu/"
+      ]
+    },
+    "Arkansas State University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): real careers page is hosted on Oracle Taleo, which the repo excludes platform-wide (Oracle ToS prohibits robots/scrapers) -- see the \"taleo\" platformRule above. platform_type is mislabeled \"generic\" in institutions-master.json so the automatic platform rule doesn't catch it; excluding by name instead.",
+      "sources": [
+        "https://phe.tbe.taleo.net/phe02/ats/careers/v2/jobSearch?org=ARKASTAT2"
+      ]
+    },
+    "Arkansas State University System": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): system governance/administrative office, not a degree-granting campus -- confirmed live its own homepage just lists the individually-tracked member campuses (Arkansas State University, ASU-Beebe, ASU-Mountain Home, ASU-Newport, ASU Mid-South, ASU Three Rivers), each already present as its own record. Same pattern as Arizona Board of Regents / CSU Chancellor's Office.",
+      "sources": [
+        "https://www.asusystem.edu/"
+      ]
+    },
+    "Arkansas State University Three Rivers": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): same as the primary Arkansas State University record -- real careers page is hosted on Oracle Taleo, platform-wide-excluded, mislabeled \"generic\" in institutions-master.json.",
+      "sources": [
+        "https://www.asutr.edu/"
+      ]
+    },
+    "Arkansas State University-Mountain Home": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): same as the primary Arkansas State University record -- real careers page is hosted on Oracle Taleo, platform-wide-excluded, mislabeled \"generic\" in institutions-master.json.",
+      "sources": [
+        "https://phe.tbe.taleo.net/phe02/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=58&org=ARKASTAT2"
+      ]
+    },
+    "Ascent College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/faculty/jobs 404s, no careers/employment link discoverable from the homepage).",
+      "sources": [
+        "https://ascent.edu/"
+      ]
+    },
+    "Associated Beth Rivkah Schools": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/careers, /jobs, /employment, /employment-opportunities all 404).",
+      "sources": [
+        "https://www.bethrivkah.edu/"
+      ]
+    },
+    "Atlantic Institute of Oriental Medicine": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.atom.edu/"
+      ]
+    },
     "Avera Sacred Heart Hospital": {
       "action": "exclude",
       "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
@@ -59,9 +211,201 @@
         "https://nces.ed.gov/ipeds/use-the-data"
       ]
     },
+    "Bacone College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-12): institution ceased operations -- Chapter 11 filed June 2024, converted to Chapter 7 liquidation May 2025, HLC accreditation revoked, campus turned over to bankruptcy trustee. bacone.edu no longer resolves (DNS failure). No longer a hiring institution.",
+      "sources": [
+        "https://www.highereddive.com/",
+        "https://www.insidehighered.com/"
+      ]
+    },
+    "Bais HaMedrash and Mesivta of Baltimore": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.bhmb.edu/"
+      ]
+    },
+    "Bais Medrash Toras Chesed": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-12): no usable careers URL found; domain has repeated SSL handshake failures. Tiny all-male Talmudic school; no jobs board or HR presence found anywhere (typical word-of-mouth hiring profile for this institution type).",
+      "sources": [
+        "https://www.bmtc.edu/"
+      ]
+    },
+    "Bakke Graduate University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (all common careers-page paths 404, no nav link).",
+      "sources": [
+        "https://www.bgu.edu/"
+      ]
+    },
+    "Baptist Health College Little Rock": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no institution-specific careers page found; the parent Baptist Health system's own careers page is itself broken (soft-404).",
+      "sources": [
+        "https://www.bhclr.edu/"
+      ]
+    },
+    "Baptist Missionary Association Theological Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation, including a full sitemap crawl.",
+      "sources": [
+        "https://www.bmats.edu/"
+      ]
+    },
+    "Baptist University of Florida": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no self-hosted careers page anywhere in site nav after live investigation; /jobs is an unrelated church-ministry placement board (a Softr app), and the legacy Jenzabar employee portal (mybcf.baptistcollege.edu) times out (dead).",
+      "sources": [
+        "https://www.buf.edu/"
+      ]
+    },
+    "Barnes-Jewish College Goldfarb School of Nursing": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): the only careers link on the College's site routes to BJC HealthCare's system-wide clinical job board (bjccareers.org), unscoped to the College specifically -- keyword-filtering by \"goldfarb\" returns unrelated hospital roles, not a discoverable School-specific faculty listing.",
+      "sources": [
+        "https://www.barnesjewishcollege.edu/resources/nursing-careers"
+      ]
+    },
+    "Be'er Yaakov Talmudic Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/careers, /employment, /jobs, /about all 404).",
+      "sources": [
+        "https://www.byts.edu/"
+      ]
+    },
+    "Bellarmine University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://bellarmine.interviewexchange.com/static/clients/459BMM1/index.jsp"
+      ]
+    },
+    "Berry College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node -- not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp"
+      ]
+    },
+    "Beth Hamedrash Shaarei Yosher Institute": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): tiny 4-page single-page site (Home/About/Net Price Calculator/Student Portal only) with no discoverable careers page after live investigation -- every guessed path renders the same homepage.",
+      "sources": [
+        "https://bhsy.edu/"
+      ]
+    },
+    "Beth Medrash Govoha": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no employment/about page found anywhere on the institution's minimal site after live investigation.",
+      "sources": [
+        "https://bmg.edu/"
+      ]
+    },
+    "Bethany Global University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://bethanygu.edu/"
+      ]
+    },
+    "Bethesda University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (all guessed paths are soft-404s: \"This page has not been generated\").",
+      "sources": [
+        "https://www.buc.edu/"
+      ]
+    },
+    "Bethlehem College & Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): the site's \"Job Board\" is explicitly career-placement services for students/alumni seeking jobs at other organizations (churches, ministries), not the institution's own hiring page -- no internal hiring page found.",
+      "sources": [
+        "https://bcsmn.edu/"
+      ]
+    },
+    "Birmingham-Southern College": {
+      "action": "exclude",
+      "reason": "Institution permanently closed on 2024-05-31; no longer operating or hiring.",
+      "sources": [
+        "https://www.bsc.edu/",
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD"
+      ]
+    },
+    "Blessing Rieman College of Nursing and Health Sciences": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no College-specific careers page exists; the only path is Blessing Health System's shared, unscoped hospital-wide job board, same misattribution-risk shape as the already-excluded Barnes-Jewish College Goldfarb School of Nursing and Cabarrus College of Health Sciences.",
+      "sources": [
+        "https://www.brcn.edu/"
+      ]
+    },
+    "Bloomfield College of Montclair State University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): absorbed into Montclair State University -- confirmed live, bloomfield.edu now redirects to montclair.edu/academics/schools-colleges/bloomfield-college. The primary \"Montclair State University\" record already covers it.",
+      "sources": [
+        "https://www.bloomfield.edu/"
+      ]
+    },
     "Bluefield University - Edward Via College - Auburn": {
       "action": "exclude",
       "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
+      "sources": [
+        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
+        "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Board of Trustees-Mississippi State Institutions of Higher Learning": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): system governance office, not a degree-granting campus -- confirmed live its own careers page lists only internal system-office administrative jobs (Manager of Internal Audit, Emergency and Safety Officer), not member-university faculty positions.",
+      "sources": [
+        "https://www.mississippi.edu/contact-us/careers"
+      ]
+    },
+    "Boise Bible College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.boisebible.edu/"
+      ]
+    },
+    "Bolivar Technical College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no institution-run careers page found after live investigation; only a generic site-search result page exists, not a real jobs board.",
+      "sources": [
+        "https://www.bolivarcollege.edu/"
+      ]
+    },
+    "Boston Baptist College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation, including a full sitemap crawl.",
+      "sources": [
+        "https://www.boston.edu/"
+      ]
+    },
+    "Bristol Community College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp"
+      ]
+    },
+    "Byzantine Catholic Seminary of Saints Cyril and Methodius": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no employment/careers/jobs link anywhere in the site nav after live investigation, confirmed via web search too.",
+      "sources": [
+        "https://www.bcs.edu/"
+      ]
+    },
+    "Cabarrus College of Health Sciences": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): the College's own employment page explicitly states hiring is \"managed through Atrium Health Cabarrus' Department of Human Resources\" -- an unscoped system-wide hospital job board, not a College-specific listing (same shape as the already-excluded Barnes-Jewish College Goldfarb School of Nursing).",
+      "sources": [
+        "https://cabarruscollege.edu/about-us/employment"
+      ]
+    },
+    "Cabrini University": {
+      "action": "exclude",
+      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
       "sources": [
         "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
         "https://nces.ed.gov/ipeds/use-the-data"
@@ -75,20 +419,81 @@
         "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD"
       ]
     },
-    "Birmingham-Southern College": {
+    "California Institute of Integral Studies": {
       "action": "exclude",
-      "reason": "Institution permanently closed on 2024-05-31; no longer operating or hiring.",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
-        "https://www.bsc.edu/",
-        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD"
+        "https://ciis.interviewexchange.com/static/clients/529CIM1"
       ]
     },
-    "Cabrini University": {
+    "Cape Cod Community College": {
       "action": "exclude",
-      "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
-        "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
-        "https://nces.ed.gov/ipeds/use-the-data"
+        "https://capecod.interviewexchange.com/static/clients/470CCM1/index.jsp"
+      ]
+    },
+    "Cayuga County Community College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://cayuga.interviewexchange.com/"
+      ]
+    },
+    "CBD College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): no careers/employment page discoverable anywhere on the site after live investigation (checked nav, footer, About, and common guessed paths) -- flagged during Bucket B round 17.",
+      "sources": [
+        "https://www.cbd.edu/"
+      ]
+    },
+    "Central Methodist University-College of Graduate and Extended Studies": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): duplicate division record -- the sibling \"Central Methodist University-College of Liberal Arts and Sciences\" record is already correctly covered (career_url verified, 3 current jobs) and is the same institution's actual hiring page.",
+      "sources": [
+        "https://www.centralmethodist.edu/about/offices/human-resources/jobs-fayette/index-faculty.html"
+      ]
+    },
+    "Central Yeshiva Tomchei Tmimim Lubavitz": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-12): no usable careers URL found. Checked cyttl.edu nav and web search (Indeed, Glassdoor, Chabad.org) -- no job board or HR presence for this small single-purpose yeshiva.",
+      "sources": [
+        "https://cyttl.edu/"
+      ]
+    },
+    "Charlotte Christian College and Theological Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found after live investigation -- the homepage's own \"Career Path\" footer link is miswired to the privacy-policy page, and every guessed path 404s.",
+      "sources": [
+        "https://www.charlottechristian.edu/"
+      ]
+    },
+    "Cincinnati College of Mortuary Science": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): the configured /academics/faculty-jobs path redirects to the generic Academics page (dead), and the institution's real \"Job Board\" only aggregates external funeral-home apprentice/licensee listings from other employers -- no discoverable CCMS-specific faculty hiring page exists.",
+      "sources": [
+        "https://www.ccms.edu/"
+      ]
+    },
+    "City Colleges of Chicago-District Office": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): system governance/administrative office, not a degree-granting campus -- confirmed all 7 individual City Colleges of Chicago campuses (Harold Washington, Harry S Truman, Kennedy-King, Malcolm X, Olive-Harvey, Richard J Daley, Wilbur Wright) are already tracked separately with their own entries in server.js.",
+      "sources": [
+        "https://www.ccc.edu/"
+      ]
+    },
+    "City University of Seattle": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): joins the other 15 InterviewExchange/Hirezon-WAF-blocked institutions -- confirmed live via direct request (3x) that cityu.interviewexchange.com returns the identical Hirezon WAF 403 as the rest of the platform, despite this being the institution's genuine, correctly-identified careers page.",
+      "sources": [
+        "https://cityu.interviewexchange.com/static/clients/447CSM1/index.jsp"
+      ]
+    },
+    "Clark University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://clarku.interviewexchange.com/static/clients/569CUM1/index.jsp"
       ]
     },
     "Clarks Summit University": {
@@ -99,6 +504,41 @@
         "https://nces.ed.gov/ipeds/use-the-data"
       ]
     },
+    "Colorado State University-System Office": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): system governance office, not a degree-granting campus -- its own careers page just aggregates postings from the three real member campuses (Colorado State University-Fort Collins, -Pueblo, -Global), each of which is already tracked individually with its own scraper entry. Same duplicate-coverage pattern as Arizona Board of Regents / Arkansas State University System, though an earlier career-url-overrides.json entry had called this \"verified working\" -- that only confirmed reachability, not that scraping it wouldn't double-count postings already attributed to the member campuses.",
+      "sources": [
+        "https://csusystem.edu/jobs/"
+      ]
+    },
+    "Commonwealth Technical Institute": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): a PA Department of Labor & Industry vocational-rehabilitation training program, not an independently-hiring institution -- the only discoverable hiring channel is Pennsylvania's fully shared statewide civil-service job board.",
+      "sources": [
+        "https://www.dli.pa.gov/Individuals/Disability-Services/CTI-HGAC/Pages/Home.aspx"
+      ]
+    },
+    "Community Christian College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no employment/careers link anywhere on the site after live investigation (small sports-focused Bible college; only a student-employment page exists), confirmed via web search too.",
+      "sources": [
+        "https://www.cccollege.edu/"
+      ]
+    },
+    "Contra Costa Community College District Office": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): non-independent governance/district-office record (4cd.edu), same shape as other already-excluded district-office records -- not a hiring campus in its own right (the district's actual campuses, e.g. Contra Costa College and Diablo Valley College, are separately covered). Flagged during Bucket B round 17.",
+      "sources": [
+        "https://www.4cd.edu/"
+      ]
+    },
+    "Curry College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://curry.interviewexchange.com/"
+      ]
+    },
     "Delaware College of Art and Design": {
       "action": "exclude",
       "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
@@ -107,12 +547,124 @@
         "https://nces.ed.gov/ipeds/use-the-data"
       ]
     },
+    "Delaware Technical Community College-Central Office": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): a sector-0 administrative-unit IPEDS record (unitid 130882), not an independently-hiring campus -- real coverage already lives under the separately-tracked \"Delaware Technical Community College\" record (peopleadmin, 4 current jobs, covered).",
+      "sources": [
+        "https://www.dtcc.edu/about/employment"
+      ]
+    },
+    "Digital Media Institute": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
+      "sources": [
+        "https://www.dmi.edu/"
+      ]
+    },
+    "Downey Adult School": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): a Downey Unified School District (dusd.net) K-12 adult-education program, not an independent degree-granting postsecondary institution with its own hiring page -- no employment link anywhere on site. Flagged during Bucket B round 17.",
+      "sources": [
+        "https://www.das.edu/"
+      ]
+    },
+    "Dragon Rises College of Oriental Medicine": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-12): no usable careers URL found. Full sitemap crawl of dragonrises.edu shows no careers/employment/jobs page anywhere; only a student-outcomes 'career-pathways' page. Small institution (<25 employees).",
+      "sources": [
+        "https://www.dragonrises.edu/"
+      ]
+    },
+    "Eastern Nazarene College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-12): institution permanently closed (Board vote June 25, 2024; wound down through 2025 via teach-out agreements to Gordon College, Mount Vernon Nazarene University, and Trevecca Nazarene University). enc.edu now redirects to mvnu.edu/enc, a legacy custodian-of-record page with no jobs content. No longer a hiring institution.",
+      "sources": [
+        "https://mvnu.edu/enc"
+      ]
+    },
+    "Eden Theological Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-12): no usable careers URL found after checking nav/footer, on-site search, and guessed common paths (/careers/, /jobs/, /employment/). Small (~34-employee) seminary.",
+      "sources": [
+        "https://www.eden.edu/"
+      ]
+    },
+    "Emmanuel College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://emmanuel.interviewexchange.com/static/clients/13EM1/listJobs.jsp"
+      ]
+    },
+    "Epic Bible College & Graduate School": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): no careers/employment page discoverable anywhere on the site after live investigation -- flagged during Bucket B round 17.",
+      "sources": [
+        "https://epic.edu/"
+      ]
+    },
+    "Family of Faith Christian University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no employment/careers/jobs page discoverable anywhere on the site after live investigation (all common paths 404, no such nav link exists).",
+      "sources": [
+        "https://www.familyoffaith.edu/"
+      ]
+    },
+    "Fashion Institute of Technology": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://fitnyc.interviewexchange.com/"
+      ]
+    },
+    "Fitchburg State University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://fitchburg.interviewexchange.com/static/clients/500FSM1/index.jsp"
+      ]
+    },
+    "Flagler Technical College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): flaglertech.edu is explicitly a Flagler Schools (K-12 district) site, not an independent degree-granting postsecondary institution. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://flaglertech.edu/"
+      ]
+    },
+    "Fort Myers Technical College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): a Lee County Public Schools technical center; its \"Job Postings\" link is a student placement service, not an HR hiring board. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.fortmyerstech.edu/"
+      ]
+    },
+    "Fred W Eberle Technical Center": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): no stable careers page exists; postings occasionally appear only as one-off WordPress news articles with no durable listing page to point at.",
+      "sources": [
+        "https://fetc.edu/"
+      ]
+    },
     "Goddard College": {
       "action": "exclude",
       "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
       "sources": [
         "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
         "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Goucher College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://goucher.interviewexchange.com/static/clients/436GCM1/index.jsp"
+      ]
+    },
+    "H W Brewster Technical College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): a Hillsborough County Public Schools (hillsboroughschools.org) technical center, same non-independent shape as the already-excluded Erwin Technical College. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.hillsboroughschools.org/Brewster"
       ]
     },
     "Illinois Eastern Community Colleges - Olney Central College": {
@@ -171,12 +723,26 @@
         "https://nces.ed.gov/ipeds/use-the-data"
       ]
     },
+    "Los Angeles County College of Nursing and Allied Health": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): a specialized program under LA County Department of Health Services (county government), not an independent institution -- its only \"Careers\" link is the whole county's general careers portal, with no program-specific faculty hiring page. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://dhs.lacounty.gov/college-of-nursing-and-allied-health/"
+      ]
+    },
     "Magdalen College": {
       "action": "exclude",
       "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
       "sources": [
         "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
         "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Mesivta Torah Vodaath Rabbinical Seminary": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-12): no usable careers URL found. Real site is torahvodaath.org (the previously-configured independentrabbinicalcolleges.org URL was a wrong shared placeholder). Full nav/footer crawl shows no careers/employment/HR link.",
+      "sources": [
+        "https://torahvodaath.org/"
       ]
     },
     "Multnomah University": {
@@ -201,6 +767,20 @@
       "sources": [
         "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
         "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Orange Technical College-East Campus": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): orangetechcollege.net's own page states it is run by Orange County Public Schools across 7 campuses -- a K-12-district-operated technical center, not an independent postsecondary institution. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.orangetechcollege.net/campuses/east_campus"
+      ]
+    },
+    "Orange Technical College-West Campus": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): same Orange County Public Schools system as Orange Technical College-East Campus. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.orangetechcollege.net/campuses/west_campus"
       ]
     },
     "Pardee RAND Graduate School - Virginia": {
@@ -243,12 +823,45 @@
         "https://nces.ed.gov/ipeds/use-the-data"
       ]
     },
+    "Rabbinical College Telshe": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-12): no stable official website exists. telsheyeshiva.org/.edu redirect to a Cardknox donation gateway, not an institutional site; telsheyeshiva.pages.dev is an unofficial fan-built mirror with no jobs page. No HR presence found.",
+      "sources": []
+    },
     "Rensselaer at Hartford": {
       "action": "exclude",
       "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
       "sources": [
         "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
         "https://nces.ed.gov/ipeds/use-the-data"
+      ]
+    },
+    "Riveroak Technical College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): a Suwannee County Schools (rtc.suwannee.k12.fl.us) technical center, not an independent postsecondary institution. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://rtc.suwannee.k12.fl.us/o/rtc"
+      ]
+    },
+    "Salve Regina University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp"
+      ]
+    },
+    "South Dakota Board of Regents": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-06): governance office, not a degree-granting campus -- but unlike other excluded board/system-office records, this one IS the real, live ATS for the SD state university system, and server.js already has special-case logic (inferSdborCampusFromDetail) that correctly attributes its postings to the separately-tracked member campuses (South Dakota State University, University of South Dakota, South Dakota School of Mines and Technology, Northern State University, Dakota State University -- all confirmed \"covered\" with real job counts). By design, zero jobs are ever attributed to the Board of Regents record itself; do not remove the SDBOR entry from server.js, it is load-bearing for the member-campus attribution -- only this institution record is excluded.",
+      "sources": [
+        "https://yourfuture.sdbor.edu/postings/search"
+      ]
+    },
+    "Suncoast Technical College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-07): a Sarasota County Schools (sarasotacountyschools.net) technical center, not an independent postsecondary institution. Flagged during Bucket B round 18.",
+      "sources": [
+        "https://www.sarasotacountyschools.net/o/stcsmc"
       ]
     },
     "Trinity International University-Florida": {
@@ -299,6 +912,13 @@
         "https://nces.ed.gov/ipeds/use-the-data"
       ]
     },
+    "University of Texas at El Paso": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://utep.interviewexchange.com/static/clients/533UTM1/index.jsp"
+      ]
+    },
     "University of the Arts": {
       "action": "exclude",
       "reason": "Excluded pending manual review (2026-02-22): no usable careers URL found in IPEDS WEBADDR or automated discovery.",
@@ -339,577 +959,19 @@
         "https://nces.ed.gov/ipeds/use-the-data"
       ]
     },
+    "Western Illinois University": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node \u2014 not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
+      "sources": [
+        "https://wiu.interviewexchange.com/static/clients/467WIM1/index.jsp"
+      ]
+    },
     "Western Maricopa Education Center - Northwest Campus": {
       "action": "exclude",
       "reason": "Excluded pending manual review (2026-02-22): IPEDS sector 99 branch/placeholder record with no canonical careers URL.",
       "sources": [
         "https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx?goto=HD",
         "https://nces.ed.gov/ipeds/use-the-data"
-      ]
-    },
-    "Bellarmine University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://bellarmine.interviewexchange.com/static/clients/459BMM1/index.jsp"
-      ]
-    },
-    "Bristol Community College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp"
-      ]
-    },
-    "California Institute of Integral Studies": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://ciis.interviewexchange.com/static/clients/529CIM1"
-      ]
-    },
-    "Cape Cod Community College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://capecod.interviewexchange.com/static/clients/470CCM1/index.jsp"
-      ]
-    },
-    "Cayuga County Community College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://cayuga.interviewexchange.com/"
-      ]
-    },
-    "Clark University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://clarku.interviewexchange.com/static/clients/569CUM1/index.jsp"
-      ]
-    },
-    "Curry College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://curry.interviewexchange.com/"
-      ]
-    },
-    "Emmanuel College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://emmanuel.interviewexchange.com/static/clients/13EM1/listJobs.jsp"
-      ]
-    },
-    "Fashion Institute of Technology": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://fitnyc.interviewexchange.com/"
-      ]
-    },
-    "Fitchburg State University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://fitchburg.interviewexchange.com/static/clients/500FSM1/index.jsp"
-      ]
-    },
-    "Goucher College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://goucher.interviewexchange.com/static/clients/436GCM1/index.jsp"
-      ]
-    },
-    "Salve Regina University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp"
-      ]
-    },
-    "University of Texas at El Paso": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://utep.interviewexchange.com/static/clients/533UTM1/index.jsp"
-      ]
-    },
-    "Western Illinois University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://wiu.interviewexchange.com/static/clients/467WIM1/index.jsp"
-      ]
-    },
-    "Berry College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node -- not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
-      "sources": [
-        "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp"
-      ]
-    },
-    "Anna Maria College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): institution ceased academic operations at the end of the Spring 2026 semester and filed for Chapter 11 bankruptcy (board vote authorizing the filing on 2026-05-08), citing multi-year enrollment declines. No longer hiring.",
-      "sources": [
-        "https://www.insidehighered.com/news/quick-takes/2026/04/23/anna-maria-college-announces-closure",
-        "https://www.nbcboston.com/news/local/anna-maria-college-closing-at-end-of-this-semester/3938857/",
-        "https://wbjournal.com/article/anna-maria-files-for-bankruptcy-blames-closure-on-falling-enrollment/"
-      ]
-    },
-    "Academy for Jewish Religion California": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (checked homepage, /faculty/jobs, /careers, /employment -- all 404 or absent from nav).",
-      "sources": [
-        "https://www.ajrca.edu/"
-      ]
-    },
-    "Allegheny Wesleyan College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (full footer nav has no HR/Careers link).",
-      "sources": [
-        "https://awc.edu/"
-      ]
-    },
-    "Agora University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation; small online-only institution with no discoverable HR presence.",
-      "sources": [
-        "https://www.agora.edu/"
-      ]
-    },
-    "Arkansas Baptist College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (Resources and Administration sections checked, no HR/jobs link).",
-      "sources": [
-        "https://www.arkansasbaptist.edu/"
-      ]
-    },
-    "Appalachian Bible College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no HR/employment page found after live investigation -- only a student-employment page exists, no faculty/staff hiring page.",
-      "sources": [
-        "https://abc.edu/"
-      ]
-    },
-    "Aiken Technical College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no institution-run careers page found after live investigation; the only jobs-related link on the site is \"College Central Network,\" a third-party student job board, not the college's own hiring page.",
-      "sources": [
-        "https://www.atc.edu/"
-      ]
-    },
-    "Beth Medrash Govoha": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no employment/about page found anywhere on the institution's minimal site after live investigation.",
-      "sources": [
-        "https://bmg.edu/"
-      ]
-    },
-    "Arizona Board of Regents": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): system governance office overseeing Arizona's public universities (ASU, U of Arizona, NAU), not a degree-granting campus itself -- same pattern as the CSU Chancellor's Office record. The universities it governs are already tracked individually under their own names.",
-      "sources": [
-        "https://www.azregents.edu/career-opportunities"
-      ]
-    },
-    "Arizona State University Campus Immersion": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): a duplicate IPEDS record for ASU's \"Campus Immersion\" delivery mode, not an independently-hiring entity -- ASU's own scraper entry (type \"asu-table\", scrapeAsuFacultyPositionsTable, pointed at facultypositions.asu.edu) already covers the university-wide faculty feed regardless of delivery mode. \"Campus Immersion\"/\"Digital Immersion\" are ASU's marketing terms for how a program is delivered, not separate HR/hiring units.",
-      "sources": [
-        "https://www.asu.edu/",
-        "https://facultypositions.asu.edu/"
-      ]
-    },
-    "Acupuncture and Integrative Medicine College-Berkeley": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers page found after live investigation -- the site's only \"Career Opportunities\" page is an alumni bulletin board of external clinic job/rental listings, not the college's own hiring page; /employment and /faculty both 404.",
-      "sources": [
-        "https://www.aimc.edu/"
-      ]
-    },
-    "Barnes-Jewish College Goldfarb School of Nursing": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): the only careers link on the College's site routes to BJC HealthCare's system-wide clinical job board (bjccareers.org), unscoped to the College specifically -- keyword-filtering by \"goldfarb\" returns unrelated hospital roles, not a discoverable School-specific faculty listing.",
-      "sources": [
-        "https://www.barnesjewishcollege.edu/resources/nursing-careers"
-      ]
-    },
-    "Ascent College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/faculty/jobs 404s, no careers/employment link discoverable from the homepage).",
-      "sources": [
-        "https://ascent.edu/"
-      ]
-    },
-    "Arizona State University Digital Immersion": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): same duplicate-delivery-mode pattern as Arizona State University Campus Immersion (see that entry) -- a duplicate IPEDS record for ASU's \"Digital Immersion\" delivery mode, not an independently-hiring entity. ASU's own scraper entry already covers the university-wide faculty feed regardless of delivery mode.",
-      "sources": [
-        "https://www.asu.edu/",
-        "https://facultypositions.asu.edu/"
-      ]
-    },
-    "American Academy of Dramatic Arts-Los Angeles": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): LA campus closure was announced in 2024 effective the 2025-26 school year; confirmed independently via ABC7 Los Angeles and Deadline reporting. The institution's own site nav now shows only the New York campus. No longer degree-granting/hiring at this location.",
-      "sources": [
-        "https://abc7.com/post/los-angeles-campus-american-academy-dramatic-arts-close/15102792/",
-        "https://deadline.com/2024/07/american-academy-of-dramatic-arts-school-los-angeles-campus-closing-1236017937/"
-      ]
-    },
-    "Antioch University-System Administration": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): duplicate record of the primary \"Antioch University\" entry (identical antioch.edu/employment URL, confirmed in server.js) -- not an independently-hiring entity.",
-      "sources": [
-        "https://www.antioch.edu/employment"
-      ]
-    },
-    "Arkansas State University System": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): system governance/administrative office, not a degree-granting campus -- confirmed live its own homepage just lists the individually-tracked member campuses (Arkansas State University, ASU-Beebe, ASU-Mountain Home, ASU-Newport, ASU Mid-South, ASU Three Rivers), each already present as its own record. Same pattern as Arizona Board of Regents / CSU Chancellor's Office.",
-      "sources": [
-        "https://www.asusystem.edu/"
-      ]
-    },
-    "Bloomfield College of Montclair State University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): absorbed into Montclair State University -- confirmed live, bloomfield.edu now redirects to montclair.edu/academics/schools-colleges/bloomfield-college. The primary \"Montclair State University\" record already covers it.",
-      "sources": [
-        "https://www.bloomfield.edu/"
-      ]
-    },
-    "Cabarrus College of Health Sciences": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): the College's own employment page explicitly states hiring is \"managed through Atrium Health Cabarrus' Department of Human Resources\" -- an unscoped system-wide hospital job board, not a College-specific listing (same shape as the already-excluded Barnes-Jewish College Goldfarb School of Nursing).",
-      "sources": [
-        "https://cabarruscollege.edu/about-us/employment"
-      ]
-    },
-    "Atlantic Institute of Oriental Medicine": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
-      "sources": [
-        "https://www.atom.edu/"
-      ]
-    },
-    "Bolivar Technical College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no institution-run careers page found after live investigation; only a generic site-search result page exists, not a real jobs board.",
-      "sources": [
-        "https://www.bolivarcollege.edu/"
-      ]
-    },
-    "Baptist University of Florida": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no self-hosted careers page anywhere in site nav after live investigation; /jobs is an unrelated church-ministry placement board (a Softr app), and the legacy Jenzabar employee portal (mybcf.baptistcollege.edu) times out (dead).",
-      "sources": [
-        "https://www.buf.edu/"
-      ]
-    },
-    "Byzantine Catholic Seminary of Saints Cyril and Methodius": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no employment/careers/jobs link anywhere in the site nav after live investigation, confirmed via web search too.",
-      "sources": [
-        "https://www.bcs.edu/"
-      ]
-    },
-    "Community Christian College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no employment/careers link anywhere on the site after live investigation (small sports-focused Bible college; only a student-employment page exists), confirmed via web search too.",
-      "sources": [
-        "https://www.cccollege.edu/"
-      ]
-    },
-    "City University of Seattle": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): joins the other 15 InterviewExchange/Hirezon-WAF-blocked institutions -- confirmed live via direct request (3x) that cityu.interviewexchange.com returns the identical Hirezon WAF 403 as the rest of the platform, despite this being the institution's genuine, correctly-identified careers page.",
-      "sources": [
-        "https://cityu.interviewexchange.com/static/clients/447CSM1/index.jsp"
-      ]
-    },
-    "Associated Beth Rivkah Schools": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/careers, /jobs, /employment, /employment-opportunities all 404).",
-      "sources": [
-        "https://www.bethrivkah.edu/"
-      ]
-    },
-    "Bakke Graduate University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (all common careers-page paths 404, no nav link).",
-      "sources": [
-        "https://www.bgu.edu/"
-      ]
-    },
-    "Digital Media Institute": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
-      "sources": [
-        "https://www.dmi.edu/"
-      ]
-    },
-    "Bethany Global University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
-      "sources": [
-        "https://bethanygu.edu/"
-      ]
-    },
-    "Blessing Rieman College of Nursing and Health Sciences": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no College-specific careers page exists; the only path is Blessing Health System's shared, unscoped hospital-wide job board, same misattribution-risk shape as the already-excluded Barnes-Jewish College Goldfarb School of Nursing and Cabarrus College of Health Sciences.",
-      "sources": [
-        "https://www.brcn.edu/"
-      ]
-    },
-    "Central Methodist University-College of Graduate and Extended Studies": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): duplicate division record -- the sibling \"Central Methodist University-College of Liberal Arts and Sciences\" record is already correctly covered (career_url verified, 3 current jobs) and is the same institution's actual hiring page.",
-      "sources": [
-        "https://www.centralmethodist.edu/about/offices/human-resources/jobs-fayette/index-faculty.html"
-      ]
-    },
-    "Arkansas State University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): real careers page is hosted on Oracle Taleo, which the repo excludes platform-wide (Oracle ToS prohibits robots/scrapers) -- see the \"taleo\" platformRule above. platform_type is mislabeled \"generic\" in institutions-master.json so the automatic platform rule doesn't catch it; excluding by name instead.",
-      "sources": [
-        "https://phe.tbe.taleo.net/phe02/ats/careers/v2/jobSearch?org=ARKASTAT2"
-      ]
-    },
-    "Arkansas State University-Mountain Home": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): same as the primary Arkansas State University record -- real careers page is hosted on Oracle Taleo, platform-wide-excluded, mislabeled \"generic\" in institutions-master.json.",
-      "sources": [
-        "https://phe.tbe.taleo.net/phe02/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=58&org=ARKASTAT2"
-      ]
-    },
-    "Arkansas State University Three Rivers": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): same as the primary Arkansas State University record -- real careers page is hosted on Oracle Taleo, platform-wide-excluded, mislabeled \"generic\" in institutions-master.json.",
-      "sources": [
-        "https://www.asutr.edu/"
-      ]
-    },
-    "Colorado State University-System Office": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): system governance office, not a degree-granting campus -- its own careers page just aggregates postings from the three real member campuses (Colorado State University-Fort Collins, -Pueblo, -Global), each of which is already tracked individually with its own scraper entry. Same duplicate-coverage pattern as Arizona Board of Regents / Arkansas State University System, though an earlier career-url-overrides.json entry had called this \"verified working\" -- that only confirmed reachability, not that scraping it wouldn't double-count postings already attributed to the member campuses.",
-      "sources": [
-        "https://csusystem.edu/jobs/"
-      ]
-    },
-    "Board of Trustees-Mississippi State Institutions of Higher Learning": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): system governance office, not a degree-granting campus -- confirmed live its own careers page lists only internal system-office administrative jobs (Manager of Internal Audit, Emergency and Safety Officer), not member-university faculty positions.",
-      "sources": [
-        "https://www.mississippi.edu/contact-us/careers"
-      ]
-    },
-    "Be'er Yaakov Talmudic Seminary": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/careers, /employment, /jobs, /about all 404).",
-      "sources": [
-        "https://www.byts.edu/"
-      ]
-    },
-    "Baptist Missionary Association Theological Seminary": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation, including a full sitemap crawl.",
-      "sources": [
-        "https://www.bmats.edu/"
-      ]
-    },
-    "Boston Baptist College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation, including a full sitemap crawl.",
-      "sources": [
-        "https://www.boston.edu/"
-      ]
-    },
-    "Baptist Health College Little Rock": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no institution-specific careers page found; the parent Baptist Health system's own careers page is itself broken (soft-404).",
-      "sources": [
-        "https://www.bhclr.edu/"
-      ]
-    },
-    "Commonwealth Technical Institute": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): a PA Department of Labor & Industry vocational-rehabilitation training program, not an independently-hiring institution -- the only discoverable hiring channel is Pennsylvania's fully shared statewide civil-service job board.",
-      "sources": [
-        "https://www.dli.pa.gov/Individuals/Disability-Services/CTI-HGAC/Pages/Home.aspx"
-      ]
-    },
-    "South Dakota Board of Regents": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): governance office, not a degree-granting campus -- but unlike other excluded board/system-office records, this one IS the real, live ATS for the SD state university system, and server.js already has special-case logic (inferSdborCampusFromDetail) that correctly attributes its postings to the separately-tracked member campuses (South Dakota State University, University of South Dakota, South Dakota School of Mines and Technology, Northern State University, Dakota State University -- all confirmed \"covered\" with real job counts). By design, zero jobs are ever attributed to the Board of Regents record itself; do not remove the SDBOR entry from server.js, it is load-bearing for the member-campus attribution -- only this institution record is excluded.",
-      "sources": [
-        "https://yourfuture.sdbor.edu/postings/search"
-      ]
-    },
-    "Bethesda University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (all guessed paths are soft-404s: \"This page has not been generated\").",
-      "sources": [
-        "https://www.buc.edu/"
-      ]
-    },
-    "Charlotte Christian College and Theological Seminary": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found after live investigation -- the homepage's own \"Career Path\" footer link is miswired to the privacy-policy page, and every guessed path 404s.",
-      "sources": [
-        "https://www.charlottechristian.edu/"
-      ]
-    },
-    "Fred W Eberle Technical Center": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no stable careers page exists; postings occasionally appear only as one-off WordPress news articles with no durable listing page to point at.",
-      "sources": [
-        "https://fetc.edu/"
-      ]
-    },
-    "Bais HaMedrash and Mesivta of Baltimore": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
-      "sources": [
-        "https://www.bhmb.edu/"
-      ]
-    },
-    "Bethlehem College & Seminary": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): the site's \"Job Board\" is explicitly career-placement services for students/alumni seeking jobs at other organizations (churches, ministries), not the institution's own hiring page -- no internal hiring page found.",
-      "sources": [
-        "https://bcsmn.edu/"
-      ]
-    },
-    "Boise Bible College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
-      "sources": [
-        "https://www.boisebible.edu/"
-      ]
-    },
-    "Beth Hamedrash Shaarei Yosher Institute": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): tiny 4-page single-page site (Home/About/Net Price Calculator/Student Portal only) with no discoverable careers page after live investigation -- every guessed path renders the same homepage.",
-      "sources": [
-        "https://bhsy.edu/"
-      ]
-    },
-    "Delaware Technical Community College-Central Office": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): a sector-0 administrative-unit IPEDS record (unitid 130882), not an independently-hiring campus -- real coverage already lives under the separately-tracked \"Delaware Technical Community College\" record (peopleadmin, 4 current jobs, covered).",
-      "sources": [
-        "https://www.dtcc.edu/about/employment"
-      ]
-    },
-    "City Colleges of Chicago-District Office": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): system governance/administrative office, not a degree-granting campus -- confirmed all 7 individual City Colleges of Chicago campuses (Harold Washington, Harry S Truman, Kennedy-King, Malcolm X, Olive-Harvey, Richard J Daley, Wilbur Wright) are already tracked separately with their own entries in server.js.",
-      "sources": [
-        "https://www.ccc.edu/"
-      ]
-    },
-    "Cincinnati College of Mortuary Science": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): the configured /academics/faculty-jobs path redirects to the generic Academics page (dead), and the institution's real \"Job Board\" only aggregates external funeral-home apprentice/licensee listings from other employers -- no discoverable CCMS-specific faculty hiring page exists.",
-      "sources": [
-        "https://www.ccms.edu/"
-      ]
-    },
-    "Family of Faith Christian University": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-06): no employment/careers/jobs page discoverable anywhere on the site after live investigation (all common paths 404, no such nav link exists).",
-      "sources": [
-        "https://www.familyoffaith.edu/"
-      ]
-    },
-    "CBD College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): no careers/employment page discoverable anywhere on the site after live investigation (checked nav, footer, About, and common guessed paths) -- flagged during Bucket B round 17.",
-      "sources": [
-        "https://www.cbd.edu/"
-      ]
-    },
-    "Epic Bible College & Graduate School": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): no careers/employment page discoverable anywhere on the site after live investigation -- flagged during Bucket B round 17.",
-      "sources": [
-        "https://epic.edu/"
-      ]
-    },
-    "Downey Adult School": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): a Downey Unified School District (dusd.net) K-12 adult-education program, not an independent degree-granting postsecondary institution with its own hiring page -- no employment link anywhere on site. Flagged during Bucket B round 17.",
-      "sources": [
-        "https://www.das.edu/"
-      ]
-    },
-    "Contra Costa Community College District Office": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): non-independent governance/district-office record (4cd.edu), same shape as other already-excluded district-office records -- not a hiring campus in its own right (the district's actual campuses, e.g. Contra Costa College and Diablo Valley College, are separately covered). Flagged during Bucket B round 17.",
-      "sources": [
-        "https://www.4cd.edu/"
-      ]
-    },
-    "Los Angeles County College of Nursing and Allied Health": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): a specialized program under LA County Department of Health Services (county government), not an independent institution -- its only \"Careers\" link is the whole county's general careers portal, with no program-specific faculty hiring page. Flagged during Bucket B round 18.",
-      "sources": [
-        "https://dhs.lacounty.gov/college-of-nursing-and-allied-health/"
-      ]
-    },
-    "Flagler Technical College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): flaglertech.edu is explicitly a Flagler Schools (K-12 district) site, not an independent degree-granting postsecondary institution. Flagged during Bucket B round 18.",
-      "sources": [
-        "https://flaglertech.edu/"
-      ]
-    },
-    "Fort Myers Technical College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): a Lee County Public Schools technical center; its \"Job Postings\" link is a student placement service, not an HR hiring board. Flagged during Bucket B round 18.",
-      "sources": [
-        "https://www.fortmyerstech.edu/"
-      ]
-    },
-    "H W Brewster Technical College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): a Hillsborough County Public Schools (hillsboroughschools.org) technical center, same non-independent shape as the already-excluded Erwin Technical College. Flagged during Bucket B round 18.",
-      "sources": [
-        "https://www.hillsboroughschools.org/Brewster"
-      ]
-    },
-    "Orange Technical College-East Campus": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): orangetechcollege.net's own page states it is run by Orange County Public Schools across 7 campuses -- a K-12-district-operated technical center, not an independent postsecondary institution. Flagged during Bucket B round 18.",
-      "sources": [
-        "https://www.orangetechcollege.net/campuses/east_campus"
-      ]
-    },
-    "Orange Technical College-West Campus": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): same Orange County Public Schools system as Orange Technical College-East Campus. Flagged during Bucket B round 18.",
-      "sources": [
-        "https://www.orangetechcollege.net/campuses/west_campus"
-      ]
-    },
-    "Riveroak Technical College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): a Suwannee County Schools (rtc.suwannee.k12.fl.us) technical center, not an independent postsecondary institution. Flagged during Bucket B round 18.",
-      "sources": [
-        "https://rtc.suwannee.k12.fl.us/o/rtc"
-      ]
-    },
-    "Suncoast Technical College": {
-      "action": "exclude",
-      "reason": "Excluded (2026-08-07): a Sarasota County Schools (sarasotacountyschools.net) technical center, not an independent postsecondary institution. Flagged during Bucket B round 18.",
-      "sources": [
-        "https://www.sarasotacountyschools.net/o/stcsmc"
       ]
     }
   }

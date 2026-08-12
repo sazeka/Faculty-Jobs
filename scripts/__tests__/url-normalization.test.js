@@ -34,6 +34,26 @@ test("canonicalizeUrl collapses slashes and trims trailing slash", () => {
   assert.equal(canonicalizeUrl("https://x.com//a///b/"), "https://x.com/a/b");
 });
 
+test("canonicalizeUrl strips a session-scoped jsessionid matrix param", () => {
+  // interviewexchange.com (a JSP-based ATS) and similar Java servlet containers
+  // can surface a career_url captured mid-session, with a ";jsessionid=..."
+  // segment baked into the path. That token expires within minutes, so saving
+  // it verbatim caused a real discover -> verify -> quarantine -> rediscover
+  // loop for several schools (Bristol CC, Cape Cod CC, Emmanuel College, ...).
+  assert.equal(
+    canonicalizeUrl("https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp;jsessionid=3C23F471BF242A30472AA845F1FFDA86"),
+    "https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp"
+  );
+  // Cape Cod's real saved override had two stacked jsessionid segments from
+  // successive re-discovery attempts -- both must go.
+  assert.equal(
+    canonicalizeUrl(
+      "https://capecod.interviewexchange.com/static/clients/470CCM1/index.jsp;jsessionid=D7B817EED47381B2C5A08E3F538D4EB5;jsessionid=2E2FB86EF203E255B5590EC9F09035DF"
+    ),
+    "https://capecod.interviewexchange.com/static/clients/470CCM1/index.jsp"
+  );
+});
+
 test("canonicalizeUrl assumes https for bare hosts and rejects junk", () => {
   assert.equal(canonicalizeUrl("example.com/jobs"), "https://example.com/jobs");
   assert.equal(canonicalizeUrl(""), null);

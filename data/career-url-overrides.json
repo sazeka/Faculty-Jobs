@@ -459,9 +459,9 @@
     {
       "name": "Baptist Health Sciences University",
       "homepage_url": "https://www.baptistu.edu/",
-      "career_url": "https://careers.baptistonline.org/search/jobs?cfm3=BHSU%20University&ns_category=baptist-health-sciences-university",
+      "career_url": "https://careers.baptistonline.org/search/location/baptist-health-sciences-university/jobs",
       "platform_type": "generic",
-      "notes": "Baptist Memorial careers portal, filtered to BHSU."
+      "notes": "Old URL used a stale query-string filter (cfm3=/ns_category=) that now 404s/403s to plain fetchers -- bot-detection/JS-rendering issue, not a dead page. Verified live via real browser: 31 open BHSU positions, several faculty roles (Nursing Adjunct Faculty, Microbiology Adjunct Faculty, Nursing Faculty - AGPCNP, Biomedical Sciences Faculty Physiology/Pathology Open Rank, Associate Professor of Clinical Sciences, Program Chair - Osteopathic Manipulative Medicine). Portal is Baptist Memorial Health Care's own custom ColdFusion site, not a named ATS vendor."
     },
     {
       "name": "Bard College",
@@ -863,6 +863,13 @@
       "notes": "Configured career_url (/faculty/jobs) 404s; real employment page found via homepage nav. Verified live: currently recruiting for 4 teaching positions (Biblical Studies, Leadership, Ministry/Professional Studies, and a Biblical Counseling Professor)."
     },
     {
+      "name": "Carolinas College of Health Sciences",
+      "homepage_url": null,
+      "career_url": "https://careers.atriumhealth.org/jobs/18045735-faculty-nursing-education",
+      "platform_type": "generic",
+      "notes": "carolinascollege.edu has a TLS cert mismatch and no jobs link. CCHS is a subsidiary of Atrium Health; real careers presence is Atrium's central portal. Verified live posting: 'Faculty, Nursing Education' (Job ID R256284). NOTE: this is a single-posting link (Atrium's Phenom-based portal search-URL format wasn't confirmed), so it will go stale once this req closes -- worth swapping for a stable 'Carolinas College' search/filter URL on careers.atriumhealth.org next time this comes up broken."
+    },
+    {
       "name": "Carroll College",
       "homepage_url": "https://www.carroll.edu/",
       "career_url": "https://www.carroll.edu/faculty-staff-positions",
@@ -903,6 +910,13 @@
       "career_url": "https://carthage.applicantpro.com/jobs/",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+    },
+    {
+      "name": "Carver Career Center",
+      "homepage_url": null,
+      "career_url": "https://www.applitrack.com/kanawha/onlineapp/default.aspx",
+      "platform_type": "generic",
+      "notes": "carvercareercenter.edu has a cert mismatch (Bluehost parking cert) and no working jobs page. Carver is a Kanawha County Schools (WV) career/tech center; real HR presence is the district-wide Frontline/AppliTrack portal (linked from ccc.kana.k12.wv.us's 'JOB POSTINGS' nav item), confirmed live. Currently 0 openings tagged to Carver specifically -- portal is correct and working, just empty for this location right now."
     },
     {
       "name": "Casa Loma College-Los Angeles",
@@ -1115,6 +1129,13 @@
       "notes": "Was pointing at the bare homepage; real Job Opportunities page linked from nav. Verified live: current faculty posting (Education Faculty-Literacy/Reading Specialist)."
     },
     {
+      "name": "Chandler-Gilbert Community College",
+      "homepage_url": null,
+      "career_url": "https://www.maricopa.edu/about/careers/faculty",
+      "platform_type": "generic",
+      "notes": "cgc.maricopa.edu no longer resolves (DNS failure); current domain is cgc.edu. CGC hiring runs through the Maricopa Community Colleges district-wide portal, confirmed live with Chandler-Gilbert as a location filter option. 11 full-time faculty openings posted district-wide; also a standing Adjunct Faculty applicant pool at maricopa.edu/about/careers/adjunct-faculty covering all 10 colleges including CGC."
+    },
+    {
       "name": "Charles R Drew University of Medicine and Science",
       "homepage_url": "https://www.cdrewu.edu/",
       "career_url": "https://recruiting2.ultipro.com/CHA1037CHRS/JobBoard/7fb6ae1e-e3f6-44ac-8694-2577af27ab6b/?q=&o=postedDateDesc&w=&wc=&we=&wpst=",
@@ -1239,6 +1260,13 @@
       "career_url": "https://careers.highmarkhealth.org/brands/ahn/?filter%5Bcategory%5D%5B0%5D=Education",
       "platform_type": "generic",
       "notes": "Citizens School of Nursing has no standalone jobs board; it's operated under Allegheny Health Network/Highmark Health. Filtered to the Education category, the parent system's portal shows postings incl. an Assistant Professor role. Note: this is the parent health system's shared portal, not exclusive to this school."
+    },
+    {
+      "name": "City College of San Francisco",
+      "homepage_url": null,
+      "career_url": "https://jobs.ccsf.edu/postings/search",
+      "platform_type": "peopleadmin",
+      "notes": "Confirmed live with 25 current postings, 22 of them part-time-pool faculty/instructor roles (Physics, Chinese Brush Painting, French, Mathematics, Astronomy, Registered Nursing Clinical Teaching Assistant, etc). Confirmed PeopleAdmin via page source despite the domain not being peopleadmin.com."
     },
     {
       "name": "City Colleges of Chicago-Harold Washington College",
@@ -1593,9 +1621,9 @@
     {
       "name": "Columbia Basin College",
       "homepage_url": "https://www.columbiabasin.edu/",
-      "career_url": "https://www.schooljobs.com/careers/columbiabasin/facultypositions",
+      "career_url": "https://www.schooljobs.com/careers/columbiabasin/promotionaljobs",
       "platform_type": "schooljobs",
-      "notes": "Previous override pointed at a single job posting (assistant-professor-of-accounting) that has since closed, hiding the rest of the board. Pointed at the faculty-specific board instead (currently 0 open, confirmed live)."
+      "notes": "The old /facultypositions sub-path 404s; the site's own 'Faculty Positions' nav link now resolves to /promotionaljobs on the same schooljobs.com/careers/columbiabasin portal (confirmed via network trace: underlying API uses ispromotional=true). Verified 9 live faculty postings: Assistant Professor of Library Services (2 positions) plus 6 Adjunct Faculty Instructor Pool postings across departments."
     },
     {
       "name": "Columbia Gorge Community College",
@@ -2004,6 +2032,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
     },
     {
+      "name": "Denison University",
+      "homepage_url": null,
+      "career_url": "https://apply.interfolio.com/11076/positions",
+      "platform_type": "interfolio",
+      "notes": "employment.denison.edu now redirects to denison.edu/campus/human-resources, which routes faculty postings out to Interfolio (staff stays on denison.edu/employment). Verified live: 3 open faculty positions (Asst Prof Chemistry, Asst Prof Religion, Visiting Asst Prof Mathematics)."
+    },
+    {
       "name": "Denmark Technical College",
       "homepage_url": "https://www.denmarktech.edu/",
       "career_url": "https://www.schooljobs.com/careers/denmarktech",
@@ -2044,6 +2079,13 @@
       "career_url": "https://dickinson.wd108.myworkdayjobs.com/Jobs",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+    },
+    {
+      "name": "Dickinson State University",
+      "homepage_url": null,
+      "career_url": "http://www2.dsu.nodak.edu/jobopenings/regular.aspx",
+      "platform_type": "generic",
+      "notes": "Official employment page routes external applicants to this custom .aspx job board on the NDUS nodak.edu domain. Confirmed live: 28 postings incl. Assistant Professor of Nursing and Assistant Professor of Kinesiology/Exercise Science."
     },
     {
       "name": "Dine College",
@@ -2291,6 +2333,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
     },
     {
+      "name": "Emmanuel University",
+      "homepage_url": null,
+      "career_url": "https://eu.edu/human-resources/faculty-openings/",
+      "platform_type": "generic",
+      "notes": "Institution rebranded from Emmanuel College (ec.edu) to Emmanuel University (eu.edu). Faculty Openings page is live but currently lists 0 faculty positions; sibling Staff Openings page is live with 3 current openings. Page structure supports faculty postings when they appear."
+    },
+    {
       "name": "Empire State University",
       "homepage_url": "https://sunyempire.edu/",
       "career_url": "https://esc.interviewexchange.com/static/clients/397ESM1/index.jsp?catid=802",
@@ -2324,6 +2373,13 @@
       "career_url": "https://www.erskine.edu/about-erskine/human-resources/job-opportunities/",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (6 faculty postings)."
+    },
+    {
+      "name": "Erwin Technical College",
+      "homepage_url": null,
+      "career_url": "https://css-sdhc-prd.inforcloudsuite.com/hcm/Jobs/form/JobBoard(HCPS,HCPS%20JOB%20BOARD).JobSearchCompositeForm?navigation=JobPosting%5BJobPostingSet%5D%28HCPS,_niu_,_niu_%29.JobBoardJobSearchCompositeFormNav&csk.JobBoard=HCPS%20JOB%20BOARD&csk.HROrganization=HCPS",
+      "platform_type": "generic",
+      "notes": "Erwin is a Hillsborough County Public Schools adult/CTE center; hiring runs through the district-wide Infor CloudSuite HCM job board. Filtered by Location contains 'Erwin': 4 current openings, all Instructor-titled (Cosmetology PT, HVAC PT, Massage Therapy PT, Barbering PT)."
     },
     {
       "name": "Essex County College",
@@ -2627,11 +2683,39 @@
       "notes": "Old URL (/s/1044/edu/start.aspx) redirects to the unrelated Harcum homepage -- confirmed broken. Found the live Employment Opportunities link on the HR page pointing to Paycom. Verified 12 postings incl. Nursing Faculty, Medical Lab Technician Adjunct Faculty, Adjunct Clinical Faculty (Dental Hygiene), Interior Design Adjunct Instructor."
     },
     {
+      "name": "Hazelden Betty Ford Graduate School",
+      "homepage_url": "https://www.hazeldenbettyford.org/graduate-school-addiction-studies",
+      "career_url": "https://jobs.hazeldenbettyford.org/careers-home/jobs",
+      "platform_type": "generic",
+      "notes": "Given homepage_url 404s; correct homepage is hazeldenbettyford.org/graduate-school-addiction-studies. Graduate School shares the Hazelden Betty Ford Foundation's single career portal, confirmed live with 63 openings foundation-wide; none currently faculty/instructor-titled for the Graduate School specifically, though 'Graduate School' appears as a department/contact category."
+    },
+    {
+      "name": "Hollins University",
+      "homepage_url": null,
+      "career_url": "https://www.hollins.edu/about-hollins/jobs/faculty-positions/",
+      "platform_type": "generic",
+      "notes": "Dedicated Faculty Positions sub-page (reached via Jobs at Hollins -> Faculty Positions) is the live listing. Confirmed 5 open tenure-track/teaching positions: Chemistry, English, Environmental Public Health, History, Sociology."
+    },
+    {
       "name": "Iowa State University",
       "homepage_url": "https://isu.wd1.myworkdayjobs.com/IowaStateJobs",
       "career_url": "https://isu.wd1.myworkdayjobs.com/IowaStateJobs",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+    },
+    {
+      "name": "Johns Hopkins University",
+      "homepage_url": null,
+      "career_url": "https://facultyjobs.jhu.edu/",
+      "platform_type": "generic",
+      "notes": "Old jobs.jhu.edu/search-jobs?acm=ALL now redirects to careers.jhu.edu (general staff/HR hub, mostly non-faculty). Dedicated faculty board at facultyjobs.jhu.edu is live with 175-218+ postings depending on filter (custom site, applications route to Interfolio dossier)."
+    },
+    {
+      "name": "Johnson & Wales University-Providence",
+      "homepage_url": null,
+      "career_url": "https://jobs.jwu.edu/",
+      "platform_type": "pageup",
+      "notes": "PageUp-powered board with 86 total openings; 7 Providence-based faculty/adjunct postings (Nursing, DPT Program Director/Faculty, Economics, Public Health, Nutrition, Ed.D. Educational Leadership). Note: careers.jwu.edu is a separate employer-relations page with no listings -- do not use that URL."
     },
     {
       "name": "Kansas State University",
@@ -2681,6 +2765,13 @@
       "career_url": "https://www.schooljobs.com/careers/laredoedu?examType%5B0%5D=Faculty&sort=PostingDate%7CDescending",
       "platform_type": "schooljobs",
       "notes": "Discovered via agent-career-discovery; verified live (4 faculty postings)."
+    },
+    {
+      "name": "Lawrence University",
+      "homepage_url": null,
+      "career_url": "https://lawrence.peopleadmin.com/postings/search",
+      "platform_type": "peopleadmin",
+      "notes": "lawrence.edu/offices/hr/careers 301-redirects to lawrence.peopleadmin.com. 19 live postings including Assistant Professor of Biology (x2 Psychology), Visiting Assistant Professor of Theatre."
     },
     {
       "name": "Lewis & Clark College",
@@ -2809,6 +2900,13 @@
       "notes": "The unscoped /postings/search URL mixed in every Athens-campus posting too (same misattribution shape as Bemidji State, round 9) -- rescoped to the real Campus facet (1228[]=5 = Lancaster) confirmed via the search form's own <select> options (Bucket B round 22). Verified live: real postings incl. \"School of Nursing Adjunct Clinical Faculty Lancaster Campus, Beginning Fall 2026 (POOL POSTING)\" and \"Adjunct Instructor of Biological Sciences, Beginning Fall Semester 2026 and/or Spring 2027 (POOL POSTING)\"."
     },
     {
+      "name": "Oklahoma State University",
+      "homepage_url": null,
+      "career_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
+      "platform_type": "pageup",
+      "notes": "Known filtered URL still works as-is (no URL change). 90 postings shown, heavily faculty/adjunct/instructor across Stillwater, OKC, Tulsa, and Okmulgee campuses. platform_type was recorded as generic; corrected to pageup to match the underlying PageUp-hosted okstate.edu jobs board."
+    },
+    {
       "name": "Old Dominion University",
       "homepage_url": "https://jobs.odu.edu/postings/search",
       "career_url": "https://jobs.odu.edu/postings/search?query_position_type_id%5B%5D=1&commit=Search",
@@ -2837,6 +2935,13 @@
       "notes": "Was pointing at the bare homepage (alamo.edu/pac); routed to Palo Alto College's dedicated Cornerstone OnDemand faculty job feed, reached via the college's own /employees/employment/ page. Page is explicitly headed 'Faculty Jobs at Palo Alto College' and is a distinct per-college site id from the combined Alamo Colleges District board (verified San Antonio College's equivalent site id shows different, SAC-labeled content, confirming these are genuinely per-college feeds, not a shared/misattributed board). Verified real infrastructure; 0 current listings visible at time of check."
     },
     {
+      "name": "Polytechnic University of Puerto Rico-Miami",
+      "homepage_url": "https://www.pupr.edu/hr/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=5388a0c5-18fe-449e-b500-098740269275&ccId=19000101_000001&lang=en_US",
+      "platform_type": "generic",
+      "notes": "pupr.edu/miami itself blocks bots (403) but pupr.edu/hr/ links to this ADP Workforce Now board (JS-rendered). Verified live via headless browser: 10 open postings including 'PROFESSOR - ORLANDO' and 2x 'PROFESOR (A)' tagged Faculty Full Time PR. One shared ADP portal covers all PUPR campuses including Miami; no Miami-specific posting open at check time but the portal is the institution's real, working career page."
+    },
+    {
       "name": "Presbyterian College",
       "homepage_url": "https://www.presby.edu/",
       "career_url": "https://www.presby.edu/about/offices-and-services/human-resources/employment/",
@@ -2858,6 +2963,20 @@
       "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings)."
     },
     {
+      "name": "Reed College",
+      "homepage_url": null,
+      "career_url": "https://www.reed.edu/dean_of_faculty/facsearch/",
+      "platform_type": "generic",
+      "notes": "reed.edu/human_resources/employment redirects to employment-at-reed/, which links to two boards: jobs.reed.edu (Breezy HR, staff-only) and this dean_of_faculty/facsearch page, the actual faculty listing (1 open: Tenure-Track Assistant Professor, Health Psychology)."
+    },
+    {
+      "name": "Remington College-Baton Rouge Campus",
+      "homepage_url": null,
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027234470_2&lang=en_US",
+      "platform_type": "generic",
+      "notes": "Reached via remingtoncollege.edu/work-at-remington/ location dropdown; Baton Rouge has its own dedicated ADP ccId. Live: 1 current opening, 'Process Technology Instructor' (faculty/instructor role)."
+    },
+    {
       "name": "Remington College-Cleveland Campus",
       "homepage_url": "https://www.remingtoncollege.edu/",
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027237045_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
@@ -2877,6 +2996,13 @@
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027237235_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
       "platform_type": "adp",
       "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 1 current posting (Student Financial Service Advisor, Fort Worth/North Richland Hills TX)."
+    },
+    {
+      "name": "Remington College-Houston Southeast Campus",
+      "homepage_url": null,
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027239827_2&lang=en_US",
+      "platform_type": "generic",
+      "notes": "Remington's corporate dropdown has only ONE combined 'Houston' entry shared with North Houston (not split per-campus). Internal location facets distinguish 'Houston North' vs 'Houston Southeast'. Currently 1 open req system-wide on this shared page, at Houston Southeast (Admissions Representative, not faculty-titled). Page is live and correctly scoped via location facet."
     },
     {
       "name": "Remington College-Lafayette Campus",
@@ -2905,6 +3031,13 @@
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027241619_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
       "platform_type": "adp",
       "notes": "ADP WorkforceNow recruitment portal."
+    },
+    {
+      "name": "Remington College-North Houston Campus",
+      "homepage_url": null,
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027239827_2&lang=en_US",
+      "platform_type": "generic",
+      "notes": "Shares the exact same corporate 'Houston' ADP page/ccId as Houston Southeast -- Remington does not give North Houston/Greenspoint its own distinct dropdown entry. Live: the only current req on this shared page is at Houston Southeast, so 0 postings currently tagged to this specific campus. Page/platform is live and working, just no open req for this location right now."
     },
     {
       "name": "Remington College-Online Dallas",
@@ -3075,6 +3208,13 @@
       "notes": "Was pointing at a generic /hr landing page (0 jobs); routed to the Employment Opportunities subpage (real listings, applications routed through Interfolio for faculty roles). Verified live: 5 faculty postings (Assistant Professor of Psychology; Assistant Professor and Internship Coordinator in Counseling and Clinical Psychology; Assistant Professor of Developmental Biology; Assistant Professor of Economics; Assistant Professor of Anthropology)."
     },
     {
+      "name": "St. Norbert College",
+      "homepage_url": null,
+      "career_url": "https://stnorbert.wd1.myworkdayjobs.com/SNC_Careers",
+      "platform_type": "workday",
+      "notes": "snc.edu/hr/employment 404s. Correct chain: snc.edu/human-resources -> my.snc.edu/humanresources/open-positions/ -> this Workday site. 29 live jobs, including multiple Adjunct Instructor faculty postings (Theology, Art Methods, Writing, Math, Accounting, Communication, Philosophy, Statistics, Physical Chemistry, American Politics)."
+    },
+    {
       "name": "Stanford University",
       "homepage_url": "https://facultypositions.stanford.edu/en-us/listing",
       "career_url": "https://facultypositions.stanford.edu/jobs/political-theory-civic-thought-and-practice-senior-rank-faculty-position-in-political-science-stanford-university-california-united-states",
@@ -3159,6 +3299,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
     },
     {
+      "name": "UMass Dartmouth",
+      "homepage_url": null,
+      "career_url": "https://careers.umassd.edu/en-us/filter",
+      "platform_type": "enusfilter",
+      "notes": "The specific work-type=faculty+full+time filter that was on file currently and legitimately returns 0 results (no open full-time faculty req at this moment, confirmed live -- not a bug), which risked this looking broken again the moment it's empty. Switched to the unfiltered base filter page, which shows the true current state: 4 postings under the Faculty category (2 directly visible: Part-Time Lecturer - Political Science, Part-Time Lecturer - First Year English). Confirmed 'Powered by PageUp' under the hood; kept platform_type enusfilter since the URL path still matches that classifier rule."
+    },
+    {
       "name": "University of Arkansas",
       "homepage_url": "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site?timeType=8676082fcc890179341a6d2e71495800&jobFamilyGroup=eaddfab9343f0113688d32d525e70000",
       "career_url": "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site",
@@ -3171,6 +3318,13 @@
       "career_url": "https://www.uaht.edu/staff/employment-opportunities.php",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (5 faculty postings)."
+    },
+    {
+      "name": "University of Charleston",
+      "homepage_url": null,
+      "career_url": "https://www.ucwv.edu/job-postings/",
+      "platform_type": "generic",
+      "notes": "ucwv.edu/employment returns 403/dead. Live replacement is ucwv.edu/job-postings/ (Ellucian CRM Recruit). 10 current listings including Assoc/Asst Professor DEL Program, Physics Adjunct, Adjunct Faculty School of Business."
     },
     {
       "name": "University of Cincinnati",
@@ -3465,6 +3619,13 @@
       "career_url": "https://fa-eneh-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/HarperCollege/jobs",
       "platform_type": "oracle",
       "notes": "jobs.harpercollege.edu now 302-redirects through a Microsoft Safelinks URL that embeds a staff member's email address and Outlook tracking data -- fragile and leaks an internal address, and this is what the career-link health check flagged as broken. Pointed directly at the underlying Oracle Fusion HCM URL instead to avoid the fragile redirect. Verified live: 131 open jobs incl. multiple Adjunct Faculty and Clinical Instructor postings."
+    },
+    {
+      "name": "Williams College",
+      "homepage_url": null,
+      "career_url": "https://employment.williams.edu/faculty-positions/",
+      "platform_type": "generic",
+      "notes": "williams.edu/admin/human-resources/employment 404s. Real hub is employment.williams.edu; Staff Careers redirects to Workday but Faculty-specific postings live at /faculty-positions/ -- 26 current items incl. tenure-track/visiting Assistant Professor searches (English, Chemistry, Arabic Studies, Economics x2, American Studies, WGSS), plus 13 Bolin Dissertation Fellowships. Each links to apply.interfolio.com."
     },
     {
       "name": "Wilmington University",

@@ -60,6 +60,20 @@ export function canonicalizeUrl(input, { stripQuery = true } = {}) {
     }
   }
 
+  // Java servlet containers (interviewexchange.com and other JSP-based ATS pages)
+  // sometimes surface a session-scoped ";jsessionid=..." matrix parameter baked
+  // into the path -- typically captured verbatim by whatever browsed the page
+  // mid-session (a discovery agent, a manual check). That token expires within
+  // minutes, so saving it as a career_url guarantees the link goes stale again
+  // shortly after -- this was the actual cause of a repeated discover -> verify
+  // -> quarantine -> null-out -> rediscover loop seen in institutions-master
+  // notes for several interviewexchange.com schools (Bristol Community College,
+  // Cape Cod Community College, Emmanuel College, and others). Global flag
+  // handles Cape Cod's case, which had two stacked jsessionid segments from
+  // successive re-discovery attempts. Strip it so only the stable, session-free
+  // path survives.
+  parsed.pathname = parsed.pathname.replace(/;jsessionid=[^;/?#]*/gi, "");
+
   parsed.pathname = parsed.pathname.replace(/\/{2,}/g, "/");
   if (parsed.pathname.length > 1 && parsed.pathname.endsWith("/")) {
     parsed.pathname = parsed.pathname.slice(0, -1);

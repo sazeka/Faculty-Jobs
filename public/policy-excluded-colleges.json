@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-12T04:37:38.926Z",
+  "generatedAt": "2026-08-12T13:43:02.410Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 93,
+  "count": 102,
   "colleges": [
     "Academy for Jewish Religion California",
     "Acupuncture and Integrative Medicine College-Berkeley",
@@ -12,6 +12,7 @@
     "Agora University",
     "Aiken Technical College",
     "Allegheny Wesleyan College",
+    "America Evangelical University",
     "American Academy of Dramatic Arts-Los Angeles",
     "Anna Maria College",
     "Antioch University-System Administration",
@@ -27,7 +28,9 @@
     "Ascent College",
     "Associated Beth Rivkah Schools",
     "Atlantic Institute of Oriental Medicine",
+    "Bacone College",
     "Bais HaMedrash and Mesivta of Baltimore",
+    "Bais Medrash Toras Chesed",
     "Bakke Graduate University",
     "Baptist Health College Little Rock",
     "Baptist Missionary Association Theological Seminary",
@@ -56,6 +59,7 @@
     "Cayuga County Community College",
     "CBD College",
     "Central Methodist University-College of Graduate and Extended Studies",
+    "Central Yeshiva Tomchei Tmimim Lubavitz",
     "Charlotte Christian College and Theological Seminary",
     "Cincinnati College of Mortuary Science",
     "City Colleges of Chicago-District Office",
@@ -71,6 +75,9 @@
     "Delaware Technical Community College-Central Office",
     "Digital Media Institute",
     "Downey Adult School",
+    "Dragon Rises College of Oriental Medicine",
+    "Eastern Nazarene College",
+    "Eden Theological Seminary",
     "Emmanuel College",
     "Epic Bible College & Graduate School",
     "Family of Faith Christian University",
@@ -82,9 +89,11 @@
     "Goucher College",
     "H W Brewster Technical College",
     "Los Angeles County College of Nursing and Allied Health",
+    "Mesivta Torah Vodaath Rabbinical Seminary",
     "New Jersey City University",
     "Orange Technical College-East Campus",
     "Orange Technical College-West Campus",
+    "Rabbinical College Telshe",
     "Riveroak Technical College",
     "Salve Regina University",
     "South Dakota Board of Regents",
@@ -154,6 +163,15 @@
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (full footer nav has no HR/Careers link).",
       "sources": [
         "https://awc.edu/"
+      ]
+    },
+    {
+      "college": "America Evangelical University",
+      "platform_type": "generic",
+      "career_url": null,
+      "reason": "Excluded (2026-08-12): no usable careers URL found on homepage, /careers, or via site search. Small evangelical graduate school.",
+      "sources": [
+        "https://www.aeu.edu/"
       ]
     },
     {
@@ -297,12 +315,31 @@
       ]
     },
     {
+      "college": "Bacone College",
+      "platform_type": "generic",
+      "career_url": null,
+      "reason": "Excluded (2026-08-12): institution ceased operations -- Chapter 11 filed June 2024, converted to Chapter 7 liquidation May 2025, HLC accreditation revoked, campus turned over to bankruptcy trustee. bacone.edu no longer resolves (DNS failure). No longer a hiring institution.",
+      "sources": [
+        "https://www.highereddive.com/",
+        "https://www.insidehighered.com/"
+      ]
+    },
+    {
       "college": "Bais HaMedrash and Mesivta of Baltimore",
       "platform_type": "generic",
       "career_url": "https://www.bhmb.edu/",
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
       "sources": [
         "https://www.bhmb.edu/"
+      ]
+    },
+    {
+      "college": "Bais Medrash Toras Chesed",
+      "platform_type": "generic",
+      "career_url": null,
+      "reason": "Excluded (2026-08-12): no usable careers URL found; domain has repeated SSL handshake failures. Tiny all-male Talmudic school; no jobs board or HR presence found anywhere (typical word-of-mouth hiring profile for this institution type).",
+      "sources": [
+        "https://www.bmtc.edu/"
       ]
     },
     {
@@ -559,6 +596,15 @@
       ]
     },
     {
+      "college": "Central Yeshiva Tomchei Tmimim Lubavitz",
+      "platform_type": "generic",
+      "career_url": null,
+      "reason": "Excluded (2026-08-12): no usable careers URL found. Checked cyttl.edu nav and web search (Indeed, Glassdoor, Chabad.org) -- no job board or HR presence for this small single-purpose yeshiva.",
+      "sources": [
+        "https://cyttl.edu/"
+      ]
+    },
+    {
       "college": "Charlotte Christian College and Theological Seminary",
       "platform_type": "generic",
       "career_url": "https://www.charlottechristian.edu/",
@@ -696,6 +742,33 @@
       ]
     },
     {
+      "college": "Dragon Rises College of Oriental Medicine",
+      "platform_type": "generic",
+      "career_url": null,
+      "reason": "Excluded (2026-08-12): no usable careers URL found. Full sitemap crawl of dragonrises.edu shows no careers/employment/jobs page anywhere; only a student-outcomes 'career-pathways' page. Small institution (<25 employees).",
+      "sources": [
+        "https://www.dragonrises.edu/"
+      ]
+    },
+    {
+      "college": "Eastern Nazarene College",
+      "platform_type": "generic",
+      "career_url": "https://www.enc.edu/",
+      "reason": "Excluded (2026-08-12): institution permanently closed (Board vote June 25, 2024; wound down through 2025 via teach-out agreements to Gordon College, Mount Vernon Nazarene University, and Trevecca Nazarene University). enc.edu now redirects to mvnu.edu/enc, a legacy custodian-of-record page with no jobs content. No longer a hiring institution.",
+      "sources": [
+        "https://mvnu.edu/enc"
+      ]
+    },
+    {
+      "college": "Eden Theological Seminary",
+      "platform_type": "generic",
+      "career_url": null,
+      "reason": "Excluded (2026-08-12): no usable careers URL found after checking nav/footer, on-site search, and guessed common paths (/careers/, /jobs/, /employment/). Small (~34-employee) seminary.",
+      "sources": [
+        "https://www.eden.edu/"
+      ]
+    },
+    {
       "college": "Emmanuel College",
       "platform_type": "interviewexchange",
       "career_url": null,
@@ -795,6 +868,15 @@
       ]
     },
     {
+      "college": "Mesivta Torah Vodaath Rabbinical Seminary",
+      "platform_type": "generic",
+      "career_url": null,
+      "reason": "Excluded (2026-08-12): no usable careers URL found. Real site is torahvodaath.org (the previously-configured independentrabbinicalcolleges.org URL was a wrong shared placeholder). Full nav/footer crawl shows no careers/employment/HR link.",
+      "sources": [
+        "https://torahvodaath.org/"
+      ]
+    },
+    {
       "college": "New Jersey City University",
       "platform_type": "taleo",
       "career_url": "https://phe.tbe.taleo.net/phe03/ats/careers/v2/searchResults?org=NJCU&cws=41",
@@ -821,6 +903,13 @@
       "sources": [
         "https://www.orangetechcollege.net/campuses/west_campus"
       ]
+    },
+    {
+      "college": "Rabbinical College Telshe",
+      "platform_type": "generic",
+      "career_url": null,
+      "reason": "Excluded (2026-08-12): no stable official website exists. telsheyeshiva.org/.edu redirect to a Cardknox donation gateway, not an institutional site; telsheyeshiva.pages.dev is an unofficial fan-built mirror with no jobs page. No HR presence found.",
+      "sources": []
     },
     {
       "college": "Riveroak Technical College",
