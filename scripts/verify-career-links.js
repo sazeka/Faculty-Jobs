@@ -171,6 +171,19 @@ async function verifyUrl(url, timeoutMs) {
   };
 }
 
+// Collapses a hostname to its registrable base domain so subdomain siblings on
+// the same ATS (dean.interviewexchange.com, farmingdale.interviewexchange.com,
+// esc.interviewexchange.com are all interviewexchange.com underneath) are
+// recognized as sharing the same upstream infra/WAF, not treated as unrelated
+// hosts. Deliberately simple (last two labels) rather than a full public-suffix
+// lookup -- every ATS domain seen in this codebase (interviewexchange.com,
+// myworkdayjobs.com, schooljobs.com, paylocity.com, adp.com, ...) is a plain
+// .com/.net, so this doesn't need to handle multi-part TLDs like co.uk.
+function baseDomain(hostname) {
+  const parts = clean(hostname).toLowerCase().split(".").filter(Boolean);
+  return parts.length <= 2 ? parts.join(".") : parts.slice(-2).join(".");
+}
+
 function detectBotChallenge(text) {
   const lower = clean(text).toLowerCase();
   if (!lower) return false;
@@ -292,7 +305,30 @@ async function main() {
   let rescuedByBrowser = 0;
   let botBlockedCount = 0;
 
-  if (browserFallbackEnabled && brokenAfterFetch.length > 0) {
+  // Several institutions can share a hosted ATS domain (interviewexchange.com,
+  // schooljobs.com, workforcenow.adp.com, ...). Confirmed by hand: Dean College,
+  // Farmingdale State College, and SUNY Empire State College -- all three on
+  // interviewexchange.com -- each pass cleanly when checked alone, but checking
+  // them in the same run trips interviewexchange's WAF into 403ing some of them,
+  // purely from several concurrent connections landing on their infra at once.
+  // Group by hostname and run each host's checks strictly one-at-a-time (with a
+  // short stagger) so total throughput across *different* hosts stays parallel,
+  // but no single host ever sees more than one of our requests at once.
+  const hostGroups = new Map(); // base domain -> institutions[]
+  for (const item of brokenAfterFetch) {
+    let host = "unknown";
+    try {
+      host = baseDomain(new URL(canonicalizeUrl(item.career_url)).hostname);
+    } catch {
+      /* keep "unknown" -- each such item just becomes its own single-item group */
+    }
+    const bucketKey = host === "unknown" ? `unknown:${normalizeNameKey(item.name)}` : host;
+    if (!hostGroups.has(bucketKey)) hostGroups.set(bucketKey, []);
+    hostGroups.get(bucketKey).push(item);
+  }
+  const workUnits = Array.from(hostGroups.values());
+
+  if (browserFallbackEnabled && workUnits.length > 0) {
     let browser = null;
     try {
       // --disable-blink-features=AutomationControlled hides the navigator.webdriver
@@ -309,7 +345,7 @@ async function main() {
 
     if (browser) {
       try {
-        const poolSize = Math.min(browserConcurrency, brokenAfterFetch.length);
+        const poolSize = Math.min(browserConcurrency, workUnits.length);
         const contexts = await Promise.all(
           Array.from({ length: poolSize }, () =>
             browser.newContext({
@@ -321,21 +357,27 @@ async function main() {
           )
         );
 
-        let bIdx = 0;
+        let uIdx = 0;
         async function browserWorker(context) {
-          while (bIdx < brokenAfterFetch.length) {
-            const current = brokenAfterFetch[bIdx++];
-            const key = normalizeNameKey(current.name);
-            const fetchVerdict = verdicts.get(key);
-            const bv = await verifyUrlWithBrowser(context, current.career_url, browserTimeoutMs);
-            if (bv.status === "healthy") rescuedByBrowser += 1;
-            if (bv.bot_blocked) botBlockedCount += 1;
-            verdicts.set(key, {
-              ...bv,
-              verified_via: "browser_fallback",
-              fetch_error: fetchVerdict?.error || null,
-              fetch_http_status: fetchVerdict?.http_status ?? null,
-            });
+          while (uIdx < workUnits.length) {
+            const unit = workUnits[uIdx++];
+            for (let i = 0; i < unit.length; i += 1) {
+              const current = unit[i];
+              const key = normalizeNameKey(current.name);
+              const fetchVerdict = verdicts.get(key);
+              const bv = await verifyUrlWithBrowser(context, current.career_url, browserTimeoutMs);
+              if (bv.status === "healthy") rescuedByBrowser += 1;
+              if (bv.bot_blocked) botBlockedCount += 1;
+              verdicts.set(key, {
+                ...bv,
+                verified_via: "browser_fallback",
+                fetch_error: fetchVerdict?.error || null,
+                fetch_http_status: fetchVerdict?.http_status ?? null,
+              });
+              // Stagger back-to-back requests to the same host so we don't just
+              // recreate the concurrency spike within a single unit's sequence.
+              if (i < unit.length - 1) await new Promise((r) => setTimeout(r, 800));
+            }
           }
         }
         await Promise.all(contexts.map((ctx) => browserWorker(ctx)));
