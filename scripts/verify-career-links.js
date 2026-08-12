@@ -2,8 +2,31 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { chromium } from "playwright";
 import { loadCampusConfigs } from "./lib/campus-config.js";
 import { canonicalizeUrl, clean, inferPlatformFromUrl, normalizeNameKey } from "./lib/url-normalization.js";
+
+// Same UA/viewport/locale the real scrapers use (server.js scrapeAllJobsStandalone,
+// scripts/test-overrides.js) so the fallback browser looks like the same client
+// that already successfully scrapes these sites, not a second, different bot.
+const BROWSER_USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121 Safari/537.36";
+
+// Phrases that show up on the interstitial/challenge page itself rather than on
+// real site content -- i.e. even a JS-executing browser got stopped short of the
+// actual career page. Kept intentionally narrow (lowercased substring match) so
+// we don't misclassify a legitimate page that merely mentions "captcha" in a
+// footer or FAQ.
+const BOT_CHALLENGE_MARKERS = [
+  "checking your browser before accessing",
+  "just a moment...",
+  "attention required! | cloudflare",
+  "please verify you are a human",
+  "verify you are human",
+  "access denied",
+  "request unsuccessful. incapsula",
+  "your browser is out of date", // Paylocity's non-JS fallback shell
+];
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -148,6 +171,61 @@ async function verifyUrl(url, timeoutMs) {
   };
 }
 
+function detectBotChallenge(text) {
+  const lower = clean(text).toLowerCase();
+  if (!lower) return false;
+  return BOT_CHALLENGE_MARKERS.some((marker) => lower.includes(marker));
+}
+
+// Slow-path re-check for anything the plain fetch() above called broken. A
+// meaningful fraction of "broken" links are nothing of the sort -- Paylocity,
+// ADP, and several campus ATS integrations only render their real content for
+// a JS-executing client, and some sites (Cloudflare-fronted, or with an
+// incomplete TLS intermediate chain) 403 / TLS-fail a bare fetch() while a real
+// browser loads fine. Reusing a real headless browser here, same as the actual
+// scrapers do, closes that gap instead of quarantining live links.
+async function verifyUrlWithBrowser(context, url, timeoutMs) {
+  const canonical = canonicalizeUrl(url);
+  if (!canonical) {
+    return { status: "invalid", http_status: null, final_url: null, error: "invalid_url", bot_blocked: false };
+  }
+
+  const page = await context.newPage();
+  try {
+    const response = await page.goto(canonical, { waitUntil: "domcontentloaded", timeout: timeoutMs });
+    // Give client-side rendering (Paylocity/ADP/Workday-style SPAs) a moment to
+    // paint before we read the DOM -- domcontentloaded alone often fires before
+    // the job list itself has rendered.
+    await page.waitForTimeout(1500).catch(() => {});
+
+    const httpStatus = response ? response.status() : null;
+    const bodyText = await page.evaluate(() => document.body?.innerText || "").catch(() => "");
+    const title = await page.title().catch(() => "");
+    const botBlocked = detectBotChallenge(`${title} ${bodyText.slice(0, 2000)}`);
+
+    const healthy = httpStatus !== null && httpStatus < 400 && !botBlocked;
+    return {
+      status: healthy ? "healthy" : "broken",
+      http_status: httpStatus,
+      final_url: canonicalizeUrl(page.url()) || page.url(),
+      error: botBlocked ? "bot_challenge_page" : healthy ? null : `http_${httpStatus ?? "unknown"}`,
+      bot_blocked: botBlocked,
+    };
+  } catch (e) {
+    const causeCode = e?.cause?.code || null;
+    const errMsg = clean(e?.message || String(e));
+    return {
+      status: "broken",
+      http_status: null,
+      final_url: null,
+      error: causeCode ? `${errMsg} (${causeCode})` : errMsg,
+      bot_blocked: false,
+    };
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 function mergeInstitutionRows(configured, overridesMap) {
   const rows = [];
   for (const c of configured) {
@@ -174,6 +252,9 @@ async function main() {
   const quarantineThreshold = Math.max(1, Number(args["quarantine-threshold"] || 2));
   const failOnBroken = args["fail-on-broken"] === true;
   const criticalOnly = args["critical-only"] === true;
+  const browserFallbackEnabled = args["browser-fallback"] !== false && !args["no-browser-fallback"];
+  const browserConcurrency = Math.max(1, Number(args["browser-concurrency"] || 6));
+  const browserTimeoutMs = Math.max(5000, Number(args["browser-timeout"] || 20000));
 
   const overridesMap = buildOverridesMap();
   const critical = loadCriticalSchools();
@@ -187,34 +268,110 @@ async function main() {
     : []);
 
   const checkedAt = new Date().toISOString();
-  const results = [];
-  let idx = 0;
 
-  async function worker() {
-    while (idx < inputs.length) {
-      const current = inputs[idx++];
-      const v = await verifyUrl(current.career_url, timeoutMs);
-      const key = normalizeNameKey(current.name);
-      const prev = previous.get(key);
-      const prevFails = Number(prev?.consecutive_failures || 0);
-      const fails = v.status === "healthy" ? 0 : prevFails + 1;
-      const quarantined = fails >= quarantineThreshold;
+  // Pass 1: cheap fetch() check for everyone.
+  const verdicts = new Map(); // normalizedName -> verification result
+  {
+    let idx = 0;
+    async function fetchWorker() {
+      while (idx < inputs.length) {
+        const current = inputs[idx++];
+        const v = await verifyUrl(current.career_url, timeoutMs);
+        verdicts.set(normalizeNameKey(current.name), { ...v, verified_via: "fetch" });
+      }
+    }
+    await Promise.all(Array.from({ length: concurrency }, () => fetchWorker()));
+  }
 
-      results.push({
-        ...current,
-        checked_at: checkedAt,
-        last_verified_at: checkedAt,
-        verification_status: quarantined ? "quarantined_broken_link" : v.status,
-        http_status: v.http_status,
-        final_url: v.final_url,
-        error: v.error,
-        consecutive_failures: fails,
-        quarantined,
-      });
+  // Pass 2: anything fetch() called broken gets a second look from a real
+  // headless browser, since a meaningful share of those are JS-gated ATS pages
+  // or bot-protection false positives, not actually dead (see verify-career-links
+  // history / the 2026-08-11 career-link-health repair round). Browser is only
+  // launched if there's actually work for it, and never blocks pass 1's speed.
+  const brokenAfterFetch = inputs.filter((c) => verdicts.get(normalizeNameKey(c.name))?.status !== "healthy");
+  let rescuedByBrowser = 0;
+  let botBlockedCount = 0;
+
+  if (browserFallbackEnabled && brokenAfterFetch.length > 0) {
+    let browser = null;
+    try {
+      // --disable-blink-features=AutomationControlled hides the navigator.webdriver
+      // flag that Chromium sets by default in headless mode -- some WAFs (confirmed:
+      // interviewexchange.com) 403 on that flag alone with no CAPTCHA/challenge page
+      // at all, so it looks identical to a genuinely dead link without this.
+      browser = await chromium.launch({ headless: true, args: ["--disable-blink-features=AutomationControlled"] });
+    } catch (e) {
+      console.warn(
+        `⚠️  Browser fallback disabled: could not launch Chromium (${clean(e?.message || e)}). ` +
+          `Run "npm run install:browsers" if this is unexpected. Falling back to fetch()-only results for ${brokenAfterFetch.length} link(s).`
+      );
+    }
+
+    if (browser) {
+      try {
+        const poolSize = Math.min(browserConcurrency, brokenAfterFetch.length);
+        const contexts = await Promise.all(
+          Array.from({ length: poolSize }, () =>
+            browser.newContext({
+              userAgent: BROWSER_USER_AGENT,
+              viewport: { width: 1280, height: 800 },
+              locale: "en-US",
+              ignoreHTTPSErrors: true, // several sites have an incomplete intermediate cert chain that Node's fetch() rejects but real browsers tolerate fine
+            })
+          )
+        );
+
+        let bIdx = 0;
+        async function browserWorker(context) {
+          while (bIdx < brokenAfterFetch.length) {
+            const current = brokenAfterFetch[bIdx++];
+            const key = normalizeNameKey(current.name);
+            const fetchVerdict = verdicts.get(key);
+            const bv = await verifyUrlWithBrowser(context, current.career_url, browserTimeoutMs);
+            if (bv.status === "healthy") rescuedByBrowser += 1;
+            if (bv.bot_blocked) botBlockedCount += 1;
+            verdicts.set(key, {
+              ...bv,
+              verified_via: "browser_fallback",
+              fetch_error: fetchVerdict?.error || null,
+              fetch_http_status: fetchVerdict?.http_status ?? null,
+            });
+          }
+        }
+        await Promise.all(contexts.map((ctx) => browserWorker(ctx)));
+        await Promise.all(contexts.map((ctx) => ctx.close().catch(() => {})));
+      } finally {
+        await browser.close().catch(() => {});
+      }
     }
   }
 
-  await Promise.all(Array.from({ length: concurrency }, () => worker()));
+  // Pass 3: combine into final per-institution records, using whichever
+  // verdict is most authoritative (browser_fallback's if it ran, else fetch's).
+  const results = [];
+  for (const current of inputs) {
+    const key = normalizeNameKey(current.name);
+    const v = verdicts.get(key);
+    const prev = previous.get(key);
+    const prevFails = Number(prev?.consecutive_failures || 0);
+    const fails = v.status === "healthy" ? 0 : prevFails + 1;
+    const quarantined = fails >= quarantineThreshold;
+
+    results.push({
+      ...current,
+      checked_at: checkedAt,
+      last_verified_at: checkedAt,
+      verification_status: quarantined ? "quarantined_broken_link" : v.status,
+      http_status: v.http_status,
+      final_url: v.final_url,
+      error: v.error,
+      verified_via: v.verified_via,
+      bot_blocked: Boolean(v.bot_blocked),
+      consecutive_failures: fails,
+      quarantined,
+    });
+  }
+
   results.sort((a, b) => a.name.localeCompare(b.name));
 
   const broken = results.filter((r) => r.verification_status !== "healthy");
@@ -222,12 +379,22 @@ async function main() {
 
   const payload = {
     generatedAt: checkedAt,
-    settings: { timeoutMs, concurrency, quarantineThreshold, criticalOnly },
+    settings: {
+      timeoutMs,
+      concurrency,
+      quarantineThreshold,
+      criticalOnly,
+      browserFallbackEnabled,
+      browserConcurrency,
+      browserTimeoutMs,
+    },
     counts: {
       checked: results.length,
       healthy: results.filter((r) => r.verification_status === "healthy").length,
       broken: broken.length,
       quarantined: quarantined.length,
+      rescuedByBrowser,
+      botBlocked: botBlockedCount,
     },
     institutions: results,
   };
@@ -242,6 +409,8 @@ async function main() {
       verification_status: r.verification_status,
       http_status: r.http_status,
       final_url: r.final_url,
+      verified_via: r.verified_via,
+      bot_blocked: r.bot_blocked,
       consecutive_failures: r.consecutive_failures,
       quarantined: r.quarantined,
     })),
@@ -258,6 +427,8 @@ async function main() {
       consecutive_failures: r.consecutive_failures,
       http_status: r.http_status,
       error: r.error,
+      verified_via: r.verified_via,
+      bot_blocked: r.bot_blocked,
       checked_at: r.checked_at,
     })),
   };
@@ -268,6 +439,8 @@ async function main() {
       name: r.name,
       consecutive_failures: r.consecutive_failures,
       verification_status: r.verification_status,
+      verified_via: r.verified_via,
+      bot_blocked: r.bot_blocked,
       checked_at: r.checked_at,
     })),
   };
@@ -284,6 +457,10 @@ async function main() {
   console.log(`Healthy: ${payload.counts.healthy}`);
   console.log(`Broken: ${payload.counts.broken}`);
   console.log(`Quarantined: ${payload.counts.quarantined}`);
+  if (browserFallbackEnabled) {
+    console.log(`Rescued by browser fallback: ${rescuedByBrowser} (fetch() called these broken; a real browser did not)`);
+    console.log(`Still broken behind a bot challenge even in-browser: ${botBlockedCount}`);
+  }
   console.log(`Wrote ${path.relative(ROOT, OUT_VERIFY_PATH)}`);
 
   if (failOnBroken && broken.length > 0) {
