@@ -562,6 +562,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
     },
     {
+      "name": "Bellevue College",
+      "homepage_url": null,
+      "career_url": "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=080",
+      "platform_type": "generic",
+      "notes": "Old career_url was just the bare bellevuecollege.edu homepage. Found the real link (\"View Open Positions at BC\"/\"View Job Opportunities\") on bellevuecollege.edu/work-at-bellevue/, pointing to the WA community/technical college system's shared ctclink.us PeopleSoft Candidate Gateway (SiteId=080 identifies this campus specifically -- same shared system as Cascadia College SiteId=300, Centralia College SiteId=120). NOT yet verified producing real job counts: this URL currently scrapes 0 via scrapeGenericJobPage, matching the same rendering-timing issue already seen on University of Minnesota's PeopleSoft Candidate Gateway (needs a longer wait / real interaction than the generic scraper currently gives it) -- URL itself is confirmed correct and current, the extraction gap is a separate, shared issue affecting the whole ctclink.us/PeopleSoft-Candidate-Gateway family, not specific to this override."
+    },
+    {
       "name": "Belmont University",
       "homepage_url": "https://www.belmont.edu/",
       "career_url": "https://belmont.csod.com/ux/ats/careersite/10/home?c=belmont&cfdd[0][id]=22&cfdd[0][options][0]=34&cfdd[0][options][1]=58&cfdd[0][options][2]=33",
@@ -2928,6 +2935,13 @@
       "notes": "Unfiltered default view returns Staff/Admin postings only, not the 2 faculty postings agent-career-discovery's own note claims \u2014 id 1 (\"Teaching and Research Faculty\" on the site's own dropdown) is the real Faculty filter, confirmed live to return 28+ real faculty postings. This override previously pointed at the unfiltered URL, which would have overridden a correct base-config URL fix (career-url-overrides.json's career_url always wins over the campus config's own url in resolveCareerUrlOverride) \u2014 updated 2026-08-03 after that exact regression was found."
     },
     {
+      "name": "Ottawa University-Surprise",
+      "homepage_url": null,
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=AB201C499D53A5D603D5BE296513B383",
+      "platform_type": "paycom",
+      "notes": "ottawa.edu/faculty/jobs 404s (site redesign moved/removed the page). Found the real Paycom portal link via ottawa.edu/careers. Verified live via scrapePaycomAs with locationFilter=Surprise: 2 real Surprise-AZ-scoped postings (Adjunct Instructor - Adult Professional & Graduate Studies - Surprise Arizona, Adjunct Instructor - MSN Nursing Program)."
+    },
+    {
       "name": "Pacific Northwest College of Art",
       "homepage_url": "https://willamette.edu/pnca/index.html",
       "career_url": "https://willamette.wd501.myworkdayjobs.com/WillametteUniversityJobs",
@@ -3283,6 +3297,13 @@
       "career_url": "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=b78332b6c6801001613e6d5a31ac0000",
       "platform_type": "workday",
       "notes": "Bucket B round 24: shares the exact same Workday tenant and Plano/Dallas physical campus facet as The Chicago School at Dallas (formerly \"Dallas Nursing Institute\", acquired by TCS) -- no separate program-level facet exists, so a TX-only titleFilter=\"nursing\" post-processing step scopes it. Synced platform_type to workday (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 0 of the 9 Plano postings currently mention \"nursing\" in the title -- genuinely 0 current openings, correctly scoped."
+    },
+    {
+      "name": "The Citadel",
+      "homepage_url": null,
+      "career_url": "https://jobs.citadel.edu/jobs/search",
+      "platform_type": "pageup",
+      "notes": "schooljobs.com/careers/citadel?keywords=faculty now redirects to the bare governmentjobs.com homepage (stale/dead link, lost its filter). Found the real, current careers portal via citadel.edu/human-resources/employment -> jobs.citadel.edu, a PageUp instance. Verified live: 8 real faculty postings incl. Tenure-Track Assistant/Associate/Full Professor of Finance, Department Head and Associate Professor/Professor of Accounting or Finance, Assistant/Associate/Full Professor of Accounting, Mathematics Adjunct Faculty (pooled), Adjunct Faculty - Physical Activity Courses (pooled)."
     },
     {
       "name": "The College of New Jersey",
