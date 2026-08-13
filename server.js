@@ -10287,11 +10287,33 @@ async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
         for (const a of Array.from(document.querySelectorAll('a[href*="/postings/"]'))) {
           const url = abs(a.getAttribute("href"));
           if (!url) continue;
-          if (!/\/postings\/\d+/i.test(url)) continue;
+          // Was /\/postings\/\d+/i with no end-anchor, so it also matched a
+          // posting's own sub-pages -- "print_preview"/"pre_apply" links sitting
+          // right next to the real posting link get treated as two MORE separate
+          // "postings" for the same job. Verified live at Chadron State College:
+          // when the page it hands off to is a single posting's detail page
+          // rather than a listing, this produced two fake entries titled "Print
+          // Preview" and "Apply for this Job" pointing at
+          // .../postings/13047/print_preview and .../postings/13047/pre_apply.
+          // Anchoring to end-of-path (allowing an optional trailing slash and/or
+          // query/fragment) keeps every real "/postings/<id>" listing link intact
+          // while excluding any sub-page hung off the same id.
+          if (!/\/postings\/\d+\/?(?:[?#].*)?$/i.test(url)) continue;
 
           const title = clean(a.textContent);
           if (!title || title.length < 4) continue;
           if (/search|home|back|return|login|logout|help|privacy|accessibility/i.test(title)) continue;
+          // Several PeopleAdmin card layouts put a second, generic CTA anchor
+          // ("View Details", "Print Preview", "Apply"/"Apply Now") right next
+          // to the real title anchor, both pointing at the same posting URL.
+          // The dedup below keeps whichever comes first in DOM order -- on
+          // some cards that's the CTA, not the title, so real postings surface
+          // under a useless label. Verified live: NC State University and
+          // University of Hartford both currently show "View Details" as a
+          // job title for this reason. Exact-match only (not a substring check)
+          // so a real title that happens to contain one of these words isn't
+          // also dropped.
+          if (/^(view\s+details?|print\s+preview|apply(\s+(now|for\s+this\s+job))?|view\s+(job|posting)|more\s+info(rmation)?|learn\s+more|read\s+more|details?)$/i.test(title)) continue;
 
           out.push({ title, url });
         }
