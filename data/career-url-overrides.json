@@ -2748,9 +2748,9 @@
     {
       "name": "Kent State University",
       "homepage_url": null,
-      "career_url": "https://jobs.kent.edu/",
+      "career_url": "https://jobs.kent.edu/jobs/search",
       "platform_type": "pageup",
-      "notes": "jobs.kent.edu/academics/faculty-jobs 404s. Confirmed live via headless browser (plain HTTP client sees an empty 202 shell -- this is a PageUp SPA that needs JS render time): base URL has FACULTY/STAFF/SERVICE & AFSCME/REGIONAL CAMPUSES category links. Confirmed PageUp via page source."
+      "notes": "Was pointing at jobs.kent.edu/ (the PageUp landing page with category tiles, no actual listings). The category tiles (STAFF/FACULTY/etc) are client-side filter buttons with no href, not navigable links. Real listing endpoint is jobs.kent.edu/jobs/search (same base path Kent State University at Stark already uses with a ?query= filter). Verified live via the pageup dispatch (now correctly wired via OVERRIDE_PLATFORM_DISPATCH): 3 real postings (Faculty Non-Tenure Track-9 Mo x2, Faculty Tenure Track-9 Mo)."
     },
     {
       "name": "Kenyon College",

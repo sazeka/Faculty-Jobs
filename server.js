@@ -13224,6 +13224,20 @@ const OVERRIDE_PLATFORM_DISPATCH = {
   // override-platform mechanism instead of inventing a new one.
   paycom: (context, url, campusName, sourceName) => scrapePaycomAs(context, url, campusName, sourceName),
   "silc-accordion": (context, url, campusName, sourceName) => scrapeSilcAccordionAs(context, url, campusName, sourceName),
+  // "pageup" was missing from this map entirely, even though scrapePageUpAs
+  // already exists and is dispatched elsewhere (ATS_HANDOFF_SCRAPERS, several
+  // per-state "type" chains). Any institution fixed via an override that set
+  // platform_type: "pageup" -- Kent State University, Kent State University at
+  // Stark, Oklahoma State University, The Citadel, Kenyon College, New Mexico
+  // State University, Gateway Community and Technical College -- silently fell
+  // through to plain generic DOM scraping in actual production instead of the
+  // PageUp handler, since resolveCareerUrlOverridePlatform's result was never
+  // recognized here. Confirmed live: Kent State University scrapes 0 via
+  // scrapeGenericJobPage's fallthrough vs 90+ real postings via scrapePageUpAs
+  // directly -- same URL, same override, only the missing dispatch entry
+  // differs. This wasn't a testing artifact; it means those 7 institutions'
+  // "fixed" overrides from rounds 25-27 hadn't actually been taking effect.
+  pageup: (context, url, campusName, sourceName) => scrapePageUpAs(context, url, campusName, sourceName),
 };
 
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
