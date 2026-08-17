@@ -235,9 +235,9 @@
     {
       "name": "American River College",
       "homepage_url": "https://www.arc.losrios.edu/",
-      "career_url": "https://www.schooljobs.com/careers/losriosccd/jobs/5203260/english-assistant-professor",
+      "career_url": "https://www.schooljobs.com/careers/losriosccd",
       "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+      "notes": "Old URL pointed at one specific job posting (jobs/5203260/english-assistant-professor) rather than the district-wide board -- American River College is part of the Los Rios Community College District, which shares one schooljobs.com/careers/losriosccd tenant across all its colleges. Verified live: 55 real postings including several Adjunct titles (Accounting Adjunct Assistant Professor Pool, Adjunct College Nurse Clinician Pool, Adjunct Counselor Pool, Adjunct Librarian Pool). CAVEAT: this override dispatch path (OVERRIDE_PLATFORM_DISPATCH['schooljobs']) does not pass through scrapeSchoolJobsAs's locationFilter param the way the hardcoded per-state array entries can (see Bossier Parish/West Hills CCD precedent) -- career-url-overrides.json has no field for it and the dispatch map does not thread one through. Folsom Lake College (server.js line ~1137) already points at this same unfiltered board today, so this isn't a new duplication risk -- both colleges will show the full district's listings rather than a scoped subset until locationFilter support is added to the override mechanism."
     },
     {
       "name": "Ana G. Mendez University",
@@ -448,6 +448,13 @@
       "career_url": "https://www.averett.edu/about-us/employment-opportunities/traditional-faculty-employment-opportunities/",
       "platform_type": "generic",
       "notes": "Configured career_url (/employment-opportunities) is a general landing page with 0 scrapeable listings; the Traditional Faculty Employment Opportunities sub-page (linked from it) has real content. Verified live: 5 tenure-track faculty postings (Assistant Professor of Nursing, Chemistry, Health and Sports Science, Sociology & Criminal Justice; Nursing Clinical and Simulation Coordinator)."
+    },
+    {
+      "name": "Babson College",
+      "homepage_url": null,
+      "career_url": "https://babson.wd1.myworkdayjobs.com/Faculty",
+      "platform_type": "workday",
+      "notes": "Was pointing at the bare babson.edu homepage, whose only faculty-related content was a nav mega-menu link (\"Undergraduate Faculty\" -> a faculty directory page, not a posting) that slipped past the title filter as a fake job. Real careers page is babson.edu/careers-at-babson/, whose \"SEARCH FACULTY POSITIONS\" button links to a Workday tenant (platform migrated from PeopleAdmin at some point). Verified live: 6 real postings (Assistant Professor Accounting, Adjunct Lecturer Accounting/Arts & Humanities/History & Society/Writing)."
     },
     {
       "name": "Baltimore City Community College",
