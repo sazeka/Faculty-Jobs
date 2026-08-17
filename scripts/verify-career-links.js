@@ -264,6 +264,18 @@ async function main() {
   const concurrency = Math.max(1, Number(args.concurrency || 12));
   const quarantineThreshold = Math.max(1, Number(args["quarantine-threshold"] || 2));
   const failOnBroken = args["fail-on-broken"] === true;
+  // Some institutions (confirmed: Dean College, interviewexchange.com) fail
+  // this check reliably from any automated environment -- not just this
+  // session's own testing, since a completely fresh GitHub Actions runner
+  // with zero prior request history hits the exact same block. Verified live
+  // via direct isolated checks that the link itself is fine for a real user;
+  // this is a persistent anti-automation wall the checker can't get past, not
+  // a real outage. Zero-tolerance --fail-on-broken turns one chronically
+  // flaky (from CI's perspective) school into a weekly false-alarm failure.
+  // --max-broken lets that be absorbed without going fully silent on a
+  // genuine multi-school break -- default 0 preserves the original
+  // zero-tolerance behavior for anyone not passing it.
+  const maxBroken = Math.max(0, Number(args["max-broken"] || 0));
   const criticalOnly = args["critical-only"] === true;
   const browserFallbackEnabled = args["browser-fallback"] !== false && !args["no-browser-fallback"];
   const browserConcurrency = Math.max(1, Number(args["browser-concurrency"] || 6));
@@ -426,6 +438,8 @@ async function main() {
       concurrency,
       quarantineThreshold,
       criticalOnly,
+      failOnBroken,
+      maxBroken,
       browserFallbackEnabled,
       browserConcurrency,
       browserTimeoutMs,
@@ -505,8 +519,11 @@ async function main() {
   }
   console.log(`Wrote ${path.relative(ROOT, OUT_VERIFY_PATH)}`);
 
-  if (failOnBroken && broken.length > 0) {
+  if (failOnBroken && broken.length > maxBroken) {
+    console.log(`Failing: ${broken.length} broken exceeds the tolerated max of ${maxBroken}.`);
     process.exitCode = 1;
+  } else if (failOnBroken && broken.length > 0) {
+    console.log(`Broken count (${broken.length}) is within the tolerated max of ${maxBroken} -- not failing.`);
   }
 }
 
