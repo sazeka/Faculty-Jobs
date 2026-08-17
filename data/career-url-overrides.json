@@ -81,9 +81,9 @@
     {
       "name": "Alabama State University",
       "homepage_url": "https://www.alasu.edu/",
-      "career_url": "https://www.governmentjobs.com/careers/alasu",
-      "platform_type": "governmentjobs",
-      "notes": "Was pointing at the homepage (0 jobs); route to ASU's GovernmentJobs/NEOGOV portal. Verified live: 2 faculty postings."
+      "career_url": "https://www.schooljobs.com/careers/alasu/promotionaljobs",
+      "platform_type": "schooljobs",
+      "notes": "Was pointing at the default schooljobs.com/careers/alasu view, which is scoped to the \"Staff Positions\" category only (0 faculty postings there). The real Faculty-category view lives at a separate /promotionaljobs route on the same NEOGOV tenant, reachable via the site's own \"Faculty\" nav link. Verified live: 21 postings when it renders in time (mix of tenure-track -- Theatre Costume Design, Psychology, Economics Assistant/Associate Professor -- and Adjunct-titled, e.g. College of Education, not excluded by omitAdjunct() since they don't say \"part-time\"). CAVEAT: this specific tenant/view is flaky against scrapeNjSchoolJobs's fixed 900ms post-load wait -- 3 of 5 test runs returned 21, the other 2 returned 0 (page just hadn't finished rendering the list yet). Net positive over the previous 0-every-time state, but expect this one to intermittently under-report rather than reliably hit 21 every scrape."
     },
     {
       "name": "Alamance Community College",
@@ -415,6 +415,13 @@
       "notes": "Configured career_url (/employment) is a landing page with 0 scrapeable listings; it links to a SmartRecruiters Faculty-specific job board (separate from Staff board). Verified live: multiple faculty postings (Non-Tenure Track Visiting Instructor in Education, FNP Faculty, and several Adjunct Faculty roles in Psychology, Entrepreneurship, Management, Marketing, Accounting, and Management Information Systems)."
     },
     {
+      "name": "Augustana University",
+      "homepage_url": "https://www.augie.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=026eaaee-2102-4004-840c-8e8ad42d78b1&ccId=19000101_000001&type=JS&lang=en_US",
+      "platform_type": "adp",
+      "notes": "Configured Workday tenant (wd1.myworkdaysite.com/recruiting/augie/augie) redirects to Workday's own generic outage page -- dead/retired tenant, not a transient blip. Augustana now recruits through ADP Workforce Now. Verified live: 3 real tenure-track faculty postings (Assistant Professor of Psychological Science, Assistant Professor of Computer Science & Software Engineering, Assistant Professor of Business Management)."
+    },
+    {
       "name": "Aurora University",
       "homepage_url": "https://aurora.edu/",
       "career_url": "https://www.schooljobs.com/careers/aurorauniversity?jobType[0]=Full-Time%20Faculty&sort=PositionTitle%7CAscending",
@@ -455,6 +462,13 @@
       "career_url": "https://babson.wd1.myworkdayjobs.com/Faculty",
       "platform_type": "workday",
       "notes": "Was pointing at the bare babson.edu homepage, whose only faculty-related content was a nav mega-menu link (\"Undergraduate Faculty\" -> a faculty directory page, not a posting) that slipped past the title filter as a fake job. Real careers page is babson.edu/careers-at-babson/, whose \"SEARCH FACULTY POSITIONS\" button links to a Workday tenant (platform migrated from PeopleAdmin at some point). Verified live: 6 real postings (Assistant Professor Accounting, Adjunct Lecturer Accounting/Arts & Humanities/History & Society/Writing)."
+    },
+    {
+      "name": "Ball State University",
+      "homepage_url": "https://www.bsu.edu/",
+      "career_url": "https://bsu.wd12.myworkdayjobs.com/External",
+      "platform_type": "workday",
+      "notes": "Configured bsu.peopleadmin.com portal is a dead/retired legacy instance -- footer reads \"Copyright (c) 2018 Ball State University\", and manually searching with every filter cleared still returns 0 results of any position type, not just Faculty. Ball State migrated to Workday. Verified live: 17 real faculty postings (Assistant Professor of Psychological Science, Instructor of Architecture, Instructor of Art and Design, Assistant Professor of Leadership/Organizational Behavior, and more)."
     },
     {
       "name": "Baltimore City Community College",
@@ -606,9 +620,9 @@
     {
       "name": "Benedictine University",
       "homepage_url": "https://ben.edu/",
-      "career_url": "https://www.benedictine.edu/jobs",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (4 faculty postings)."
+      "career_url": "https://benu.csod.com/ux/ats/careersite/7/home?c=benu",
+      "platform_type": "csod",
+      "notes": "Configured career_url (benedictine.edu/jobs) is the WRONG INSTITUTION's domain entirely -- benedictine.edu is Benedictine College in Atchison, Kansas, a separate school from Benedictine University in Lisle, IL (whose real domain is ben.edu). Benedictine University's own site links to two separate Cornerstone (CSOD) career sites: careersite/5 (non-adjunct Faculty, currently 0 open) and careersite/7 (Adjunct Faculty, live). Routed to site 7 since it's the one with real current content. Verified live: 18 postings, all \"Adjunct Lecturer - <subject>\" titles (British Literature, Theology, Biological Sciences, etc.) -- not excluded by omitAdjunct() since the titles don't say \"part-time\"."
     },
     {
       "name": "Bethel University",
@@ -1192,13 +1206,6 @@
       "notes": "TBR (College System of TN) careers, filtered to this institution."
     },
     {
-      "name": "Chemeketa Community College",
-      "homepage_url": "https://www.chemeketa.edu/",
-      "career_url": "https://www.governmentjobs.com/careers/chemeketacc",
-      "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery (community colleges); verified live, 2 faculty postings (real scrape filters to faculty)."
-    },
-    {
       "name": "Chesapeake College",
       "homepage_url": "https://www.chesapeake.edu/",
       "career_url": "https://www.schooljobs.com/careers/chesapeakecollege",
@@ -1297,13 +1304,6 @@
       "notes": "Was pointing at the bare homepage; the 'Job Openings' link goes to this ApplyToJob portal. Verified live: 2 current faculty postings (Adjunct Faculty in Addiction Counseling; Adjunct Faculty in Nonprofit Management), both remote."
     },
     {
-      "name": "Clackamas Community College",
-      "homepage_url": "https://www.clackamas.edu/",
-      "career_url": "https://www.schooljobs.com/careers/clackamascc",
-      "platform_type": "schooljobs",
-      "notes": "Old URL (clackamas.edu/faculty/jobs) 404s. College's careers hub links out to governmentjobs.com/careers/clackamascc, which redirects to this schooljobs.com URL. Verified 31 postings incl. multiple Instructor [Faculty Part-Time Pool] titles (Apprenticeship, Auto Body, Automotive, Biology, Business Admin, Communications, Computer Science, etc.)."
-    },
-    {
       "name": "Claflin University",
       "homepage_url": "https://www.claflin.edu/",
       "career_url": "https://www.claflin.edu/employment",
@@ -1330,13 +1330,6 @@
       "career_url": "https://www.cau.edu/about/offices-resources/human-resources/employment-information/open-positions",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (16 faculty postings)."
-    },
-    {
-      "name": "Clark College",
-      "homepage_url": "https://www.clark.edu/",
-      "career_url": "https://www.schooljobs.com/careers/clarkcollege",
-      "platform_type": "schooljobs",
-      "notes": "Configured /about/jobs-and-employment page is a landing directory linking out to per-category schooljobs.com pages (Staff/Faculty/Admin/PT-Hrly) instead of hosting listings. Verified live on the base schooljobs.com portal: 36 jobs, several faculty (Part-time Advanced Manufacturing Professor, Allied Health Professors, Anthropology Professor, BASHS Professor, Biology Professor)."
     },
     {
       "name": "Clark State College",
@@ -1801,6 +1794,13 @@
       "notes": "Was pointing at the bare homepage; route to their NEOGOV/schooljobs portal. Verified live: 18 jobs found, 7 instructor-titled (Adult Education, Astronomy, Chemistry, CIS, Construction Trades, EMT, and Noncredit ESL instructors, all part-time faculty)."
     },
     {
+      "name": "Cornell College",
+      "homepage_url": "https://www.cornellcollege.edu/",
+      "career_url": "https://recruiting2.ultipro.com/COR1036CORN/JobBoard/30d770d7-3983-4bf1-867a-479db251bad8",
+      "platform_type": "generic",
+      "notes": "Configured career_url (cornellcollege.edu/faculty/jobs) redirects straight to the bare homepage -- dead page, no such route exists anymore. Real listings live on a UKG/UltiPro recruiting board (linked from the site's HR/Employment page), which plain DOM anchor scraping (platform_type generic) already handles fine -- no dedicated scraper needed. Verified live: 2 postings (\"Cornell College Lecturer Position at Beihua University in Jilin, China\", a recurring 2-semester overseas partner-campus lecturer post). Caveat: most other current Faculty-category listings on this board are \"(Part-time)\"-titled and correctly excluded by omitAdjunct()."
+    },
+    {
       "name": "Cossatot Community College of the University of Arkansas",
       "homepage_url": "https://www.cccua.edu/index.html",
       "career_url": "https://www.cccua.edu/about-ua-cossatot/human-resources/employment-opportunities.html",
@@ -1988,13 +1988,6 @@
       "career_url": "https://www.dawson.edu/employment-opportunities.html",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
-    },
-    {
-      "name": "Daytona State College",
-      "homepage_url": "https://www.daytonastate.edu/",
-      "career_url": "https://www.schooljobs.com/careers/daytonastate/faculty",
-      "platform_type": "schooljobs",
-      "notes": "Configured career_url 404'd; the real Career Opportunities page links to a dedicated Faculty category on schooljobs.com. Verified live: 4 postings including Faculty, Aviation Maintenance."
     },
     {
       "name": "De Anza College",
@@ -2536,13 +2529,6 @@
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
     },
     {
-      "name": "Foothill-De Anza Community College District",
-      "homepage_url": "https://www.fhda.edu/",
-      "career_url": "https://www.schooljobs.com/careers/fhda/Faculty",
-      "platform_type": "schooljobs",
-      "notes": "Was pointing at a /jobs info page (the district's actual ATS is Taleo, which is excluded per Oracle's ToS); route instead to the district's SchoolJobs/NEOGOV Faculty-filtered board, also linked from the same page. Verified live: 123 faculty-specific postings (e.g., Instructor, Veterinary Technology). This entry represents the two-college district itself (Foothill + De Anza), so a district-wide portal is the correct scope here, not a misattribution case."
-    },
-    {
       "name": "Forsyth Technical Community College",
       "homepage_url": "https://www.forsythtech.edu/",
       "career_url": "https://careers.forsythtech.edu/postings/search?sort=225+asc",
@@ -2709,6 +2695,13 @@
       "career_url": "https://www.hollins.edu/about-hollins/jobs/faculty-positions/",
       "platform_type": "generic",
       "notes": "Dedicated Faculty Positions sub-page (reached via Jobs at Hollins -> Faculty Positions) is the live listing. Confirmed 5 open tenure-track/teaching positions: Chemistry, English, Environmental Public Health, History, Sociology."
+    },
+    {
+      "name": "Iona University",
+      "homepage_url": "https://www.iona.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/portal/F28471DFA0F4183976163E181A695BE1/career-page",
+      "platform_type": "paycom",
+      "notes": "Configured career_url (iona.edu/offices/human-resources/employment-iona) is a static HR gateway page with no actual listings -- it only links out to Paycom. Routed directly to the Paycom board itself. Verified live: 9 total postings; scrapePaycomAs doesn't title-filter (tags everything category: Faculty, same as its other callers), but manually applying looksFacultyish() leaves real faculty-relevant titles (FNP Nursing Program Director and Senior Clinical Lecturer, Nursing Adjunct Lab/Clinical Instructor, Clinical Lecturer - Education, Adjunct Instructor) alongside non-faculty ones (Campus Safety Officer, Academic Advisor, Lifeguard) that the pipeline's downstream global faculty filter removes."
     },
     {
       "name": "Iowa State University",
@@ -3126,9 +3119,9 @@
     {
       "name": "Saint Michael's College",
       "homepage_url": "https://www.smcvt.edu/",
-      "career_url": "https://egqw.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_13/jobs",
+      "career_url": "https://stmichaels-ibukjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2",
       "platform_type": "oracle",
-      "notes": "Was pointing at a different Oracle Cloud HCM site (CX_2) that is purely a marketing landing page; routed to the college's actual jobs-listing site (CX_13), linked from CX_2 as 'Employment Opportunities'. Verified real infrastructure; page correctly renders 'no jobs available' rather than blank/error - 0 current openings at time of check."
+      "notes": "Configured Oracle Cloud tenant (egqw.fa.us2.oraclecloud.com/.../CX_13) fully renders but is a stale/abandoned tenant -- genuinely 0 jobs, and it's not the one linked from the college's own site anymore. smcvt.edu/teaching-resources/careers/ now links to a different tenant (stmichaels-ibukjb.fa.ocs.oraclecloud.com/.../CX_2). Verified live: that tenant is real and current (18 open reqs) but currently 0 are faculty-titled (all staff/admin/trades -- Assistant Director for Alumni & Family Engagement, Building Trades Supervisor, Electrician, etc.). Applying this fix purely for correctness (right tenant wired up for whenever a faculty req opens); does not change the current job count."
     },
     {
       "name": "San Antonio College",
@@ -3346,6 +3339,13 @@
       "career_url": "https://careers.umassd.edu/en-us/filter",
       "platform_type": "enusfilter",
       "notes": "The specific work-type=faculty+full+time filter that was on file currently and legitimately returns 0 results (no open full-time faculty req at this moment, confirmed live -- not a bug), which risked this looking broken again the moment it's empty. Switched to the unfiltered base filter page, which shows the true current state: 4 postings under the Faculty category (2 directly visible: Part-Time Lecturer - Political Science, Part-Time Lecturer - First Year English). Confirmed 'Powered by PageUp' under the hood; kept platform_type enusfilter since the URL path still matches that classifier rule."
+    },
+    {
+      "name": "University of Alabama",
+      "homepage_url": "https://www.ua.edu/",
+      "career_url": "https://careers.ua.edu/jobs/search/facultyjobs?page=1&category_uids%5B%5D=64c4c56c13267cdcd83c99e7dbd37544&category_uids%5B%5D=184576ee68eaea946117d720edf7df0f&query=",
+      "platform_type": "generic",
+      "notes": "Configured career_url (careers.ua.edu/faculty/jobs) 404s -- that short path no longer exists. Real, current faculty-jobs search page (linked from the site's own careers portal) is the /jobs/search/facultyjobs route with its two faculty category filters pre-applied. Verified live: 28 postings (Tenure/Tenure-Track and Non-Tenure-Track/Clinical Faculty categories), e.g. Assistant Professor in Clinical Psychology Law, Assistant/Associate Professor in Quantitative Psychology."
     },
     {
       "name": "University of Arkansas",

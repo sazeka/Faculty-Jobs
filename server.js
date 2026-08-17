@@ -15306,6 +15306,15 @@ async function scrapeOrAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OR");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OR");
         if (type === "peopleadmin-dept") return await scrapePeopleAdminWithDept(context, url, campus, "OR");
+        // "schooljobs" was missing from this dispatch chain entirely even though
+        // scrapeSchoolJobsAs already exists and OR_CAMPUSES has two entries
+        // tagged type: "schooljobs" (Chemeketa, Clackamas) -- both silently fell
+        // through to the bare `return []` below instead of ever being scraped.
+        // Same shape as the earlier missing "pageup" dispatch-map bug: correct
+        // URL, correct type tag, just no matching branch to route it. Verified
+        // live: Chemeketa 2 real faculty postings (Nursing Instructor, Welding
+        // Instructor); Clackamas confirmed separately.
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "OR");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OR");
         return [];
       } catch (e) {
