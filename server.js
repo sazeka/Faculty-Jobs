@@ -13738,6 +13738,10 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
     const filtered = jobs
       .filter((j) => !omitAdjunct(j.title))
       .filter((j) => clean(j.title).toLowerCase() !== campusNameKey)
+      // Alverno's careers page includes a persistent faculty-directory nav
+      // link labelled "Faculty Experts" beside its real openings. It contains
+      // a faculty keyword but is not a vacancy.
+      .filter((j) => clean(j.title).toLowerCase() !== "faculty experts")
       .filter((j) => !isBareAtsBoardRoot(j.url));
 
     // Fallback only: if no inline jobs were found, the page likely hands off to an
