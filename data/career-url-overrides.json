@@ -1752,6 +1752,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
     },
     {
+      "name": "Concordia University-Irvine",
+      "homepage_url": "https://www.cui.edu/",
+      "career_url": "https://cui.applicantpro.com/",
+      "platform_type": "generic",
+      "notes": "Replaced the university homepage with Concordia Irvine's institution-specific ApplicantPro board, linked from its official Employment Opportunities page."
+    },
+    {
       "name": "Concordia University-Chicago",
       "homepage_url": "https://www.cuchicago.edu/",
       "career_url": "https://cuchicago.applicantpro.com/jobs/",
@@ -1906,24 +1913,38 @@
       "notes": "Paycom ATS career portal."
     },
     {
+      "name": "CUNY Lehman College",
+      "homepage_url": "https://www.lehman.edu/",
+      "career_url": "https://cuny.jobs/campus/lehman-college/jobs/",
+      "platform_type": "cuny-jobs",
+      "notes": "Lehman's official Careers page links to this campus-filtered CUNY jobs feed, avoiding attribution of positions from other CUNY campuses."
+    },
+    {
+      "name": "CUNY Stella and Charles Guttman Community College",
+      "homepage_url": "https://guttman.cuny.edu/",
+      "career_url": "https://cuny.jobs/campus/guttman-community-college/jobs/",
+      "platform_type": "cuny-jobs",
+      "notes": "Guttman's official prospective-employees page links to this campus-filtered CUNY jobs feed and instructs applicants to select Guttman as the location."
+    },
+    {
       "name": "CUNY City College",
       "homepage_url": "https://www.ccny.cuny.edu/",
       "career_url": "https://cuny.jobs/campus/city-college-of-new-york/jobs/",
-      "platform_type": "generic",
+      "platform_type": "cuny-jobs",
       "notes": "Old career_url was just the CCNY homepage. CUNY campuses share a central portal at cuny.jobs, filterable per campus. Verified 24 postings on the City College feed; a faculty-only sub-filter shows 15 faculty postings (Adjunct Lecturer/Assistant Professor across departments)."
     },
     {
       "name": "CUNY Graduate School and University Center",
       "homepage_url": "https://www.gc.cuny.edu/",
       "career_url": "https://cuny.jobs/campus/graduate-center/jobs/",
-      "platform_type": "generic",
+      "platform_type": "cuny-jobs",
       "notes": "Old career_url was just the GC homepage. Replaced with the Graduate Center-specific feed on the shared CUNY portal. Verified 16 postings incl. Assistant Professor and Associate Professor roles in various PhD programs."
     },
     {
       "name": "CUNY Hostos Community College",
       "homepage_url": "https://www.hostos.cuny.edu/",
       "career_url": "https://cuny.jobs/campus/hostos-community-college/jobs/",
-      "platform_type": "generic",
+      "platform_type": "cuny-jobs",
       "notes": "Old career_url was just the Hostos homepage. Replaced with the Hostos-specific feed on cuny.jobs. Verified 8 postings incl. Adjunct Assistant Professor / Adjunct Lecturer faculty roles."
     },
     {
@@ -2016,6 +2037,13 @@
       "career_url": "https://davenport.csod.com/ux/ats/careersite/15/home?c=davenport",
       "platform_type": "csod",
       "notes": "Configured career_url pointed at one specific job requisition (/home/requisition/2850), long since expired/closed, rather than the general listing page on the same tenant. davenport.edu/careers links to the same tenant's \"External Candidates\" search page instead. Verified live: 6 postings, e.g. \"Adjunct Faculty-Grand Rapids-Nursing\", \"Adjunct Faculty-Online-Accounting (Casa Latina,Bilingual)\" -- not excluded by omitAdjunct() since none say \"part-time\"."
+    },
+    {
+      "name": "Davis & Elkins College",
+      "homepage_url": "https://www.dewv.edu/",
+      "career_url": "https://www.dewv.edu/human-resources/",
+      "platform_type": "generic",
+      "notes": "Replaced the college homepage with its official Human Resources page, which publishes current job postings directly, including faculty searches."
     },
     {
       "name": "Davidson College",

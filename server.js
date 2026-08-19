@@ -84,6 +84,7 @@ import { chromium } from "playwright";
 import { createHash } from "crypto";
 import { extractCsodJobsFromDocument } from "./scripts/lib/csod-extraction.js";
 import { extractRiceFacultyRows } from "./scripts/lib/rice-faculty-extraction.js";
+import { extractCunyJobRows } from "./scripts/lib/cuny-jobs-extraction.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -13125,6 +13126,44 @@ async function scrapeRiceFacultyApi(_context, _careerUrl, campusName, sourceName
   return mapApiJobs(extractRiceFacultyRows(payload), campusName, sourceName);
 }
 
+// CUNY's campus pages are server-rendered, but the generic anchor scanner also
+// sees facet links such as "Faculty Affairs" and "Faculty (1)" and mistakes
+// them for postings. Restrict extraction to the portal's actual `/job/` detail
+// links and walk its result pages while retaining the campus slug in the URL.
+async function scrapeCunyJobs(context, careerUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  const rows = [];
+  const seen = new Set();
+  try {
+    for (let pageNumber = 1; pageNumber <= 50; pageNumber++) {
+      const url = new URL(careerUrl);
+      if (pageNumber > 1) url.searchParams.set("page", String(pageNumber));
+      await gotoWithRetry(page, url.toString(), { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await page.waitForSelector('main a[href*="/job/"]', { timeout: 10_000 }).catch(() => {});
+
+      const anchors = await safeEvaluate(page, () =>
+        Array.from(document.querySelectorAll('main a[href*="/job/"]')).map((anchor) => ({
+          href: anchor.getAttribute("href"),
+          title: anchor.querySelector("h1,h2,h3,h4")?.textContent || anchor.textContent,
+          location: anchor.querySelector('[class*="location" i]')?.textContent || null,
+        }))
+      );
+      const pageRows = extractCunyJobRows(anchors, url.toString());
+      let added = 0;
+      for (const row of pageRows) {
+        if (seen.has(row.url)) continue;
+        seen.add(row.url);
+        rows.push(row);
+        added++;
+      }
+      if (!pageRows.length || !added) break;
+    }
+  } finally {
+    await page.close().catch(() => {});
+  }
+  return mapApiJobs(rows, campusName, sourceName);
+}
+
 // A career-url override can repoint an institution at a different ATS than its
 // static server.js `type` — e.g. American Baptist College, Chatham University, and
 // Colby College are all configured "generic" but were later discovered to really
@@ -13175,6 +13214,7 @@ const OVERRIDE_PLATFORM_DISPATCH = {
       /\bCharlotte\b/i.test(job.location || "")
     ),
   "rice-faculty": scrapeRiceFacultyApi,
+  "cuny-jobs": scrapeCunyJobs,
 };
 
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
