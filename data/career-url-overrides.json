@@ -1535,6 +1535,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
     },
     {
+      "name": "College of Saint Mary",
+      "homepage_url": "https://www.csm.edu/",
+      "career_url": "https://www.csm.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Configured career_url was the bare homepage (0 scrapeable listings); the site's own Employment page (linked from the homepage) lists current openings directly as plain anchors to PDF postings -- no ATS/iframe involved. Verified live: 3 real faculty postings (Biology & Chemistry Adjunct Faculty, MSOL Adjunct Instructor, Physician Assistant Studies Faculty), none excluded by omitAdjunct() since none say \"part-time\"."
+    },
+    {
       "name": "College of Southern Idaho",
       "homepage_url": "https://www.csi.edu/",
       "career_url": "https://csi-openhire.silkroad.com/epostings/index.cfm?fuseaction=app.allpositions&company_id=17127&version=1",
@@ -3045,13 +3052,6 @@
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027241028_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
       "platform_type": "adp",
       "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 3 current postings including 2 faculty-ish roles (Instructor - Medical Assistant; Medical Assistant Program Chair) plus an Externship Coordinator role."
-    },
-    {
-      "name": "Remington College-Nashville Campus",
-      "homepage_url": "https://www.remingtoncollege.edu/",
-      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027241619_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
-      "platform_type": "adp",
-      "notes": "ADP WorkforceNow recruitment portal."
     },
     {
       "name": "Remington College-North Houston Campus",
