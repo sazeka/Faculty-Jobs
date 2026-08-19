@@ -148,8 +148,14 @@ async function verifyUrl(url, timeoutMs) {
     } catch (e) {
       timer.clear();
       if (method === "HEAD") continue;
+      const fallbackTimer = withTimeout(timeoutMs);
       try {
-        const fallback = await fetch(canonical, { method: "GET", redirect: "follow" });
+        const fallback = await fetch(canonical, {
+          method: "GET",
+          redirect: "follow",
+          signal: fallbackTimer.signal,
+        });
+        fallbackTimer.clear();
         const botBlocked = hasBotChallengeUrl(fallback.url);
         return {
           status: botBlocked ? BOT_BLOCKED_STATUS : fallback.status >= 400 ? "broken" : "healthy",
@@ -159,6 +165,7 @@ async function verifyUrl(url, timeoutMs) {
           canonical_url: canonical,
         };
       } catch (fallbackError) {
+        fallbackTimer.clear();
         const causeCode = fallbackError?.cause?.code || e?.cause?.code || null;
         const errMsg = clean(fallbackError?.message || e?.message || String(fallbackError || e));
         return {
