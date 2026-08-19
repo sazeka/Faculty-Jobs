@@ -13170,6 +13170,10 @@ const OVERRIDE_PLATFORM_DISPATCH = {
   // differs. This wasn't a testing artifact; it means those 7 institutions'
   // "fixed" overrides from rounds 25-27 hadn't actually been taking effect.
   pageup: (context, url, campusName, sourceName) => scrapePageUpAs(context, url, campusName, sourceName),
+  "pageup-charlotte": async (context, url, campusName, sourceName) =>
+    (await scrapePageUpAs(context, url, campusName, sourceName)).filter((job) =>
+      /\bCharlotte\b/i.test(job.location || "")
+    ),
   "rice-faculty": scrapeRiceFacultyApi,
 };
 
