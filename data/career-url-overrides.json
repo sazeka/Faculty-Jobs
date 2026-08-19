@@ -193,9 +193,9 @@
     {
       "name": "Amarillo College",
       "homepage_url": "https://www.actx.edu/",
-      "career_url": "https://www.schooljobs.com/careers/actx?category%5b0%5d=Instructor&category%5b1%5d=Faculty&jobType%5b0%5d=Part-Time&sort=PostingDate%7CDescending&page=2",
+      "career_url": "https://www.schooljobs.com/careers/actx?category%5B0%5D=Instructor&category%5B1%5D=Faculty&sort=PostingDate%7CDescending",
       "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+      "notes": "Configured career_url was doubly narrowed (jobType=Part-Time AND page=2), which skipped every full-time faculty posting entirely -- the unfiltered category view (Instructor+Faculty, no jobType/page restriction) has 23 postings across all pages. Verified live: 21 postings, including full-time \"Faculty - Biology\", \"Faculty - Economics\", \"Faculty - Welding\", \"Faculty - Advanced Manufacturing\" (none excluded by omitAdjunct()) alongside part-time \"Adjunct Faculty - X\" titles. CAVEAT: flaky against the scraper's fixed post-load wait, same family of issue as Alabama State/Delta College/Rider -- 1 of 2 test runs this session returned 0."
     },
     {
       "name": "American Baptist College",
@@ -520,13 +520,6 @@
       "notes": "Configured career_url (/employment) is a general HR landing page with 0 scrapeable listings; the Dean of the Faculty office maintains a separate Current Faculty Job Postings page (linked from Employment). Verified live: 3 tenure-track faculty postings (Professor of Africana, Assistant Professor of Biology - Marine Biology, Assistant Professor of Physics)."
     },
     {
-      "name": "Bates Technical College",
-      "homepage_url": "https://www.batestech.edu/",
-      "career_url": "https://www.schooljobs.com/careers/batesctc",
-      "platform_type": "schooljobs",
-      "notes": "TESTING"
-    },
-    {
       "name": "Baton Rouge Community College",
       "homepage_url": "https://www.mybrcc.edu/",
       "career_url": "https://mybrcc.edu/about-brcc/human-resources/employment_opportunities.php",
@@ -651,6 +644,13 @@
       "career_url": "https://bluecc.edu/about/faculty-staff-resources/",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+    },
+    {
+      "name": "Blue Ridge Community and Technical College",
+      "homepage_url": "https://www.blueridgectc.edu/",
+      "career_url": "https://www.schooljobs.com/careers/blueridgectc",
+      "platform_type": "schooljobs",
+      "notes": "Configured career_url was the bare homepage; real ATS (linked from the site's HR/Faculty-and-Staff page) is a NEOGOV/schooljobs tenant, reached via a governmentjobs.com redirect. Verified live: 0 postings currently (server-rendered \"0 jobs found\", confirmed genuinely empty, not a JS-shell artifact) -- applied for correctness so it starts working the moment the college posts an opening."
     },
     {
       "name": "Bluefield University",
@@ -1521,13 +1521,6 @@
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
     },
     {
-      "name": "College of Eastern Idaho",
-      "homepage_url": "https://www.cei.edu/",
-      "career_url": "https://www.schooljobs.com/careers/cei",
-      "platform_type": "schooljobs",
-      "notes": "TESTING"
-    },
-    {
       "name": "College of Saint Mary",
       "homepage_url": "https://www.csm.edu/",
       "career_url": "https://www.csm.edu/employment/",
@@ -1654,13 +1647,6 @@
       "notes": "Homepage scrape picked up news articles as jobs; route to the canonical /careers/ page (lists openings when available, else none)."
     },
     {
-      "name": "Columbia University in the City of New York",
-      "homepage_url": "https://www.columbia.edu/",
-      "career_url": "https://academic.careers.columbia.edu/",
-      "platform_type": "generic",
-      "notes": "Old career_url was just the university homepage. Replaced with Columbia's actual faculty/academic hiring site. Verified 643 postings incl. many Assistant/Associate/Full Professor and Lecturer titles across departments."
-    },
-    {
       "name": "Columbus College of Art & Design",
       "homepage_url": "https://www.ccad.edu/",
       "career_url": "https://ccad.applicantpro.com/jobs/",
@@ -1764,6 +1750,13 @@
       "career_url": "https://recruitingbypaycor.com/career/CareerHome.action?clientId=8a7883d0838c33b10183aa4f3eb00892",
       "platform_type": "generic",
       "notes": "Was pointing at the bare homepage; route to their Paycor recruiting portal. Verified live: about 28 postings, 9 faculty-titled (Contracted Faculty of Practice adjuncts in Biology/Microbiology, Business Management, Calculus PSEO, Kinesiology dissertation advising, MAT K-6, Ceramics, Nursing, Diagnostic Medical Sonography, plus a Tenure-Track Faculty in Doctoral Education and a Full-Time Faculty of Practice in Diagnostic Medical Sonography)."
+    },
+    {
+      "name": "Connecticut College",
+      "homepage_url": "https://www.conncoll.edu/",
+      "career_url": "https://conncoll.peopleadmin.com/postings/search",
+      "platform_type": "peopleadmin",
+      "notes": "Configured career_url (conncoll.edu/employment) 301-redirects to a plain HR landing page with no listings; the real PeopleAdmin tenant was sitting unused in the homepage_url field instead. Swapped it in. Verified live: 24 total postings via the real scraper, but 0 are currently faculty-titled -- the site's own Faculty/Staff filter confirms 0 open faculty reqs right now (Groundsperson, Custodian, Assistant Coach, Deputy CIO, etc. are the only current postings). Applied for correctness; will start surfacing real content the moment a faculty search opens."
     },
     {
       "name": "Connecticut State Community College",
@@ -1941,6 +1934,20 @@
       "notes": "Was pointing at the bare homepage; real employment page lists current postings directly in a table. Verified live: includes 1 faculty posting (Nursing Faculty - Bottineau Campus) among current openings."
     },
     {
+      "name": "Dakota County Technical College",
+      "homepage_url": "https://www.dctc.edu/",
+      "career_url": "https://www.dctc.edu/about-us/human-resources/employment-at-dctc/",
+      "platform_type": "generic",
+      "notes": "Configured career_url was missing a trailing slash, which the site's IIS backend 403s on; the canonical URL (with trailing slash) returns 200 with real, plain-HTML (non-JS) listings. Verified live: 2 postings, \"Biology Instructor\" and \"Nursing Assistant/Home Health Aide Instructor\", neither excluded by omitAdjunct()."
+    },
+    {
+      "name": "Dakota Wesleyan University",
+      "homepage_url": "https://www.dwu.edu/",
+      "career_url": "https://dwu.hireclick.com/jobboard/",
+      "platform_type": "generic",
+      "notes": "Configured career_url (dwu.edu/academics/faculty-jobs) is a generic academics-hub page with no listings, just a footer link out to HireClick. Routed there directly. Verified live: 0 current postings (the HireClick board genuinely has no open listings right now, just a general-application CTA) -- applied for correctness; DWU's one-off faculty postings get taken down once filled, so expect sparse/intermittent real content going forward."
+    },
+    {
       "name": "Dallas Baptist University",
       "homepage_url": "https://www.dbu.edu/",
       "career_url": "https://recruiting.adp.com/srccar/public/RTI.home?c=1174615&d=DBUCareerSite",
@@ -1971,9 +1978,9 @@
     {
       "name": "Davenport University",
       "homepage_url": "https://www.davenport.edu/",
-      "career_url": "https://davenport.csod.com/ux/ats/careersite/15/home/requisition/2850?c=davenport",
+      "career_url": "https://davenport.csod.com/ux/ats/careersite/15/home?c=davenport",
       "platform_type": "csod",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+      "notes": "Configured career_url pointed at one specific job requisition (/home/requisition/2850), long since expired/closed, rather than the general listing page on the same tenant. davenport.edu/careers links to the same tenant's \"External Candidates\" search page instead. Verified live: 6 postings, e.g. \"Adjunct Faculty-Grand Rapids-Nursing\", \"Adjunct Faculty-Online-Accounting (Casa Latina,Bilingual)\" -- not excluded by omitAdjunct() since none say \"part-time\"."
     },
     {
       "name": "Davidson-Davie Community College",
@@ -2016,6 +2023,13 @@
       "career_url": "https://www.schooljobs.com/careers/desu#",
       "platform_type": "schooljobs",
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+    },
+    {
+      "name": "Delaware Valley University",
+      "homepage_url": "https://www.delval.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=997c6fde-f713-4be9-b6cf-f4bdbc02cbbb&ccId=19000101_000001&lang=en_US",
+      "platform_type": "adp",
+      "notes": "Configured career_url was the bare homepage; the site's own careers page (delval.edu/careers-delval) links out to this ADP Workforce Now portal. Verified live: 5 postings, e.g. \"Adjunct Instructors Needed for Math Courses\", \"Adjunct Pool- Graduate Educational Leadership: North Penn\" -- not excluded by omitAdjunct() since none say \"part-time\"."
     },
     {
       "name": "Delgado Community College",
@@ -2454,9 +2468,9 @@
     {
       "name": "Feather River Community College District",
       "homepage_url": "https://www.frc.edu/",
-      "career_url": "https://www.schooljobs.com/careers/frc",
-      "platform_type": "schooljobs",
-      "notes": "Old career_url was just the homepage. Homepage's Employment link leads to frc.edu/employment, which links to the real ATS: schooljobs.com/careers/frc. Combined main-jobs + adjunct/transfer pool listings include several Associate (Adjunct) Faculty titles (Animal Science, Anthropology, Biology, Nursing, etc.)."
+      "career_url": "https://frc.peopleadmin.com/postings/search",
+      "platform_type": "peopleadmin",
+      "notes": "Configured career_url (schooljobs.com/careers/frc) is a dead/retired NEOGOV tenant (0 jobs found). FRC migrated its ATS to PeopleAdmin. Verified live: 73 total postings, 10 real faculty (\"Associate (Adjunct) Faculty - <subject>\" -- Anthropology, Nursing, Forestry/Natural Resources, Anatomy/Physiology, Agriculture Business, Animal Science, Environmental Studies, Business, Health & Exercise Studies), not excluded by omitAdjunct() since none say \"part-time\"."
     },
     {
       "name": "Finger Lakes Community College",
@@ -3080,6 +3094,13 @@
       "career_url": "https://rit.wd12.myworkdayjobs.com/careers",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+    },
+    {
+      "name": "Saint Anselm College",
+      "homepage_url": "https://www.anselm.edu/human-resources/employment-opportunities",
+      "career_url": "https://anselm.wd1.myworkdayjobs.com/Anselm",
+      "platform_type": "workday",
+      "notes": "career_url was already correct but mistagged platform_type: \"generic\", so scrapeGenericJobPage's plain DOM anchor scraping couldn't handle Workday's SPA-rendered job cards -- same bug class as Bastyr University (existing override, see its own notes). Retagged to \"workday\" to route through scrapeWorkdayAs. Verified live via the real scraper: 0 current postings (genuinely no faculty reqs open right now -- Library Technical Assistant, Assistant Director Career Advising, Lab Manager, coaching roles are the only current openings, none faculty-titled). Applied for correctness."
     },
     {
       "name": "Saint Joseph's University - Lancaster",

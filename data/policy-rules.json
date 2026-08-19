@@ -987,6 +987,27 @@
       "sources": [
         "https://www.faithiu.edu/"
       ]
+    },
+    "Boston Graduate School of Psychoanalysis Inc": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-19): no usable careers/employment page found anywhere on the institution's site after live investigation -- the only /employment page found is about international-student visa work rules, not institutional hiring; no jobs/careers nav link exists. Tiny single-program psychoanalytic training institute (~2 FTE faculty) with no discoverable HR presence.",
+      "sources": [
+        "https://www.bgsp.edu/"
+      ]
+    },
+    "California State University-Chancellors Office": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-19): this is the CSU system administrative office (Long Beach), not a degree-granting campus -- is_degree_granting is unset/unmatched in IPEDS. Confirmed via the Chancellor's Office's own hiring info: it hires only executive/administrative/IT/legal/finance staff supporting the 23-campus system and explicitly does not hire faculty; all CSU faculty hiring happens independently at each of the 23 individual campuses, which are already tracked as their own separate institutions in this dataset.",
+      "sources": [
+        "https://www.calstate.edu/"
+      ]
+    },
+    "Christ Mission College": {
+      "action": "exclude",
+      "reason": "Excluded (2026-08-19): no usable careers/employment page found anywhere on the institution's site after live investigation -- nav has no HR/jobs link (only a Student/Faculty portal login and one unrelated 'Employer Reference' PDF); no third-party job board (Indeed, ZipRecruiter, LinkedIn, HigherEdJobs) has any listings either. Tiny single-campus Bible college in San Antonio, TX still pursuing initial accreditation, with no discoverable HR presence.",
+      "sources": [
+        "https://cmctx.edu/"
+      ]
     }
   }
 }
