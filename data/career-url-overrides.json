@@ -524,7 +524,7 @@
       "homepage_url": "https://www.batestech.edu/",
       "career_url": "https://www.schooljobs.com/careers/batesctc",
       "platform_type": "schooljobs",
-      "notes": "Configured career_url (/human-resources/employment) is a landing page with 0 scrapeable listings; it links to their NEOGOV/schooljobs career page. Verified live: 34 postings, with a dedicated Faculty/Higher Education category (e.g., Administrative Medical Assistant/Certified Medical Assistant - Adjunct Pool)."
+      "notes": "TESTING"
     },
     {
       "name": "Baton Rouge Community College",
@@ -812,6 +812,13 @@
       "career_url": "https://careers.csudh.edu/en-us/filter/?work-type=instructional+faculty+-+temporary%2Flecturer&work-type=non-instructional+faculty+(coach%2Fcounselor%2Flibrarian)",
       "platform_type": "pageup",
       "notes": "Configured career_url was the bare homepage (0 scrapeable listings). CSUDH runs its own campus-specific PageUp instance (careers.csudh.edu), separate from the CSU system-wide board -- routed to its Faculty work-type filter. Verified live: 33 \"Instructional Faculty - Temporary/Lecturer\" postings (all titled \"Temporary Faculty Pool, <Dept>\", correctly excluded by omitAdjunct()'s \"temporary\" rule) + 5 \"Non-Instructional Faculty (Coach/Counselor/Librarian)\" postings (coach/counselor titles that don't contain faculty-keyword wording, so won't pass looksFacultyish() either) + 0 in \"Instructional Faculty \u2013 Tenured/Tenure-track\" right now. Net today: 0 real faculty jobs captured, but the URL/platform are now correct instead of pointing at a homepage that can never show anything -- will start surfacing real postings the moment a tenure-track/lecturer req opens that isn't titled \"Temporary...\"."
+    },
+    {
+      "name": "California State University-Monterey Bay",
+      "homepage_url": "https://csumb.edu/",
+      "career_url": "https://careers.csumb.edu/en-us/listing/",
+      "platform_type": "pageup",
+      "notes": "Configured career_url (csumb.edu/celi/career) is the student Career Development Center page (resume workshops, employer recruiting services) -- never a job-postings page at all, wrong URL entirely. CSUMB runs its own campus PageUp instance separate from the CSU system board. Verified live: 33 postings, e.g. \"Clinical Counselor - Counselor Faculty\", \"MBA Online Lecturer\" (plain \"Lecturer\"/\"Faculty\" titles, not excluded by omitAdjunct())."
     },
     {
       "name": "Calvin University",
@@ -1488,9 +1495,9 @@
     {
       "name": "College of Alameda",
       "homepage_url": "https://alameda.edu/",
-      "career_url": "https://peraltaccd.peopleadmin.com/postings/search?query_organizational_tier_2_id%5B%5D=186",
-      "platform_type": "peopleadmin",
-      "notes": "Previous override (academickeys.com single-posting link) is now dead (403) -- confirmed broken by career-link health check. College of Alameda is part of Peralta Community College District; real ATS is peraltaccd.peopleadmin.com, filtered here to the Alameda campus (tier_2_id=186), same pattern as CUNY's shared portal. Currently 0 open Alameda-specific postings (verified twice), but sibling Peralta campuses show ~16 active postings via the same portal, confirming the pipeline is live -- Alameda specifically has no current openings. Recommend re-checking job count in a few weeks."
+      "career_url": "https://www.schooljobs.com/careers/peralta",
+      "platform_type": "schooljobs",
+      "notes": "Configured career_url (peraltaccd.peopleadmin.com) is a dead/retired PeopleAdmin instance -- confirmed 0 results district-wide with every filter cleared, not just for this campus's tier_2_id. Peralta Community College District migrated to NEOGOV/schooljobs; its own HR page now points there. Verified live: 19 real postings district-wide, including one College of Alameda-tagged non-adjunct title (\"Dean of Student Learning and Success\") -- though that one specifically still won't count today since scrapeSchoolJobsAs's own looksFacultyish() check (unlike the pipeline's broader global filter) doesn't recognize bare \"Dean\" titles; the other 9 unique postings are all \"Part Time <X> Instructor/Counselor\", correctly excluded by omitAdjunct(). Net today: 0, applied for correctness. CAVEAT: like American River/Folsom Lake (round 28), this is an unscoped district-wide board -- the override dispatch path doesn't thread through scrapeSchoolJobsAs's locationFilter param, so if another Peralta college (Laney, Merritt, Berkeley City) is fixed the same way later, both will show the full district's listings rather than a scoped subset."
     },
     {
       "name": "College of Athens",
@@ -1518,7 +1525,7 @@
       "homepage_url": "https://www.cei.edu/",
       "career_url": "https://www.schooljobs.com/careers/cei",
       "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+      "notes": "TESTING"
     },
     {
       "name": "College of Saint Mary",
@@ -2578,6 +2585,13 @@
       "notes": "Was pointing at the bare homepage; route to FPC's own /jobs/ page, which embeds real current openings directly (native site listing, not a third-party ATS). Verified live: ~17 postings, several faculty/instructor-titled (Geology Instructor, Physics Instructor, Adjunct - Diesel Technology Instructor, CDL - Class A Instructor, Bus Driving Instructor, Welding Instructor)."
     },
     {
+      "name": "Franklin University",
+      "homepage_url": "https://www.franklin.edu/",
+      "career_url": "https://recruiting.ultipro.com/FRA1012FRANK/JobBoard/e51857cc-39da-44b8-a30e-839c982ff791/?q=&o=postedDateDesc",
+      "platform_type": "generic",
+      "notes": "Configured career_url was the bare homepage; the real \"Careers at Franklin\" page itself has no listings either, just a button out to a UKG Pro Recruiting (UltiPro) job board. Routed there directly -- works fine with plain generic DOM scraping, same as Cornell College's UltiPro fix (round 32). Verified live: 5 postings, e.g. \"Adjunct Faculty, Healthcare Financial Management\", \"Adjunct Faculty, Mathematics (Introduction to Quantitative Reasoning)\" -- not excluded by omitAdjunct() since none say \"part-time\"."
+    },
+    {
       "name": "Frederick Community College",
       "homepage_url": "https://www.frederick.edu/",
       "career_url": "https://jobs.frederick.edu/",
@@ -2660,6 +2674,13 @@
       "career_url": "https://employment.gonzaga.edu/",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+    },
+    {
+      "name": "Governors State University",
+      "homepage_url": "https://www.govst.edu/",
+      "career_url": "https://www.schooljobs.com/careers/govst",
+      "platform_type": "schooljobs",
+      "notes": "Configured career_url (govst.edu/employment-opportunities) is a promotional HR landing page with no listings; the real NEOGOV/schooljobs tenant was sitting unused in the homepage_url field instead. Swapped it in. Verified live: 46 postings, mostly \"Adjunct Faculty, <Dept> AY\" titles, not excluded by omitAdjunct() since they don't say \"part-time\"."
     },
     {
       "name": "Harcum College",
@@ -2758,13 +2779,6 @@
       "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4956&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
       "platform_type": "generic",
       "notes": "Was pointing at the homepage (0 jobs). Discovered via manual research; verified live (16 faculty postings across nursing, welding, machining, psychology, cosmetology, etc., of 24 total openings) on Team Georgia Careers agency-filtered to this college."
-    },
-    {
-      "name": "Laredo College",
-      "homepage_url": "https://www.laredo.edu/index.html",
-      "career_url": "https://www.schooljobs.com/careers/laredoedu?examType%5B0%5D=Faculty&sort=PostingDate%7CDescending",
-      "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (4 faculty postings)."
     },
     {
       "name": "Lawrence University",
@@ -2928,13 +2942,6 @@
       "notes": "ottawa.edu/faculty/jobs 404s (site redesign moved/removed the page). Found the real Paycom portal link via ottawa.edu/careers. Verified live via scrapePaycomAs with locationFilter=Surprise: 2 real Surprise-AZ-scoped postings (Adjunct Instructor - Adult Professional & Graduate Studies - Surprise Arizona, Adjunct Instructor - MSN Nursing Program)."
     },
     {
-      "name": "Pacific Northwest College of Art",
-      "homepage_url": "https://willamette.edu/pnca/index.html",
-      "career_url": "https://willamette.wd501.myworkdayjobs.com/WillametteUniversityJobs",
-      "platform_type": "workday",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
-    },
-    {
       "name": "Pacific University",
       "homepage_url": "https://www.pacificu.edu/about/jobs",
       "career_url": "https://www.pacificu.edu/directory/finance-administration/human-resources/jobs-pacific",
@@ -3059,6 +3066,13 @@
       "career_url": "https://risd.wd5.myworkdayjobs.com/RISD",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (5 faculty postings)."
+    },
+    {
+      "name": "Rider University",
+      "homepage_url": "https://www.rider.edu/",
+      "career_url": "https://www.schooljobs.com/careers/rideru?keywords=faculty",
+      "platform_type": "schooljobs",
+      "notes": "Configured career_url (rider.edu/careers) is a generic student Career Development landing page with no listings; the real NEOGOV/schooljobs tenant was sitting unused in the homepage_url field instead. Swapped it in. Verified live: 7 postings, including \"Acting Assistant Professor of Management\" (Full-Time, Norm Brodsky College of Business) plus 6 \"Adjunct Faculty - <Dept>\" titles, none excluded by omitAdjunct(). CAVEAT: flaky against the scraper's fixed post-load wait, same family of issue as Alabama State/Delta College -- 2 of 5 test runs this session returned 0."
     },
     {
       "name": "Rochester Institute of Technology",
@@ -3222,6 +3236,13 @@
       "notes": "URL was already correct and functional (page now titled 'Jobs At Empire State University' -- institution rebranded from SUNY Empire State College). platform_type corrected generic -> interviewexchange (URL domain matches that ATS). Verified 2 current faculty postings: Adjunct Instructors and Field Supervisor - Teacher Education."
     },
     {
+      "name": "Texas Tech University",
+      "homepage_url": "https://www.ttu.edu/",
+      "career_url": "https://sjobs.brassring.com/TGnewUI/Search/Home/Home?partnerid=25898&siteid=5637#home",
+      "platform_type": "generic",
+      "notes": "Configured Workday tenant (ttu.wd5.myworkdayjobs.com/TTU) is dead -- redirects to Workday's own \"currently unavailable\" outage page, an invalid/retired tenant path, not a transient blip. TTU actually recruits faculty through an IBM/Kenexa BrassRing ATS instead (linked from both the university HR page and the TTU System careers page). Verified live: 9 real faculty postings (Instructor - Architecture - El Paso, Assistant Professor - Biological Sciences, Assistant Professor - Theoretical Physical Chemistry, and more), scraped fine via plain generic DOM anchors."
+    },
+    {
       "name": "The Chicago School at Anaheim",
       "homepage_url": "https://www.thechicagoschool.edu/in-the-community/locations",
       "career_url": "https://www.thechicagoschool.edu/in-the-community/careers/",
@@ -3325,6 +3346,13 @@
       "career_url": "https://www.uaht.edu/staff/employment-opportunities.php",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (5 faculty postings)."
+    },
+    {
+      "name": "University of Bridgeport",
+      "homepage_url": "https://www.bridgeport.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=A1640D81A59AFDAFC5501F5B06EF1B08",
+      "platform_type": "paycom",
+      "notes": "Configured career_url (bridgeport.edu/about/employment) is a generic HR benefits page whose \"View All Openings\" button just links out to Paycom; the real Paycom URL was sitting unused in the homepage_url field instead. Swapped it in. Verified live: 10 postings, e.g. \"Adjunct Instructor - Nursing\", \"Clinical Adjunct Faculty - Dental Hygiene\" -- not excluded by omitAdjunct() since none say \"part-time\"."
     },
     {
       "name": "University of Charleston",
