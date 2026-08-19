@@ -4,6 +4,12 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { chromium } from "playwright";
 import { loadCampusConfigs } from "./lib/campus-config.js";
+import {
+  BOT_BLOCKED_STATUS,
+  hasBotChallengeUrl,
+  isHardVerificationFailure,
+  nextConsecutiveFailures,
+} from "./lib/link-verdict.js";
 import { canonicalizeUrl, clean, inferPlatformFromUrl, normalizeNameKey } from "./lib/url-normalization.js";
 
 // Same UA/viewport/locale the real scrapers use (server.js scrapeAllJobsStandalone,
@@ -129,11 +135,12 @@ async function verifyUrl(url, timeoutMs) {
         continue;
       }
 
+      const botBlocked = hasBotChallengeUrl(res.url);
       return {
-        status: res.status >= 400 ? "broken" : "healthy",
+        status: botBlocked ? BOT_BLOCKED_STATUS : res.status >= 400 ? "broken" : "healthy",
         http_status: res.status,
         final_url: canonicalizeUrl(res.url) || res.url,
-        error: null,
+        error: botBlocked ? "bot_challenge_redirect" : null,
         canonical_url: canonical,
       };
     } catch (e) {
@@ -141,11 +148,12 @@ async function verifyUrl(url, timeoutMs) {
       if (method === "HEAD") continue;
       try {
         const fallback = await fetch(canonical, { method: "GET", redirect: "follow" });
+        const botBlocked = hasBotChallengeUrl(fallback.url);
         return {
-          status: fallback.status >= 400 ? "broken" : "healthy",
+          status: botBlocked ? BOT_BLOCKED_STATUS : fallback.status >= 400 ? "broken" : "healthy",
           http_status: fallback.status,
           final_url: canonicalizeUrl(fallback.url) || fallback.url,
-          error: null,
+          error: botBlocked ? "bot_challenge_redirect" : null,
           canonical_url: canonical,
         };
       } catch (fallbackError) {
@@ -214,11 +222,21 @@ async function verifyUrlWithBrowser(context, url, timeoutMs) {
     const httpStatus = response ? response.status() : null;
     const bodyText = await page.evaluate(() => document.body?.innerText || "").catch(() => "");
     const title = await page.title().catch(() => "");
-    const botBlocked = detectBotChallenge(`${title} ${bodyText.slice(0, 2000)}`);
+    let knownAtsAutomationBlock = false;
+    try {
+      knownAtsAutomationBlock =
+        httpStatus === 403 && baseDomain(new URL(page.url()).hostname) === "interviewexchange.com";
+    } catch {
+      /* page.url() can be non-HTTP after a failed navigation */
+    }
+    const botBlocked =
+      hasBotChallengeUrl(page.url()) ||
+      detectBotChallenge(`${title} ${bodyText.slice(0, 2000)}`) ||
+      knownAtsAutomationBlock;
 
     const healthy = httpStatus !== null && httpStatus < 400 && !botBlocked;
     return {
-      status: healthy ? "healthy" : "broken",
+      status: botBlocked ? BOT_BLOCKED_STATUS : healthy ? "healthy" : "broken",
       http_status: httpStatus,
       final_url: canonicalizeUrl(page.url()) || page.url(),
       error: botBlocked ? "bot_challenge_page" : healthy ? null : `http_${httpStatus ?? "unknown"}`,
@@ -241,8 +259,10 @@ async function verifyUrlWithBrowser(context, url, timeoutMs) {
 
 function mergeInstitutionRows(configured, overridesMap) {
   const rows = [];
+  const included = new Set();
   for (const c of configured) {
     const key = normalizeNameKey(c.name);
+    included.add(key);
     const ov = overridesMap.get(key);
     const homepage_url = canonicalizeUrl(ov?.homepage_url || c.career_url);
     const career_url = canonicalizeUrl(ov?.career_url || c.career_url);
@@ -253,6 +273,21 @@ function mergeInstitutionRows(configured, overridesMap) {
       career_url,
       override_applied: Boolean(ov),
       override_notes: ov?.notes || null,
+    });
+  }
+  // System-wide scrapers (CSU, USG, TCSG) intentionally omit many individual
+  // campuses from server.js's per-campus arrays. Still verify explicit career
+  // overrides for those institutions; otherwise stale "unchecked"/"invalid"
+  // states can survive forever even after a correct URL has been supplied.
+  for (const [key, ov] of overridesMap) {
+    if (included.has(key) || !ov.career_url) continue;
+    rows.push({
+      name: ov.name,
+      platform_type: clean(ov.platform_type || inferPlatformFromUrl(ov.career_url) || "generic"),
+      homepage_url: canonicalizeUrl(ov.homepage_url || ov.career_url),
+      career_url: canonicalizeUrl(ov.career_url),
+      override_applied: true,
+      override_notes: ov.notes || null,
     });
   }
   return rows;
@@ -408,8 +443,8 @@ async function main() {
     const v = verdicts.get(key);
     const prev = previous.get(key);
     const prevFails = Number(prev?.consecutive_failures || 0);
-    const fails = v.status === "healthy" ? 0 : prevFails + 1;
-    const quarantined = fails >= quarantineThreshold;
+    const fails = nextConsecutiveFailures(prevFails, v.status);
+    const quarantined = isHardVerificationFailure(v.status) && fails >= quarantineThreshold;
 
     results.push({
       ...current,
@@ -428,7 +463,8 @@ async function main() {
 
   results.sort((a, b) => a.name.localeCompare(b.name));
 
-  const broken = results.filter((r) => r.verification_status !== "healthy");
+  const broken = results.filter((r) => isHardVerificationFailure(r.verification_status));
+  const botBlocked = results.filter((r) => r.verification_status === BOT_BLOCKED_STATUS);
   const quarantined = results.filter((r) => r.quarantined);
 
   const payload = {
@@ -448,9 +484,10 @@ async function main() {
       checked: results.length,
       healthy: results.filter((r) => r.verification_status === "healthy").length,
       broken: broken.length,
+      botBlocked: botBlocked.length,
       quarantined: quarantined.length,
       rescuedByBrowser,
-      botBlocked: botBlockedCount,
+      botBlockedDetectedThisRun: botBlockedCount,
     },
     institutions: results,
   };
@@ -511,6 +548,7 @@ async function main() {
 
   console.log(`Checked ${payload.counts.checked} institution career URLs`);
   console.log(`Healthy: ${payload.counts.healthy}`);
+  console.log(`Bot-blocked (not treated as broken): ${payload.counts.botBlocked}`);
   console.log(`Broken: ${payload.counts.broken}`);
   console.log(`Quarantined: ${payload.counts.quarantined}`);
   if (browserFallbackEnabled) {

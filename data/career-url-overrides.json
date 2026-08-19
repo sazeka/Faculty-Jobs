@@ -331,6 +331,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
     },
     {
+      "name": "Atlanta Technical College",
+      "homepage_url": "https://www.atlantatech.edu/",
+      "career_url": "https://www.tcsg.edu/about-tcsg/system-office-services/employment-opportunities/",
+      "platform_type": "generic",
+      "notes": "Atlanta Technical College is covered by the TCSG system-wide faculty scraper. TCSG's official Employment Opportunities page explicitly lists jobs for its system office and all 22 colleges, so use it instead of the college homepage for link health."
+    },
+    {
       "name": "Arkansas Northeastern College",
       "homepage_url": "https://www.anc.edu/",
       "career_url": "https://www.anc.edu/jobs",
@@ -833,6 +840,13 @@
       "career_url": "https://careers.csudh.edu/en-us/filter/?work-type=instructional+faculty+-+temporary%2Flecturer&work-type=non-instructional+faculty+(coach%2Fcounselor%2Flibrarian)",
       "platform_type": "pageup",
       "notes": "Configured career_url was the bare homepage (0 scrapeable listings). CSUDH runs its own campus-specific PageUp instance (careers.csudh.edu), separate from the CSU system-wide board -- routed to its Faculty work-type filter. Verified live: 33 \"Instructional Faculty - Temporary/Lecturer\" postings (all titled \"Temporary Faculty Pool, <Dept>\", correctly excluded by omitAdjunct()'s \"temporary\" rule) + 5 \"Non-Instructional Faculty (Coach/Counselor/Librarian)\" postings (coach/counselor titles that don't contain faculty-keyword wording, so won't pass looksFacultyish() either) + 0 in \"Instructional Faculty \u2013 Tenured/Tenure-track\" right now. Net today: 0 real faculty jobs captured, but the URL/platform are now correct instead of pointing at a homepage that can never show anything -- will start surfacing real postings the moment a tenure-track/lecturer req opens that isn't titled \"Temporary...\"."
+    },
+    {
+      "name": "California State University Maritime Academy",
+      "homepage_url": "https://www.csum.edu/",
+      "career_url": "https://jobs.csum.edu/en-us/listing/",
+      "platform_type": "pageup",
+      "notes": "The former homepage URL could never expose openings. Cal Maritime's official PageUp listing is live; employment positions transitioned to Cal Poly after the institutions integrated, but this campus-specific board remains the authoritative listing page."
     },
     {
       "name": "California State University-Monterey Bay",
@@ -1801,6 +1815,13 @@
       "notes": "Configured career_url was the bare homepage; the real employment page (server-rendered HTML, not JS) lists postings directly and hands off to ADP for full applicant portals. Verified live: 2 postings, \"Mental Health Nursing Adjunct Instructor\" and \"Adjunct Professor (Multiple Positions)\", not excluded by omitAdjunct()."
     },
     {
+      "name": "Conway School of Landscape Design",
+      "homepage_url": "https://csld.edu/",
+      "career_url": "https://csld.edu/people/",
+      "platform_type": "generic",
+      "notes": "The former /people/job-openings path returns 404. The school's current People page contains its Job Openings section; it may legitimately yield zero faculty jobs when only staff openings are posted."
+    },
+    {
       "name": "Cornell College",
       "homepage_url": "https://www.cornellcollege.edu/",
       "career_url": "https://recruiting2.ultipro.com/COR1036CORN/JobBoard/30d770d7-3983-4bf1-867a-479db251bad8",
@@ -2198,6 +2219,13 @@
       "career_url": "https://www.eccc.edu/employment",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery (community colleges); verified live, 2 faculty postings (real scrape filters to faculty)."
+    },
+    {
+      "name": "East Georgia State College",
+      "homepage_url": "https://www.ega.edu/",
+      "career_url": "https://www.ega.edu/about/departments/human-resources/job-opportunities.html",
+      "platform_type": "generic",
+      "notes": "East Georgia is scraped through the University System of Georgia feed. Its official HR Job Opportunities page replaces the homepage-only career URL and links applicants to current openings."
     },
     {
       "name": "East Stroudsburg University",
@@ -2683,6 +2711,13 @@
       "notes": "Was pointing at the homepage (0 jobs). Discovered via manual research; verified live (3 faculty postings, e.g. English Instructor, Economics Adjunct Faculty, of 7 total openings) on Team Georgia Careers agency-filtered to this college."
     },
     {
+      "name": "Georgia Piedmont Technical College",
+      "homepage_url": "https://www.gptc.edu/",
+      "career_url": "https://www.gptc.edu/about-us/careers",
+      "platform_type": "generic",
+      "notes": "Georgia Piedmont is covered by the TCSG system-wide faculty scraper. Its official Careers page replaces the homepage-only URL and links to current full-time and adjunct opportunities."
+    },
+    {
       "name": "Gonzaga University",
       "homepage_url": "https://www.gonzaga.edu/about/offices-services/human-resources/careers",
       "career_url": "https://employment.gonzaga.edu/",
@@ -2744,6 +2779,13 @@
       "career_url": "https://facultyjobs.jhu.edu/",
       "platform_type": "generic",
       "notes": "Old jobs.jhu.edu/search-jobs?acm=ALL now redirects to careers.jhu.edu (general staff/HR hub, mostly non-faculty). Dedicated faculty board at facultyjobs.jhu.edu is live with 175-218+ postings depending on filter (custom site, applications route to Interfolio dossier)."
+    },
+    {
+      "name": "Johnson & Wales University-Charlotte",
+      "homepage_url": "https://www.jwu.edu/campuses/charlotte/",
+      "career_url": "https://jobs.jwu.edu/",
+      "platform_type": "pageup",
+      "notes": "The former /faculty/jobs URL returns 404. JWU's official employment landing page routes applicants to this shared PageUp board, which redirects to /en-us/listing/ and serves current openings for all campuses, including Charlotte."
     },
     {
       "name": "Johnson & Wales University-Providence",
@@ -2856,6 +2898,13 @@
       "career_url": "https://apply.workable.com/middleburycollege",
       "platform_type": "generic",
       "notes": "Was pointing at the Institute's homepage; route to Middlebury's Workable careers board (linked as 'Employment'). Verified live: 'Faculty' category shows 8 open positions at time of check. Caveat: board is shared across all Middlebury College/Institute campuses and schools, not filtered to the Monterey Institute specifically."
+    },
+    {
+      "name": "Linfield University",
+      "homepage_url": "https://www.linfield.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/portal/F16D49EDEBF447BF71AEBC32D5AF6AB5/career-page",
+      "platform_type": "paycom",
+      "notes": "The former careers.linfield.edu host no longer resolves. Linfield's official Employment Opportunities page embeds this Paycom portal; validated live with HTTP 200."
     },
     {
       "name": "Minnesota State System",
@@ -3059,6 +3108,13 @@
       "career_url": "https://risd.wd5.myworkdayjobs.com/RISD",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (5 faculty postings)."
+    },
+    {
+      "name": "Rice University",
+      "homepage_url": "https://www.rice.edu/",
+      "career_url": "https://vpaa.rice.edu/faculty/open-positions",
+      "platform_type": "rice-faculty",
+      "notes": "The former jobs.rice.edu/postings/search endpoint returns 404. Rice HR directs faculty applicants to this official VPAA Open Positions page, whose public JSON feed supplies current positions and stable Interfolio IDs; a dedicated feed adapter avoids treating navigation links as jobs."
     },
     {
       "name": "Rider University",

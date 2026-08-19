@@ -2,6 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { isHardVerificationFailure } from "./lib/link-verdict.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,7 +69,7 @@ function main() {
       continue;
     }
 
-    if (String(row.verification_status) !== "healthy") {
+    if (isHardVerificationFailure(String(row.verification_status))) {
       failures.push({
         school: row.name,
         reason: row.verification_status || "unhealthy",

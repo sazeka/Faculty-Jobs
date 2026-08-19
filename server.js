@@ -83,6 +83,7 @@ import { fileURLToPath, pathToFileURL } from "url";
 import { chromium } from "playwright";
 import { createHash } from "crypto";
 import { extractCsodJobsFromDocument } from "./scripts/lib/csod-extraction.js";
+import { extractRiceFacultyRows } from "./scripts/lib/rice-faculty-extraction.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -13117,6 +13118,13 @@ async function scrapePaycomApi(context, careerUrl, campusName, sourceName) {
   return mapApiJobs(rows, campusName, sourceName);
 }
 
+async function scrapeRiceFacultyApi(_context, _careerUrl, campusName, sourceName) {
+  const payload = await fetchJsonApi(
+    "https://vpaa-api-server-stnkl.ondigitalocean.app/interfolio/faculty-search/open-positions"
+  );
+  return mapApiJobs(extractRiceFacultyRows(payload), campusName, sourceName);
+}
+
 // A career-url override can repoint an institution at a different ATS than its
 // static server.js `type` — e.g. American Baptist College, Chatham University, and
 // Colby College are all configured "generic" but were later discovered to really
@@ -13162,6 +13170,7 @@ const OVERRIDE_PLATFORM_DISPATCH = {
   // differs. This wasn't a testing artifact; it means those 7 institutions'
   // "fixed" overrides from rounds 25-27 hadn't actually been taking effect.
   pageup: (context, url, campusName, sourceName) => scrapePageUpAs(context, url, campusName, sourceName),
+  "rice-faculty": scrapeRiceFacultyApi,
 };
 
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
