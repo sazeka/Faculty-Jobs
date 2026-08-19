@@ -30,6 +30,7 @@ const BOT_CHALLENGE_MARKERS = [
   "please verify you are a human",
   "verify you are human",
   "access denied",
+  "your access to this site has been limited",
   "request unsuccessful. incapsula",
   "your browser is out of date", // Paylocity's non-JS fallback shell
 ];
@@ -224,8 +225,14 @@ async function verifyUrlWithBrowser(context, url, timeoutMs) {
     const title = await page.title().catch(() => "");
     let knownAtsAutomationBlock = false;
     try {
+      const host = new URL(page.url()).hostname;
       knownAtsAutomationBlock =
-        httpStatus === 403 && baseDomain(new URL(page.url()).hostname) === "interviewexchange.com";
+        (httpStatus === 403 && baseDomain(host) === "interviewexchange.com") ||
+        // NYU's CDN alternates between a `?challenge=` response and a bare 405
+        // for this official faculty-search page when it detects automation.
+        // A normal interactive session reaches the same URL and the dedicated
+        // NYU scraper handles its Interfolio listings.
+        (httpStatus === 405 && /(^|\.)nyu\.edu$/i.test(host));
     } catch {
       /* page.url() can be non-HTTP after a failed navigation */
     }

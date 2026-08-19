@@ -1025,7 +1025,6 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Citrus College", type: "generic", url: "https://www.citruscollege.edu/" },
   { campus: "City College of San Francisco", type: "generic", url: "https://www.ccsf.edu/about-ccsf/administration/human-resources/jobs-ccsf" },
   { campus: "Claremont Lincoln University", type: "generic", url: "https://claremontlincoln.edu/careers-at-clu" },
-  { campus: "Claremont School of Theology", type: "generic", url: "https://www.cst.edu/" },
   { campus: "Clovis Community College", type: "generic", url: "https://www.cloviscollege.edu/" },
   { campus: "Coast Community College District Office", type: "generic", url: "https://www.cccd.edu/employment/index.html" },
   { campus: "Coastline Community College", type: "generic", url: "https://www.coastline.edu/" },
@@ -3806,7 +3805,6 @@ const OH_CAMPUSES = [
   // peopleadmin.com hostname, so hand-off never fired. query_position_type_id[]=3
   // confirmed live as "Faculty Jobs" (id 4 = "Adjunct Faculty").
   { campus: "Ashland University", type: "peopleadmin", url: "https://jobs.ashland.edu/postings/search?query_position_type_id%5B%5D=3&commit=Search" },
-  { campus: "Athenaeum of Ohio", type: "generic", url: "https://www.athenaeum.edu/" },
   // Was pointing at the bare homepage. Real employment page is
   // /inside-aultman/employment/job-opportunities, which links out to the
   // shared Aultman Health System careers portal (a HealthcareSource/symplr

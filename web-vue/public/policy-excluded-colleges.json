@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-19T19:22:19.243Z",
+  "generatedAt": "2026-08-19T19:30:04.417Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 108,
+  "count": 111,
   "colleges": [
     "Academy for Jewish Religion California",
     "Academy of Chinese Culture and Health Sciences",
@@ -28,6 +28,7 @@
     "Arkansas State University-Mountain Home",
     "Ascent College",
     "Associated Beth Rivkah Schools",
+    "Athenaeum of Ohio",
     "Atlantic Institute of Oriental Medicine",
     "Bacone College",
     "Bais HaMedrash and Mesivta of Baltimore",
@@ -69,6 +70,7 @@
     "Cincinnati College of Mortuary Science",
     "City Colleges of Chicago-District Office",
     "City University of Seattle",
+    "Claremont School of Theology",
     "Clark University",
     "Colorado State University-System Office",
     "Commonwealth Technical Institute",
@@ -81,6 +83,7 @@
     "Digital Media Institute",
     "Downey Adult School",
     "Dragon Rises College of Oriental Medicine",
+    "East Georgia State College",
     "Eastern Nazarene College",
     "Eden Theological Seminary",
     "Emmanuel College",
@@ -318,6 +321,15 @@
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/careers, /jobs, /employment, /employment-opportunities all 404).",
       "sources": [
         "https://www.bethrivkah.edu/"
+      ]
+    },
+    {
+      "college": "Athenaeum of Ohio",
+      "platform_type": "generic",
+      "career_url": "https://www.athenaeum.edu/",
+      "reason": "Excluded (2026-08-19): the institution now operates as Mount St. Mary's Seminary & School of Theology, and a live review of the official site found no careers, employment, or faculty-openings page. The configured homepage is not a hiring destination.",
+      "sources": [
+        "https://www.athenaeum.edu/"
       ]
     },
     {
@@ -692,6 +704,16 @@
       ]
     },
     {
+      "college": "Claremont School of Theology",
+      "platform_type": "generic",
+      "career_url": "https://www.cst.edu/",
+      "reason": "Excluded (2026-08-19): the active institution's official site exposes employee resources and an HR contact but no careers, employment, jobs, or faculty-openings page. The configured homepage is not a hiring destination.",
+      "sources": [
+        "https://cst.edu/",
+        "https://cst.edu/diversity-and-inclusion/"
+      ]
+    },
+    {
       "college": "Clark University",
       "platform_type": "interviewexchange",
       "career_url": "https://clarku.interviewexchange.com/static/clients/569CUM1/index.jsp",
@@ -799,6 +821,16 @@
       "reason": "Excluded (2026-08-12): no usable careers URL found. Full sitemap crawl of dragonrises.edu shows no careers/employment/jobs page anywhere; only a student-outcomes 'career-pathways' page. Small institution (<25 employees).",
       "sources": [
         "https://www.dragonrises.edu/"
+      ]
+    },
+    {
+      "college": "East Georgia State College",
+      "platform_type": "generic",
+      "career_url": "https://www.ega.edu/about/departments/human-resources/job-opportunities.html",
+      "reason": "Excluded (2026-08-19): the Board of Regents gave final approval to consolidate East Georgia State College into Georgia Southern University effective January 1, 2026. The former institution and its campuses now operate under the Georgia Southern University name and no longer hire independently.",
+      "sources": [
+        "https://www.usg.edu/news/release/regents-give-final-approval-for-georgia-southern-universityeast-georgia-state-college-consolidation/",
+        "https://www.georgiasouthern.edu/consolidation/faq"
       ]
     },
     {
