@@ -1,12 +1,13 @@
 {
-  "generatedAt": "2026-08-19T07:29:29.478Z",
+  "generatedAt": "2026-08-19T16:52:09.613Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 102,
+  "count": 108,
   "colleges": [
     "Academy for Jewish Religion California",
+    "Academy of Chinese Culture and Health Sciences",
     "Acupuncture and Integrative Medicine College-Berkeley",
     "Adelphi University",
     "Agora University",
@@ -50,17 +51,21 @@
     "Boise Bible College",
     "Bolivar Technical College",
     "Boston Baptist College",
+    "Boston Graduate School of Psychoanalysis Inc",
+    "Bridges Christian College",
     "Bristol Community College",
     "Byzantine Catholic Seminary of Saints Cyril and Methodius",
     "Cabarrus College of Health Sciences",
     "California Institute of Integral Studies",
     "California Institute of Technology",
+    "California State University-Chancellors Office",
     "Cape Cod Community College",
     "Cayuga County Community College",
     "CBD College",
     "Central Methodist University-College of Graduate and Extended Studies",
     "Central Yeshiva Tomchei Tmimim Lubavitz",
     "Charlotte Christian College and Theological Seminary",
+    "Christ Mission College",
     "Cincinnati College of Mortuary Science",
     "City Colleges of Chicago-District Office",
     "City University of Seattle",
@@ -80,6 +85,7 @@
     "Eden Theological Seminary",
     "Emmanuel College",
     "Epic Bible College & Graduate School",
+    "Faith International University",
     "Family of Faith Christian University",
     "Fashion Institute of Technology",
     "Fitchburg State University",
@@ -117,6 +123,15 @@
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (checked homepage, /faculty/jobs, /careers, /employment -- all 404 or absent from nav).",
       "sources": [
         "https://www.ajrca.edu/"
+      ]
+    },
+    {
+      "college": "Academy of Chinese Culture and Health Sciences",
+      "platform_type": "generic",
+      "career_url": "https://www.acchs.edu/faculty/jobs",
+      "reason": "Excluded (2026-08-19): no usable careers/employment page found anywhere on the institution's site after live investigation (checked homepage nav/footer -- no careers/employment/jobs link at all; /faculty/jobs and /employment/ both 404). Small single-campus TCM graduate school with no discoverable HR presence.",
+      "sources": [
+        "https://www.acchs.edu/"
       ]
     },
     {
@@ -514,6 +529,24 @@
       ]
     },
     {
+      "college": "Boston Graduate School of Psychoanalysis Inc",
+      "platform_type": "generic",
+      "career_url": "https://www.bgsp.edu/",
+      "reason": "Excluded (2026-08-19): no usable careers/employment page found anywhere on the institution's site after live investigation -- the only /employment page found is about international-student visa work rules, not institutional hiring; no jobs/careers nav link exists. Tiny single-program psychoanalytic training institute (~2 FTE faculty) with no discoverable HR presence.",
+      "sources": [
+        "https://www.bgsp.edu/"
+      ]
+    },
+    {
+      "college": "Bridges Christian College",
+      "platform_type": "generic",
+      "career_url": "https://www.bcc.edu/",
+      "reason": "Excluded (2026-08-19): no usable careers/employment page found anywhere on the institution's site after live investigation (/careers 404s, no employment link in nav/footer, no third-party job board listings). Tiny (~108 students) fully-online ministry-model theological school with no discoverable public faculty-hiring pipeline.",
+      "sources": [
+        "https://www.bcc.edu/"
+      ]
+    },
+    {
       "college": "Bristol Community College",
       "platform_type": "interviewexchange",
       "career_url": "https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp",
@@ -557,6 +590,15 @@
       "sources": [
         "https://www.oracle.com/legal/terms.html",
         "https://www.oracle.com/human-capital-management/taleo/"
+      ]
+    },
+    {
+      "college": "California State University-Chancellors Office",
+      "platform_type": "generic",
+      "career_url": "https://www.calstate.edu/",
+      "reason": "Excluded (2026-08-19): this is the CSU system administrative office (Long Beach), not a degree-granting campus -- is_degree_granting is unset/unmatched in IPEDS. Confirmed via the Chancellor's Office's own hiring info: it hires only executive/administrative/IT/legal/finance staff supporting the 23-campus system and explicitly does not hire faculty; all CSU faculty hiring happens independently at each of the 23 individual campuses, which are already tracked as their own separate institutions in this dataset.",
+      "sources": [
+        "https://www.calstate.edu/"
       ]
     },
     {
@@ -611,6 +653,15 @@
       "reason": "Excluded (2026-08-06): no usable careers/employment page found after live investigation -- the homepage's own \"Career Path\" footer link is miswired to the privacy-policy page, and every guessed path 404s.",
       "sources": [
         "https://www.charlottechristian.edu/"
+      ]
+    },
+    {
+      "college": "Christ Mission College",
+      "platform_type": "generic",
+      "career_url": "https://cmctx.edu/",
+      "reason": "Excluded (2026-08-19): no usable careers/employment page found anywhere on the institution's site after live investigation -- nav has no HR/jobs link (only a Student/Faculty portal login and one unrelated 'Employer Reference' PDF); no third-party job board (Indeed, ZipRecruiter, LinkedIn, HigherEdJobs) has any listings either. Tiny single-campus Bible college in San Antonio, TX still pursuing initial accreditation, with no discoverable HR presence.",
+      "sources": [
+        "https://cmctx.edu/"
       ]
     },
     {
@@ -787,6 +838,15 @@
       ]
     },
     {
+      "college": "Faith International University",
+      "platform_type": "generic",
+      "career_url": "https://www.faithiu.edu/",
+      "reason": "Excluded (2026-08-19): no usable careers/employment page found anywhere on the institution's site after live investigation (checked homepage nav/footer -- only a staff/faculty directory page exists, no jobs content; /employment 404s). Small single-campus Bible college/seminary with no discoverable HR presence.",
+      "sources": [
+        "https://www.faithiu.edu/"
+      ]
+    },
+    {
       "college": "Family of Faith Christian University",
       "platform_type": "generic",
       "career_url": "https://www.familyoffaith.edu/",
@@ -909,7 +969,10 @@
       "platform_type": "generic",
       "career_url": "https://independentrabbinicalcolleges.org/index.html",
       "reason": "Excluded (2026-08-12): no stable official website exists. telsheyeshiva.org/.edu redirect to a Cardknox donation gateway, not an institutional site; telsheyeshiva.pages.dev is an unofficial fan-built mirror with no jobs page. No HR presence found.",
-      "sources": []
+      "sources": [
+        "https://nces.ed.gov/collegenavigator/?id=205124",
+        "https://independentrabbinicalcolleges.org/index.html"
+      ]
     },
     {
       "college": "Riveroak Technical College",
