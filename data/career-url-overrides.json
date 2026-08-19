@@ -2181,9 +2181,9 @@
     {
       "name": "East Stroudsburg University",
       "homepage_url": "https://esu.csod.com/ats/careersite/search.aspx?site=1&c=esu",
-      "career_url": "https://esu.csod.com/ux/ats/careersite/1/home/requisition/8301?c=esu",
+      "career_url": "https://esu.csod.com/ats/careersite/search.aspx?site=1&c=esu",
       "platform_type": "csod",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+      "notes": "Configured career_url pointed at one specific, now-dead CSOD job requisition; the general search page was already sitting in homepage_url. Swapped it in. This also surfaced a real underlying scraper bug (fixed in server.js this round): ESU's CSOD tenant is a legacy ASP.NET WebForms UI whose job-title links are javascript:WebForm_DoPostBackWithOptions(...) postback stubs, not real hrefs -- scrapeNjCsod's URL-matching regexes never recognized the embedded JobDetails.aspx?site=X&id=Y path, so every posting silently vanished regardless of which CSOD URL was configured. Verified live: 1 real posting (\"CY Chemistry & Biochemistry Adjunct Pool\"), not excluded by omitAdjunct()."
     },
     {
       "name": "East Stroudsburg University of Pennsylvania",
