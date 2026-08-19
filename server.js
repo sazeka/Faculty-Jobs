@@ -82,6 +82,7 @@ import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import { chromium } from "playwright";
 import { createHash } from "crypto";
+import { extractCsodJobsFromDocument } from "./scripts/lib/csod-extraction.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -9561,47 +9562,7 @@ async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
 
     // Helper to extract jobs from current page
     const extractJobs = async () => {
-      return await page.evaluate(() => {
-        const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-        const abs = (href) => {
-          try {
-            return new URL(href, location.href).toString();
-          } catch {
-            return null;
-          }
-        };
-
-        const out = [];
-        const seen = new Set();
-
-        const extractDept = (container) => {
-          const txt = clean(container?.innerText || "");
-          const m =
-            txt.match(/\b(?:Department|College|School|Division|Program|Unit)\s*:?\s*([^\n•|]{3,90})/i) ||
-            txt.match(/\b(?:Academic\s+Unit)\s*:?\s*([^\n•|]{3,90})/i);
-          return m ? clean(m[1]) : null;
-        };
-
-        for (const a of Array.from(document.querySelectorAll("a[href]"))) {
-          const url = abs(a.getAttribute("href"));
-          const title = clean(a.textContent);
-          if (!url || !title || title.length < 4) continue;
-
-          const ok =
-            /\/job\//i.test(url) ||
-            /ats\/job/i.test(url) ||
-            (/career/i.test(url) && /job/i.test(url)) ||
-            /\/requisition\/\d+/i.test(url) ||
-            (/ux\/ats\/careersite/i.test(url) && /requisition/i.test(url));
-          if (!ok) continue;
-
-          if (seen.has(url)) continue;
-          seen.add(url);
-          const container = a.closest("li, article, tr, div") || a.parentElement;
-          out.push({ title, url, dept: extractDept(container) });
-        }
-        return out;
-      });
+      return await page.evaluate(extractCsodJobsFromDocument);
     };
 
     // Collect all jobs including pagination (UNM style page numbers)
@@ -9646,46 +9607,9 @@ async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
       if (newCount === 0) break;
     }
 
-const jobs = allJobs.length > 0 ? allJobs : await page.evaluate(() => {
-      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
-      const abs = (href) => {
-        try {
-          return new URL(href, location.href).toString();
-        } catch {
-          return null;
-        }
-      };
-
-      const out = [];
-      const seen = new Set();
-
-      const extractDept = (container) => {
-        const txt = clean(container?.innerText || "");
-        const m =
-          txt.match(/\b(?:Department|College|School|Division|Program|Unit)\s*:?\s*([^\n•|]{3,90})/i) ||
-          txt.match(/\b(?:Academic\s+Unit)\s*:?\s*([^\n•|]{3,90})/i);
-        return m ? clean(m[1]) : null;
-      };
-
-      for (const a of Array.from(document.querySelectorAll("a[href]"))) {
-        const url = abs(a.getAttribute("href"));
-        const title = clean(a.textContent);
-        if (!url || !title || title.length < 4) continue;
-
-        const ok =
-        /\/job\//i.test(url) ||
-        /ats\/job/i.test(url) ||
-        (/career/i.test(url) && /job/i.test(url)) ||
-        /\/requisition\/\d+/i.test(url) ||
-        (/ux\/ats\/careersite/i.test(url) && /requisition/i.test(url));if (!ok) continue;
-
-        if (seen.has(url)) continue;
-        seen.add(url);
-        const container = a.closest("li, article, tr, div") || a.parentElement;
-        out.push({ title, url, dept: extractDept(container) });
-      }
-      return out;
-    });
+    const jobs = allJobs.length > 0
+      ? allJobs
+      : await page.evaluate(extractCsodJobsFromDocument);
 
     const filtered = jobs.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
