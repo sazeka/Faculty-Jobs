@@ -968,13 +968,6 @@
       "notes": "Configured /faculty/jobs 404s; the college's real employment page links to this ctclink (PeopleSoft, shared WA state community/technical college HR system) job search, scoped to Cascadia College via SiteId=300. Verified live after clicking 'View All Jobs': 48 postings, including a Quarterly Part-Time Associate Faculty - Atmospheric Sciences role. Note: this ctclink page loads only a search shell on initial page view; a click/search step is needed to populate listings, so a scraper would need to handle that. Bucket B round 24: platform_type synced from generic to peoplesoft-fluid to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 46 results after the 'View All Jobs' click, all correctly scoped, but all titled 'Quarterly Part Time Associate Faculty - <subject>' -- correctly excluded by the shared omitAdjunct filter, genuinely 0 current qualifying postings. Bucket B round 24: platform_type synced from generic to peoplesoft-fluid to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 46 results after the 'View All Jobs' click, all correctly scoped, but all titled 'Quarterly Part Time Associate Faculty - <subject>' -- correctly excluded by the shared omitAdjunct filter, genuinely 0 current qualifying postings."
     },
     {
-      "name": "Casper College",
-      "homepage_url": "https://www.caspercollege.edu/",
-      "career_url": "https://www.schooljobs.com/careers/caspercollege",
-      "platform_type": "schooljobs",
-      "notes": "Configured HR landing page links out to this NEOGOV/schooljobs portal instead of hosting listings itself. Verified live: faculty posting present (Adjunct Faculty - World Languages (Spanish)) among current openings."
-    },
-    {
       "name": "Catawba College",
       "homepage_url": "https://www.catawba.edu/",
       "career_url": "https://www.catawba.edu/jobs/",
@@ -1012,9 +1005,9 @@
     {
       "name": "Cedar Crest College",
       "homepage_url": "https://www.cedarcrest.edu/",
-      "career_url": "https://www.cedarcrest.edu/about/human-resources/",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/portal/62D4FBF25A09F3EBE58345A7B7B899F9/career-page",
+      "platform_type": "paycom",
+      "notes": "Configured career_url was a generic HR informational page with no listings, just a link out to Paycom. Routed there directly. Verified live: 7 total postings, including \"Occupational Therapy Faculty\" (full-time, Assistant/Associate Professor rank) -- not excluded by omitAdjunct()."
     },
     {
       "name": "Cedarville University",
@@ -1467,9 +1460,9 @@
     {
       "name": "Coastal Alabama Community College",
       "homepage_url": "https://www.coastalalabama.edu/",
-      "career_url": "https://www.schooljobs.com/careers/accs/coastal",
+      "career_url": "https://www.schooljobs.com/careers/accs/coastal/promotionaljobs",
       "platform_type": "schooljobs",
-      "notes": "Old URL is a hub page listing job categories with no parseable postings table. Replaced with the direct schooljobs.com listing linked from that hub. Verified 7 postings incl. Instructor - Nursing (Atmore/Brewton) and Instructor - Nursing (Bay Minette). Note: schooljobs.com/careers/coastalalabama (similar name) is a stale full-time-only filter showing 0 jobs -- do not use that one."
+      "notes": "Configured career_url shows only the \"Full-Time Faculty and Staff\" category, which is currently 0 -- Coastal Alabama's actual current openings are all filed under the separate \"Part-Time Faculty/Adjunct Positions\" (/promotionaljobs) view, same category-split pattern as Alabama State/Cabrillo/Chattahoochee Valley. Verified live: 15 postings, e.g. \"Instructor (Adjunct)- Art\", \"Instructor (Adjunct)- Biology\" -- not excluded by omitAdjunct() since the titles don't say \"part-time\"/\"pt\"/\"temp\". CAVEAT: flaky against the scraper's fixed post-load wait, same family of issue as other ACCS/schooljobs tenants this project has hit -- 1 of 3 test runs this session returned 0."
     },
     {
       "name": "Coastal Pines Technical College",
@@ -1554,13 +1547,6 @@
       "career_url": "https://www.csn.edu/about-us/careers",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (70 faculty postings)."
-    },
-    {
-      "name": "College of the Albemarle",
-      "homepage_url": "https://www.albemarle.edu/",
-      "career_url": "https://www.governmentjobs.com/careers/albemarleedu",
-      "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
     },
     {
       "name": "College of the Canyons",
@@ -1696,13 +1682,6 @@
       "notes": "Old career_url was the bare homepage. Found a dedicated employment page on the college's own domain backed by a Paycom widget. Bot-protection blocked full verification of live count in this pass; a third-party job-board mirror confirms at least one recent faculty posting (Bookkeeping and Accounting Instructor) sourced from this channel. Recommend a follow-up browser-based recheck."
     },
     {
-      "name": "Community College of Baltimore County",
-      "homepage_url": "https://www.ccbcmd.edu/",
-      "career_url": "https://www.schooljobs.com/careers/ccbcmd/fulltimefaculty",
-      "platform_type": "schooljobs",
-      "notes": "Was pointing at ccbcmd.edu/jobs, a landing page with category buttons but no listed postings; route directly to the Full-Time Faculty search on their NEOGOV/schooljobs portal (linked from that page). Verified live: 5 jobs found, all faculty (Aviation Faculty 10-Month, Civil-Survey Engineering Faculty, Digital Media Production Faculty, Nursing Faculty Medical-Surgical, Nursing Program Director)."
-    },
-    {
       "name": "Community College of Beaver County",
       "homepage_url": "https://www.ccbc.edu/",
       "career_url": "https://ccbc.edu/employment/",
@@ -1792,6 +1771,13 @@
       "career_url": "https://www.schooljobs.com/careers/cmccd",
       "platform_type": "schooljobs",
       "notes": "Was pointing at the bare homepage; route to their NEOGOV/schooljobs portal. Verified live: 18 jobs found, 7 instructor-titled (Adult Education, Astronomy, Chemistry, CIS, Construction Trades, EMT, and Noncredit ESL instructors, all part-time faculty)."
+    },
+    {
+      "name": "Corban University",
+      "homepage_url": "https://www.corban.edu/",
+      "career_url": "https://www.corban.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Configured career_url was the bare homepage; the real employment page (server-rendered HTML, not JS) lists postings directly and hands off to ADP for full applicant portals. Verified live: 2 postings, \"Mental Health Nursing Adjunct Instructor\" and \"Adjunct Professor (Multiple Positions)\", not excluded by omitAdjunct()."
     },
     {
       "name": "Cornell College",
@@ -1988,6 +1974,13 @@
       "career_url": "https://davenport.csod.com/ux/ats/careersite/15/home?c=davenport",
       "platform_type": "csod",
       "notes": "Configured career_url pointed at one specific job requisition (/home/requisition/2850), long since expired/closed, rather than the general listing page on the same tenant. davenport.edu/careers links to the same tenant's \"External Candidates\" search page instead. Verified live: 6 postings, e.g. \"Adjunct Faculty-Grand Rapids-Nursing\", \"Adjunct Faculty-Online-Accounting (Casa Latina,Bilingual)\" -- not excluded by omitAdjunct() since none say \"part-time\"."
+    },
+    {
+      "name": "Davidson College",
+      "homepage_url": "https://www.davidson.edu/",
+      "career_url": "https://fa-exci-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2",
+      "platform_type": "oracle",
+      "notes": "Configured Workday tenant is dead (persistent HTTP 500s, not a transient blip) -- Davidson does not run Workday. The real career site (employment.davidson.edu) redirects to an Oracle Cloud HCM instance instead. Verified live: 3 postings, \"Assistant Professor of Chemistry\" and \"Assistant Professor of Sociology\", not excluded by omitAdjunct()."
     },
     {
       "name": "Dawson Community College",
@@ -2515,13 +2508,6 @@
       "notes": "Was pointing at a /careers landing page with only social-media/Handshake links and no embedded listing; route to FSW's SilkRoad careers board. Round 18 update: bare page-1 URL only shows Administrative/Management categories -- real faculty postings live on page 2's 'Faculty' category, and the generic scraper doesn't paginate this platform. Scoped via SilkRoad's own '?SelectedCategory=<id>' query param (same mechanism already proven by the Cameron University record in server.js), category id 36329 = 'Faculty' (found via the page's own category-header element IDs). Verified live: 2 real postings, 'Professor, Early Childhood Education' and 'Professor, Nursing (Lee)'."
     },
     {
-      "name": "Folsom Lake College",
-      "homepage_url": "https://www.flc.losrios.edu/",
-      "career_url": "https://www.schooljobs.com/careers/losriosccd",
-      "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
-    },
-    {
       "name": "Forsyth Technical Community College",
       "homepage_url": "https://www.forsythtech.edu/",
       "career_url": "https://careers.forsythtech.edu/postings/search?sort=225+asc",
@@ -3012,13 +2998,6 @@
       "notes": "Remington's corporate dropdown has only ONE combined 'Houston' entry shared with North Houston (not split per-campus). Internal location facets distinguish 'Houston North' vs 'Houston Southeast'. Currently 1 open req system-wide on this shared page, at Houston Southeast (Admissions Representative, not faculty-titled). Page is live and correctly scoped via location facet."
     },
     {
-      "name": "Remington College-Lafayette Campus",
-      "homepage_url": "https://www.remingtoncollege.edu/",
-      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027239359_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
-      "platform_type": "adp",
-      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 1 current posting (Lab Assistant Program Chair, Lafayette LA - an academic-leadership role)."
-    },
-    {
       "name": "Remington College-Memphis Campus",
       "homepage_url": "https://www.remingtoncollege.edu/",
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027240777_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
@@ -3038,20 +3017,6 @@
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027239827_2&lang=en_US",
       "platform_type": "generic",
       "notes": "Shares the exact same corporate 'Houston' ADP page/ccId as Houston Southeast -- Remington does not give North Houston/Greenspoint its own distinct dropdown entry. Live: the only current req on this shared page is at Houston Southeast, so 0 postings currently tagged to this specific campus. Page/platform is live and working, just no open req for this location right now."
-    },
-    {
-      "name": "Remington College-Online Dallas",
-      "homepage_url": "https://www.remingtoncollege.edu/",
-      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027234110_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
-      "platform_type": "adp",
-      "notes": "Was pointing at a campus location landing page (0 jobs); routed to the dedicated ADP WorkforceNow recruitment feed for the Online/Dallas location listed on the site's careers page. Verified live: 1 current posting (Restaurant Hotel Retail Management - Program Chair, an academic-leadership role)."
-    },
-    {
-      "name": "Remington College-Shreveport Campus",
-      "homepage_url": "https://www.remingtoncollege.edu/",
-      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027242374_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
-      "platform_type": "adp",
-      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: real infrastructure confirmed ('Current Openings (0 of 0)'); 0 current postings at time of check."
     },
     {
       "name": "Rensselaer Polytechnic Institute",
