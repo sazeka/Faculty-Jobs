@@ -15439,6 +15439,15 @@ async function scrapeMnAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MN");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "MN");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "MN");
+        // "schooljobs" was missing from this dispatch chain entirely even though
+        // scrapeSchoolJobsAs already exists and MN_CAMPUSES has a correctly
+        // configured type: "schooljobs" entry (College of Saint Benedict) --
+        // it was silently falling through to the bare `return []` below. Same
+        // shape as the OR dispatch chain's missing "schooljobs" case (round 29,
+        // Chemeketa/Clackamas). Verified live: 2 real faculty postings
+        // (Visiting Assistant Professor of Chemistry, Adjunct Instructor of
+        // Strategic Communications).
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MN");
         return [];
       } catch (e) {

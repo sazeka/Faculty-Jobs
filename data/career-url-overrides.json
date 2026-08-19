@@ -296,6 +296,13 @@
       "notes": "Was pointing at the bare homepage; homepage links to a dedicated Faculty & Staff > Hiring page. Verified live: real, correct dedicated hiring page, but explicitly states 'There are no open positions at this time' -- kept since it's genuine infrastructure that will surface postings when they open, unlike the homepage."
     },
     {
+      "name": "Appalachian State University",
+      "homepage_url": "https://www.appstate.edu/",
+      "career_url": "https://appstate.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search",
+      "platform_type": "peopleadmin",
+      "notes": "Configured career_url (appstate.edu/employment) is a plain HR landing page with no scrapeable listings; the actual PeopleAdmin postings-search URL was sitting unused in the institutions-master.json homepage_url field instead. Routed career_url to that real postings-search URL directly. Verified live: 15 real faculty postings (Practitioner in Residence for the Department of Management, Lowe's Tech Distinguished Professor and Program Director in Cybersecurity, and more)."
+    },
+    {
       "name": "Arcadia University",
       "homepage_url": "https://www.arcadia.edu/",
       "career_url": "https://arcadia.isolvedhire.com/jobsearch/?job_board_classification=faculty",
@@ -375,9 +382,9 @@
     {
       "name": "Asheville-Buncombe Technical Community College",
       "homepage_url": "https://www.abtech.edu/",
-      "career_url": "https://abtech.edu/employment",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery (community colleges); verified live, 19 faculty postings (real scrape filters to faculty)."
+      "career_url": "https://abtcc.peopleadmin.com/postings/search",
+      "platform_type": "peopleadmin",
+      "notes": "Configured career_url (abtech.edu/employment) is a static landing page with no listings -- it links out (via a plain, non-nav anchor easy to miss) to the real PeopleAdmin ATS at abtcc.peopleadmin.com. That tenant's own Position Type filter only offers one combined \"Full-Time Faculty/Staff or Part-Time Staff\" option (no faculty-only filter), so routed to the unfiltered /postings/search board and let the pipeline's own looksFacultyish()/omitAdjunct() filters do the sorting, same as every other scrapePeopleAdminAs caller. Verified live: 145 total postings, 113 faculty-titled (mostly \"Instructor, <subject>\" and \"Adjunct Instructor, <subject>\" -- Dental Assisting, Construction Management, Cosmetology, Dental Hygiene, Paramedic, Math, English, and more), none excluded by omitAdjunct() since they don't say \"part-time\"."
     },
     {
       "name": "Assumption University",
@@ -1528,13 +1535,6 @@
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
     },
     {
-      "name": "College of Saint Benedict",
-      "homepage_url": "https://csbsju.edu/",
-      "career_url": "https://www.schooljobs.com/careers/csbsju/faculty",
-      "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
-    },
-    {
       "name": "College of Southern Idaho",
       "homepage_url": "https://www.csi.edu/",
       "career_url": "https://csi-openhire.silkroad.com/epostings/index.cfm?fuseaction=app.allpositions&company_id=17127&version=1",
@@ -2009,13 +2009,6 @@
       "career_url": "https://dmcjobs.delmar.edu/postings/search",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (9 faculty postings)."
-    },
-    {
-      "name": "Delaware County Community College",
-      "homepage_url": "https://www.dccc.edu/",
-      "career_url": "https://www.schooljobs.com/careers/dccc",
-      "platform_type": "schooljobs",
-      "notes": "Was pointing at the bare homepage; real employment page links to schooljobs.com. Verified live: 36 postings, many adjunct faculty (Adjunct Advanced Manufacturing Technology, Adjunct Allied Health, Adjunct Anatomy & Physiology, Adjunct Automotive, Adjunct Biology, Adjunct Carpentry, Adjunct Chemistry Instructors, and more)."
     },
     {
       "name": "Delaware State University",
