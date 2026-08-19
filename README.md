@@ -3,7 +3,7 @@
 **A scholarly directory of open faculty positions across North American higher education.**
 Free to browse, no account required → **[www.facultyatlas.org](https://www.facultyatlas.org)**
 
-Faculty Atlas aggregates **6,000+ open faculty listings** from **400+ institutions** across **50+ state systems and university networks**, normalizes them into a single searchable catalog, and refreshes automatically every other day.
+Faculty Atlas aggregates **14,000+ open faculty listings** from **1,000+ institutions** across **50+ state systems and university networks**, normalizes them into a single searchable catalog, and refreshes automatically every other day.
 
 ---
 
