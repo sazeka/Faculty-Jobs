@@ -35,8 +35,8 @@ jobs:
       - name: Check for merge conflict markers
         run: npm run verify:no-conflicts
 
-      - name: Install Playwright Chromium (with deps)
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
 
       - name: Verify critical institution career links
         run: npm run verify:career-links -- --critical-only --fail-on-broken --concurrency 4 --timeout 15000
