@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-31T20:48:34.771Z",
+  "updatedAt": "2026-08-19T16:58:06Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -604,6 +604,13 @@
       "notes": "Configured career_url (benedictine.edu/jobs) is the WRONG INSTITUTION's domain entirely -- benedictine.edu is Benedictine College in Atchison, Kansas, a separate school from Benedictine University in Lisle, IL (whose real domain is ben.edu). Benedictine University's own site links to two separate Cornerstone (CSOD) career sites: careersite/5 (non-adjunct Faculty, currently 0 open) and careersite/7 (Adjunct Faculty, live). Routed to site 7 since it's the one with real current content. Verified live: 18 postings, all \"Adjunct Lecturer - <subject>\" titles (British Literature, Theology, Biological Sciences, etc.) -- not excluded by omitAdjunct() since the titles don't say \"part-time\"."
     },
     {
+      "name": "Benjamin Franklin Cummings Institute of Technology",
+      "homepage_url": "https://www.bfit.edu/",
+      "career_url": "https://recruiting.paylocity.com/recruiting/jobs/All/7566732a-4240-4a20-a614-53c85b140700/Benjamin-Franklin-Cummings-Institute-of-Technology",
+      "platform_type": "generic",
+      "notes": "Configured career_url (bfit.edu) redirects to the institution's current domain (franklincummings.edu) but was never a jobs page -- the real board is a Paylocity tenant linked from the current site's Work page. Verified live: 3 postings, e.g. \"Adjunct Lecturer-CIT\", \"Adjunct Lecturer-Building Energy Management\", not excluded by omitAdjunct()."
+    },
+    {
       "name": "Bethel University",
       "homepage_url": "https://www.bethelu.edu/",
       "career_url": "https://www.bethelu.edu/employees/careers",
@@ -700,6 +707,13 @@
       "career_url": "https://www.schooljobs.com/careers/bgsu/faculty",
       "platform_type": "schooljobs",
       "notes": "Was pointing at the HR careers landing page (0 jobs shown directly); that page links to a schooljobs.com/governmentjobs.com (NEOGOV) portal with a dedicated faculty-only filter. Verified live: 3 faculty postings (Assistant Teaching Professor; Assistant Teaching Professor - Nursing; Assistant/Associate Teaching Professor - Nursing)."
+    },
+    {
+      "name": "BridgeValley Community & Technical College",
+      "homepage_url": "https://www.bridgevalley.edu/",
+      "career_url": "https://www.schooljobs.com/careers/bridgevalleyedu",
+      "platform_type": "schooljobs",
+      "notes": "Configured career_url was the bare homepage; real jobs page (offices/hr/jobs.html) hands off to this NEOGOV/schooljobs tenant. Verified live: 16 postings, e.g. \"Medical Laboratory Program Director and Faculty\", \"English Faculty\", not excluded by omitAdjunct()."
     },
     {
       "name": "Brigham Young University-Hawaii",
@@ -840,6 +854,13 @@
       "career_url": "https://jobs.silkroad.com/Cameron/Careers?StartDate=&EndDate=&SearchString=&SelectedCategory=36314&SelectedPositionType=FullTimeRegular#mainContent",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings)."
+    },
+    {
+      "name": "Canada College",
+      "homepage_url": "https://canadacollege.edu/",
+      "career_url": "https://www.communitycollegecareerconnect.com/jobs?jobCreatorName=Ca%C3%B1ada+College",
+      "platform_type": "generic",
+      "notes": "Configured career_url was the bare homepage; the San Mateo County CCD's old NEOGOV-style portal has been superseded by the CA Community Colleges Chancellor's Office's new statewide Community College Career Connect platform, scoped here via its employer-name query param. Verified live: 1 posting, \"French - Associate Instructor\", not excluded by omitAdjunct() since it doesn't say \"part-time\"."
     },
     {
       "name": "Cape Cod Community College",
@@ -1691,9 +1712,9 @@
     {
       "name": "Community College of Philadelphia",
       "homepage_url": "https://www.ccp.edu/",
-      "career_url": "https://www.ccp.edu/about-ccp/news-events/career-opportunities",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery (community colleges); verified live, 3 faculty postings (real scrape filters to faculty)."
+      "career_url": "https://ccp-sb.peopleadmin.com/postings/search?query_position_type_id%5B%5D=1",
+      "platform_type": "peopleadmin",
+      "notes": "The institution's careers landing page hands off to this PeopleAdmin board. Routed directly to the faculty position-type filter so the scraper avoids unrelated staff postings; verified live on 2026-08-19."
     },
     {
       "name": "Community College of Rhode Island",
@@ -1771,6 +1792,13 @@
       "career_url": "https://www.schooljobs.com/careers/cmccd",
       "platform_type": "schooljobs",
       "notes": "Was pointing at the bare homepage; route to their NEOGOV/schooljobs portal. Verified live: 18 jobs found, 7 instructor-titled (Adult Education, Astronomy, Chemistry, CIS, Construction Trades, EMT, and Noncredit ESL instructors, all part-time faculty)."
+    },
+    {
+      "name": "Coppin State University",
+      "homepage_url": "https://www.coppin.edu/",
+      "career_url": "https://marylandconnect.wd1.myworkdayjobs.com/CSU_Careers",
+      "platform_type": "workday",
+      "notes": "Configured career_url was the bare homepage; real ATS is a Coppin-specific (not USM-shared) Workday tenant, titled \"Careers at Coppin\" -- confirmed scoped to this institution only, no misattribution risk. Net today: 0 -- all 5 current openings are staff/police/admin, no faculty-titled postings right now. Applied for correctness."
     },
     {
       "name": "Corban University",
@@ -2146,9 +2174,9 @@
     {
       "name": "Dordt University",
       "homepage_url": "https://www.dordt.edu/",
-      "career_url": "https://ibmxjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/jobs?lastSelectedFacet=CATEGORIES&selectedCategoriesFacet=300000008610535",
+      "career_url": "https://ibmxjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/jobs",
       "platform_type": "oracle",
-      "notes": "Was pointing at the bare homepage; real Job Openings page links to their Oracle Cloud recruiting site's Faculty category. Verified live: real infrastructure, but 0 open jobs in that category at time of check - kept so future faculty postings are picked up."
+      "notes": "Configured career_url was filtered to a specific category facet that's currently empty; the unfiltered view captures whatever's open going forward. Net today: 0 -- current openings (Coach, Graduate Assistant, Executive Director of Marketing) are all non-faculty. Applied for correctness."
     },
     {
       "name": "Drury University",
@@ -2676,6 +2704,13 @@
       "notes": "Configured career_url (govst.edu/employment-opportunities) is a promotional HR landing page with no listings; the real NEOGOV/schooljobs tenant was sitting unused in the homepage_url field instead. Swapped it in. Verified live: 46 postings, mostly \"Adjunct Faculty, <Dept> AY\" titles, not excluded by omitAdjunct() since they don't say \"part-time\"."
     },
     {
+      "name": "Hackensack Meridian School of Medicine",
+      "homepage_url": "https://www.hmsom.edu/en",
+      "career_url": "https://jobs.hackensackmeridianhealth.org/school-of-medicine",
+      "platform_type": "generic",
+      "notes": "Both homepage_url and career_url were the bare marketing homepage, no listings at all -- real board is the parent health system's own careers site, filtered to the School of Medicine. Platform tagged \"generic\" rather than \"icims\": the URL pattern is /job/<location>/<slug>/<reqid>/<atsid> (singular \"job\"), which doesn't match scrapeIcimsAs's narrower selectors (built for genuine icims.com tenants using plural \"/jobs/\" or \"job-\" patterns) -- generic DOM scraping already handles it fine. Verified live: 2 postings, \"Professor - Assistant, Associate, Full\" and \"Faculty Liaison - School of Medicine\", not excluded by omitAdjunct()."
+    },
+    {
       "name": "Harcum College",
       "homepage_url": "https://www.harcum.edu/s/1044/edu/start.aspx",
       "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=2B20FD7642D04B903043BFBC00E7A15E",
@@ -3020,10 +3055,10 @@
     },
     {
       "name": "Rensselaer Polytechnic Institute",
-      "homepage_url": "https://careers.rpi.edu/en-us/filter?job-mail-subscribe-privacy=agree&search-keyword=&work-type=full%20time&category=faculty",
-      "career_url": "https://careers.rpi.edu/jobs/search",
+      "homepage_url": "https://careers.rpi.edu/",
+      "career_url": "https://careers.rpi.edu/jobs/search?category=faculty",
       "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+      "notes": "The homepage_url field's own filtered link (en-us/filter?...category=faculty) 404s; career_url (unfiltered board, 48 mostly-staff postings) buries any faculty results. The site does support a working category filter under a different path. Verified live: 2 postings, \"Lecturer, Sr.\" and \"Aerospace Engineering Faculty (Lecturer, Senior Lecturer, or Professor of Practice)\", not excluded by omitAdjunct()."
     },
     {
       "name": "Rhode Island School of Design",
@@ -3500,6 +3535,13 @@
       "career_url": "https://fa-ewkd-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/USF/job/40752",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (48 faculty postings)."
+    },
+    {
+      "name": "University of Virginia",
+      "homepage_url": "https://jobs.virginia.edu/us/en/uva-faculty-positions",
+      "career_url": "https://apply.interfolio.com/50272/positions",
+      "platform_type": "generic",
+      "notes": "Configured Workday tenant is dead -- the tenant's own page explicitly says \"job postings for this page have been moved,\" pointing to jobs.virginia.edu instead. But UVA's hiring is split across three separate channels there: staff on Workday, faculty wage positions on jobs.virginia.edu itself, and -- critically -- all SALARIED faculty positions on a separate Interfolio tenant. Routed there. Verified live: 1 real posting (\"Academic General Faculty, Technology & Operations Management (TOM)\"), not excluded by omitAdjunct()."
     },
     {
       "name": "Utah Tech University",
