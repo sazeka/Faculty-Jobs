@@ -765,11 +765,18 @@
       "notes": "Discovered via agent-career-discovery (community colleges); verified live, 2 faculty postings (real scrape filters to faculty)."
     },
     {
+      "name": "Butler University",
+      "homepage_url": "https://www.butler.edu/",
+      "career_url": "https://fa-exer-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+      "platform_type": "oracle",
+      "notes": "Configured Workday tenant (butler.wd5.myworkdayjobs.com/BUJobs) is dead -- redirects to Workday's own \"currently unavailable\" page, and Butler's own HR page now links to Oracle Cloud HCM instead. Verified live: 1 posting, \"Adjunct - Nursing\" (BSN Program Adjunct Clinical Faculty) -- passes the filter since the title says \"Adjunct\" but not \"part-time\"/\"temp\"/\"admin\"."
+    },
+    {
       "name": "Cabrillo College",
       "homepage_url": "https://www.cabrillo.edu/",
-      "career_url": "https://www.schooljobs.com/careers/cabrilloedu",
+      "career_url": "https://www.schooljobs.com/careers/cabrilloedu/promotionaljobs",
       "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+      "notes": "Configured career_url (base schooljobs.com/careers/cabrilloedu) only shows the \"Support\"/staff category (4 jobs, none faculty); the college's Faculty-category positions live under the separate /promotionaljobs view instead, same category-split pattern as Alabama State (round 29) and Chattahoochee Valley (this round). Verified live: 14 real postings, all \"<subject> - Associate Instructor\"/\"Associate Faculty\" titles (Communication Studies, Dental Hygiene, Nursing, Mathematics, Welding, and more) -- Cabrillo's part-time pool positions are labeled \"Associate\", not \"Part-Time\", so none are excluded by omitAdjunct()."
     },
     {
       "name": "Caldwell Community College and Technical Institute",
@@ -1024,13 +1031,6 @@
       "notes": "Was pointing at the bare homepage; real Job Opportunities page found via HR nav. Verified live: current postings include Administrative Assistant to the Dean of Health Sciences, Assistant Athletic Trainer, and others - no faculty-titled posting visible at check time, but a real, live listings page."
     },
     {
-      "name": "Central Alabama Community College",
-      "homepage_url": "https://www.cacc.edu/",
-      "career_url": "https://www.schooljobs.com/careers/accs/cacc",
-      "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
-    },
-    {
       "name": "Central Baptist College",
       "homepage_url": "https://www.cbc.edu/",
       "career_url": "https://www.cbc.edu/jobs",
@@ -1078,6 +1078,13 @@
       "career_url": "https://www.easyhrweb.com/JC_Central_GA/",
       "platform_type": "generic",
       "notes": "Was pointing at the homepage (0 jobs). College uses its own EasyHRWeb JobCenter (not the tcsg.edu system-wide feed, which showed 0 for this college at check time). Discovered via manual research; verified live (Full Time Faculty categories with current openings: Arts & Sciences 3, Corrections 3, Health Technology 11, Public Services 1, Technical/Trade/Industrial 6, plus 50 Part Time/Adjunct Faculty openings)."
+    },
+    {
+      "name": "Central Maine Community College",
+      "homepage_url": "https://www.cmcc.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=CB41A12CFFFC3B05785D8B7E108D7E03",
+      "platform_type": "paycom",
+      "notes": "Configured career_url was the bare homepage (only procurement RFP/RFQ notices); the site's dedicated jobs page (discover-cmcc/overview/jobs-at-cmcc/) embeds a Paycom ATS instead. Routed there directly. Verified live: 10 postings, e.g. \"Adjunct instructor for ASN Nursing program\", \"Adjunct instructor for the HVAC/Plumbing courses\", not excluded by omitAdjunct() since none say \"part-time\"."
     },
     {
       "name": "Central Methodist University-College of Liberal Arts and Sciences",
@@ -1201,9 +1208,9 @@
     {
       "name": "Chattahoochee Valley Community College",
       "homepage_url": "https://www.cv.edu/",
-      "career_url": "https://www.schooljobs.com/careers/accs/jobs/newprint/4482590",
+      "career_url": "https://www.schooljobs.com/careers/accs/chattahoochee/promotionaljobs",
       "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+      "notes": "Configured career_url pointed at one specific job print-view (accs/jobs/newprint/4482590), long expired -- the real ACCS/schooljobs tenant slug for this college is accs/chattahoochee. The full-time board there currently has little content; the /promotionaljobs (Part-Time Faculty/Adjunct) view has real content. Verified live: 20 postings, all \"Adjunct <X> Instructor\" titles (Nursing, EMS, English, HVAC/R, Industrial Maintenance, Business & Computer Information Technology, Fine Arts & Social Sciences, and more), none excluded by omitAdjunct() since none say \"part-time\". CAVEAT: flaky against the scraper's fixed post-load wait, same family as Alabama State/Delta/Rider/Amarillo -- 2 of 4 test runs this session returned 0."
     },
     {
       "name": "Chattanooga State Community College",
@@ -1444,6 +1451,13 @@
       "notes": "Discovered via agent-career-discovery (community colleges); verified live, 3 faculty postings (real scrape filters to faculty)."
     },
     {
+      "name": "Clovis Community College",
+      "homepage_url": "https://www.cloviscollege.edu/",
+      "career_url": "https://scccd.peopleadmin.com/postings/search?615%5B%5D=13",
+      "platform_type": "peopleadmin",
+      "notes": "Configured career_url was the bare homepage; real ATS is the same shared SCCCD PeopleAdmin instance as Fresno City College (round 35), scoped here to Clovis Community College via the Location facet (615[]=13, NOT Fresno's 615[]=2 -- confirmed the distinct facet value from the tenant's own dropdown to avoid misattributing Fresno's postings to Clovis). Net today: 0 -- Clovis's current postings are all \"... (Part-Time Faculty Pool)\" titled, correctly excluded by omitAdjunct(). Applied for correctness."
+    },
+    {
       "name": "Coahoma Community College",
       "homepage_url": "https://www.coahomacc.edu/",
       "career_url": "https://www.coahomacc.edu/employee-services/jobs/index.html",
@@ -1460,9 +1474,9 @@
     {
       "name": "Coastal Pines Technical College",
       "homepage_url": "https://www.coastalpines.edu/",
-      "career_url": "https://apps.bluefinhr.com/JC_CoastalPines/joblistings/Description.aspx?Parameter=JobListings&PositionID=715",
+      "career_url": "https://careers.georgia.gov/jobs-search?field_agency_name=4896",
       "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+      "notes": "Configured career_url pointed at one specific job posting (PositionID=715) on apps.bluefinhr.com, a domain that's now entirely unreachable -- the college has migrated to Team Georgia Careers (a statewide Drupal portal backed by a shared Workday tenant), scoped to this college via its own agency-name facet (field_agency_name=4896). Verified live: 1 real posting, \"Instructor, Math\", not excluded by omitAdjunct()."
     },
     {
       "name": "Coastline Community College",
@@ -1694,13 +1708,6 @@
       "career_url": "https://ccbc.edu/employment/",
       "platform_type": "generic",
       "notes": "Was pointing at the bare homepage; the real employment page (linked from the homepage) lists current openings directly in HTML with Dayforce apply links. Verified live: about 12 postings, with 8 faculty (Adjunct Faculty - Professional Piloting, Air Traffic Control, Rad Tech, Nursing, Vet Tech, Nursing Clinical Obstetrics, Biology, Mathematics, plus Full-Time Faculty - Nursing)."
-    },
-    {
-      "name": "Community College of Denver",
-      "homepage_url": "https://www.ccd.edu/",
-      "career_url": "https://www.schooljobs.com/careers/ccd",
-      "platform_type": "schooljobs",
-      "notes": "Was pointing at the bare homepage; route to their NEOGOV/schooljobs portal. Verified live: real ATS infrastructure confirmed but 0 current openings (\"No jobs at this time\") - kept since it's clearly the correct portal for any future postings."
     },
     {
       "name": "Community College of Philadelphia",
@@ -1983,13 +1990,6 @@
       "notes": "Configured career_url pointed at one specific job requisition (/home/requisition/2850), long since expired/closed, rather than the general listing page on the same tenant. davenport.edu/careers links to the same tenant's \"External Candidates\" search page instead. Verified live: 6 postings, e.g. \"Adjunct Faculty-Grand Rapids-Nursing\", \"Adjunct Faculty-Online-Accounting (Casa Latina,Bilingual)\" -- not excluded by omitAdjunct() since none say \"part-time\"."
     },
     {
-      "name": "Davidson-Davie Community College",
-      "homepage_url": "https://www.davidsondavie.edu/",
-      "career_url": "https://www.schooljobs.com/careers/davidsondavie",
-      "platform_type": "schooljobs",
-      "notes": "davidsondavie.edu/mission-vision-values/employment is behind a Cloudflare bot-check that blocks automated health checks. The college's actual ATS is NEOGOV/schooljobs.com, directly reachable with 3 postings incl. Nursing Faculty."
-    },
-    {
       "name": "Dawson Community College",
       "homepage_url": "https://www.dawson.edu/",
       "career_url": "https://www.dawson.edu/employment-opportunities.html",
@@ -2235,13 +2235,6 @@
       "notes": "Was pointing at a student career-services landing page; the real HR careers page links to Paycom. Bucket B round 24: platform_type synced from generic to paycom to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 64 postings including faculty (e.g., Adjunct Faculty, Adjunct Faculty - Psychology, Adjunct Faculty - Mathematics). Bucket B round 24: platform_type synced from generic to paycom to match the server.js fix (otherwise applyCareerUrlOverridesInPlace would silently revert the type back to generic). Verified live: 64 postings including faculty (e.g., Adjunct Faculty, Adjunct Faculty - Psychology, Adjunct Faculty - Mathematics)."
     },
     {
-      "name": "Eastern New Mexico University Ruidoso Branch Community College",
-      "homepage_url": "https://www.ruidoso.enmu.edu/",
-      "career_url": "https://www.schooljobs.com/careers/enmu/transferjobs",
-      "platform_type": "schooljobs",
-      "notes": "Configured faculty/jobs URL 404'd; real employment page links to schooljobs.com filtered to the Ruidoso campus. Verified live: 5 postings, 2 explicitly faculty (Resource Faculty - Career & Technical; Resource Faculty for Business & Information Systems)."
-    },
-    {
       "name": "Eastern New Mexico University-Roswell Campus",
       "homepage_url": "https://www.roswell.enmu.edu/",
       "career_url": "https://www.roswell.enmu.edu/human-resources/",
@@ -2408,13 +2401,6 @@
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=f349d37e-0872-42cb-bcca-bc23d939ff50&ccId=19000101_000001&lang=en_US",
       "platform_type": "adp",
       "notes": "CORRECTED (Bucket B round 20): the prior override here (careersngr.com/jobs_at/evangel-university) was a name-collision misattribution -- careersngr.com is a Nigerian job board, and its 'Evangel University' postings are all for Evangel University, Akaeze (Ebonyi State, Nigeria), a completely different institution that happens to share this Springfield, Missouri university's name. All 16 'verified' postings under the old override (e.g. 'Lecturer II (Nursing Science) at Evangel University, Akaeze') were fake data for this record. Routed to Evangel's own real ADP tenant instead (linked from its open-positions page). Verified live via direct API call: of 20 total reqs, 8 are faculty-titled, e.g. 'Faculty - College of Online Learning', 'AGTS Adjunct Faculty for Black Church Studies', 'Adjunct Faculty - JRLC', 'Seminary Adjunct Faculty'."
-    },
-    {
-      "name": "Everett Community College",
-      "homepage_url": "https://www.everettcc.edu/",
-      "career_url": "https://www.schooljobs.com/careers/everettcc",
-      "platform_type": "schooljobs",
-      "notes": "everettcc.edu (entire site) currently serves a 'Website Maintenance' placeholder page -- genuinely down. Real ATS is NEOGOV/schooljobs.com, directly reachable with 23 postings, several faculty-titled (Nursing Faculty (Tenure Track), Humanities Associate Faculty, Psychology Associate Faculty, etc)."
     },
     {
       "name": "Excelsior University",
@@ -2620,6 +2606,13 @@
       "notes": "Paylocity recruiting portal, filtered to Faculty."
     },
     {
+      "name": "Fresno City College",
+      "homepage_url": "https://www.fresnocitycollege.edu/",
+      "career_url": "https://scccd.peopleadmin.com/postings/search?615%5B%5D=2",
+      "platform_type": "peopleadmin",
+      "notes": "Configured career_url was the bare homepage; real ATS is the shared State Center CCD (SCCCD) PeopleAdmin instance, scoped to Fresno City College via the Location facet (615[]=2). Verified live: 2 postings, \"Communication Arts Instructor (Full-Time, Tenure-Track)\" and \"Counselor, EOPS (Full-Time, Categorically Funded)\", properly scoped to this campus only (confirmed no cross-campus leakage)."
+    },
+    {
       "name": "Fresno Pacific University",
       "homepage_url": "https://www.fresno.edu/",
       "career_url": "https://fresnoedu.attract.neoed.com/fresno-pacific-university-yP",
@@ -2803,10 +2796,10 @@
     },
     {
       "name": "Lewis & Clark College",
-      "homepage_url": "https://www.lclark.edu/about/hr/employment",
-      "career_url": "https://www.lclark.edu/offices/human_resources/jobs/",
-      "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+      "homepage_url": "https://www.lclark.edu/",
+      "career_url": "https://lewisandclark.wd5.myworkdayjobs.com/Faculty",
+      "platform_type": "workday",
+      "notes": "Configured career_url (lclark.edu/offices/human_resources/jobs) is a category-links page (staff/student/faculty split by separate Workday portals), not a listing itself -- nothing to scrape there. Routed directly to the dedicated Faculty Workday portal. Verified live: 3 postings, \"Assistant Professor of Data Science\" and \"Visiting Assistant Professor in Psychology\" (both non-adjunct, pass filter) plus \"Adjunct Instructor / Lecturer in Computer Science\" (contains \"Adjunct\", also passes since no part-time wording)."
     },
     {
       "name": "Luther College",
@@ -2891,13 +2884,6 @@
       "career_url": "https://nku.wd108.myworkdayjobs.com/NKU_External",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
-    },
-    {
-      "name": "Northwest Nazarene University",
-      "homepage_url": "https://www.nnu.edu/",
-      "career_url": "https://recruiting.paylocity.com/recruiting/jobs/All/dc628dad-def7-40c4-a8e8-46445f141a37/Northwest-Nazarene-University-Inc",
-      "platform_type": "generic",
-      "notes": "Was pointing at an /employment/ page whose only real links were static individual adjunct-application subpages; route to NNU's Paylocity recruiting board, also linked from that page as 'See Current Openings' (a second, distinct 'NNU-Health-Inc' Paylocity board also exists and was excluded to stay scoped to the university itself). Verified live: 16 postings, 2 faculty (Assistant/Associate Professor of Electrical Engineering; Access Services Librarian - Faculty)."
     },
     {
       "name": "Nova Southeastern University",
@@ -3650,10 +3636,10 @@
     },
     {
       "name": "Westminster University (Utah)",
-      "homepage_url": "https://westminsteru.edu/about/offices/human-resources/open-positions/index.html",
-      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8b104a38-45ac-4682-9e01-117585322eb0",
-      "platform_type": "generic",
-      "notes": "westminsteru.edu/about/offices/human-resources/open-positions/index.html 404s. Current live path is westminsteru.edu/about/human-resources/careers-at-westminster-university.html -> Explore Open Positions -> this ADP Workforce Now portal. Verified via direct ADP API call: 9 openings incl. 1 faculty-titled Adjunct role."
+      "homepage_url": "https://westminsteru.edu/about/human-resources/careers-at-westminster-university.html",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8b104a38-45ac-4682-9e01-117585322eb0&ccId=19000101_000001&lang=en_US",
+      "platform_type": "adp",
+      "notes": "Configured career_url is the correct ADP tenant but was missing the required ccId param (scrapeAdpApi requires both cid AND ccId to hit the real-time job-requisitions API; without ccId it silently returns []). Appended the generic \"all openings\" ccId used by other ADP institutions in this codebase. Also, homepage_url was a dead/404 HR path; updated to the real HR careers page. Verified live: 2 postings, \"Assistant Professor of Nursing (Graduate Family Nurse Practitioner)\" and a plain \"Adjunct\" posting, neither excluded by omitAdjunct()."
     },
     {
       "name": "Whitworth University",
