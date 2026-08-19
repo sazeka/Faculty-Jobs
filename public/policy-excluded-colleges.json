@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T07:28:53.789Z",
+  "generatedAt": "2026-08-19T07:29:29.478Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
@@ -113,7 +113,7 @@
     {
       "college": "Academy for Jewish Religion California",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://www.ajrca.edu/faculty/jobs",
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (checked homepage, /faculty/jobs, /careers, /employment -- all 404 or absent from nav).",
       "sources": [
         "https://www.ajrca.edu/"
@@ -159,7 +159,7 @@
     {
       "college": "Allegheny Wesleyan College",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://awc.edu/faculty/jobs",
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (full footer nav has no HR/Careers link).",
       "sources": [
         "https://awc.edu/"
@@ -168,7 +168,7 @@
     {
       "college": "America Evangelical University",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://www.aeu.edu/",
       "reason": "Excluded (2026-08-12): no usable careers URL found on homepage, /careers, or via site search. Small evangelical graduate school.",
       "sources": [
         "https://www.aeu.edu/"
@@ -290,7 +290,7 @@
     {
       "college": "Ascent College",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://ascent.edu/faculty/jobs",
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation (/faculty/jobs 404s, no careers/employment link discoverable from the homepage).",
       "sources": [
         "https://ascent.edu/"
@@ -308,7 +308,7 @@
     {
       "college": "Atlantic Institute of Oriental Medicine",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://www.atom.edu/faculty/jobs",
       "reason": "Excluded (2026-08-06): no usable careers/employment page found anywhere on the institution's site after live investigation.",
       "sources": [
         "https://www.atom.edu/"
@@ -317,7 +317,7 @@
     {
       "college": "Bacone College",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://www.bacone.edu/",
       "reason": "Excluded (2026-08-12): institution ceased operations -- Chapter 11 filed June 2024, converted to Chapter 7 liquidation May 2025, HLC accreditation revoked, campus turned over to bankruptcy trustee. bacone.edu no longer resolves (DNS failure). No longer a hiring institution.",
       "sources": [
         "https://www.highereddive.com/",
@@ -336,7 +336,7 @@
     {
       "college": "Bais Medrash Toras Chesed",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://www.bmtc.edu/",
       "reason": "Excluded (2026-08-12): no usable careers URL found; domain has repeated SSL handshake failures. Tiny all-male Talmudic school; no jobs board or HR presence found anywhere (typical word-of-mouth hiring profile for this institution type).",
       "sources": [
         "https://www.bmtc.edu/"
@@ -408,7 +408,7 @@
     {
       "college": "Berry College",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp",
       "reason": "Excluded (2026-08-06): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node -- not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://berry.interviewexchange.com/static/clients/563BCM1/index.jsp"
@@ -516,7 +516,7 @@
     {
       "college": "Bristol Community College",
       "platform_type": "interviewexchange",
-      "career_url": null,
+      "career_url": "https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://bristolcc.interviewexchange.com/static/clients/460BCM1/index.jsp"
@@ -543,7 +543,7 @@
     {
       "college": "California Institute of Integral Studies",
       "platform_type": "interviewexchange",
-      "career_url": null,
+      "career_url": "https://ciis.interviewexchange.com/static/clients/529CIM1",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://ciis.interviewexchange.com/static/clients/529CIM1"
@@ -562,7 +562,7 @@
     {
       "college": "Cape Cod Community College",
       "platform_type": "interviewexchange",
-      "career_url": null,
+      "career_url": "https://capecod.interviewexchange.com/static/clients/470CCM1/index.jsp",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://capecod.interviewexchange.com/static/clients/470CCM1/index.jsp"
@@ -571,7 +571,7 @@
     {
       "college": "Cayuga County Community College",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://cayuga.interviewexchange.com/",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://cayuga.interviewexchange.com/"
@@ -598,7 +598,7 @@
     {
       "college": "Central Yeshiva Tomchei Tmimim Lubavitz",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://cyttl.edu/faculty/jobs",
       "reason": "Excluded (2026-08-12): no usable careers URL found. Checked cyttl.edu nav and web search (Indeed, Glassdoor, Chabad.org) -- no job board or HR presence for this small single-purpose yeshiva.",
       "sources": [
         "https://cyttl.edu/"
@@ -634,7 +634,7 @@
     {
       "college": "City University of Seattle",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://cityu.interviewexchange.com/static/clients/447CSM1/index.jsp",
       "reason": "Excluded (2026-08-06): joins the other 15 InterviewExchange/Hirezon-WAF-blocked institutions -- confirmed live via direct request (3x) that cityu.interviewexchange.com returns the identical Hirezon WAF 403 as the rest of the platform, despite this being the institution's genuine, correctly-identified careers page.",
       "sources": [
         "https://cityu.interviewexchange.com/static/clients/447CSM1/index.jsp"
@@ -643,7 +643,7 @@
     {
       "college": "Clark University",
       "platform_type": "interviewexchange",
-      "career_url": null,
+      "career_url": "https://clarku.interviewexchange.com/static/clients/569CUM1/index.jsp",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://clarku.interviewexchange.com/static/clients/569CUM1/index.jsp"
@@ -708,7 +708,7 @@
     {
       "college": "Curry College",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://curry.interviewexchange.com/",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://curry.interviewexchange.com/"
@@ -744,7 +744,7 @@
     {
       "college": "Dragon Rises College of Oriental Medicine",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://www.dragonrises.edu/",
       "reason": "Excluded (2026-08-12): no usable careers URL found. Full sitemap crawl of dragonrises.edu shows no careers/employment/jobs page anywhere; only a student-outcomes 'career-pathways' page. Small institution (<25 employees).",
       "sources": [
         "https://www.dragonrises.edu/"
@@ -762,7 +762,7 @@
     {
       "college": "Eden Theological Seminary",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://www.eden.edu/faculty/jobs",
       "reason": "Excluded (2026-08-12): no usable careers URL found after checking nav/footer, on-site search, and guessed common paths (/careers/, /jobs/, /employment/). Small (~34-employee) seminary.",
       "sources": [
         "https://www.eden.edu/"
@@ -771,7 +771,7 @@
     {
       "college": "Emmanuel College",
       "platform_type": "interviewexchange",
-      "career_url": null,
+      "career_url": "https://emmanuel.interviewexchange.com/static/clients/13EM1/listJobs.jsp",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://emmanuel.interviewexchange.com/static/clients/13EM1/listJobs.jsp"
@@ -798,7 +798,7 @@
     {
       "college": "Fashion Institute of Technology",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://fitnyc.interviewexchange.com/",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://fitnyc.interviewexchange.com/"
@@ -807,7 +807,7 @@
     {
       "college": "Fitchburg State University",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://fitchburg.interviewexchange.com/static/clients/500FSM1/index.jsp",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://fitchburg.interviewexchange.com/static/clients/500FSM1/index.jsp"
@@ -843,7 +843,7 @@
     {
       "college": "Goucher College",
       "platform_type": "interviewexchange",
-      "career_url": null,
+      "career_url": "https://goucher.interviewexchange.com/static/clients/436GCM1/index.jsp",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://goucher.interviewexchange.com/static/clients/436GCM1/index.jsp"
@@ -870,7 +870,7 @@
     {
       "college": "Mesivta Torah Vodaath Rabbinical Seminary",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://independentrabbinicalcolleges.org/index.html",
       "reason": "Excluded (2026-08-12): no usable careers URL found. Real site is torahvodaath.org (the previously-configured independentrabbinicalcolleges.org URL was a wrong shared placeholder). Full nav/footer crawl shows no careers/employment/HR link.",
       "sources": [
         "https://torahvodaath.org/"
@@ -907,7 +907,7 @@
     {
       "college": "Rabbinical College Telshe",
       "platform_type": "generic",
-      "career_url": null,
+      "career_url": "https://independentrabbinicalcolleges.org/index.html",
       "reason": "Excluded (2026-08-12): no stable official website exists. telsheyeshiva.org/.edu redirect to a Cardknox donation gateway, not an institutional site; telsheyeshiva.pages.dev is an unofficial fan-built mirror with no jobs page. No HR presence found.",
       "sources": []
     },
@@ -923,7 +923,7 @@
     {
       "college": "Salve Regina University",
       "platform_type": "interviewexchange",
-      "career_url": null,
+      "career_url": "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp"
@@ -1010,7 +1010,7 @@
     {
       "college": "University of Texas at El Paso",
       "platform_type": "interviewexchange",
-      "career_url": null,
+      "career_url": "https://utep.interviewexchange.com/static/clients/533UTM1/index.jsp",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://utep.interviewexchange.com/static/clients/533UTM1/index.jsp"
@@ -1029,7 +1029,7 @@
     {
       "college": "Western Illinois University",
       "platform_type": "interviewexchange",
-      "career_url": null,
+      "career_url": "https://wiu.interviewexchange.com/static/clients/467WIM1/index.jsp?c=1098",
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned.",
       "sources": [
         "https://wiu.interviewexchange.com/static/clients/467WIM1/index.jsp"
