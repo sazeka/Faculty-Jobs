@@ -29,6 +29,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -268,7 +269,7 @@ const report = {
 
 if (!DRY_RUN) {
   // Update public/jobs.json
-  const updatedPayload = { ...payload, jobs: cleanedJobs };
+  const updatedPayload = synchronizeJobCount({ ...payload, jobs: cleanedJobs });
   writeJson(PUBLIC_JOBS, updatedPayload);
 
   // Mirror to docs/ if the file already exists there

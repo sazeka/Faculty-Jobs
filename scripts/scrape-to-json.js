@@ -7,6 +7,7 @@ import { scrapeAllJobsStandalone, callLocalSummarizer, getSystemGroup, normalize
 import { canonicalizeUrl, inferPlatformFromUrl } from "./lib/url-normalization.js";
 import { shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from "./lib/scrape-guard.js";
 import { preserveEnrichment } from "./lib/enrichment-merge.js";
+import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -374,6 +375,11 @@ function canonicalizeJobUrls(data) {
       );
     }
   }
+
+  // Final write boundary: downstream passes may replace or filter the job array,
+  // so derive metadata from the finished payload instead of trusting an earlier
+  // pipeline stage's count.
+  data = synchronizeJobCount(data);
 
   for (const outPath of targets) {
     fs.writeFileSync(outPath, JSON.stringify(data, null, 2));
