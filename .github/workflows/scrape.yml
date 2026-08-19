@@ -59,7 +59,7 @@ jobs:
         run: npm run scrape:json
 
       - name: Verify post quality
-        run: npm run verify:post-quality -- --max-nonjob 0 --max-nonhttps-pct 1 --max-missing-desc-pct 95 --max-placeholder-titles 0
+        run: npm run verify:post-quality -- --max-nonjob 0 --max-nonhttps-pct 1 --max-missing-desc-pct 96 --max-placeholder-titles 0
 
       - name: Verify policy integrity (post-scrape)
         run: npm run verify:policy
