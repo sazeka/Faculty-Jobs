@@ -191,13 +191,6 @@
       "notes": "Was pointing at the bare homepage; homepage links to their NEOGOV/schooljobs career page. Verified live: 9 postings (Assistant Controller, Assistant Director roles, Assistant Men's Lacrosse Coach, etc.) -- none currently faculty-titled, but this is real, correct infrastructure vs. a homepage that will never show anything."
     },
     {
-      "name": "Alvin Community College",
-      "homepage_url": "https://www.alvincollege.edu/",
-      "career_url": "https://www.schooljobs.com/careers/alvincollege",
-      "platform_type": "schooljobs",
-      "notes": "Configured career_url was a /jobs landing page with 0 scrapeable listings; it links to their real NEOGOV/schooljobs career page. Verified live: 98 postings, dozens of Adjunct faculty listings across many disciplines (Accounting, Arts, Nursing/ADN, Astronomy, Automotive Technology, Biology, Business Administration, Business Management, Chemistry, Communications, and more)."
-    },
-    {
       "name": "Amarillo College",
       "homepage_url": "https://www.actx.edu/",
       "career_url": "https://www.schooljobs.com/careers/actx?category%5b0%5d=Instructor&category%5b1%5d=Faculty&jobType%5b0%5d=Part-Time&sort=PostingDate%7CDescending&page=2",
@@ -338,13 +331,6 @@
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
     },
     {
-      "name": "Arkansas Colleges of Health Education",
-      "homepage_url": "https://achehealth.edu/",
-      "career_url": "https://recruiting.paylocity.com/recruiting/jobs/All/966a7ab2-15b9-4608-8364-32d0b75d2c2b/Arkansas-Colleges-of-Health-Education",
-      "platform_type": "generic",
-      "notes": "Configured career_url is a landing page with 0 scrapeable listings; it links to their Paylocity recruiting portal. Verified live: 14 postings, several faculty-titled (Assistant/Associate Professor of Obstetrics & Gynecology; Principal Faculty of Physician Associate Practice; Chair of the Department of Primary Care; Assistant/Associate Professor of Family Medicine/Internal Medicine/Pediatrics; Assistant/Associate/Professor of OMM; Adjunct Instructor roles in Population Health and Physical Therapy)."
-    },
-    {
       "name": "Arkansas Northeastern College",
       "homepage_url": "https://www.anc.edu/",
       "career_url": "https://www.anc.edu/jobs",
@@ -399,13 +385,6 @@
       "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4906&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
       "platform_type": "generic",
       "notes": "Was pointing at the homepage (0 jobs). Own site's Employment page (and a HireBridge portal it links to) list HR info/work-study only, no faculty; real faculty postings live on Team Georgia Careers agency-filtered to this college. Discovered via manual research; verified live (6 faculty postings, e.g. Adjunct Instructor - Surgical Technology, of 10 total openings)."
-    },
-    {
-      "name": "Atlantic Cape Community College",
-      "homepage_url": "https://atlanticcape.edu/",
-      "career_url": "https://www.governmentjobs.com/careers/atlanticcape/",
-      "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery (community colleges); verified live, 1 faculty posting (real scrape filters to faculty)."
     },
     {
       "name": "Auburn University at Montgomery",
@@ -828,6 +807,13 @@
       "notes": "Was pointing at the bare homepage; route to their real employment page, which explicitly separates 'Academic Listings' from 'Non-Academic Listings'. Verified live: page correctly reads 'There are currently no academic listings' as of this check (0 faculty openings right now) but is the correct, real infrastructure so future faculty postings will be picked up."
     },
     {
+      "name": "California State University-Dominguez Hills",
+      "homepage_url": "https://www.csudh.edu/",
+      "career_url": "https://careers.csudh.edu/en-us/filter/?work-type=instructional+faculty+-+temporary%2Flecturer&work-type=non-instructional+faculty+(coach%2Fcounselor%2Flibrarian)",
+      "platform_type": "pageup",
+      "notes": "Configured career_url was the bare homepage (0 scrapeable listings). CSUDH runs its own campus-specific PageUp instance (careers.csudh.edu), separate from the CSU system-wide board -- routed to its Faculty work-type filter. Verified live: 33 \"Instructional Faculty - Temporary/Lecturer\" postings (all titled \"Temporary Faculty Pool, <Dept>\", correctly excluded by omitAdjunct()'s \"temporary\" rule) + 5 \"Non-Instructional Faculty (Coach/Counselor/Librarian)\" postings (coach/counselor titles that don't contain faculty-keyword wording, so won't pass looksFacultyish() either) + 0 in \"Instructional Faculty \u2013 Tenured/Tenure-track\" right now. Net today: 0 real faculty jobs captured, but the URL/platform are now correct instead of pointing at a homepage that can never show anything -- will start surfacing real postings the moment a tenure-track/lecturer req opens that isn't titled \"Temporary...\"."
+    },
+    {
       "name": "Calvin University",
       "homepage_url": "https://www.calvin.edu/",
       "career_url": "https://calvin.wd5.myworkdayjobs.com/CalvinUniversityCareers",
@@ -1101,6 +1087,13 @@
       "notes": "Configured career_url is a CNM-hosted landing page ('Apply for Jobs at CNM') that just links to this Workday site instead of hosting listings. Verified live: 63 postings, several faculty (Part Time Instructor - Carpentry, Psychology, Machine Tool Technology, History, Aviation Maintenance Technology)."
     },
     {
+      "name": "Central Oregon Community College",
+      "homepage_url": "https://www.cocc.edu/",
+      "career_url": "https://jobs.cocc.edu/postings/search",
+      "platform_type": "peopleadmin",
+      "notes": "Configured career_url was the bare homepage (0 scrapeable listings); real ATS is a dedicated PeopleAdmin/PowerSchool portal at jobs.cocc.edu, not linked directly from the homepage nav. Verified live: 25 postings, including \"Assistant Professor Aviation\" (full-time, Winter Term 2027 start -- genuinely faculty-relevant, not excluded by omitAdjunct()). Several \"Part-Time Instructor <subject> (POOL)\" titles (Automotive, Culinary, Business, CIS, Forest Resources Technology, Veterinary Technician, Music) are correctly excluded since they explicitly say \"Part-Time\"."
+    },
+    {
       "name": "Central Pennsylvania Institute of Science and Technology",
       "homepage_url": "https://cpi.edu/",
       "career_url": "https://cpi.edu/company/cpi/",
@@ -1365,13 +1358,6 @@
       "career_url": "https://nebraskamed.wd5.myworkdayjobs.com/en-US/Clarkson",
       "platform_type": "workday",
       "notes": "Configured /about/employment-opportunities page is a landing page linking to this Nebraska Medicine-hosted Workday site (Clarkson College is affiliated with Nebraska Medicine). Verified live: 13 postings, heavily faculty (Nurse Aide Instructor, Professional Development Instructor, Undergraduate Mental Health Nursing Adjunct Faculty, Undergraduate Nursing Med/Surg Adjunct Faculty, and open-rank clinical faculty roles)."
-    },
-    {
-      "name": "Clarkson University",
-      "homepage_url": "https://www.clarkson.edu/",
-      "career_url": "https://careerhub-clarkson.icims.com/",
-      "platform_type": "icims",
-      "notes": "Was pointing at the bare homepage; the Human Resources page's 'Career Opportunities' link goes to this iCIMS portal. The intro page itself shows little text, but its embedded search iframe (verified by rendering it directly) lists postings including Visiting Assistant Professor of Engineering Science."
     },
     {
       "name": "Clatsop Community College",
@@ -2034,9 +2020,9 @@
     {
       "name": "Delta College",
       "homepage_url": "https://www.delta.edu/",
-      "career_url": "https://www.schooljobs.com/careers/deltacollege/faculty",
+      "career_url": "https://www.schooljobs.com/careers/deltacollege",
       "platform_type": "schooljobs",
-      "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+      "notes": "Configured career_url was narrowed to schooljobs.com's own \"Faculty\" job-type filter, which currently has 0 matches -- Delta classifies its part-time teaching pool postings under a separate \"Adjunct Faculty\" job type instead, which that filter excludes. Routed to the unfiltered board and let the pipeline's own looksFacultyish()/omitAdjunct() filters sort it out, same pattern as Alabama State (round 29). Verified live: 50 postings, e.g. \"Associate Professor of Counseling (EOPS)\" and 49 \"Adjunct Associate Professor of <subject> Pool\" titles (Photography, Mathematics, Biological Sciences, Nursing, Welding, etc.) -- none excluded by omitAdjunct() since none say \"part-time\". CAVEAT: like Alabama State, this specific board is flaky against the scraper's fixed post-load wait -- 1 of 4 test runs returned 0, the other 3 returned 50-55. Net positive over always-0, but expect intermittent under-reporting."
     },
     {
       "name": "Denison University",
@@ -3012,20 +2998,6 @@
       "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed, found via the site's 'work-at-remington' page listing per-campus links (same cid as the existing Memphis/Nashville overrides, campus-specific ccId). Verified live: real infrastructure confirmed ('Current Openings (0 of 0)'); 0 current postings at time of check."
     },
     {
-      "name": "Remington College-Dallas Campus",
-      "homepage_url": "https://www.remingtoncollege.edu/",
-      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027207438_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
-      "platform_type": "adp",
-      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 1 current posting (Student Financial Service Advisor, Dallas TX) - not faculty-titled but confirms real, campus-specific infrastructure."
-    },
-    {
-      "name": "Remington College-Fort Worth Campus",
-      "homepage_url": "https://www.remingtoncollege.edu/",
-      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027237235_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
-      "platform_type": "adp",
-      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 1 current posting (Student Financial Service Advisor, Fort Worth/North Richland Hills TX)."
-    },
-    {
       "name": "Remington College-Houston Southeast Campus",
       "homepage_url": null,
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027239827_2&lang=en_US",
@@ -3051,7 +3023,7 @@
       "homepage_url": "https://www.remingtoncollege.edu/",
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027241028_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter",
       "platform_type": "adp",
-      "notes": "Was pointing at a campus location landing page (0 jobs); routed to this campus's dedicated ADP WorkforceNow recruitment feed. Verified live: 3 current postings including 2 faculty-ish roles (Instructor - Medical Assistant; Medical Assistant Program Chair) plus an Externship Coordinator role."
+      "notes": "Configured career_url (remingtoncollege.edu/locations/mobile/, type generic) is a plain location/contact page with 0 scrapeable listings. The college's own \"Work at Remington\" page links each campus straight to its own ADP Career Center tenant -- Mobile's is this ccId. Verified live via the real scraper: 0 current openings (genuinely none posted right now, same as the Nashville/Fort Worth/Dallas campuses checked this round), but the URL/platform are now actually correct for whenever Mobile does post something, instead of pointing at a page that can never show listings."
     },
     {
       "name": "Remington College-North Houston Campus",
@@ -3465,6 +3437,13 @@
       "career_url": "https://uni.wd5.myworkdayjobs.com/uni/job/main-campus/assistant-adjunct-professor---counseling--remote-eligible-within-iowa-_jr1311",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
+    },
+    {
+      "name": "University of Notre Dame",
+      "homepage_url": "https://jobs.nd.edu/",
+      "career_url": "https://facultypositions.nd.edu/",
+      "platform_type": "generic",
+      "notes": "Configured career_url (jobs.nd.edu, redirects to careers.nd.edu) is Notre Dame's STAFF-only careers site (95 open roles, zero academic) -- the page explicitly states \"Prospective faculty can explore roles at facultypositions.nd.edu,\" a deliberately separate site for faculty hiring. Routed there directly. Verified live: 27 real faculty postings (Assistant Professor in Archaeology, Assistant Professor of Visual Communication Design - Tenure Track, Senior Endowed Chair in US History, and more)."
     },
     {
       "name": "University of Oregon",
