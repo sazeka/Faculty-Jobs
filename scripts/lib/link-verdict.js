@@ -10,6 +10,16 @@ export function hasBotChallengeUrl(url) {
   }
 }
 
+export function hasMeaningfulTimedOutPage(finalUrl, title, bodyText) {
+  try {
+    const parsed = new URL(finalUrl);
+    if (!/^https?:$/.test(parsed.protocol)) return false;
+  } catch {
+    return false;
+  }
+  return `${title || ""} ${bodyText || ""}`.replace(/\s+/g, " ").trim().length >= 100;
+}
+
 export function isHardVerificationFailure(status) {
   return status !== HEALTHY_STATUS && status !== BOT_BLOCKED_STATUS;
 }

@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   BOT_BLOCKED_STATUS,
+  hasMeaningfulTimedOutPage,
   hasBotChallengeUrl,
   isHardVerificationFailure,
   nextConsecutiveFailures,
@@ -29,4 +30,17 @@ test("broken and invalid links increment their failure streak", () => {
   assert.equal(nextConsecutiveFailures(1, "broken"), 2);
   assert.equal(isHardVerificationFailure("invalid"), true);
   assert.equal(nextConsecutiveFailures(0, "invalid"), 1);
+});
+
+test("a timed-out navigation can still prove that a real page rendered", () => {
+  assert.equal(
+    hasMeaningfulTimedOutPage(
+      "https://example.edu/careers",
+      "Careers",
+      "Current faculty opportunities ".repeat(5)
+    ),
+    true
+  );
+  assert.equal(hasMeaningfulTimedOutPage("about:blank", "", "Loading..."), false);
+  assert.equal(hasMeaningfulTimedOutPage("https://example.edu/careers", "", "Loading..."), false);
 });

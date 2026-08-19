@@ -7,6 +7,7 @@ import { loadCampusConfigs } from "./lib/campus-config.js";
 import {
   BOT_BLOCKED_STATUS,
   hasBotChallengeUrl,
+  hasMeaningfulTimedOutPage,
   isHardVerificationFailure,
   nextConsecutiveFailures,
 } from "./lib/link-verdict.js";
@@ -221,7 +222,9 @@ async function verifyUrlWithBrowser(context, url, timeoutMs) {
     await page.waitForTimeout(1500).catch(() => {});
 
     const httpStatus = response ? response.status() : null;
-    const bodyText = await page.evaluate(() => document.body?.innerText || "").catch(() => "");
+    const bodyText = await page
+      .evaluate(() => `${document.body?.innerText || ""} ${document.body?.textContent || ""}`)
+      .catch(() => "");
     const title = await page.title().catch(() => "");
     let knownAtsAutomationBlock = false;
     try {
@@ -250,6 +253,26 @@ async function verifyUrlWithBrowser(context, url, timeoutMs) {
       bot_blocked: botBlocked,
     };
   } catch (e) {
+    // `page.goto(..., waitUntil: "domcontentloaded")` can time out after the
+    // server has already returned and rendered a meaningful page. This is
+    // common on otherwise-live college sites with a stuck analytics/widget
+    // resource (Alverno, Blackfeet, and BJU all reproduced it in CI). For a
+    // link-health check, a real rendered document is authoritative even when
+    // the load lifecycle never settles.
+    const bodyText = await page.evaluate(() => document.body?.innerText || "").catch(() => "");
+    const title = await page.title().catch(() => "");
+    const finalUrl = page.url();
+    const botBlocked =
+      hasBotChallengeUrl(finalUrl) || detectBotChallenge(`${title} ${bodyText.slice(0, 2000)}`);
+    if (botBlocked || hasMeaningfulTimedOutPage(finalUrl, title, bodyText)) {
+      return {
+        status: botBlocked ? BOT_BLOCKED_STATUS : "healthy",
+        http_status: null,
+        final_url: canonicalizeUrl(finalUrl) || finalUrl,
+        error: botBlocked ? "bot_challenge_page" : "navigation_timeout_after_render",
+        bot_blocked: botBlocked,
+      };
+    }
     const causeCode = e?.cause?.code || null;
     const errMsg = clean(e?.message || String(e));
     return {
