@@ -2232,6 +2232,14 @@ const NH_CAMPUSES = [
     url: "https://searchjobs.dartmouth.edu/postings/search",
   },
   {
+    // Dartmouth's faculty hiring board is separate from its PeopleAdmin staff/
+    // general employment portal. Keep both: the Interfolio board currently
+    // carries the substantive faculty searches and postdoctoral fellowships.
+    campus: "Dartmouth College",
+    type: "interfolio-inst",
+    url: "https://apply.interfolio.com/11002/positions",
+  },
+  {
     campus: "Saint Anselm College",
     // URL is already a raw Workday tenant — a pure JS SPA shell with 0 static
     // anchors "generic" can't read.
