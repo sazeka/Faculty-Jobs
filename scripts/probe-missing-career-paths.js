@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { isRejectedCareerPage } from "./lib/career-path-probe.js";
+import { compareDiscoveryPriority, isRejectedCareerPage } from "./lib/career-path-probe.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -203,7 +203,7 @@ function chooseTargets(master, ipedsByUnitid, ipedsByName, limit) {
       const lvl = norm(i.level);
       return !lvl || lvl === "2-year" || lvl === "4-year";
     })
-    .sort((a, b) => clean(a.name).localeCompare(clean(b.name)));
+    .sort(compareDiscoveryPriority);
 
   const selected = [];
   for (const inst of unresolved) {
@@ -259,14 +259,21 @@ async function main() {
       updated: false,
     };
 
+    if (opts.apply) {
+      inst.discovery_attempts = Number(inst.discovery_attempts || 0) + 1;
+      inst.last_discovery_attempt_at = new Date().toISOString();
+      inst.last_discovery_status = best
+        ? best.score >= 0.55
+          ? "path_probe_updated"
+          : "path_probe_low_confidence"
+        : "path_probe_no_candidate";
+      inst.last_discovery_confidence = best?.score ?? 0;
+    }
+
     if (best && best.score >= 0.55 && opts.apply) {
       inst.career_url = best.url;
       if (!clean(inst.platform_type)) inst.platform_type = best.platform_type || "generic";
       inst.last_checked_at = new Date().toISOString();
-      inst.discovery_attempts = Number(inst.discovery_attempts || 0) + 1;
-      inst.last_discovery_attempt_at = new Date().toISOString();
-      inst.last_discovery_status = "path_probe";
-      inst.last_discovery_confidence = best.score;
       inst.notes = clean(`${inst.notes || ""} Career path probe seeded ${new Date().toISOString()}.`).trim();
       updated += 1;
       row.updated = true;

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { isRejectedCareerPage } from "../lib/career-path-probe.js";
+import { compareDiscoveryPriority, isRejectedCareerPage } from "../lib/career-path-probe.js";
 
 test("career path probing rejects fabricated faculty/jobs and soft-404 pages", () => {
   assert.equal(isRejectedCareerPage("https://example.edu/faculty/jobs"), true);
@@ -19,4 +19,14 @@ test("career path probing accepts a normal employment page", () => {
     isRejectedCareerPage("https://example.edu/human-resources/employment", "<title>Employment Opportunities</title>"),
     false
   );
+});
+
+test("career discovery prioritizes unattempted and least-recently attempted institutions", () => {
+  const rows = [
+    { name: "Recent", discovery_attempts: 1, last_discovery_attempt_at: "2026-08-20" },
+    { name: "Unattempted", discovery_attempts: 0 },
+    { name: "Older", discovery_attempts: 1, last_discovery_attempt_at: "2026-08-01" },
+  ];
+  rows.sort(compareDiscoveryPriority);
+  assert.deepEqual(rows.map((row) => row.name), ["Unattempted", "Older", "Recent"]);
 });

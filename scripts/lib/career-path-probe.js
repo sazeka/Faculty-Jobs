@@ -15,3 +15,13 @@ export function isRejectedCareerPage(url, bodyText = "") {
   return /(?:\b404\b|page not found|not found)/i.test(title);
 }
 
+export function compareDiscoveryPriority(a, b) {
+  const attemptsA = Number(a?.discovery_attempts || 0);
+  const attemptsB = Number(b?.discovery_attempts || 0);
+  if (attemptsA !== attemptsB) return attemptsA - attemptsB;
+
+  const attemptedAtA = String(a?.last_discovery_attempt_at || "");
+  const attemptedAtB = String(b?.last_discovery_attempt_at || "");
+  if (attemptedAtA !== attemptedAtB) return attemptedAtA.localeCompare(attemptedAtB);
+  return String(a?.name || "").localeCompare(String(b?.name || ""));
+}
