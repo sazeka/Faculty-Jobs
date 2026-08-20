@@ -203,6 +203,16 @@ function renderWeekPage(entry, prevEntry, nextEntry) {
     </table>`
     : "";
 
+  const tenure = entry.tenureTrackBreakdown;
+  const tenureHtml = tenure
+    ? `<h2>Appointment track</h2>
+    <table>
+      <tr><td>Tenure-track</td><td class="n">${tenure.tenureTrack.toLocaleString()} · ${tenure.tenureTrackPct}% of classified</td></tr>
+      <tr><td>Non-tenure-track</td><td class="n">${tenure.nonTenureTrack.toLocaleString()} · ${tenure.nonTenureTrackPct}% of classified</td></tr>
+      <tr><td>Unclassified</td><td class="n">${tenure.unknown.toLocaleString()}</td></tr>
+    </table>`
+    : "";
+
   const pagerHtml = `
     <div class="pager">
       <span>${prevEntry ? `<a href="/trends/${prevEntry.weekEnd}/">← Week of ${esc(fmtWeek(prevEntry.weekEnd))}</a>` : ""}</span>
@@ -220,7 +230,7 @@ function renderWeekPage(entry, prevEntry, nextEntry) {
     </div>
     ${prose}
     ${sourcesHtml}
-    ${institutionsHtml}
+    ${institutionsHtml}${tenureHtml ? `\n    ${tenureHtml}` : ""}
     ${typesHtml}
     ${pagerHtml}
   `;

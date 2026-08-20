@@ -40,6 +40,7 @@ const sortedPositionTypes = computed(() => {
   return Object.entries(types).sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count }))
 })
 const maxTypeCount = computed(() => sortedPositionTypes.value[0]?.count || 1)
+const tenureStats = computed(() => trends.value?.stats?.tenureTrackBreakdown || null)
 
 const aiParagraphs = computed(() =>
   (trends.value?.aiSummary || '').split('\n\n').map(p => p.trim()).filter(Boolean)
@@ -100,6 +101,33 @@ function fmtWeek(s) {
     </div>
 
     <hr class="fa-rule-thin" style="margin: 40px 0;" />
+
+    <!-- Appointment-track comparison -->
+    <section v-if="tenureStats" class="tenure-comparison" aria-labelledby="tenure-comparison-title">
+      <div class="fa-label" id="tenure-comparison-title">Appointment track</div>
+      <div class="tenure-metrics">
+        <div class="tenure-metric">
+          <div class="fa-meta">Tenure-track</div>
+          <div class="fa-display tenure-metric-value">{{ fmt(tenureStats.tenureTrack) }}</div>
+          <div class="fa-num tenure-metric-share">{{ tenureStats.tenureTrackPct }}% of classified</div>
+        </div>
+        <div class="tenure-metric">
+          <div class="fa-meta">Non-tenure-track</div>
+          <div class="fa-display tenure-metric-value">{{ fmt(tenureStats.nonTenureTrack) }}</div>
+          <div class="fa-num tenure-metric-share">{{ tenureStats.nonTenureTrackPct }}% of classified</div>
+        </div>
+      </div>
+      <div class="tenure-ratio" aria-hidden="true">
+        <div class="tenure-ratio-tt" :style="{ width: `${tenureStats.tenureTrackPct}%` }"></div>
+        <div class="tenure-ratio-ntt" :style="{ width: `${tenureStats.nonTenureTrackPct}%` }"></div>
+      </div>
+      <div class="fa-meta tenure-note">
+        Based on {{ fmt(tenureStats.classified) }} listings with a known appointment track.
+        {{ fmt(tenureStats.unknown) }} additional listings are unclassified and excluded from the percentages.
+      </div>
+    </section>
+
+    <hr v-if="tenureStats" class="fa-rule-thin" style="margin: 40px 0;" />
 
     <!-- Stats grid -->
     <div class="trends-stats-grid">
@@ -197,6 +225,44 @@ function fmtWeek(s) {
 }
 .trends-prose p:last-child { margin-bottom: 0; }
 
+.tenure-comparison { max-width: 820px; }
+.tenure-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin-top: 18px;
+  border: 1px solid var(--rule);
+  background: var(--rule);
+}
+.tenure-metric {
+  background: var(--paper);
+  padding: 20px 24px;
+}
+.tenure-metric-value {
+  font-size: 34px;
+  line-height: 1.1;
+  margin-top: 5px;
+}
+.tenure-metric-share {
+  color: var(--ink-3);
+  font-size: 11px;
+  margin-top: 3px;
+}
+.tenure-ratio {
+  display: flex;
+  height: 7px;
+  margin-top: 14px;
+  overflow: hidden;
+  background: var(--paper-3);
+}
+.tenure-ratio-tt { background: var(--sage); }
+.tenure-ratio-ntt { background: var(--accent); }
+.tenure-note {
+  color: var(--ink-4);
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
 .trends-stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -273,6 +339,7 @@ function fmtWeek(s) {
   .trends-tab { padding: 32px var(--pad); }
   .trends-narrative { margin-top: 24px; }
   .trends-prose p { font-size: 15px; line-height: 1.7; }
+  .tenure-metrics { grid-template-columns: 1fr; }
 
   /* Stack the two-up grids — the side-by-side columns and the fixed 380px
      sparkline column both overflow a phone viewport otherwise. */

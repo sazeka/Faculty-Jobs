@@ -23,6 +23,7 @@ import path from "path";
 import http from "http";
 import https from "https";
 import { fileURLToPath } from "url";
+import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -106,7 +107,14 @@ function computeStats(jobs) {
     .slice(0, 10)
     .map(([institution, count]) => ({ institution, count }));
 
-  return { totalJobs: jobs.length, bySource, byType, topSources, topInstitutions };
+  return {
+    totalJobs: jobs.length,
+    bySource,
+    byType,
+    topSources,
+    topInstitutions,
+    tenureTrackBreakdown: computeTenureTrackBreakdown(jobs),
+  };
 }
 
 // ── Fallback template summary ─────────────────────────────────────────────────
@@ -123,6 +131,9 @@ function templateSummary(stats, prev) {
     topType
       ? `${topType[0]} roles represent the largest category with ${topType[1].toLocaleString()} listings.`
       : "",
+    stats.tenureTrackBreakdown.classified
+      ? `Among positions with a known appointment track, ${stats.tenureTrackBreakdown.tenureTrackPct}% are tenure-track and ${stats.tenureTrackBreakdown.nonTenureTrackPct}% are non-tenure-track.`
+      : "",
   ].filter(Boolean).join(" ");
 }
 
@@ -138,6 +149,7 @@ Focus on:
 - Changes in total listing volume vs last week (if available)
 - Which states or systems are most active
 - What position types dominate
+- The tenure-track versus non-tenure-track mix, while acknowledging unclassified listings
 - Anything noteworthy or surprising in the data
 
 Avoid: technical jargon, mentioning job IDs, phrases like "the data shows" or "according to the data", or bullet points.
@@ -196,6 +208,7 @@ Focus on:
 - Changes in total listing volume vs last week (if available)
 - Which states or systems are most active
 - What position types dominate
+- The tenure-track versus non-tenure-track mix, while acknowledging unclassified listings
 - Anything noteworthy or surprising in the data
 
 Avoid: technical jargon, mentioning job IDs, phrases like "the data shows" or "according to the data", or bullet points.
@@ -271,6 +284,7 @@ async function main() {
     totalDeltaPct: prev ? Number(((( stats.totalJobs - prev.totalJobs) / prev.totalJobs) * 100).toFixed(1)) : null,
     topSourcesByJobs: stats.topSources.slice(0, 8),
     positionTypeBreakdown: stats.byType,
+    tenureTrackBreakdown: stats.tenureTrackBreakdown,
     topInstitutions: stats.topInstitutions.slice(0, 5),
   };
 
@@ -294,6 +308,7 @@ async function main() {
     totalJobs: stats.totalJobs,
     bySource: stats.bySource,
     byType: stats.byType,
+    tenureTrackBreakdown: stats.tenureTrackBreakdown,
     topSources: stats.topSources,
     topInstitutions: stats.topInstitutions,
     aiSummary: summary,
@@ -315,7 +330,14 @@ async function main() {
       topSources: stats.topSources,
       topInstitutions: stats.topInstitutions,
     },
-    history: updatedHistory.map((h) => ({ weekEnd: h.weekEnd, totalJobs: h.totalJobs })),
+    history: updatedHistory.map((h) => ({
+      weekEnd: h.weekEnd,
+      totalJobs: h.totalJobs,
+      tenureTrack: h.tenureTrackBreakdown?.tenureTrack ?? null,
+      nonTenureTrack: h.tenureTrackBreakdown?.nonTenureTrack ?? null,
+      tenureTrackPct: h.tenureTrackBreakdown?.tenureTrackPct ?? null,
+      nonTenureTrackPct: h.tenureTrackBreakdown?.nonTenureTrackPct ?? null,
+    })),
   };
 
   if (DRY_RUN) {
