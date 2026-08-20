@@ -586,6 +586,7 @@ const CT_PRIVATE_CAMPUSES = [
   { campus: "Charter Oak State College", type: "generic", url: "https://www.charteroak.edu/aboutus/employment.php" },
   { campus: "Connecticut State Community College", type: "generic", url: "https://ctstate.edu/" },
   { campus: "Eastern Connecticut State University", type: "generic", url: "https://www.easternct.edu/" },
+  { campus: "Hartford International University for Religion and Peace", type: "generic", url: "https://www.hartfordinternational.edu/about/employment" },
 ];
 
 const CSU_URL =
@@ -758,6 +759,8 @@ const MA_PRIVATE_CAMPUSES = [
     url: "https://www.framingham.edu/about-fsu/careers-fsu",
   },
   { campus: "Franklin W Olin College of Engineering", type: "generic", url: "https://www.olin.edu/" },
+  { campus: "Hebrew College", type: "generic", url: "https://hebrewcollege.edu/resources/employment-opportunities/" },
+  { campus: "Hellenic College-Holy Cross Greek Orthodox School of Theology", type: "generic", url: "https://www.hchc.edu/employment-opportunities/" },
 ];
 
 // UC (AP Recruit)
@@ -1162,6 +1165,11 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "California State University-Fresno", type: "generic", url: "https://adminfinance.fresnostate.edu/hr/jobs" },
   { campus: "California State University-Northridge", type: "generic", url: "https://www.csun.edu/hr/careers" },
   { campus: "California State University-San Marcos", type: "generic", url: "https://www.csusm.edu/careers" },
+  { campus: "California Indian Nations College", type: "generic", url: "https://cincollege.org/administration/human-resources/employment-opportunities/" },
+  { campus: "Gavilan College", type: "generic", url: "https://www.gavilan.edu/jobs/" },
+  { campus: "Golden West College", type: "generic", url: "https://www.goldenwestcollege.edu/hr/careers/index.html" },
+  { campus: "Grossmont-Cuyamaca Community College District", type: "generic", url: "https://www.gcccd.edu/jobs/" },
+  { campus: "Haven University", type: "generic", url: "https://www.haven.edu/faculty/jobs" },
 ];
 
 // NJ (multi-platform)
@@ -1554,6 +1562,11 @@ const PA_PRIVATE_CAMPUSES = [
   // – Physical Chemistry").
   { campus: "Elizabethtown College", type: "generic", url: "https://recruiting.paylocity.com/recruiting/jobs/All/fdb22ab4-b61f-498b-ac07-a242180665c7/Elizabethtown-College" },
   { campus: "Franklin and Marshall College", type: "generic", url: "https://www.fandm.edu/campus-services/human-resources/" },
+  { campus: "Gannon University", type: "generic", url: "https://www.gannon.edu/employment-at-gannon/" },
+  { campus: "Geneva College", type: "generic", url: "https://www.geneva.edu/employment/" },
+  { campus: "Grove City College", type: "generic", url: "https://www.gcc.edu/Home/Academics/Majors-Departments/School-of-Business/Accounting-Finance/Faculty/jobs" },
+  { campus: "Gwynedd Mercy University", type: "generic", url: "https://www.gmercyu.edu/faculty/jobs" },
+  { campus: "Holy Family University", type: "generic", url: "https://www.holyfamily.edu/about/administrative-services/human-resources/jobs" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -1729,6 +1742,11 @@ const NC_CAMPUSES = [
     url: "https://faytechcc.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=2&443%5B%5D=1&commit=Search",
   },
   { campus: "Forsyth Technical Community College", type: "generic", url: "https://www.forsythtech.edu/" },
+  { campus: "Blue Ridge Community College (NC)", type: "generic", url: "https://www.blueridge.edu/about-blue-ridge/human-resources-department/careers/" },
+  { campus: "Gardner-Webb University", type: "generic", url: "https://gardner-webb.edu/about/offices-and-departments/human-resources/job-openings/" },
+  { campus: "Gaston College", type: "generic", url: "https://www.gaston.edu/employment-opportunities/" },
+  { campus: "Guilford Technical Community College", type: "generic", url: "https://www.gtcc.edu/about/employment/index.php" },
+  { campus: "Halifax Community College", type: "generic", url: "https://halifaxcc.edu/community/employment-opportunities/" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -2024,6 +2042,7 @@ const SC_CAMPUSES = [
     url: "https://www.schooljobs.com/careers/fdtc",
   },
   { campus: "Francis Marion University", type: "generic", url: "https://www.fmarion.edu/" },
+  { campus: "Columbia College (SC)", type: "generic", url: "https://www.columbiasc.edu/about/employment" },
 ];
 
 
@@ -2742,6 +2761,11 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Fashion Institute of Technology", type: "interviewexchange", url: "https://fitnyc.interviewexchange.com/" },
   { campus: "Finger Lakes Community College", type: "generic", url: "https://www.flcc.edu/" },
   { campus: "Finger Lakes Health College of Nursing & Health Sciences", type: "generic", url: "https://www.flhcon.edu/" },
+  { campus: "Arnot Ogden Medical Center", type: "generic", url: "https://www.arnothealth.org/careers" },
+  { campus: "Hamilton College", type: "generic", url: "https://www.hamilton.edu/offices/human-resources/employment" },
+  { campus: "Hartwick College", type: "generic", url: "https://www.hartwick.edu/about-us/employment/" },
+  { campus: "Hilbert College", type: "generic", url: "https://www.hilbert.edu/faculty-staff/employment-benefits/careers-hiring-process/" },
+  { campus: "Hobart William Smith Colleges", type: "generic", url: "https://www.hws.edu/faculty/jobs" },
 ];
 
 // OR (Oregon)
@@ -3011,6 +3035,8 @@ const WA_CAMPUSES = [
   { campus: "Edmonds College", type: "generic", url: "https://www.edmonds.edu/about-edmonds/job-opportunities/" },
   { campus: "Everett Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/everettcc" },
   { campus: "Faith International University", type: "generic", url: "https://www.faithiu.edu/" },
+  { campus: "Grays Harbor College", type: "generic", url: "https://www.schooljobs.com/careers/ghc" },
+  { campus: "Green River College", type: "generic", url: "https://www.greenriver.edu/faculty/jobs" },
 ];
 
 
@@ -3189,6 +3215,8 @@ const MN_CAMPUSES = [
   { campus: "Dakota County Technical College", type: "generic", url: "https://www.dctc.edu/about-us/human-resources/employment-at-dctc" },
   { campus: "Dunwoody College of Technology", type: "generic", url: "https://dunwoody.edu/about/employment-at-dunwoody/faculty" },
   { campus: "Fond du Lac Tribal and Community College", type: "generic", url: "https://www.fdltcc.edu/" },
+  { campus: "Bethel University (MN)", type: "generic", url: "https://www.bethel.edu/employment/" },
+  { campus: "Gustavus Adolphus College", type: "generic", url: "https://gustavus.edu/about/administrative-offices/human-resources/employment-opportunities-human-resources" },
 ];
 
 // ND (North Dakota)
@@ -3416,6 +3444,7 @@ const IA_CAMPUSES = [
   { campus: "Ellsworth Community College", type: "generic", url: "https://ecc.iavalley.edu/" },
   { campus: "Emmaus Bible College", type: "generic", url: "https://www.emmaus.edu/careers" },
   { campus: "Faith Baptist Bible College and Theological Seminary", type: "generic", url: "https://faith.edu/careers" },
+  { campus: "Hawkeye Community College", type: "generic", url: "https://www.hawkeyecollege.edu/faculty/jobs" },
 ];
 
 // WY (Wyoming)
@@ -3479,6 +3508,7 @@ const MT_CAMPUSES = [
     url: "https://www.paycomonline.net/v4/ats/web.php/portal/23D9610C7FF62DF6DF80223B0B1ED6E3/career-page",
   },
   { campus: "Fort Peck Community College", type: "generic", url: "https://www.fpcc.edu/about" },
+  { campus: "Highlands College of Montana Tech", type: "generic", url: "https://www.mtech.edu/about/employment/" },
 ];
 
 // WI (Wisconsin)
@@ -3559,6 +3589,7 @@ const WI_CAMPUSES = [
   { campus: "Concordia University-Wisconsin", type: "generic", url: "https://cuw.applicantpro.com/jobs" },
   { campus: "Edgewood College", type: "generic", url: "https://www.edgewood.edu/employment/" },
   { campus: "Fox Valley Technical College", type: "generic", url: "https://www.fvtc.edu/academics/faculty-jobs" },
+  { campus: "Gateway Technical College", type: "generic", url: "https://www.gtc.edu/about-gateway/jobs-gateway/why-work-gateway" },
 ];
 
 // CO (Colorado)
@@ -4059,6 +4090,12 @@ const MI_CAMPUSES = [
   // ETS does not publish a standalone employment board.
   { campus: "Ecumenical Theological Seminary", type: "generic", url: "https://www.etseminary.edu/" },
   { campus: "Ferris State University", type: "generic", url: "https://www.ferris.edu/" },
+  { campus: "Grand Rapids Community College", type: "generic", url: "https://www.grcc.edu/faculty-staff/human-resources/careers" },
+  { campus: "Grand Valley State University", type: "generic", url: "https://www.gvsu.edu/careers/" },
+  { campus: "Great Lakes Christian College", type: "generic", url: "https://glcc.edu/employment/" },
+  { campus: "Henry Ford College", type: "generic", url: "https://www.hfcc.edu/careers/faculty" },
+  { campus: "Hillsdale College", type: "generic", url: "https://www.hillsdale.edu/404-not-found/?request=https://www.hillsdale.edu/faculty/jobs" },
+  { campus: "Hope College", type: "generic", url: "https://hope.edu/jobs/" },
 ];
 
 // IL (Illinois)
@@ -4313,6 +4350,8 @@ const IL_CAMPUSES = [
   { campus: "Elmhurst University", type: "generic", url: "https://apply.workable.com/elmhurst-edu" },
   { campus: "Erikson Institute", type: "generic", url: "https://www.erikson.edu/careers" },
   { campus: "Eureka College", type: "generic", url: "https://www.eureka.edu/employment" },
+  { campus: "Greenville University", type: "generic", url: "https://www.greenville.edu/inside-gu/employment/job-opportunities" },
+  { campus: "Highland Community College", type: "generic", url: "https://highland.edu/event/faculty-art-exhibit-opening-reception/" },
 ];
 
 // ID (Idaho)
@@ -4433,6 +4472,8 @@ const IN_CAMPUSES = [
   // postings will be picked up once they're listed.
   { campus: "Concordia Theological Seminary", type: "generic", url: "https://recruiting.paylocity.com/recruiting/jobs/All/07aeeac2-22ba-48be-81e4-96e31b9ef75b/Concordia-Theological-Seminary" },
   { campus: "Franklin College", type: "generic", url: "https://franklincollege.edu/about/key-offices/office-of-human-resources/employment-opportunities" },
+  { campus: "Anderson University (IN)", type: "generic", url: "https://anderson.edu/hr/faculty-staff-employment/" },
+  { campus: "Bethel University (IN)", type: "generic", url: "https://betheluniversity.edu/about/employment/" },
 ];
 
 // WV (West Virginia)
@@ -4482,6 +4523,7 @@ const WV_CAMPUSES = [
   { campus: "Eastern West Virginia Community and Technical College", type: "generic", url: "https://easternwv.edu/employment-opportunities" },
   { campus: "Fairmont State University", type: "generic", url: "https://www.fairmontstatejobs.com/" },
   { campus: "Fred W Eberle Technical Center", type: "generic", url: "https://fetc.edu/" },
+  { campus: "Future Generations University", type: "generic", url: "https://www.future.edu/employment-opportunities/" },
 ];
 
 // TX (Texas)
@@ -4791,6 +4833,8 @@ const TX_CAMPUSES = [
   { campus: "El Paso Community College", type: "generic", url: "https://www.epcc.edu/" },
   { campus: "Episcopal Theological Seminary of the Southwest", type: "generic", url: "https://ssw.edu/alumni/jobs" },
   { campus: "Frank Phillips College", type: "generic", url: "https://fpctx.edu/jobs" },
+  { campus: "Grayson College", type: "generic", url: "https://www.grayson.edu/employment/" },
+  { campus: "Hill College", type: "generic", url: "https://www.hillcollege.edu/Faculty_Staff/HR/Employment.html" },
 ];
 
 // FL (Florida)
@@ -5102,7 +5146,7 @@ const GA_CAMPUSES = [
   { campus: "College of Athens", type: "generic", url: "https://collegeofathens.edu/coa-employment" },
   { campus: "Columbia Theological Seminary", type: "generic", url: "https://www.ctsnet.edu/careers" },
   { campus: "Covenant College", type: "generic", url: "https://covenant.workbrightats.com/jobs" },
-  { campus: "Emmanuel University", type: "generic", url: "https://www.ec.edu/" },
+  { campus: "Emmanuel University", type: "generic", url: "https://eu.edu/human-resources/faculty-openings" },
   { campus: "Emory University", type: "generic", url: "https://www.emory.edu/" },
   { campus: "Emory University-Oxford College", type: "generic", url: "https://www.oxford.emory.edu/resources/human-resources/careers.html" },
   // Already correctly wired (real single-institution ApplicantPro board,
@@ -5198,6 +5242,7 @@ const AL_CAMPUSES = [
   { campus: "Coastal Alabama Community College", type: "generic", url: "https://www.coastalalabama.edu/about/employment" },
   { campus: "Enterprise State Community College", type: "schooljobs", url: "https://schooljobs.com/careers/accs/enterprise/promotionaljobs" },
   { campus: "Faulkner University", type: "generic", url: "https://faulkner.applicantpro.com/jobs" },
+  { campus: "George C Wallace State Community College-Hanceville", type: "generic", url: "https://www.wallacestate.edu/programs/academic-division/index.html/faculty-jobs" },
 ];
 
 // MS (Mississippi)
@@ -5239,8 +5284,10 @@ const MS_CAMPUSES = [
     type: "paycom",
     url: "https://www.paycomonline.net/v4/ats/web.php/portal/1F33F8BBDC686BCE369D823D8B8EF3B4/career-page",
   },
-  { campus: "East Central Community College", type: "generic", url: "https://www.eccc.edu/" },
+  { campus: "East Central Community College", type: "generic", url: "https://www.eccc.edu/employment" },
   { campus: "East Mississippi Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/eastmisscc" },
+  { campus: "Hinds Community College", type: "generic", url: "https://www.hindscc.edu/workforce/jobs" },
+  { campus: "Holmes Community College", type: "generic", url: "https://holmescc.edu/employment/" },
 ];
 
 // LA (Louisiana)
@@ -5347,6 +5394,7 @@ const AR_CAMPUSES = [
   { campus: "Crowley's Ridge College", type: "generic", url: "https://crc.edu/careers" },
   { campus: "East Arkansas Community College", type: "generic", url: "https://www.uaeacc.edu/employment" },
   { campus: "Ecclesia College", type: "generic", url: "https://ecollege.edu/employment" },
+  { campus: "Henderson State University", type: "generic", url: "https://www.hsu.edu/about/administration/finance-and-administration/human-resources/job-opportunities/" },
 ];
 
 // KS (Kansas)
@@ -5422,6 +5470,7 @@ const KS_CAMPUSES = [
   { campus: "Fort Hays Tech North Central", type: "generic", url: "https://www.fhtechnc.edu/" },
   { campus: "Fort Scott Community College", type: "generic", url: "https://www.fortscott.edu/" },
   { campus: "Friends University", type: "generic", url: "https://www.friends.edu/" },
+  { campus: "Hesston College", type: "generic", url: "https://hesston.edu/about/employment/" },
 ];
 
 // OK (Oklahoma)
@@ -5552,6 +5601,8 @@ const MO_CAMPUSES = [
   { campus: "Evangel University-College of Online Learning", type: "generic", url: "https://www.evangel.edu/" },
   { campus: "Evangel University-James River Assembly of God Church", type: "generic", url: "https://www.evangel.edu/" },
   { campus: "Fontbonne University", type: "generic", url: "https://www.fontbonne.edu/" },
+  { campus: "Columbia College (MO)", type: "generic", url: "https://www.ccis.edu/careers/" },
+  { campus: "Hannibal-LaGrange University", type: "generic", url: "https://www.hlg.edu/about-hlgu/employment-opportunities/" },
 ];
 
 // KY (Kentucky)
@@ -5660,6 +5711,7 @@ const HI_CAMPUSES = [
   { campus: "University of Hawaii System", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=faculty" },
   { campus: "Chaminade University of Honolulu", type: "generic", url: "https://chaminade.edu/employment-opportunities/" },
   { campus: "Brigham Young University-Hawaii", type: "generic", url: "https://www.byuh.edu/" },
+  { campus: "Hawaii Pacific University", type: "generic", url: "https://www.hpu.edu/hpu-careers/job-listings.html" },
 ];
 
 /* ============================== EXPRESS ============================== */
