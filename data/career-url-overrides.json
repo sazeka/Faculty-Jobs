@@ -342,6 +342,7 @@
       "homepage_url": "https://www.atlantatech.edu/",
       "career_url": "https://www.tcsg.edu/about-tcsg/system-office-services/employment-opportunities/",
       "platform_type": "generic",
+      "coverage_source": "TCSG",
       "notes": "Atlanta Technical College is covered by the TCSG system-wide faculty scraper. TCSG's official Employment Opportunities page explicitly lists jobs for its system office and all 22 colleges, so use it instead of the college homepage for link health."
     },
     {
@@ -853,6 +854,7 @@
       "homepage_url": "https://www.csudh.edu/",
       "career_url": "https://careers.csudh.edu/en-us/filter/?work-type=instructional+faculty+-+temporary%2Flecturer&work-type=non-instructional+faculty+(coach%2Fcounselor%2Flibrarian)",
       "platform_type": "pageup",
+      "coverage_source": "CSU",
       "notes": "Configured career_url was the bare homepage (0 scrapeable listings). CSUDH runs its own campus-specific PageUp instance (careers.csudh.edu), separate from the CSU system-wide board -- routed to its Faculty work-type filter. Verified live: 33 \"Instructional Faculty - Temporary/Lecturer\" postings (all titled \"Temporary Faculty Pool, <Dept>\", correctly excluded by omitAdjunct()'s \"temporary\" rule) + 5 \"Non-Instructional Faculty (Coach/Counselor/Librarian)\" postings (coach/counselor titles that don't contain faculty-keyword wording, so won't pass looksFacultyish() either) + 0 in \"Instructional Faculty \u2013 Tenured/Tenure-track\" right now. Net today: 0 real faculty jobs captured, but the URL/platform are now correct instead of pointing at a homepage that can never show anything -- will start surfacing real postings the moment a tenure-track/lecturer req opens that isn't titled \"Temporary...\"."
     },
     {
@@ -860,6 +862,7 @@
       "homepage_url": "https://www.csum.edu/",
       "career_url": "https://jobs.csum.edu/en-us/listing/",
       "platform_type": "pageup",
+      "coverage_source": "CSU",
       "notes": "The former homepage URL could never expose openings. Cal Maritime's official PageUp listing is live; employment positions transitioned to Cal Poly after the institutions integrated, but this campus-specific board remains the authoritative listing page."
     },
     {
@@ -867,6 +870,7 @@
       "homepage_url": "https://csumb.edu/",
       "career_url": "https://careers.csumb.edu/en-us/listing/",
       "platform_type": "pageup",
+      "coverage_source": "CSU",
       "notes": "Configured career_url (csumb.edu/celi/career) is the student Career Development Center page (resume workshops, employer recruiting services) -- never a job-postings page at all, wrong URL entirely. CSUMB runs its own campus PageUp instance separate from the CSU system board. Verified live: 33 postings, e.g. \"Clinical Counselor - Counselor Faculty\", \"MBA Online Lecturer\" (plain \"Lecturer\"/\"Faculty\" titles, not excluded by omitAdjunct())."
     },
     {
@@ -1511,6 +1515,7 @@
       "homepage_url": "https://www.coastalpines.edu/",
       "career_url": "https://careers.georgia.gov/jobs-search?field_agency_name=4896",
       "platform_type": "generic",
+      "coverage_source": "TCSG",
       "notes": "Configured career_url pointed at one specific job posting (PositionID=715) on apps.bluefinhr.com, a domain that's now entirely unreachable -- the college has migrated to Team Georgia Careers (a statewide Drupal portal backed by a shared Workday tenant), scoped to this college via its own agency-name facet (field_agency_name=4896). Verified live: 1 real posting, \"Instructor, Math\", not excluded by omitAdjunct()."
     },
     {
@@ -1729,6 +1734,13 @@
       "career_url": "https://ccbc.edu/employment/",
       "platform_type": "generic",
       "notes": "Was pointing at the bare homepage; the real employment page (linked from the homepage) lists current openings directly in HTML with Dayforce apply links. Verified live: about 12 postings, with 8 faculty (Adjunct Faculty - Professional Piloting, Air Traffic Control, Rad Tech, Nursing, Vet Tech, Nursing Clinical Obstetrics, Biology, Mathematics, plus Full-Time Faculty - Nursing)."
+    },
+    {
+      "name": "Community College of Baltimore County",
+      "homepage_url": "https://www.ccbcmd.edu/For/Job-Seekers/index.html",
+      "career_url": "https://www.schooljobs.com/careers/ccbcmd",
+      "platform_type": "schooljobs",
+      "notes": "The official CCBC Job Seekers page links to this NEOGOV board. Route directly to the application board because the ccbcmd.edu/jobs short URL intermittently hangs before redirecting."
     },
     {
       "name": "Community College of Philadelphia",
@@ -2757,6 +2769,7 @@
       "homepage_url": "https://www.gptc.edu/",
       "career_url": "https://www.gptc.edu/about-us/careers",
       "platform_type": "generic",
+      "coverage_source": "TCSG",
       "notes": "Georgia Piedmont is covered by the TCSG system-wide faculty scraper. Its official Careers page replaces the homepage-only URL and links to current full-time and adjunct opportunities."
     },
     {

@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { loadCampusConfigs } from "./lib/campus-config.js";
 import { canonicalizeUrl, clean, normalizeNameKey, inferPlatformFromUrl } from "./lib/url-normalization.js";
 import { parseCsv, mapIpedsRows, buildLookupByName } from "./lib/ipeds.js";
+import { deriveCoverageStatus, deriveJobPresenceStatus } from "./lib/institution-coverage.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,6 +55,7 @@ function buildOverridesMap() {
       homepage_url: canonicalizeUrl(row?.homepage_url),
       career_url: canonicalizeUrl(row?.career_url),
       platform_type: clean(row?.platform_type) || null,
+      coverage_source: clean(row?.coverage_source) || null,
       notes: clean(row?.notes) || null,
     });
   }
@@ -114,16 +116,18 @@ function main() {
       ov?.career_url || configuredUrl || prev?.career_url || prev?.homepage_url
     );
     const platform_type = clean(ov?.platform_type || prev?.platform_type) || inferPlatformFromUrl(career_url) || "generic";
+    const coverage_source = clean(ov?.coverage_source || prev?.coverage_source) || null;
 
     return {
       homepage_url,
       career_url,
       platform_type,
+      coverage_source,
       override_notes: ov?.notes || null,
     };
   };
 
-  const applyVerification = (row) => {
+  const applyVerification = (row, { isConfigured = false, hasSharedSource = false } = {}) => {
     const key = normalizeNameKey(row.name);
     const link = linkStatusByName.get(key);
     const isQuarantined = quarantinedNames.has(key);
@@ -155,9 +159,17 @@ function main() {
     // all showed real non-zero job counts while still reporting "missing").
     if (isQuarantined && !(row.last_seen_job_count > 0)) {
       merged.career_url = null;
-      if (merged.coverage_status === "covered") merged.coverage_status = "missing";
       merged.notes = clean(`${merged.notes || ""} Quarantined due to repeated broken career link checks.`) || null;
     }
+
+    merged.coverage_status = deriveCoverageStatus({
+      isConfigured,
+      hasSharedSource,
+      careerUrl: merged.career_url,
+      verificationStatus: merged.verification_status,
+      jobCount: merged.last_seen_job_count,
+    });
+    merged.job_presence_status = deriveJobPresenceStatus(merged.last_seen_job_count);
 
     return merged;
   };
@@ -189,11 +201,11 @@ function main() {
         homepage_url: urls.homepage_url,
         career_url: urls.career_url,
         platform_type: urls.platform_type,
-        coverage_status: currentJobCount > 0 ? "covered" : "missing",
+        coverage_source: urls.coverage_source,
         last_seen_job_count: currentJobCount,
         last_checked_at: new Date().toISOString(),
         notes: clean(`${prev.notes || ""} ${urls.override_notes || ""}`) || null,
-      })
+      }, { isConfigured: true, hasSharedSource: Boolean(urls.coverage_source) })
     );
   }
 
@@ -224,7 +236,7 @@ function main() {
         homepage_url: urls.homepage_url,
         career_url: urls.career_url,
         platform_type: urls.platform_type,
-        coverage_status: "covered",
+        coverage_source: urls.coverage_source,
         last_seen_job_count: count,
         last_checked_at: new Date().toISOString(),
         notes: prev.notes || "Present in jobs data but missing from explicit campus config.",
@@ -250,10 +262,20 @@ function main() {
         homepage_url: urls.homepage_url,
         career_url: urls.career_url,
         platform_type: urls.platform_type,
-        coverage_status: prev.coverage_status || "missing",
+        coverage_source: urls.coverage_source,
+        // This row is not emitted by a standalone config in the current run.
+        // Preserve its latest observation because shared system scrapers can
+        // attribute jobs to campuses that do not have their own config row.
         last_seen_job_count: Number(prev.last_seen_job_count || 0),
         last_checked_at: new Date().toISOString(),
         notes: prev.notes || "Preserved from previous master snapshot.",
+      }, {
+        // Shared system scrapers emit member-campus names without requiring a
+        // duplicate standalone scraper config or campus-specific career URL.
+        hasSharedSource:
+          Boolean(urls.coverage_source) ||
+          prev.coverage_status === "covered" ||
+          prev.notes === "Present in jobs data but missing from explicit campus config.",
       })
     );
   }
@@ -292,7 +314,7 @@ function main() {
       linkStatusFrom: path.relative(ROOT, LINK_STATUS_PATH),
       quarantineFrom: path.relative(ROOT, QUARANTINE_PATH),
       ipedsFrom: ipedsFile ? path.relative(ROOT, path.join(IPEDS_DIR, ipedsFile)) : null,
-      note: "Includes homepage_url + career_url split, override priority, link verification/quarantine metadata, and IPEDS-enriched state/control/level.",
+      note: "Coverage reflects configured, usable career sources; job_presence_status and last_seen_job_count separately describe jobs found in the latest available scrape observation. Includes homepage_url + career_url split, override priority, link verification/quarantine metadata, and IPEDS-enriched state/control/level.",
     },
     counts: {
       totalInstitutions: filtered.length,

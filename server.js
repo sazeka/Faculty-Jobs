@@ -2130,7 +2130,10 @@ const MD_CAMPUSES = [
   },
   { campus: "Chesapeake College", type: "schooljobs", url: "https://www.schooljobs.com/careers/chesapeakecollege" },
   { campus: "College of Southern Maryland", type: "generic", url: "https://www.csmd.edu/employment" },
-  { campus: "Community College of Baltimore County", type: "generic", url: "https://www.ccbcmd.edu/jobs" },
+  // The official /jobs short link intermittently hangs before redirecting.
+  // Point directly at CCBC's NEOGOV board, which is the destination linked by
+  // the college's Job Seekers page and exposes stable per-posting URLs.
+  { campus: "Community College of Baltimore County", type: "schooljobs", url: "https://www.schooljobs.com/careers/ccbcmd" },
   { campus: "Coppin State University", type: "generic", url: "https://www.coppin.edu/" },
   { campus: "Frederick Community College", type: "generic", url: "https://jobs.frederick.edu/" },
   { campus: "Frostburg State University", type: "generic", url: "https://www.frostburg.edu/human-resources/Careers-at-FSU/Careers-at-FSU.php" },
