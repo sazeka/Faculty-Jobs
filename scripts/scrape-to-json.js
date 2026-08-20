@@ -317,8 +317,12 @@ function canonicalizeJobUrls(data) {
   }
 
   // Always-on per-source/per-college anti-flake healing (runs even with no CAMPUS_ALLOWLIST).
-  const healMinBaseline = Number(process.env.SOURCE_HEAL_MIN_BASELINE || 20);
-  const healDropPct = Number(process.env.SOURCE_HEAL_DROP_PCT || 70);
+  // Match the data-health alert policy: if a source is large enough to open a
+  // 60%-drop issue, it must also be large enough for this pre-write guard to
+  // heal. The old 20/70 defaults let ND fall 16 -> 5 and only complained after
+  // the damaged snapshot had already been published.
+  const healMinBaseline = Number(process.env.SOURCE_HEAL_MIN_BASELINE || 10);
+  const healDropPct = Number(process.env.SOURCE_HEAL_DROP_PCT || 60);
   if (process.env.DISABLE_SOURCE_HEAL !== "1") {
     const heal = healCrateredSources(data, previousData, {
       minBaseline: healMinBaseline,

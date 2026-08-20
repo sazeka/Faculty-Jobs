@@ -30,6 +30,20 @@ test("healCrateredSources ignores normal fluctuation (no false positive)", () =>
   assert.equal(countBySource(r.data).NM, 40);
 });
 
+test("healCrateredSources protects alert-sized small sources", () => {
+  const prev = { jobs: mk("ND", 16) };
+  const next = { jobs: mk("ND", 5) };
+  const result = healCrateredSources(next, prev, { minBaseline: 10, dropPct: 60 });
+
+  assert.equal(countBySource(result.data).ND, 16);
+  assert.deepEqual(result.healed[0], {
+    source: "ND",
+    baseline: 16,
+    current: 5,
+    restoredTo: 16,
+  });
+});
+
 test("healCrateredSources restores one cratered college inside a partially healthy source", () => {
   const collegeJobs = (college, n) =>
     Array.from({ length: n }, (_, i) => ({ source: "NM", college, url: `https://x/${college}/${i}`, title: `t${i}` }));
