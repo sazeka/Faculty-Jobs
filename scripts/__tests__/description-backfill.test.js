@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   descriptionAttemptCount,
+  isUnsupportedDescriptionUrl,
   needsDescriptionFetch,
   prioritizeDescriptionCandidates,
 } from "../lib/description-backfill.js";
@@ -27,6 +28,13 @@ test("fetches new descriptions and retries one stale empty result", () => {
     descriptionFetchAttempts: 2,
   }, NOW), false);
   assert.equal(descriptionAttemptCount({ descriptionFetchedAt: "2026-08-01" }), 1);
+});
+
+test("skips virtual OneUSG search fragments that cannot resolve to public detail pages", () => {
+  const url = "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL#jobId=300794";
+  assert.equal(isUnsupportedDescriptionUrl(url), true);
+  assert.equal(needsDescriptionFetch({ url }, NOW), false);
+  assert.equal(isUnsupportedDescriptionUrl("https://example.edu/jobs/300794"), false);
 });
 
 test("prioritizes unknown tenure and then newer postings", () => {

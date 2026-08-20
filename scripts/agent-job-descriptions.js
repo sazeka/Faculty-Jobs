@@ -23,9 +23,11 @@ import { chromium } from "playwright";
 import { extractStartDate } from "./lib/start-date.js";
 import {
   descriptionAttemptCount,
+  isUnsupportedDescriptionUrl,
   needsDescriptionFetch,
   prioritizeDescriptionCandidates,
 } from "./lib/description-backfill.js";
+import { createDescriptionFetchReport } from "./lib/description-fetch-report.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -161,6 +163,7 @@ async function main() {
   let attempted = 0;
   let nextIdx = 0;
   let sinceSave = 0;
+  const fetchReport = createDescriptionFetchReport();
 
   async function worker() {
     while (nextIdx < toProcess.length) {
@@ -172,6 +175,7 @@ async function main() {
       let validThrough = "";
       let closeRolling = false;
       let datePostedFromOpenDate = false;
+      let fetchErrored = false;
       try {
         await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
         // Cornerstone (csod) is a single-page app that renders the "Posted on …"
@@ -329,6 +333,7 @@ async function main() {
         validThrough = result?.validThrough || result?.close?.date || "";
         closeRolling = !result?.validThrough && !result?.close?.date && !!result?.close?.rolling;
       } catch {
+        fetchErrored = true;
         desc = "";
       } finally {
         await page.close().catch(() => {});
@@ -337,6 +342,8 @@ async function main() {
       // Strip a leading "Skip to Main Content" link that some ATS pages render
       // inside the content region (not in a <nav>, so the DOM strip misses it).
       if (desc) desc = desc.replace(/^\s*skip to (main )?content\s*/i, "").trim();
+
+      fetchReport.record(job.url, desc ? "filled" : fetchErrored ? "errors" : "empty");
 
       attempted++;
       const wasMissingDescription = !String(target.description || "").trim();
@@ -398,6 +405,10 @@ async function main() {
     (j) => !String(j.description || "").trim() && /^https?:\/\//i.test(j.url || "")
   ).length;
   const eligibleRemaining = payload.jobs.filter((j) => needsDescriptionFetch(j)).length;
+  const unsupportedRemaining = payload.jobs.filter(
+    (j) => !String(j.description || "").trim() && isUnsupportedDescriptionUrl(j.url)
+  ).length;
+  const fetchDiagnostics = fetchReport.summarize();
 
   writeJson(REPORT_PATH, {
     generatedAt: new Date().toISOString(),
@@ -416,6 +427,8 @@ async function main() {
     totalWithDescription,
     remaining,
     eligibleRemaining,
+    unsupportedRemaining,
+    fetchDiagnostics,
     config: { max: MAX, concurrency: CONCURRENCY, timeoutMs: TIMEOUT_MS, minLen: MIN_LEN },
   });
 
@@ -427,6 +440,15 @@ async function main() {
   console.log(`  Total w/ description: ${totalWithDescription.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
   console.log(`  Remaining missing  : ${remaining.toLocaleString()}`);
   console.log(`  Eligible next run  : ${eligibleRemaining.toLocaleString()}`);
+  console.log(`  Unsupported links  : ${unsupportedRemaining.toLocaleString()}`);
+  console.log("  Highest-failure platforms:");
+  for (const row of fetchDiagnostics.byPlatform.slice(0, 5)) {
+    console.log(`    ${row.platform}: ${row.empty + row.errors}/${row.attempted} failed (${row.failureRatePct}%)`);
+  }
+  console.log("  Highest-failure hosts:");
+  for (const row of fetchDiagnostics.byHost.slice(0, 10)) {
+    console.log(`    ${row.host}: ${row.empty + row.errors}/${row.attempted} failed (${row.failureRatePct}%)`);
+  }
   console.log(`  Report saved       : generated/job-descriptions-report.json\n`);
 }
 

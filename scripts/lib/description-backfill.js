@@ -7,6 +7,14 @@ function hasHttpUrl(job) {
   return /^https?:\/\//i.test(job?.url || "");
 }
 
+// OneUSG/PeopleSoft listing rows do not expose public detail URLs. The scraper
+// stores a #jobId fragment to keep rows unique, but fragments never reach the
+// server and anonymous visits currently redirect to a PeopleSoft sign-in error.
+// Do not spend the limited daily detail-page quota retrying these virtual links.
+export function isUnsupportedDescriptionUrl(url) {
+  return /careers\.hprod\.onehcm\.usg\.edu/i.test(String(url || "")) && /#jobId=\d+/i.test(String(url || ""));
+}
+
 function inferredAttempts(job) {
   const stored = Number(job?.descriptionFetchAttempts);
   if (Number.isFinite(stored) && stored >= 0) return stored;
@@ -19,7 +27,7 @@ export function needsDescriptionFetch(
   retryDays = DESCRIPTION_RETRY_DAYS,
   maxAttempts = DESCRIPTION_MAX_ATTEMPTS
 ) {
-  if (!hasHttpUrl(job) || String(job?.description || "").trim()) return false;
+  if (!hasHttpUrl(job) || isUnsupportedDescriptionUrl(job?.url) || String(job?.description || "").trim()) return false;
   const attempts = inferredAttempts(job);
   if (!job.descriptionFetchedAt) return attempts < maxAttempts;
   if (attempts >= maxAttempts) return false;
