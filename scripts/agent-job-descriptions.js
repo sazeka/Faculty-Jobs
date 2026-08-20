@@ -151,7 +151,11 @@ async function main() {
   }
 
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ userAgent: "Mozilla/5.0 FacultyJobsDescBot/1.0" });
+  // Keep Chromium's normal browser identity. Several Workday tenants (including
+  // Ohio State) leave the SPA permanently on "Loading" when the old custom
+  // FacultyJobsDescBot user agent is present, while the same detail page renders
+  // immediately with Playwright's standard Chromium user agent.
+  const context = await browser.newContext();
   const jobIndex = new Map(payload.jobs.map((j) => [j.canonicalJobId, j]));
 
   let filled = 0;

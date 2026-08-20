@@ -30,3 +30,9 @@ test('daily data-health workflow backfills 1,600 descriptions per run', () => {
     /npm run agent:descriptions -- --max 1600 --concurrency 8/,
   );
 });
+
+test('description backfill does not use the Workday-blocked bot user agent', () => {
+  const source = fs.readFileSync(path.join(ROOT, 'scripts/agent-job-descriptions.js'), 'utf8');
+  assert.doesNotMatch(source, /userAgent:\s*["']Mozilla\/5\.0 FacultyJobsDescBot/);
+  assert.match(source, /chromium\.launch\(\{ headless: true \}\)/);
+});
