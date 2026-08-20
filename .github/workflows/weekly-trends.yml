@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write
-  models: read
 
 concurrency:
   group: weekly-trends
@@ -34,8 +33,7 @@ jobs:
       - name: Generate weekly trends (with AI summary)
         run: node scripts/generate-weekly-trends.js
         env:
-          AI_BACKEND: github-models
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AI_BACKEND: template
 
       - name: Generate indexable trends pages
         run: node scripts/generate-trends-pages.js

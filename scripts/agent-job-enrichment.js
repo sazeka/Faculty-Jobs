@@ -12,8 +12,8 @@
  * runs are never lost.
  *
  * Backend selection:
- *   default                  → Ollama local
- *   AI_BACKEND=github-models → GitHub Models (used in Actions)
+ *   default               → Ollama local
+ *   AI_BACKEND=rules-only → deterministic classification only (Actions)
  *
  * Usage:
  *   node scripts/agent-job-enrichment.js [--dry-run] [--max <n>] [--batch-size <n>] [--concurrency <n>]
@@ -26,7 +26,6 @@ import {
   classifyTenureTrack,
   classifyTenureTrackWithEvidence,
 } from './lib/weekly-tenure-stats.js';
-import { callGitHubModels, DEFAULT_GITHUB_MODEL } from './lib/github-models.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -59,7 +58,6 @@ const CONCURRENCY = Math.min(Number(args['concurrency'] || process.env.AI_ENRICH
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'localhost:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
 const AI_BACKEND = process.env.AI_BACKEND || 'ollama';
-const GITHUB_MODEL = process.env.GITHUB_MODEL || DEFAULT_GITHUB_MODEL;
 // A hung/overloaded backend (e.g. Ollama swapping a 7B model on an 8GB
 // Jetson, or thrashing under memory pressure) can accept the connection and
 // then just never respond -- that isn't a connection-level failure, so
@@ -191,17 +189,6 @@ function parseResponse(text) {
   return JSON.parse(clean);
 }
 
-// ── GitHub Models API ────────────────────────────────────────────────────────
-
-async function callGitHubModelsBatch(batch) {
-  const text = await callGitHubModels({
-    prompt: buildPrompt(batch),
-    model: GITHUB_MODEL,
-    maxTokens: 1024,
-  });
-  return parseResponse(text);
-}
-
 // ── Ollama API ────────────────────────────────────────────────────────────────
 
 function callOllama(batch) {
@@ -256,13 +243,13 @@ async function main() {
 
   if (AI_BACKEND === 'ollama') {
     console.log(`  Backend: Ollama (${OLLAMA_MODEL} @ ${OLLAMA_HOST})`);
-  } else if (AI_BACKEND === 'github-models') {
-    console.log(`  Backend: GitHub Models (${GITHUB_MODEL})`);
+  } else if (AI_BACKEND === 'rules-only') {
+    console.log('  Backend: deterministic rules only');
   } else {
     throw new Error(`Unsupported AI_BACKEND: ${AI_BACKEND}`);
   }
 
-  const enrichBatch = AI_BACKEND === 'ollama' ? callOllama : callGitHubModelsBatch;
+  const enrichBatch = callOllama;
 
   const payload = readJson(PUBLIC_JOBS);
   if (!payload?.jobs?.length) {
@@ -300,7 +287,7 @@ async function main() {
           : 2;
       return score(a) - score(b);
     });
-  const toProcess = candidates.slice(0, MAX);
+  const toProcess = AI_BACKEND === 'rules-only' ? [] : candidates.slice(0, MAX);
   const tenureUnknown = payload.jobs.filter(needsTenure).length;
   const disciplineMissing = payload.jobs.filter(needsDiscipline).length;
 
@@ -311,6 +298,32 @@ async function main() {
   console.log(`  To process now   : ${toProcess.length.toLocaleString()} (max ${MAX})`);
   console.log(`  Batch size       : ${BATCH_SIZE}`);
   console.log(`  Concurrency      : ${CONCURRENCY}`);
+
+  if (AI_BACKEND === 'rules-only') {
+    if (DRY_RUN) {
+      console.log(`\n  Would save ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications. No files written.`);
+      return;
+    }
+    if (deterministicTenureCount) {
+      writeJson(PUBLIC_JOBS, payload);
+      if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+    }
+    const totalEnriched = payload.jobs.filter(j => j.discipline !== undefined).length;
+    writeJson(REPORT_PATH, {
+      generatedAt: new Date().toISOString(),
+      backend: 'rules-only',
+      totalJobs: payload.jobs.length,
+      enrichedThisRun: 0,
+      totalEnriched,
+      remaining: payload.jobs.length - totalEnriched,
+      tenureClassifiedByRules: deterministicTenureCount,
+      tenureUnknown,
+      errors: 0,
+    });
+    console.log(`\n  Saved ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications.`);
+    console.log('  Model enrichment skipped in CI; run locally with Ollama for remaining fields.');
+    return;
+  }
 
   if (toProcess.length === 0) {
     console.log('\n  All jobs already enriched. Nothing to do.');
@@ -381,7 +394,7 @@ async function main() {
     if (!ok) {
       // Authentication/configuration errors affect every row. Do not recursively
       // split a 25-row batch into hundreds of guaranteed-failing requests.
-      if (/authentication_error|api key is invalid|unauthorized|forbidden|GITHUB_TOKEN is required|HTTP (401|403|429)/i.test(errMsg || '')) {
+      if (/authentication_error|api key is invalid|unauthorized|forbidden|HTTP (401|403|429)/i.test(errMsg || '')) {
         throw new Error(`Fatal enrichment backend error: ${errMsg}`);
       }
       if (batch.length === 1) {

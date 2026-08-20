@@ -9,7 +9,6 @@ on:
 permissions:
   contents: write
   issues: write
-  models: read
 
 concurrency:
   group: agent-team
@@ -60,8 +59,7 @@ jobs:
         run: npm run agent:enrich -- --max 500
         continue-on-error: true
         env:
-          AI_BACKEND: github-models
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AI_BACKEND: rules-only
 
       - name: Rebuild web data chunks from updated jobs.json
         run: |

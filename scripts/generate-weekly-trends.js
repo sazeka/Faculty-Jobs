@@ -6,9 +6,9 @@
  * generate a prose narrative summary.
  *
  * Backend selection:
- *   default                  → Ollama local
- *   AI_BACKEND=github-models → GitHub Models (used in Actions)
- *   unavailable backend      → template summary fallback
+ *   default             → Ollama local
+ *   AI_BACKEND=template → deterministic template summary (Actions)
+ *   unavailable backend → template summary fallback
  *
  * Outputs:
  *   docs/data/weekly-trends.json     (served by GitHub Pages)
@@ -23,7 +23,6 @@ import path from "path";
 import http from "http";
 import { fileURLToPath } from "url";
 import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
-import { callGitHubModels, DEFAULT_GITHUB_MODEL } from "./lib/github-models.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -41,7 +40,6 @@ const DRY_RUN      = process.argv.includes("--dry-run");
 const OLLAMA_HOST  = process.env.OLLAMA_HOST  || "localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "qwen2.5:7b";
 const AI_BACKEND   = process.env.AI_BACKEND || "ollama";
-const GITHUB_MODEL = process.env.GITHUB_MODEL || DEFAULT_GITHUB_MODEL;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -137,33 +135,6 @@ function templateSummary(stats, prev) {
   ].filter(Boolean).join(" ");
 }
 
-// ── GitHub Models API call ───────────────────────────────────────────────────
-
-function callGitHubModelsSummary(statsForPrompt) {
-  const prompt = `You are writing a weekly digest for Faculty Atlas, a U.S. faculty job listings platform.
-
-Write a 2-3 paragraph summary (150–200 words) of this week's faculty hiring trends. Use a professional but readable newsletter tone.
-
-Focus on:
-- Changes in total listing volume vs last week (if available)
-- Which states or systems are most active
-- What position types dominate
-- The tenure-track versus non-tenure-track mix, while acknowledging unclassified listings
-- Anything noteworthy or surprising in the data
-
-Avoid: technical jargon, mentioning job IDs, phrases like "the data shows" or "according to the data", or bullet points.
-
-Weekly data:
-${JSON.stringify(statsForPrompt, null, 2)}`;
-
-  return callGitHubModels({
-    prompt,
-    model: GITHUB_MODEL,
-    maxTokens: 400,
-    temperature: 0.4,
-  });
-}
-
 // ── Ollama API call ───────────────────────────────────────────────────────────
 
 function callOllama(statsForPrompt) {
@@ -229,7 +200,7 @@ async function main() {
   console.log("\nFaculty Atlas - Weekly Trends Generator");
   if (DRY_RUN) console.log("  *** DRY RUN ***");
   if (AI_BACKEND === "ollama") console.log(`  Backend: Ollama (${OLLAMA_MODEL} @ ${OLLAMA_HOST})`);
-  else if (AI_BACKEND === "github-models") console.log(`  Backend: GitHub Models (${GITHUB_MODEL})`);
+  else if (AI_BACKEND === "template") console.log("  Backend: deterministic template");
   else throw new Error(`Unsupported AI_BACKEND: ${AI_BACKEND}`);
 
   const payload = readJson(JOBS_PATH);
@@ -259,10 +230,12 @@ async function main() {
 
   // Generate prose summary
   let summary;
-  const aiCall = AI_BACKEND === "ollama" ? callOllama : callGitHubModelsSummary;
-  try {
+  if (AI_BACKEND === "template") {
+    summary = templateSummary(stats, prev);
+    console.log("\n  Template summary generated.");
+  } else try {
     console.log(`\n  Generating prose summary...`);
-    summary = await aiCall(statsForPrompt);
+    summary = await callOllama(statsForPrompt);
     console.log("  Summary generated.");
   } catch (err) {
     console.warn(`  AI error: ${err.message} — falling back to template.`);

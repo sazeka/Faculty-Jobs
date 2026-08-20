@@ -28,7 +28,7 @@ The scraper (`server.js` + `scripts/scrape-to-json.js`) writes `public/jobs.json
 
 - **Scraper / server:** Node.js, Express, Playwright
 - **Frontend:** Vue 3 + Vite (static build)
-- **AI enrichment:** Ollama (local/default) / GitHub Models with the automatic `GITHUB_TOKEN` (CI)
+- **AI enrichment:** Ollama (local/default) / deterministic rules and template summaries (CI, no API secret)
 - **Automation:** GitHub Actions
 - **Hosting:** GitHub Pages (custom domain, HTTPS)
 - **Analytics:** GoatCounter (privacy-first, no cookies)
