@@ -374,6 +374,15 @@ async function main() {
     return;
   }
 
+  // Persist deterministic work before making any external model calls. A bad
+  // or expired API credential must not throw away thousands of rule-based
+  // classifications discovered earlier in this run.
+  if (deterministicTenureCount) {
+    writeJson(PUBLIC_JOBS, payload);
+    if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+    console.log(`\n  Saved ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications before AI enrichment.`);
+  }
+
   // Index by canonicalJobId for fast in-place mutation
   const jobIndex = new Map(payload.jobs.map(j => [j.canonicalJobId, j]));
 
@@ -405,6 +414,11 @@ async function main() {
     const ok = Array.isArray(results) && results.length === batch.length;
 
     if (!ok) {
+      // Authentication/configuration errors affect every row. Do not recursively
+      // split a 25-row batch into hundreds of guaranteed-failing requests.
+      if (/authentication_error|api key is invalid|unauthorized|forbidden/i.test(errMsg || '')) {
+        throw new Error(`Fatal enrichment backend error: ${errMsg}`);
+      }
       if (batch.length === 1) {
         // Genuinely un-enrichable on this pass; leave it for the next run.
         errorCount++;
