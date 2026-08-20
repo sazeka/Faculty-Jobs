@@ -46,19 +46,21 @@ jobs:
         run: npm run agent:job-presence
         continue-on-error: true
 
-      - name: Enrich new jobs with discipline, tenure status, and position type
-        run: npm run agent:enrich -- --max 500
-        continue-on-error: true
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          USE_CLAUDE: '1'
-
       - name: Install Playwright Chromium (for description backfill)
         run: npx playwright install --with-deps chromium
 
       - name: Backfill missing job descriptions from detail pages
         run: npm run agent:descriptions -- --max 400 --concurrency 6
         continue-on-error: true
+
+      # Enrichment must follow description backfill: title-only inference often
+      # cannot determine appointment track, while the posting body can state it.
+      - name: Enrich jobs with discipline, tenure status, and position type
+        run: npm run agent:enrich -- --max 500
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          USE_CLAUDE: '1'
 
       - name: Rebuild web data chunks from updated jobs.json
         run: |

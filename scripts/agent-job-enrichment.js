@@ -23,6 +23,10 @@ import path from 'path';
 import http from 'http';
 import https from 'https';
 import { fileURLToPath } from 'url';
+import {
+  classifyTenureTrack,
+  classifyTenureTrackWithEvidence,
+} from './lib/weekly-tenure-stats.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -301,22 +305,61 @@ async function main() {
     process.exit(1);
   }
 
-  const unenriched = payload.jobs.filter(j => j.discipline === undefined);
-  const toProcess  = unenriched.slice(0, MAX);
+  // Apply high-confidence deterministic classifications first. This resolves
+  // explicit title/description language plus definitionally temporary ranks
+  // without spending model tokens, and records why each decision was made.
+  let deterministicTenureCount = 0;
+  for (const job of payload.jobs) {
+    // Check the stored field in isolation so the richer classifier can still
+    // discover title/description evidence on records currently marked unknown.
+    if (classifyTenureTrack({ tenureTrack: job.tenureTrack }) !== null) continue;
+    const inferred = classifyTenureTrackWithEvidence(job);
+    if (inferred.value === null) continue;
+    deterministicTenureCount++;
+    if (!DRY_RUN) {
+      job.tenureTrack = inferred.value ? 'tenure-track' : 'non-tenure-track';
+      job.tenureEvidence = inferred.evidence;
+    }
+  }
+
+  const needsDiscipline = job => job.discipline === undefined;
+  const needsTenure = job => classifyTenureTrack(job) === null;
+  const candidates = payload.jobs
+    .filter(job => needsDiscipline(job) || needsTenure(job))
+    .sort((a, b) => {
+      // Resolve unknown tenure statuses with usable descriptions first; those
+      // are the cases where the model has actual evidence rather than a title-
+      // only guess. Then continue the existing discipline backlog.
+      const score = job => needsTenure(job) && String(job.description || '').trim() ? 0
+        : needsDiscipline(job) ? 1
+          : 2;
+      return score(a) - score(b);
+    });
+  const toProcess = candidates.slice(0, MAX);
+  const tenureUnknown = payload.jobs.filter(needsTenure).length;
+  const disciplineMissing = payload.jobs.filter(needsDiscipline).length;
 
   console.log(`\n  Total jobs       : ${payload.jobs.length.toLocaleString()}`);
-  console.log(`  Already enriched : ${(payload.jobs.length - unenriched.length).toLocaleString()}`);
+  console.log(`  Discipline known : ${(payload.jobs.length - disciplineMissing).toLocaleString()}`);
+  console.log(`  Tenure unknown   : ${tenureUnknown.toLocaleString()}`);
+  console.log(`  Rule-classified  : ${deterministicTenureCount.toLocaleString()}`);
   console.log(`  To process now   : ${toProcess.length.toLocaleString()} (max ${MAX})`);
   console.log(`  Batch size       : ${BATCH_SIZE}`);
   console.log(`  Concurrency      : ${CONCURRENCY}`);
 
   if (toProcess.length === 0) {
     console.log('\n  All jobs already enriched. Nothing to do.');
+    if (!DRY_RUN && deterministicTenureCount) {
+      writeJson(PUBLIC_JOBS, payload);
+      if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+    }
     writeJson(REPORT_PATH, {
       generatedAt: new Date().toISOString(),
       totalJobs: payload.jobs.length,
       enrichedThisRun: 0,
       totalEnriched: payload.jobs.length,
+      tenureClassifiedByRules: deterministicTenureCount,
+      tenureUnknown,
       errors: 0,
     });
     return;
@@ -383,9 +426,12 @@ async function main() {
       const result = results[j];
       if (!job || !result) continue;
       const norm = normalizeResult(result);
-      job.discipline   = norm.discipline;
-      job.tenureTrack  = norm.tenureTrack;
-      job.positionType = norm.positionType;
+      if (job.discipline === undefined) job.discipline = norm.discipline;
+      if (classifyTenureTrack(job) === null) {
+        job.tenureTrack = norm.tenureTrack;
+        if (norm.tenureTrack !== 'unknown') job.tenureEvidence = 'ai';
+      }
+      if (!job.positionType || job.positionType === 'Unknown') job.positionType = norm.positionType;
       enrichedCount++;
       batchEnriched++;
     }
@@ -417,6 +463,8 @@ async function main() {
     generatedAt:     new Date().toISOString(),
     totalJobs:       payload.jobs.length,
     enrichedThisRun: enrichedCount,
+    tenureClassifiedByRules: deterministicTenureCount,
+    tenureUnknown: payload.jobs.filter(needsTenure).length,
     totalEnriched,
     remaining:       payload.jobs.length - totalEnriched,
     failedThisRun:   errorCount,
