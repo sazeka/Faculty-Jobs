@@ -11,6 +11,21 @@ export function countBySource(data) {
   return out;
 }
 
+function sourceCollegeKey(job) {
+  const source = String(job?.source || "").trim();
+  const college = String(job?.college || "").trim();
+  return source && college ? `${source}\u0000${college}` : null;
+}
+
+function countBySourceCollege(data) {
+  const out = {};
+  for (const job of data?.jobs || []) {
+    const key = sourceCollegeKey(job);
+    if (key) out[key] = (out[key] || 0) + 1;
+  }
+  return out;
+}
+
 // Hard block: discard the whole new snapshot when an allowlisted set of sources
 // collapses (a strong signal of an anti-bot/blocked run). Requires CAMPUS_ALLOWLIST.
 export function shouldBlockOverwrite(newData, prevData, allowlistRaw) {
@@ -70,8 +85,11 @@ export function healCrateredSources(newData, prevData, { minBaseline, dropPct })
 
   const prevBy = countBySource(prevData);
   const nextBy = countBySource(newData);
+  const prevByCollege = countBySourceCollege(prevData);
+  const nextByCollege = countBySourceCollege(newData);
 
   const cratered = new Set();
+  const crateredColleges = new Set();
   const healed = [];
   for (const s of Object.keys(prevBy)) {
     const p = prevBy[s] || 0;
@@ -83,14 +101,34 @@ export function healCrateredSources(newData, prevData, { minBaseline, dropPct })
       healed.push({ source: s, baseline: p, current: n, restoredTo: p });
     }
   }
-  if (cratered.size === 0) return empty;
+
+  // A state/system source can remain above the aggregate crater threshold even
+  // when one large campus fails (UNM fell 33 -> 2 while the rest of NM kept the
+  // source total at 18). Apply the same guard per source+college unless the
+  // entire source is already being restored.
+  for (const key of Object.keys(prevByCollege)) {
+    const [source, college] = key.split("\u0000");
+    if (cratered.has(source)) continue;
+    const p = prevByCollege[key] || 0;
+    const n = nextByCollege[key] || 0;
+    const floor = Math.ceil(p * (1 - dropPct / 100));
+    if (p >= minBaseline && n < floor) {
+      crateredColleges.add(key);
+      healed.push({ source, college, baseline: p, current: n, restoredTo: p });
+    }
+  }
+  if (cratered.size === 0 && crateredColleges.size === 0) return empty;
 
   // Drop the (likely-flaky) new jobs for cratered sources, splice in the previous ones.
-  const jobs = newData.jobs.filter((j) => !cratered.has(String(j?.source || "").trim()));
+  const shouldRestore = (job) => {
+    const source = String(job?.source || "").trim();
+    return cratered.has(source) || crateredColleges.has(sourceCollegeKey(job));
+  };
+  const jobs = newData.jobs.filter((job) => !shouldRestore(job));
   let jobsRestored = 0;
-  for (const j of prevData.jobs) {
-    if (cratered.has(String(j?.source || "").trim())) {
-      jobs.push(j);
+  for (const job of prevData.jobs) {
+    if (shouldRestore(job)) {
+      jobs.push(job);
       jobsRestored += 1;
     }
   }

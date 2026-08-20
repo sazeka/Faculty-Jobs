@@ -22,7 +22,7 @@ scrape (Playwright)  →  normalize + canonical IDs  →  AI enrich  →  qualit
       →  public/jobs.json  →  chunked + synced to web-vue  →  Vue build  →  docs/ (GitHub Pages)
 ```
 
-The scraper (`server.js` + `scripts/scrape-to-json.js`) writes `public/jobs.json`; the Vue app (`web-vue/`) renders it as chunked, lazy-loaded data. A set of resilience guards keep the dataset stable: per-source anti-flake healing (a flaky run can't wipe a state), confirmed-dead-URL pruning, snapshot overwrite protection, and institution-coverage regression alerts. Source coverage is tracked separately from job presence, so a valid source with zero current openings remains covered.
+The scraper (`server.js` + `scripts/scrape-to-json.js`) writes `public/jobs.json`; the Vue app (`web-vue/`) renders it as chunked, lazy-loaded data. A set of resilience guards keep the dataset stable: per-source and per-college anti-flake healing (a flaky run can't wipe a state or one campus inside it), confirmed-dead-URL pruning, snapshot overwrite protection, and institution-coverage regression alerts. Source coverage is tracked separately from job presence, so a valid source with zero current openings remains covered.
 
 ## Tech stack
 
@@ -99,4 +99,4 @@ npm run reconcile:institutions -- --apply
 
 `generated/national-institution-reconciliation.json` records the exact national definition, IPEDS classifications, imported count, and any identity conflicts. An institution is only considered career-source covered after its source is wired into the scraper; an IPEDS homepage alone remains in the `missing` discovery backlog.
 
-`generated/institution-data-audit.json` reports duplicate identities, shared UNITIDs, missing IPEDS metadata, alias collisions, and suspicious synthetic career URLs. Coverage regression alerts report changes to the real national backlog of `missing` or `pending_review` institutions.
+`generated/institution-data-audit.json` reports duplicate identities, shared UNITIDs, missing IPEDS metadata, alias collisions, and suspicious synthetic career URLs. Coverage regression alerts report increases above the accepted national backlog watermark in `data/coverage-alert-thresholds.json`; lower `maxMissing` as discovery reduces the backlog so genuine reversals continue to alert.

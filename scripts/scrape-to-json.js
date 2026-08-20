@@ -316,7 +316,7 @@ function canonicalizeJobUrls(data) {
     console.warn(`⚠️  Failed to read previous snapshot: ${e?.message || e}`);
   }
 
-  // Always-on per-source anti-flake healing (runs even with no CAMPUS_ALLOWLIST).
+  // Always-on per-source/per-college anti-flake healing (runs even with no CAMPUS_ALLOWLIST).
   const healMinBaseline = Number(process.env.SOURCE_HEAL_MIN_BASELINE || 20);
   const healDropPct = Number(process.env.SOURCE_HEAL_DROP_PCT || 70);
   if (process.env.DISABLE_SOURCE_HEAL !== "1") {
@@ -327,10 +327,11 @@ function canonicalizeJobUrls(data) {
     if (heal.healed.length > 0) {
       data = heal.data;
       console.warn(
-        `🩹 Healed ${heal.healed.length} cratered source(s), restored ${heal.jobsRestored} jobs from previous snapshot:`
+        `🩹 Healed ${heal.healed.length} cratered source/campus group(s), restored ${heal.jobsRestored} jobs from previous snapshot:`
       );
       for (const h of heal.healed) {
-        console.warn(`   - ${h.source}: ${h.current} → restored to ${h.restoredTo} (baseline ${h.baseline})`);
+        const label = h.college ? `${h.source} / ${h.college}` : h.source;
+        console.warn(`   - ${label}: ${h.current} → restored to ${h.restoredTo} (baseline ${h.baseline})`);
       }
       const healReportPath = path.join(__dirname, "..", "generated", "source-heal-report.json");
       fs.writeFileSync(

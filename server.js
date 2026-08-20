@@ -86,6 +86,7 @@ import { extractCsodJobsFromDocument } from "./scripts/lib/csod-extraction.js";
 import { extractRiceFacultyRows } from "./scripts/lib/rice-faculty-extraction.js";
 import { extractCunyJobRows } from "./scripts/lib/cuny-jobs-extraction.js";
 import { canonicalInstitutionName } from "./scripts/lib/institution-aliases.js";
+import { interfolioApplicationUrl } from "./scripts/lib/interfolio-position.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -16005,6 +16006,7 @@ async function scrapeNmAll(context) {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "NM");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NM");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NM");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NM");
         if (type === "sjc-sf") return await scrapeSjcSantaFeJobs(context, url, campus, "NM");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NM");
         return [];
@@ -17030,7 +17032,7 @@ async function scrapeInterfolioInstitution(context, startUrl, campusName, source
       // an API description and so never enter the page-fetch/date-scan queue.
       const job = {
         title: clean(r.name || ""),
-        url: `https://apply.interfolio.com/${r.id}`,
+        url: interfolioApplicationUrl(r),
         source: sourceName,
         category: "Faculty",
         college: campusName,
@@ -17050,8 +17052,9 @@ async function scrapeInterfolioInstitution(context, startUrl, campusName, source
       return job;
     });
 
-    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
-    return jobs;
+    const validJobs = jobs.filter((job) => job.url);
+    console.log(`${campusName} ${sourceName} listings scraped: ${validJobs.length}`);
+    return validJobs;
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
     return [];

@@ -42,6 +42,7 @@ const JOB_URL_REPORT_PATH   = path.join(ROOT, "generated", "job-url-report.json"
 const DATA_HEALTH_PATH      = path.join(ROOT, "generated", "data-health-report.json");
 const LIVE_SITE_PATH        = path.join(ROOT, "generated", "live-site-health.json");
 const COVERAGE_REPORT_PATH  = path.join(ROOT, "generated", "coverage-report.json");
+const COVERAGE_THRESHOLDS_PATH = path.join(ROOT, "data", "coverage-alert-thresholds.json");
 const JOBS_JSON_PATH        = path.join(ROOT, "public",    "jobs.json");
 const ALERT_REPORT_PATH     = path.join(ROOT, "generated", "alert-issues-report.json");
 
@@ -540,7 +541,13 @@ function checkCoverageRegression() {
     return alerts;
   }
 
-  for (const issue of findCoverageRegressions(report)) {
+  const configured = readJson(COVERAGE_THRESHOLDS_PATH) || {};
+  const thresholds = {
+    maxMissing: Number.isFinite(Number(configured.maxMissing)) ? Number(configured.maxMissing) : 0,
+    maxPending: Number.isFinite(Number(configured.maxPending)) ? Number(configured.maxPending) : 0,
+  };
+
+  for (const issue of findCoverageRegressions(report, thresholds)) {
     const label = issue.kind === "missing" ? "missing" : "pending review";
     const title = `🔴 Coverage regression: ${issue.actual} institutions ${label}`;
     const body = [
@@ -551,7 +558,7 @@ function checkCoverageRegression() {
       `**Expected maximum:** ${issue.allowed}`,
       `**Eligible universe:** ${report?.totals?.eligible_universe ?? "N/A"}`,
       ``,
-      `The generated coverage report is no longer at the zero-backlog baseline. This may be a real newly added IPEDS institution or a lost scraper source; review the affected institution records before changing the threshold.`,
+      `The generated coverage report exceeded the accepted backlog watermark in \`data/coverage-alert-thresholds.json\`. This may be a newly added IPEDS institution or a lost scraper source; review the affected institution records before changing the threshold.`,
       ``,
       `Source: \`generated/coverage-report.json\``,
       ``,
@@ -594,7 +601,7 @@ async function main() {
       `Live site fail (live-site-health.json overallStatus === "FAIL")`,
       "Data staleness (public/jobs.json generatedAt/scrapedAt > 48 hours old)",
       `Jetson heartbeat (no "Daily scrape update" commit in > ${HEARTBEAT_HOURS} hours)`,
-      "Coverage regression (missing or pending-review institutions > 0)",
+      "Coverage regression (missing or pending-review institutions above accepted watermark)",
     ],
     candidatesFound: candidates.length,
     issuesSkipped: [],

@@ -30,6 +30,27 @@ test("healCrateredSources ignores normal fluctuation (no false positive)", () =>
   assert.equal(countBySource(r.data).NM, 40);
 });
 
+test("healCrateredSources restores one cratered college inside a partially healthy source", () => {
+  const collegeJobs = (college, n) =>
+    Array.from({ length: n }, (_, i) => ({ source: "NM", college, url: `https://x/${college}/${i}`, title: `t${i}` }));
+  const prev = { jobs: [...collegeJobs("University of New Mexico", 33), ...collegeJobs("Other NM", 14)] };
+  const next = { jobs: [...collegeJobs("University of New Mexico", 2), ...collegeJobs("Other NM", 16)] };
+
+  const result = healCrateredSources(next, prev, { minBaseline: 20, dropPct: 70 });
+  const unm = result.data.jobs.filter((job) => job.college === "University of New Mexico");
+  const other = result.data.jobs.filter((job) => job.college === "Other NM");
+
+  assert.equal(unm.length, 33);
+  assert.equal(other.length, 16, "healthy colleges retain fresh results");
+  assert.deepEqual(result.healed[0], {
+    source: "NM",
+    college: "University of New Mexico",
+    baseline: 33,
+    current: 2,
+    restoredTo: 33,
+  });
+});
+
 test("healCrateredSources is a no-op without a previous snapshot", () => {
   const next = { jobs: mk("NM", 3) };
   const r = healCrateredSources(next, null, { minBaseline: 20, dropPct: 70 });

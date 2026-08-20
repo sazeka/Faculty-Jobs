@@ -58,6 +58,9 @@ jobs:
       - name: Rebuild institutions and coverage artifacts
         run: npm run build:coverage
 
+      - name: Lower accepted coverage backlog watermark
+        run: npm run update:coverage-alert-thresholds
+
       - name: Enforce strict institution identity and source quality
         run: npm run audit:institutions:strict
 
@@ -67,6 +70,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add server.js \
+            data/coverage-alert-thresholds.json \
             data/institutions-master.json \
             generated/scrape-config-additions.json \
             generated/promotion-candidates.json \
