@@ -191,7 +191,7 @@ function parseResponse(text) {
   return JSON.parse(clean);
 }
 
-// ── Claude API ────────────────────────────────────────────────────────────────
+// ── GitHub Models API ────────────────────────────────────────────────────────
 
 async function callGitHubModelsBatch(batch) {
   const text = await callGitHubModels({

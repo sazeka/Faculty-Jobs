@@ -137,7 +137,7 @@ function templateSummary(stats, prev) {
   ].filter(Boolean).join(" ");
 }
 
-// ── Claude API call ───────────────────────────────────────────────────────────
+// ── GitHub Models API call ───────────────────────────────────────────────────
 
 function callGitHubModelsSummary(statsForPrompt) {
   const prompt = `You are writing a weekly digest for Faculty Atlas, a U.S. faculty job listings platform.
