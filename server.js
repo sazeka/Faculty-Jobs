@@ -85,6 +85,7 @@ import { createHash } from "crypto";
 import { extractCsodJobsFromDocument } from "./scripts/lib/csod-extraction.js";
 import { extractRiceFacultyRows } from "./scripts/lib/rice-faculty-extraction.js";
 import { extractCunyJobRows } from "./scripts/lib/cuny-jobs-extraction.js";
+import { canonicalInstitutionName } from "./scripts/lib/institution-aliases.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -919,7 +920,7 @@ const CA_PRIVATE_CAMPUSES = [
   {
     campus: "Santiago Canyon College",
     type: "schooljobs",
-    url: "https://www.sccollege.edu/faculty/jobs",
+    url: "https://www.schooljobs.com/careers/rsccd/transferjobs",
     locationFilter: "Orange",
   },
   { campus: "The Chicago School at Anaheim", type: "generic", url: "https://www.thechicagoschool.edu/in-the-community/locations/" },
@@ -1021,7 +1022,7 @@ const CA_PRIVATE_CAMPUSES = [
   // Verified live: 50 real postings, e.g. "African American Studies (and/or
   // Black Studies/Africana) Ethnic Studies), Part-Time Faculty Pool" and
   // "American Sign Language, Part-Time Faculty Pool", both Category: Faculty.
-  { campus: "Chaffey College", type: "schooljobs", url: "https://www.chaffey.edu/faculty/jobs" },
+  { campus: "Chaffey College", type: "schooljobs", url: "https://www.schooljobs.com/careers/chaffey" },
   { campus: "Chapman University", type: "generic", url: "https://www.chapman.edu/faculty-staff/human-resources/jobs/index.aspx" },
   { campus: "Charles R Drew University of Medicine and Science", type: "generic", url: "https://www.cdrewu.edu/" },
   { campus: "Church Divinity School of the Pacific", type: "generic", url: "https://www.cdsp.edu/" },
@@ -1552,7 +1553,7 @@ const PA_PRIVATE_CAMPUSES = [
   // "Assistant or Associate Professor of Engineering", "Adjunct Instructor
   // – Physical Chemistry").
   { campus: "Elizabethtown College", type: "generic", url: "https://recruiting.paylocity.com/recruiting/jobs/All/fdb22ab4-b61f-498b-ac07-a242180665c7/Elizabethtown-College" },
-  { campus: "Franklin and Marshall College", type: "generic", url: "https://www.fandm.edu/faculty/jobs" },
+  { campus: "Franklin and Marshall College", type: "generic", url: "https://www.fandm.edu/campus-services/human-resources/" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -1673,7 +1674,7 @@ const NC_CAMPUSES = [
   { campus: "Barton College", type: "generic", url: "https://www.barton.edu/" },
   { campus: "Beaufort County Community College", type: "generic", url: "https://jobs.beaufortccc.edu/postings/search" },
   { campus: "Belmont Abbey College", type: "generic", url: "https://belmontabbeycollege.edu/about-us/employment/" },
-  { campus: "Bennett College", type: "generic", url: "https://www.bennett.edu/faculty/jobs" },
+  { campus: "Bennett College", type: "generic", url: "https://www.bennett.edu/administration/administrative-services/human-resources/employment/" },
   { campus: "Bladen Community College", type: "generic", url: "https://bladencc.edu/" },
   { campus: "Brevard College", type: "generic", url: "https://brevard.edu/employment-opportunities" },
   { campus: "Brunswick Community College", type: "generic", url: "https://www.brunswickcc.edu/" },
@@ -2606,7 +2607,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Albany Law School", type: "generic", url: "https://www.albanylaw.edu/about/employment-albany-law-school" },
   { campus: "Albany Medical College", type: "generic", url: "https://www.amc.edu/" },
   { campus: "Albert Einstein College of Medicine", type: "generic", url: "https://www.einsteinmed.edu/" },
-  { campus: "Alfred University", type: "generic", url: "https://www.alfred.edu/faculty/jobs" },
+  { campus: "Alfred University", type: "generic", url: "https://www.alfred.edu/jobs-at-alfred/" },
   // Was pointing at the bare homepage -- no careers/employment link exists
   // anywhere on aada.edu (confirmed: /careers, /employment, /jobs, and
   // several /about/* variants all 404). AADA has no self-hosted job board;
@@ -2629,7 +2630,8 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Bard College", type: "generic", url: "https://www.bard.edu/employment" },
   { campus: "Barnard College", type: "generic", url: "https://www.barnard.edu/" },
   { campus: "Be'er Yaakov Talmudic Seminary", type: "generic", url: "https://www.byts.edu/" },
-  { campus: "Beth Hamedrash Shaarei Yosher Institute", type: "generic", url: "https://bhsy.edu/faculty/jobs" },
+  // No public vacancies page; monitor the stable official institution page.
+  { campus: "Beth Hamedrash Shaarei Yosher Institute", type: "generic", url: "https://bhsy.edu/" },
   { campus: "Binghamton University", type: "generic", url: "https://www.binghamton.edu/" },
   { campus: "Boricua College", type: "generic", url: "https://www.boricuacollege.edu/careers" },
   { campus: "Brooklyn Law School", type: "generic", url: "https://www.brooklaw.edu/" },
@@ -2701,7 +2703,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "CUNY LaGuardia Community College", type: "generic", url: "https://www.lagcc.cuny.edu/" },
   { campus: "CUNY Lehman College", type: "generic", url: "https://www.lehman.edu/" },
   { campus: "CUNY Medgar Evers College", type: "generic", url: "https://www.mec.cuny.edu/" },
-  { campus: "CUNY New York City College of Technology", type: "generic", url: "https://www.citytech.cuny.edu/faculty/jobs" },
+  { campus: "CUNY New York City College of Technology", type: "generic", url: "https://www.citytech.cuny.edu/hr/job-board.aspx" },
   { campus: "CUNY Queens College", type: "generic", url: "https://www.qc.cuny.edu/" },
   { campus: "CUNY Queensborough Community College", type: "generic", url: "https://www.qcc.cuny.edu/employment" },
   { campus: "CUNY School of Law", type: "generic", url: "https://www.law.cuny.edu/" },
@@ -4054,7 +4056,8 @@ const MI_CAMPUSES = [
   { campus: "Cranbrook Academy of Art", type: "generic", url: "https://cranbrookart.edu/employment-opportunities" },
   { campus: "Davenport University", type: "csod", url: "https://davenport.csod.com/ux/ats/careersite/15/home/requisition/2850?c=davenport" },
   { campus: "Delta College", type: "schooljobs", url: "https://www.schooljobs.com/careers/deltacollege/faculty" },
-  { campus: "Ecumenical Theological Seminary", type: "generic", url: "https://www.etseminary.edu/faculty/jobs" },
+  // ETS does not publish a standalone employment board.
+  { campus: "Ecumenical Theological Seminary", type: "generic", url: "https://www.etseminary.edu/" },
   { campus: "Ferris State University", type: "generic", url: "https://www.ferris.edu/" },
 ];
 
@@ -4300,7 +4303,7 @@ const IL_CAMPUSES = [
   { campus: "City Colleges of Chicago-District Office", type: "generic", url: "https://www.ccc.edu/" },
   { campus: "College of DuPage", type: "csod", url: "https://cod.csod.com/ux/ats/careersite/4/home?c=cod" },
   { campus: "College of Lake County", type: "generic", url: "https://www.clcillinois.edu/" },
-  { campus: "Columbia College Chicago", type: "generic", url: "https://www.colum.edu/faculty/jobs" },
+  { campus: "Columbia College Chicago", type: "generic", url: "https://about.colum.edu/provost/faculty-careers/" },
   { campus: "Concordia University-Chicago", type: "generic", url: "https://cuchicago.applicantpro.com/jobs" },
   { campus: "Danville Area Community College", type: "generic", url: "https://dacc.edu/hr/employment" },
   { campus: "DePaul University", type: "generic", url: "https://www.depaul.edu/" },
@@ -4409,7 +4412,7 @@ const IN_CAMPUSES = [
     type: "adp-career-center",
     url: "https://hr.earlham.edu/careers",
   },
-  { campus: "Marian University-Ancilla", type: "generic", url: "https://www.marian.edu/faculty/jobs" },
+  { campus: "Marian University-Ancilla", type: "ultipro-ukg", url: "https://marian.rec.pro.ukg.net/MAR1500MNUI/JobBoard/fde73847-46d9-4c8a-924e-a28b5c630bfc/?o=postedDateDesc%2Findex&q=", locationFilter: "Plymouth" },
   { campus: "Trine University-Regional/Non-Traditional Campuses", type: "generic", url: "https://www.trine.edu/human-resources/careers/index.aspx/faculty" },
   { campus: "Anabaptist Mennonite Biblical Seminary", type: "generic", url: "https://www.ambs.edu/employment" },
   { campus: "Bethany Theological Seminary", type: "generic", url: "https://www.bethanyseminary.edu/" },
@@ -4929,7 +4932,7 @@ const FL_CAMPUSES = [
   // (would require a new scraper) -- still a real improvement over the
   // homepage even though the postings aren't extracted yet.
   { campus: "Bethune-Cookman University", type: "generic", url: "https://www.cookman.edu/hr/job-opportunities.html" },
-  { campus: "Broward College", type: "generic", url: "https://www.broward.edu/error/404.html?requestUrl=/faculty/jobs" },
+  { campus: "Broward College", type: "workday", url: "https://browardcollege.wd5.myworkdayjobs.com/FT" },
   { campus: "Chipola College", type: "generic", url: "https://www.chipola.edu/about/administrative-offices/human-resources/job-openings" },
   // Was pointing at the bare homepage. Real page is /about-cf/.../work-at-cf/,
   // which hands off to an institution-specific ADP career site
@@ -5910,7 +5913,10 @@ export async function scrapeAllJobsStandalone() {
     }
 
     // Normalize known noisy locations (e.g., building names) to campus city/state.
-    const normalizedJobs = jobs.map(normalizeLocationByCollege).map(normalizeJobEnrichment);
+    const normalizedJobs = jobs
+      .map((job) => ({ ...job, college: canonicalInstitutionName(job?.college) || job?.college }))
+      .map(normalizeLocationByCollege)
+      .map(normalizeJobEnrichment);
 
     // Print failure summary
     if (failures.length > 0) {
@@ -16024,12 +16030,13 @@ async function scrapeInAll(context) {
   const results = await mapWithConcurrency(
     IN_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IN");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "IN");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "IN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IN");
+        if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "IN", locationFilter || null);
         if (type === "adp-career-center") return await scrapeAdpCareerCenterAs(context, url, campus, "IN");
         return [];
       } catch (e) {

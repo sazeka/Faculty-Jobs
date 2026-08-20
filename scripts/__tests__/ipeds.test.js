@@ -9,6 +9,8 @@ import {
   isDegreeGrantingBySector,
   mapIpedsRows,
   buildLookupByName,
+  buildRelaxedLookupByName,
+  relaxedInstitutionNameKey,
   parseIalias,
 } from "../lib/ipeds.js";
 
@@ -118,4 +120,21 @@ test("buildLookupByName drops an alias that's ambiguous across institutions", ()
     { name: "Tech College B", unitid: 2, aliases: ["Tech"] },
   ]);
   assert.equal(lookup.has("tech"), false);
+});
+
+test("relaxed IPEDS lookup handles punctuation and common scraper abbreviations", () => {
+  const lookup = buildRelaxedLookupByName([
+    { name: "California State University-San Marcos", unitid: 1, aliases: [] },
+    { name: "University of Massachusetts-Lowell", unitid: 2, aliases: [] },
+  ]);
+  assert.equal(lookup.get(relaxedInstitutionNameKey("California State University, San Marcos")).unitid, 1);
+  assert.equal(lookup.get(relaxedInstitutionNameKey("UMass Lowell")).unitid, 2);
+});
+
+test("relaxed IPEDS lookup only exposes unique legal-name variants", () => {
+  const lookup = buildRelaxedLookupByName([
+    { name: "Example University-Main Campus", unitid: 1, aliases: [] },
+    { name: "Example University-Springfield", unitid: 2, aliases: [] },
+  ]);
+  assert.equal(lookup.has(relaxedInstitutionNameKey("Example University")), false);
 });

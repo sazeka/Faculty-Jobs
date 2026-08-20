@@ -4,8 +4,16 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { loadCampusConfigs } from "./lib/campus-config.js";
 import { canonicalizeUrl, clean, normalizeNameKey, inferPlatformFromUrl } from "./lib/url-normalization.js";
-import { parseCsv, mapIpedsRows, buildLookupByName } from "./lib/ipeds.js";
+import {
+  parseCsv,
+  mapIpedsRows,
+  buildLookupByName,
+  buildRelaxedLookupByName,
+  relaxedInstitutionNameKey,
+} from "./lib/ipeds.js";
 import { deriveCoverageStatus, deriveJobPresenceStatus } from "./lib/institution-coverage.js";
+import { canonicalInstitutionName } from "./lib/institution-aliases.js";
+import { institutionMetadataOverride } from "./lib/institution-metadata-overrides.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,12 +35,18 @@ function buildIpedsLookup() {
       .readdirSync(IPEDS_DIR)
       .filter((f) => /^hd\d{4}\.csv$/i.test(f))
       .sort();
-    if (files.length === 0) return { lookup: new Map(), file: null };
+    if (files.length === 0) return { lookup: new Map(), relaxedLookup: new Map(), unitidLookup: new Map(), file: null };
     const file = files[files.length - 1]; // latest year
     const rows = parseCsv(fs.readFileSync(path.join(IPEDS_DIR, file), "utf8"));
-    return { lookup: buildLookupByName(mapIpedsRows(rows)), file };
+    const mapped = mapIpedsRows(rows);
+    return {
+      lookup: buildLookupByName(mapped),
+      relaxedLookup: buildRelaxedLookupByName(mapped),
+      unitidLookup: new Map(mapped.filter((row) => row.unitid).map((row) => [row.unitid, row])),
+      file,
+    };
   } catch {
-    return { lookup: new Map(), file: null };
+    return { lookup: new Map(), relaxedLookup: new Map(), unitidLookup: new Map(), file: null };
   }
 }
 
@@ -49,7 +63,7 @@ function buildOverridesMap() {
   const rows = Array.isArray(data?.overrides) ? data.overrides : [];
   const map = new Map();
   for (const row of rows) {
-    const name = clean(row?.name);
+    const name = canonicalInstitutionName(row?.name);
     if (!name) continue;
     map.set(normalizeNameKey(name), {
       homepage_url: canonicalizeUrl(row?.homepage_url),
@@ -67,7 +81,7 @@ function buildLinkStatusMap() {
   const rows = Array.isArray(data?.institutions) ? data.institutions : [];
   const map = new Map();
   for (const row of rows) {
-    const name = clean(row?.name);
+    const name = canonicalInstitutionName(row?.name);
     if (!name) continue;
     map.set(normalizeNameKey(name), row);
   }
@@ -77,7 +91,7 @@ function buildLinkStatusMap() {
 function buildQuarantineSet() {
   const data = readJsonOrNull(QUARANTINE_PATH);
   const rows = Array.isArray(data?.institutions) ? data.institutions : [];
-  return new Set(rows.map((r) => normalizeNameKey(r?.name)).filter(Boolean));
+  return new Set(rows.map((r) => normalizeNameKey(canonicalInstitutionName(r?.name))).filter(Boolean));
 }
 
 function main() {
@@ -87,7 +101,7 @@ function main() {
   const jobs = Array.isArray(jobsData.jobs) ? jobsData.jobs : [];
   const jobCountByCollege = new Map();
   for (const j of jobs) {
-    const name = clean(j?.college);
+    const name = canonicalInstitutionName(j?.college);
     if (!name) continue;
     jobCountByCollege.set(name, (jobCountByCollege.get(name) || 0) + 1);
   }
@@ -95,7 +109,15 @@ function main() {
   const existing = readJsonOrNull(OUT_PATH);
   const existingMap = new Map();
   for (const row of Array.isArray(existing?.institutions) ? existing.institutions : []) {
-    existingMap.set(normalizeNameKey(row?.name), row);
+    const canonicalName = canonicalInstitutionName(row?.name);
+    const canonicalKey = normalizeNameKey(canonicalName);
+    const prior = existingMap.get(canonicalKey);
+    const aliases = new Set([...(prior?.aliases || []), ...(row?.aliases || [])]);
+    if (clean(row?.name) && clean(row?.name) !== canonicalName) aliases.add(clean(row.name));
+    const merged = prior
+      ? { ...row, ...prior, name: canonicalName, aliases: [...aliases].sort() }
+      : { ...row, name: canonicalName, aliases: [...aliases].sort() };
+    existingMap.set(canonicalKey, merged);
   }
 
   const overrides = buildOverridesMap();
@@ -174,8 +196,10 @@ function main() {
     return merged;
   };
 
-  for (const c of configured) {
+  for (const rawConfig of configured) {
+    const c = { ...rawConfig, name: canonicalInstitutionName(rawConfig.name) };
     const key = normalizeNameKey(c.name);
+    if (seen.has(key)) continue;
     seen.add(key);
     const prev = existingMap.get(key) || {};
     const currentJobCount = jobCountByCollege.get(c.name) || 0;
@@ -283,10 +307,18 @@ function main() {
   // Enrich every record with IPEDS metadata (state/control/level/sector/unitid).
   // IPEDS is the source of truth; fall back to the prior value only when the name
   // doesn't match a known institution.
-  const { lookup: ipedsByName, file: ipedsFile } = buildIpedsLookup();
+  const {
+    lookup: ipedsByName,
+    relaxedLookup: ipedsByRelaxedName,
+    unitidLookup: ipedsByUnitid,
+    file: ipedsFile,
+  } = buildIpedsLookup();
   let ipedsMatched = 0;
   for (const r of result) {
-    const hit = ipedsByName.get(normalizeNameKey(r.name));
+    const hit =
+      (r.unitid ? ipedsByUnitid.get(Number(r.unitid)) : null) ||
+      ipedsByName.get(normalizeNameKey(r.name)) ||
+      ipedsByRelaxedName.get(relaxedInstitutionNameKey(r.name));
     if (!hit) continue;
     ipedsMatched += 1;
     r.unitid = r.unitid || hit.unitid || null;
@@ -295,9 +327,23 @@ function main() {
     r.level = hit.level || r.level || null;
     r.control = hit.control || r.control || null;
     if (typeof hit.is_degree_granting === "boolean") r.is_degree_granting = hit.is_degree_granting;
+    r.metadata_source = "IPEDS";
+  }
+  let metadataOverridesApplied = 0;
+  for (const r of result) {
+    if (r.state && r.control && r.level) continue;
+    const override = institutionMetadataOverride(r.name);
+    if (!override) continue;
+    metadataOverridesApplied += 1;
+    r.state = r.state || override.state;
+    r.control = r.control || override.control;
+    r.level = r.level || override.level;
+    r.is_degree_granting = r.is_degree_granting ?? true;
+    r.metadata_source = "curated override";
   }
   if (ipedsFile) {
     console.log(`Enriched ${ipedsMatched}/${result.length} institutions from IPEDS (${ipedsFile})`);
+    console.log(`Applied ${metadataOverridesApplied} curated metadata overrides`);
   } else {
     console.warn("No IPEDS hd*.csv found in data/ipeds — state/control/level not enriched.");
   }

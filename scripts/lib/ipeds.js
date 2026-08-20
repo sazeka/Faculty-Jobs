@@ -201,3 +201,55 @@ export function buildLookupByName(mappedRows) {
 
   return byName;
 }
+
+// Conservative secondary key for legal-name punctuation and common system
+// abbreviations used by scraper labels. Callers must still require uniqueness:
+// this is intentionally not a fuzzy/string-distance match.
+export function relaxedInstitutionNameKey(value) {
+  return clean(value)
+    .replace(/\((?:SUNY|WV|KS|UTAH)\)$/i, "")
+    .replace(/^SUNY\s+/i, "")
+    .replace(/^UMass\s+/i, "University of Massachusetts ")
+    .replace(/^UNC[-\s]+/i, "University of North Carolina ")
+    .replace(/^UW[-\s]+/i, "University of Wisconsin ")
+    .replace(/^CU\s+/i, "University of Colorado ")
+    .replace(/\bCCD\b/gi, "Community College District")
+    .replace(/&/g, " and ")
+    .replace(/\bthe\b/gi, " ")
+    .replace(/[^a-z0-9]+/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function relaxedNameVariants(value) {
+  const base = clean(value);
+  const variants = new Set([relaxedInstitutionNameKey(base)]);
+  const withoutCampusQualifier = base
+    .replace(/-(?:Main Campus|Fort Collins|Springfield|Columbia|Twin Cities|Seattle Campus|Ann Arbor)$/i, "")
+    .replace(/\s+Campus Immersion$/i, "")
+    .replace(/\s+at Kent$/i, "")
+    .replace(/\s+of Pennsylvania$/i, "")
+    .replace(/\s+of New Jersey$/i, "");
+  variants.add(relaxedInstitutionNameKey(withoutCampusQualifier));
+  return [...variants].filter(Boolean);
+}
+
+export function buildRelaxedLookupByName(mappedRows) {
+  const candidates = new Map();
+  for (const row of mappedRows) {
+    for (const candidate of [row.name, ...(row.aliases || [])]) {
+      for (const candidateKey of relaxedNameVariants(candidate)) {
+        if (!candidates.has(candidateKey)) candidates.set(candidateKey, new Map());
+        const identity = row.unitid ? `id:${row.unitid}` : `name:${key(row.name)}`;
+        candidates.get(candidateKey).set(identity, row);
+      }
+    }
+  }
+
+  const lookup = new Map();
+  for (const [candidateKey, rows] of candidates) {
+    if (rows.size === 1) lookup.set(candidateKey, [...rows.values()][0]);
+  }
+  return lookup;
+}
