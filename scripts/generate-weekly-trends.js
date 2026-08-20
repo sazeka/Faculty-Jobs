@@ -23,6 +23,7 @@ import path from "path";
 import http from "http";
 import { fileURLToPath } from "url";
 import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
+import { latestPriorWeek } from "./lib/weekly-trends-history.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -207,9 +208,9 @@ async function main() {
   if (!payload?.jobs?.length) { console.error("Cannot read public/jobs.json"); process.exit(1); }
 
   const history = readJson(HISTORY_PATH) || [];
-  const prev    = history.length ? history[history.length - 1] : null;
-  const stats   = computeStats(payload.jobs);
   const weekEnd = isoWeekEnd();
+  const prev    = latestPriorWeek(history, weekEnd);
+  const stats   = computeStats(payload.jobs);
 
   console.log(`\n  Week ending : ${weekEnd}`);
   console.log(`  Total jobs  : ${stats.totalJobs.toLocaleString()}`);

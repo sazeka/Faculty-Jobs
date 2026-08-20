@@ -15,7 +15,11 @@ test("classifies stored and explicitly titled tenure status", () => {
   assert.equal(classifyTenureTrack({ title: "Visiting Assistant Professor" }), false);
   assert.equal(classifyTenureTrack({ positionType: "Postdoctoral" }), false);
   assert.equal(classifyTenureTrack({ title: "Adjunct Professor" }), false);
+  assert.equal(classifyTenureTrack({ title: "Assistant Professor of Practice" }), false);
+  assert.equal(classifyTenureTrack({ title: "Psychology Temporary Lecturer" }), false);
+  assert.equal(classifyTenureTrack({ title: "Part-Time Nursing Instructor" }), false);
   assert.equal(classifyTenureTrack({ title: "Lecturer" }), null);
+  assert.equal(classifyTenureTrack({ title: "Full-Time Lecturer" }), null);
   assert.equal(classifyTenureTrack({ title: "Assistant Professor" }), null);
 });
 

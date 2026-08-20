@@ -1,6 +1,6 @@
 const NON_TENURE_RE = /\b(?:non[\s-]?tenure(?:[\s-]?track)?|ntt|teaching[\s-]?track|instructional[\s-]?track|professional[\s-]?track|practice[\s-]?track|clinical[\s-]?track|research[\s-]?track|fixed[\s-]?term|term[\s-]?faculty|contingent)\b/i;
 const TENURE_RE = /\b(?:tenure[\s-]?track|tenure[\s-]?stream|tenure[\s-]?eligible|tenured)\b/i;
-const CLEARLY_TEMPORARY_RANK_RE = /\b(?:adjunct|visiting|post[\s-]?doc(?:toral)?)\b/i;
+const CLEARLY_NON_TENURE_TITLE_RE = /\b(?:adjunct|visiting|post[\s-]?doc(?:toral)?|temporary|part[\s-]?time|professor\s+of\s+practice)\b/i;
 
 function explicitSignals(raw) {
   const text = String(raw || "");
@@ -28,11 +28,11 @@ export function classifyTenureTrackWithEvidence(job = {}) {
   if (titleSignals.nonTenure && !titleSignals.tenure) return { value: false, evidence: "title-explicit" };
   if (titleSignals.tenure && !titleSignals.nonTenure) return { value: true, evidence: "title-explicit" };
 
-  // These ranks are definitionally temporary/non-tenure-track. Do not extend
-  // this shortcut to lecturer, instructor, clinical, research, or professor:
-  // those ranks can be on either track depending on the institution.
+  // These ranks or appointment qualifiers are definitionally non-tenure-track.
+  // Do not extend this shortcut to lecturer, instructor, clinical, research,
+  // or professor generally: those can be on either track by institution.
   const rankText = `${title} ${job.positionType || ""}`;
-  if (CLEARLY_TEMPORARY_RANK_RE.test(rankText)) return { value: false, evidence: "title-rank" };
+  if (CLEARLY_NON_TENURE_TITLE_RE.test(rankText)) return { value: false, evidence: "title-rank" };
 
   const descriptionSignals = explicitSignals(job.description);
   if (descriptionSignals.nonTenure && !descriptionSignals.tenure) return { value: false, evidence: "description-explicit" };
