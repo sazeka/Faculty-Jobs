@@ -5,6 +5,7 @@ const props = defineProps({
   filters: { type: Object, required: true },
   stateOptions: { type: Array, required: true },
   positionTypeOptions: { type: Array, required: true },
+  tenureTrackCount: { type: Number, default: 0 },
   disciplineOptions: { type: Array, default: () => [] },
   collegeOptions: { type: Array, required: true },
   departmentOptions: { type: Array, required: true },
@@ -177,6 +178,7 @@ function toggleCollege(value) {
         <label class="fa-facet-item" :class="{ active: filters.tenureTrackOnly }" @click="updateField('tenureTrackOnly', !filters.tenureTrackOnly)">
           <span class="fa-check" :class="{ checked: filters.tenureTrackOnly }">{{ filters.tenureTrackOnly ? '✓' : '' }}</span>
           <span style="flex: 1;">Tenure-Track only</span>
+          <span class="fa-meta" style="font-size: 10px;">{{ tenureTrackCount }}</span>
         </label>
       </div>
     </div>

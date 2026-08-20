@@ -41,7 +41,7 @@ const heroStates = computed(() =>
 
 const filters = ref(createDefaultFilters())
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
-const { stateOptions, positionTypeOptions, disciplineOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
+const { stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
   useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob })
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({ filtersRef: filters, updateFilters })
 const { alertsWithCounts, addAlert, removeAlert, subscribeAlert, subscribeStatus, subscribeError } = useAlerts({ filtersRef: filters, countMatches })
@@ -395,6 +395,7 @@ onMounted(async () => {
               :filters="filters"
               :state-options="stateOptions"
               :position-type-options="positionTypeOptions"
+              :tenure-track-count="tenureTrackCount"
               :discipline-options="disciplineOptions"
               :college-options="collegeOptions"
               :department-options="departmentOptions"

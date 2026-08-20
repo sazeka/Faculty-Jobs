@@ -1,6 +1,9 @@
 import { computed } from 'vue'
 import { ALL_FILTER_VALUE, createDefaultFilters } from '../config/appConfig.js'
 import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxonomy.js'
+import { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
+
+export { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
 
 // Today as YYYY-MM-DD for deadline comparisons; computed once per page load.
 // closeDate values are date-only, so a UTC slice is the right granularity.
@@ -38,53 +41,6 @@ export function getDiscipline(job) {
     if (rule.terms.some(t => hay.includes(t))) return rule.label
   }
   return 'Other'
-}
-
-export function getPositionType(title) {
-  const t = (title || '').toLowerCase()
-  if (t.includes('assistant professor')) return 'Assistant Professor'
-  if (t.includes('associate professor')) return 'Associate Professor'
-  if (t.includes('full professor') || (/(^|\W)professor(\W|$)/.test(t) && !t.includes('assistant') && !t.includes('associate'))) return 'Professor'
-  if (t.includes('lecturer')) return 'Lecturer'
-  if (t.includes('instructor')) return 'Instructor'
-  if (t.includes('visiting')) return 'Visiting Faculty'
-  if (t.includes('adjunct')) return 'Adjunct'
-  if (t.includes('postdoc') || t.includes('post-doc')) return 'Postdoctoral'
-  if (t.includes('research')) return 'Research Faculty'
-  if (t.includes('clinical')) return 'Clinical Faculty'
-  return 'Faculty'
-}
-
-// Like getPositionType, but returns ALL ranks a title spans, so a combined
-// posting (e.g. "Assistant/Associate Professor", "Open Rank") appears under each
-// matching filter. Only the professor-rank dimension is multi-tagged; everything
-// else falls back to the single-category logic to avoid over-tagging.
-export function getPositionTypes(title) {
-  const t = (title || '').toLowerCase()
-  const isAdjunct = t.includes('adjunct')
-  if (/professor/.test(t)) {
-    // "all ranks" / "open rank" spans the full professor ladder
-    if (/\b(all ranks|open rank|any rank|all levels|various ranks)\b/.test(t)) {
-      const ranks = ['Assistant Professor', 'Associate Professor', 'Professor']
-      if (isAdjunct) ranks.push('Adjunct')
-      return ranks
-    }
-    const ranks = []
-    // Accept abbreviations too: "Asst/Assoc Professor" → Assistant + Associate.
-    if (/\b(?:assistant|asst)\b/.test(t)) ranks.push('Assistant Professor')
-    if (/\b(?:associate|assoc)\b/.test(t)) ranks.push('Associate Professor')
-    if (/\bfull professor\b/.test(t)) ranks.push('Professor')
-    if (ranks.length) {
-      if (isAdjunct) ranks.push('Adjunct')
-      return ranks
-    }
-  }
-  // Single-category titles keep the existing exclusive priority, but a title
-  // mentioning "adjunct" alongside another status (e.g. "Adjunct, Clinical X")
-  // should still surface under Adjunct even though it isn't the top match.
-  const primary = getPositionType(t)
-  if (isAdjunct && primary !== 'Adjunct') return [primary, 'Adjunct']
-  return [primary]
 }
 
 function stripDateTextFromTitle(value) {
@@ -227,7 +183,7 @@ function normalizeJob(job) {
     // Closed = a real close date in the past, and not an open-until-filled
     // (rolling) posting. Used to default-hide expired listings.
     isClosed: Boolean(job?.closeDate && !job?.openUntilFilled && String(job.closeDate) < TODAY_ISO),
-    tenureTrack: typeof job?.tenureTrack === 'boolean' ? job.tenureTrack : null,
+    tenureTrack: normalizeTenureTrack(job?.tenureTrack, job?.titleClean || job?.title || ''),
     positionTypes: job?.rank ? [job.rank] : getPositionTypes(job?.titleClean || job?.title || ''),
     positionType: job?.rank || getPositionType(job?.titleClean || job?.title || ''),
     state,
@@ -421,6 +377,10 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     })
   })
 
+  const tenureTrackCount = computed(() =>
+    applyFilters({ ignoreKey: 'tenureTrackOnly' }).filter((job) => job.tenureTrack === true).length
+  )
+
   const collegeOptions = computed(() => {
     const counts = countBy(applyFilters({ ignoreKey: 'college' }), (job) => job.college)
     return allCollegeValues.value.map((value) => {
@@ -572,6 +532,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   return {
     stateOptions,
     positionTypeOptions,
+    tenureTrackCount,
     disciplineOptions,
     collegeOptions,
     departmentOptions,
