@@ -18,6 +18,9 @@ const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'su
 
 const disciplineSearch = ref('')
 const collegeSearch = ref('')
+const showAllDisciplines = ref(false)
+const showAllRanks = ref(false)
+const showAllStates = ref(false)
 const showSubscribePanel = ref(false)
 const subscribeEmail = ref('')
 
@@ -53,6 +56,25 @@ const statesForFilter = computed(() =>
     .filter((o) => o.count > 0 || o.value === props.filters.state)
     .slice()
     .sort((a, b) => String(a.value).localeCompare(String(b.value)))
+)
+
+function limitedOptions(options, expanded, activeValue, limit = 8) {
+  if (expanded || options.length <= limit) return options
+  const visible = options.slice(0, limit)
+  const active = options.find((option) => option.value === activeValue)
+  if (active && !visible.some((option) => option.value === active.value)) visible.push(active)
+  return visible
+}
+
+const visibleDisciplineOptions = computed(() => {
+  if (disciplineSearch.value.trim()) return filteredDisciplineOptions.value
+  return limitedOptions(filteredDisciplineOptions.value, showAllDisciplines.value, props.filters.discipline)
+})
+const visibleRankOptions = computed(() =>
+  limitedOptions(props.positionTypeOptions, showAllRanks.value, props.filters.positionType)
+)
+const visibleStateOptions = computed(() =>
+  limitedOptions(statesForFilter.value, showAllStates.value, props.filters.state)
 )
 
 function updateField(key, value) {
@@ -104,7 +126,7 @@ function toggleCollege(value) {
         aria-label="Search institutions"
         style="font-size: 13px; margin-bottom: 8px;"
       />
-      <div style="display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
         <label
           v-for="opt in filteredCollegeOptions"
           :key="opt.value"
@@ -133,9 +155,9 @@ function toggleCollege(value) {
         aria-label="Search disciplines"
         style="font-size: 13px; margin-bottom: 8px;"
       />
-      <div style="display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
         <label
-          v-for="opt in filteredDisciplineOptions"
+          v-for="opt in visibleDisciplineOptions"
           :key="opt.value"
           class="fa-facet-item"
           :class="{ active: filters.discipline === opt.value }"
@@ -148,6 +170,13 @@ function toggleCollege(value) {
           <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
         </label>
         <div v-if="filteredDisciplineOptions.length === 0" class="fa-meta" style="padding: 4px 0; font-style: italic;">No match</div>
+        <button
+          v-if="!disciplineSearch.trim() && filteredDisciplineOptions.length > 8"
+          type="button"
+          class="fa-btn fa-btn-ghost"
+          style="margin-top: 6px; justify-content: center;"
+          @click="showAllDisciplines = !showAllDisciplines"
+        >{{ showAllDisciplines ? 'Show less' : `View ${filteredDisciplineOptions.length - 8} more` }}</button>
       </div>
     </div>
 
@@ -156,7 +185,7 @@ function toggleCollege(value) {
       <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Rank</div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <label
-          v-for="opt in positionTypeOptions.slice(0, 8)"
+          v-for="opt in visibleRankOptions"
           :key="opt.value"
           class="fa-facet-item"
           :class="{ active: filters.positionType === opt.value }"
@@ -168,6 +197,13 @@ function toggleCollege(value) {
           <span style="flex: 1;">{{ opt.label }}</span>
           <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
         </label>
+        <button
+          v-if="positionTypeOptions.length > 8"
+          type="button"
+          class="fa-btn fa-btn-ghost"
+          style="margin-top: 6px; justify-content: center;"
+          @click="showAllRanks = !showAllRanks"
+        >{{ showAllRanks ? 'Show less' : `View ${positionTypeOptions.length - 8} more` }}</button>
       </div>
     </div>
 
@@ -186,9 +222,9 @@ function toggleCollege(value) {
     <!-- State -->
     <div style="margin-bottom: 28px;">
       <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">State</div>
-      <div style="display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
         <label
-          v-for="opt in statesForFilter"
+          v-for="opt in visibleStateOptions"
           :key="opt.value"
           class="fa-facet-item"
           :class="{ active: filters.state === opt.value }"
@@ -200,6 +236,13 @@ function toggleCollege(value) {
           <span style="flex: 1;">{{ opt.value }}</span>
           <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
         </label>
+        <button
+          v-if="statesForFilter.length > 8"
+          type="button"
+          class="fa-btn fa-btn-ghost"
+          style="margin-top: 6px; justify-content: center;"
+          @click="showAllStates = !showAllStates"
+        >{{ showAllStates ? 'Show less' : `View ${statesForFilter.length - 8} more` }}</button>
       </div>
     </div>
 

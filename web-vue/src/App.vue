@@ -235,6 +235,7 @@ onMounted(async () => {
     </header>
 
     <!-- ═══ HERO ═══ -->
+    <template v-if="activeTab !== 'trends'">
     <section class="fa-hero">
       <div class="fa-hero-left">
         <div class="fa-label" style="margin-bottom: 24px;">The Atlas · {{ todayStr }}</div>
@@ -317,6 +318,7 @@ onMounted(async () => {
       <div v-if="loadError" class="fa-meta" style="color: var(--accent);">⚠ {{ loadError }}</div>
     </div>
     <hr class="fa-rule" style="margin: 0 var(--pad);" />
+    </template>
 
     <!-- ═══ TRENDS TAB ═══ -->
     <TrendsTab v-if="activeTab === 'trends'" :base-url="baseUrl" />
