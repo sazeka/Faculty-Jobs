@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { auditInstitutions } from "./lib/institution-audit.js";
+import { auditInstitutions, strictAuditFailures } from "./lib/institution-audit.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const input = JSON.parse(fs.readFileSync(path.join(ROOT, "data/institutions-master.json"), "utf8"));
@@ -22,6 +22,14 @@ console.log("Wrote generated/institution-data-audit.json");
 // A duplicated normalized name makes rows ambiguous and is always invalid.
 // Shared UNITIDs are reported for review but are not automatically fatal:
 // branch campuses can legitimately share an institutional identifier.
-if (process.argv.includes("--fail-on-duplicates") && audit.duplicateNames.length) {
+const strictFailures = strictAuditFailures(audit);
+if (process.argv.includes("--strict") && strictFailures.length) {
+  console.error(
+    `Strict institution audit failed: ${strictFailures
+      .map(({ kind, count }) => `${kind}=${count}`)
+      .join(", ")}`
+  );
+  process.exitCode = 1;
+} else if (process.argv.includes("--fail-on-duplicates") && audit.duplicateNames.length) {
   process.exitCode = 1;
 }

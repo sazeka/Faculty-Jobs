@@ -39,3 +39,15 @@ export function auditInstitutions(rows = []) {
       .sort((a, b) => a.name.localeCompare(b.name)),
   };
 }
+
+export function strictAuditFailures(audit = {}) {
+  return [
+    ["duplicate names", audit.duplicateNames],
+    ["duplicate UNITIDs", audit.duplicateUnitids],
+    ["alias collisions", audit.aliasCollisions],
+    ["unknown metadata", audit.unknownMetadata],
+    ["synthetic career URLs", audit.suspiciousSyntheticCareerUrls],
+  ]
+    .filter(([, rows]) => Array.isArray(rows) && rows.length > 0)
+    .map(([kind, rows]) => ({ kind, count: rows.length }));
+}

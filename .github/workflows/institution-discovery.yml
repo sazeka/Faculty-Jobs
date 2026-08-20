@@ -58,6 +58,9 @@ jobs:
       - name: Rebuild institutions and coverage artifacts
         run: npm run build:coverage
 
+      - name: Enforce strict institution identity and source quality
+        run: npm run audit:institutions:strict
+
       - name: Commit & push if changed
         run: |
           git config user.name "github-actions[bot]"
@@ -74,6 +77,7 @@ jobs:
             generated/promotion-apply-discovered-report.json \
             generated/career-path-probe-report.json \
             generated/coverage-report.json \
+            generated/institution-data-audit.json \
             generated/national-institution-reconciliation.json \
             generated/policy-excluded-colleges.json \
             public/policy-excluded-colleges.json \
