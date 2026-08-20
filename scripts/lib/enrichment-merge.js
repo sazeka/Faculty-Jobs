@@ -1,9 +1,9 @@
-// Carry LLM-derived enrichment forward across scrapes. Pure functions, unit-tested
-// in scripts/__tests__/enrichment-merge.test.js.
+// Carry derived enrichment and description-backfill progress across scrapes.
+// Pure functions, unit-tested in scripts/__tests__/enrichment-merge.test.js.
 //
 // The daily scrape re-fetches raw listings and produces jobs with NO enrichment
-// fields, which used to wipe discipline/positionType/tenureTrack from the live
-// site every day (CI has no LLM to re-run agent:enrich). preserveEnrichment()
+// fields, which used to wipe classifications and accumulated descriptions from
+// the live site every day. preserveEnrichment()
 // copies those fields from the previous snapshot onto the fresh one, matching by
 // canonicalJobId first then URL. It ONLY fills fields that are missing/empty on
 // the fresh job — it never overwrites data the fresh scrape actually produced —
@@ -11,12 +11,28 @@
 // the (local/periodic) enricher.
 
 export const ENRICHMENT_FIELDS = ["discipline", "tenureTrack", "positionType"];
+export const ENRICHMENT_METADATA_FIELDS = ["tenureEvidence"];
+export const DESCRIPTION_FIELDS = [
+  "description",
+  "descriptionFetchedAt",
+  "descriptionFetchAttempts",
+  "descriptionFetchStatus",
+];
 // Also carry recency dates across scrapes: a scrape that skips the job-presence
 // step (firstSeen) or description backfill (datePosted) — e.g. a bare local
 // scrape — would otherwise wipe them and break the "Most recent" sort. Only
 // fills when the fresh job lacks the field, so Oracle's freshly-scraped
 // datePosted and job-presence's firstSeen still win when present.
-export const CARRIED_FIELDS = [...ENRICHMENT_FIELDS, "datePosted", "firstSeen", "closeDate", "startDate"];
+export const CARRIED_FIELDS = [
+  ...ENRICHMENT_FIELDS,
+  ...ENRICHMENT_METADATA_FIELDS,
+  ...DESCRIPTION_FIELDS,
+  "datePosted",
+  "firstSeen",
+  "closeDate",
+  "openUntilFilled",
+  "startDate",
+];
 
 function isEmpty(v) {
   return v === undefined || v === null || v === "";

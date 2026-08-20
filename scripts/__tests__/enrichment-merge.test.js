@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { preserveEnrichment, ENRICHMENT_FIELDS } from "../lib/enrichment-merge.js";
+import {
+  preserveEnrichment,
+  ENRICHMENT_FIELDS,
+  DESCRIPTION_FIELDS,
+} from "../lib/enrichment-merge.js";
 
 const enriched = (over = {}) => ({
   canonicalJobId: "job_aaa",
@@ -69,4 +73,35 @@ test("no previous snapshot is a safe no-op", () => {
   const fresh = { jobs: [{ canonicalJobId: "job_aaa", url: "https://x/1" }] };
   assert.equal(preserveEnrichment(fresh, null).restoredFields, 0);
   assert.equal(preserveEnrichment(fresh, { jobs: [] }).restoredFields, 0);
+});
+
+test("carries description backfill progress across daily scrapes", () => {
+  const previous = {
+    jobs: [{
+      canonicalJobId: "job-1",
+      url: "https://example.edu/jobs/1",
+      description: "A detailed faculty job description.",
+      descriptionFetchedAt: "2026-08-20T12:00:00.000Z",
+      descriptionFetchAttempts: 1,
+      descriptionFetchStatus: "filled",
+    }],
+  };
+  const fresh = { jobs: [{ canonicalJobId: "job-1", url: "https://example.edu/jobs/1" }] };
+
+  const result = preserveEnrichment(fresh, previous);
+  for (const field of DESCRIPTION_FIELDS) {
+    assert.equal(result.data.jobs[0][field], previous.jobs[0][field]);
+  }
+});
+
+test("never overwrites a freshly scraped description", () => {
+  const previous = {
+    jobs: [{ canonicalJobId: "job-1", description: "Older backfilled text" }],
+  };
+  const fresh = {
+    jobs: [{ canonicalJobId: "job-1", description: "Fresh source description" }],
+  };
+
+  const result = preserveEnrichment(fresh, previous);
+  assert.equal(result.data.jobs[0].description, "Fresh source description");
 });

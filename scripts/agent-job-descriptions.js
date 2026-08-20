@@ -8,8 +8,9 @@
  * that gap and improves both the UI and downstream AI enrichment.
  *
  * Uses Playwright (many job detail pages — Workday, Taleo, etc. — are JS-rendered).
- * Idempotent: a `descriptionFetchedAt` marker is set on every attempt so a page
- * that yields nothing (404, paywall, JS we can't parse) is not retried forever.
+ * A `descriptionFetchedAt` marker and attempt count are saved. Empty results get
+ * one delayed retry after 14 days, then stop so broken pages are not retried
+ * forever.
  * Saves after each batch so partial runs are never lost.
  *
  * Usage:
@@ -20,6 +21,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { chromium } from "playwright";
 import { extractStartDate } from "./lib/start-date.js";
+import {
+  descriptionAttemptCount,
+  needsDescriptionFetch,
+  prioritizeDescriptionCandidates,
+} from "./lib/description-backfill.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -111,9 +117,7 @@ async function main() {
     ? payload.jobs.filter(
         (j) => !j.datePosted && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "")
       )
-    : payload.jobs.filter(
-        (j) => (!j.description || !String(j.description).trim()) && j.descriptionFetchedAt === undefined && /^https?:\/\//i.test(j.url || "")
-      );
+    : prioritizeDescriptionCandidates(payload.jobs);
   const toProcess = needs.slice(0, MAX);
 
   const haveDesc = payload.jobs.filter((j) => j.description && String(j.description).trim()).length;
@@ -335,12 +339,18 @@ async function main() {
       if (desc) desc = desc.replace(/^\s*skip to (main )?content\s*/i, "").trim();
 
       attempted++;
+      const wasMissingDescription = !String(target.description || "").trim();
+      const priorDescriptionAttempts = descriptionAttemptCount(target);
       target.descriptionFetchedAt = new Date().toISOString();
       // Only fill an empty description — a redate re-scan must not clobber a
       // description captured on the original fetch.
       if (desc && !String(target.description || "").trim()) {
         target.description = desc;
         filled++;
+      }
+      if (wasMissingDescription) {
+        target.descriptionFetchAttempts = priorDescriptionAttempts + 1;
+        target.descriptionFetchStatus = desc ? "filled" : "empty";
       }
       // Soft "anticipated start date" parsed from the posting body (free text).
       if (!target.startDate) {
@@ -385,8 +395,9 @@ async function main() {
 
   const totalWithDescription = payload.jobs.filter((j) => j.description && String(j.description).trim()).length;
   const remaining = payload.jobs.filter(
-    (j) => (!j.description || !String(j.description).trim()) && j.descriptionFetchedAt === undefined && /^https?:\/\//i.test(j.url || "")
+    (j) => !String(j.description || "").trim() && /^https?:\/\//i.test(j.url || "")
   ).length;
+  const eligibleRemaining = payload.jobs.filter((j) => needsDescriptionFetch(j)).length;
 
   writeJson(REPORT_PATH, {
     generatedAt: new Date().toISOString(),
@@ -404,6 +415,7 @@ async function main() {
     totalWithDeadline: payload.jobs.filter((j) => j.closeDate).length,
     totalWithDescription,
     remaining,
+    eligibleRemaining,
     config: { max: MAX, concurrency: CONCURRENCY, timeoutMs: TIMEOUT_MS, minLen: MIN_LEN },
   });
 
@@ -413,7 +425,8 @@ async function main() {
   console.log(`  deadlines found    : ${deadlineFilled} (${attempted ? ((deadlineFilled / attempted) * 100).toFixed(0) : 0}%)  [+${rollingFilled} rolling/until-filled]`);
   console.log(`  start dates found  : ${startFilled} (${attempted ? ((startFilled / attempted) * 100).toFixed(0) : 0}%)`);
   console.log(`  Total w/ description: ${totalWithDescription.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
-  console.log(`  Remaining unfetched: ${remaining.toLocaleString()}`);
+  console.log(`  Remaining missing  : ${remaining.toLocaleString()}`);
+  console.log(`  Eligible next run  : ${eligibleRemaining.toLocaleString()}`);
   console.log(`  Report saved       : generated/job-descriptions-report.json\n`);
 }
 
