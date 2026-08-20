@@ -1169,7 +1169,6 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Gavilan College", type: "generic", url: "https://www.gavilan.edu/jobs/" },
   { campus: "Golden West College", type: "generic", url: "https://www.goldenwestcollege.edu/hr/careers/index.html" },
   { campus: "Grossmont-Cuyamaca Community College District", type: "generic", url: "https://www.gcccd.edu/jobs/" },
-  { campus: "Haven University", type: "generic", url: "https://www.haven.edu/faculty/jobs" },
 ];
 
 // NJ (multi-platform)
@@ -1564,8 +1563,6 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Franklin and Marshall College", type: "generic", url: "https://www.fandm.edu/campus-services/human-resources/" },
   { campus: "Gannon University", type: "generic", url: "https://www.gannon.edu/employment-at-gannon/" },
   { campus: "Geneva College", type: "generic", url: "https://www.geneva.edu/employment/" },
-  { campus: "Grove City College", type: "generic", url: "https://www.gcc.edu/Home/Academics/Majors-Departments/School-of-Business/Accounting-Finance/Faculty/jobs" },
-  { campus: "Gwynedd Mercy University", type: "generic", url: "https://www.gmercyu.edu/faculty/jobs" },
   { campus: "Holy Family University", type: "generic", url: "https://www.holyfamily.edu/about/administrative-services/human-resources/jobs" },
 ];
 
@@ -2765,7 +2762,6 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Hamilton College", type: "generic", url: "https://www.hamilton.edu/offices/human-resources/employment" },
   { campus: "Hartwick College", type: "generic", url: "https://www.hartwick.edu/about-us/employment/" },
   { campus: "Hilbert College", type: "generic", url: "https://www.hilbert.edu/faculty-staff/employment-benefits/careers-hiring-process/" },
-  { campus: "Hobart William Smith Colleges", type: "generic", url: "https://www.hws.edu/faculty/jobs" },
 ];
 
 // OR (Oregon)
@@ -3036,7 +3032,6 @@ const WA_CAMPUSES = [
   { campus: "Everett Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/everettcc" },
   { campus: "Faith International University", type: "generic", url: "https://www.faithiu.edu/" },
   { campus: "Grays Harbor College", type: "generic", url: "https://www.schooljobs.com/careers/ghc" },
-  { campus: "Green River College", type: "generic", url: "https://www.greenriver.edu/faculty/jobs" },
 ];
 
 
@@ -3444,7 +3439,6 @@ const IA_CAMPUSES = [
   { campus: "Ellsworth Community College", type: "generic", url: "https://ecc.iavalley.edu/" },
   { campus: "Emmaus Bible College", type: "generic", url: "https://www.emmaus.edu/careers" },
   { campus: "Faith Baptist Bible College and Theological Seminary", type: "generic", url: "https://faith.edu/careers" },
-  { campus: "Hawkeye Community College", type: "generic", url: "https://www.hawkeyecollege.edu/faculty/jobs" },
 ];
 
 // WY (Wyoming)
@@ -4094,7 +4088,6 @@ const MI_CAMPUSES = [
   { campus: "Grand Valley State University", type: "generic", url: "https://www.gvsu.edu/careers/" },
   { campus: "Great Lakes Christian College", type: "generic", url: "https://glcc.edu/employment/" },
   { campus: "Henry Ford College", type: "generic", url: "https://www.hfcc.edu/careers/faculty" },
-  { campus: "Hillsdale College", type: "generic", url: "https://www.hillsdale.edu/404-not-found/?request=https://www.hillsdale.edu/faculty/jobs" },
   { campus: "Hope College", type: "generic", url: "https://hope.edu/jobs/" },
 ];
 

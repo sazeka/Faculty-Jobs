@@ -104,6 +104,10 @@ const ALIASES = new Map(
     ["California State University, Monterey Bay", "California State University-Monterey Bay"],
     ["California State University Channel Islands", "California State University-Channel Islands"],
     ["Commonwealth University", "Commonwealth University of Pennsylvania"],
+    ["SUNY Genesee Community College", "Genesee Community College"],
+    ["SUNY Jamestown Community College", "Jamestown Community College"],
+    ["SUNY Schenectady County Community College", "Schenectady County Community College"],
+    ["UNC School of the Arts", "University of North Carolina School of the Arts"],
   ].map(([alias, canonical]) => [key(alias), canonical])
 );
 

@@ -14,6 +14,7 @@ import {
 import { deriveCoverageStatus, deriveJobPresenceStatus } from "./lib/institution-coverage.js";
 import { canonicalInstitutionName } from "./lib/institution-aliases.js";
 import { institutionMetadataOverride } from "./lib/institution-metadata-overrides.js";
+import { isSuspiciousSyntheticCareerUrl } from "./lib/institution-audit.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -134,12 +135,13 @@ function main() {
     const homepage_url = canonicalizeUrl(
       ov?.homepage_url || prev?.homepage_url || configuredUrl || prev?.career_url
     );
-    const career_url = canonicalizeUrl(
+    const candidateCareerUrl = canonicalizeUrl(
       ov?.career_url ||
       configuredUrl ||
       prev?.career_url ||
       (prev?.national_reconciliation_status === "missing_career_url" ? null : prev?.homepage_url)
     );
+    const career_url = isSuspiciousSyntheticCareerUrl(candidateCareerUrl) ? null : candidateCareerUrl;
     const platform_type = clean(ov?.platform_type || prev?.platform_type) || inferPlatformFromUrl(career_url) || "generic";
     const coverage_source = clean(ov?.coverage_source || prev?.coverage_source) || null;
 

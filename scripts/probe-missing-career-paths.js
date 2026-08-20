@@ -2,6 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { isRejectedCareerPage } from "./lib/career-path-probe.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -110,6 +111,7 @@ const STUDENT_CAREER_RE =
   /career-services|career[-_]?center|career-development|student-services|recreational|aquatics|\/students?\/|\binternships?\b/;
 
 function scoreCandidate(url, bodyText) {
+  if (isRejectedCareerPage(url, bodyText)) return 0;
   const u = norm(url);
   const t = norm(bodyText).slice(0, 12000);
   let s = 0;
@@ -155,7 +157,6 @@ function buildProbeUrls(baseUrl) {
       "/human-resources",
       "/human-resources/jobs",
       "/about/employment",
-      "/faculty/jobs",
       "/faculty-employment",
       "/academics/faculty-jobs",
       "/job-opportunities",
@@ -242,6 +243,7 @@ async function main() {
     for (const u of probeUrls) {
       const r = await fetchText(u, opts.timeoutMs);
       if (!r.ok) continue;
+      if (isRejectedCareerPage(r.finalUrl, r.text)) continue;
       const score = scoreCandidate(r.finalUrl, r.text || "");
       const cand = { url: r.finalUrl, sourceUrl: u, score, platform_type: inferPlatform(r.finalUrl), status: r.status };
       if (!best || cand.score > best.score) best = cand;

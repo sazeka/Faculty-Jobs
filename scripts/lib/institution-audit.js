@@ -1,6 +1,10 @@
 const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
 const key = (value) => clean(value).toLowerCase();
 
+export function isSuspiciousSyntheticCareerUrl(value) {
+  return /\/faculty\/jobs\/?(?:[?#].*)?$/i.test(clean(value));
+}
+
 function duplicatesBy(rows, valueOf) {
   const groups = new Map();
   for (const row of rows) {
@@ -30,7 +34,7 @@ export function auditInstitutions(rows = []) {
       .map((row) => clean(row.name))
       .sort(),
     suspiciousSyntheticCareerUrls: institutions
-      .filter((row) => /\/faculty\/jobs\/?(?:[?#].*)?$/i.test(clean(row.career_url)))
+      .filter((row) => isSuspiciousSyntheticCareerUrl(row.career_url))
       .map((row) => ({ name: row.name, career_url: row.career_url }))
       .sort((a, b) => a.name.localeCompare(b.name)),
   };
