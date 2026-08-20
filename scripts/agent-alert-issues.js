@@ -31,6 +31,7 @@ import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
+import { findCoverageRegressions } from "./lib/coverage-health.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -40,6 +41,7 @@ const ROOT = path.resolve(__dirname, "..");
 const JOB_URL_REPORT_PATH   = path.join(ROOT, "generated", "job-url-report.json");
 const DATA_HEALTH_PATH      = path.join(ROOT, "generated", "data-health-report.json");
 const LIVE_SITE_PATH        = path.join(ROOT, "generated", "live-site-health.json");
+const COVERAGE_REPORT_PATH  = path.join(ROOT, "generated", "coverage-report.json");
 const JOBS_JSON_PATH        = path.join(ROOT, "public",    "jobs.json");
 const ALERT_REPORT_PATH     = path.join(ROOT, "generated", "alert-issues-report.json");
 
@@ -529,6 +531,37 @@ function checkJetsonHeartbeat() {
   return alerts;
 }
 
+/** Alert whenever the eligible universe is no longer fully classified. */
+function checkCoverageRegression() {
+  const alerts = [];
+  const report = readJson(COVERAGE_REPORT_PATH);
+  if (!report) {
+    console.log(`  [SKIP] coverage-report.json not found or unreadable.`);
+    return alerts;
+  }
+
+  for (const issue of findCoverageRegressions(report)) {
+    const label = issue.kind === "missing" ? "missing" : "pending review";
+    const title = `🔴 Coverage regression: ${issue.actual} institutions ${label}`;
+    const body = [
+      `## Institution Coverage Regression`,
+      ``,
+      `**Condition:** ${label}`,
+      `**Current count:** ${issue.actual}`,
+      `**Expected maximum:** ${issue.allowed}`,
+      `**Eligible universe:** ${report?.totals?.eligible_universe ?? "N/A"}`,
+      ``,
+      `The generated coverage report is no longer at the zero-backlog baseline. This may be a real newly added IPEDS institution or a lost scraper source; review the affected institution records before changing the threshold.`,
+      ``,
+      `Source: \`generated/coverage-report.json\``,
+      ``,
+      `_This issue was automatically created by agent-alert-issues.js_`,
+    ].join("\n");
+    alerts.push({ title, body, source: "coverage-report.json", detail: issue });
+  }
+  return alerts;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -545,6 +578,7 @@ async function main() {
     ...checkLiveSite(),
     ...checkDataStaleness(),
     ...checkJetsonHeartbeat(),
+    ...checkCoverageRegression(),
   ];
 
   console.log(`\n  Candidate alerts found: ${candidates.length}`);
@@ -560,6 +594,7 @@ async function main() {
       `Live site fail (live-site-health.json overallStatus === "FAIL")`,
       "Data staleness (public/jobs.json generatedAt/scrapedAt > 48 hours old)",
       `Jetson heartbeat (no "Daily scrape update" commit in > ${HEARTBEAT_HOURS} hours)`,
+      "Coverage regression (missing or pending-review institutions > 0)",
     ],
     candidatesFound: candidates.length,
     issuesSkipped: [],

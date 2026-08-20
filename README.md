@@ -22,7 +22,7 @@ scrape (Playwright)  →  normalize + canonical IDs  →  AI enrich  →  qualit
       →  public/jobs.json  →  chunked + synced to web-vue  →  Vue build  →  docs/ (GitHub Pages)
 ```
 
-The scraper (`server.js` + `scripts/scrape-to-json.js`) writes `public/jobs.json`; the Vue app (`web-vue/`) renders it as chunked, lazy-loaded data. A set of resilience guards keep the dataset stable: per-source anti-flake healing (a flaky run can't wipe a state), confirmed-dead-URL pruning, and snapshot overwrite protection.
+The scraper (`server.js` + `scripts/scrape-to-json.js`) writes `public/jobs.json`; the Vue app (`web-vue/`) renders it as chunked, lazy-loaded data. A set of resilience guards keep the dataset stable: per-source anti-flake healing (a flaky run can't wipe a state), confirmed-dead-URL pruning, snapshot overwrite protection, and institution-coverage regression alerts. Source coverage is tracked separately from job presence, so a valid source with zero current openings remains covered.
 
 ## Tech stack
 
@@ -81,4 +81,9 @@ Data-quality checks:
 npm run verify:no-conflicts
 npm run verify:career-links
 npm run verify:critical-schools
+npm run build:coverage
+npm run audit:institutions
+npm run verify:post-quality -- --max-missing-desc-pct 96
 ```
+
+`generated/institution-data-audit.json` reports duplicate identities, shared UNITIDs, missing IPEDS metadata, alias collisions, and suspicious synthetic career URLs. A zero-backlog coverage regression automatically opens an issue if an eligible institution returns to `missing` or `pending_review`.

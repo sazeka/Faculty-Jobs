@@ -790,8 +790,11 @@ const CA_PRIVATE_CAMPUSES = [
     type: "taleo",
     url: "https://phf.tbe.taleo.net/phf03/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=37&org=CALTECH",
   },
-  { campus: "Academy for Jewish Religion California", type: "generic", url: "https://www.ajrca.edu/faculty/jobs" },
-  { campus: "Academy of Chinese Culture and Health Sciences", type: "generic", url: "https://www.acchs.edu/faculty/jobs" },
+  // These small institutions do not publish a dedicated vacancies page. Keep
+  // their stable official contact/home pages as the monitored source instead
+  // of the old synthetic /faculty/jobs URLs, which returned hard 404s.
+  { campus: "Academy for Jewish Religion California", type: "generic", url: "https://ajrca.edu/contact-us/" },
+  { campus: "Academy of Chinese Culture and Health Sciences", type: "generic", url: "https://acchs.edu/" },
   { campus: "Acupuncture and Integrative Medicine College-Berkeley", type: "generic", url: "https://www.aimc.edu/" },
   { campus: "Alder Graduate School of Education", type: "generic", url: "https://aldergse.edu/" },
   { campus: "Allan Hancock College", type: "generic", url: "https://www.hancockcollege.edu/careers/" },
@@ -1808,7 +1811,7 @@ const VA_CAMPUSES = [
   { campus: "Agora University", type: "generic", url: "https://www.agora.edu/" },
   { campus: "Appalachian College of Pharmacy", type: "generic", url: "https://www.acp.edu/employment" },
   { campus: "Appalachian School of Law", type: "generic", url: "https://www.asl.edu/faculty-2/hiring" },
-  { campus: "Ascent College", type: "generic", url: "https://ascent.edu/faculty/jobs" },
+  { campus: "Ascent College", type: "generic", url: "https://ascent.edu/" },
   { campus: "Averett University", type: "generic", url: "https://www.averett.edu/about-us/employment-opportunities/traditional-faculty-employment-opportunities" },
   // Was pointing at the college's own employment page, which just links out
   // to the VCCS system-wide job portal (no anchors of its own). Real ATS is
@@ -2667,7 +2670,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Bryant & Stratton College-Syracuse North", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=syracuse&o=postedDateDesc", locationFilter: "SYRACUSE" },
   { campus: "Canisius University", type: "generic", url: "https://www.canisius.edu/" },
   { campus: "Cayuga County Community College", type: "interviewexchange", url: "https://cayuga.interviewexchange.com/" },
-  { campus: "Central Yeshiva Tomchei Tmimim Lubavitz", type: "generic", url: "https://cyttl.edu/faculty/jobs" },
+  { campus: "Central Yeshiva Tomchei Tmimim Lubavitz", type: "generic", url: "https://cyttl.edu/" },
   { campus: "Clarkson University", type: "icims", url: "https://careerhub-clarkson.icims.com/" },
   { campus: "Clinton Community College", type: "generic", url: "https://www.clinton.edu/" },
   { campus: "Colgate Rochester Crozer Divinity School", type: "generic", url: "https://www.crcds.edu/" },
@@ -3798,7 +3801,7 @@ const OH_CAMPUSES = [
   { campus: "Rabbinical College Telshe", type: "generic", url: "https://independentrabbinicalcolleges.org/index.html" },
   { campus: "Toledo Public Schools Adult and Continuing Education", type: "generic", url: "https://www.tps.org/adult_education/barber_program" },
   { campus: "Air Force Institute of Technology-Graduate School of Engineering & Management", type: "generic", url: "https://www.afit.edu/" },
-  { campus: "Allegheny Wesleyan College", type: "generic", url: "https://awc.edu/faculty/jobs" },
+  { campus: "Allegheny Wesleyan College", type: "generic", url: "https://awc.edu/faculty-and-staff/" },
   { campus: "Antioch College", type: "generic", url: "https://antiochcollege.edu/about/employment/faculty-staff-jobs" },
   { campus: "Antioch University", type: "generic", url: "https://www.antioch.edu/employment" },
   { campus: "Antioch University-System Administration", type: "generic", url: "https://www.antioch.edu/employment" },
@@ -4907,7 +4910,7 @@ const FL_CAMPUSES = [
   { campus: "AdventHealth University", type: "generic", url: "https://jobs.adventhealth.com/job-search-results?department%5B%5D=AdventHealth%20University" },
   { campus: "Albizu University-Miami", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=89df2234-abda-481d-9d9f-d75161691110&ccId=9200493117153_2&type=JS&lang=en_US" },
   { campus: "Ana G. Mendez University", type: "generic", url: "https://jobs.agmu.edu/home" },
-  { campus: "Atlantic Institute of Oriental Medicine", type: "generic", url: "https://www.atom.edu/faculty/jobs" },
+  { campus: "Atlantic Institute of Oriental Medicine", type: "generic", url: "https://atom.edu/" },
   { campus: "Atlantic Technical College", type: "generic", url: "https://www.atlantictechnicalcollege.edu/" },
   { campus: "Ave Maria School of Law", type: "generic", url: "https://www.avemarialaw.edu/" },
   { campus: "Ave Maria University", type: "generic", url: "https://www.avemaria.edu/" },
@@ -5526,7 +5529,7 @@ const MO_CAMPUSES = [
   { campus: "Culver-Stockton College", type: "generic", url: "https://culver.edu/employment" },
   { campus: "Drury University", type: "generic", url: "https://www.drury.edu/academic-affairs/open-faculty-positions" },
   { campus: "East Central College", type: "generic", url: "https://www.eastcentral.edu/hr/employment-opportunities" },
-  { campus: "Eden Theological Seminary", type: "generic", url: "https://www.eden.edu/faculty/jobs" },
+  { campus: "Eden Theological Seminary", type: "generic", url: "https://www.eden.edu/quick-links/career-opportunities-through-eden/" },
   // CORRECTED (Bucket B round 20): was pointing at the bare homepage, which
   // relied on a career-url-overrides.json entry that (see that file's own
   // note) was a name-collision misattribution to a Nigerian university of
@@ -11273,11 +11276,11 @@ async function scrapeClaremontAll(context) {
   const tasks = CLAREMONT_CAMPUSES.map(({ campus, type, url }) =>
     (async () => {
       try {
-        if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "Claremont");
+        if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "Claremont Colleges");
         if (type === "cmc") return await scrapeClaremontCmc(context, url, campus);
         if (type === "workday") return await scrapeClaremontWorkday(context, url, campus);
         if (type === "pomona") return await scrapePomonaFacultyJobs(context, url, campus);
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "Claremont");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "Claremont Colleges");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} Claremont scrape failed:`, e?.message || e);

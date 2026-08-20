@@ -21,6 +21,7 @@
     "verify:post-quality": "node scripts/verify-post-quality.js",
     "build:policy-exclusions": "node scripts/generate-policy-exclusions.js",
     "build:coverage-report": "node scripts/generate-coverage-report.js",
+    "audit:institutions": "node scripts/audit-institutions.js --fail-on-duplicates",
     "verify:policy": "node scripts/verify-policy-integrity.js",
     "verify:policy:pre": "node scripts/verify-policy-integrity.js --skip-jobs-check",
     "sync:policy-exclusions": "node scripts/sync-policy-exclusions-web.js",
