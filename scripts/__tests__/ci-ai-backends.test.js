@@ -22,3 +22,11 @@ test('CI uses no-secret deterministic backends while local scripts default to Ol
     assert.doesNotMatch(source, /ANTHROPIC_API_KEY|GITHUB_MODEL|USE_CLAUDE|api\.anthropic\.com|models\.github\.ai/);
   }
 });
+
+test('daily data-health workflow backfills 1,600 descriptions per run', () => {
+  const agentWorkflow = fs.readFileSync(path.join(ROOT, '.github/workflows/agent-team.yml'), 'utf8');
+  assert.match(
+    agentWorkflow,
+    /npm run agent:descriptions -- --max 1600 --concurrency 8/,
+  );
+});

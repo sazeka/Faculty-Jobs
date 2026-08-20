@@ -50,7 +50,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Backfill missing job descriptions from detail pages
-        run: npm run agent:descriptions -- --max 800 --concurrency 8
+        run: npm run agent:descriptions -- --max 1600 --concurrency 8
         continue-on-error: true
 
       # Enrichment must follow description backfill: title-only inference often
