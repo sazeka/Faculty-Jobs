@@ -6170,7 +6170,14 @@ export function normalizeJobTitle(rawTitle) {
   // Trailing bracketed requisition codes like "[R0148940]" / "[REQ-12345]":
   // bracket content with no spaces and a 3+ digit run (so "[K-12]" and word tags
   // are kept). Brackets at the end of a title are virtually always codes.
-  t = t.replace(/\s*\[[^\]\s]*\d{3,}[^\]\s]*\]\s*$/g, "");
+  t = t.replace(/\s*\[[^\]\s]*\d{3,}[^\]\s]*\]\s*[.,;:]?\s*$/g, "");
+  // Requisition codes sometimes sit inside a meaningful parenthetical rather
+  // than occupying the whole suffix. Remove only the trailing code sequence
+  // before `)` and preserve the specialization/program text around it.
+  t = t.replace(
+    /\s*[-–—]\s*#?(?:(?:REQ|JR)[- ]?)?[A-Za-z]?\d{5,}[A-Za-z]?(?:\s*&\s*#?(?:(?:REQ|JR)[- ]?)?[A-Za-z]?\d{5,}[A-Za-z]?)*(?=\s*\))/gi,
+    ""
+  );
   // Drop a trailing asterisk-footnote status tag like "(*Restricted)" /
   // "(*Restricted*)" — the leading "*" marks it as a posting flag, not part of
   // the title. Real parentheticals (e.g. "(Tenure-Track)") don't start with "*".
@@ -6208,6 +6215,10 @@ export function normalizeJobTitle(rawTitle) {
   t = t.replace(/\bASSOCPROFESSOR\b/gi, "ASSOCIATE PROFESSOR");
   t = t.replace(/\bPROFESSORIN\b/gi, "PROFESSOR IN ");
   t = t.replace(/\b(PROFESSOR|LECTURER|INSTRUCTOR|FACULTY)(\d+)\b/gi, "$1");
+  // Course-section suffixes are useful for identifying the field but make a
+  // poor public title. MIS is the standard abbreviation for Information
+  // Systems; retain that meaning while dropping section/modality codes.
+  t = t.replace(/\bMIS\s+\d{3}[A-Za-z]?(?:\s+[A-Za-z0-9-]+)*\s*$/i, "Information Systems");
   // Strip feed tails that leak location/region/deadline metadata into the title:
   //   - University of Houston: "… - {City}, {State}, United States - {fragment}"
   //   - SUNY: "… Region: {region} Open until filled" (and a standalone deadline)
