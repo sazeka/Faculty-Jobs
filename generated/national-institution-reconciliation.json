@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-08-20T07:42:14.900Z",
+  "apply": true,
+  "inputs": {
+    "master": "data/institutions-master.json",
+    "ipeds": "data/ipeds/hd2024.csv"
+  },
+  "definition": {
+    "geography": "50 states and District of Columbia",
+    "active": "IPEDS ACT=A and CYACTIVE=1",
+    "degreeGranting": "IPEDS DEGGRANT=1",
+    "levels": [
+      "2-year",
+      "4-year"
+    ],
+    "controls": [
+      "public",
+      "private nonprofit"
+    ]
+  },
+  "counts": {
+    "ipedsRows": 6072,
+    "activeEligibleIpeds": 3276,
+    "alreadyAccounted": 3276,
+    "missingBeforeApply": 0,
+    "appended": 0,
+    "conflicts": 0,
+    "totalImported": 1877,
+    "totalNameConflictsResolved": 21,
+    "masterAfterApply": 3355,
+    "classificationCounts": {
+      "active_eligible": 3276,
+      "inactive_or_closed": 29,
+      "control_out_of_scope": 694,
+      "not_degree_granting": 1935,
+      "outside_us_states": 138
+    }
+  },
+  "conflicts": [],
+  "missingInstitutions": []
+}

@@ -7,6 +7,7 @@ import {
   mapControl,
   mapLevel,
   isDegreeGrantingBySector,
+  mapDegreeGranting,
   mapIpedsRows,
   buildLookupByName,
   buildRelaxedLookupByName,
@@ -49,6 +50,12 @@ test("isDegreeGrantingBySector classifies sectors", () => {
   assert.equal(isDegreeGrantingBySector(""), null);
 });
 
+test("mapDegreeGranting prefers the explicit IPEDS DEGGRANT field", () => {
+  assert.equal(mapDegreeGranting("1", "7"), true);
+  assert.equal(mapDegreeGranting("2", "1"), false);
+  assert.equal(mapDegreeGranting("", "1"), true);
+});
+
 test("parseCsv handles header, BOM, quotes, and CRLF", () => {
   const csv = '﻿UNITID,INSTNM,STABBR\r\n1,"Smith, College",MA\r\n2,Plain University,CA\r\n';
   const rows = parseCsv(csv);
@@ -78,6 +85,13 @@ test("mapIpedsRows drops for-profits and dedups", () => {
   assert.equal(mapped[0].control, "public");
   assert.equal(mapped[0].level, "4-year");
   assert.equal(mapped[0].is_degree_granting, true);
+});
+
+test("mapIpedsRows does not call an explicitly non-degree institution degree-granting", () => {
+  const [row] = mapIpedsRows([
+    { UNITID: "9", INSTNM: "Certificate Institute", STABBR: "TX", CONTROL: "1", ICLEVEL: "1", SECTOR: "1", DEGGRANT: "2" },
+  ]);
+  assert.equal(row.is_degree_granting, false);
 });
 
 test("buildLookupByName keys case-insensitively", () => {

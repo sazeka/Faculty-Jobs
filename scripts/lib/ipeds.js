@@ -115,6 +115,13 @@ export function isDegreeGrantingBySector(sectorCode) {
   return null;
 }
 
+export function mapDegreeGranting(degreeGrantingCode, sectorCode) {
+  const explicit = toInt(degreeGrantingCode);
+  if (explicit === 1) return true;
+  if (explicit === 2) return false;
+  return isDegreeGrantingBySector(sectorCode);
+}
+
 // IPEDS's IALIAS column packs multiple alternate names into one field with an
 // inconsistent delimiter — usually "|", sometimes 2+ spaces, occasionally ";".
 // A single space is never a delimiter (aliases are themselves multi-word), so
@@ -154,7 +161,10 @@ export function mapIpedsRows(rows) {
       sector: sectorRaw ? toInt(sectorRaw) : null,
       level: mapLevel(levelRaw),
       control,
-      is_degree_granting: isDegreeGrantingBySector(sectorRaw),
+      is_degree_granting: mapDegreeGranting(
+        firstField(row, ["DEGGRANT", "deggrant"]),
+        sectorRaw
+      ),
     });
   }
 

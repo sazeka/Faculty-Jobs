@@ -135,7 +135,10 @@ function main() {
       ov?.homepage_url || prev?.homepage_url || configuredUrl || prev?.career_url
     );
     const career_url = canonicalizeUrl(
-      ov?.career_url || configuredUrl || prev?.career_url || prev?.homepage_url
+      ov?.career_url ||
+      configuredUrl ||
+      prev?.career_url ||
+      (prev?.national_reconciliation_status === "missing_career_url" ? null : prev?.homepage_url)
     );
     const platform_type = clean(ov?.platform_type || prev?.platform_type) || inferPlatformFromUrl(career_url) || "generic";
     const coverage_source = clean(ov?.coverage_source || prev?.coverage_source) || null;
@@ -297,9 +300,11 @@ function main() {
         // Shared system scrapers emit member-campus names without requiring a
         // duplicate standalone scraper config or campus-specific career URL.
         hasSharedSource:
-          Boolean(urls.coverage_source) ||
-          prev.coverage_status === "covered" ||
-          prev.notes === "Present in jobs data but missing from explicit campus config.",
+          prev.national_reconciliation_status === "missing_career_url"
+            ? false
+            : Boolean(urls.coverage_source) ||
+              prev.coverage_status === "covered" ||
+              prev.notes === "Present in jobs data but missing from explicit campus config.",
       })
     );
   }
@@ -354,6 +359,7 @@ function main() {
   const out = {
     generatedAt: new Date().toISOString(),
     source: {
+      ...(existing?.source || {}),
       configuredFrom: "server.js",
       jobsFrom: path.relative(ROOT, JOBS_PATH),
       overridesFrom: path.relative(ROOT, OVERRIDES_PATH),

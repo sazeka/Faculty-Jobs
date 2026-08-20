@@ -86,4 +86,17 @@ npm run audit:institutions
 npm run verify:post-quality -- --max-missing-desc-pct 96
 ```
 
-`generated/institution-data-audit.json` reports duplicate identities, shared UNITIDs, missing IPEDS metadata, alias collisions, and suspicious synthetic career URLs. A zero-backlog coverage regression automatically opens an issue if an eligible institution returns to `missing` or `pending_review`.
+National institution reconciliation:
+
+```bash
+# Compare the master list with the active IPEDS universe.
+npm run reconcile:institutions
+
+# Add active, degree-granting public/nonprofit 2-year and 4-year institutions
+# from the 50 states and Washington, D.C. that are absent from the master.
+npm run reconcile:institutions -- --apply
+```
+
+`generated/national-institution-reconciliation.json` records the exact national definition, IPEDS classifications, imported count, and any identity conflicts. An institution is only considered career-source covered after its source is wired into the scraper; an IPEDS homepage alone remains in the `missing` discovery backlog.
+
+`generated/institution-data-audit.json` reports duplicate identities, shared UNITIDs, missing IPEDS metadata, alias collisions, and suspicious synthetic career URLs. Coverage regression alerts report changes to the real national backlog of `missing` or `pending_review` institutions.

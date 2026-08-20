@@ -33,6 +33,9 @@ jobs:
       - name: Check for merge conflict markers
         run: npm run verify:no-conflicts
 
+      - name: Reconcile active eligible institutions from IPEDS
+        run: npm run reconcile:institutions -- --apply
+
       - name: Seed new institutions from IPEDS WEBADDR
         run: npm run seed:ipeds:webaddr
 
@@ -71,6 +74,7 @@ jobs:
             generated/promotion-apply-discovered-report.json \
             generated/career-path-probe-report.json \
             generated/coverage-report.json \
+            generated/national-institution-reconciliation.json \
             generated/policy-excluded-colleges.json \
             public/policy-excluded-colleges.json \
             docs/policy-excluded-colleges.json \
