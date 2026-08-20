@@ -2,6 +2,7 @@ import { classifyTenureTrack } from "./weekly-tenure-stats.js";
 
 export const DESCRIPTION_RETRY_DAYS = 14;
 export const DESCRIPTION_MAX_ATTEMPTS = 2;
+export const DESCRIPTION_FETCH_VERSION = 2;
 
 function hasHttpUrl(job) {
   return /^https?:\/\//i.test(job?.url || "");
@@ -28,6 +29,13 @@ export function needsDescriptionFetch(
   maxAttempts = DESCRIPTION_MAX_ATTEMPTS
 ) {
   if (!hasHttpUrl(job) || isUnsupportedDescriptionUrl(job?.url) || String(job?.description || "").trim()) return false;
+  // Version 2 removed a custom bot user agent that prevented many Workday SPAs
+  // from rendering. Give every empty Workday result captured by the old fetcher
+  // one immediate migration retry, regardless of its age/attempt count.
+  if (
+    /myworkdayjobs\.com|myworkdaysite\.com/i.test(String(job?.url || "")) &&
+    Number(job?.descriptionFetchVersion || 0) < DESCRIPTION_FETCH_VERSION
+  ) return true;
   const attempts = inferredAttempts(job);
   if (!job.descriptionFetchedAt) return attempts < maxAttempts;
   if (attempts >= maxAttempts) return false;

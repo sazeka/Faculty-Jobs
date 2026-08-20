@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  DESCRIPTION_FETCH_VERSION,
   descriptionAttemptCount,
   isUnsupportedDescriptionUrl,
   needsDescriptionFetch,
@@ -35,6 +36,20 @@ test("skips virtual OneUSG search fragments that cannot resolve to public detail
   assert.equal(isUnsupportedDescriptionUrl(url), true);
   assert.equal(needsDescriptionFetch({ url }, NOW), false);
   assert.equal(isUnsupportedDescriptionUrl("https://example.edu/jobs/300794"), false);
+});
+
+test("immediately retries Workday results captured by the pre-fix fetcher once", () => {
+  const oldResult = {
+    url: "https://school.wd1.myworkdayjobs.com/jobs/job/example_R123",
+    descriptionFetchedAt: "2026-08-19T00:00:00.000Z",
+    descriptionFetchAttempts: 2,
+    descriptionFetchStatus: "empty",
+  };
+  assert.equal(needsDescriptionFetch(oldResult, NOW), true);
+  assert.equal(needsDescriptionFetch({
+    ...oldResult,
+    descriptionFetchVersion: DESCRIPTION_FETCH_VERSION,
+  }, NOW), false);
 });
 
 test("prioritizes unknown tenure and then newer postings", () => {

@@ -17,6 +17,7 @@ export const DESCRIPTION_FIELDS = [
   "descriptionFetchedAt",
   "descriptionFetchAttempts",
   "descriptionFetchStatus",
+  "descriptionFetchVersion",
 ];
 // Also carry recency dates across scrapes: a scrape that skips the job-presence
 // step (firstSeen) or description backfill (datePosted) — e.g. a bare local

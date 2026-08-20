@@ -22,6 +22,7 @@ import { fileURLToPath } from "url";
 import { chromium } from "playwright";
 import { extractStartDate } from "./lib/start-date.js";
 import {
+  DESCRIPTION_FETCH_VERSION,
   descriptionAttemptCount,
   isUnsupportedDescriptionUrl,
   needsDescriptionFetch,
@@ -362,6 +363,7 @@ async function main() {
       if (wasMissingDescription) {
         target.descriptionFetchAttempts = priorDescriptionAttempts + 1;
         target.descriptionFetchStatus = desc ? "filled" : "empty";
+        target.descriptionFetchVersion = DESCRIPTION_FETCH_VERSION;
       }
       // Soft "anticipated start date" parsed from the posting body (free text).
       if (!target.startDate) {

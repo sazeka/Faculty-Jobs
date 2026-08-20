@@ -84,6 +84,7 @@ test("carries description backfill progress across daily scrapes", () => {
       descriptionFetchedAt: "2026-08-20T12:00:00.000Z",
       descriptionFetchAttempts: 1,
       descriptionFetchStatus: "filled",
+      descriptionFetchVersion: 2,
     }],
   };
   const fresh = { jobs: [{ canonicalJobId: "job-1", url: "https://example.edu/jobs/1" }] };
