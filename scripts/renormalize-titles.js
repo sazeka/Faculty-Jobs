@@ -67,6 +67,7 @@ const presenceDoc = readJson(PRESENCE);
 const presence = presenceDoc && presenceDoc.jobs ? presenceDoc : null;
 
 let changed = 0;
+let fieldsChanged = 0;
 let idChanged = 0;
 let ledgerMigrated = 0;
 const samples = [];
@@ -83,6 +84,21 @@ for (const job of payload.jobs) {
 
   const oldJobId = job.canonicalJobId;
   job.title = after;
+
+  // Legacy Stevens listings copied the course section (for example
+  // "MIS 630 ONL-Z") into both academic-field columns. Once the title is
+  // normalized, repair those stored fields as well so the UI does not keep
+  // exposing a course code as the department/specialization.
+  const legacyMisField = /^MIS\s+\d{3}\b/i;
+  if (after.includes("Information Systems")) {
+    for (const field of ["department", "specialization"]) {
+      if (legacyMisField.test(String(job[field] || ""))) {
+        job[field] = "Information Systems";
+        fieldsChanged++;
+      }
+    }
+  }
+
   const { canonicalGroupId, canonicalJobId } = canonicalIds(job, after);
 
   if (canonicalJobId !== oldJobId) {
@@ -103,6 +119,7 @@ for (const job of payload.jobs) {
 console.log("\nFaculty Atlas — Title Re-normalization");
 console.log(`  Total jobs        : ${payload.jobs.length.toLocaleString()}`);
 console.log(`  Titles changed    : ${changed.toLocaleString()}`);
+console.log(`  Fields repaired   : ${fieldsChanged.toLocaleString()}`);
 console.log(`  Canonical IDs new : ${idChanged.toLocaleString()}`);
 console.log(`  Ledger entries mvd: ${ledgerMigrated.toLocaleString()}`);
 console.log("\n  Sample changes:");
