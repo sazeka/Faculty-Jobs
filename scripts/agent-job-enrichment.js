@@ -11,9 +11,9 @@
  * API call for cost efficiency. Saves progress after each batch so partial
  * runs are never lost.
  *
- * Backend selection (automatic):
- *   ANTHROPIC_API_KEY set → Claude Haiku (used in CI/GitHub Actions)
- *   not set              → Ollama local (used on developer machines)
+ * Backend selection:
+ *   default                  → Ollama local
+ *   AI_BACKEND=github-models → GitHub Models (used in Actions)
  *
  * Usage:
  *   node scripts/agent-job-enrichment.js [--dry-run] [--max <n>] [--batch-size <n>] [--concurrency <n>]
@@ -21,12 +21,12 @@
 import fs from 'fs';
 import path from 'path';
 import http from 'http';
-import https from 'https';
 import { fileURLToPath } from 'url';
 import {
   classifyTenureTrack,
   classifyTenureTrackWithEvidence,
 } from './lib/weekly-tenure-stats.js';
+import { callGitHubModels, DEFAULT_GITHUB_MODEL } from './lib/github-models.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -56,10 +56,10 @@ const DRY_RUN     = Boolean(args['dry-run']);
 const MAX         = Number(args['max'] || process.env.AI_ENRICH_MAX || 500);
 const BATCH_SIZE  = Math.min(Number(args['batch-size'] || 25), 50);
 const CONCURRENCY = Math.min(Number(args['concurrency'] || process.env.AI_ENRICH_CONCURRENCY || 1), 8);
-const API_KEY     = process.env.ANTHROPIC_API_KEY;
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'localhost:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
-const USE_OLLAMA  = process.env.USE_CLAUDE !== '1';
+const AI_BACKEND = process.env.AI_BACKEND || 'ollama';
+const GITHUB_MODEL = process.env.GITHUB_MODEL || DEFAULT_GITHUB_MODEL;
 // A hung/overloaded backend (e.g. Ollama swapping a 7B model on an 8GB
 // Jetson, or thrashing under memory pressure) can accept the connection and
 // then just never respond -- that isn't a connection-level failure, so
@@ -68,10 +68,8 @@ const USE_OLLAMA  = process.env.USE_CLAUDE !== '1';
 // this step either) hangs forever. Same bug class as the 2026-07-27 5-day
 // hang already fixed in agent-job-descriptions.js -- that fix never made it
 // to this file. Ollama gets a generous budget since local inference on
-// constrained hardware is genuinely slow; Claude's hosted API should never
-// need anywhere close to this.
+// constrained hardware is genuinely slow.
 const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS || 180_000);
-const CLAUDE_TIMEOUT_MS = Number(process.env.CLAUDE_TIMEOUT_MS || 60_000);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -195,48 +193,13 @@ function parseResponse(text) {
 
 // ── Claude API ────────────────────────────────────────────────────────────────
 
-function callClaude(batch) {
-  return new Promise((resolve, reject) => {
-    const body = JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: buildPrompt(batch) }],
-    });
-
-    const req = https.request(
-      {
-        hostname: 'api.anthropic.com',
-        path: '/v1/messages',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': API_KEY,
-          'anthropic-version': '2023-06-01',
-          'Content-Length': Buffer.byteLength(body),
-        },
-      },
-      (res) => {
-        let data = '';
-        res.on('data', c => (data += c));
-        res.on('end', () => {
-          try {
-            const parsed = JSON.parse(data);
-            const text = parsed?.content?.[0]?.text?.trim();
-            if (!text) { reject(new Error(JSON.stringify(parsed))); return; }
-            resolve(parseResponse(text));
-          } catch (e) {
-            reject(e);
-          }
-        });
-      }
-    );
-    req.setTimeout(CLAUDE_TIMEOUT_MS, () => {
-      req.destroy(new Error(`Claude request timed out after ${CLAUDE_TIMEOUT_MS / 1000}s`));
-    });
-    req.on('error', reject);
-    req.write(body);
-    req.end();
+async function callGitHubModelsBatch(batch) {
+  const text = await callGitHubModels({
+    prompt: buildPrompt(batch),
+    model: GITHUB_MODEL,
+    maxTokens: 1024,
   });
+  return parseResponse(text);
 }
 
 // ── Ollama API ────────────────────────────────────────────────────────────────
@@ -291,13 +254,15 @@ async function main() {
   console.log('\nFaculty Atlas - Job Enrichment Agent');
   if (DRY_RUN) console.log('  *** DRY RUN ***');
 
-  if (USE_OLLAMA) {
+  if (AI_BACKEND === 'ollama') {
     console.log(`  Backend: Ollama (${OLLAMA_MODEL} @ ${OLLAMA_HOST})`);
+  } else if (AI_BACKEND === 'github-models') {
+    console.log(`  Backend: GitHub Models (${GITHUB_MODEL})`);
   } else {
-    console.log('  Backend: Claude Haiku (Anthropic API)');
+    throw new Error(`Unsupported AI_BACKEND: ${AI_BACKEND}`);
   }
 
-  const enrichBatch = USE_OLLAMA ? callOllama : callClaude;
+  const enrichBatch = AI_BACKEND === 'ollama' ? callOllama : callGitHubModelsBatch;
 
   const payload = readJson(PUBLIC_JOBS);
   if (!payload?.jobs?.length) {
@@ -416,7 +381,7 @@ async function main() {
     if (!ok) {
       // Authentication/configuration errors affect every row. Do not recursively
       // split a 25-row batch into hundreds of guaranteed-failing requests.
-      if (/authentication_error|api key is invalid|unauthorized|forbidden/i.test(errMsg || '')) {
+      if (/authentication_error|api key is invalid|unauthorized|forbidden|GITHUB_TOKEN is required|HTTP (401|403|429)/i.test(errMsg || '')) {
         throw new Error(`Fatal enrichment backend error: ${errMsg}`);
       }
       if (batch.length === 1) {
