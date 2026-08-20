@@ -2,6 +2,7 @@ import { computed } from 'vue'
 import { ALL_FILTER_VALUE, createDefaultFilters } from '../config/appConfig.js'
 import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxonomy.js'
 import { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
+import { inferAlaskaCampus } from '../../../scripts/lib/alaska-campus.js'
 
 export { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
 
@@ -69,6 +70,10 @@ export function normalizeSystemCollege(job) {
   if (!original) return null
 
   const hay = `${job?.title || ''} ${job?.location || ''} ${job?.url || ''}`.toLowerCase()
+
+  if (original === 'University of Alaska System') {
+    return inferAlaskaCampus(job) || original
+  }
 
   if (original === 'University of Hawaii System') {
     if (hay.includes('hilo')) return 'University of Hawaii at Hilo'

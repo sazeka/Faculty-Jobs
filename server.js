@@ -87,6 +87,7 @@ import { extractRiceFacultyRows } from "./scripts/lib/rice-faculty-extraction.js
 import { extractCunyJobRows } from "./scripts/lib/cuny-jobs-extraction.js";
 import { canonicalInstitutionName } from "./scripts/lib/institution-aliases.js";
 import { interfolioApplicationUrl } from "./scripts/lib/interfolio-position.js";
+import { alaskaCampusLocation, inferAlaskaCampus } from "./scripts/lib/alaska-campus.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -16528,7 +16529,12 @@ async function scrapeAkAll(context) {
       }
     }
   );
-  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+  return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : [])))
+    .map((job) => {
+      const campus = inferAlaskaCampus(job);
+      return campus ? { ...job, college: campus, location: alaskaCampusLocation(campus) || job.location } : job;
+    })
+    .filter((j) => !omitAdjunct(j.title));
 }
 
 async function scrapeHiAll(context) {
