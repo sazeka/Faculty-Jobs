@@ -29,6 +29,7 @@ import {
   prioritizeDescriptionCandidates,
 } from "./lib/description-backfill.js";
 import { createDescriptionFetchReport } from "./lib/description-fetch-report.js";
+import { buildWorkdayCxsUrl, fetchWorkdayPosting } from "./lib/workday-description.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -189,13 +190,26 @@ async function main() {
       let datePostedFromOpenDate = false;
       let fetchErrored = false;
       try {
-        // newPage() and close() have no Playwright timeout of their own. The
-        // 2026-08-20 Actions run completed 1,575/1,600 pages in 11 minutes, then
-        // all workers waited here or in close() until GitHub killed the job at
-        // six hours. Bound both lifecycle calls so one wedged CDP round-trip
-        // becomes an ordinary failed attempt and the worker keeps moving.
-        page = await withTimeout(context.newPage(), PAGE_CREATE_TIMEOUT_MS, "context.newPage");
-        await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
+        if (buildWorkdayCxsUrl(job.url)) {
+          // Workday detail pages are SPAs and frequently remain on "Loading" in
+          // hosted Chromium. Their public CXS endpoint returns the same posting
+          // body and exact posting-window dates without browser rendering.
+          const result = await fetchWorkdayPosting(job.url, {
+            timeoutMs: TIMEOUT_MS,
+            minLen: MIN_LEN,
+            maxLen: MAX_LEN,
+          });
+          desc = result.desc;
+          datePosted = result.datePosted;
+          validThrough = result.validThrough;
+        } else {
+          // newPage() and close() have no Playwright timeout of their own. The
+          // 2026-08-20 Actions run completed 1,575/1,600 pages in 11 minutes, then
+          // all workers waited here or in close() until GitHub killed the job at
+          // six hours. Bound both lifecycle calls so one wedged CDP round-trip
+          // becomes an ordinary failed attempt and the worker keeps moving.
+          page = await withTimeout(context.newPage(), PAGE_CREATE_TIMEOUT_MS, "context.newPage");
+          await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
         // Cornerstone (csod) is a single-page app that renders the "Posted on …"
         // date client-side well after DOMContentLoaded; the default 1.5s wait
         // fires before it paints, so the date (and full body) is missed. Give
@@ -343,13 +357,14 @@ async function main() {
           20000,
           "page.evaluate"
         );
-        desc = result?.desc || "";
-        // JSON-LD datePosted wins; fall back to a labeled "Open Date" field.
-        datePosted = result?.datePosted || result?.openDate || "";
-        datePostedFromOpenDate = !result?.datePosted && !!result?.openDate;
-        // Deadline: JSON-LD validThrough wins, else a labeled close/deadline date.
-        validThrough = result?.validThrough || result?.close?.date || "";
-        closeRolling = !result?.validThrough && !result?.close?.date && !!result?.close?.rolling;
+          desc = result?.desc || "";
+          // JSON-LD datePosted wins; fall back to a labeled "Open Date" field.
+          datePosted = result?.datePosted || result?.openDate || "";
+          datePostedFromOpenDate = !result?.datePosted && !!result?.openDate;
+          // Deadline: JSON-LD validThrough wins, else a labeled close/deadline date.
+          validThrough = result?.validThrough || result?.close?.date || "";
+          closeRolling = !result?.validThrough && !result?.close?.date && !!result?.close?.rolling;
+        }
       } catch {
         fetchErrored = true;
         desc = "";

@@ -2,7 +2,7 @@ import { classifyTenureTrack } from "./weekly-tenure-stats.js";
 
 export const DESCRIPTION_RETRY_DAYS = 14;
 export const DESCRIPTION_MAX_ATTEMPTS = 2;
-export const DESCRIPTION_FETCH_VERSION = 2;
+export const DESCRIPTION_FETCH_VERSION = 3;
 
 function hasHttpUrl(job) {
   return /^https?:\/\//i.test(job?.url || "");
