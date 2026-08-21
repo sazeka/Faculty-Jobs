@@ -1,46 +1,55 @@
 {
-  "generatedAt": "2026-08-21T04:35:44.985Z",
-  "totalJobs": 15262,
+  "generatedAt": "2026-08-21T19:24:39.746Z",
+  "totalJobs": 15260,
   "attemptedThisRun": 400,
-  "filledThisRun": 186,
-  "datePostedFilledThisRun": 319,
-  "openDateFilledThisRun": 50,
-  "startDateFilledThisRun": 27,
-  "totalWithStartDate": 773,
-  "deadlineFilledThisRun": 63,
-  "rollingFilledThisRun": 51,
+  "filledThisRun": 125,
+  "datePostedFilledThisRun": 291,
+  "openDateFilledThisRun": 14,
+  "startDateFilledThisRun": 11,
+  "totalWithStartDate": 784,
+  "deadlineFilledThisRun": 39,
+  "rollingFilledThisRun": 25,
   "mode": "normal",
-  "totalWithDatePosted": 7314,
-  "totalWithDeadline": 2537,
-  "totalWithDescription": 4219,
-  "remaining": 11043,
-  "eligibleRemaining": 10028,
+  "totalWithDatePosted": 7605,
+  "totalWithDeadline": 2576,
+  "totalWithDescription": 4344,
+  "remaining": 10916,
+  "eligibleRemaining": 9627,
   "unsupportedRemaining": 68,
   "fetchDiagnostics": {
     "byPlatform": [
       {
         "platform": "workday",
-        "attempted": 197,
+        "attempted": 260,
         "filled": 1,
-        "empty": 196,
+        "empty": 259,
         "errors": 0,
-        "fillRatePct": 0.5,
-        "failureRatePct": 99.5
+        "fillRatePct": 0.4,
+        "failureRatePct": 99.6
       },
       {
         "platform": "generic",
-        "attempted": 123,
-        "filled": 114,
+        "attempted": 73,
+        "filled": 62,
+        "empty": 4,
+        "errors": 7,
+        "fillRatePct": 84.9,
+        "failureRatePct": 15.1
+      },
+      {
+        "platform": "pageup",
+        "attempted": 2,
+        "filled": 0,
         "empty": 0,
-        "errors": 9,
-        "fillRatePct": 92.7,
-        "failureRatePct": 7.3
+        "errors": 2,
+        "fillRatePct": 0,
+        "failureRatePct": 100
       },
       {
         "platform": "paycom",
-        "attempted": 8,
+        "attempted": 2,
         "filled": 0,
-        "empty": 8,
+        "empty": 2,
         "errors": 0,
         "fillRatePct": 0,
         "failureRatePct": 100
@@ -56,26 +65,8 @@
       },
       {
         "platform": "schooljobs",
-        "attempted": 41,
-        "filled": 41,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "ap-recruit",
-        "attempted": 13,
-        "filled": 13,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "peopleadmin",
-        "attempted": 10,
-        "filled": 10,
+        "attempted": 27,
+        "filled": 27,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
@@ -83,17 +74,26 @@
       },
       {
         "platform": "interfolio",
-        "attempted": 2,
-        "filled": 2,
+        "attempted": 19,
+        "filled": 19,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
         "failureRatePct": 0
       },
       {
-        "platform": "enusfilter",
-        "attempted": 1,
-        "filled": 1,
+        "platform": "peopleadmin",
+        "attempted": 6,
+        "filled": 6,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "ap-recruit",
+        "attempted": 6,
+        "filled": 6,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
@@ -103,40 +103,30 @@
     "byHost": [
       {
         "platform": "workday",
-        "host": "umiami.wd1.myworkdayjobs.com",
-        "attempted": 95,
+        "host": "wisconsin.wd1.myworkdayjobs.com",
+        "attempted": 82,
         "filled": 0,
-        "empty": 95,
+        "empty": 82,
         "errors": 0,
         "fillRatePct": 0,
         "failureRatePct": 100
       },
       {
         "platform": "workday",
-        "host": "wisconsin.wd1.myworkdayjobs.com",
-        "attempted": 40,
-        "filled": 0,
-        "empty": 40,
+        "host": "umiami.wd1.myworkdayjobs.com",
+        "attempted": 80,
+        "filled": 1,
+        "empty": 79,
         "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
+        "fillRatePct": 1.3,
+        "failureRatePct": 98.8
       },
       {
         "platform": "workday",
         "host": "psu.wd1.myworkdayjobs.com",
-        "attempted": 16,
+        "attempted": 28,
         "filled": 0,
-        "empty": 16,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "paycom",
-        "host": "www.paycomonline.net",
-        "attempted": 8,
-        "filled": 0,
-        "empty": 8,
+        "empty": 28,
         "errors": 0,
         "fillRatePct": 0,
         "failureRatePct": 100
@@ -144,19 +134,9 @@
       {
         "platform": "workday",
         "host": "osu.wd1.myworkdayjobs.com",
-        "attempted": 7,
+        "attempted": 18,
         "filled": 0,
-        "empty": 7,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "coloradomesa.wd501.myworkdayjobs.com",
-        "attempted": 4,
-        "filled": 0,
-        "empty": 4,
+        "empty": 18,
         "errors": 0,
         "fillRatePct": 0,
         "failureRatePct": 100
@@ -164,6 +144,26 @@
       {
         "platform": "workday",
         "host": "nshe.wd1.myworkdayjobs.com",
+        "attempted": 13,
+        "filled": 0,
+        "empty": 13,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "workday",
+        "host": "northeastern.wd1.myworkdayjobs.com",
+        "attempted": 9,
+        "filled": 0,
+        "empty": 9,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "workday",
+        "host": "isu.wd1.myworkdayjobs.com",
         "attempted": 4,
         "filled": 0,
         "empty": 4,
@@ -173,7 +173,7 @@
       },
       {
         "platform": "workday",
-        "host": "ivytech.wd1.myworkdayjobs.com",
+        "host": "unf.wd5.myworkdayjobs.com",
         "attempted": 4,
         "filled": 0,
         "empty": 4,
@@ -193,17 +193,7 @@
       },
       {
         "platform": "workday",
-        "host": "isu.wd1.myworkdayjobs.com",
-        "attempted": 4,
-        "filled": 0,
-        "empty": 4,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "wfu.wd1.myworkdayjobs.com",
+        "host": "ivytech.wd1.myworkdayjobs.com",
         "attempted": 3,
         "filled": 0,
         "empty": 3,
@@ -213,47 +203,37 @@
       },
       {
         "platform": "workday",
-        "host": "wd5.myworkdaysite.com",
-        "attempted": 2,
+        "host": "minnstate.wd115.myworkdayjobs.com",
+        "attempted": 3,
         "filled": 0,
-        "empty": 2,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "ulsltu.wd503.myworkdayjobs.com",
-        "attempted": 2,
-        "filled": 0,
-        "empty": 2,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "unf.wd5.myworkdayjobs.com",
-        "attempted": 2,
-        "filled": 0,
-        "empty": 2,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "wd1.myworkdaysite.com",
-        "attempted": 2,
-        "filled": 0,
-        "empty": 2,
+        "empty": 3,
         "errors": 0,
         "fillRatePct": 0,
         "failureRatePct": 100
       },
       {
         "platform": "generic",
-        "host": "www.cau.edu",
+        "host": "workforcenow.adp.com",
+        "attempted": 9,
+        "filled": 7,
+        "empty": 2,
+        "errors": 0,
+        "fillRatePct": 77.8,
+        "failureRatePct": 22.2
+      },
+      {
+        "platform": "workday",
+        "host": "uchicago.wd5.myworkdayjobs.com",
+        "attempted": 2,
+        "filled": 0,
+        "empty": 2,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "pageup",
+        "host": "careers.pageuppeople.com",
         "attempted": 2,
         "filled": 0,
         "empty": 0,
@@ -265,25 +245,85 @@
         "platform": "workday",
         "host": "byu.wd1.myworkdayjobs.com",
         "attempted": 2,
-        "filled": 1,
-        "empty": 1,
+        "filled": 0,
+        "empty": 2,
         "errors": 0,
-        "fillRatePct": 50,
-        "failureRatePct": 50
-      },
-      {
-        "platform": "csod",
-        "host": "esu.csod.com",
-        "attempted": 2,
-        "filled": 1,
-        "empty": 1,
-        "errors": 0,
-        "fillRatePct": 50,
-        "failureRatePct": 50
+        "fillRatePct": 0,
+        "failureRatePct": 100
       },
       {
         "platform": "workday",
-        "host": "geisinger.wd5.myworkdayjobs.com",
+        "host": "utaustin.wd1.myworkdayjobs.com",
+        "attempted": 2,
+        "filled": 0,
+        "empty": 2,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "paycom",
+        "host": "www.paycomonline.net",
+        "attempted": 2,
+        "filled": 0,
+        "empty": 2,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "workday",
+        "host": "wustl.wd1.myworkdayjobs.com",
+        "attempted": 2,
+        "filled": 0,
+        "empty": 2,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.tcu.edu",
+        "attempted": 6,
+        "filled": 5,
+        "empty": 1,
+        "errors": 0,
+        "fillRatePct": 83.3,
+        "failureRatePct": 16.7
+      },
+      {
+        "platform": "csod",
+        "host": "isu.csod.com",
+        "attempted": 3,
+        "filled": 2,
+        "empty": 1,
+        "errors": 0,
+        "fillRatePct": 66.7,
+        "failureRatePct": 33.3
+      },
+      {
+        "platform": "generic",
+        "host": "www.cccua.edu",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 0,
+        "errors": 1,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "workday",
+        "host": "uasys.wd5.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 1,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "workday",
+        "host": "olemiss.wd12.myworkdayjobs.com",
         "attempted": 1,
         "filled": 0,
         "empty": 1,
@@ -303,7 +343,57 @@
       },
       {
         "platform": "workday",
-        "host": "wd501.myworkdaysite.com",
+        "host": "rit.wd12.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 1,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.aum.edu",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 1,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "generic",
+        "host": "cdn.wou.edu",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 0,
+        "errors": 1,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "workday",
+        "host": "bsu.wd12.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 1,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "workday",
+        "host": "hindscc.wd1.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 1,
+        "errors": 0,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "workday",
+        "host": "lsu.wd1.myworkdayjobs.com",
         "attempted": 1,
         "filled": 0,
         "empty": 1,
@@ -323,87 +413,7 @@
       },
       {
         "platform": "workday",
-        "host": "kean.wd503.myworkdayjobs.com",
-        "attempted": 1,
-        "filled": 0,
-        "empty": 1,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "uasys.wd5.myworkdayjobs.com",
-        "attempted": 1,
-        "filled": 0,
-        "empty": 1,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "minnstate.wd115.myworkdayjobs.com",
-        "attempted": 1,
-        "filled": 0,
-        "empty": 1,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "generic",
-        "host": "www.cccua.edu",
-        "attempted": 1,
-        "filled": 0,
-        "empty": 0,
-        "errors": 1,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "seattleu.wd108.myworkdayjobs.com",
-        "attempted": 1,
-        "filled": 0,
-        "empty": 1,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "trinity.wd1.myworkdayjobs.com",
-        "attempted": 1,
-        "filled": 0,
-        "empty": 1,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "generic",
-        "host": "dev-cau.pantheonsite.io",
-        "attempted": 1,
-        "filled": 0,
-        "empty": 0,
-        "errors": 1,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "cmu.wd5.myworkdayjobs.com",
-        "attempted": 1,
-        "filled": 0,
-        "empty": 1,
-        "errors": 0,
-        "fillRatePct": 0,
-        "failureRatePct": 100
-      },
-      {
-        "platform": "workday",
-        "host": "lsu.wd1.myworkdayjobs.com",
+        "host": "ecc.wd5.myworkdayjobs.com",
         "attempted": 1,
         "filled": 0,
         "empty": 1,
@@ -414,58 +424,18 @@
       {
         "platform": "schooljobs",
         "host": "www.schooljobs.com",
-        "attempted": 41,
-        "filled": 41,
+        "attempted": 27,
+        "filled": 27,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
         "failureRatePct": 0
       },
       {
-        "platform": "generic",
-        "host": "careers.bowdoin.edu",
-        "attempted": 12,
-        "filled": 12,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "felician.edu",
-        "attempted": 9,
-        "filled": 9,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "ap.washington.edu",
-        "attempted": 7,
-        "filled": 7,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "jobs.uri.edu",
-        "attempted": 6,
-        "filled": 6,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "explore.jobs.ufl.edu",
-        "attempted": 5,
-        "filled": 5,
+        "platform": "interfolio",
+        "host": "apply.interfolio.com",
+        "attempted": 19,
+        "filled": 19,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
@@ -483,7 +453,7 @@
       },
       {
         "platform": "generic",
-        "host": "fvsu.applicantpro.com",
+        "host": "colleges.ccc.edu",
         "attempted": 4,
         "filled": 4,
         "empty": 0,
@@ -493,69 +463,9 @@
       },
       {
         "platform": "generic",
-        "host": "jobs.apply.vt.edu",
+        "host": "fa-ewkd-saasfaprod1.fa.ocs.oraclecloud.com",
         "attempted": 4,
         "filled": 4,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "daemen.applicantpro.com",
-        "attempted": 4,
-        "filled": 4,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "ap-recruit",
-        "host": "aprecruit.ucsf.edu",
-        "attempted": 4,
-        "filled": 4,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "careers.dmu.edu",
-        "attempted": 4,
-        "filled": 4,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "peopleadmin",
-        "host": "doane.peopleadmin.com",
-        "attempted": 4,
-        "filled": 4,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "recruit.apo.ucla.edu",
-        "attempted": 3,
-        "filled": 3,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "ap-recruit",
-        "host": "recruit.ap.uci.edu",
-        "attempted": 3,
-        "filled": 3,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
@@ -573,109 +483,9 @@
       },
       {
         "platform": "generic",
-        "host": "eeik.fa.us2.oraclecloud.com",
+        "host": "ap.washington.edu",
         "attempted": 3,
         "filled": 3,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "lcsc.applicantpro.com",
-        "attempted": 3,
-        "filled": 3,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "careers.uh.edu",
-        "attempted": 3,
-        "filled": 3,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "careers.uoregon.edu",
-        "attempted": 3,
-        "filled": 3,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "www.wmujobs.org",
-        "attempted": 2,
-        "filled": 2,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "bartonccc.agilehr.com",
-        "attempted": 2,
-        "filled": 2,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "jobs.oit.edu",
-        "attempted": 2,
-        "filled": 2,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "interfolio",
-        "host": "apply.interfolio.com",
-        "attempted": 2,
-        "filled": 2,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "employment.unl.edu",
-        "attempted": 2,
-        "filled": 2,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "www.sjc.edu",
-        "attempted": 2,
-        "filled": 2,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "csucareers.calstate.edu",
-        "attempted": 2,
-        "filled": 2,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
@@ -683,49 +493,9 @@
       },
       {
         "platform": "peopleadmin",
-        "host": "indiana.peopleadmin.com",
+        "host": "ecu.peopleadmin.com",
         "attempted": 2,
         "filled": 2,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "peopleadmin",
-        "host": "chicagostate.peopleadmin.com",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "peopleadmin",
-        "host": "une.peopleadmin.com",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "jobs.cofc.edu",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "www.ohiouniversityjobs.com",
-        "attempted": 1,
-        "filled": 1,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
@@ -734,36 +504,76 @@
       {
         "platform": "generic",
         "host": "www.communitycollegecareerconnect.com",
-        "attempted": 1,
-        "filled": 1,
+        "attempted": 2,
+        "filled": 2,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
         "failureRatePct": 0
       },
       {
-        "platform": "csod",
-        "host": "unm.csod.com",
-        "attempted": 1,
-        "filled": 1,
+        "platform": "generic",
+        "host": "felician.edu",
+        "attempted": 2,
+        "filled": 2,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
         "failureRatePct": 0
       },
       {
-        "platform": "csod",
-        "host": "illinois.csod.com",
-        "attempted": 1,
-        "filled": 1,
+        "platform": "generic",
+        "host": "employment.ku.edu",
+        "attempted": 2,
+        "filled": 2,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
         "failureRatePct": 0
       },
       {
-        "platform": "peopleadmin",
-        "host": "deltastate.peopleadmin.com",
+        "platform": "generic",
+        "host": "recruit.apo.ucla.edu",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "www.fhtechnc.edu",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "employment.angelo.edu",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.k-state.edu",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "www.sujobopps.com",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -773,87 +583,7 @@
       },
       {
         "platform": "generic",
-        "host": "facultycareers.gsu.edu",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "academicjobsonline.org",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "carthage.applicantpro.com",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "jobs.cortland.edu",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "www.murraystatejobs.com",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "www.ugajobsearch.com",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "careers.msu.edu",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "ctstatecommunitycollege.applytojob.com",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "generic",
-        "host": "fa-ewkd-saasfaprod1.fa.ocs.oraclecloud.com",
+        "host": "sunysullivan.isolvedhire.com",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -873,7 +603,7 @@
       },
       {
         "platform": "generic",
-        "host": "provost.lafayette.edu",
+        "host": "recruitingbypaycor.com",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -882,8 +612,8 @@
         "failureRatePct": 0
       },
       {
-        "platform": "enusfilter",
-        "host": "careers.fresnostate.edu",
+        "platform": "generic",
+        "host": "jobs.fdu.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -893,7 +623,7 @@
       },
       {
         "platform": "peopleadmin",
-        "host": "morgan.peopleadmin.com",
+        "host": "uidaho.peopleadmin.com",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -903,7 +633,7 @@
       },
       {
         "platform": "generic",
-        "host": "beloit.applicantpro.com",
+        "host": "www.erikson.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -913,17 +643,7 @@
       },
       {
         "platform": "generic",
-        "host": "jobs.villanova.edu",
-        "attempted": 1,
-        "filled": 1,
-        "empty": 0,
-        "errors": 0,
-        "fillRatePct": 100,
-        "failureRatePct": 0
-      },
-      {
-        "platform": "csod",
-        "host": "cod.csod.com",
+        "host": "www.afit.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -933,7 +653,7 @@
       },
       {
         "platform": "generic",
-        "host": "careers.umass.edu",
+        "host": "jobs.ecsu.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -943,7 +663,7 @@
       },
       {
         "platform": "generic",
-        "host": "prd.hcm.ndus.edu",
+        "host": "www.arapahoe.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -953,7 +673,7 @@
       },
       {
         "platform": "ap-recruit",
-        "host": "recruit.ap.ucsb.edu",
+        "host": "recruit.ap.uci.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -963,7 +683,17 @@
       },
       {
         "platform": "generic",
-        "host": "recruit.ucdavis.edu",
+        "host": "hvcc.hire.trakstar.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "csod",
+        "host": "illinois.csod.com",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -973,7 +703,7 @@
       },
       {
         "platform": "generic",
-        "host": "jobs.ncsu.edu",
+        "host": "employment.bryant.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -983,7 +713,7 @@
       },
       {
         "platform": "generic",
-        "host": "www.csun.edu",
+        "host": "www.eastwest.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -993,7 +723,7 @@
       },
       {
         "platform": "generic",
-        "host": "employment.angelo.edu",
+        "host": "www.qc.cuny.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -1003,7 +733,7 @@
       },
       {
         "platform": "generic",
-        "host": "www.edgewood.edu",
+        "host": "www.beaconcollege.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -1013,7 +743,7 @@
       },
       {
         "platform": "generic",
-        "host": "yourfuture.sdbor.edu",
+        "host": "www.johnmarshall.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -1023,7 +753,7 @@
       },
       {
         "platform": "generic",
-        "host": "jobs.liu.edu",
+        "host": "pslinks.fiu.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -1033,7 +763,7 @@
       },
       {
         "platform": "generic",
-        "host": "workforcenow.adp.com",
+        "host": "employment.marquette.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -1043,7 +773,7 @@
       },
       {
         "platform": "generic",
-        "host": "www.chc.edu",
+        "host": "academicpositions.harvard.edu",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -1053,7 +783,7 @@
       },
       {
         "platform": "generic",
-        "host": "jobs.apu.edu",
+        "host": "www.ugajobsearch.com",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
@@ -1063,7 +793,67 @@
       },
       {
         "platform": "generic",
-        "host": "www.nebrwesleyan.edu",
+        "host": "www.ubjobs.buffalo.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "franklinpierceuniversity.applytojob.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "unc.peopleadmin.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "marshall.peopleadmin.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "www.murraystatejobs.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "csod",
+        "host": "arizona.csod.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "unmc.peopleadmin.com",
         "attempted": 1,
         "filled": 1,
         "empty": 0,
