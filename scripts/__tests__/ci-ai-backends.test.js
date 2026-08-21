@@ -23,16 +23,25 @@ test('CI uses no-secret deterministic backends while local scripts default to Ol
   }
 });
 
-test('daily data-health workflow backfills 1,600 descriptions per run', () => {
+test('daily data-health workflow backfills 1,600 descriptions in recoverable batches', () => {
   const agentWorkflow = fs.readFileSync(path.join(ROOT, '.github/workflows/agent-team.yml'), 'utf8');
-  assert.match(
-    agentWorkflow,
-    /npm run agent:descriptions -- --max 1600 --concurrency 8/,
-  );
+  assert.match(agentWorkflow, /for batch in 1 2 3 4/);
+  assert.match(agentWorkflow, /npm run agent:descriptions -- --max 400 --concurrency 8/);
+  assert.match(agentWorkflow, /name: Push description checkpoint/);
+  assert.match(agentWorkflow, /timeout-minutes:\s*45/);
 });
 
 test('description backfill does not use the Workday-blocked bot user agent', () => {
   const source = fs.readFileSync(path.join(ROOT, 'scripts/agent-job-descriptions.js'), 'utf8');
   assert.doesNotMatch(source, /userAgent:\s*["']Mozilla\/5\.0 FacultyJobsDescBot/);
   assert.match(source, /chromium\.launch\(\{ headless: true \}\)/);
+});
+
+test('description backfill bounds browser lifecycle calls and writes atomic checkpoints', () => {
+  const source = fs.readFileSync(path.join(ROOT, 'scripts/agent-job-descriptions.js'), 'utf8');
+  assert.match(source, /withTimeout\(context\.newPage\(\), PAGE_CREATE_TIMEOUT_MS/);
+  assert.match(source, /withTimeout\(page\.close\(\), PAGE_CLOSE_TIMEOUT_MS/);
+  assert.match(source, /withTimeout\(context\.close\(\), 10000/);
+  assert.match(source, /withTimeout\(browser\.close\(\), 10000/);
+  assert.match(source, /fs\.renameSync\(tmp, p\)/);
 });

@@ -50,8 +50,47 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Backfill missing job descriptions from detail pages
-        run: npm run agent:descriptions -- --max 1600 --concurrency 8
+        timeout-minutes: 45
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Keep the 1,600-page daily capacity, but divide it into recoverable
+          # commits. If a later browser batch wedges or times out, all completed
+          # batches remain in the checkout for the checkpoint step below.
+          for batch in 1 2 3 4; do
+            echo "Running description batch ${batch}/4"
+            npm run agent:descriptions -- --max 400 --concurrency 8
+            git add public/jobs.json docs/jobs.json generated/job-descriptions-report.json
+            if ! git diff --cached --quiet; then
+              git commit -m "Description backfill checkpoint ${batch}/4"
+            fi
+          done
         continue-on-error: true
+
+      - name: Push description checkpoint
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Preserve a partially completed batch too: the script atomically
+          # saves every 25 attempts, including when the preceding step times out.
+          git add public/jobs.json docs/jobs.json generated/job-descriptions-report.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Description backfill partial checkpoint"
+          fi
+
+          if [ "$(git rev-list --count origin/main..HEAD)" = "0" ]; then
+            echo "No description changes to push."
+            exit 0
+          fi
+
+          for attempt in 1 2 3 4 5; do
+            if git push; then break; fi
+            echo "Push rejected (attempt ${attempt}) — rebasing onto latest origin/main…"
+            git pull --rebase -X theirs --autostash origin main || git rebase --abort
+            if [ "${attempt}" = "5" ]; then echo "::error::Checkpoint push still failing after 5 attempts." >&2; exit 1; fi
+          done
 
       # Enrichment must follow description backfill: title-only inference often
       # cannot determine appointment track, while the posting body can state it.

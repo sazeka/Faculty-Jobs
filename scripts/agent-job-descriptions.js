@@ -64,6 +64,8 @@ const RECLOSE = Boolean(args["reclose"]);
 const MAX = Number(args["max"] || process.env.DESC_MAX || 300);
 const CONCURRENCY = Math.min(Number(args["concurrency"] || process.env.DESC_CONCURRENCY || 6), 12);
 const TIMEOUT_MS = Math.max(8000, Number(args["timeout-ms"] || 30000));
+const PAGE_CREATE_TIMEOUT_MS = 10000;
+const PAGE_CLOSE_TIMEOUT_MS = 5000;
 const MIN_LEN = Math.max(80, Number(args["min-len"] || 200));
 const MAX_LEN = 6000;
 
@@ -90,7 +92,12 @@ function readJson(p) {
 }
 function writeJson(p, v) {
   fs.mkdirSync(path.dirname(p), { recursive: true });
-  fs.writeFileSync(p, JSON.stringify(v, null, 2) + "\n", "utf8");
+  // A workflow timeout can terminate the process between any two instructions.
+  // Write checkpoints atomically so the following recovery step sees either the
+  // previous complete JSON file or the new one, never a truncated document.
+  const tmp = `${p}.tmp-${process.pid}`;
+  fs.writeFileSync(tmp, JSON.stringify(v, null, 2) + "\n", "utf8");
+  fs.renameSync(tmp, p);
 }
 
 // Normalize a JSON-LD datePosted (ISO date or datetime) to YYYY-MM-DD; reject
@@ -174,7 +181,7 @@ async function main() {
     while (nextIdx < toProcess.length) {
       const job = toProcess[nextIdx++];
       const target = jobIndex.get(job.canonicalJobId) || job;
-      const page = await context.newPage();
+      let page;
       let desc = "";
       let datePosted = "";
       let validThrough = "";
@@ -182,6 +189,12 @@ async function main() {
       let datePostedFromOpenDate = false;
       let fetchErrored = false;
       try {
+        // newPage() and close() have no Playwright timeout of their own. The
+        // 2026-08-20 Actions run completed 1,575/1,600 pages in 11 minutes, then
+        // all workers waited here or in close() until GitHub killed the job at
+        // six hours. Bound both lifecycle calls so one wedged CDP round-trip
+        // becomes an ordinary failed attempt and the worker keeps moving.
+        page = await withTimeout(context.newPage(), PAGE_CREATE_TIMEOUT_MS, "context.newPage");
         await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
         // Cornerstone (csod) is a single-page app that renders the "Posted on …"
         // date client-side well after DOMContentLoaded; the default 1.5s wait
@@ -341,7 +354,9 @@ async function main() {
         fetchErrored = true;
         desc = "";
       } finally {
-        await page.close().catch(() => {});
+        if (page) {
+          await withTimeout(page.close(), PAGE_CLOSE_TIMEOUT_MS, "page.close").catch(() => {});
+        }
       }
 
       // Strip a leading "Skip to Main Content" link that some ATS pages render
@@ -401,7 +416,8 @@ async function main() {
   }
 
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
-  await browser.close();
+  await withTimeout(context.close(), 10000, "context.close").catch(() => {});
+  await withTimeout(browser.close(), 10000, "browser.close").catch(() => {});
 
   writeJson(PUBLIC_JOBS, payload);
   if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
