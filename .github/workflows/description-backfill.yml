@@ -1,0 +1,96 @@
+name: Focused description backfill
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: ATS platform to process
+        required: true
+        type: choice
+        default: paycom
+        options:
+          - paycom
+          - workday
+          - schooljobs
+          - peopleadmin
+          - csod
+          - pageup
+          - ap-recruit
+          - interfolio
+          - generic
+      max:
+        description: Maximum postings to attempt
+        required: true
+        type: choice
+        default: "200"
+        options:
+          - "100"
+          - "200"
+          - "400"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: focused-description-${{ inputs.platform }}
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    env:
+      DESC_PLATFORM: ${{ inputs.platform }}
+      DESC_MAX: ${{ inputs.max }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for browser-backed platforms
+        if: inputs.platform != 'paycom' && inputs.platform != 'workday'
+        run: npx playwright install --with-deps chromium
+
+      - name: Backfill selected platform
+        timeout-minutes: 30
+        run: npm run agent:descriptions -- --concurrency 8
+
+      - name: Rebuild site data
+        run: |
+          node scripts/sync-web-data-files.js
+          cp -R web-vue/public/data/. docs/data/
+          cp -R web-vue/public/data/. public/data/
+
+      - name: Commit and push checkpoint
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add \
+            public/jobs.json \
+            docs/jobs.json \
+            web-vue/public/jobs.json \
+            web-vue/public/data/ \
+            docs/data/ \
+            public/data/ \
+            generated/job-descriptions-report.json
+
+          if git diff --cached --quiet; then
+            echo "No description changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Focused description backfill: ${DESC_PLATFORM}"
+          for attempt in 1 2 3 4 5; do
+            if git push; then break; fi
+            echo "Push rejected (attempt ${attempt}); rebasing onto origin/main"
+            git pull --rebase -X theirs --autostash origin main || git rebase --abort
+            if [ "${attempt}" = "5" ]; then exit 1; fi
+          done

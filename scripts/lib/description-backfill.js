@@ -1,4 +1,5 @@
 import { classifyTenureTrack } from "./weekly-tenure-stats.js";
+import { inferPlatformFromUrl } from "./url-normalization.js";
 
 export const DESCRIPTION_RETRY_DAYS = 14;
 export const DESCRIPTION_MAX_ATTEMPTS = 2;
@@ -58,10 +59,15 @@ export function needsDescriptionFetch(
   return nowMs - fetchedMs >= retryDays * 24 * 60 * 60 * 1000;
 }
 
-export function prioritizeDescriptionCandidates(jobs = [], nowMs = Date.now()) {
+export function matchesDescriptionPlatform(job, platform = "") {
+  const wanted = String(platform || "").trim().toLowerCase();
+  return !wanted || inferPlatformFromUrl(job?.url) === wanted;
+}
+
+export function prioritizeDescriptionCandidates(jobs = [], nowMs = Date.now(), { platform = "" } = {}) {
   return jobs
     .map((job, index) => ({ job, index }))
-    .filter(({ job }) => needsDescriptionFetch(job, nowMs))
+    .filter(({ job }) => needsDescriptionFetch(job, nowMs) && matchesDescriptionPlatform(job, platform))
     .sort((a, b) => {
       const unknownA = classifyTenureTrack(a.job) === null ? 0 : 1;
       const unknownB = classifyTenureTrack(b.job) === null ? 0 : 1;

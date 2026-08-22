@@ -14,7 +14,7 @@
  * Saves after each batch so partial runs are never lost.
  *
  * Usage:
- *   node scripts/agent-job-descriptions.js [--dry-run] [--max <n>] [--concurrency <n>] [--timeout-ms <n>] [--min-len <n>]
+ *   node scripts/agent-job-descriptions.js [--dry-run] [--platform <name>] [--max <n>] [--concurrency <n>] [--timeout-ms <n>] [--min-len <n>]
  */
 import fs from "fs";
 import path from "path";
@@ -25,6 +25,7 @@ import {
   DESCRIPTION_FETCH_VERSION,
   descriptionAttemptCount,
   isUnsupportedDescriptionUrl,
+  matchesDescriptionPlatform,
   needsDescriptionFetch,
   prioritizeDescriptionCandidates,
 } from "./lib/description-backfill.js";
@@ -55,6 +56,10 @@ function parseArgs(argv) {
 
 const args = parseArgs(process.argv.slice(2));
 const DRY_RUN = Boolean(args["dry-run"]);
+const PLATFORM = String(args.platform || process.env.DESC_PLATFORM || "").trim().toLowerCase();
+if (PLATFORM && !/^[a-z0-9-]+$/.test(PLATFORM)) {
+  throw new Error(`Invalid description platform: ${PLATFORM}`);
+}
 // --redate: re-visit pages already fetched (descriptionFetchedAt set) that still
 // have no datePosted, to pick up labeled "Open Date" fields added since the last
 // fetch. Targets only the already-fetched-but-undated set, not the whole corpus.
@@ -123,13 +128,13 @@ async function main() {
 
   const needs = RECLOSE
     ? payload.jobs.filter(
-        (j) => !j.closeDate && !j.openUntilFilled && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "")
+        (j) => !j.closeDate && !j.openUntilFilled && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "") && matchesDescriptionPlatform(j, PLATFORM)
       )
     : REDATE
     ? payload.jobs.filter(
-        (j) => !j.datePosted && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "")
+        (j) => !j.datePosted && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "") && matchesDescriptionPlatform(j, PLATFORM)
       )
-    : prioritizeDescriptionCandidates(payload.jobs);
+    : prioritizeDescriptionCandidates(payload.jobs, Date.now(), { platform: PLATFORM });
   const toProcess = needs.slice(0, MAX);
 
   const haveDesc = payload.jobs.filter((j) => j.description && String(j.description).trim()).length;
@@ -139,6 +144,7 @@ async function main() {
   console.log(`  With description  : ${haveDesc.toLocaleString()}`);
   console.log(`  Missing (unfetched): ${needs.length.toLocaleString()}`);
   console.log(`  To process now    : ${toProcess.length.toLocaleString()} (max ${MAX})`);
+  if (PLATFORM) console.log(`  Platform filter   : ${PLATFORM}`);
   console.log(`  Concurrency       : ${CONCURRENCY}`);
 
   if (toProcess.length === 0) {
@@ -160,12 +166,24 @@ async function main() {
     return;
   }
 
-  const browser = await chromium.launch({ headless: true });
-  // Keep Chromium's normal browser identity. Several Workday tenants (including
-  // Ohio State) leave the SPA permanently on "Loading" when the old custom
-  // FacultyJobsDescBot user agent is present, while the same detail page renders
-  // immediately with Playwright's standard Chromium user agent.
-  const context = await browser.newContext();
+  // Direct Workday and Paycom API routes do not need Chromium. Start it lazily
+  // only when a selected posting needs DOM rendering; this keeps focused API
+  // backfills fast and avoids downloading a browser in their workflows.
+  let browser;
+  let context;
+  let contextPromise;
+  async function ensureBrowserContext() {
+    if (!contextPromise) {
+      contextPromise = (async () => {
+        browser = await chromium.launch({ headless: true });
+        // Keep Chromium's normal identity. A custom bot user agent prevents
+        // several Workday-style SPAs from rendering.
+        context = await browser.newContext();
+        return context;
+      })();
+    }
+    return contextPromise;
+  }
   const jobIndex = new Map(payload.jobs.map((j) => [j.canonicalJobId, j]));
 
   let filled = 0;
@@ -221,6 +239,7 @@ async function main() {
           // all workers waited here or in close() until GitHub killed the job at
           // six hours. Bound both lifecycle calls so one wedged CDP round-trip
           // becomes an ordinary failed attempt and the worker keeps moving.
+          await ensureBrowserContext();
           page = await withTimeout(context.newPage(), PAGE_CREATE_TIMEOUT_MS, "context.newPage");
           await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS });
         // Cornerstone (csod) is a single-page app that renders the "Posted on …"
@@ -444,8 +463,8 @@ async function main() {
   }
 
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
-  await withTimeout(context.close(), 10000, "context.close").catch(() => {});
-  await withTimeout(browser.close(), 10000, "browser.close").catch(() => {});
+  if (context) await withTimeout(context.close(), 10000, "context.close").catch(() => {});
+  if (browser) await withTimeout(browser.close(), 10000, "browser.close").catch(() => {});
 
   writeJson(PUBLIC_JOBS, payload);
   if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
@@ -479,7 +498,7 @@ async function main() {
     eligibleRemaining,
     unsupportedRemaining,
     fetchDiagnostics,
-    config: { max: MAX, concurrency: CONCURRENCY, timeoutMs: TIMEOUT_MS, minLen: MIN_LEN },
+    config: { max: MAX, concurrency: CONCURRENCY, timeoutMs: TIMEOUT_MS, minLen: MIN_LEN, platform: PLATFORM || null },
   });
 
   console.log(`\n  Attempted this run : ${attempted}`);

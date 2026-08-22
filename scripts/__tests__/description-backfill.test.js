@@ -5,6 +5,7 @@ import {
   DESCRIPTION_FETCH_VERSION,
   descriptionAttemptCount,
   isUnsupportedDescriptionUrl,
+  matchesDescriptionPlatform,
   needsDescriptionFetch,
   prioritizeDescriptionCandidates,
 } from "../lib/description-backfill.js";
@@ -29,6 +30,20 @@ test("fetches new descriptions and retries one stale empty result", () => {
     descriptionFetchAttempts: 2,
   }, NOW), false);
   assert.equal(descriptionAttemptCount({ descriptionFetchedAt: "2026-08-01" }), 1);
+});
+
+test("filters description candidates to one requested platform", () => {
+  const jobs = [
+    { canonicalJobId: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/ABC/jobs/1" },
+    { canonicalJobId: "workday", url: "https://school.wd1.myworkdayjobs.com/jobs/job/example_R1" },
+    { canonicalJobId: "generic", url: "https://example.edu/jobs/1" },
+  ];
+  assert.equal(matchesDescriptionPlatform(jobs[0], "paycom"), true);
+  assert.equal(matchesDescriptionPlatform(jobs[1], "paycom"), false);
+  assert.deepEqual(
+    prioritizeDescriptionCandidates(jobs, NOW, { platform: "paycom" }).map((job) => job.canonicalJobId),
+    ["paycom"],
+  );
 });
 
 test("skips virtual OneUSG search fragments that cannot resolve to public detail pages", () => {
