@@ -38,6 +38,31 @@ test("career path probing rejects student-facing career and library resources", 
   assert.equal(isRejectedCareerPage("https://example.edu/careers", "<title>Career Services</title>"), true);
 });
 
+test("career path probing rejects student career pages that previously scored as hiring sources", () => {
+  const falsePositives = [
+    "https://lasierra.edu/services/student-academic-support/career-services",
+    "https://www.lamar.edu/career-and-testing-services",
+    "https://www.midland.edu/services-resources/career-transfer-center/index.php",
+    "https://www2.naz.edu/career-design-office",
+    "https://www.park.edu/current-students/career",
+    "https://www.regis.edu/academics/student-success/career-professional-development",
+    "https://www.wccnet.edu/succeed/center-for-career-success",
+    "https://www.widener.edu/academics/academic-resources-success/academic-career-support/career-design-development",
+  ];
+  for (const url of falsePositives) assert.equal(isRejectedCareerPage(url), true, url);
+});
+
+test("career path probing rejects individual job details and faculty directories as source pages", () => {
+  const nonBoards = [
+    "https://www.schooljobs.com/careers/northweststate/jobs/5444125/industrial-technology-faculty",
+    "https://osu.wd1.myworkdayjobs.com/en-US/OSUCareers/job/Business-Finance-Lecturer_R154017",
+    "https://recruiting.paylocity.com/recruiting/jobs/Details/3272529/example/faculty-position",
+    "https://careers.insidehighered.com/job/3523006/academic-advisor/",
+    "https://lifewest.edu/faculty",
+  ];
+  for (const url of nonBoards) assert.equal(isRejectedCareerPage(url), true, url);
+});
+
 test("career discovery prioritizes unattempted and least-recently attempted institutions", () => {
   const rows = [
     { name: "Recent", discovery_attempts: 1, last_discovery_attempt_at: "2026-08-20" },

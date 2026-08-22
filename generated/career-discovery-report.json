@@ -1,14 +1,5439 @@
 {
-  "generatedAt": "2026-08-11T23:13:52.562Z",
+  "generatedAt": "2026-08-22T13:52:14.943Z",
   "options": {
     "apply": true,
-    "limit": 200,
-    "delayMs": 700,
+    "limit": 100,
+    "delayMs": 300,
     "minConfidence": 0.65,
-    "scopeEligibleOnly": true
+    "scopeEligibleOnly": true,
+    "weakOnly": true,
+    "timeoutMs": 8000
   },
-  "scanned": 0,
-  "updated": 0,
-  "note": "No eligible missing institutions require discovery (career_url/platform_type already present).",
-  "results": []
+  "scanned": 100,
+  "updated": 32,
+  "unresolved": 68,
+  "discovered": 32,
+  "inferredPlatform": 0,
+  "results": [
+    {
+      "name": "Georgian Court University",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://georgian.edu/academics/gainful-employment/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://georgian.edu/human-resources/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=0674ba22-8f97-458a-80c0-91217826b19b&",
+          "confidence": 0,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "recognized_ats"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 4
+        },
+        {
+          "query": "Georgian Court University faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Golden Gate University",
+      "state": "CA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Golden Gate University faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Goshen College",
+      "state": "IN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Goshen College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Grace College and Theological Seminary",
+      "state": "IN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://www.grace.edu/about/grace-college/employment/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.grace.edu/academics/center-for-career-connections/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Grace College and Theological Seminary faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Grace School of Theology",
+      "state": "TX",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Grace School of Theology faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Great Bay Community College",
+      "state": "NH",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.45,
+      "topCandidates": [
+        {
+          "url": "https://www.ccsnh.edu/human-resources/employment-opportunities/",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Great Bay Community College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Great Falls College Montana State University",
+      "state": "MT",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.25,
+      "topCandidates": [
+        {
+          "url": "https://www.gfcmsu.edu/campus-departments/personnel/career-opportunities/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Great Falls College Montana State University faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Gupton Jones College of Funeral Service",
+      "state": "GA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Gupton Jones College of Funeral Service faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Haskell Indian Nations University",
+      "state": "KS",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Haskell Indian Nations University faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Helene Fuld College of Nursing",
+      "state": "NY",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Helene Fuld College of Nursing faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Helms College",
+      "state": "GA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [
+        {
+          "url": "https://www.paycomonline.net/v4/ats/web.php/portal/CDA1B79B0620249447CBC9E755D51645/career-page",
+          "confidence": 0,
+          "platform_type": "paycom",
+          "query": "official homepage links",
+          "validation": "recognized_ats"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Helms College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Heritage Christian University",
+      "state": "AL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.25,
+      "topCandidates": [
+        {
+          "url": "https://www.hcu.edu/about/job-openings/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Heritage Christian University faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Heritage University",
+      "state": "WA",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://heritage.edu/faculty-staff/human-resources/",
+      "platform_type": "generic",
+      "confidence": 0.65,
+      "method": "duckduckgo_html",
+      "query": "official homepage links",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://heritage.edu/faculty-staff/human-resources/",
+          "confidence": 0.65,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Heritage University faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Holy Apostles College and Seminary",
+      "state": "CT",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Holy Apostles College and Seminary faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Huntingdon College",
+      "state": "AL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Huntingdon College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Howard Payne University",
+      "state": "TX",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.25,
+      "topCandidates": [
+        {
+          "url": "https://www.hputx.edu/campus-offices/human-resources/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Howard Payne University faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Indiana Institute of Technology",
+      "state": "IN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.4,
+      "topCandidates": [
+        {
+          "url": "https://hr.indianatech.edu/current-warriors/resources/ethics-hotline/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://hr.indianatech.edu/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://careercenter.indianatech.edu/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://hr.indianatech.edu/current-warriors/tech-salutes/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.paycomonline.net/v4/ats/web.php/portal/9B7DD7DDF4B46DE388E0D590C86BBE1D/career-page",
+          "confidence": 0,
+          "platform_type": "paycom",
+          "query": "official homepage links",
+          "validation": "recognized_ats"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 5
+        },
+        {
+          "query": "Indiana Institute of Technology faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Huston-Tillotson University",
+      "state": "TX",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Huston-Tillotson University faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Institute of Taoist Education and Acupuncture",
+      "state": "CO",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Institute of Taoist Education and Acupuncture faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Iowa Western Community College",
+      "state": "IA",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/iwcc",
+      "platform_type": "schooljobs",
+      "confidence": 0.95,
+      "method": "duckduckgo_html",
+      "query": "official homepage links",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/iwcc",
+          "confidence": 0.95,
+          "platform_type": "schooljobs",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.iwcc.edu/about/career-technical-expansion-updates/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Iowa Western Community College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Institute of Buddhist Studies",
+      "state": "CA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.45,
+      "topCandidates": [
+        {
+          "url": "https://www.shin-ibs.edu/about/employment/",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Institute of Buddhist Studies faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Jackson Theological Seminary",
+      "state": "AR",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Jackson Theological Seminary faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "J. F. Drake State Community and Technical College",
+      "state": "AL",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/accs/drakestate",
+      "platform_type": "schooljobs",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "J. F. Drake State Community and Technical College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/accs/drakestate",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "J. F. Drake State Community and Technical College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_timeout",
+          "count": 0
+        },
+        {
+          "query": "J. F. Drake State Community and Technical College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "J. F. Drake State Community and Technical College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "J. F. Drake State Community and Technical College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "J. F. Drake State Community and Technical College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Institute of Lutheran Theology",
+      "state": "SD",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://www.myjobmag.co.ke/jobs-by-title/lecturer-in-theology-and-biblical-studies",
+      "platform_type": "generic",
+      "confidence": 0.75,
+      "method": "duckduckgo_html",
+      "query": "Institute of Lutheran Theology faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.myjobmag.co.ke/jobs-by-title/lecturer-in-theology-and-biblical-studies",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "Institute of Lutheran Theology faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://jobs.chronicle.com/jobs/religion-and-theology/",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Institute of Lutheran Theology faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.grace.edu/about/grace-college/employment/current-openings/",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "Institute of Lutheran Theology human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Institute of Lutheran Theology faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Institute of Lutheran Theology academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 7
+        },
+        {
+          "query": "Institute of Lutheran Theology faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 7
+        },
+        {
+          "query": "Institute of Lutheran Theology human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Iowa Lakes Community College",
+      "state": "IA",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.lakescorridor.com/talent/jobs/p/item/25114/academic-success-coordinator",
+      "platform_type": "generic",
+      "confidence": 0.75,
+      "method": "duckduckgo_html",
+      "query": "Iowa Lakes Community College academic jobs",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.lakescorridor.com/talent/jobs/p/item/25114/academic-success-coordinator",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "Iowa Lakes Community College academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://jobboard.iowalakes.edu/jobs/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Iowa Lakes Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://iowalakes.edu/about/employment-opportunities/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Iowa Lakes Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/iowa-lakes-community-college-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Iowa Lakes Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Iowa Lakes Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Iowa Lakes Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Iowa Lakes Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Iowa Lakes Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Jefferson State Community College",
+      "state": "AL",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/accs/jefferson",
+      "platform_type": "schooljobs",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Jefferson State Community College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/accs/jefferson",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Jefferson State Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/accs/jefferson/promotionaljobs",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Jefferson State Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/accs/Jefferson/jobInterestCards/categories",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Jefferson State Community College academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/accs/jefferson/jobs/3496179/l19-hourly-workforce-education-instructor",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Jefferson State Community College faculty employment",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://sunyjefferson.edu/careers-jefferson/index.php",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Jefferson State Community College human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Jefferson State Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Jefferson State Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Jefferson State Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Jefferson State Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Jung Tao School of Classical Chinese Medicine",
+      "state": "NC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.campusreel.org/student-jobs/jung-tao-school-of-classical-chinese-medicine",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Jung Tao School of Classical Chinese Medicine academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.collegeraptor.com/colleges/careers/Jung-Tao-School-of-Classical-Chinese-Medicine-NC--461139",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Jung Tao School of Classical Chinese Medicine academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.salary.com/research/company/jung-tao-school-of-classical-chinese-medicine-salary",
+          "confidence": 0.3,
+          "platform_type": "generic",
+          "query": "Jung Tao School of Classical Chinese Medicine faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Jung Tao School of Classical Chinese Medicine faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Jung Tao School of Classical Chinese Medicine academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Jung Tao School of Classical Chinese Medicine faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Jung Tao School of Classical Chinese Medicine human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 7
+        }
+      ]
+    },
+    {
+      "name": "Kentucky State University",
+      "state": "KY",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://careers.insidehighered.com/job/3538192/fws-student-assistant-office-of-academic-affairs/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Kentucky State University academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/kentucky-state-university/3266/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Kentucky State University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://careers.insidehighered.com/employer/c98d41c0-b3f1-405d-8f4a-b62e31725569/kentucky-state-university",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Kentucky State University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Kentucky State University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Kentucky State University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Kentucky State University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Kentucky State University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Kansas Christian College",
+      "state": "KS",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://kansaschristian.edu/employment-application/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://kansaschristian.edu/employment-opportunities/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Kansas Christian College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Kansas Christian College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Kansas Christian College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Kansas Christian College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Kentucky Mountain Bible College",
+      "state": "KY",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.3,
+      "topCandidates": [
+        {
+          "url": "https://www.openlecture.com/universities/kentucky-mountain-bible-college",
+          "confidence": 0.3,
+          "platform_type": "generic",
+          "query": "Kentucky Mountain Bible College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.univstats.com/staffs/kentucky-mountain-bible-college/",
+          "confidence": 0.3,
+          "platform_type": "generic",
+          "query": "Kentucky Mountain Bible College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Kentucky Mountain Bible College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Kentucky Mountain Bible College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 7
+        },
+        {
+          "query": "Kentucky Mountain Bible College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Kentucky Mountain Bible College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        }
+      ]
+    },
+    {
+      "name": "Keystone College",
+      "state": "PA",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://www.keystone.edu/jobs_at_keystone/faculty-positions/",
+      "platform_type": "generic",
+      "confidence": 0.65,
+      "method": "duckduckgo_html",
+      "query": "Keystone College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.keystone.edu/jobs_at_keystone/faculty-positions/",
+          "confidence": 0.65,
+          "platform_type": "generic",
+          "query": "Keystone College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/keystone-college-careers",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Keystone College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Keystone College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Keystone College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Keystone College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Keystone College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Kentucky Christian University",
+      "state": "KY",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/kentucky-christian-college/4623/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Kentucky Christian University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Kentucky Christian University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Kentucky Christian University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Kentucky Christian University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Kentucky Christian University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Laguna College of Art and Design",
+      "state": "CA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Laguna College of Art and Design faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Laguna College of Art and Design academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Laguna College of Art and Design faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Laguna College of Art and Design human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Lake Land College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/lakelandcollege",
+      "platform_type": "schooljobs",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Lake Land College academic jobs",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/lakelandcollege",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Lake Land College academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/lakelandcollege/jobs/5305615-0/adjunct-math-faculty-position",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Lake Land College faculty employment",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/lakelandcollege/Fulltimefaculty",
+          "confidence": 0.95,
+          "platform_type": "schooljobs",
+          "query": "Lake Land College faculty jobs careers",
+          "validation": "recognized_ats"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 4
+        },
+        {
+          "query": "Lake Land College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lake Land College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lake Land College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lake Land College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Lakewood University",
+      "state": "OH",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://www.ccu.edu/jobs/staff-and-full-time-faculty-jobs/",
+      "platform_type": "generic",
+      "confidence": 0.7,
+      "method": "duckduckgo_html",
+      "query": "Lakewood University academic jobs",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.ccu.edu/jobs/staff-and-full-time-faculty-jobs/",
+          "confidence": 0.7,
+          "platform_type": "generic",
+          "query": "Lakewood University academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.ccu.edu/jobs/",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "Lakewood University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Lakewood University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lakewood University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Lakewood University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lakewood University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Lake Superior State University",
+      "state": "MI",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://careers.pageuppeople.com/mob/1130/cw/en-us/listing/",
+      "platform_type": "pageup",
+      "confidence": 0.95,
+      "method": "duckduckgo_html",
+      "query": "Lake Superior State University faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://careers.pageuppeople.com/mob/1130/cw/en-us/listing/",
+          "confidence": 0.95,
+          "platform_type": "pageup",
+          "query": "Lake Superior State University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://careers.pageuppeople.com/1130/cw/en-us/job/",
+          "confidence": 0.95,
+          "platform_type": "pageup",
+          "query": "Lake Superior State University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://careers.pageuppeople.com/1130/cw/en-us/listing/?page=2&page-items=5",
+          "confidence": 0.8,
+          "platform_type": "pageup",
+          "query": "Lake Superior State University faculty employment",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://jobs.lssu.edu/jobs/adjunct-instructor-of-biology-sault-ste-marie-michigan-united-states",
+          "confidence": 0.7,
+          "platform_type": "generic",
+          "query": "Lake Superior State University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Lake Superior State University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lake Superior State University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Lake Superior State University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lake Superior State University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Larkin University",
+      "state": "FL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://www.larkin.edu/human-resources/career-and-employment-opportunities/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Larkin University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Larkin University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 7
+        },
+        {
+          "query": "Larkin University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Larkin University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Langston University",
+      "state": "OK",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://jobs.okstate.edu/langston-university-home",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Langston University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://jobs.okstate.edu/jobs/search/search-page-langston",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Langston University academic jobs",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Langston University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Langston University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Langston University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Langston University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Le Moyne College",
+      "state": "NY",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://echo.lemoyne.edu/Faculty-Staff/Campus-Resources/Human-Resources/Employment-Resources",
+      "platform_type": "generic",
+      "confidence": 0.85,
+      "method": "duckduckgo_html",
+      "query": "Le Moyne College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://echo.lemoyne.edu/Faculty-Staff/Campus-Resources/Human-Resources/Employment-Resources",
+          "confidence": 0.85,
+          "platform_type": "generic",
+          "query": "Le Moyne College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://echo.lemoyne.edu/Faculty-Staff/Campus-Resources/Human-Resources/Employment-Resources/New-Employee-Information",
+          "confidence": 0.85,
+          "platform_type": "generic",
+          "query": "Le Moyne College faculty employment",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.lemoyne.edu/Faculty-Staff/",
+          "confidence": 0.65,
+          "platform_type": "generic",
+          "query": "Le Moyne College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://echo.lemoyne.edu/Faculty-Staff/Campus-Resources/Human-Resources",
+          "confidence": 0.65,
+          "platform_type": "generic",
+          "query": "Le Moyne College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://agilitas.wd503.myworkdayjobs.com/LMC",
+          "confidence": 0.6,
+          "platform_type": "workday",
+          "query": "Le Moyne College faculty jobs careers",
+          "validation": "recognized_ats"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Le Moyne College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Le Moyne College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Le Moyne College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Le Moyne College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Lebanon Valley College",
+      "state": "PA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/lebanon-valley-college/4658/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Lebanon Valley College academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/lebanon-valley-college-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Lebanon Valley College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Lebanon Valley College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lebanon Valley College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lebanon Valley College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lebanon Valley College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Le Moyne-Owen College",
+      "state": "TN",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://www.lemoyne.edu/Faculty-Staff/",
+      "platform_type": "generic",
+      "confidence": 0.65,
+      "method": "duckduckgo_html",
+      "query": "Le Moyne-Owen College faculty employment",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.lemoyne.edu/Faculty-Staff/",
+          "confidence": 0.65,
+          "platform_type": "generic",
+          "query": "Le Moyne-Owen College faculty employment",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://echo.lemoyne.edu/Faculty-Staff/Campus-Resources/Human-Resources",
+          "confidence": 0.65,
+          "platform_type": "generic",
+          "query": "Le Moyne-Owen College faculty employment",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Le Moyne-Owen College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Le Moyne-Owen College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Le Moyne-Owen College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Le Moyne-Owen College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Laurel Ridge Community College",
+      "state": "VA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Laurel Ridge Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Laurel Ridge Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Laurel Ridge Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Laurel Ridge Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Lee University",
+      "state": "TN",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://www.wlu.edu/employment-opportunities/faculty-positions",
+      "platform_type": "generic",
+      "confidence": 0.7,
+      "method": "duckduckgo_html",
+      "query": "Lee University faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.wlu.edu/employment-opportunities/faculty-positions",
+          "confidence": 0.7,
+          "platform_type": "generic",
+          "query": "Lee University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Lee University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Lee University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lee University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lee University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Lawrence Technological University",
+      "state": "MI",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/lawrence-technological-university/4656/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Lawrence Technological University human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/ltu-jobs",
+          "confidence": 0.35,
+          "platform_type": "generic",
+          "query": "Lawrence Technological University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/lawrence-technological-university/4656",
+          "confidence": 0.3,
+          "platform_type": "generic",
+          "query": "Lawrence Technological University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Lawrence Technological University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lawrence Technological University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Lawrence Technological University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lawrence Technological University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Lenoir Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/lenoirccedu",
+      "platform_type": "schooljobs",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Lenoir Community College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/lenoirccedu",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Lenoir Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/lenoirccedu",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/lenoirccedu?pagetype=jobOpportunitiesJobs&jobId=5188888&jobName=controller&tab=1",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Lenoir Community College human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/lenoir-community-college/14551/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Lenoir Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Lenoir Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lenoir Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lenoir Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lenoir Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Life Chiropractic College West",
+      "state": "CA",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://lifewest.edu/faculty",
+      "platform_type": "generic",
+      "confidence": 0.65,
+      "method": "duckduckgo_html",
+      "query": "Life Chiropractic College West faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://lifewest.edu/faculty",
+          "confidence": 0.65,
+          "platform_type": "generic",
+          "query": "Life Chiropractic College West faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://lifewest.edu/careers",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Life Chiropractic College West faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Life Chiropractic College West academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Life Chiropractic College West faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Life Chiropractic College West human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Life Pacific University",
+      "state": "CA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://www.pacificu.edu/directory/finance-administration/human-resources/jobs-pacific",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Life Pacific University academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://recruiting.paylocity.com/Recruiting/Jobs/All/f2a089c7-dd55-4fd3-8ffb-64f8c87eebe9/Life-Pacific-College",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Life Pacific University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Life Pacific University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Life Pacific University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Life Pacific University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Life Pacific University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Lincoln University",
+      "state": "CA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://www.lincoln.edu/about/employment.html",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Lincoln University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.lincolnu.edu/about-lincoln/human-resource-services/employment-opportunities.html",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Lincoln University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Lincoln University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lincoln University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Lincoln University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lincoln University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Longy School of Music of Bard College",
+      "state": "MA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://www.bard.edu/employment/employment/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Longy School of Music of Bard College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://longy.edu/about/jobs/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Longy School of Music of Bard College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Longy School of Music of Bard College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Longy School of Music of Bard College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Longy School of Music of Bard College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Longy School of Music of Bard College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Lutheran School of Theology at Chicago",
+      "state": "IL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://recruiting.paylocity.com/recruiting/jobs/Details/4345463/Lutheran-School-of-Theology-at-Chicago/Student-Success-Counselor",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Lutheran School of Theology at Chicago academic jobs",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Lutheran School of Theology at Chicago faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Lutheran School of Theology at Chicago academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lutheran School of Theology at Chicago faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Lutheran School of Theology at Chicago human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Maharishi International University",
+      "state": "IA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/maharishi-international-university/16574/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Maharishi International University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://services.miu.edu/human-resources/faculty/faculty-positions-available/",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Maharishi International University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Maharishi International University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Maharishi International University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Maharishi International University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Maharishi International University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Lourdes University",
+      "state": "OH",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/lourdes-university-careers",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Lourdes University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Lourdes University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Lourdes University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Lourdes University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Lourdes University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Manhattan School of Music",
+      "state": "NY",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://globalstudyhelpers.com/manhattan-school-of-music-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Manhattan School of Music faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/manhattan-school-of-music/4719/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Manhattan School of Music faculty employment",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/manhattan-school-of-music-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Manhattan School of Music faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Manhattan School of Music faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Manhattan School of Music academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Manhattan School of Music faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Manhattan School of Music human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Manchester University",
+      "state": "IN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.manchester.ac.uk/connect/jobs/",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Manchester University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Manchester University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Manchester University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Manchester University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Manchester University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Martin Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/martinccedu/",
+      "platform_type": "schooljobs",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Martin Community College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/martinccedu/",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Martin Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.governmentjobs.com/jobs/5378514-0/instructor-english-9-month-full-time",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Martin Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Martin Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Martin Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Martin Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Martin Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        }
+      ]
+    },
+    {
+      "name": "Maranatha Baptist University",
+      "state": "WI",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.45,
+      "topCandidates": [
+        {
+          "url": "https://my.mbu.edu/ICS/Personnel/Human_Resources/Employment.jnz?portlet=Open_Staff_Positions",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "Maranatha Baptist University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://my.mbu.edu/ICS/Personnel/Human_Resources/Employment.jnz",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "Maranatha Baptist University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Maranatha Baptist University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Maranatha Baptist University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Maranatha Baptist University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Maranatha Baptist University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Manna University",
+      "state": "NC",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://mvnu.edu/employment-opportunities/faculty-job-opportunities/",
+      "platform_type": "generic",
+      "confidence": 0.7,
+      "method": "duckduckgo_html",
+      "query": "Manna University faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://mvnu.edu/employment-opportunities/faculty-job-opportunities/",
+          "confidence": 0.7,
+          "platform_type": "generic",
+          "query": "Manna University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://mannapa.org/about/careers/",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Manna University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Manna University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Manna University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 7
+        },
+        {
+          "query": "Manna University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Manna University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        }
+      ]
+    },
+    {
+      "name": "Mary Baldwin University",
+      "state": "VA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/mary-baldwin-university/4734/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Mary Baldwin University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/mary-baldwin-university-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Mary Baldwin University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Mary Baldwin University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Mary Baldwin University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Mary Baldwin University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Mary Baldwin University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        }
+      ]
+    },
+    {
+      "name": "Mars Hill University",
+      "state": "NC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://marshill.edu/about/our-team/employment-opportunities.html",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Mars Hill University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/mars-hill-college-careers",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Mars Hill University academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.universityjob.com/employment/MHUHR",
+          "confidence": 0.35,
+          "platform_type": "generic",
+          "query": "Mars Hill University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Mars Hill University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Mars Hill University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Mars Hill University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Mars Hill University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Manhattan Christian College",
+      "state": "KS",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/manhattan-christian-college/4717/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Manhattan Christian College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Manhattan Christian College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Manhattan Christian College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Manhattan Christian College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Manhattan Christian College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Massachusetts School of Law",
+      "state": "MA",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://jobs.chronicle.com/jobs/faculty-positions/massachusetts/",
+      "platform_type": "generic",
+      "confidence": 0.75,
+      "method": "duckduckgo_html",
+      "query": "Massachusetts School of Law human resources faculty positions",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://jobs.chronicle.com/jobs/faculty-positions/massachusetts/",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "Massachusetts School of Law human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.massachusetts.edu/careers",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Massachusetts School of Law faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://careers.massachusetts.edu/en-us/listing/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Massachusetts School of Law human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Massachusetts School of Law faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Massachusetts School of Law academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Massachusetts School of Law faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Massachusetts School of Law human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Maryville College",
+      "state": "TN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/maryville-college/3347/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Maryville College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Maryville College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Maryville College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Maryville College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Maryville College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Martin Luther College",
+      "state": "MN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.45,
+      "topCandidates": [
+        {
+          "url": "https://mlc-wels.edu/nts/all-about-new-ulm/employment-opportunities/",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "Martin Luther College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Martin Luther College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Martin Luther College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Martin Luther College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Martin Luther College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Mayland Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/maylandedu",
+      "platform_type": "schooljobs",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Mayland Community College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/maylandedu",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Mayland Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/maylandedu/jobs/5429791/career-technology-faculty-instructor-adjunct-applicant-pool",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Mayland Community College human resources faculty positions",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/maylandedu/jobs/4766567/arts-science-faculty-instructor-adjunct-applicant-pool",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Mayland Community College academic jobs",
+          "validation": "recognized_ats"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Mayland Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Mayland Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Mayland Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Mayland Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "McPherson College",
+      "state": "KS",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://my.mcpherson.edu/ICS/Employment/Employment_Landing_Page.jnz?portlet=Employment_Position_Application",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "McPherson College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://my.mcpherson.edu/ICS/Employment/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://careers.insidehighered.com/employer/28ca788c-5f78-4619-b1cb-0966b5c2bba3/mcpherson-college",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "McPherson College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/mcpherson-college/4752/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "McPherson College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 4
+        },
+        {
+          "query": "McPherson College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "McPherson College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "McPherson College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "McPherson College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Memphis Theological Seminary",
+      "state": "TN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://memphisseminary.edu/student-resources/student-services/employment-2/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://memphisseminary.edu/work-at-mts/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "Memphis Theological Seminary faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Memphis Theological Seminary faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Memphis Theological Seminary academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Memphis Theological Seminary faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Memphis Theological Seminary human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Methodist University",
+      "state": "NC",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://centralmethodist.edu/about/offices/human-resources/jobs-fayette/index-faculty.html",
+      "platform_type": "generic",
+      "confidence": 0.85,
+      "method": "duckduckgo_html",
+      "query": "Methodist University faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://centralmethodist.edu/about/offices/human-resources/jobs-fayette/index-faculty.html",
+          "confidence": 0.85,
+          "platform_type": "generic",
+          "query": "Methodist University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.smu.edu/businessfinance/hr/workingatsmu/faculty-careers",
+          "confidence": 0.7,
+          "platform_type": "generic",
+          "query": "Methodist University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.methodist.edu/academics/one-stop/academic-support/student-consultants/",
+          "confidence": 0.65,
+          "platform_type": "generic",
+          "query": "Methodist University academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://centralmethodist.edu/about/offices/human-resources/jobs-fayette/index.html",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Methodist University human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.myjobmag.co.ke/jobs/vacancies-at-kenya-methodist-university-kemu-9",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Methodist University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Methodist University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Methodist University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Methodist University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Methodist University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Mid-America College of Funeral Service",
+      "state": "IN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.collegeraptor.com/colleges/careers/Mid-America-College-of-Funeral-Service-IN--151962",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Mid-America College of Funeral Service academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.macu.edu/about/jobs-at-macu/",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "Mid-America College of Funeral Service human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://mid-america.edu/job-openings/apprentice-funeral-director-embalmer-2/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "Mid-America College of Funeral Service faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://mid-america.edu/student-life/current-job-openings/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "Mid-America College of Funeral Service faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Mid-America College of Funeral Service faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Mid-America College of Funeral Service academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 7
+        },
+        {
+          "query": "Mid-America College of Funeral Service faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Mid-America College of Funeral Service human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        }
+      ]
+    },
+    {
+      "name": "Milligan University",
+      "state": "TN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://milligan.edu/employment/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/milligan-college/4783/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Milligan University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Milligan University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Milligan University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Milligan University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Milligan University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Montreat College",
+      "state": "NC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Montreat College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Montreat College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Montreat College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Montreat College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Montgomery Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/montgomerycollege?page=1",
+      "platform_type": "schooljobs",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Montgomery Community College human resources faculty positions",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/montgomerycollege?page=1",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Montgomery Community College human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/mc3/jobs/5209159/english-faculty-part-time-applicant-pool",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Montgomery Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/montgomerycollege/jobs/5438434-0/assistant-to-the-vice-president-of-instruction-and-student-services-instructiona",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Montgomery Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.simplyhired.com/search?q=+Montgomery+Community+College+faculty+jobs",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "Montgomery Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 5
+        },
+        {
+          "query": "Montgomery Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Montgomery Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Montgomery Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Montgomery Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Moraine Valley Community College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://careers.insidehighered.com/job/3526161/departmental-assistant-academic-advising-center/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Moraine Valley Community College academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://jobs.morainevalley.edu/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Moraine Valley Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://careers.insidehighered.com/employer/ba6ec715-9bc4-4b26-b0c5-897b00ab3600/moraine-valley-community-college",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Moraine Valley Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Moraine Valley Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Moraine Valley Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Moraine Valley Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Moraine Valley Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Morris Brown College",
+      "state": "GA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://morrisbrown.isolvedhire.com/jobs/1499492.html",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Morris Brown College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/morris-brown-college-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Morris Brown College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Morris Brown College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Morris Brown College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Morris Brown College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Morris Brown College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Nashville State Community College",
+      "state": "TN",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/nashville-state-community-college/17612/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Nashville State Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.nscc.edu/faculty-staff/human-resources/non-discrimination-notice.php",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Nashville State Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Nashville State Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Nashville State Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Nashville State Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Nashua Community College",
+      "state": "NH",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/nashua-community-college-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Nashua Community College academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/nashua-community-college/14425/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Nashua Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Nashua Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Nashua Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Nashua Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Nashua Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        }
+      ]
+    },
+    {
+      "name": "Navajo Technical University",
+      "state": "NM",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/navajo-technical-university/14145/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Navajo Technical University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Navajo Technical University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Navajo Technical University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Navajo Technical University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Navajo Technical University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "NationsUniversity",
+      "state": "LA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.45,
+      "topCandidates": [
+        {
+          "url": "https://unu.edu/topics/jobs-listing",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "NationsUniversity faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://unu.edu/careers",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "NationsUniversity faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "NationsUniversity faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "NationsUniversity academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "NationsUniversity faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "NationsUniversity human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Neosho County Community College",
+      "state": "KS",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.4,
+      "topCandidates": [
+        {
+          "url": "https://www.neosho.edu/HVAC",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.neosho.edu/welding-technology",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 7
+        },
+        {
+          "query": "Neosho County Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Neosho County Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Neosho County Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Neosho County Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "New Brunswick Theological Seminary",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.simplyhired.com/browse-jobs/companies/New-Brunswick-Theological-Seminary",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "New Brunswick Theological Seminary academic jobs",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "New Brunswick Theological Seminary faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "New Brunswick Theological Seminary academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "New Brunswick Theological Seminary faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "New Brunswick Theological Seminary human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "New Hope Christian College-Eugene",
+      "state": "OR",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/new-hope-christian-college-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "New Hope Christian College-Eugene faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "New Hope Christian College-Eugene faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "New Hope Christian College-Eugene academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "New Hope Christian College-Eugene faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "New Hope Christian College-Eugene human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "New England Law-Boston",
+      "state": "MA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/new-england-school-of-law-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "New England Law-Boston academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.nesl.edu/careers",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.nesl.edu/careers",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://masslawyersweekly.com/adjunct-faculty-legal-research-writing-program/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "New England Law-Boston faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "New England Law-Boston faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "New England Law-Boston academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "New England Law-Boston faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "New England Law-Boston human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        }
+      ]
+    },
+    {
+      "name": "New York Academy of Art",
+      "state": "NY",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://academyofartuniversity.wd5.myworkdayjobs.com/academy_of_art",
+      "platform_type": "workday",
+      "confidence": 0.75,
+      "method": "duckduckgo_html",
+      "query": "New York Academy of Art human resources faculty positions",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://academyofartuniversity.wd5.myworkdayjobs.com/academy_of_art",
+          "confidence": 0.75,
+          "platform_type": "workday",
+          "query": "New York Academy of Art human resources faculty positions",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://www.simplyhired.com/browse-jobs/companies/New-York-Academy-of-Art",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "New York Academy of Art academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/new-york-academy-of-art-graduate-school-of-figurative-art/4882/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "New York Academy of Art faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "New York Academy of Art faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "New York Academy of Art academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "New York Academy of Art faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "New York Academy of Art human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "New England College of Optometry",
+      "state": "MA",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://recruiting.paylocity.com/recruiting/jobs/Details/3272529/THE-NEW-ENGLAND-COLLEGE/Full-time-Clinical-Optometrist-Faculty-Position",
+      "platform_type": "generic",
+      "confidence": 0.75,
+      "method": "duckduckgo_html",
+      "query": "New England College of Optometry faculty employment",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://recruiting.paylocity.com/recruiting/jobs/Details/3272529/THE-NEW-ENGLAND-COLLEGE/Full-time-Clinical-Optometrist-Faculty-Position",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "New England College of Optometry faculty employment",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/new-england-college-of-optometry/4869/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "New England College of Optometry academic jobs",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "New England College of Optometry faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "New England College of Optometry academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "New England College of Optometry faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "New England College of Optometry human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Niagara University",
+      "state": "NY",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/niagara-university-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Niagara University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Niagara University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Niagara University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Niagara University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Niagara University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "NewU University",
+      "state": "DC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "NewU University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "NewU University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "NewU University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "NewU University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "North Carolina Wesleyan University",
+      "state": "NC",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://www.wesleyan.edu/hr/careers/app-faculty.html",
+      "platform_type": "generic",
+      "confidence": 0.85,
+      "method": "duckduckgo_html",
+      "query": "North Carolina Wesleyan University human resources faculty positions",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.wesleyan.edu/hr/careers/app-faculty.html",
+          "confidence": 0.85,
+          "platform_type": "generic",
+          "query": "North Carolina Wesleyan University human resources faculty positions",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://ncwu.edu/community/careers/current-openings/adjunct-faculty-positions-adult-professional-studies-programs/",
+          "confidence": 0.7,
+          "platform_type": "generic",
+          "query": "North Carolina Wesleyan University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://ncwu.edu/community/careers/current-openings/faculty-teaching-positions/",
+          "confidence": 0.7,
+          "platform_type": "generic",
+          "query": "North Carolina Wesleyan University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.wesleyan.edu/hr/careers/app-staff.html",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "North Carolina Wesleyan University faculty employment",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.wesleyan.edu/hr/careers/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "North Carolina Wesleyan University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.wesleyan.edu/about/careers.html",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "North Carolina Wesleyan University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "North Carolina Wesleyan University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "North Carolina Wesleyan University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "North Carolina Wesleyan University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "North Carolina Wesleyan University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "North Dakota State College of Science",
+      "state": "ND",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://ndscs.edu/student-support/academic-career-advising/",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/north-dakota-state-college-of-science/16805/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "North Dakota State College of Science faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/north-dakota-state-college-of-science-careers",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "North Dakota State College of Science academic jobs",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "North Dakota State College of Science faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "North Dakota State College of Science academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "North Dakota State College of Science faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "North Dakota State College of Science human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Northland College",
+      "state": "WI",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://aku.taleo.net/careersection/ex/joblist.ftl?lang=en",
+      "platform_type": "taleo",
+      "confidence": 0.75,
+      "method": "duckduckgo_html",
+      "query": "Northland College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://aku.taleo.net/careersection/ex/joblist.ftl?lang=en",
+          "confidence": 0.75,
+          "platform_type": "taleo",
+          "query": "Northland College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.northlandcollege.edu/about/offices/human-resources/employment/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Northland College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/northland-college/4911/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Northland College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/northland-college-careers",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Northland College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Northland College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northland College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northland College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northland College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Northwest Florida State College",
+      "state": "FL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/northwest-florida-state-college-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Northwest Florida State College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Northwest Florida State College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northwest Florida State College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northwest Florida State College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northwest Florida State College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Northwest Mississippi Community College",
+      "state": "MS",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/northwest-mississippi-community-college-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Northwest Mississippi Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 43
+        },
+        {
+          "query": "Northwest Mississippi Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Northwest Mississippi Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Northwest Mississippi Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Northwest Mississippi Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Northwest Shoals Community College",
+      "state": "AL",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/accs/northwest",
+      "platform_type": "schooljobs",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Northwest Shoals Community College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/accs/northwest",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Northwest Shoals Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/accs/northwest/jobs/3675364/adjunct-welding-technology-instructor",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Northwest Shoals Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/accs/northwest/jobs/4897899/adjunct-k-12-dual-enrollment-instructor",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Northwest Shoals Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.governmentjobs.com/jobs/5450957-0/academic-support-associate-humanities-fine-arts-business-division-part-time",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "Northwest Shoals Community College academic jobs",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 4
+        },
+        {
+          "query": "Northwest Shoals Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Northwest Shoals Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Northwest Shoals Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northwest Shoals Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Northwest State Community College",
+      "state": "OH",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/northweststate/jobs/5444125/industrial-technology-faculty-electrical",
+      "platform_type": "schooljobs",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Northwest State Community College faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/northweststate/jobs/5444125/industrial-technology-faculty-electrical",
+          "confidence": 0.99,
+          "platform_type": "schooljobs",
+          "query": "Northwest State Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/northweststate/promotionaljobs",
+          "confidence": 0.95,
+          "platform_type": "schooljobs",
+          "query": "Northwest State Community College academic jobs",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://old.northweststate.edu/careers-at-nscc.html",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Northwest State Community College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://northweststate.edu/careers-at-nscc/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Northwest State Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northwest State Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northwest State Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Northwest State Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Nueta Hidatsa Sahnish College",
+      "state": "ND",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/employers/nueta-hidatsa-sahnish-college/16413/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Nueta Hidatsa Sahnish College faculty employment",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/nueta-hidatsa-sahnish-college-careers",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Nueta Hidatsa Sahnish College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Nueta Hidatsa Sahnish College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Nueta Hidatsa Sahnish College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Nueta Hidatsa Sahnish College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Nueta Hidatsa Sahnish College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Notre Dame of Maryland University",
+      "state": "MD",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://jobs.chronicle.com/job/37977116/academic-fieldwork-coordinator/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Notre Dame of Maryland University academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.academicjobs.com/notre-dame-of-maryland-university-jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Notre Dame of Maryland University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 18
+        },
+        {
+          "query": "Notre Dame of Maryland University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Notre Dame of Maryland University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Notre Dame of Maryland University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Notre Dame of Maryland University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Ohio State University-Mansfield Campus",
+      "state": "OH",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://osu.wd1.myworkdayjobs.com/en-US/OSUCareers/job/Business-Finance-Lecturer---Mansfield-campus_R154017",
+      "platform_type": "workday",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Ohio State University-Mansfield Campus academic jobs",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://osu.wd1.myworkdayjobs.com/en-US/OSUCareers/job/Business-Finance-Lecturer---Mansfield-campus_R154017",
+          "confidence": 0.99,
+          "platform_type": "workday",
+          "query": "Ohio State University-Mansfield Campus academic jobs",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://osu.wd1.myworkdayjobs.com/en-US/OSUCareers/job/Lecturer---Mansfield-campus_R157658",
+          "confidence": 0.99,
+          "platform_type": "workday",
+          "query": "Ohio State University-Mansfield Campus academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://osu.wd1.myworkdayjobs.com/en-US/OSUCareers/job/Social-Work-Lecturer--SEM--Mansfield-Campus_R152199",
+          "confidence": 0.99,
+          "platform_type": "workday",
+          "query": "Ohio State University-Mansfield Campus faculty jobs careers",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://careers.insidehighered.com/job/3532129/coordinator-of-academic-success-mansfield-campus-/",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "Ohio State University-Mansfield Campus academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://careers.insidehighered.com/job/3540233/undergraduate-academic-advisor-2-mansfield-campus-/",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "Ohio State University-Mansfield Campus academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://osu.wd1.myworkdayjobs.com/OSUCareers",
+          "confidence": 0.6,
+          "platform_type": "workday",
+          "query": "Ohio State University-Mansfield Campus faculty jobs careers",
+          "validation": "recognized_ats"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 5
+        },
+        {
+          "query": "Ohio State University-Mansfield Campus faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Ohio State University-Mansfield Campus academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Ohio State University-Mansfield Campus faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Ohio State University-Mansfield Campus human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Ohio State University-Lima Campus",
+      "state": "OH",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://osu.wd1.myworkdayjobs.com/en-US/OSUCareers/job/EXP-Semester-Lecturer--Lima-Campus-_R136381",
+      "platform_type": "workday",
+      "confidence": 0.99,
+      "method": "duckduckgo_html",
+      "query": "Ohio State University-Lima Campus faculty jobs careers",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://osu.wd1.myworkdayjobs.com/en-US/OSUCareers/job/EXP-Semester-Lecturer--Lima-Campus-_R136381",
+          "confidence": 0.99,
+          "platform_type": "workday",
+          "query": "Ohio State University-Lima Campus faculty jobs careers",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://careers.insidehighered.com/job/3532175/education-lecturer-9m-lima-campus/",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "Ohio State University-Lima Campus faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://hrs.osu.edu/faculty-and-staff/employment-opportunties",
+          "confidence": 0.7,
+          "platform_type": "generic",
+          "query": "Ohio State University-Lima Campus faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://lima.osu.edu/faculty-and-staff",
+          "confidence": 0.65,
+          "platform_type": "generic",
+          "query": "Ohio State University-Lima Campus faculty employment",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://osu.wd1.myworkdayjobs.com/OSUCareers",
+          "confidence": 0.6,
+          "platform_type": "workday",
+          "query": "Ohio State University-Lima Campus faculty jobs careers",
+          "validation": "recognized_ats"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Ohio State University-Lima Campus faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Ohio State University-Lima Campus academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Ohio State University-Lima Campus faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Ohio State University-Lima Campus human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Ohio State University-Marion Campus",
+      "state": "OH",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://careers.insidehighered.com/job/3523006/undergraduate-academic-advisor-2-marion-/",
+      "platform_type": "generic",
+      "confidence": 0.75,
+      "method": "duckduckgo_html",
+      "query": "Ohio State University-Marion Campus academic jobs",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://careers.insidehighered.com/job/3523006/undergraduate-academic-advisor-2-marion-/",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "Ohio State University-Marion Campus academic jobs",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://careers.insidehighered.com/job/3540954/biology-lecturer-9m-marion-campus-/",
+          "confidence": 0.75,
+          "platform_type": "generic",
+          "query": "Ohio State University-Marion Campus faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://hrs.osu.edu/faculty-and-staff/employment-opportunties",
+          "confidence": 0.7,
+          "platform_type": "generic",
+          "query": "Ohio State University-Marion Campus faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://osu.wd1.myworkdayjobs.com/OSUCareers",
+          "confidence": 0.6,
+          "platform_type": "workday",
+          "query": "Ohio State University-Marion Campus faculty jobs careers",
+          "validation": "recognized_ats"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Ohio State University-Marion Campus faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Ohio State University-Marion Campus academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Ohio State University-Marion Campus faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Ohio State University-Marion Campus human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Oklahoma Wesleyan University",
+      "state": "OK",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://wesleyan.wd5.myworkdayjobs.com/careers",
+      "platform_type": "workday",
+      "confidence": 0.95,
+      "method": "duckduckgo_html",
+      "query": "Oklahoma Wesleyan University human resources faculty positions",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://wesleyan.wd5.myworkdayjobs.com/careers",
+          "confidence": 0.95,
+          "platform_type": "workday",
+          "query": "Oklahoma Wesleyan University human resources faculty positions",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://www.wesleyan.edu/hr/careers/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "Oklahoma Wesleyan University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Oklahoma Wesleyan University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Oklahoma Wesleyan University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 7
+        },
+        {
+          "query": "Oklahoma Wesleyan University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Oklahoma Wesleyan University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Otterbein University",
+      "state": "OH",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/otterbein/jobs/newprint/5221125",
+      "platform_type": "schooljobs",
+      "confidence": 0.95,
+      "method": "duckduckgo_html",
+      "query": "Otterbein University academic jobs",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.schooljobs.com/careers/otterbein/jobs/newprint/5221125",
+          "confidence": 0.95,
+          "platform_type": "schooljobs",
+          "query": "Otterbein University academic jobs",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://www.schooljobs.com/careers/otterbein",
+          "confidence": 0.95,
+          "platform_type": "schooljobs",
+          "query": "Otterbein University faculty jobs careers",
+          "validation": "recognized_ats"
+        },
+        {
+          "url": "https://www.academicjobs.com/employers/otterbein-university/4972/jobs",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Otterbein University faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Otterbein University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Otterbein University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Otterbein University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Otterbein University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Paine College",
+      "state": "GA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.academicjobs.com/paine-college-careers",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "Paine College faculty jobs careers",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Paine College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Paine College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Paine College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Paine College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        }
+      ]
+    }
+  ]
 }

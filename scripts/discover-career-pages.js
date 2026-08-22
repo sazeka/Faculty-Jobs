@@ -2,6 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { isRejectedCareerPage } from "./lib/career-path-probe.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -110,12 +111,24 @@ function looksBadCandidate(url) {
     "x.com",
     "twitter.com",
     "youtube.com",
+    "myjobmag.",
+    "jobs.chronicle.com",
+    "careers.insidehighered.com",
     "news.",
     "/news",
     "/events",
-    "/about",
     "/giving",
     "/alumni",
+    "career-services",
+    "career-readiness",
+    "career-exploration",
+    "career-design",
+    "career-professional-development",
+    "career-transfer-center",
+    "career-and-testing-services",
+    "center-for-career-success",
+    "student-employment",
+    "academic-career-support",
   ];
   return deny.some((d) => u.includes(d));
 }
@@ -160,6 +173,58 @@ function scoreCandidate(url, schoolName) {
   return Number(score.toFixed(2));
 }
 
+function extractOfficialCareerLinks(html, baseUrl) {
+  const links = [];
+  const seen = new Set();
+  const anchorRe = /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>/gi;
+  let match;
+  while ((match = anchorRe.exec(String(html || ""))) !== null) {
+    const raw = match[1]
+      .replace(/&amp;/gi, "&")
+      .replace(/&#38;/g, "&")
+      .trim();
+    let url;
+    try {
+      url = new URL(raw, baseUrl).toString();
+    } catch {
+      continue;
+    }
+    if (!/^https?:\/\//i.test(url) || seen.has(url) || looksBadCandidate(url)) continue;
+    const normalized = normalize(url);
+    const hiringPath = /career|careers|employment|human-resources|\/hr\b|faculty-position|openings|job-opportunities|work-with-us|join-our-team|recruitment/.test(normalized);
+    const knownAts = /myworkdayjobs\.com|myworkdaysite\.com|pageuppeople\.com|taleo\.net|peopleadmin\.com|schooljobs\.com|governmentjobs\.com|csod\.com|paycomonline\.net|interviewexchange\.com|jobvite\.com|interfolio\.com|greenhouse\.io|lever\.co|icims\.com|workforcenow\.adp\.com|applicantstack\.com|silkroad\.com/.test(normalized);
+    if (!hiringPath && !knownAts) continue;
+    seen.add(url);
+    links.push(url);
+  }
+  return links;
+}
+
+async function fetchOfficialHomepageLinks(inst, timeoutMs = 12000) {
+  const homepage = clean(inst.homepage_url);
+  if (!homepage) return { ok: false, reason: "missing_homepage", urls: [] };
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(homepage, {
+      signal: controller.signal,
+      redirect: "follow",
+      headers: { "User-Agent": "Mozilla/5.0 FacultyJobsDiscovery/1.0" },
+    });
+    if (!response.ok) return { ok: false, reason: `homepage_http_${response.status}`, urls: [] };
+    const finalUrl = response.url || homepage;
+    return {
+      ok: true,
+      method: "official_homepage_links",
+      urls: extractOfficialCareerLinks(await response.text(), finalUrl),
+    };
+  } catch (error) {
+    return { ok: false, reason: error?.name === "AbortError" ? "homepage_timeout" : "homepage_fetch_error", urls: [] };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchDdgResults(query, timeoutMs = 12000) {
   const searchUrl = `https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
 
@@ -194,10 +259,29 @@ async function discoverForInstitution(inst, timeoutMs = 12000) {
   const candidateByUrl = new Map();
   const queryResults = [];
 
+  const officialLinks = await fetchOfficialHomepageLinks(inst, timeoutMs);
+  queryResults.push({
+    query: "official homepage links",
+    ok: officialLinks.ok,
+    reason: officialLinks.reason || null,
+    count: (officialLinks.urls || []).length,
+  });
+  for (const url of officialLinks.urls || []) {
+    candidateByUrl.set(url, {
+      url,
+      confidence: scoreCandidate(url, inst.name),
+      platform_type: inferPlatformFromUrl(url),
+      query: "official homepage links",
+    });
+  }
+
   for (const query of queries) {
     const r = await fetchDdgResults(query, timeoutMs);
     queryResults.push({ query, ok: r.ok, reason: r.reason || null, count: (r.urls || []).length });
-    if (!r.ok) continue;
+    if (!r.ok) {
+      if (r.reason === "search_http_403" || r.reason === "search_http_429") break;
+      continue;
+    }
 
     for (const url of r.urls || []) {
       const confidence = scoreCandidate(url, inst.name);
@@ -216,12 +300,76 @@ async function discoverForInstitution(inst, timeoutMs = 12000) {
   const candidates = [...candidateByUrl.values()]
     .sort((a, b) => b.confidence - a.confidence)
     .slice(0, 10);
-  const best = candidates[0] || null;
+  const validated = [];
+  const rejected = [];
+  await Promise.all(candidates.slice(0, 6).map(async (candidate) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(candidate.url, {
+        signal: controller.signal,
+        redirect: "follow",
+        headers: { "User-Agent": "Mozilla/5.0 FacultyJobsDiscovery/1.0" },
+      });
+      const body = response.ok ? await response.text() : "";
+      const finalUrl = response.url || candidate.url;
+      if (!response.ok) {
+        rejected.push({ ...candidate, reason: `candidate_http_${response.status}` });
+        return;
+      }
+      if (isRejectedCareerPage(finalUrl, body)) {
+        rejected.push({ ...candidate, url: finalUrl, reason: "rejected_non_employee_career_page" });
+        return;
+      }
+
+      const text = normalize(body.replace(/<[^>]+>/g, " ")).slice(0, 40000);
+      const employeeEvidence = /employment opportunities|current openings|job openings|open positions|faculty positions|staff positions|search (?:for )?jobs|apply for (?:a )?position|join our (?:team|faculty|staff)|work (?:at|for|with)\b|equal opportunity employer|applicants? for employment/.test(text);
+      const knownAts = /myworkdayjobs\.com|myworkdaysite\.com|pageuppeople\.com|taleo\.net|peopleadmin\.com|schooljobs\.com|governmentjobs\.com|csod\.com|paycomonline\.net|interviewexchange\.com|jobvite\.com|interfolio\.com|greenhouse\.io|lever\.co|icims\.com|workforcenow\.adp\.com|applicantstack\.com|silkroad\.com/.test(normalize(finalUrl));
+      if (!employeeEvidence && !knownAts) {
+        rejected.push({ ...candidate, url: finalUrl, reason: "no_employee_hiring_evidence" });
+        return;
+      }
+
+      let officialDomain = false;
+      try {
+        const candidateHost = new URL(finalUrl).hostname.replace(/^www\./i, "");
+        const homepageHost = new URL(inst.homepage_url).hostname.replace(/^www\./i, "");
+        officialDomain = candidateHost === homepageHost || candidateHost.endsWith(`.${homepageHost}`) || homepageHost.endsWith(`.${candidateHost}`);
+      } catch {
+        officialDomain = false;
+      }
+      const normalizedInstitutionName = normalize(inst.name).replace(/[^a-z0-9]+/g, " ").trim();
+      const normalizedEvidenceText = text.replace(/[^a-z0-9]+/g, " ");
+      const institutionNamed = normalizedInstitutionName.length >= 5 && normalizedEvidenceText.includes(normalizedInstitutionName);
+      if (!officialDomain && (!knownAts || !institutionNamed)) {
+        rejected.push({ ...candidate, url: finalUrl, reason: "institution_identity_mismatch" });
+        return;
+      }
+
+      const evidenceBoost = employeeEvidence ? 0.15 : 0;
+      const confidence = Math.min(0.99, Number((scoreCandidate(finalUrl, inst.name) + evidenceBoost).toFixed(2)));
+      validated.push({
+        ...candidate,
+        url: finalUrl,
+        confidence,
+        platform_type: inferPlatformFromUrl(finalUrl),
+        validation: employeeEvidence ? "employee_hiring_evidence" : "recognized_ats",
+      });
+    } catch (error) {
+      rejected.push({ ...candidate, reason: error?.name === "AbortError" ? "candidate_timeout" : "candidate_fetch_error" });
+    } finally {
+      clearTimeout(timer);
+    }
+  }));
+
+  validated.sort((a, b) => b.confidence - a.confidence);
+  const best = validated[0] || null;
   if (!best) {
     return {
       ok: false,
       reason: "no_candidates",
-      candidates,
+      candidates: validated,
+      rejectedCandidates: rejected,
       queryResults,
       method: "duckduckgo_html",
     };
@@ -231,7 +379,8 @@ async function discoverForInstitution(inst, timeoutMs = 12000) {
     ok: true,
     reason: "candidate_found",
     best,
-    candidates,
+    candidates: validated,
+    rejectedCandidates: rejected,
     queryResults,
     method: "duckduckgo_html",
     query: best.query || queries[0],
@@ -246,6 +395,8 @@ function parseArgs(argv) {
     delayMs: 700,
     minConfidence: 0.65,
     scopeEligibleOnly: true,
+    weakOnly: false,
+    timeoutMs: 8000,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -258,6 +409,8 @@ function parseArgs(argv) {
     else if (a === "--limit" && args[i + 1]) out.limit = Math.max(1, Number(args[++i]));
     else if (a === "--delay-ms" && args[i + 1]) out.delayMs = Math.max(0, Number(args[++i]));
     else if (a === "--min-confidence" && args[i + 1]) out.minConfidence = Math.max(0, Math.min(1, Number(args[++i])));
+    else if (a === "--timeout-ms" && args[i + 1]) out.timeoutMs = Math.max(2000, Number(args[++i]));
+    else if (a === "--weak-only") out.weakOnly = true;
     else if (a === "--all-missing") out.scopeEligibleOnly = false;
   }
   return out;
@@ -357,8 +510,19 @@ async function main() {
     targets = targets.filter((r) => isEligibleByScope(r, scope));
   }
 
+  if (opts.weakOnly) {
+    targets = targets.filter((r) => {
+      const confidence = Number(r.last_discovery_confidence || 0);
+      return confidence > 0 && confidence < 0.55;
+    });
+  }
+
   targets = targets
     .sort((a, b) => {
+      if (opts.weakOnly) {
+        const confidenceDelta = Number(b.last_discovery_confidence || 0) - Number(a.last_discovery_confidence || 0);
+        if (confidenceDelta !== 0) return confidenceDelta;
+      }
       const da = attemptRank(a);
       const db = attemptRank(b);
       if (da !== db) return da - db; // oldest / never-attempted first
@@ -425,7 +589,7 @@ async function main() {
       continue;
     }
 
-    const found = await discoverForInstitution(inst);
+    const found = await discoverForInstitution(inst, opts.timeoutMs);
     let applied = false;
 
     if (found.ok && found.best && found.best.confidence >= opts.minConfidence) {

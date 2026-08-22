@@ -1631,6 +1631,7 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Gwynedd Mercy University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=26d7eba1-7ff1-4642-a01e-31acc49de6f5&lang=en_US" },
   { campus: "Seton Hill University", type: "generic", url: "https://www.setonhill.edu/resources/employment/faculty.html" },
   { campus: "Widener University", type: "generic", url: "https://www.widener.edu/employment" },
+  { campus: "Keystone College", type: "generic", url: "https://www.keystone.edu/jobs_at_keystone/faculty-positions/" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -1820,6 +1821,9 @@ const NC_CAMPUSES = [
   { campus: "Wayne Community College", type: "generic", url: "https://www.schooljobs.com/careers/waynecc" },
   { campus: "Wilkes Community College", type: "generic", url: "https://jobs.wilkescc.edu/" },
   { campus: "Wingate University", type: "generic", url: "https://www.wingate.edu/quicklinks/careers" },
+  { campus: "Lenoir Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/lenoirccedu" },
+  { campus: "Martin Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/martinccedu/" },
+  { campus: "Mayland Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/maylandedu" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -2906,6 +2910,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Utica University", type: "generic", url: "https://www.utica.edu/hr/employment.cfm" },
   { campus: "Hobart William Smith Colleges", type: "generic", url: "https://www.hws.edu/offices/hr/employment-opportunities/default.aspx" },
   { campus: "Nazareth University", type: "peopleadmin", url: "https://jobs.naz.edu/" },
+  { campus: "Le Moyne College", type: "generic", url: "https://echo.lemoyne.edu/Faculty-Staff/Campus-Resources/Human-Resources/Employment-Resources" },
 ];
 
 // OR (Oregon)
@@ -3186,6 +3191,7 @@ const WA_CAMPUSES = [
   { campus: "Pacific Northwest University of Health Sciences", type: "generic", url: "https://www.pnwu.edu/job-opportunities/careers-at-pnwu/" },
   { campus: "Tacoma Community College", type: "generic", url: "https://www.tacomacc.edu/about/employment/" },
   { campus: "Green River College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/greenriveredu" },
+  { campus: "Heritage University", type: "generic", url: "https://heritage.edu/faculty-staff/human-resources/" },
 ];
 
 
@@ -3621,6 +3627,7 @@ const IA_CAMPUSES = [
   { campus: "Wartburg College", type: "generic", url: "https://www.wartburg.edu/faculty-employment" },
   { campus: "Wartburg Theological Seminary", type: "generic", url: "https://www.wartburgseminary.edu/academics/faculty-jobs" },
   { campus: "Hawkeye Community College", type: "generic", url: "https://jobs.hawkeyecollege.edu/employment" },
+  { campus: "Iowa Western Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/iwcc" },
 ];
 
 // WY (Wyoming)
@@ -4111,6 +4118,8 @@ const OH_CAMPUSES = [
   { campus: "Wittenberg University", type: "generic", url: "https://www.wittenberg.edu/administration/careers" },
   { campus: "Youngstown State University", type: "generic", url: "https://ysu.edu/faculty-employment" },
   { campus: "Zane State College", type: "generic", url: "https://www.zanestate.edu/careers/" },
+  { campus: "Northwest State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/northweststate" },
+  { campus: "Otterbein University", type: "schooljobs", url: "https://www.schooljobs.com/careers/otterbein" },
 ];
 
 // NM (New Mexico)
@@ -4335,6 +4344,7 @@ const MI_CAMPUSES = [
   { campus: "Hillsdale College", type: "generic", url: "https://www.hillsdale.edu/about/human-resources/" },
   { campus: "Keweenaw Bay Ojibwa Community College", type: "generic", url: "https://www.kbocc.edu/openings/" },
   { campus: "Washtenaw Community College", type: "peopleadmin", url: "https://jobs.wccnet.edu/" },
+  { campus: "Lake Superior State University", type: "pageup", url: "https://careers.pageuppeople.com/1130/cw/en-us/listing/" },
 ];
 
 // IL (Illinois)
@@ -4611,6 +4621,7 @@ const IL_CAMPUSES = [
   { campus: "Southwestern Illinois College", type: "generic", url: "https://www.swic.edu/about/human-resources/employment-at-swic/" },
   { campus: "Spertus College", type: "generic", url: "https://www.spertus.edu/employment-opportunities/" },
   { campus: "VanderCook College of Music", type: "generic", url: "https://www.vandercook.edu/employment/" },
+  { campus: "Lake Land College", type: "schooljobs", url: "https://www.schooljobs.com/careers/lakelandcollege" },
 ];
 
 // ID (Idaho)
@@ -5569,6 +5580,9 @@ const AL_CAMPUSES = [
   { campus: "United States Sports University", type: "generic", url: "https://ussu.edu/employment-opportunities/" },
   { campus: "University of Alabama System Office", type: "generic", url: "https://uasystem.edu/staff-departments/academic-student-affairs/employment-earnings/" },
   { campus: "University of West Alabama", type: "generic", url: "https://www.uwa.edu/employment/" },
+  { campus: "J. F. Drake State Community and Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/drakestate" },
+  { campus: "Jefferson State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/jefferson" },
+  { campus: "Northwest Shoals Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/northwest" },
 ];
 
 // MS (Mississippi)
