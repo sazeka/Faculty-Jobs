@@ -1,51 +1,61 @@
 {
-  "generatedAt": "2026-08-22T08:51:48.895Z",
+  "generatedAt": "2026-08-22T08:59:10.566Z",
   "totalJobs": 15052,
-  "attemptedThisRun": 4,
-  "filledThisRun": 3,
-  "datePostedFilledThisRun": 0,
+  "attemptedThisRun": 110,
+  "filledThisRun": 110,
+  "datePostedFilledThisRun": 110,
   "openDateFilledThisRun": 0,
-  "startDateFilledThisRun": 0,
-  "totalWithStartDate": 977,
+  "startDateFilledThisRun": 6,
+  "totalWithStartDate": 983,
   "deadlineFilledThisRun": 0,
   "rollingFilledThisRun": 0,
   "mode": "normal",
-  "totalWithDatePosted": 8311,
+  "totalWithDatePosted": 8421,
   "totalWithDeadline": 2846,
-  "totalWithDescription": 7874,
-  "remaining": 7178,
-  "eligibleRemaining": 6274,
-  "unsupportedRemaining": 550,
+  "totalWithDescription": 7984,
+  "remaining": 7068,
+  "eligibleRemaining": 6201,
+  "unsupportedRemaining": 551,
   "fetchDiagnostics": {
     "byPlatform": [
       {
-        "platform": "paycom",
-        "attempted": 4,
-        "filled": 3,
+        "platform": "adp",
+        "attempted": 110,
+        "filled": 110,
         "empty": 0,
-        "errors": 1,
-        "fillRatePct": 75,
-        "failureRatePct": 25
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
       }
     ],
     "byHost": [
       {
-        "platform": "paycom",
-        "host": "www.paycomonline.net",
-        "attempted": 4,
-        "filled": 3,
+        "platform": "adp",
+        "host": "workforcenow.adp.com",
+        "attempted": 103,
+        "filled": 103,
         "empty": 0,
-        "errors": 1,
-        "fillRatePct": 75,
-        "failureRatePct": 25
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "adp",
+        "host": "workforcenow.cloud.adp.com",
+        "attempted": 7,
+        "filled": 7,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
       }
     ]
   },
   "config": {
-    "max": 100,
+    "max": 200,
     "concurrency": 8,
     "timeoutMs": 30000,
     "minLen": 200,
-    "platform": "paycom"
+    "platform": "adp"
   }
 }
