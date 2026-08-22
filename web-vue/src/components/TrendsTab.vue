@@ -32,8 +32,10 @@ const historyBars = computed(() => {
   }))
 })
 
-const topSources = computed(() => (trends.value?.stats?.topSources || []).slice(0, 8))
-const maxSourceCount = computed(() => topSources.value[0]?.count || 1)
+const controlHistory = computed(() => (trends.value?.history || [])
+  .filter(h => h.publicJobs != null && h.privateNonprofitJobs != null)
+  .slice(-12))
+const controlStats = computed(() => trends.value?.stats?.institutionControlBreakdown || null)
 
 const sortedPositionTypes = computed(() => {
   const types = trends.value?.stats?.positionTypeBreakdown || {}
@@ -132,16 +134,49 @@ function fmtWeek(s) {
     <!-- Stats grid -->
     <div class="trends-stats-grid">
 
-      <!-- Top states -->
+      <!-- Public/private history -->
       <div class="trends-col">
-        <div class="fa-label" style="margin-bottom: 20px;">Top states &amp; systems</div>
-        <div v-for="s in topSources" :key="s.source" class="trends-bar-row">
-          <div class="trends-bar-label fa-meta">{{ s.source }}</div>
-          <div class="trends-bar-track">
-            <div class="trends-bar-fill" :style="{ width: `${Math.round((s.count / maxSourceCount) * 100)}%` }"></div>
+        <div class="fa-label" style="margin-bottom: 20px;">Public vs private over time</div>
+        <template v-if="controlStats">
+          <div class="control-current">
+            <div>
+              <div class="fa-meta">Public</div>
+              <div class="fa-display control-value">{{ fmt(controlStats.public) }}</div>
+              <div class="fa-num control-share">{{ controlStats.publicPct }}%</div>
+            </div>
+            <div>
+              <div class="fa-meta">Private nonprofit</div>
+              <div class="fa-display control-value">{{ fmt(controlStats.privateNonprofit) }}</div>
+              <div class="fa-num control-share">{{ controlStats.privateNonprofitPct }}%</div>
+            </div>
           </div>
-          <div class="fa-num trends-bar-count">{{ fmt(s.count) }}</div>
-        </div>
+          <div v-if="controlHistory.length" class="control-history" aria-label="Weekly share of classified public and private nonprofit job listings">
+            <div
+              v-for="week in controlHistory"
+              :key="week.weekEnd"
+              class="control-week"
+              :title="`${fmtWeek(week.weekEnd)}: ${fmt(week.publicJobs)} public (${week.publicPct}%), ${fmt(week.privateNonprofitJobs)} private nonprofit (${week.privateNonprofitPct}%)`"
+            >
+              <div class="control-week-private" :style="{ height: `${week.privateNonprofitPct}%` }"></div>
+              <div class="control-week-public" :style="{ height: `${week.publicPct}%` }"></div>
+            </div>
+          </div>
+          <div v-if="controlHistory.length" class="trends-spark-labels fa-meta">
+            <span>{{ fmtWeek(controlHistory[0].weekEnd) }}</span>
+            <span>{{ fmtWeek(controlHistory[controlHistory.length - 1].weekEnd) }}</span>
+          </div>
+          <div v-if="controlHistory.length === 1" class="fa-meta control-start-note">
+            Tracking starts this week; a new comparison point will be added to this chart each week.
+          </div>
+          <div class="control-legend fa-meta">
+            <span><i class="control-key control-key-public"></i>Public</span>
+            <span><i class="control-key control-key-private"></i>Private nonprofit</span>
+          </div>
+          <div class="fa-meta control-note">
+            Percentages use {{ fmt(controlStats.classified) }} listings matched to institution control.
+            {{ fmt(controlStats.unknown) }} unmatched listings are excluded.
+          </div>
+        </template>
       </div>
 
       <!-- Position types -->
@@ -269,6 +304,38 @@ function fmtWeek(s) {
   gap: 48px;
 }
 .trends-col {}
+
+.control-current {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+.control-value { font-size: 28px; line-height: 1.1; margin-top: 4px; }
+.control-share { color: var(--ink-3); font-size: 11px; margin-top: 2px; }
+.control-history {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  height: 112px;
+  border-bottom: 1px solid var(--rule);
+}
+.control-week {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 5px;
+}
+.control-week-public { background: var(--sage); }
+.control-week-private { background: var(--accent); }
+.control-legend { display: flex; gap: 18px; margin-top: 12px; font-size: 10px; }
+.control-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.control-key { display: inline-block; width: 9px; height: 9px; }
+.control-key-public { background: var(--sage); }
+.control-key-private { background: var(--accent); }
+.control-note { color: var(--ink-4); line-height: 1.5; margin-top: 10px; }
+.control-start-note { color: var(--ink-3); line-height: 1.5; margin-top: 10px; }
 
 .trends-bar-row {
   display: grid;

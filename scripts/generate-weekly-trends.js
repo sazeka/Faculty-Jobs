@@ -23,12 +23,14 @@ import path from "path";
 import http from "http";
 import { fileURLToPath } from "url";
 import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
+import { computeInstitutionControlBreakdown } from "./lib/weekly-institution-control-stats.js";
 import { latestPriorWeek } from "./lib/weekly-trends-history.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const JOBS_PATH    = path.join(ROOT, "public", "jobs.json");
+const INSTITUTIONS_PATH = path.join(ROOT, "data", "institutions-master.json");
 const HISTORY_PATH = path.join(ROOT, "generated", "weekly-stats-history.json");
 const OUT_PATHS    = [
   path.join(ROOT, "docs",   "data", "weekly-trends.json"),
@@ -81,7 +83,7 @@ function detectPositionType(title) {
 
 // ── Stats computation ─────────────────────────────────────────────────────────
 
-function computeStats(jobs) {
+function computeStats(jobs, institutions) {
   const bySource     = {};
   const byType       = {};
   const byInstitution = {};
@@ -113,6 +115,7 @@ function computeStats(jobs) {
     topSources,
     topInstitutions,
     tenureTrackBreakdown: computeTenureTrackBreakdown(jobs),
+    institutionControlBreakdown: computeInstitutionControlBreakdown(jobs, institutions),
   };
 }
 
@@ -121,12 +124,13 @@ function computeStats(jobs) {
 function templateSummary(stats, prev) {
   const delta = prev ? stats.totalJobs - prev.totalJobs : 0;
   const sign  = delta >= 0 ? "+" : "";
-  const top3  = stats.topSources.slice(0, 3).map(s => `${s.source} (${s.count.toLocaleString()})`).join(", ");
   const topType = Object.entries(stats.byType).sort((a, b) => b[1] - a[1])[0];
   return [
     `Faculty Atlas is currently tracking ${stats.totalJobs.toLocaleString()} open faculty positions` +
       (prev ? ` — ${sign}${delta} compared to last week.` : "."),
-    `The most active systems this week are ${top3}.`,
+    stats.institutionControlBreakdown.classified
+      ? `Among listings matched to institution type, ${stats.institutionControlBreakdown.publicPct}% are at public institutions and ${stats.institutionControlBreakdown.privateNonprofitPct}% are at private nonprofit institutions.`
+      : "",
     topType
       ? `${topType[0]} roles represent the largest category with ${topType[1].toLocaleString()} listings.`
       : "",
@@ -146,7 +150,7 @@ Write a 2-3 paragraph summary (150–200 words) of this week's faculty hiring tr
 
 Focus on:
 - Changes in total listing volume vs last week (if available)
-- Which states or systems are most active
+- How public versus private nonprofit hiring compares
 - What position types dominate
 - The tenure-track versus non-tenure-track mix, while acknowledging unclassified listings
 - Anything noteworthy or surprising in the data
@@ -206,11 +210,14 @@ async function main() {
 
   const payload = readJson(JOBS_PATH);
   if (!payload?.jobs?.length) { console.error("Cannot read public/jobs.json"); process.exit(1); }
+  const institutionsPayload = readJson(INSTITUTIONS_PATH);
+  const institutions = Array.isArray(institutionsPayload?.institutions) ? institutionsPayload.institutions : [];
+  if (!institutions.length) { console.error("Cannot read data/institutions-master.json"); process.exit(1); }
 
   const history = readJson(HISTORY_PATH) || [];
   const weekEnd = isoWeekEnd();
   const prev    = latestPriorWeek(history, weekEnd);
-  const stats   = computeStats(payload.jobs);
+  const stats   = computeStats(payload.jobs, institutions);
 
   console.log(`\n  Week ending : ${weekEnd}`);
   console.log(`  Total jobs  : ${stats.totalJobs.toLocaleString()}`);
@@ -226,6 +233,7 @@ async function main() {
     topSourcesByJobs: stats.topSources.slice(0, 8),
     positionTypeBreakdown: stats.byType,
     tenureTrackBreakdown: stats.tenureTrackBreakdown,
+    institutionControlBreakdown: stats.institutionControlBreakdown,
     topInstitutions: stats.topInstitutions.slice(0, 5),
   };
 
@@ -252,6 +260,7 @@ async function main() {
     bySource: stats.bySource,
     byType: stats.byType,
     tenureTrackBreakdown: stats.tenureTrackBreakdown,
+    institutionControlBreakdown: stats.institutionControlBreakdown,
     topSources: stats.topSources,
     topInstitutions: stats.topInstitutions,
     aiSummary: summary,
@@ -280,6 +289,11 @@ async function main() {
       nonTenureTrack: h.tenureTrackBreakdown?.nonTenureTrack ?? null,
       tenureTrackPct: h.tenureTrackBreakdown?.tenureTrackPct ?? null,
       nonTenureTrackPct: h.tenureTrackBreakdown?.nonTenureTrackPct ?? null,
+      publicJobs: h.institutionControlBreakdown?.public ?? null,
+      privateNonprofitJobs: h.institutionControlBreakdown?.privateNonprofit ?? null,
+      publicPct: h.institutionControlBreakdown?.publicPct ?? null,
+      privateNonprofitPct: h.institutionControlBreakdown?.privateNonprofitPct ?? null,
+      institutionControlUnknown: h.institutionControlBreakdown?.unknown ?? null,
     })),
   };
 
