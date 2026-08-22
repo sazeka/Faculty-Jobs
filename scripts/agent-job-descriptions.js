@@ -32,6 +32,7 @@ import {
 import { createDescriptionFetchReport } from "./lib/description-fetch-report.js";
 import { buildWorkdayCxsUrl, fetchWorkdayPosting } from "./lib/workday-description.js";
 import { fetchPaycomPosting, parsePaycomJobUrl } from "./lib/paycom-description.js";
+import { fetchAdpPosting, parseAdpJobUrl } from "./lib/adp-description.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -230,6 +231,17 @@ async function main() {
             // This is the structured description field from Paycom's API, not
             // a guessed DOM region, so short legitimate adjunct-pool postings
             // are safe to keep without the generic page-chrome threshold.
+            minLen: Math.min(MIN_LEN, 80),
+            maxLen: MAX_LEN,
+          });
+          desc = result.desc;
+          datePosted = result.datePosted;
+          validThrough = result.validThrough;
+        } else if (parseAdpJobUrl(job.url)) {
+          // ADP Workforce Now exposes each public requisition as structured
+          // JSON, including the complete description and exact post date.
+          const result = await fetchAdpPosting(job.url, {
+            timeoutMs: TIMEOUT_MS,
             minLen: Math.min(MIN_LEN, 80),
             maxLen: MAX_LEN,
           });

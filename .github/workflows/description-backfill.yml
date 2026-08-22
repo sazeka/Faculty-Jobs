@@ -10,6 +10,7 @@ on:
         default: paycom
         options:
           - paycom
+          - adp
           - workday
           - schooljobs
           - peopleadmin
@@ -56,7 +57,7 @@ jobs:
         run: npm ci
 
       - name: Install Chromium for browser-backed platforms
-        if: inputs.platform != 'paycom' && inputs.platform != 'workday'
+        if: inputs.platform != 'paycom' && inputs.platform != 'workday' && inputs.platform != 'adp'
         run: npx playwright install --with-deps chromium
 
       - name: Backfill selected platform

@@ -3,7 +3,9 @@ import { inferPlatformFromUrl } from "./url-normalization.js";
 
 export const DESCRIPTION_RETRY_DAYS = 14;
 export const DESCRIPTION_MAX_ATTEMPTS = 2;
-export const DESCRIPTION_FETCH_VERSION = 5;
+export const DESCRIPTION_FETCH_VERSION = 6;
+const PAYCOM_DIRECT_FETCH_VERSION = 5;
+const ADP_DIRECT_FETCH_VERSION = 6;
 
 function hasHttpUrl(job) {
   return /^https?:\/\//i.test(job?.url || "");
@@ -31,6 +33,10 @@ export function isUnsupportedDescriptionUrl(url) {
   // has no job identifier and therefore no description endpoint to recover.
   if (/paycomonline\.net\/v4\/ats\/web\.php\/jobs(?:\?|$)/i.test(value) && !/[?&]job=\d+/i.test(value)) return true;
 
+  // ADP career-center URLs without jobId identify the tenant or a category,
+  // not an individual requisition, so there is no detail body to request.
+  if (/workforcenow(?:\.cloud)?\.adp\.com/i.test(value) && !/[?&]jobId=[a-z\d_]+/i.test(value)) return true;
+
   return false;
 }
 
@@ -53,7 +59,8 @@ export function needsDescriptionFetch(
   const url = String(job?.url || "");
   const fetchVersion = Number(job?.descriptionFetchVersion || 0);
   if (/myworkdayjobs\.com|myworkdaysite\.com/i.test(url) && fetchVersion < 3) return true;
-  if (/paycomonline\.net/i.test(url) && fetchVersion < DESCRIPTION_FETCH_VERSION) return true;
+  if (/paycomonline\.net/i.test(url) && fetchVersion < PAYCOM_DIRECT_FETCH_VERSION) return true;
+  if (/workforcenow(?:\.cloud)?\.adp\.com/i.test(url) && fetchVersion < ADP_DIRECT_FETCH_VERSION) return true;
   const attempts = inferredAttempts(job);
   if (!job.descriptionFetchedAt) return attempts < maxAttempts;
   if (attempts >= maxAttempts) return false;

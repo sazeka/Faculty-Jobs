@@ -65,6 +65,7 @@ test("inferPlatformFromUrl recognizes known ATS platforms", () => {
   assert.equal(inferPlatformFromUrl("https://abc.myworkdayjobs.com/x"), "workday");
   assert.equal(inferPlatformFromUrl("https://jobs.silkroad.com/x"), "generic");
   assert.equal(inferPlatformFromUrl("https://unm.csod.com/x"), "csod");
+  assert.equal(inferPlatformFromUrl("https://workforcenow.adp.com/mascsr/jobs"), "adp");
   assert.equal(inferPlatformFromUrl("https://x.interfolio.com/y"), "interfolio");
   assert.equal(inferPlatformFromUrl(""), null);
 });

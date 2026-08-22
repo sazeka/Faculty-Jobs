@@ -92,6 +92,7 @@ export function inferPlatformFromUrl(url) {
   if (u.includes("schooljobs.com")) return "schooljobs";
   if (u.includes("csod.com")) return "csod";
   if (u.includes("paycomonline.net")) return "paycom";
+  if (u.includes("workforcenow.adp.com") || u.includes("workforcenow.cloud.adp.com")) return "adp";
   if (u.includes("interviewexchange.com")) return "interviewexchange";
   if (u.includes("jobvite.com")) return "jobvite";
   if (u.includes("interfolio.com")) return "interfolio";

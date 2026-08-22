@@ -68,6 +68,12 @@ test("skips Paycom tenant listings that are not individual jobs", () => {
   assert.equal(needsDescriptionFetch({ url: listing }, NOW), false);
 });
 
+test("skips ADP career-center listings without a requisition id", () => {
+  const listing = "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=77bf9053-07ed-47ba-b601-d78b61854199&ccId=9200563810115_2&lang=en_US";
+  assert.equal(isUnsupportedDescriptionUrl(listing), true);
+  assert.equal(needsDescriptionFetch({ url: listing }, NOW), false);
+});
+
 test("immediately retries Workday results captured by the pre-fix fetcher once", () => {
   const oldResult = {
     url: "https://school.wd1.myworkdayjobs.com/jobs/job/example_R123",
@@ -92,13 +98,25 @@ test("immediately retries Paycom results captured before the direct API fetcher"
     descriptionFetchedAt: "2026-08-19T00:00:00.000Z",
     descriptionFetchAttempts: 2,
     descriptionFetchStatus: "empty",
-    descriptionFetchVersion: DESCRIPTION_FETCH_VERSION - 1,
+    descriptionFetchVersion: 4,
   };
   assert.equal(needsDescriptionFetch(oldResult, NOW), true);
   assert.equal(needsDescriptionFetch({
     ...oldResult,
-    descriptionFetchVersion: DESCRIPTION_FETCH_VERSION,
+    descriptionFetchVersion: 5,
   }, NOW), false);
+});
+
+test("immediately retries ADP results captured before the direct API fetcher", () => {
+  const oldResult = {
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=997c6fde-f713-4be9-b6cf-f4bdbc02cbbb&ccId=19000101_000001&jobId=9200129779508_1",
+    descriptionFetchedAt: "2026-08-19T00:00:00.000Z",
+    descriptionFetchAttempts: 2,
+    descriptionFetchStatus: "empty",
+    descriptionFetchVersion: 5,
+  };
+  assert.equal(needsDescriptionFetch(oldResult, NOW), true);
+  assert.equal(needsDescriptionFetch({ ...oldResult, descriptionFetchVersion: DESCRIPTION_FETCH_VERSION }, NOW), false);
 });
 
 test("prioritizes unknown tenure and then newer postings", () => {
