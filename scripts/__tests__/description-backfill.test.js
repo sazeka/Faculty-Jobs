@@ -59,6 +59,25 @@ test("immediately retries Workday results captured by the pre-fix fetcher once",
     ...oldResult,
     descriptionFetchVersion: DESCRIPTION_FETCH_VERSION,
   }, NOW), false);
+  assert.equal(needsDescriptionFetch({
+    ...oldResult,
+    descriptionFetchVersion: 3,
+  }, NOW), false);
+});
+
+test("immediately retries Paycom results captured before the direct API fetcher", () => {
+  const oldResult = {
+    url: "https://www.paycomonline.net/v4/ats/web.php/portal/D735C44B01F6404D0C91B262228D396A/jobs/427011",
+    descriptionFetchedAt: "2026-08-19T00:00:00.000Z",
+    descriptionFetchAttempts: 2,
+    descriptionFetchStatus: "empty",
+    descriptionFetchVersion: DESCRIPTION_FETCH_VERSION - 1,
+  };
+  assert.equal(needsDescriptionFetch(oldResult, NOW), true);
+  assert.equal(needsDescriptionFetch({
+    ...oldResult,
+    descriptionFetchVersion: DESCRIPTION_FETCH_VERSION,
+  }, NOW), false);
 });
 
 test("prioritizes unknown tenure and then newer postings", () => {

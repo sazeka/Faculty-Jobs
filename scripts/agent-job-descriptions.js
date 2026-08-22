@@ -30,6 +30,7 @@ import {
 } from "./lib/description-backfill.js";
 import { createDescriptionFetchReport } from "./lib/description-fetch-report.js";
 import { buildWorkdayCxsUrl, fetchWorkdayPosting } from "./lib/workday-description.js";
+import { fetchPaycomPosting, parsePaycomJobUrl } from "./lib/paycom-description.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -195,6 +196,18 @@ async function main() {
           // hosted Chromium. Their public CXS endpoint returns the same posting
           // body and exact posting-window dates without browser rendering.
           const result = await fetchWorkdayPosting(job.url, {
+            timeoutMs: TIMEOUT_MS,
+            minLen: MIN_LEN,
+            maxLen: MAX_LEN,
+          });
+          desc = result.desc;
+          datePosted = result.datePosted;
+          validThrough = result.validThrough;
+        } else if (parsePaycomJobUrl(job.url)) {
+          // Paycom's SPA obtains the complete posting from a public JSON API.
+          // Fetch it directly using the short-lived session token embedded in
+          // the public landing page, avoiding unreliable browser rendering.
+          const result = await fetchPaycomPosting(job.url, {
             timeoutMs: TIMEOUT_MS,
             minLen: MIN_LEN,
             maxLen: MAX_LEN,
