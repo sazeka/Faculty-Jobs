@@ -8,12 +8,25 @@ function hasHttpUrl(job) {
   return /^https?:\/\//i.test(job?.url || "");
 }
 
-// OneUSG/PeopleSoft listing rows do not expose public detail URLs. The scraper
-// stores a #jobId fragment to keep rows unique, but fragments never reach the
-// server and anonymous visits currently redirect to a PeopleSoft sign-in error.
-// Do not spend the limited daily detail-page quota retrying these virtual links.
+// Some URLs cannot yield a description to an unattended fetcher even though
+// they remain useful links for a human job seeker. Keep the job records, but do
+// not spend the limited description quota retrying known-impossible targets.
 export function isUnsupportedDescriptionUrl(url) {
-  return /careers\.hprod\.onehcm\.usg\.edu/i.test(String(url || "")) && /#jobId=\d+/i.test(String(url || ""));
+  const value = String(url || "");
+
+  // OneUSG/PeopleSoft listing rows use a virtual #jobId fragment. Fragments
+  // never reach the server and anonymous visits redirect to a sign-in error.
+  if (/careers\.hprod\.onehcm\.usg\.edu/i.test(value) && /#jobId=\d+/i.test(value)) return true;
+
+  // InterviewExchange/Hirezon returns its explicit "resource not authorized"
+  // WAF response to direct pages and public RSS feeds from GitHub-hosted,
+  // residential, Google translation, and public archive fetchers. Repeated
+  // browser attempts cannot recover content and previously consumed hundreds
+  // of slots per backfill. Preserve these links for users while excluding them
+  // from automated description attempts until the vendor exposes a usable feed.
+  if (/^https?:\/\/([a-z0-9-]+\.)?interviewexchange\.com\//i.test(value)) return true;
+
+  return false;
 }
 
 function inferredAttempts(job) {

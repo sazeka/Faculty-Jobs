@@ -38,6 +38,15 @@ test("skips virtual OneUSG search fragments that cannot resolve to public detail
   assert.equal(isUnsupportedDescriptionUrl("https://example.edu/jobs/300794"), false);
 });
 
+test("skips InterviewExchange pages blocked by the platform-wide Hirezon WAF", () => {
+  const tenantUrl = "https://fredonia.interviewexchange.com/jobofferdetails.jsp?JOBID=188165";
+  const sharedUrl = "https://www.interviewexchange.com/jobofferdetails.jsp?JOBID=180452";
+  assert.equal(isUnsupportedDescriptionUrl(tenantUrl), true);
+  assert.equal(isUnsupportedDescriptionUrl(sharedUrl), true);
+  assert.equal(needsDescriptionFetch({ url: tenantUrl }, NOW), false);
+  assert.equal(isUnsupportedDescriptionUrl("https://interviewexchange.example.edu/jobs/1"), false);
+});
+
 test("immediately retries Workday results captured by the pre-fix fetcher once", () => {
   const oldResult = {
     url: "https://school.wd1.myworkdayjobs.com/jobs/job/example_R123",
