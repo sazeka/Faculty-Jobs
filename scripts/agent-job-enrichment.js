@@ -26,6 +26,10 @@ import {
   classifyTenureTrack,
   classifyTenureTrackWithEvidence,
 } from './lib/weekly-tenure-stats.js';
+import {
+  alignEnrichmentResults,
+  validateAiTenureEvidence,
+} from './lib/enrichment-response.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -161,16 +165,18 @@ function buildPrompt(batch) {
 
   return `You are a structured data extractor for academic faculty job listings.
 
-For each item, extract three fields:
+For each item, extract five fields:
 1. discipline - the academic field (e.g., "Computer Science", "Nursing", "Mathematics", "English Literature"). Be specific. Return null if the item is not a real faculty job posting (e.g., a phone number, degree program name, or non-job listing).
-2. tenureTrack - exactly one of: "tenure-track", "non-tenure-track", or "unknown"
+2. tenureTrack - exactly one of: "tenure-track", "non-tenure-track", or "unknown". Do not infer tenure status from words such as full-time, faculty, professor, lecturer, or instructor. Use a non-unknown value only when the supplied text explicitly states the appointment track; otherwise return "unknown".
 3. positionType - MUST be exactly one of these strings (no others allowed): "Assistant Professor", "Associate Professor", "Full Professor", "Open Rank", "Lecturer", "Instructor", "Adjunct", "Visiting", "Clinical", "Postdoctoral", "Research", "Other". Use "Other" for anything that does not fit.
+4. itemId - copy the numbered item ID exactly. This is required even when other fields are null.
+5. tenureEvidence - for a non-unknown tenureTrack, copy an exact short quote from the supplied title or description that explicitly supports the appointment track. Return null for unknown. Never paraphrase.
 
 When a Description is provided, use it — it usually states tenure status, rank, and field more reliably than the title alone.
 
-Return ONLY a JSON array with one object per item in the same order. No explanation, no markdown fences.
+Return ONLY a JSON array with one object per item. No explanation, no markdown fences.
 
-Example: [{"discipline":"Computer Science","tenureTrack":"tenure-track","positionType":"Assistant Professor"}]
+Example: [{"itemId":1,"discipline":"Computer Science","tenureTrack":"tenure-track","tenureEvidence":"tenure-track faculty appointment","positionType":"Assistant Professor"}]
 
 Items:
 ${jobLines}`;
@@ -373,6 +379,7 @@ async function main() {
 
   let enrichedCount = 0;
   let errorCount    = 0;
+  let aiTenureCount = 0;
   let nextBatch     = 0;
 
   // Process one batch. The local model frequently drops rows (or emits
@@ -389,7 +396,8 @@ async function main() {
       errMsg = err.message;
     }
 
-    const ok = Array.isArray(results) && results.length === batch.length;
+    const alignedResults = alignEnrichmentResults(results, batch.length);
+    const ok = Boolean(alignedResults);
 
     if (!ok) {
       // Authentication/configuration errors affect every row. Do not recursively
@@ -415,13 +423,23 @@ async function main() {
     let batchEnriched = 0;
     for (let j = 0; j < batch.length; j++) {
       const job    = jobIndex.get(batch[j].canonicalJobId);
-      const result = results[j];
+      const result = alignedResults[j];
       if (!job || !result) continue;
       const norm = normalizeResult(result);
-      if (job.discipline === undefined) job.discipline = norm.discipline;
+      if (
+        job.discipline === undefined &&
+        typeof norm.discipline === 'string' &&
+        norm.discipline.trim()
+      ) {
+        job.discipline = norm.discipline.trim();
+      }
       if (classifyTenureTrack(job) === null) {
-        job.tenureTrack = norm.tenureTrack;
-        if (norm.tenureTrack !== 'unknown') job.tenureEvidence = 'ai';
+        const evidence = validateAiTenureEvidence(norm.tenureTrack, result.tenureEvidence, job);
+        if (evidence) {
+          job.tenureTrack = norm.tenureTrack;
+          job.tenureEvidence = 'ai-quoted';
+          aiTenureCount++;
+        }
       }
       if (!job.positionType || job.positionType === 'Unknown') job.positionType = norm.positionType;
       enrichedCount++;
@@ -456,6 +474,7 @@ async function main() {
     totalJobs:       payload.jobs.length,
     enrichedThisRun: enrichedCount,
     tenureClassifiedByRules: deterministicTenureCount,
+    tenureClassifiedByAi: aiTenureCount,
     tenureUnknown: payload.jobs.filter(needsTenure).length,
     totalEnriched,
     remaining:       payload.jobs.length - totalEnriched,
@@ -465,6 +484,7 @@ async function main() {
 
   console.log(`\n  Enriched this run : ${enrichedCount}`);
   console.log(`  Total enriched    : ${totalEnriched.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
+  console.log(`  Tenure accepted   : ${aiTenureCount.toLocaleString()} (exact quoted evidence)`);
   if (errorCount) console.log(`  Jobs left for next run : ${errorCount}`);
   console.log(`  Report saved      : generated/enrichment-report.json`);
   console.log('');
