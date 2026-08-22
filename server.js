@@ -593,6 +593,7 @@ const CT_PRIVATE_CAMPUSES = [
   { campus: "United States Coast Guard Academy", type: "generic", url: "https://uscga.edu/about/jobs/" },
   { campus: "University of New Haven", type: "generic", url: "https://www.newhaven.edu/about/employment/index.php" },
   { campus: "Southern Connecticut State University", type: "generic", url: "https://inside.southernct.edu/human-resources/jobs" },
+  { campus: "Goodwin University", type: "generic", url: "https://www.goodwin.edu/faculty-employment" },
 ];
 
 const CSU_URL =
