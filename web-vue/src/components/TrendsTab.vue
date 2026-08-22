@@ -11,7 +11,9 @@ const error = ref(null)
 
 onMounted(async () => {
   try {
-    const res = await fetch(`${props.baseUrl}data/weekly-trends.json`)
+    const res = await fetch(`${props.baseUrl}data/weekly-trends.json?v=institution-control-1`, {
+      cache: 'no-store',
+    })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     trends.value = await res.json()
   } catch {
@@ -177,6 +179,9 @@ function fmtWeek(s) {
             {{ fmt(controlStats.unknown) }} unmatched listings are excluded.
           </div>
         </template>
+        <div v-else class="fa-meta control-unavailable">
+          Institution-control history will appear after the latest weekly data finishes loading.
+        </div>
       </div>
 
       <!-- Position types -->
@@ -336,6 +341,7 @@ function fmtWeek(s) {
 .control-key-private { background: var(--accent); }
 .control-note { color: var(--ink-4); line-height: 1.5; margin-top: 10px; }
 .control-start-note { color: var(--ink-3); line-height: 1.5; margin-top: 10px; }
+.control-unavailable { color: var(--ink-3); line-height: 1.6; max-width: 360px; }
 
 .trends-bar-row {
   display: grid;
