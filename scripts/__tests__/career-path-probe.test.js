@@ -21,6 +21,17 @@ test("career path probing accepts a normal employment page", () => {
   );
 });
 
+test("career path probing rejects student-facing career and library resources", () => {
+  assert.equal(
+    isRejectedCareerPage("https://example.edu/career-readiness/experiential-learning/faculty-led-travel/"),
+    true
+  );
+  assert.equal(
+    isRejectedCareerPage("https://example.edu/distance-education-library-services/employment-resources/"),
+    true
+  );
+});
+
 test("career discovery prioritizes unattempted and least-recently attempted institutions", () => {
   const rows = [
     { name: "Recent", discovery_attempts: 1, last_discovery_attempt_at: "2026-08-20" },

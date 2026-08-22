@@ -1584,6 +1584,8 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Manor College", type: "generic", url: "https://manor.edu/about/employment/" },
   { campus: "Marywood University", type: "generic", url: "https://www.marywood.edu/depts/human-resources/employment-opportunities/" },
   { campus: "Missio Theological Seminary", type: "generic", url: "https://missio.edu/employment-opportunities/" },
+  { campus: "Mount Aloysius College", type: "generic", url: "https://www.mtaloy.edu/employment-opportunities/" },
+  { campus: "Northern Pennsylvania Regional College", type: "generic", url: "https://nprc.edu/employment/" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -1764,6 +1766,7 @@ const NC_CAMPUSES = [
   { campus: "Gaston College", type: "generic", url: "https://www.gaston.edu/employment-opportunities/" },
   { campus: "Guilford Technical Community College", type: "generic", url: "https://www.gtcc.edu/about/employment/index.php" },
   { campus: "Halifax Community College", type: "generic", url: "https://halifaxcc.edu/community/employment-opportunities/" },
+  { campus: "Mitchell Community College", type: "generic", url: "https://www.mitchellcc.edu/employment-opportunities/" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -1951,6 +1954,8 @@ const VA_CAMPUSES = [
   { campus: "Emory & Henry University", type: "generic", url: "https://www.emoryhenry.edu/human-resources/employment-opportunities/" },
   { campus: "Ferrum College", type: "generic", url: "https://ferrumcollege.applytojob.com/apply" },
   { campus: "J Sargeant Reynolds Community College", type: "generic", url: "https://www.reynolds.edu/jobs/" },
+  { campus: "Mountain Gateway Community College", type: "generic", url: "https://www.mgcc.edu/jobs" },
+  { campus: "Northern Virginia Community College", type: "generic", url: "https://www.nvcc.edu/about/employment/" },
 ];
 
 // SC (South Carolina) - major public research + private liberal arts
@@ -2063,6 +2068,9 @@ const SC_CAMPUSES = [
   { campus: "Columbia College (SC)", type: "generic", url: "https://www.columbiasc.edu/about/employment" },
   { campus: "Horry-Georgetown Technical College", type: "generic", url: "https://www.hgtc.edu/about_hgtc/administrativedepartments/humanresources/employment/index.html/faculty" },
   { campus: "Lander University", type: "generic", url: "https://www.lander.edu/about/offices-departments/human-resources/employment-opportunities/index.html" },
+  { campus: "Morris College", type: "generic", url: "https://www.morris.edu/employment-opportunities/" },
+  { campus: "Newberry College", type: "generic", url: "https://www.newberry.edu/employment" },
+  { campus: "North Greenville University", type: "generic", url: "https://www.ngu.edu/life-at-ngu/jobs-at-ngu/" },
 ];
 
 
@@ -2181,6 +2189,7 @@ const MD_CAMPUSES = [
   { campus: "Frederick Community College", type: "generic", url: "https://jobs.frederick.edu/" },
   { campus: "Frostburg State University", type: "generic", url: "https://www.frostburg.edu/human-resources/Careers-at-FSU/Careers-at-FSU.php" },
   { campus: "Loyola University Maryland", type: "generic", url: "https://www.loyola.edu/about/employment/" },
+  { campus: "Montgomery College", type: "generic", url: "https://www.montgomerycollege.edu/about-mc/careers/index.html" },
 ];
 
 
@@ -2801,6 +2810,10 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Jewish Theological Seminary of America", type: "generic", url: "https://www.jtsa.edu/careers-at-jts/" },
   { campus: "Keuka College", type: "generic", url: "https://www.keuka.edu/hr/employment-opportunities" },
   { campus: "Mirrer Yeshiva Cent Institute", type: "generic", url: "https://www.mirreryeshiva.com/faculty-employment" },
+  { campus: "Mount Saint Mary College", type: "generic", url: "https://www.msmc.edu/employment/" },
+  { campus: "New York College of Traditional Chinese Medicine", type: "generic", url: "https://nyctcm.edu/about-nyctcm-traditional-chinese-medicine/employment-opportunities-at-nyctcm/" },
+  { campus: "New York Medical College", type: "generic", url: "https://www.nymc.edu/careers/" },
+  { campus: "Northeastern Seminary", type: "generic", url: "https://www.nes.edu/employment" },
 ];
 
 // OR (Oregon)
@@ -2906,6 +2919,7 @@ const OR_CAMPUSES = [
   { campus: "Clatsop Community College", type: "generic", url: "https://www.clatsopcc.edu/" },
   { campus: "Columbia Gorge Community College", type: "generic", url: "https://www.cgcc.edu/jobs" },
   { campus: "Corban University", type: "generic", url: "https://www.corban.edu/" },
+  { campus: "National University of Natural Medicine", type: "generic", url: "https://nunm.edu/jobs/" },
 ];
 
 
@@ -3072,6 +3086,8 @@ const WA_CAMPUSES = [
   { campus: "Faith International University", type: "generic", url: "https://www.faithiu.edu/" },
   { campus: "Grays Harbor College", type: "generic", url: "https://www.schooljobs.com/careers/ghc" },
   { campus: "Lower Columbia College", type: "generic", url: "https://lowercolumbia.edu/jobs/" },
+  { campus: "Northwest University", type: "generic", url: "https://www.northwestu.edu/jobs" },
+  { campus: "Northwest University-Center for Online and Extended Education", type: "generic", url: "https://www.northwestu.edu/jobs" },
 ];
 
 
@@ -3255,6 +3271,7 @@ const MN_CAMPUSES = [
   { campus: "Gustavus Adolphus College", type: "generic", url: "https://gustavus.edu/about/administrative-offices/human-resources/employment-opportunities-human-resources" },
   { campus: "Leech Lake Tribal College", type: "generic", url: "https://www.lltc.edu/human-resources/employment/" },
   { campus: "Metropolitan State University", type: "generic", url: "https://www.metrostate.edu/about/employment" },
+  { campus: "North Central University", type: "generic", url: "https://www.northcentral.edu/about/employment/" },
 ];
 
 // ND (North Dakota)
@@ -3488,6 +3505,7 @@ const IA_CAMPUSES = [
   { campus: "Faith Baptist Bible College and Theological Seminary", type: "generic", url: "https://faith.edu/careers" },
   { campus: "Kirkwood Community College", type: "generic", url: "https://www.kirkwood.edu/about-us/faculty-leadership/leadership-team/human-resources/job-listings" },
   { campus: "Loras College", type: "generic", url: "https://loras.edu/employment/" },
+  { campus: "Northwest Iowa Community College", type: "generic", url: "https://nwicc.edu/employment-opportunities/employment-application/" },
 ];
 
 // WY (Wyoming)
@@ -3505,6 +3523,7 @@ const WY_CAMPUSES = [
   { campus: "Casper College", type: "schooljobs", url: "https://www.schooljobs.com/careers/caspercollege" },
   { campus: "Central Wyoming College", type: "generic", url: "https://www.cwc.edu/" },
   { campus: "Eastern Wyoming College", type: "generic", url: "https://ewc.wy.edu/" },
+  { campus: "Northwest College", type: "generic", url: "https://www.nwc.edu/employment/" },
 ];
 
 // MT (Montana)
@@ -3553,6 +3572,9 @@ const MT_CAMPUSES = [
   { campus: "Fort Peck Community College", type: "generic", url: "https://www.fpcc.edu/about" },
   { campus: "Highlands College of Montana Tech", type: "generic", url: "https://www.mtech.edu/about/employment/" },
   { campus: "Miles Community College", type: "generic", url: "https://www.milescc.edu/employment/" },
+  { campus: "Montana Bible College", type: "generic", url: "https://www.montanabiblecollege.edu/academics/faculty-jobs" },
+  { campus: "Montana State University Billings", type: "generic", url: "https://www.msubillings.edu/careers/" },
+  { campus: "Montana Technological University", type: "generic", url: "https://www.mtech.edu/about/employment/" },
 ];
 
 // WI (Wisconsin)
@@ -3636,6 +3658,8 @@ const WI_CAMPUSES = [
   { campus: "Gateway Technical College", type: "generic", url: "https://www.gtc.edu/about-gateway/jobs-gateway/why-work-gateway" },
   { campus: "Medical College of Wisconsin", type: "generic", url: "https://www.mcw.edu/departments/human-resources/careers" },
   { campus: "Milwaukee School of Engineering", type: "generic", url: "https://www.msoe.edu/about-msoe/careers-at-msoe/" },
+  { campus: "Nashotah House", type: "generic", url: "https://www.nashotah.edu/employment-opportunities/" },
+  { campus: "Nicolet Area Technical College", type: "generic", url: "https://www.nicoletcollege.edu/about/employment" },
 ];
 
 // CO (Colorado)
@@ -3740,6 +3764,8 @@ const CO_CAMPUSES = [
   },
   { campus: "Lamar Community College", type: "generic", url: "https://www.lamarcc.edu/faculty-employment" },
   { campus: "Metropolitan State University of Denver", type: "generic", url: "https://www.msudenver.edu/faculty-affairs/faculty-employment-handbook/" },
+  { campus: "Naropa University", type: "generic", url: "https://www.naropa.edu/employment/" },
+  { campus: "Nazarene Bible College", type: "generic", url: "https://nbc.edu/jobs/" },
 ];
 
 // OH (Ohio)
@@ -3945,6 +3971,9 @@ const OH_CAMPUSES = [
   { campus: "Lakeland Community College", type: "generic", url: "https://www.lakelandcc.edu/employment" },
   { campus: "Mercy College of Ohio", type: "generic", url: "https://mercycollege.edu/about/employment-opportunities" },
   { campus: "Methodist Theological School in Ohio", type: "generic", url: "https://www.mtso.edu/about-mtso/employment-opportunities/" },
+  { campus: "Mount St. Joseph University", type: "generic", url: "https://www.msj.edu/employment-at-the-university/index.html" },
+  { campus: "Mount Vernon Nazarene University", type: "generic", url: "https://mvnu.edu/employment-opportunities/" },
+  { campus: "Muskingum University", type: "generic", url: "https://www.muskingum.edu/human-resources/careers" },
 ];
 
 // NM (New Mexico)
@@ -3970,6 +3999,7 @@ const NM_CAMPUSES = [
   { campus: "Eastern New Mexico University-Roswell Campus", type: "generic", url: "https://www.roswell.enmu.edu/human-resources" },
   { campus: "Luna Community College", type: "generic", url: "https://luna.edu/faculty-employment" },
   { campus: "Mesalands Community College", type: "generic", url: "https://www.mesalands.edu/faculty-employment" },
+  { campus: "New Mexico Military Institute", type: "generic", url: "https://www.nmmi.edu/human-resources/employment-opportunities/" },
 ];
 
 // NV (Nevada)
@@ -4154,6 +4184,7 @@ const MI_CAMPUSES = [
   { campus: "Macomb Community College", type: "generic", url: "https://www.macomb.edu/human-resources/employment-opportunities.html" },
   { campus: "Michigan School of Psychology", type: "generic", url: "https://msp.edu/about/employment/" },
   { campus: "Mid Michigan College", type: "generic", url: "https://midmich.edu/info-for/employees/human-resources/careers/" },
+  { campus: "Montcalm Community College", type: "generic", url: "https://www.montcalm.edu/about/employment/" },
 ];
 
 // IL (Illinois)
@@ -4418,6 +4449,9 @@ const IL_CAMPUSES = [
   { campus: "Lake Forest Graduate School of Management", type: "generic", url: "https://lfgsm.edu/employment-opportunities/" },
   { campus: "Lewis University", type: "generic", url: "https://www.lewisu.edu/faculty-employment" },
   { campus: "Loyola University Chicago", type: "generic", url: "https://www.luc.edu/hr/careers/" },
+  { campus: "Monmouth College", type: "generic", url: "https://www.monmouthcollege.edu/offices/hr/employment-opportunities/" },
+  { campus: "National University of Health Sciences", type: "generic", url: "https://www.nuhs.edu/about/human-resources/job-openings/" },
+  { campus: "Northern Baptist Theological Seminary", type: "generic", url: "https://www.seminary.edu/employment-opportunities/" },
 ];
 
 // ID (Idaho)
@@ -4594,6 +4628,7 @@ const WV_CAMPUSES = [
   { campus: "Fairmont State University", type: "generic", url: "https://www.fairmontstatejobs.com/" },
   { campus: "Fred W Eberle Technical Center", type: "generic", url: "https://fetc.edu/" },
   { campus: "Future Generations University", type: "generic", url: "https://www.future.edu/employment-opportunities/" },
+  { campus: "New River Community and Technical College", type: "generic", url: "https://www.newriver.edu/employment-opportunities/" },
 ];
 
 // TX (Texas)
@@ -4911,6 +4946,8 @@ const TX_CAMPUSES = [
   { campus: "McMurry University", type: "generic", url: "https://mcm.edu/careers-at-mcmurry-university/" },
   { campus: "Messenger College", type: "generic", url: "https://www.messengercollege.edu/academics/faculty-jobs" },
   { campus: "Midwestern State University", type: "generic", url: "https://www.msutexas.edu/human-resources/jobs/" },
+  { campus: "Nelson University", type: "generic", url: "https://www.nelson.edu/employment/" },
+  { campus: "North American University", type: "generic", url: "https://www.na.edu/faculty-staff/human-resources/employment-opportunities/" },
 ];
 
 // FL (Florida)
@@ -5325,6 +5362,7 @@ const AL_CAMPUSES = [
   { campus: "George C Wallace State Community College-Hanceville", type: "generic", url: "https://www.wallacestate.edu/programs/academic-division/index.html/faculty-jobs" },
   { campus: "John C Calhoun State Community College", type: "generic", url: "https://calhoun.edu/about/hr-employment/job-seeker-resources/" },
   { campus: "Marion Military Institute", type: "generic", url: "https://marionmilitary.edu/faculty-and-staff/employment-4/" },
+  { campus: "Northeast Alabama Community College", type: "generic", url: "https://www.nacc.edu/about-nacc/college-offices/human-resources/employment" },
 ];
 
 // MS (Mississippi)
@@ -5372,6 +5410,7 @@ const MS_CAMPUSES = [
   { campus: "Holmes Community College", type: "generic", url: "https://holmescc.edu/employment/" },
   { campus: "Jackson State University", type: "generic", url: "https://www.jsums.edu/careers/faculty/" },
   { campus: "Jones County Junior College", type: "generic", url: "https://www.jcjc.edu/employment/" },
+  { campus: "Mississippi College", type: "generic", url: "https://www.mc.edu/offices/human-resources/employment" },
 ];
 
 // LA (Louisiana)
@@ -5485,6 +5524,7 @@ const AR_CAMPUSES = [
   { campus: "East Arkansas Community College", type: "generic", url: "https://www.uaeacc.edu/employment" },
   { campus: "Ecclesia College", type: "generic", url: "https://ecollege.edu/employment" },
   { campus: "Henderson State University", type: "generic", url: "https://www.hsu.edu/about/administration/finance-and-administration/human-resources/job-opportunities/" },
+  { campus: "National Park College", type: "generic", url: "https://np.edu/facstaff/human-resources/employment-opportunities/" },
 ];
 
 // KS (Kansas)
@@ -5609,6 +5649,7 @@ const OK_CAMPUSES = [
   { campus: "East Central University", type: "generic", url: "https://ecokedu.bamboohr.com/careers" },
   { campus: "Eastern Oklahoma State College", type: "generic", url: "https://www.eosc.edu/about/human-resources/employment-opportunities" },
   { campus: "Family of Faith Christian University", type: "generic", url: "https://www.familyoffaith.edu/" },
+  { campus: "Murray State College", type: "generic", url: "https://www.mscok.edu/careers" },
 ];
 
 // MO (Missouri)
@@ -5697,6 +5738,8 @@ const MO_CAMPUSES = [
   { campus: "Columbia College (MO)", type: "generic", url: "https://www.ccis.edu/careers/" },
   { campus: "Hannibal-LaGrange University", type: "generic", url: "https://www.hlg.edu/about-hlgu/employment-opportunities/" },
   { campus: "Logan University", type: "generic", url: "https://www.logan.edu/employment-opportunities-at-logan/" },
+  { campus: "Moberly Area Community College", type: "generic", url: "https://www.macc.edu/jobs/" },
+  { campus: "North Central Missouri College", type: "generic", url: "https://www.ncmissouri.edu/jobs/" },
 ];
 
 // KY (Kentucky)
@@ -5791,6 +5834,7 @@ const TN_CAMPUSES = [
   { campus: "Lane College", type: "generic", url: "https://www.lanecollege.edu/employment" },
   { campus: "Mid-South Christian College", type: "generic", url: "https://www.midsouthchristian.edu/academics/faculty-jobs" },
   { campus: "Middle Tennessee School of Anesthesia Inc", type: "generic", url: "https://www.mtsa.edu/careers/" },
+  { campus: "Northeast State Community College", type: "generic", url: "https://www.northeaststate.edu/faculty-and-staff/human-resources/careers.html" },
 ];
 
 // AK (Alaska)
