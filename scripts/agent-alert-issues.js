@@ -10,15 +10,9 @@
  *   2. Scraper drop    — data-health-report.json sourceDropWarnings entry with dropPct >= 60
  *   3. Live site fail  — live-site-health.json overallStatus === "FAIL" (case-insensitive)
  *   4. Data staleness  — jobs.json generatedAt (or scrapedAt) more than 48 hours old
- *   5. Jetson heartbeat — no "Daily scrape update" commit (the Jetson's own daily-
- *      update.sh signature) in the last 36 hours. Distinct from #4: the Jetson's
- *      systemd service hung for 5 days straight in 2026-07-27 while jobs.json
- *      *looked* fresh the whole time — someone was manually re-triggering the
- *      CI-based scrape.yml every day or two, which genuinely refreshes
- *      jobs.json's scrapedAt and kept closing every staleness alert, while the
- *      actual automated pipeline stayed dead underneath. This check watches the
- *      specific mechanism that failed instead of a proxy any ad-hoc scrape can
- *      satisfy.
+ *   5. Scheduled scrape heartbeat — no "Scheduled scrape update" commit in the
+ *      last 60 hours. Distinct from #4 because a manually dispatched scrape can
+ *      refresh jobs.json without proving that the unattended schedule works.
  *
  * Usage:
  *   node scripts/agent-alert-issues.js [--dry-run]
@@ -52,7 +46,7 @@ const DEAD_PCT_THRESHOLD  = 50;   // % dead job URLs before alerting
 const DEAD_MIN_CHECKED    = 5;    // minimum checked URLs required
 const DROP_PCT_THRESHOLD  = 60;   // % scraper count drop before alerting
 const STALENESS_HOURS     = 48;   // hours before jobs.json is considered stale
-const HEARTBEAT_HOURS     = 36;   // hours before a missing "Daily scrape update" commit alerts
+const HEARTBEAT_HOURS     = 60;   // alternating-day schedule plus a 12-hour delay allowance
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
 
@@ -458,13 +452,12 @@ function checkDataStaleness() {
 }
 
 /**
- * Alert when no commit matching the Jetson's own "Daily scrape update"
- * message has landed within HEARTBEAT_HOURS. Deliberately independent of
- * jobs.json's own scrapedAt field (see the file-level doc comment) — this
- * reads git history directly so a manual scrape.yml run elsewhere can't mask
- * the specific automated pipeline being down.
+ * Alert when no commit from an unattended scrape.yml schedule has landed
+ * within HEARTBEAT_HOURS. Deliberately independent of jobs.json's scrapedAt
+ * field: manual workflow dispatches use a different commit signature and
+ * therefore cannot mask a failed schedule.
  */
-function checkJetsonHeartbeat() {
+function checkScheduledScrapeHeartbeat() {
   const alerts = [];
 
   // %cI = committer date, strict ISO 8601 — stable to parse regardless of the
@@ -475,12 +468,12 @@ function checkJetsonHeartbeat() {
   // outage, and a false "down" alert would be worse than staying silent until
   // the checkout is fixed.
   const out = runCommand(
-    `git log -1 --grep="^Daily scrape update" --format=%cI`,
-    "git log (Jetson heartbeat)"
+    `git log -1 --grep="^Scheduled scrape update" --format=%cI`,
+    "git log (scheduled scrape heartbeat)"
   );
   const dateStr = out ? out.trim() : "";
   if (!dateStr) {
-    console.log(`  [SKIP] No "Daily scrape update" commit found in the fetched git history.`);
+    console.log(`  [SKIP] No "Scheduled scrape update" commit found in the fetched git history.`);
     return alerts;
   }
 
@@ -494,25 +487,22 @@ function checkJetsonHeartbeat() {
 
   if (ageHours >= HEARTBEAT_HOURS) {
     const ageDays = (ageHours / 24).toFixed(1);
-    const title = `🔴 Jetson heartbeat: no daily scrape commit in 36+ hours`;
+    const title = `🔴 Scheduled scrape heartbeat: no update in 60+ hours`;
     const body = [
-      `## Jetson Heartbeat Alert`,
+      `## Scheduled Scrape Heartbeat Alert`,
       ``,
-      `**Last "Daily scrape update" commit:** ${dateStr}`,
+      `**Last "Scheduled scrape update" commit:** ${dateStr}`,
       `**Age:** ~${ageDays} days (${Math.round(ageHours)} hours)`,
       `**Threshold:** ${HEARTBEAT_HOURS} hours`,
       ``,
       `### What triggered this alert`,
-      `No commit matching the Jetson's own daily-update.sh signature ("Daily scrape update <date>") has landed in ${Math.round(ageHours)} hours. ` +
-        `This check is independent of the "Data staleness" alert on purpose: jobs.json can look fresh from a manually-triggered CI scrape ` +
-        `(scrape.yml) while the actual unattended pipeline on the Jetson is down — that happened for 5 days straight starting 2026-07-27, ` +
-        `undetected because a manual scrape kept resetting the staleness clock underneath it.`,
+      `No commit matching the scheduled workflow signature ("Scheduled scrape update <date>") has landed in ${Math.round(ageHours)} hours. ` +
+        `Manual workflow runs use a different signature, so they cannot conceal a failure of the unattended schedule.`,
       ``,
       `### Likely causes`,
-      `- The systemd service is stuck (check \`systemctl status faculty-atlas-daily-update.service\` on the Jetson — a service stuck ` +
-        `"activating" for a long time blocks every subsequent scheduled trigger)`,
-      `- The Jetson is powered off, offline, or lost network connectivity`,
-      `- \`daily-update.sh\` is erroring before it reaches the commit/push step`,
+      `- The scheduled GitHub Actions run failed or was delayed`,
+      `- Repository Actions or scheduled workflows were disabled`,
+      `- The scrape completed without reaching its commit/push step`,
       ``,
       `### Timestamp`,
       `${nowIso()}`,
@@ -584,7 +574,7 @@ async function main() {
     ...checkScraperHealthDrops(),
     ...checkLiveSite(),
     ...checkDataStaleness(),
-    ...checkJetsonHeartbeat(),
+    ...checkScheduledScrapeHeartbeat(),
     ...checkCoverageRegression(),
   ];
 
@@ -600,7 +590,7 @@ async function main() {
       "Scraper health drop (data-health-report.json sourceDropWarnings, dropPct >= 60)",
       `Live site fail (live-site-health.json overallStatus === "FAIL")`,
       "Data staleness (public/jobs.json generatedAt/scrapedAt > 48 hours old)",
-      `Jetson heartbeat (no "Daily scrape update" commit in > ${HEARTBEAT_HOURS} hours)`,
+      `Scheduled scrape heartbeat (no "Scheduled scrape update" commit in > ${HEARTBEAT_HOURS} hours)`,
       "Coverage regression (missing or pending-review institutions above accepted watermark)",
     ],
     candidatesFound: candidates.length,

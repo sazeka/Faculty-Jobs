@@ -1,11 +1,14 @@
 name: Daily scrape
 
 on:
-  # Manual-only. The nightly local daily-update.ps1 is the primary scraper — it
-  # has local Ollama so it can enrich + stamp firstSeen, which CI can't. Running
-  # both double-scraped and raced pushes on main, so the scheduled cron is
-  # removed; trigger here manually (Run workflow) when a CI scrape is wanted.
+  # The cloud scrape is the unattended source-of-truth refresh. Ollama remains
+  # local and is used only by the separate enrichment process, so this workflow
+  # does not need an AI API key or access to the Jetson.
   workflow_dispatch:
+  schedule:
+    # 03:17 UTC on alternating calendar days. The offset avoids the busiest
+    # top-of-hour window, where GitHub notes scheduled jobs can be delayed.
+    - cron: "17 3 */2 * *"
 
 permissions:
   contents: write
@@ -108,7 +111,12 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Daily update jobs and policy artifacts"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            commit_message="Scheduled scrape update $(date -u +%F)"
+          else
+            commit_message="Manual scrape update $(date -u +%F)"
+          fi
+          git commit -m "${commit_message}"
 
           # main moves often (other scheduled workflows + manual commits), so a bare
           # push races and fails non-fast-forward. Retry: rebase onto latest,

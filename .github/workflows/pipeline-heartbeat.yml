@@ -7,11 +7,10 @@ name: Pipeline heartbeat
 # checkout + the one check, so it can't be taken out by an unrelated failure
 # elsewhere in the pipeline.
 #
-# Also independent of jobs.json's own staleness field on purpose: that field
-# can be refreshed by a manual scrape.yml run while the Jetson's actual
-# unattended pipeline is down underneath it — see agent-alert-issues.js's
-# checkJetsonHeartbeat() for the incident that motivated this (2026-07-27,
-# 5 days undetected).
+# Also independent of jobs.json's own staleness field on purpose: a manually
+# dispatched scrape can refresh the data without proving that the unattended
+# schedule works. Scheduled scrape.yml runs use a distinct commit signature,
+# and the heartbeat watches only that signature.
 #
 # Runs every 6 hours so an outage is caught within hours, not days.
 
@@ -35,7 +34,7 @@ jobs:
       - name: Checkout (full history)
         uses: actions/checkout@v5
         with:
-          # The heartbeat check reads git log for the last "Daily scrape
+          # The heartbeat check reads git log for the last "Scheduled scrape
           # update" commit — a shallow checkout would make that look
           # identical to "pipeline is down" and the check deliberately
           # stays silent rather than risk a false alert, so it needs real
