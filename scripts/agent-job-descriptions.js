@@ -25,6 +25,7 @@ import {
   DESCRIPTION_FETCH_VERSION,
   descriptionAttemptCount,
   isUnsupportedDescriptionUrl,
+  matchesDescriptionHost,
   matchesDescriptionPlatform,
   needsDescriptionFetch,
   prioritizeDescriptionCandidates,
@@ -58,8 +59,12 @@ function parseArgs(argv) {
 const args = parseArgs(process.argv.slice(2));
 const DRY_RUN = Boolean(args["dry-run"]);
 const PLATFORM = String(args.platform || process.env.DESC_PLATFORM || "").trim().toLowerCase();
+const HOST = String(args.host || process.env.DESC_HOST || "").trim().toLowerCase();
 if (PLATFORM && !/^[a-z0-9-]+$/.test(PLATFORM)) {
   throw new Error(`Invalid description platform: ${PLATFORM}`);
+}
+if (HOST && !/^(?:[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?\.)+[a-z]{2,}$/i.test(HOST)) {
+  throw new Error(`Invalid description host: ${HOST}`);
 }
 // --redate: re-visit pages already fetched (descriptionFetchedAt set) that still
 // have no datePosted, to pick up labeled "Open Date" fields added since the last
@@ -129,13 +134,13 @@ async function main() {
 
   const needs = RECLOSE
     ? payload.jobs.filter(
-        (j) => !j.closeDate && !j.openUntilFilled && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "") && matchesDescriptionPlatform(j, PLATFORM)
+        (j) => !j.closeDate && !j.openUntilFilled && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "") && matchesDescriptionPlatform(j, PLATFORM) && matchesDescriptionHost(j, HOST)
       )
     : REDATE
     ? payload.jobs.filter(
-        (j) => !j.datePosted && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "") && matchesDescriptionPlatform(j, PLATFORM)
+        (j) => !j.datePosted && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "") && matchesDescriptionPlatform(j, PLATFORM) && matchesDescriptionHost(j, HOST)
       )
-    : prioritizeDescriptionCandidates(payload.jobs, Date.now(), { platform: PLATFORM });
+    : prioritizeDescriptionCandidates(payload.jobs, Date.now(), { platform: PLATFORM, host: HOST });
   const toProcess = needs.slice(0, MAX);
 
   const haveDesc = payload.jobs.filter((j) => j.description && String(j.description).trim()).length;
@@ -146,6 +151,7 @@ async function main() {
   console.log(`  Missing (unfetched): ${needs.length.toLocaleString()}`);
   console.log(`  To process now    : ${toProcess.length.toLocaleString()} (max ${MAX})`);
   if (PLATFORM) console.log(`  Platform filter   : ${PLATFORM}`);
+  if (HOST) console.log(`  Host filter       : ${HOST}`);
   console.log(`  Concurrency       : ${CONCURRENCY}`);
 
   if (toProcess.length === 0) {
@@ -513,7 +519,7 @@ async function main() {
     eligibleRemaining,
     unsupportedRemaining,
     fetchDiagnostics,
-    config: { max: MAX, concurrency: CONCURRENCY, timeoutMs: TIMEOUT_MS, minLen: MIN_LEN, platform: PLATFORM || null },
+    config: { max: MAX, concurrency: CONCURRENCY, timeoutMs: TIMEOUT_MS, minLen: MIN_LEN, platform: PLATFORM || null, host: HOST || null },
   });
 
   console.log(`\n  Attempted this run : ${attempted}`);

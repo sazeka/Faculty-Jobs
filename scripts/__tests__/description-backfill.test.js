@@ -5,6 +5,7 @@ import {
   DESCRIPTION_FETCH_VERSION,
   descriptionAttemptCount,
   isUnsupportedDescriptionUrl,
+  matchesDescriptionHost,
   matchesDescriptionPlatform,
   needsDescriptionFetch,
   prioritizeDescriptionCandidates,
@@ -43,6 +44,22 @@ test("filters description candidates to one requested platform", () => {
   assert.deepEqual(
     prioritizeDescriptionCandidates(jobs, NOW, { platform: "paycom" }).map((job) => job.canonicalJobId),
     ["paycom"],
+  );
+});
+
+test("filters description candidates to one exact hostname", () => {
+  const jobs = [
+    { canonicalJobId: "harvard", url: "https://academicpositions.harvard.edu/postings/1" },
+    { canonicalJobId: "missouri", url: "https://erecruit.umsystem.edu/jobs/1" },
+    { canonicalJobId: "subdomain", url: "https://other.academicpositions.harvard.edu/postings/2" },
+  ];
+  assert.equal(matchesDescriptionHost(jobs[0], "academicpositions.harvard.edu"), true);
+  assert.equal(matchesDescriptionHost(jobs[1], "academicpositions.harvard.edu"), false);
+  assert.equal(matchesDescriptionHost(jobs[2], "academicpositions.harvard.edu"), false);
+  assert.deepEqual(
+    prioritizeDescriptionCandidates(jobs, NOW, { platform: "generic", host: "academicpositions.harvard.edu" })
+      .map((job) => job.canonicalJobId),
+    ["harvard"],
   );
 });
 

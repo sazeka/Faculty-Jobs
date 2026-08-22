@@ -50,6 +50,7 @@ test('focused description workflow restricts runs to an explicit platform', () =
   const workflow = fs.readFileSync(path.join(ROOT, '.github/workflows/description-backfill.yml'), 'utf8');
   assert.match(workflow, /type:\s*choice/);
   assert.match(workflow, /DESC_PLATFORM:\s*\$\{\{ inputs\.platform \}\}/);
+  assert.match(workflow, /DESC_HOST:\s*\$\{\{ inputs\.host \}\}/);
   assert.match(workflow, /npm run agent:descriptions -- --concurrency 8/);
   assert.doesNotMatch(workflow, /agent:data-health|agent:job-presence|agent:alert-issues|agent:discover/);
 });

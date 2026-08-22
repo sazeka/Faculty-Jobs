@@ -75,10 +75,20 @@ export function matchesDescriptionPlatform(job, platform = "") {
   return !wanted || inferPlatformFromUrl(job?.url) === wanted;
 }
 
-export function prioritizeDescriptionCandidates(jobs = [], nowMs = Date.now(), { platform = "" } = {}) {
+export function matchesDescriptionHost(job, host = "") {
+  const wanted = String(host || "").trim().toLowerCase();
+  if (!wanted) return true;
+  try {
+    return new URL(job?.url).hostname.toLowerCase() === wanted;
+  } catch {
+    return false;
+  }
+}
+
+export function prioritizeDescriptionCandidates(jobs = [], nowMs = Date.now(), { platform = "", host = "" } = {}) {
   return jobs
     .map((job, index) => ({ job, index }))
-    .filter(({ job }) => needsDescriptionFetch(job, nowMs) && matchesDescriptionPlatform(job, platform))
+    .filter(({ job }) => needsDescriptionFetch(job, nowMs) && matchesDescriptionPlatform(job, platform) && matchesDescriptionHost(job, host))
     .sort((a, b) => {
       const unknownA = classifyTenureTrack(a.job) === null ? 0 : 1;
       const unknownB = classifyTenureTrack(b.job) === null ? 0 : 1;

@@ -28,12 +28,16 @@ on:
           - "100"
           - "200"
           - "400"
+      host:
+        description: Optional exact hostname (primarily for generic sites)
+        required: false
+        type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: focused-description-${{ inputs.platform }}
+  group: focused-description-${{ inputs.platform }}-${{ inputs.host || 'all' }}
   cancel-in-progress: false
 
 jobs:
@@ -42,6 +46,7 @@ jobs:
     env:
       DESC_PLATFORM: ${{ inputs.platform }}
       DESC_MAX: ${{ inputs.max }}
+      DESC_HOST: ${{ inputs.host }}
 
     steps:
       - name: Checkout
