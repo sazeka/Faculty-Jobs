@@ -3,7 +3,7 @@ import { inferPlatformFromUrl } from "./url-normalization.js";
 
 export const DESCRIPTION_RETRY_DAYS = 14;
 export const DESCRIPTION_MAX_ATTEMPTS = 2;
-export const DESCRIPTION_FETCH_VERSION = 4;
+export const DESCRIPTION_FETCH_VERSION = 5;
 
 function hasHttpUrl(job) {
   return /^https?:\/\//i.test(job?.url || "");
@@ -26,6 +26,10 @@ export function isUnsupportedDescriptionUrl(url) {
   // of slots per backfill. Preserve these links for users while excluding them
   // from automated description attempts until the vendor exposes a usable feed.
   if (/^https?:\/\/([a-z0-9-]+\.)?interviewexchange\.com\//i.test(value)) return true;
+
+  // A Paycom tenant career page is a listing, not an individual posting. It
+  // has no job identifier and therefore no description endpoint to recover.
+  if (/paycomonline\.net\/v4\/ats\/web\.php\/jobs(?:\?|$)/i.test(value) && !/[?&]job=\d+/i.test(value)) return true;
 
   return false;
 }

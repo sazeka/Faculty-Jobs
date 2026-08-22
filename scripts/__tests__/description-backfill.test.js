@@ -62,6 +62,12 @@ test("skips InterviewExchange pages blocked by the platform-wide Hirezon WAF", (
   assert.equal(isUnsupportedDescriptionUrl("https://interviewexchange.example.edu/jobs/1"), false);
 });
 
+test("skips Paycom tenant listings that are not individual jobs", () => {
+  const listing = "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=ABFDAFED645B6920CFDB8559C078F8A5";
+  assert.equal(isUnsupportedDescriptionUrl(listing), true);
+  assert.equal(needsDescriptionFetch({ url: listing }, NOW), false);
+});
+
 test("immediately retries Workday results captured by the pre-fix fetcher once", () => {
   const oldResult = {
     url: "https://school.wd1.myworkdayjobs.com/jobs/job/example_R123",

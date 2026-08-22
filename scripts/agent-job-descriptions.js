@@ -227,7 +227,10 @@ async function main() {
           // the public landing page, avoiding unreliable browser rendering.
           const result = await fetchPaycomPosting(job.url, {
             timeoutMs: TIMEOUT_MS,
-            minLen: MIN_LEN,
+            // This is the structured description field from Paycom's API, not
+            // a guessed DOM region, so short legitimate adjunct-pool postings
+            // are safe to keep without the generic page-chrome threshold.
+            minLen: Math.min(MIN_LEN, 80),
             maxLen: MAX_LEN,
           });
           desc = result.desc;

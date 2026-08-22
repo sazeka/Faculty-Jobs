@@ -20,6 +20,14 @@ test("recognizes public Paycom job URLs", () => {
   assert.equal(parsePaycomJobUrl("http://www.paycomonline.net/v4/ats/web.php/portal/D735C44B01F6404D0C91B262228D396A/jobs/1"), null);
   assert.equal(parsePaycomJobUrl("https://example.edu/portal/D735C44B01F6404D0C91B262228D396A/jobs/1"), null);
   assert.equal(parsePaycomJobUrl("https://www.paycomonline.net/v4/ats/web.php/portal/not-a-portal/jobs/1"), null);
+  assert.deepEqual(
+    parsePaycomJobUrl("https://www.paycomonline.net/v4/ats/web.php/jobs/ViewJobDetails?job=197287&clientkey=BB7291F0AACA6F77C168A8637CE63218"),
+    {
+      jobId: "197287",
+      portalId: "BB7291F0AACA6F77C168A8637CE63218",
+      referrer: "https://www.paycomonline.net/v4/ats/web.php/jobs/ViewJobDetails?job=197287&clientkey=BB7291F0AACA6F77C168A8637CE63218",
+    },
+  );
 });
 
 test("extracts balanced Paycom host config with nested JSON strings", () => {
@@ -68,6 +76,32 @@ test("fetches a Paycom posting through its public detail API", async () => {
   assert.equal(calls[1].url, "https://portal-applicant-tracking.us-cent.paycomonline.net/api/ats/job-postings/427011");
   assert.equal(calls[1].options.headers.authorization, "jwt-value");
   assert.equal(calls[1].options.headers["portal-host-referrer"], JOB_URL);
+});
+
+test("uses the trusted final URL after a legacy Paycom redirect", async () => {
+  const legacy = "https://www.paycomonline.net/v4/ats/web.php/jobs/ViewJobDetails?job=197287&clientkey=BB7291F0AACA6F77C168A8637CE63218";
+  const modern = "https://www.paycomonline.net/v4/ats/web.php/portal/BB7291F0AACA6F77C168A8637CE63218/jobs/197287";
+  const calls = [];
+  await fetchPaycomPosting(legacy, {
+    minLen: 1,
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      if (calls.length === 1) {
+        return {
+          ok: true,
+          url: modern,
+          async text() {
+            return `<script>var configsFromHost = ${JSON.stringify({
+              sessionJWT: "jwt",
+              libConfig: JSON.stringify({ atsPortalMantleServiceUrl: "https://portal-applicant-tracking.us-cent.paycomonline.net/" }),
+            })};</script>`;
+          },
+        };
+      }
+      return { ok: true, async json() { return { jobPosting: { description: "Recovered" } }; } };
+    },
+  });
+  assert.equal(calls[1].options.headers["portal-host-referrer"], modern);
 });
 
 test("rejects untrusted service hosts and failed responses", async () => {

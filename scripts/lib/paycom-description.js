@@ -36,6 +36,16 @@ export function parsePaycomJobUrl(input) {
   if (url.protocol !== "https:" || !PAYCOM_HOST.test(url.hostname)) return null;
 
   const segments = url.pathname.split("/").filter(Boolean);
+  // Older saved links redirect to the modern /portal/{clientkey}/jobs/{job}
+  // route. Preserve support for them so the landing request can follow that
+  // redirect and obtain the same short-lived API configuration.
+  if (/\/jobs\/viewjobdetails$/i.test(url.pathname)) {
+    const portalId = url.searchParams.get("clientkey") || "";
+    const jobId = url.searchParams.get("job") || "";
+    if (PORTAL_ID.test(portalId) && JOB_ID.test(jobId)) {
+      return { jobId, portalId, referrer: url.href };
+    }
+  }
   const portalIndex = segments.findIndex((segment) => segment.toLowerCase() === "portal");
   if (
     portalIndex < 0 ||
@@ -132,13 +142,20 @@ export async function fetchPaycomPosting(
     const serviceUrl = getPaycomServiceUrl(config);
     if (!config?.sessionJWT || !serviceUrl) throw new Error("Paycom landing page omitted its public API configuration");
 
+    // fetch follows legacy ViewJobDetails redirects. The API checks the modern
+    // final page as its portal referrer, so use it when it is a trusted Paycom
+    // URL for the same posting.
+    let apiReferrer = parsed.referrer;
+    const redirected = parsePaycomJobUrl(landing.url);
+    if (redirected?.jobId === parsed.jobId) apiReferrer = redirected.referrer;
+
     const endpoint = new URL(`api/ats/job-postings/${parsed.jobId}`, serviceUrl).href;
     const response = await fetchImpl(endpoint, {
       headers: {
         accept: "application/json, text/plain, */*",
         authorization: String(config.sessionJWT),
         locale: "en-US",
-        "portal-host-referrer": parsed.referrer,
+        "portal-host-referrer": apiReferrer,
       },
       signal: controller.signal,
     });
