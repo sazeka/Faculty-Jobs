@@ -1,27 +1,27 @@
 {
-  "generatedAt": "2026-08-22T10:03:13.877Z",
+  "generatedAt": "2026-08-22T10:06:27.032Z",
   "totalJobs": 15052,
-  "attemptedThisRun": 55,
-  "filledThisRun": 55,
+  "attemptedThisRun": 138,
+  "filledThisRun": 138,
   "datePostedFilledThisRun": 0,
   "openDateFilledThisRun": 0,
-  "startDateFilledThisRun": 0,
-  "totalWithStartDate": 1149,
-  "deadlineFilledThisRun": 0,
-  "rollingFilledThisRun": 0,
+  "startDateFilledThisRun": 5,
+  "totalWithStartDate": 1154,
+  "deadlineFilledThisRun": 8,
+  "rollingFilledThisRun": 1,
   "mode": "normal",
   "totalWithDatePosted": 9958,
-  "totalWithDeadline": 3309,
-  "totalWithDescription": 10890,
-  "remaining": 4162,
-  "eligibleRemaining": 3263,
+  "totalWithDeadline": 3317,
+  "totalWithDescription": 11028,
+  "remaining": 4024,
+  "eligibleRemaining": 3125,
   "unsupportedRemaining": 551,
   "fetchDiagnostics": {
     "byPlatform": [
       {
-        "platform": "interfolio",
-        "attempted": 55,
-        "filled": 55,
+        "platform": "generic",
+        "attempted": 138,
+        "filled": 138,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
@@ -30,10 +30,10 @@
     ],
     "byHost": [
       {
-        "platform": "interfolio",
-        "host": "apply.interfolio.com",
-        "attempted": 55,
-        "filled": 55,
+        "platform": "generic",
+        "host": "academicpositions.harvard.edu",
+        "attempted": 138,
+        "filled": 138,
         "empty": 0,
         "errors": 0,
         "fillRatePct": 100,
@@ -42,10 +42,11 @@
     ]
   },
   "config": {
-    "max": 100,
+    "max": 200,
     "concurrency": 8,
     "timeoutMs": 30000,
     "minLen": 200,
-    "platform": "interfolio"
+    "platform": "generic",
+    "host": "academicpositions.harvard.edu"
   }
 }
