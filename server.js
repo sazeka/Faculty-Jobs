@@ -1275,6 +1275,7 @@ const NJ_PRIVATE_CAMPUSES = [
   { campus: "Fairleigh Dickinson University-Metropolitan Campus", type: "generic", url: "https://jobs.fdu.edu/" },
   { campus: "Felician University", type: "generic", url: "https://felician.edu/about-felician-university/careers-at-felician/" },
   { campus: "Middlesex College", type: "generic", url: "https://middlesexcollege.edu/employment-opportunities/" },
+  { campus: "Pillar College", type: "generic", url: "https://www.pillar.edu/careers" },
 ];
 
 // Claremont Colleges
@@ -1586,6 +1587,9 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Missio Theological Seminary", type: "generic", url: "https://missio.edu/employment-opportunities/" },
   { campus: "Mount Aloysius College", type: "generic", url: "https://www.mtaloy.edu/employment-opportunities/" },
   { campus: "Northern Pennsylvania Regional College", type: "generic", url: "https://nprc.edu/employment/" },
+  { campus: "Philadelphia College of Osteopathic Medicine", type: "generic", url: "https://www.pcom.edu/about/departments/human-resources/career-opportunities/" },
+  { campus: "Pittsburgh Institute of Aeronautics", type: "generic", url: "https://pia.edu/employment/" },
+  { campus: "Pittsburgh Theological Seminary", type: "generic", url: "https://www.pts.edu/employment-opportunities" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -2190,6 +2194,7 @@ const MD_CAMPUSES = [
   { campus: "Frostburg State University", type: "generic", url: "https://www.frostburg.edu/human-resources/Careers-at-FSU/Careers-at-FSU.php" },
   { campus: "Loyola University Maryland", type: "generic", url: "https://www.loyola.edu/about/employment/" },
   { campus: "Montgomery College", type: "generic", url: "https://www.montgomerycollege.edu/about-mc/careers/index.html" },
+  { campus: "Prince George's Community College", type: "generic", url: "https://www.pgcc.edu/careers/" },
 ];
 
 
@@ -3088,6 +3093,8 @@ const WA_CAMPUSES = [
   { campus: "Lower Columbia College", type: "generic", url: "https://lowercolumbia.edu/jobs/" },
   { campus: "Northwest University", type: "generic", url: "https://www.northwestu.edu/jobs" },
   { campus: "Northwest University-Center for Online and Extended Education", type: "generic", url: "https://www.northwestu.edu/jobs" },
+  { campus: "Pacific Northwest Christian College", type: "generic", url: "https://www.pnwcc.edu/about/employment/" },
+  { campus: "Pacific Northwest University of Health Sciences", type: "generic", url: "https://www.pnwu.edu/job-opportunities/careers-at-pnwu/" },
 ];
 
 
@@ -3660,6 +3667,7 @@ const WI_CAMPUSES = [
   { campus: "Milwaukee School of Engineering", type: "generic", url: "https://www.msoe.edu/about-msoe/careers-at-msoe/" },
   { campus: "Nashotah House", type: "generic", url: "https://www.nashotah.edu/employment-opportunities/" },
   { campus: "Nicolet Area Technical College", type: "generic", url: "https://www.nicoletcollege.edu/about/employment" },
+  { campus: "Ottawa University-Milwaukee", type: "generic", url: "https://www.ottawa.edu/faculty-employment" },
 ];
 
 // CO (Colorado)
@@ -3766,6 +3774,7 @@ const CO_CAMPUSES = [
   { campus: "Metropolitan State University of Denver", type: "generic", url: "https://www.msudenver.edu/faculty-affairs/faculty-employment-handbook/" },
   { campus: "Naropa University", type: "generic", url: "https://www.naropa.edu/employment/" },
   { campus: "Nazarene Bible College", type: "generic", url: "https://nbc.edu/jobs/" },
+  { campus: "Otero College", type: "generic", url: "https://otero.edu/about/careers/" },
 ];
 
 // OH (Ohio)
@@ -3974,6 +3983,7 @@ const OH_CAMPUSES = [
   { campus: "Mount St. Joseph University", type: "generic", url: "https://www.msj.edu/employment-at-the-university/index.html" },
   { campus: "Mount Vernon Nazarene University", type: "generic", url: "https://mvnu.edu/employment-opportunities/" },
   { campus: "Muskingum University", type: "generic", url: "https://www.muskingum.edu/human-resources/careers" },
+  { campus: "Ohio Wesleyan University", type: "generic", url: "https://www.owu.edu/about/offices-services-directory/human-resources/career-information/job-openings/" },
 ];
 
 // NM (New Mexico)
@@ -4185,6 +4195,9 @@ const MI_CAMPUSES = [
   { campus: "Michigan School of Psychology", type: "generic", url: "https://msp.edu/about/employment/" },
   { campus: "Mid Michigan College", type: "generic", url: "https://midmich.edu/info-for/employees/human-resources/careers/" },
   { campus: "Montcalm Community College", type: "generic", url: "https://www.montcalm.edu/about/employment/" },
+  { campus: "Northwestern Michigan College", type: "generic", url: "https://www.nmc.edu/about/employment/" },
+  { campus: "Northwood University", type: "generic", url: "https://www.northwood.edu/jobs/" },
+  { campus: "Oakland Community College", type: "generic", url: "https://www.oaklandcc.edu/employment/" },
 ];
 
 // IL (Illinois)
@@ -4452,6 +4465,7 @@ const IL_CAMPUSES = [
   { campus: "Monmouth College", type: "generic", url: "https://www.monmouthcollege.edu/offices/hr/employment-opportunities/" },
   { campus: "National University of Health Sciences", type: "generic", url: "https://www.nuhs.edu/about/human-resources/job-openings/" },
   { campus: "Northern Baptist Theological Seminary", type: "generic", url: "https://www.seminary.edu/employment-opportunities/" },
+  { campus: "Parkland College", type: "generic", url: "https://www.parkland.edu/Main/About-Parkland/Department-Office-Directory/Human-Resources/Employment-Opportunities" },
 ];
 
 // ID (Idaho)
@@ -4578,6 +4592,8 @@ const IN_CAMPUSES = [
   { campus: "Indiana University-East", type: "generic", url: "https://east.iu.edu/jobs/" },
   { campus: "Ivy Tech Community College", type: "generic", url: "https://www.ivytech.edu/careers" },
   { campus: "Martin University", type: "generic", url: "https://www.martin.edu/academics/faculty-jobs" },
+  { campus: "Purdue University Fort Wayne", type: "generic", url: "https://careers.purdue.edu/FW" },
+  { campus: "Purdue University Northwest", type: "generic", url: "https://careers.purdue.edu/PNW" },
 ];
 
 // WV (West Virginia)
@@ -4629,6 +4645,7 @@ const WV_CAMPUSES = [
   { campus: "Fred W Eberle Technical Center", type: "generic", url: "https://fetc.edu/" },
   { campus: "Future Generations University", type: "generic", url: "https://www.future.edu/employment-opportunities/" },
   { campus: "New River Community and Technical College", type: "generic", url: "https://www.newriver.edu/employment-opportunities/" },
+  { campus: "Pierpont Community and Technical College", type: "generic", url: "https://www.pierpont.edu/employment-opportunities/" },
 ];
 
 // TX (Texas)
@@ -5221,6 +5238,8 @@ const FL_CAMPUSES = [
   { campus: "Indian River State College", type: "generic", url: "https://irsc.edu/news/faculty-job-fair-seeks-passionate-educators-join-the-river-community/" },
   { campus: "Jones Technical Institute", type: "generic", url: "https://www.jtech.org/careers-at-jtech/" },
   { campus: "Lynn University", type: "generic", url: "https://www.lynn.edu/employment" },
+  { campus: "Palm Beach Atlantic University", type: "generic", url: "https://www.pba.edu/offices/human-resources/employment/" },
+  { campus: "Palm Beach State College", type: "generic", url: "https://www.palmbeachstate.edu/employment/" },
 ];
 
 // GA (Georgia)
@@ -5298,6 +5317,7 @@ const GA_CAMPUSES = [
   { campus: "Southern Regional Technical College", type: "generic", url: "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4966&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All" },
   { campus: "West Georgia Technical College", type: "generic", url: "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4921&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All&search_api_fulltext=" },
   { campus: "Life University", type: "generic", url: "https://www.life.edu/about/employment-opportunities/" },
+  { campus: "Piedmont University", type: "generic", url: "https://www.piedmont.edu/employment/" },
 ];
 
 // AL (Alabama)
@@ -5411,6 +5431,7 @@ const MS_CAMPUSES = [
   { campus: "Jackson State University", type: "generic", url: "https://www.jsums.edu/careers/faculty/" },
   { campus: "Jones County Junior College", type: "generic", url: "https://www.jcjc.edu/employment/" },
   { campus: "Mississippi College", type: "generic", url: "https://www.mc.edu/offices/human-resources/employment" },
+  { campus: "Pearl River Community College", type: "generic", url: "https://prcc.edu/about/employment-opportunities/" },
 ];
 
 // LA (Louisiana)
@@ -5525,6 +5546,7 @@ const AR_CAMPUSES = [
   { campus: "Ecclesia College", type: "generic", url: "https://ecollege.edu/employment" },
   { campus: "Henderson State University", type: "generic", url: "https://www.hsu.edu/about/administration/finance-and-administration/human-resources/job-opportunities/" },
   { campus: "National Park College", type: "generic", url: "https://np.edu/facstaff/human-resources/employment-opportunities/" },
+  { campus: "Ozarka College", type: "generic", url: "https://www.ozarka.edu/faculty-employment" },
 ];
 
 // KS (Kansas)
@@ -5604,6 +5626,10 @@ const KS_CAMPUSES = [
   { campus: "Hutchinson Community College", type: "generic", url: "https://www.hutchcc.edu/jobs" },
   { campus: "Kansas Wesleyan University", type: "generic", url: "https://www.kwu.edu/about/careers/" },
   { campus: "MidAmerica Nazarene University", type: "generic", url: "https://www.mnu.edu/employment/" },
+  { campus: "Ottawa University-Kansas City", type: "generic", url: "https://www.ottawa.edu/faculty-employment" },
+  { campus: "Ottawa University-Online", type: "generic", url: "https://www.ottawa.edu/faculty-employment" },
+  { campus: "Ottawa University-Ottawa", type: "generic", url: "https://www.ottawa.edu/faculty-employment" },
+  { campus: "Pittsburg State University", type: "generic", url: "https://www.pittstate.edu/hr/jobs.html" },
 ];
 
 // OK (Oklahoma)
@@ -5650,6 +5676,7 @@ const OK_CAMPUSES = [
   { campus: "Eastern Oklahoma State College", type: "generic", url: "https://www.eosc.edu/about/human-resources/employment-opportunities" },
   { campus: "Family of Faith Christian University", type: "generic", url: "https://www.familyoffaith.edu/" },
   { campus: "Murray State College", type: "generic", url: "https://www.mscok.edu/careers" },
+  { campus: "Oklahoma City University", type: "generic", url: "https://www.okcu.edu/faculty-staff/human-resources/careers-at-ocu" },
 ];
 
 // MO (Missouri)

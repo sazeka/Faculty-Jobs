@@ -9,7 +9,7 @@ export function isRejectedCareerPage(url, bodyText = "") {
     if (/\/(?:404|404-not-found|not-found)(?:\/|$)/i.test(parsed.pathname)) return true;
     // Student career-readiness, travel, and library-resource pages can contain
     // words such as "faculty" and "employment" without being hiring portals.
-    if (/(?:career-readiness|experiential-learning|faculty-led-travel|distance-education|library-services)/i.test(parsed.pathname)) return true;
+    if (/(?:career-readiness|career-exploration|experiential-learning|faculty-led-travel|academic-programs|distance-education|library-services|\/news\/)/i.test(parsed.pathname)) return true;
   } catch {
     return true;
   }
