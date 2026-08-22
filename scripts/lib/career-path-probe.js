@@ -9,13 +9,14 @@ export function isRejectedCareerPage(url, bodyText = "") {
     if (/\/(?:404|404-not-found|not-found)(?:\/|$)/i.test(parsed.pathname)) return true;
     // Student career-readiness, travel, and library-resource pages can contain
     // words such as "faculty" and "employment" without being hiring portals.
-    if (/(?:career-readiness|career-exploration|experiential-learning|faculty-led-travel|academic-programs|distance-education|library-services|\/news\/)/i.test(parsed.pathname)) return true;
+    if (/(?:career-readiness|career-exploration|student-employment|experiential-learning|faculty-led-travel|academic-programs|distance-education|library-services|\/news\/)/i.test(parsed.pathname)) return true;
+    if (/^\/job\/[^/]+\/?$/i.test(parsed.pathname)) return true;
   } catch {
     return true;
   }
 
   const title = String(bodyText || "").match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "";
-  return /(?:\b404\b|page not found|not found)/i.test(title);
+  return /(?:\b404\b|page not found|not found|career services)/i.test(title);
 }
 
 export function compareDiscoveryPriority(a, b) {

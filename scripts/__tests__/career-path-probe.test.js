@@ -33,6 +33,9 @@ test("career path probing rejects student-facing career and library resources", 
   assert.equal(isRejectedCareerPage("https://example.edu/academics/academic-programs/careers-electric-academy/"), true);
   assert.equal(isRejectedCareerPage("https://example.edu/careers/career-exploration/faculty-services/"), true);
   assert.equal(isRejectedCareerPage("https://example.edu/about/news/student-employment-program/"), true);
+  assert.equal(isRejectedCareerPage("https://example.edu/student-employment/"), true);
+  assert.equal(isRejectedCareerPage("https://example.edu/job/administrative-coordinator/"), true);
+  assert.equal(isRejectedCareerPage("https://example.edu/careers", "<title>Career Services</title>"), true);
 });
 
 test("career discovery prioritizes unattempted and least-recently attempted institutions", () => {
