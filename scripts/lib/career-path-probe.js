@@ -34,3 +34,9 @@ export function compareDiscoveryPriority(a, b) {
   if (attemptedAtA !== attemptedAtB) return attemptedAtA.localeCompare(attemptedAtB);
   return String(a?.name || "").localeCompare(String(b?.name || ""));
 }
+
+export function excludePreviouslyReported(institutions, reportResults) {
+  const key = (value) => String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
+  const skippedNames = new Set((reportResults || []).map((item) => key(item?.name)).filter(Boolean));
+  return (institutions || []).filter((item) => !skippedNames.has(key(item?.name)));
+}

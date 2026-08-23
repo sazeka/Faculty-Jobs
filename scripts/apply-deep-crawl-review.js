@@ -10,6 +10,7 @@ const ACCEPTED_PATH = path.join(ROOT, "generated", "promotion-candidates-deep-cr
 const REVIEW_PATH = path.join(ROOT, "generated", "deep-crawl-review-report.json");
 const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
 const key = (value) => clean(value).toLowerCase();
+const replayDiscoveryState = process.argv.includes("--replay-discovery-state");
 
 const master = JSON.parse(fs.readFileSync(MASTER_PATH, "utf8"));
 const discovery = JSON.parse(fs.readFileSync(DISCOVERY_PATH, "utf8"));
@@ -20,9 +21,16 @@ const reviewed = (discovery.results || []).filter((item) => item.status === "dis
 const applied = [];
 const rejected = [];
 
-for (const result of reviewed) {
+for (const result of discovery.results || []) {
   const institution = institutions.get(key(result.name));
   if (!institution) continue;
+  if (replayDiscoveryState) {
+    institution.last_discovery_attempt_at = discovery.generatedAt;
+    institution.last_discovery_status = result.status;
+    institution.last_discovery_confidence = Number(result.confidence || 0);
+    institution.discovery_attempts = Number(institution.discovery_attempts || 0) + 1;
+  }
+  if (result.status !== "discovered") continue;
   const approved = accepted.get(key(result.name));
   if (approved) {
     institution.career_url = approved.career_url;

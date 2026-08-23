@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { isRejectedCareerPage } from "./lib/career-path-probe.js";
+import { excludePreviouslyReported, isRejectedCareerPage } from "./lib/career-path-probe.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,7 +15,7 @@ const REVIEW_CSV_PATH = path.join(ROOT, "generated", "career-discovery-review.cs
 
 function usage() {
   console.log(
-    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--min-confidence 0.65] [--all-missing]"
+    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--min-confidence 0.65] [--weak-only] [--skip-report FILE] [--all-missing]"
   );
 }
 
@@ -396,6 +396,7 @@ function parseArgs(argv) {
     minConfidence: 0.65,
     scopeEligibleOnly: true,
     weakOnly: false,
+    skipReport: null,
     timeoutMs: 8000,
   };
 
@@ -411,6 +412,7 @@ function parseArgs(argv) {
     else if (a === "--min-confidence" && args[i + 1]) out.minConfidence = Math.max(0, Math.min(1, Number(args[++i])));
     else if (a === "--timeout-ms" && args[i + 1]) out.timeoutMs = Math.max(2000, Number(args[++i]));
     else if (a === "--weak-only") out.weakOnly = true;
+    else if (a === "--skip-report" && args[i + 1]) out.skipReport = args[++i];
     else if (a === "--all-missing") out.scopeEligibleOnly = false;
   }
   return out;
@@ -497,6 +499,10 @@ function writeReviewCsv(results) {
 
 async function main() {
   const opts = parseArgs(process.argv);
+  const reportOptions = {
+    ...opts,
+    skipReport: opts.skipReport ? path.basename(opts.skipReport) : null,
+  };
   const master = JSON.parse(fs.readFileSync(MASTER_PATH, "utf8"));
   ensureMasterShape(master);
   const policyRules = readJsonOrNull(POLICY_RULES_PATH);
@@ -517,6 +523,12 @@ async function main() {
     });
   }
 
+  if (opts.skipReport) {
+    const skipPath = path.resolve(ROOT, opts.skipReport);
+    const previousReport = readJsonOrNull(skipPath);
+    targets = excludePreviouslyReported(targets, previousReport?.results);
+  }
+
   targets = targets
     .sort((a, b) => {
       if (opts.weakOnly) {
@@ -533,7 +545,7 @@ async function main() {
   if (targets.length === 0) {
     const report = {
       generatedAt: new Date().toISOString(),
-      options: opts,
+      options: reportOptions,
       scanned: 0,
       updated: 0,
       note: opts.scopeEligibleOnly
@@ -656,7 +668,7 @@ async function main() {
 
   const report = {
     generatedAt: new Date().toISOString(),
-    options: opts,
+    options: reportOptions,
     scanned: targets.length,
     updated,
     unresolved: results.filter((r) => r.status === "unresolved").length,

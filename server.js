@@ -1825,6 +1825,8 @@ const NC_CAMPUSES = [
   { campus: "Lenoir Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/lenoirccedu" },
   { campus: "Martin Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/martinccedu/" },
   { campus: "Mayland Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/maylandedu" },
+  { campus: "Piedmont Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/piedmontcc" },
+  { campus: "Tri-County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/tricountycc" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -2021,6 +2023,7 @@ const VA_CAMPUSES = [
   { campus: "University of Lynchburg", type: "generic", url: "https://www.lynchburg.edu/student-life/belonging/international-student-support/employment/" },
   { campus: "Virginia Beach Theological Seminary", type: "generic", url: "https://www.vbts.edu/academics/faculty-jobs/" },
   { campus: "Wytheville Community College", type: "generic", url: "https://www.wcc.vccs.edu/employment-opportunities-information" },
+  { campus: "Regent University", type: "pageup", url: "https://careers.pageuppeople.com/1152/cw/en-us/listing/" },
 ];
 
 // SC (South Carolina) - major public research + private liberal arts
@@ -2912,6 +2915,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Hobart William Smith Colleges", type: "generic", url: "https://www.hws.edu/offices/hr/employment-opportunities/default.aspx" },
   { campus: "Nazareth University", type: "peopleadmin", url: "https://jobs.naz.edu/" },
   { campus: "Le Moyne College", type: "generic", url: "https://echo.lemoyne.edu/Faculty-Staff/Campus-Resources/Human-Resources/Employment-Resources" },
+  { campus: "Rockland Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sunyrockland" },
 ];
 
 // OR (Oregon)
@@ -5148,6 +5152,7 @@ const TX_CAMPUSES = [
   { campus: "Western Texas College", type: "generic", url: "https://www.wtc.edu/faculty-employment" },
   { campus: "Lamar University", type: "schooljobs", url: "https://www.schooljobs.com/careers/lamar" },
   { campus: "Midland College", type: "peopleadmin", url: "https://midland.peopleadmin.com/postings/search" },
+  { campus: "Tyler Junior College", type: "schooljobs", url: "https://www.schooljobs.com/careers/tjc" },
 ];
 
 // FL (Florida)
@@ -5584,6 +5589,7 @@ const AL_CAMPUSES = [
   { campus: "J. F. Drake State Community and Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/drakestate" },
   { campus: "Jefferson State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/jefferson" },
   { campus: "Northwest Shoals Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/northwest" },
+  { campus: "Shelton State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/sheltonstate" },
 ];
 
 // MS (Mississippi)
@@ -10581,7 +10587,7 @@ async function scrapeMiAll(context) {
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
-async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName, locationFilter = null) {
+export async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName, locationFilter = null) {
   const items = await scrapeNjSchoolJobs(context, startUrl, campusName, sourceName, locationFilter);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
@@ -14722,7 +14728,7 @@ async function scrapeSjcSantaFeJobs(context, startUrl, campusName, sourceName) {
 }
 
 // PageUp scraper (used by Yeshiva University)
-async function scrapePageUpAs(context, startUrl, campusName, sourceName) {
+export async function scrapePageUpAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     const jobs = [];

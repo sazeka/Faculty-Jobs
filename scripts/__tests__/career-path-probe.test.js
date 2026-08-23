@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { compareDiscoveryPriority, isRejectedCareerPage } from "../lib/career-path-probe.js";
+import { compareDiscoveryPriority, excludePreviouslyReported, isRejectedCareerPage } from "../lib/career-path-probe.js";
 
 test("career path probing rejects fabricated faculty/jobs and soft-404 pages", () => {
   assert.equal(isRejectedCareerPage("https://example.edu/faculty/jobs"), true);
@@ -71,4 +71,10 @@ test("career discovery prioritizes unattempted and least-recently attempted inst
   ];
   rows.sort(compareDiscoveryPriority);
   assert.deepEqual(rows.map((row) => row.name), ["Unattempted", "Older", "Recent"]);
+});
+
+test("career discovery can skip every institution from the previous batch report", () => {
+  const rows = [{ name: "First College" }, { name: "Second University" }, { name: "Third Institute" }];
+  const priorResults = [{ name: " first   college " }, { name: "SECOND UNIVERSITY" }];
+  assert.deepEqual(excludePreviouslyReported(rows, priorResults), [{ name: "Third Institute" }]);
 });
