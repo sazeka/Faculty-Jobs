@@ -15,7 +15,7 @@ const REVIEW_CSV_PATH = path.join(ROOT, "generated", "career-discovery-review.cs
 
 function usage() {
   console.log(
-    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--min-confidence 0.65] [--weak-only] [--skip-report FILE] [--all-missing]"
+    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--min-confidence 0.65] [--weak-only|--medium-only] [--skip-report FILE] [--all-missing]"
   );
 }
 
@@ -396,6 +396,7 @@ function parseArgs(argv) {
     minConfidence: 0.65,
     scopeEligibleOnly: true,
     weakOnly: false,
+    mediumOnly: false,
     skipReports: [],
     timeoutMs: 8000,
   };
@@ -412,6 +413,7 @@ function parseArgs(argv) {
     else if (a === "--min-confidence" && args[i + 1]) out.minConfidence = Math.max(0, Math.min(1, Number(args[++i])));
     else if (a === "--timeout-ms" && args[i + 1]) out.timeoutMs = Math.max(2000, Number(args[++i]));
     else if (a === "--weak-only") out.weakOnly = true;
+    else if (a === "--medium-only") out.mediumOnly = true;
     else if (a === "--skip-report" && args[i + 1]) out.skipReports.push(args[++i]);
     else if (a === "--all-missing") out.scopeEligibleOnly = false;
   }
@@ -510,7 +512,7 @@ async function main() {
 
   let targets = master.institutions
     .filter((r) => normalize(r.coverage_status) === "missing")
-    .filter((r) => opts.weakOnly || !clean(r.career_url) || !clean(r.platform_type));
+    .filter((r) => opts.weakOnly || opts.mediumOnly || !clean(r.career_url) || !clean(r.platform_type));
 
   if (opts.scopeEligibleOnly) {
     targets = targets.filter((r) => isEligibleByScope(r, scope));
@@ -523,6 +525,13 @@ async function main() {
     });
   }
 
+  if (opts.mediumOnly) {
+    targets = targets.filter((r) => {
+      const confidence = Number(r.last_discovery_confidence || 0);
+      return confidence >= 0.55 && confidence < opts.minConfidence;
+    });
+  }
+
   for (const reportPath of opts.skipReports) {
     const skipPath = path.resolve(ROOT, reportPath);
     const previousReport = readJsonOrNull(skipPath);
@@ -531,7 +540,7 @@ async function main() {
 
   targets = targets
     .sort((a, b) => {
-      if (opts.weakOnly) {
+      if (opts.weakOnly || opts.mediumOnly) {
         const confidenceDelta = Number(b.last_discovery_confidence || 0) - Number(a.last_discovery_confidence || 0);
         if (confidenceDelta !== 0) return confidenceDelta;
       }
@@ -606,8 +615,8 @@ async function main() {
 
     if (found.ok && found.best && found.best.confidence >= opts.minConfidence) {
       if (opts.apply) {
-        if (opts.weakOnly || !clean(inst.career_url)) inst.career_url = found.best.url;
-        if (opts.weakOnly || !clean(inst.platform_type)) inst.platform_type = found.best.platform_type || inferPlatformFromUrl(found.best.url);
+        if (opts.weakOnly || opts.mediumOnly || !clean(inst.career_url)) inst.career_url = found.best.url;
+        if (opts.weakOnly || opts.mediumOnly || !clean(inst.platform_type)) inst.platform_type = found.best.platform_type || inferPlatformFromUrl(found.best.url);
         inst.last_checked_at = new Date().toISOString();
         inst.last_discovery_attempt_at = attemptedAt;
         inst.last_discovery_status = "discovered";
@@ -634,7 +643,7 @@ async function main() {
       });
     } else {
       if (opts.apply) {
-        if (opts.weakOnly) {
+        if (opts.weakOnly || opts.mediumOnly) {
           inst.career_url = null;
           inst.platform_type = null;
         }

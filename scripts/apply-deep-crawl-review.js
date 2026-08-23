@@ -28,27 +28,24 @@ const discoveryResults = discoveries.flatMap((report) =>
 const acceptedPayload = JSON.parse(fs.readFileSync(ACCEPTED_PATH, "utf8"));
 const accepted = new Map((acceptedPayload.items || []).map((item) => [key(item.name), item]));
 const institutions = new Map((master.institutions || []).map((item) => [key(item.name), item]));
-const reviewed = discoveryResults.filter((item) => item.status === "discovered");
+const reviewed = discoveryResults.filter((item) => item.status === "discovered" || accepted.has(key(item.name)));
 const applied = [];
 const rejected = [];
 
 for (const result of discoveryResults) {
   const institution = institutions.get(key(result.name));
   if (!institution) continue;
+  const approved = accepted.get(key(result.name));
   if (replayDiscoveryState) {
     institution.last_discovery_attempt_at = result.discoveryGeneratedAt;
     institution.last_discovery_status = result.status;
     institution.last_discovery_confidence = Number(result.confidence || 0);
     institution.discovery_attempts = Number(institution.discovery_attempts || 0) + 1;
   }
-  if (result.status !== "discovered") {
-    if (closeUnresolved && result.status === "unresolved") {
-      institution.last_discovery_status = "deep_crawl_unresolved";
-      institution.last_discovery_confidence = 0;
-    }
-    continue;
-  }
-  const approved = accepted.get(key(result.name));
+  // Human review may approve a candidate that deliberately remained below the
+  // automatic promotion threshold. This is common for official employee career
+  // gateways discovered from an institution's own homepage: they have strong
+  // identity evidence but score 0.60 because the URL is not a recognized ATS.
   if (approved) {
     institution.career_url = approved.career_url;
     institution.platform_type = approved.platform_type || "generic";
@@ -58,6 +55,13 @@ for (const result of discoveryResults) {
     continue;
   }
 
+  if (result.status !== "discovered") {
+    if (closeUnresolved && result.status === "unresolved") {
+      institution.last_discovery_status = "deep_crawl_unresolved";
+      institution.last_discovery_confidence = 0;
+    }
+    continue;
+  }
   if (clean(institution.career_url) === clean(result.career_url)) institution.career_url = null;
   institution.last_discovery_status = "deep_crawl_rejected_identity";
   institution.last_discovery_confidence = 0;
