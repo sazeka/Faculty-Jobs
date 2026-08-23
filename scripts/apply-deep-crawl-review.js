@@ -11,21 +11,31 @@ const REVIEW_PATH = path.join(ROOT, "generated", "deep-crawl-review-report.json"
 const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
 const key = (value) => clean(value).toLowerCase();
 const replayDiscoveryState = process.argv.includes("--replay-discovery-state");
+const discoveryPaths = [];
+for (let i = 2; i < process.argv.length; i++) {
+  if (process.argv[i] === "--discovery-report" && process.argv[i + 1]) {
+    discoveryPaths.push(path.resolve(ROOT, process.argv[++i]));
+  }
+}
+if (discoveryPaths.length === 0) discoveryPaths.push(DISCOVERY_PATH);
 
 const master = JSON.parse(fs.readFileSync(MASTER_PATH, "utf8"));
-const discovery = JSON.parse(fs.readFileSync(DISCOVERY_PATH, "utf8"));
+const discoveries = discoveryPaths.map((reportPath) => JSON.parse(fs.readFileSync(reportPath, "utf8")));
+const discoveryResults = discoveries.flatMap((report) =>
+  (report.results || []).map((result) => ({ ...result, discoveryGeneratedAt: report.generatedAt })),
+);
 const acceptedPayload = JSON.parse(fs.readFileSync(ACCEPTED_PATH, "utf8"));
 const accepted = new Map((acceptedPayload.items || []).map((item) => [key(item.name), item]));
 const institutions = new Map((master.institutions || []).map((item) => [key(item.name), item]));
-const reviewed = (discovery.results || []).filter((item) => item.status === "discovered");
+const reviewed = discoveryResults.filter((item) => item.status === "discovered");
 const applied = [];
 const rejected = [];
 
-for (const result of discovery.results || []) {
+for (const result of discoveryResults) {
   const institution = institutions.get(key(result.name));
   if (!institution) continue;
   if (replayDiscoveryState) {
-    institution.last_discovery_attempt_at = discovery.generatedAt;
+    institution.last_discovery_attempt_at = result.discoveryGeneratedAt;
     institution.last_discovery_status = result.status;
     institution.last_discovery_confidence = Number(result.confidence || 0);
     institution.discovery_attempts = Number(institution.discovery_attempts || 0) + 1;
@@ -52,6 +62,6 @@ master.generatedAt = new Date().toISOString();
 fs.writeFileSync(MASTER_PATH, JSON.stringify(master, null, 2) + "\n");
 fs.writeFileSync(
   REVIEW_PATH,
-  JSON.stringify({ generatedAt: new Date().toISOString(), reviewed: reviewed.length, applied, rejected }, null, 2) + "\n"
+  JSON.stringify({ generatedAt: new Date().toISOString(), scanned: discoveryResults.length, reviewed: reviewed.length, applied, rejected }, null, 2) + "\n"
 );
 console.log(`Reviewed ${reviewed.length}: accepted ${applied.length}, rejected ${rejected.length}`);

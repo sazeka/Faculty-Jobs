@@ -1208,6 +1208,7 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Humphreys University-Stockton and Modesto Campuses", type: "generic", url: "https://www.humphreys.edu/career-opportunities/" },
   { campus: "La Sierra University", type: "generic", url: "https://jobs.silkroad.com/lasierrauniversity/lasierrauniversitycareers" },
   { campus: "University of Redlands", type: "generic", url: "https://www.redlands.edu/offices-directory/offices/human-resources" },
+  { campus: "Lake Tahoe Community College", type: "peopleadmin", url: "https://ltcc.peopleadmin.com/postings/search" },
 ];
 
 // NJ (multi-platform)
@@ -2916,6 +2917,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Nazareth University", type: "peopleadmin", url: "https://jobs.naz.edu/" },
   { campus: "Le Moyne College", type: "generic", url: "https://echo.lemoyne.edu/Faculty-Staff/Campus-Resources/Human-Resources/Employment-Resources" },
   { campus: "Rockland Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sunyrockland" },
+  { campus: "Mohawk Valley Community College", type: "csod", url: "https://mvcc.csod.com/ats/careersite/search.aspx?site=1&c=mvcc" },
 ];
 
 // OR (Oregon)
@@ -3024,6 +3026,8 @@ const OR_CAMPUSES = [
   { campus: "National University of Natural Medicine", type: "generic", url: "https://nunm.edu/jobs/" },
   { campus: "University of Western States", type: "generic", url: "https://www.uws.edu/why-uws/employment/" },
   { campus: "Western Seminary", type: "generic", url: "https://www.westernseminary.edu/about/employment" },
+  { campus: "Klamath Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/klamathcc" },
+  { campus: "Southwestern Oregon Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/socc" },
 ];
 
 
@@ -4125,6 +4129,7 @@ const OH_CAMPUSES = [
   { campus: "Zane State College", type: "generic", url: "https://www.zanestate.edu/careers/" },
   { campus: "Northwest State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/northweststate" },
   { campus: "Otterbein University", type: "schooljobs", url: "https://www.schooljobs.com/careers/otterbein" },
+  { campus: "Shawnee State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/SSUOH" },
 ];
 
 // NM (New Mexico)
@@ -4222,6 +4227,7 @@ const UT_CAMPUSES = [
   },
   { campus: "Ensign College", type: "generic", url: "https://www.ensign.edu/" },
   { campus: "Salt Lake Community College", type: "generic", url: "https://www.slcc.edu/jobs/" },
+  { campus: "Snow College", type: "schooljobs", url: "https://www.schooljobs.com/careers/snowcollege" },
 ];
 
 // MI (Michigan)
@@ -4350,6 +4356,7 @@ const MI_CAMPUSES = [
   { campus: "Keweenaw Bay Ojibwa Community College", type: "generic", url: "https://www.kbocc.edu/openings/" },
   { campus: "Washtenaw Community College", type: "peopleadmin", url: "https://jobs.wccnet.edu/" },
   { campus: "Lake Superior State University", type: "pageup", url: "https://careers.pageuppeople.com/1130/cw/en-us/listing/" },
+  { campus: "Mott Community College", type: "peopleadmin", url: "https://mcc.peopleadmin.com/postings/search" },
 ];
 
 // IL (Illinois)
@@ -4627,6 +4634,10 @@ const IL_CAMPUSES = [
   { campus: "Spertus College", type: "generic", url: "https://www.spertus.edu/employment-opportunities/" },
   { campus: "VanderCook College of Music", type: "generic", url: "https://www.vandercook.edu/employment/" },
   { campus: "Lake Land College", type: "schooljobs", url: "https://www.schooljobs.com/careers/lakelandcollege" },
+  { campus: "Heartland Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/heartland/" },
+  { campus: "McHenry County College", type: "schooljobs", url: "https://www.schooljobs.com/careers/mchenrycountycollege" },
+  { campus: "Richland Community College", type: "peopleadmin", url: "https://richland.peopleadmin.com/postings/search" },
+  { campus: "Shawnee Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/shawneecc" },
 ];
 
 // ID (Idaho)
@@ -5153,6 +5164,8 @@ const TX_CAMPUSES = [
   { campus: "Lamar University", type: "schooljobs", url: "https://www.schooljobs.com/careers/lamar" },
   { campus: "Midland College", type: "peopleadmin", url: "https://midland.peopleadmin.com/postings/search" },
   { campus: "Tyler Junior College", type: "schooljobs", url: "https://www.schooljobs.com/careers/tjc" },
+  { campus: "Lamar State College-Orange", type: "schooljobs", url: "https://www.schooljobs.com/careers/lsco" },
+  { campus: "Wayland Baptist University", type: "generic", url: "https://www.wbu.edu/about/employment/faculty/index.htm" },
 ];
 
 // FL (Florida)
@@ -5432,6 +5445,8 @@ const FL_CAMPUSES = [
   { campus: "South Florida Bible College and Theological Seminary", type: "generic", url: "https://sfbc.edu/employment/" },
   { campus: "The University of Tampa", type: "generic", url: "https://www.ut.edu/about-utampa/university-services/human-resources/employment-opportunities" },
   { campus: "Valencia College", type: "generic", url: "https://valenciacollege.edu/employees/employment-at-valencia/" },
+  { campus: "Polk State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/polkstate" },
+  { campus: "State College of Florida-Manatee-Sarasota", type: "schooljobs", url: "https://www.schooljobs.com/careers/scf" },
 ];
 
 // GA (Georgia)
@@ -5639,6 +5654,7 @@ const MS_CAMPUSES = [
   { campus: "Jones County Junior College", type: "generic", url: "https://www.jcjc.edu/employment/" },
   { campus: "Mississippi College", type: "generic", url: "https://www.mc.edu/offices/human-resources/employment" },
   { campus: "Pearl River Community College", type: "generic", url: "https://prcc.edu/about/employment-opportunities/" },
+  { campus: "Mississippi Valley State University", type: "peopleadmin", url: "https://mvsu.peopleadmin.com/postings/search" },
 ];
 
 // LA (Louisiana)
@@ -10649,7 +10665,7 @@ async function scrapeExactHireAs(context, startUrl, campusName, sourceName) {
   }
 }
 
-async function scrapeCsodAs(context, startUrl, campusName, sourceName) {
+export async function scrapeCsodAs(context, startUrl, campusName, sourceName) {
   const items = await scrapeNjCsod(context, startUrl, campusName, sourceName);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
@@ -10689,7 +10705,7 @@ function inferSdborCampusFromDetail(html, title = "") {
   return null;
 }
 
-async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
+export async function scrapePeopleAdminAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     const jobs = [];
@@ -13984,6 +14000,10 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
         }
 
         if (!title || title.length < 10) continue;
+        // Breadcrumb text can contain "Faculty" and inherit a job-looking URL
+        // from surrounding navigation, but it is page chrome rather than a
+        // posting title (for example: "Home > About > Employment > Faculty").
+        if (/^home\s*(?:>|›|\/)/i.test(title)) continue;
         // A real job posting's title is always a proper heading — a title
         // starting with a lowercase letter is a sentence fragment bleeding
         // through from body/policy text (e.g. a definitions page describing

@@ -396,7 +396,7 @@ function parseArgs(argv) {
     minConfidence: 0.65,
     scopeEligibleOnly: true,
     weakOnly: false,
-    skipReport: null,
+    skipReports: [],
     timeoutMs: 8000,
   };
 
@@ -412,7 +412,7 @@ function parseArgs(argv) {
     else if (a === "--min-confidence" && args[i + 1]) out.minConfidence = Math.max(0, Math.min(1, Number(args[++i])));
     else if (a === "--timeout-ms" && args[i + 1]) out.timeoutMs = Math.max(2000, Number(args[++i]));
     else if (a === "--weak-only") out.weakOnly = true;
-    else if (a === "--skip-report" && args[i + 1]) out.skipReport = args[++i];
+    else if (a === "--skip-report" && args[i + 1]) out.skipReports.push(args[++i]);
     else if (a === "--all-missing") out.scopeEligibleOnly = false;
   }
   return out;
@@ -501,7 +501,7 @@ async function main() {
   const opts = parseArgs(process.argv);
   const reportOptions = {
     ...opts,
-    skipReport: opts.skipReport ? path.basename(opts.skipReport) : null,
+    skipReports: opts.skipReports.map((reportPath) => path.basename(reportPath)),
   };
   const master = JSON.parse(fs.readFileSync(MASTER_PATH, "utf8"));
   ensureMasterShape(master);
@@ -523,8 +523,8 @@ async function main() {
     });
   }
 
-  if (opts.skipReport) {
-    const skipPath = path.resolve(ROOT, opts.skipReport);
+  for (const reportPath of opts.skipReports) {
+    const skipPath = path.resolve(ROOT, reportPath);
     const previousReport = readJsonOrNull(skipPath);
     targets = excludePreviouslyReported(targets, previousReport?.results);
   }
