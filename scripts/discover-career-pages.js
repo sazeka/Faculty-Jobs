@@ -510,7 +510,7 @@ async function main() {
 
   let targets = master.institutions
     .filter((r) => normalize(r.coverage_status) === "missing")
-    .filter((r) => !clean(r.career_url) || !clean(r.platform_type));
+    .filter((r) => opts.weakOnly || !clean(r.career_url) || !clean(r.platform_type));
 
   if (opts.scopeEligibleOnly) {
     targets = targets.filter((r) => isEligibleByScope(r, scope));
@@ -606,8 +606,8 @@ async function main() {
 
     if (found.ok && found.best && found.best.confidence >= opts.minConfidence) {
       if (opts.apply) {
-        if (!clean(inst.career_url)) inst.career_url = found.best.url;
-        if (!clean(inst.platform_type)) inst.platform_type = found.best.platform_type || inferPlatformFromUrl(found.best.url);
+        if (opts.weakOnly || !clean(inst.career_url)) inst.career_url = found.best.url;
+        if (opts.weakOnly || !clean(inst.platform_type)) inst.platform_type = found.best.platform_type || inferPlatformFromUrl(found.best.url);
         inst.last_checked_at = new Date().toISOString();
         inst.last_discovery_attempt_at = attemptedAt;
         inst.last_discovery_status = "discovered";
@@ -634,6 +634,10 @@ async function main() {
       });
     } else {
       if (opts.apply) {
+        if (opts.weakOnly) {
+          inst.career_url = null;
+          inst.platform_type = null;
+        }
         inst.last_discovery_attempt_at = attemptedAt;
         inst.last_discovery_status = "unresolved";
         inst.last_discovery_confidence = Number(found.best?.confidence || 0);

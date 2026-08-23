@@ -1,60 +1,23 @@
 {
-  "generatedAt": "2026-08-23T16:11:03.618Z",
+  "generatedAt": "2026-08-23T16:44:30.079Z",
   "options": {
     "apply": true,
-    "limit": 100,
+    "limit": 1000,
     "delayMs": 300,
     "minConfidence": 0.65,
     "scopeEligibleOnly": true,
     "weakOnly": true,
-    "skipReports": [
-      "faculty-jobs-previous-weak100.json",
-      "faculty-jobs-weak-batch2.json",
-      "faculty-jobs-weak-batch3.json",
-      "faculty-jobs-weak-batch4.json"
-    ],
+    "skipReports": [],
     "timeoutMs": 8000
   },
-  "scanned": 100,
+  "scanned": 25,
   "updated": 2,
-  "unresolved": 98,
+  "unresolved": 23,
   "discovered": 2,
   "inferredPlatform": 0,
   "results": [
     {
-      "name": "SUNY Adirondack",
-      "state": "NY",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.sunyacc.edu/careers",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 11
-        },
-        {
-          "query": "SUNY Adirondack faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Sussex County Community College",
+      "name": "Assumption College for Sisters",
       "state": "NJ",
       "level": "2-year",
       "status": "unresolved",
@@ -70,157 +33,218 @@
           "count": 0
         },
         {
-          "query": "Sussex County Community College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
+          "query": "Assumption College for Sisters faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Assumption College for Sisters academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Assumption College for Sisters faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Assumption College for Sisters human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        }
+      ]
+    },
+    {
+      "name": "Cochran School of Nursing",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Cochran School of Nursing faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Cochran School of Nursing academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Cochran School of Nursing faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Cochran School of Nursing human resources faculty positions",
+          "ok": true,
+          "reason": null,
           "count": 0
         }
       ]
     },
     {
-      "name": "Stillman College",
+      "name": "Davis College",
+      "state": "NY",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Davis College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Davis College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Davis College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Davis College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Garrett-Evangelical Theological Seminary",
+      "state": "IL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Garrett-Evangelical Theological Seminary faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Garrett-Evangelical Theological Seminary academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Garrett-Evangelical Theological Seminary faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Garrett-Evangelical Theological Seminary human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Fullerton College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fullerton College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fullerton College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fullerton College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fullerton College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "George C Wallace Community College-Dothan",
       "state": "AL",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Stillman College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "SUNY College at Geneseo",
-      "state": "NY",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "SUNY College at Geneseo faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Teachers College at Columbia University",
-      "state": "NY",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://employment.tc.columbia.edu/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Teachers College at Columbia University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Tarleton State University",
-      "state": "TX",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Tarleton State University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Tennessee Board of Regents",
-      "state": "TN",
       "level": "2-year",
       "status": "unresolved",
       "reason": "candidate_found",
       "error": null,
-      "confidence": 0.45,
+      "confidence": 0.4,
       "topCandidates": [
         {
-          "url": "https://www.tbr.edu/hr/employment-opportunities",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.tbr.edu/external-affairs/tennessee-council-career-and-technical-education-tccte",
+          "url": "https://wallace.edu/programs-training/career-technical-programs/",
           "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
         },
         {
-          "url": "https://www.tbr.edu/hr/department-human-resources-and-payroll-services",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.tbr.edu/hr/employee-benefits",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.tbr.edu/initiatives/career-year",
-          "confidence": 0.25,
+          "url": "https://wallace.edu/about/human-resources/",
+          "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
@@ -231,35 +255,95 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 5
+          "count": 2
         },
         {
-          "query": "Tennessee Board of Regents faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
+          "query": "George C Wallace Community College-Dothan faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "George C Wallace Community College-Dothan academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "George C Wallace Community College-Dothan faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "George C Wallace Community College-Dothan human resources faculty positions",
+          "ok": true,
+          "reason": null,
           "count": 0
         }
       ]
     },
     {
-      "name": "Temple University",
-      "state": "PA",
+      "name": "Bethany College (KS)",
+      "state": "KS",
       "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Bethany College (KS) faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Bethany College (KS) academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Bethany College (KS) faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Bethany College (KS) human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "CAAN Academy of Nursing",
+      "state": "IL",
+      "level": "2-year",
       "status": "unresolved",
       "reason": "candidate_found",
       "error": null,
-      "confidence": 0.6,
+      "confidence": 0.5,
       "topCandidates": [
         {
-          "url": "https://careers.temple.edu/",
-          "confidence": 0.6,
+          "url": "https://www.caanacademy.org/employment-opportunities",
+          "confidence": 0.5,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
         },
         {
-          "url": "https://careercenter.temple.edu/",
-          "confidence": 0.4,
+          "url": "https://www.caanacademy.org/employment-opportunities62d0620e",
+          "confidence": 0.5,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
@@ -270,18 +354,36 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 3
+          "count": 2
         },
         {
-          "query": "Temple University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
+          "query": "CAAN Academy of Nursing faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "CAAN Academy of Nursing academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "CAAN Academy of Nursing faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "CAAN Academy of Nursing human resources faculty positions",
+          "ok": true,
+          "reason": null,
           "count": 0
         }
       ]
     },
     {
-      "name": "SUM Bible College and Theological Seminary",
+      "name": "American Film Institute Conservatory",
       "state": "CA",
       "level": "4-year",
       "status": "unresolved",
@@ -297,241 +399,25 @@
           "count": 1
         },
         {
-          "query": "SUM Bible College and Theological Seminary faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Texas A&M University-Kingsville",
-      "state": "TX",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "American Film Institute Conservatory faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Texas A&M University-Kingsville faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Texas State Technical College",
-      "state": "TX",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Texas State Technical College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Thaddeus Stevens College of Technology",
-      "state": "PA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Thaddeus Stevens College of Technology faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "The Chicago School at Washington DC",
-      "state": "DC",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "The Chicago School at Washington DC faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "The Landing School",
-      "state": "ME",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 5
-        },
-        {
-          "query": "The Landing School faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "The Seattle School of Theology & Psychology",
-      "state": "WA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://theseattleschool.edu/human-resources/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "The Seattle School of Theology & Psychology faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "The Southern Baptist Theological Seminary",
-      "state": "KY",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://inside.sbts.edu/human-resources/employment/",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "The Southern Baptist Theological Seminary faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "The University of Tennessee System Office",
-      "state": "TN",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://tennessee.edu/about/careers/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "The University of Tennessee System Office faculty jobs careers",
+          "query": "American Film Institute Conservatory academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "The University of Tennessee System Office academic jobs",
+          "query": "American Film Institute Conservatory faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "The University of Tennessee System Office faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Tennessee System Office human resources faculty positions",
+          "query": "American Film Institute Conservatory human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -539,532 +425,7 @@
       ]
     },
     {
-      "name": "The University of Tennessee-Martin",
-      "state": "TN",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.25,
-      "topCandidates": [
-        {
-          "url": "https://www.utm.edu/offices-and-services/human-resources/",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "The University of Tennessee-Martin faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Tennessee-Martin academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Tennessee-Martin faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Tennessee-Martin human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "The University of Tennessee-Chattanooga",
-      "state": "TN",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.25,
-      "topCandidates": [
-        {
-          "url": "https://www.utc.edu/finance-and-administration/human-resources/work",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "The University of Tennessee-Chattanooga faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Tennessee-Chattanooga academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Tennessee-Chattanooga faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Tennessee-Chattanooga human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "The University of Texas Medical Branch at Galveston",
-      "state": "TX",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://www.utmb.edu/hr/careers",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "The University of Texas Medical Branch at Galveston faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Texas Medical Branch at Galveston academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Texas Medical Branch at Galveston faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Texas Medical Branch at Galveston human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "The University of Texas Health Science Center at San Antonio",
-      "state": "TX",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://wp.uthscsa.edu/careers/",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://wp.uthscsa.edu/careers/",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "The University of Texas Health Science Center at San Antonio faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Texas Health Science Center at San Antonio academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Texas Health Science Center at San Antonio faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Texas Health Science Center at San Antonio human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "The University of Texas System Office",
-      "state": "TX",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "The University of Texas System Office faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Texas System Office academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Texas System Office faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "The University of Texas System Office human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Tiffin University",
-      "state": "OH",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Tiffin University faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tiffin University academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tiffin University faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tiffin University human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Toccoa Falls College",
-      "state": "GA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Toccoa Falls College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Toccoa Falls College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Toccoa Falls College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Toccoa Falls College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Trinity Anglican Seminary",
-      "state": "PA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://tas.edu/careers",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Trinity Anglican Seminary faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Trinity Anglican Seminary academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Trinity Anglican Seminary faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Trinity Anglican Seminary human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Tri-State Bible College",
-      "state": "OH",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tri-State Bible College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tri-State Bible College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tri-State Bible College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tri-State Bible College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Trevecca Nazarene University",
-      "state": "TN",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://www.trevecca.edu/offices-services/current-job-opportunities",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Trevecca Nazarene University faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Trevecca Nazarene University academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Trevecca Nazarene University faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Trevecca Nazarene University human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Tulane University of Louisiana",
-      "state": "LA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://hr.tulane.edu/jobs",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Tulane University of Louisiana faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tulane University of Louisiana academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tulane University of Louisiana faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Tulane University of Louisiana human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Trinity Baptist College",
+      "name": "Faith Theological Seminary and Christian College",
       "state": "FL",
       "level": "4-year",
       "status": "unresolved",
@@ -1077,28 +438,28 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 1
+          "count": 0
         },
         {
-          "query": "Trinity Baptist College faculty jobs careers",
+          "query": "Faith Theological Seminary and Christian College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Trinity Baptist College academic jobs",
+          "query": "Faith Theological Seminary and Christian College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Trinity Baptist College faculty employment",
+          "query": "Faith Theological Seminary and Christian College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Trinity Baptist College human resources faculty positions",
+          "query": "Faith Theological Seminary and Christian College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1106,17 +467,17 @@
       ]
     },
     {
-      "name": "Tulsa Community College",
-      "state": "OK",
-      "level": "2-year",
+      "name": "Colby-Sawyer College",
+      "state": "NH",
+      "level": "4-year",
       "status": "unresolved",
       "reason": "candidate_found",
       "error": null,
-      "confidence": 0.6,
+      "confidence": 0.4,
       "topCandidates": [
         {
-          "url": "https://www.tulsacc.edu/about-tcc/employment",
-          "confidence": 0.6,
+          "url": "https://www.colby-sawyer.edu/offices/human-resources",
+          "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
@@ -1130,25 +491,25 @@
           "count": 1
         },
         {
-          "query": "Tulsa Community College faculty jobs careers",
+          "query": "Colby-Sawyer College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Tulsa Community College academic jobs",
+          "query": "Colby-Sawyer College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Tulsa Community College faculty employment",
+          "query": "Colby-Sawyer College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Tulsa Community College human resources faculty positions",
+          "query": "Colby-Sawyer College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1156,8 +517,50 @@
       ]
     },
     {
-      "name": "Union College",
-      "state": "NY",
+      "name": "Georgetown College",
+      "state": "KY",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Georgetown College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Georgetown College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Georgetown College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Georgetown College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Gordon College",
+      "state": "MA",
       "level": "4-year",
       "status": "unresolved",
       "reason": "candidate_found",
@@ -1165,8 +568,15 @@
       "confidence": 0.6,
       "topCandidates": [
         {
-          "url": "https://www.union.edu/human-resources/careers",
+          "url": "https://www.gordon.edu/offices-services/human-resources/jobs",
           "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.gordon.edu/offices-services/human-resources",
+          "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
@@ -1180,25 +590,25 @@
           "count": 2
         },
         {
-          "query": "Union College faculty jobs careers",
+          "query": "Gordon College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Union College academic jobs",
+          "query": "Gordon College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Union College faculty employment",
+          "query": "Gordon College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Union College human resources faculty positions",
+          "query": "Gordon College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1206,49 +616,41 @@
       ]
     },
     {
-      "name": "University of Akron Main Campus",
+      "name": "Gods Bible School and College",
       "state": "OH",
       "level": "4-year",
       "status": "unresolved",
-      "reason": "candidate_found",
+      "reason": "no_candidates",
       "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.uakron.edu/hr/jobs.dot",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
+      "confidence": 0,
+      "topCandidates": [],
       "queryResults": [
         {
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 2
+          "count": 0
         },
         {
-          "query": "University of Akron Main Campus faculty jobs careers",
+          "query": "Gods Bible School and College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "University of Akron Main Campus academic jobs",
+          "query": "Gods Bible School and College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "University of Akron Main Campus faculty employment",
+          "query": "Gods Bible School and College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "University of Akron Main Campus human resources faculty positions",
+          "query": "Gods Bible School and College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1256,58 +658,8 @@
       ]
     },
     {
-      "name": "Union Adventist University",
-      "state": "NE",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://uau.edu/employment",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Union Adventist University faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Union Adventist University academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Union Adventist University faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Union Adventist University human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "United Tribes Technical College",
-      "state": "ND",
+      "name": "Graceland University-Lamoni",
+      "state": "IA",
       "level": "4-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -1322,25 +674,25 @@
           "count": 1
         },
         {
-          "query": "United Tribes Technical College faculty jobs careers",
+          "query": "Graceland University-Lamoni faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "United Tribes Technical College academic jobs",
+          "query": "Graceland University-Lamoni academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "United Tribes Technical College faculty employment",
+          "query": "Graceland University-Lamoni faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "United Tribes Technical College human resources faculty positions",
+          "query": "Graceland University-Lamoni human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1348,25 +700,21 @@
       ]
     },
     {
-      "name": "University of Alaska System of Higher Education",
-      "state": "AK",
+      "name": "Grambling State University",
+      "state": "LA",
       "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
+      "status": "discovered",
+      "career_url": "https://www.schooljobs.com/careers/gram",
+      "platform_type": "schooljobs",
+      "confidence": 0.95,
+      "method": "duckduckgo_html",
+      "query": "official homepage links",
+      "applied": true,
       "topCandidates": [
         {
-          "url": "https://careers.alaska.edu/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.alaska.edu/hr/index.php",
-          "confidence": 0.4,
-          "platform_type": "generic",
+          "url": "https://www.schooljobs.com/careers/gram",
+          "confidence": 0.95,
+          "platform_type": "schooljobs",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
         }
@@ -1379,25 +727,25 @@
           "count": 2
         },
         {
-          "query": "University of Alaska System of Higher Education faculty jobs careers",
+          "query": "Grambling State University faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "University of Alaska System of Higher Education academic jobs",
+          "query": "Grambling State University academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "University of Alaska System of Higher Education faculty employment",
+          "query": "Grambling State University faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "University of Alaska System of Higher Education human resources faculty positions",
+          "query": "Grambling State University human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1405,22 +753,56 @@
       ]
     },
     {
-      "name": "United Theological Seminary of the Twin Cities",
-      "state": "MN",
+      "name": "Generations College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Generations College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Generations College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Generations College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Generations College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Gordon-Conwell Theological Seminary",
+      "state": "MA",
       "level": "4-year",
       "status": "unresolved",
-      "reason": "candidate_found",
+      "reason": "no_candidates",
       "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.unitedseminary.edu/employment/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
+      "confidence": 0,
+      "topCandidates": [],
       "queryResults": [
         {
           "query": "official homepage links",
@@ -1429,25 +811,25 @@
           "count": 1
         },
         {
-          "query": "United Theological Seminary of the Twin Cities faculty jobs careers",
+          "query": "Gordon-Conwell Theological Seminary faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "United Theological Seminary of the Twin Cities academic jobs",
+          "query": "Gordon-Conwell Theological Seminary academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "United Theological Seminary of the Twin Cities faculty employment",
+          "query": "Gordon-Conwell Theological Seminary faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "United Theological Seminary of the Twin Cities human resources faculty positions",
+          "query": "Gordon-Conwell Theological Seminary human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1455,37 +837,37 @@
       ]
     },
     {
-      "name": "Umpqua Community College",
-      "state": "OR",
-      "level": "2-year",
+      "name": "Gratz College",
+      "state": "PA",
+      "level": "4-year",
       "status": "unresolved",
       "reason": "candidate_found",
       "error": null,
-      "confidence": 0.4,
+      "confidence": 0.6,
       "topCandidates": [
         {
-          "url": "https://umpqua.edu/become-a-student/your-future-career-health/",
+          "url": "https://www.gratz.edu/employment",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.gratz.edu/students/research/global-employment-opportunities",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.gratz.edu/admission-aid/financial-aid-scholarships/midcareer-fellowships",
           "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
         },
         {
-          "url": "https://umpqua.edu/about/governance-operations/human-resources/employee-and-labor-relations/non-discrimination/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://umpqua.edu/about/governance-operations/human-resources/employee-and-labor-relations/title-ix/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://umpqua.edu/about/governance-operations/human-resources/",
+          "url": "https://www.gratz.edu/admission-aid/financial-aid-scholarships/midcareer-fellowships/midcareer-fellowship",
           "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
@@ -1500,25 +882,25 @@
           "count": 4
         },
         {
-          "query": "Umpqua Community College faculty jobs careers",
+          "query": "Gratz College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Umpqua Community College academic jobs",
+          "query": "Gratz College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Umpqua Community College faculty employment",
+          "query": "Gratz College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Umpqua Community College human resources faculty positions",
+          "query": "Gratz College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1526,152 +908,9 @@
       ]
     },
     {
-      "name": "University of Arkansas at Pine Bluff",
-      "state": "AR",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 6
-        },
-        {
-          "query": "University of Arkansas at Pine Bluff faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Colorado System Office",
-      "state": "CO",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://www.cu.edu/cu-careers",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.cu.edu/cu-careers",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 5
-        },
-        {
-          "query": "University of Colorado System Office faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Kentucky",
-      "state": "KY",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://careers.uky.edu/",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "University of Kentucky faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Maine at Augusta",
-      "state": "ME",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "University of Maine at Augusta faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Maine",
-      "state": "ME",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "University of Maine faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Massachusetts Chan Medical School",
-      "state": "MA",
-      "level": "4-year",
+      "name": "Fulton-Montgomery Community College",
+      "state": "NY",
+      "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
       "error": null,
@@ -1685,65 +924,89 @@
           "count": 0
         },
         {
-          "query": "University of Massachusetts Chan Medical School faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
+          "query": "Fulton-Montgomery Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fulton-Montgomery Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fulton-Montgomery Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fulton-Montgomery Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
           "count": 0
         }
       ]
     },
     {
-      "name": "University of Maryland Eastern Shore",
-      "state": "MD",
-      "level": "4-year",
+      "name": "Garden City Community College",
+      "state": "KS",
+      "level": "2-year",
       "status": "unresolved",
-      "reason": "candidate_found",
+      "reason": "no_candidates",
       "error": null,
-      "confidence": 0.25,
-      "topCandidates": [
-        {
-          "url": "https://www.umes.edu/tech/cte-masters/",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
+      "confidence": 0,
+      "topCandidates": [],
       "queryResults": [
         {
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 3
+          "count": 1
         },
         {
-          "query": "University of Maryland Eastern Shore faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
+          "query": "Garden City Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Garden City Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Garden City Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Garden City Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
           "count": 0
         }
       ]
     },
     {
-      "name": "University of Massachusetts Global",
+      "name": "Columbia College",
       "state": "CA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://yosemite.peopleadmin.com/",
+      "platform_type": "peopleadmin",
+      "confidence": 0.75,
+      "method": "duckduckgo_html",
+      "query": "official homepage links",
+      "applied": true,
       "topCandidates": [
         {
-          "url": "https://www.umassglobal.edu/careers",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.umassglobal.edu/blog-news/6-types-business-degrees-and-career-paths",
-          "confidence": 0.4,
-          "platform_type": "generic",
+          "url": "https://yosemite.peopleadmin.com/",
+          "confidence": 0.75,
+          "platform_type": "peopleadmin",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
         }
@@ -1753,60 +1016,53 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 4
+          "count": 1
         },
         {
-          "query": "University of Massachusetts Global faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
+          "query": "Columbia College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Columbia College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Columbia College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Columbia College human resources faculty positions",
+          "ok": true,
+          "reason": null,
           "count": 0
         }
       ]
     },
     {
-      "name": "University of Minnesota-Crookston",
-      "state": "MN",
+      "name": "Galveston College",
+      "state": "TX",
       "level": "4-year",
       "status": "unresolved",
       "reason": "candidate_found",
       "error": null,
-      "confidence": 0.45,
+      "confidence": 0.5,
       "topCandidates": [
         {
-          "url": "https://crk.umn.edu/human-resources/employment",
-          "confidence": 0.45,
+          "url": "https://www.gc.edu/academic-career-programs/pathways/index.php",
+          "confidence": 0.5,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
         },
         {
-          "query": "University of Minnesota-Crookston faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of New Hampshire-Franklin Pierce School of Law",
-      "state": "NH",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://law.unh.edu/careers/employers",
-          "confidence": 0.45,
+          "url": "https://www.gc.edu/about-gc/administration/human-resources/index.php",
+          "confidence": 0.25,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
@@ -1820,412 +1076,34 @@
           "count": 6
         },
         {
-          "query": "University of New Hampshire-Franklin Pierce School of Law faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Northern Colorado",
-      "state": "CO",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "University of Northern Colorado faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Scranton",
-      "state": "PA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.scranton.edu/hr/employment/employmentopportunities.shtml",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "University of Scranton faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of the District of Columbia",
-      "state": "DC",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://www.udc.edu/human-resources/careers-udc",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "University of the District of Columbia faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Texas Southwestern Medical Center",
-      "state": "TX",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Galveston College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "University of Texas Southwestern Medical Center faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Southern Maine",
-      "state": "ME",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Galveston College academic jobs",
           "ok": true,
           "reason": null,
-          "count": 2
-        },
-        {
-          "query": "University of Southern Maine faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
           "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of West Florida",
-      "state": "FL",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://careers.uwf.edu/",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
         },
         {
-          "url": "https://uwf.edu/offices/human-resources/policies-regulations-and-compliance/equal-opportunity-office/",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Galveston College faculty employment",
           "ok": true,
           "reason": null,
-          "count": 3
+          "count": 0
         },
         {
-          "query": "University of West Florida faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "University of Wisconsin-Green Bay",
-      "state": "WI",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.25,
-      "topCandidates": [
-        {
-          "url": "https://www.uwgb.edu/human-resources/",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Galveston College human resources faculty positions",
           "ok": true,
           "reason": null,
-          "count": 3
-        },
-        {
-          "query": "University of Wisconsin-Green Bay faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
           "count": 0
         }
       ]
     },
     {
-      "name": "University System of New Hampshire System Office",
-      "state": "NH",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "University System of New Hampshire System Office faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Ursuline College",
-      "state": "OH",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.ursuline.edu/inside-ursuline/employment/overview",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.ursuline.edu/inside-ursuline/employment",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.ursuline.edu/inside-ursuline/employment/job-opportunities",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 5
-        },
-        {
-          "query": "Ursuline College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Valparaiso University",
-      "state": "IN",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Valparaiso University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Ventura County Community College System Office",
-      "state": "CA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://www.vcccd.edu/departments/human-resources/employment",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.vcccd.edu/temporary-employment",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 8
-        },
-        {
-          "query": "Ventura County Community College System Office faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Vermont Law and Graduate School",
-      "state": "VT",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.vermontlaw.edu/careers",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 8
-        },
-        {
-          "query": "Vermont Law and Graduate School faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Virginia Peninsula Community College",
-      "state": "VA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Virginia Peninsula Community College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Virginia Western Community College",
-      "state": "VA",
+      "name": "Clovis Community College (NM)",
+      "state": "NM",
       "level": "2-year",
       "status": "unresolved",
       "reason": "candidate_found",
@@ -2233,53 +1111,7 @@
       "confidence": 0.4,
       "topCandidates": [
         {
-          "url": "https://www.virginiawestern.edu/about/legal-and-policies/policies/human-resources/iii-16/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 4
-        },
-        {
-          "query": "Virginia Western Community College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Walla Walla University",
-      "state": "WA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://www.wallawalla.edu/human-resources",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.wallawalla.edu/human-resources/employee-resources/handbook-policies/discrimination-and-harassment",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.wallawalla.edu/human-resources/risk-safety",
+          "url": "https://www.clovis.edu/hr/index.aspx",
           "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
@@ -2294,365 +1126,34 @@
           "count": 3
         },
         {
-          "query": "Walla Walla University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Washington College",
-      "state": "MD",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://www.washcoll.edu/people_departments/offices/human-resources/employment/index.php",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.washcoll.edu/career.php",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Clovis Community College (NM) faculty jobs careers",
           "ok": true,
           "reason": null,
-          "count": 2
+          "count": 0
         },
         {
-          "query": "Washington College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Waukesha County Technical College",
-      "state": "WI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Clovis Community College (NM) academic jobs",
           "ok": true,
           "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Waukesha County Technical College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
           "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Wayland Baptist University",
-      "state": "TX",
-      "level": "4-year",
-      "status": "discovered",
-      "career_url": "https://www.wbu.edu/about/employment/faculty/index.htm",
-      "platform_type": "generic",
-      "confidence": 0.7,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.wbu.edu/about/employment/faculty/index.htm",
-          "confidence": 0.7,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
         },
         {
-          "url": "https://www.wbu.edu/about/employment/staff/index.htm",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.wbu.edu/about/employment/index.htm",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Clovis Community College (NM) faculty employment",
           "ok": true,
           "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Wayland Baptist University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
           "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Weill Medical College of Cornell University",
-      "state": "NY",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://careers.weill.cornell.edu/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
         },
         {
-          "url": "https://careers.weill.cornell.edu/about-weill-cornell/wcm-eeo-statement",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Clovis Community College (NM) human resources faculty positions",
           "ok": true,
           "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Weill Medical College of Cornell University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
           "count": 0
         }
       ]
     },
     {
-      "name": "Wesley Biblical Seminary",
-      "state": "MS",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://wbs.edu/employment/",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Wesley Biblical Seminary faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "West Liberty University",
-      "state": "WV",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://westliberty.edu/human-resources/graduate-assistant-employment/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://westliberty.edu/human-resources/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 4
-        },
-        {
-          "query": "West Liberty University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Western Michigan University Homer Stryker M.D. School of Medicine",
+      "name": "Glen Oaks Community College",
       "state": "MI",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://wmed.edu/employment",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Western Michigan University Homer Stryker M.D. School of Medicine faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Western Oklahoma State College",
-      "state": "OK",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Western Oklahoma State College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Western Governors University",
-      "state": "UT",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.25,
-      "topCandidates": [
-        {
-          "url": "https://www.wgu.edu/student-experience/outcomes/career-growth.html",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.wgu.edu/online-business-degrees/human-resources-bachelors-program.html",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 4
-        },
-        {
-          "query": "Western Governors University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Western Colorado University",
-      "state": "CO",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://western.edu/about/directory/human-resources/careers-at-western/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Western Colorado University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Westmoreland County Community College",
-      "state": "PA",
       "level": "2-year",
       "status": "unresolved",
       "reason": "candidate_found",
@@ -2660,275 +1161,7 @@
       "confidence": 0.6,
       "topCandidates": [
         {
-          "url": "https://westmoreland.edu/about/employment/index.html",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Westmoreland County Community College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Westminster College (PA)",
-      "state": "PA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.westminster.edu/campus/services/professional-development-center/careers-networking.cfm",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.westminster.edu/about/community/employment.cfm",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Westminster College (PA) faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Whatcom Community College",
-      "state": "WA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.whatcom.edu/about-wcc/employment-hr",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.whatcom.edu/about-wcc/employment-hr/job-information",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 14
-        },
-        {
-          "query": "Whatcom Community College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Whittier College",
-      "state": "CA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.whittier.edu/humanresources/employment",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Whittier College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Western Piedmont Community College",
-      "state": "NC",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Western Piedmont Community College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "William Carey University",
-      "state": "MS",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://www.wmcarey.edu/office/human-resources/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "William Carey University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Wilkes University",
-      "state": "PA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://www.wilkes.edu/academics/career-development-and-internships/cooperative-education-internships/employer-info.aspx",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.wilkes.edu/about-wilkes/offices-and-administration/human-resources/index.aspx",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.wilkes.edu/academics/career-development-and-internships/index.aspx",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 4
-        },
-        {
-          "query": "Wilkes University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "William R Moore College of Technology",
-      "state": "TN",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "William R Moore College of Technology faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "William Jewell College",
-      "state": "MO",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.jewell.edu/employment",
+          "url": "https://www.glenoaks.edu/about-gocc/college-operations/human-resources/jobs/index.php",
           "confidence": 0.6,
           "platform_type": "generic",
           "query": "official homepage links",
@@ -2943,566 +1176,27 @@
           "count": 1
         },
         {
-          "query": "William Jewell College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Wichita State University-Campus of Applied Sciences and Technology",
-      "state": "KS",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 4
-        },
-        {
-          "query": "Wichita State University-Campus of Applied Sciences and Technology faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Wilson College",
-      "state": "PA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.wilson.edu/employment-opportunities",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.wilson.edu/career-development",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.wilson.edu/human-resources",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Wilson College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Wilmington College",
-      "state": "OH",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Glen Oaks Community College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Wilmington College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Williston State College",
-      "state": "ND",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://willistonstate.edu/about/employment/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://willistonstate.edu/about/Employment/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Williston State College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Women's Institute of Torah Seminary and College",
-      "state": "MD",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Women's Institute of Torah Seminary and College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Winebrenner Theological Seminary",
-      "state": "OH",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Winebrenner Theological Seminary faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Yakima Valley College",
-      "state": "WA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://www.yvcc.edu/human-resources/employment.php",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.yvcc.edu/human-resources/index.php",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.yvcc.edu/human-resources/equal-opportunity.php",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Yakima Valley College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Yavapai College",
-      "state": "AZ",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Yavapai College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "York University",
-      "state": "NE",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://www.york.edu/about/employment.php",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "York University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Young Harris College",
-      "state": "GA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Young Harris College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Yeshivah Gedolah Rabbinical College",
-      "state": "FL",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Yeshivah Gedolah Rabbinical College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Greensboro College",
-      "state": "NC",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://www.greensboro.edu/academics/student-success/career-personal-development/employers/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 5
-        },
-        {
-          "query": "Greensboro College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Great Northern University",
-      "state": "WA",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Great Northern University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Harding University",
-      "state": "AR",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://www.harding.edu/about/offices-departments/hr/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Harding University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Hardin-Simmons University",
-      "state": "TX",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Glen Oaks Community College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Hardin-Simmons University faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Haywood Community College",
-      "state": "NC",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Glen Oaks Community College faculty employment",
           "ok": true,
           "reason": null,
-          "count": 1
+          "count": 0
         },
         {
-          "query": "Haywood Community College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Hanover College",
-      "state": "IN",
-      "level": "4-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
+          "query": "Glen Oaks Community College human resources faculty positions",
           "ok": true,
           "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Hanover College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "H Councill Trenholm State Community College",
-      "state": "AL",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 5
-        },
-        {
-          "query": "H Councill Trenholm State Community College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Heartland Community College",
-      "state": "IL",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/heartland/",
-      "platform_type": "schooljobs",
-      "confidence": 0.99,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/heartland/",
-          "confidence": 0.99,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.heartland.edu/careerCenter/onCampusEmployment.html",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Heartland Community College faculty jobs careers",
-          "ok": false,
-          "reason": "search_http_403",
           "count": 0
         }
       ]

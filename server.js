@@ -1209,6 +1209,10 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "La Sierra University", type: "generic", url: "https://jobs.silkroad.com/lasierrauniversity/lasierrauniversitycareers" },
   { campus: "University of Redlands", type: "generic", url: "https://www.redlands.edu/offices-directory/offices/human-resources" },
   { campus: "Lake Tahoe Community College", type: "peopleadmin", url: "https://ltcc.peopleadmin.com/postings/search" },
+  { campus: "Mission College", type: "peopleadmin", url: "https://wvm.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_organizational_tier_1_id%5B%5D=572&commit=Search" },
+  { campus: "North Orange County Community College District", type: "peopleadmin", url: "https://nocccd.peopleadmin.com/postings/search" },
+  { campus: "Palo Verde College", type: "schooljobs", url: "https://www.schooljobs.com/careers/paloverde" },
+  { campus: "San Jose-Evergreen Community College District", type: "peopleadmin", url: "https://sjeccd.peopleadmin.com/postings/search" },
 ];
 
 // NJ (multi-platform)
@@ -1306,6 +1310,7 @@ const NJ_PRIVATE_CAMPUSES = [
   { campus: "Middlesex College", type: "generic", url: "https://middlesexcollege.edu/employment-opportunities/" },
   { campus: "Pillar College", type: "generic", url: "https://www.pillar.edu/careers" },
   { campus: "Warren County Community College", type: "generic", url: "https://www.warren.edu/employment/" },
+  { campus: "Salem Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/5128793052B923DB6B8BB21179616D44/career-page" },
 ];
 
 // Claremont Colleges
@@ -1634,6 +1639,7 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Seton Hill University", type: "generic", url: "https://www.setonhill.edu/resources/employment/faculty.html" },
   { campus: "Widener University", type: "generic", url: "https://www.widener.edu/employment" },
   { campus: "Keystone College", type: "generic", url: "https://www.keystone.edu/jobs_at_keystone/faculty-positions/" },
+  { campus: "La Salle University", type: "peopleadmin", url: "https://lasalle.peopleadmin.com/postings/search" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -1828,6 +1834,7 @@ const NC_CAMPUSES = [
   { campus: "Mayland Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/maylandedu" },
   { campus: "Piedmont Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/piedmontcc" },
   { campus: "Tri-County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/tricountycc" },
+  { campus: "Lees-McRae College", type: "peopleadmin", url: "https://leesmcrae.peopleadmin.com/postings/search" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -2918,6 +2925,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Le Moyne College", type: "generic", url: "https://echo.lemoyne.edu/Faculty-Staff/Campus-Resources/Human-Resources/Employment-Resources" },
   { campus: "Rockland Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sunyrockland" },
   { campus: "Mohawk Valley Community College", type: "csod", url: "https://mvcc.csod.com/ats/careersite/search.aspx?site=1&c=mvcc" },
+  { campus: "Sarah Lawrence College", type: "peopleadmin", url: "https://slc.peopleadmin.com/postings/search" },
 ];
 
 // OR (Oregon)
@@ -3544,6 +3552,8 @@ const NE_CAMPUSES = [
   { campus: "College of Saint Mary", type: "generic", url: "https://www.csm.edu/" },
   { campus: "Concordia University-Nebraska", type: "generic", url: "https://www.cune.edu/employment/jobs-and-openings" },
   { campus: "Summit Christian College", type: "generic", url: "https://www.summitcc.edu/academics/faculty-jobs" },
+  { campus: "Peru State College", type: "peopleadmin", url: "https://nscs.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&query_organizational_tier_3_id%5B%5D=any&1349%5B%5D=2&commit=Search" },
+  { campus: "Western Nebraska Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/wncc" },
 ];
 
 // IA (Iowa)
@@ -3637,6 +3647,8 @@ const IA_CAMPUSES = [
   { campus: "Wartburg Theological Seminary", type: "generic", url: "https://www.wartburgseminary.edu/academics/faculty-jobs" },
   { campus: "Hawkeye Community College", type: "generic", url: "https://jobs.hawkeyecollege.edu/employment" },
   { campus: "Iowa Western Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/iwcc" },
+  { campus: "Northeast Iowa Community College", type: "peopleadmin", url: "https://nicc.peopleadmin.com/postings/search" },
+  { campus: "Western Iowa Tech Community College", type: "peopleadmin", url: "https://witcc.peopleadmin.com/postings/search" },
 ];
 
 // WY (Wyoming)
@@ -4357,6 +4369,8 @@ const MI_CAMPUSES = [
   { campus: "Washtenaw Community College", type: "peopleadmin", url: "https://jobs.wccnet.edu/" },
   { campus: "Lake Superior State University", type: "pageup", url: "https://careers.pageuppeople.com/1130/cw/en-us/listing/" },
   { campus: "Mott Community College", type: "peopleadmin", url: "https://mcc.peopleadmin.com/postings/search" },
+  { campus: "Southwestern Michigan College", type: "peopleadmin", url: "https://swmich.peopleadmin.com/postings/search" },
+  { campus: "University of Detroit Mercy", type: "adp", url: "https://myjobs.adp.com/udmercycareers/cx/job-listing" },
 ];
 
 // IL (Illinois)
@@ -4638,6 +4652,8 @@ const IL_CAMPUSES = [
   { campus: "McHenry County College", type: "schooljobs", url: "https://www.schooljobs.com/careers/mchenrycountycollege" },
   { campus: "Richland Community College", type: "peopleadmin", url: "https://richland.peopleadmin.com/postings/search" },
   { campus: "Shawnee Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/shawneecc" },
+  { campus: "McKendree University", type: "schooljobs", url: "https://www.schooljobs.com/careers/mckendree" },
+  { campus: "Triton College", type: "peopleadmin", url: "https://jobopenings.triton.edu/postings/search" },
 ];
 
 // ID (Idaho)
@@ -5166,6 +5182,10 @@ const TX_CAMPUSES = [
   { campus: "Tyler Junior College", type: "schooljobs", url: "https://www.schooljobs.com/careers/tjc" },
   { campus: "Lamar State College-Orange", type: "schooljobs", url: "https://www.schooljobs.com/careers/lsco" },
   { campus: "Wayland Baptist University", type: "generic", url: "https://www.wbu.edu/about/employment/faculty/index.htm" },
+  { campus: "Lamar Institute of Technology", type: "schooljobs", url: "https://www.schooljobs.com/careers/lit" },
+  { campus: "Sul Ross State University", type: "peopleadmin", url: "https://sulross.peopleadmin.com/postings/search" },
+  { campus: "Texas Southmost College", type: "peopleadmin", url: "https://tsc.peopleadmin.com/postings/search" },
+  { campus: "Trinity Valley Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/tvcc" },
 ];
 
 // FL (Florida)
@@ -5731,6 +5751,7 @@ const LA_CAMPUSES = [
   { campus: "Loyola University New Orleans", type: "generic", url: "https://www.loyno.edu/about/employment" },
   { campus: "McNeese State University", type: "generic", url: "https://www.mcneese.edu/about-us/leadership-team/business-affairs/division-of-business-affairs/employment/" },
   { campus: "SOWELA Technical Community College", type: "generic", url: "https://www.sowela.edu/about/careers/" },
+  { campus: "Grambling State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/gram" },
 ];
 
 // AR (Arkansas)
@@ -10568,6 +10589,7 @@ async function scrapeMiAll(context) {
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MI");
         if (type === "kzoo-faculty") return await scrapeKzooFacultyJobs(context, url, campus, "MI");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MI");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "MI");
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -12836,7 +12858,7 @@ async function scrapeNyPrivate(context) {
 }
 
 // Paycom scraper (JS-rendered career portal)
-async function scrapePaycomAs(context, startUrl, campusName, sourceName, locationFilter = null) {
+export async function scrapePaycomAs(context, startUrl, campusName, sourceName, locationFilter = null) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -13481,7 +13503,7 @@ async function scrapeFiuApi(campusName, sourceName) {
 // ATS hand-off wrapper: matches the (context, url, campusName, sourceName)
 // signature every other ATS_HANDOFF_SCRAPERS entry uses; scrapeAdpApi itself
 // needs no browser context since it hits the public ADP feed directly.
-async function scrapeAdpAs(context, url, campusName, sourceName, locationFilter = null) {
+export async function scrapeAdpAs(context, url, campusName, sourceName, locationFilter = null) {
   return await scrapeAdpApi(url, campusName, sourceName, locationFilter);
 }
 

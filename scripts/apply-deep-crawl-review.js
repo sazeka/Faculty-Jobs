@@ -11,6 +11,7 @@ const REVIEW_PATH = path.join(ROOT, "generated", "deep-crawl-review-report.json"
 const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
 const key = (value) => clean(value).toLowerCase();
 const replayDiscoveryState = process.argv.includes("--replay-discovery-state");
+const closeUnresolved = process.argv.includes("--close-unresolved");
 const discoveryPaths = [];
 for (let i = 2; i < process.argv.length; i++) {
   if (process.argv[i] === "--discovery-report" && process.argv[i + 1]) {
@@ -40,7 +41,13 @@ for (const result of discoveryResults) {
     institution.last_discovery_confidence = Number(result.confidence || 0);
     institution.discovery_attempts = Number(institution.discovery_attempts || 0) + 1;
   }
-  if (result.status !== "discovered") continue;
+  if (result.status !== "discovered") {
+    if (closeUnresolved && result.status === "unresolved") {
+      institution.last_discovery_status = "deep_crawl_unresolved";
+      institution.last_discovery_confidence = 0;
+    }
+    continue;
+  }
   const approved = accepted.get(key(result.name));
   if (approved) {
     institution.career_url = approved.career_url;
@@ -54,7 +61,10 @@ for (const result of discoveryResults) {
   if (clean(institution.career_url) === clean(result.career_url)) institution.career_url = null;
   institution.last_discovery_status = "deep_crawl_rejected_identity";
   institution.last_discovery_confidence = 0;
-  institution.notes = clean(`${institution.notes || ""} Deep crawl candidate rejected during institution-identity review.`);
+  const rejectionNote = "Deep crawl candidate rejected during institution-identity review.";
+  if (!clean(institution.notes).includes(rejectionNote)) {
+    institution.notes = clean(`${institution.notes || ""} ${rejectionNote}`);
+  }
   rejected.push({ name: result.name, rejected_url: result.career_url, reason: "institution identity mismatch, third-party aggregator, directory, or individual job detail" });
 }
 
