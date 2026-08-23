@@ -30,7 +30,7 @@ export function parseCampusConfigs(serverText) {
     const typeMatch = line.match(/type:\s*"([^"]+)"/);
     const urlMatch = line.match(/url:\s*"([^"]+)"/);
 
-    if (line.startsWith("{")) {
+    if (line.startsWith("{") || /^const\s+[A-Z0-9_]+\s*=\s*\{$/.test(line)) {
       if (cur && (cur.campus || cur.url || cur.type)) flush();
       cur = {};
     }
@@ -40,7 +40,10 @@ export function parseCampusConfigs(serverText) {
     if (typeMatch) cur.type = typeMatch[1];
     if (urlMatch) cur.url = urlMatch[1];
 
-    if (line.startsWith("},") || line === "}") {
+    // One-line campus objects end with "}," rather than starting with it.
+    // Also flush at an array boundary so the final campus is not overwritten
+    // by a following singleton config object before it can be recorded.
+    if (line.endsWith("},") || line === "}" || line === "};" || line === "];" ) {
       flush();
     }
   }

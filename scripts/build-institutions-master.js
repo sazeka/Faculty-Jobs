@@ -150,6 +150,7 @@ function main() {
       career_url,
       platform_type,
       coverage_source,
+      has_curated_shared_source: Boolean(clean(ov?.coverage_source)),
       override_notes: ov?.notes || null,
     };
   };
@@ -302,11 +303,12 @@ function main() {
         // Shared system scrapers emit member-campus names without requiring a
         // duplicate standalone scraper config or campus-specific career URL.
         hasSharedSource:
-          prev.national_reconciliation_status === "missing_career_url"
+          urls.has_curated_shared_source ||
+          (prev.national_reconciliation_status === "missing_career_url"
             ? false
             : Boolean(urls.coverage_source) ||
               prev.coverage_status === "covered" ||
-              prev.notes === "Present in jobs data but missing from explicit campus config.",
+              prev.notes === "Present in jobs data but missing from explicit campus config."),
       })
     );
   }
