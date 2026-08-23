@@ -15,7 +15,7 @@ const REVIEW_CSV_PATH = path.join(ROOT, "generated", "career-discovery-review.cs
 
 function usage() {
   console.log(
-    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--min-confidence 0.65] [--weak-only|--medium-only] [--skip-report FILE] [--all-missing]"
+    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--min-confidence 0.65] [--weak-only|--medium-only|--unresolved-only] [--level LEVEL] [--skip-report FILE] [--all-missing]"
   );
 }
 
@@ -397,6 +397,8 @@ function parseArgs(argv) {
     scopeEligibleOnly: true,
     weakOnly: false,
     mediumOnly: false,
+    unresolvedOnly: false,
+    level: null,
     skipReports: [],
     timeoutMs: 8000,
   };
@@ -414,6 +416,8 @@ function parseArgs(argv) {
     else if (a === "--timeout-ms" && args[i + 1]) out.timeoutMs = Math.max(2000, Number(args[++i]));
     else if (a === "--weak-only") out.weakOnly = true;
     else if (a === "--medium-only") out.mediumOnly = true;
+    else if (a === "--unresolved-only") out.unresolvedOnly = true;
+    else if (a === "--level" && args[i + 1]) out.level = clean(args[++i]);
     else if (a === "--skip-report" && args[i + 1]) out.skipReports.push(args[++i]);
     else if (a === "--all-missing") out.scopeEligibleOnly = false;
   }
@@ -501,6 +505,7 @@ function writeReviewCsv(results) {
 
 async function main() {
   const opts = parseArgs(process.argv);
+  const revisitMode = opts.weakOnly || opts.mediumOnly || opts.unresolvedOnly;
   const reportOptions = {
     ...opts,
     skipReports: opts.skipReports.map((reportPath) => path.basename(reportPath)),
@@ -512,7 +517,7 @@ async function main() {
 
   let targets = master.institutions
     .filter((r) => normalize(r.coverage_status) === "missing")
-    .filter((r) => opts.weakOnly || opts.mediumOnly || !clean(r.career_url) || !clean(r.platform_type));
+    .filter((r) => revisitMode || !clean(r.career_url) || !clean(r.platform_type));
 
   if (opts.scopeEligibleOnly) {
     targets = targets.filter((r) => isEligibleByScope(r, scope));
@@ -532,6 +537,14 @@ async function main() {
     });
   }
 
+  if (opts.unresolvedOnly) {
+    targets = targets.filter((r) => normalize(r.last_discovery_status) === "unresolved");
+  }
+
+  if (opts.level) {
+    targets = targets.filter((r) => normalize(r.level) === normalize(opts.level));
+  }
+
   for (const reportPath of opts.skipReports) {
     const skipPath = path.resolve(ROOT, reportPath);
     const previousReport = readJsonOrNull(skipPath);
@@ -540,7 +553,7 @@ async function main() {
 
   targets = targets
     .sort((a, b) => {
-      if (opts.weakOnly || opts.mediumOnly) {
+      if (revisitMode) {
         const confidenceDelta = Number(b.last_discovery_confidence || 0) - Number(a.last_discovery_confidence || 0);
         if (confidenceDelta !== 0) return confidenceDelta;
       }
@@ -615,8 +628,8 @@ async function main() {
 
     if (found.ok && found.best && found.best.confidence >= opts.minConfidence) {
       if (opts.apply) {
-        if (opts.weakOnly || opts.mediumOnly || !clean(inst.career_url)) inst.career_url = found.best.url;
-        if (opts.weakOnly || opts.mediumOnly || !clean(inst.platform_type)) inst.platform_type = found.best.platform_type || inferPlatformFromUrl(found.best.url);
+        if (revisitMode || !clean(inst.career_url)) inst.career_url = found.best.url;
+        if (revisitMode || !clean(inst.platform_type)) inst.platform_type = found.best.platform_type || inferPlatformFromUrl(found.best.url);
         inst.last_checked_at = new Date().toISOString();
         inst.last_discovery_attempt_at = attemptedAt;
         inst.last_discovery_status = "discovered";
@@ -643,7 +656,7 @@ async function main() {
       });
     } else {
       if (opts.apply) {
-        if (opts.weakOnly || opts.mediumOnly) {
+        if (revisitMode) {
           inst.career_url = null;
           inst.platform_type = null;
         }
