@@ -1112,7 +1112,7 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Contra Costa Community College District Office", type: "generic", url: "https://www.4cd.edu/" },
   { campus: "Copper Mountain Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cmccd" },
   { campus: "Cosumnes River College", type: "generic", url: "https://www.crc.losrios.edu/" },
-  { campus: "Crafton Hills College", type: "generic", url: "https://www.craftonhills.edu/" },
+  { campus: "Crafton Hills College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sbccd", locationFilter: "Crafton Hills College" },
   // Was pointing at the bare homepage. Real ATS is NEOGOV/schooljobs
   // (single-institution tenant). Verified live: 26 postings, several
   // faculty-titled ("Automotive Technology Part-Time Instructor Pool",
@@ -1268,6 +1268,15 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Mt San Jacinto Community College District", type: "generic", url: "https://www.msjc.edu/humanresources/" },
   { campus: "San Joaquin Delta College", type: "generic", url: "https://www.deltacollege.edu/jobs-delta" },
   { campus: "Sierra College", type: "generic", url: "https://www.sierracollege.edu/administration/human-resources/recruitment-employment-opportunities/" },
+  // RCCD's replacement PeopleAdmin tenant exposes stable organizational-tier
+  // IDs for each college. Keep the full-time-faculty position facet (1541=2)
+  // and campus facet together so the shared district board cannot leak jobs
+  // between Riverside, Norco, and Moreno Valley.
+  { campus: "Riverside City College", type: "peopleadmin", url: "https://jobs.rccd.edu/postings/search?1541%5B%5D=2&query_organizational_tier_1_id%5B%5D=756&commit=Search" },
+  { campus: "Norco College", type: "peopleadmin", url: "https://jobs.rccd.edu/postings/search?1541%5B%5D=2&query_organizational_tier_1_id%5B%5D=755&commit=Search" },
+  // SBCCD uses NEOGOV for both colleges; the location field is rendered on
+  // every card and is already enforced by scrapeSchoolJobsAs.
+  { campus: "San Bernardino Valley College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sbccd", locationFilter: "San Bernardino Valley College" },
 ];
 
 // NJ (multi-platform)
@@ -1321,6 +1330,12 @@ const NJ_CAMPUSES = [
     type: "workday",
     url: "https://wpunj.wd1.myworkdayjobs.com/ext?jobFamilyGroup=beb7f5bb680310016e27a7df06100000",
   },
+  // RCSJ publishes separate, official NEOGOV sub-boards for its two IPEDS
+  // campuses. The /promotionaljobs path is explicitly labelled Cumberland;
+  // the root board is explicitly labelled Gloucester, so no inferred campus
+  // assignment or location-string heuristic is needed.
+  { campus: "Rowan College of South Jersey-Gloucester Campus", type: "schooljobs", url: "https://www.schooljobs.com/careers/rcsjedu" },
+  { campus: "Rowan College of South Jersey-Cumberland Campus", type: "schooljobs", url: "https://www.schooljobs.com/careers/rcsjedu/promotionaljobs" },
 ];
 
 const NJ_PRIVATE_CAMPUSES = [
@@ -3742,6 +3757,7 @@ const NE_CAMPUSES = [
   { campus: "Metropolitan Community College Area", type: "workday", url: "https://mccneb.wd5.myworkdayjobs.com/mccnebjobs" },
   { campus: "Mid-Plains Community College", type: "generic", url: "https://mpcc.edu/faculty-staff/human-resources/employment-opportunities.php" },
   { campus: "Northeast Community College", type: "generic", url: "https://northeast.edu/about-us/employment" },
+  { campus: "Nebraska College of Technical Agriculture", type: "peopleadmin", url: "https://employment.unl.edu/postings/search?query_position_type_id%5B%5D=2&query_organizational_tier_3_id%5B%5D=245&commit=Search" },
 ];
 
 // IA (Iowa)
@@ -3913,6 +3929,8 @@ const MT_CAMPUSES = [
   },
   { campus: "Fort Peck Community College", type: "generic", url: "https://www.fpcc.edu/about" },
   { campus: "Highlands College of Montana Tech", type: "generic", url: "https://www.mtech.edu/about/employment/" },
+  { campus: "Great Falls College Montana State University", type: "peopleadmin", url: "https://jobs.gfcmsu.edu/postings/search?sort=225+asc" },
+  { campus: "Helena College University of Montana", type: "generic", url: "https://helenacollege.edu/hr/job_opp.aspx" },
   { campus: "Miles Community College", type: "generic", url: "https://www.milescc.edu/employment/" },
   { campus: "Montana Bible College", type: "generic", url: "https://www.montanabiblecollege.edu/academics/faculty-jobs" },
   { campus: "Montana State University Billings", type: "generic", url: "https://www.msubillings.edu/careers/" },
@@ -4139,6 +4157,11 @@ const OH_CAMPUSES = [
     campus: "Ohio State University",
     type: "workday",
     url: "https://osu.wd1.myworkdayjobs.com/OSUCareers?timeType=38709af0feb60197596be2b9ff095800&jobFamilyGroup=67612469e2ea01a29e348f105b01ff10",
+  },
+  {
+    campus: "Ohio State University Agricultural Technical Institute",
+    type: "workday",
+    url: "https://osu.wd1.myworkdayjobs.com/OSUCareers?locations=819c1ab743bd01b092af970065019db6&jobFamilyGroup=67612469e2ea01a29e348f105b01ff10",
   },
   {
     campus: "University of Toledo",
@@ -6543,6 +6566,13 @@ const HI_CAMPUSES = [
   { campus: "Hawaii Pacific University", type: "generic", url: "https://www.hpu.edu/hpu-careers/job-listings.html" },
   { campus: "Kapiolani Community College", type: "generic", url: "https://www.kapiolani.hawaii.edu/faculty-staff/human-resources/employment-checklists/" },
   { campus: "Windward Community College", type: "generic", url: "https://windward.hawaii.edu/about-wcc/employment-opportunities/" },
+  // The University of Hawaii uses one NEOGOV tenant. Its keyword search is
+  // intentionally loose, so each branch also requires an exact department/
+  // hiring-unit marker from the rendered job card before attribution.
+  { campus: "Hawaii Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=Hawai%27i%20Community%20College", contentFilter: "Hawai'i Community College" },
+  { campus: "Honolulu Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=Honolulu%20Community%20College", contentFilter: "Honolulu Community College" },
+  { campus: "Kauai Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=Kaua%27i%20Community%20College", contentFilter: "Kaua'i Community College" },
+  { campus: "Leeward Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=Leeward%20Community%20College", contentFilter: "Leeward Community College" },
 ];
 
 /* ============================== EXPRESS ============================== */
@@ -10538,7 +10568,15 @@ async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
 
 // SchoolJobs pagination sometimes uses javascript:void(0) for Next.
 // We click and wait for results signature to change.
-async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "NJ", locationFilter = null) {
+export function matchesSchoolJobsCampusScope(job, locationFilter = null, contentFilter = null) {
+  const location = clean(job?.location || "").toLowerCase();
+  const content = clean(job?.cardText || "").toLowerCase();
+  if (locationFilter && !location.includes(clean(locationFilter).toLowerCase())) return false;
+  if (contentFilter && !content.includes(clean(contentFilter).toLowerCase())) return false;
+  return true;
+}
+
+async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "NJ", locationFilter = null, contentFilter = null) {
   const page = await context.newPage();
   try {
     const jobs = [];
@@ -10575,7 +10613,8 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "
           const card = a.closest("li.list-item, li");
           const metaLi = card ? card.querySelector("ul.list-meta li") : null;
           const location_ = metaLi ? clean(metaLi.textContent) : "";
-          out.push({ title, url, location: location_ });
+          const cardText = card ? clean(card.textContent) : title;
+          out.push({ title, url, location: location_, cardText });
         }
         return out;
       });
@@ -10595,9 +10634,7 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "
     // Scope down to one campus's postings when this schooljobs tenant is
     // shared district-wide. No-op (unfiltered, same as before) for every
     // existing caller that doesn't pass locationFilter.
-    const scoped = locationFilter
-      ? jobs.filter((j) => (j.location || "").toLowerCase().includes(locationFilter.toLowerCase()))
-      : jobs;
+    const scoped = jobs.filter((job) => matchesSchoolJobsCampusScope(job, locationFilter, contentFilter));
 
     const filtered = scoped.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
@@ -11010,8 +11047,8 @@ async function scrapeMiAll(context) {
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
-export async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName, locationFilter = null) {
-  const items = await scrapeNjSchoolJobs(context, startUrl, campusName, sourceName, locationFilter);
+export async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName, locationFilter = null, contentFilter = null) {
+  const items = await scrapeNjSchoolJobs(context, startUrl, campusName, sourceName, locationFilter, contentFilter);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
 
@@ -17390,9 +17427,9 @@ async function scrapeHiAll(context) {
   const results = await mapWithConcurrency(
     HI_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter, contentFilter }) => {
       try {
-        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "HI");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "HI", locationFilter || null, contentFilter || null);
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "HI");
         return [];
       } catch (e) {
