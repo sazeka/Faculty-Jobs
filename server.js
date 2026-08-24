@@ -1962,6 +1962,8 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Richard Bland College", type: "generic", url: "https://www.jobs.virginia.gov/jobs/search?query=Richard+Bland+College" },
+  { campus: "Southside College of Health Sciences", type: "generic", url: "https://www.schs.edu/employment-opportunities" },
   {
     campus: "University of Virginia",
     type: "workday-search",
@@ -2337,6 +2339,7 @@ const DE_CAMPUSES = [
 
 // MD (Maryland) - major research universities + liberal arts colleges
 const MD_CAMPUSES = [
+  { campus: "Hagerstown Community College", type: "generic", url: "https://www.hagerstowncc.edu/human-resources" },
   {
     campus: "University of Maryland, Baltimore",
     type: "taleo",
@@ -2546,6 +2549,7 @@ const NH_CAMPUSES = [
 
 // AZ (Arizona)
 const AZ_CAMPUSES = [
+  { campus: "Pima Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/pimacc" },
   {
     campus: "Arizona State University",
     type: "asu-table",
@@ -3506,6 +3510,7 @@ const VT_CAMPUSES = [
 
 // MN (Minnesota)
 const MN_CAMPUSES = [
+  { campus: "White Earth Tribal and Community College", type: "generic", url: "https://www.wetcc.edu/employment-careers/" },
   {
     campus: "University of Minnesota",
     type: "umn",
@@ -3701,6 +3706,7 @@ const SD_CAMPUSES = [
 
 // NE (Nebraska)
 const NE_CAMPUSES = [
+  { campus: "Little Priest Tribal College", type: "generic", url: "https://www.littlepriest.edu/human-resources/" },
   {
     campus: "University of Nebraska-Lincoln",
     type: "peopleadmin",
@@ -3942,6 +3948,10 @@ const MT_CAMPUSES = [
 
 // WI (Wisconsin)
 const WI_CAMPUSES = [
+  { campus: "Lakeshore Technical College", type: "generic", url: "https://careers.lakeshore.edu/jobs" },
+  { campus: "Moraine Park Technical College", type: "generic", url: "https://www.morainepark.edu/experience-mptc/jobs-and-careers/" },
+  { campus: "Waukesha County Technical College", type: "generic", url: "https://www.wctc.edu/WCTC/WCTC-Jobs" },
+  { campus: "Western Technical College", type: "generic", url: "https://www.westerntc.edu/work-at-western" },
   {
     campus: "UW-Madison",
     type: "workday",
@@ -4499,6 +4509,7 @@ const UT_CAMPUSES = [
 
 // MI (Michigan)
 const MI_CAMPUSES = [
+  { campus: "North Central Michigan College", type: "generic", url: "https://www.ncmich.edu/about-us/our-team/join-our-team.html" },
   {
     campus: "Central Michigan University",
     type: "peopleadmin",
@@ -4643,6 +4654,8 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  { campus: "CAAN Academy of Nursing", type: "generic", url: "https://www.caanacademy.org/employment-opportunities" },
+  { campus: "Illinois Valley Community College", type: "applitrack", url: "https://www.applitrack.com/ivcc/onlineapp/default.aspx?Category=Faculty+Full-Time" },
   // Was correctly wired as "peoplesoft-fluid" back on 2026-07-21 (commit
   // a97b6fa6, 27 real faculty postings surfaced), but an automated weekly
   // "institution discovery" re-probe (commit cbd6f368, 2026-07-25) silently
@@ -5083,6 +5096,7 @@ const IN_CAMPUSES = [
 
 // WV (West Virginia)
 const WV_CAMPUSES = [
+  { campus: "Southern West Virginia Community and Technical College", type: "generic", url: "https://www.southernwv.edu/facultystaff/human-resources/" },
   {
     campus: "West Virginia University",
     type: "taleo",
@@ -5139,6 +5153,8 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Kilgore College", type: "generic", url: "https://www.kilgore.edu/additional-resources/human-resources/" },
+  { campus: "Ranger College", type: "generic", url: "https://www.rangercollege.edu/about-us/human-resources/index.php" },
   {
     campus: "University of Texas at Austin",
     type: "workday",
@@ -5966,6 +5982,8 @@ const AL_CAMPUSES = [
 
 // MS (Mississippi)
 const MS_CAMPUSES = [
+  { campus: "Mississippi Delta Community College", type: "generic", url: "https://www.msdelta.edu/human-resources/employment-opportunities.php" },
+  { campus: "Southwest Mississippi Community College", type: "generic", url: "https://www.smcc.edu/employment-opportunities/" },
   { campus: "University of Mississippi", type: "workday", url: "https://olemiss.wd12.myworkdayjobs.com/External__Faculty" },
   { campus: "Mississippi University for Women", type: "peopleadmin", url: "https://muw.peopleadmin.com/postings/search" },
   { campus: "Delta State University", type: "peopleadmin", url: "https://deltastate.peopleadmin.com/postings/search" },
@@ -6020,6 +6038,7 @@ const MS_CAMPUSES = [
 
 // LA (Louisiana)
 const LA_CAMPUSES = [
+  { campus: "Nunez Community College", type: "generic", url: "https://www.nunez.edu/careers" },
   { campus: "Louisiana State University", type: "workday", url: "https://lsu.wd1.myworkdayjobs.com/LSU?Job_Profiles=7a9995fc77aa101fe03ed2adb83abd3b&Job_Profiles=7a9995fc77aa101fe03fb0edd613be1b&Job_Profiles=7a9995fc77aa101fe03ea5230b41bd10&Job_Profiles=7a9995fc77aa101fe03c558ab5c0bac4&Job_Profiles=7a9995fc77aa101fe03fb8c46670be23&Job_Profiles=7a9995fc77aa101fe03fa8fe7ecdbe13&Job_Profiles=48b1ff5a2bae01637b1270c77c372403" },
   { campus: "Louisiana Tech University", type: "workday", url: "https://ulsltu.wd503.myworkdayjobs.com/LATECHCareers" },
   { campus: "Dillard University", type: "generic", url: "https://www.dillard.edu/human-resources/" },
@@ -6316,6 +6335,7 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "State Technical College of Missouri", type: "generic", url: "https://statetechmo.edu/human-resources/" },
   {
     campus: "University of Missouri",
     type: "umsystem-hrs",
@@ -6499,6 +6519,7 @@ const KY_CAMPUSES = [
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
+  { campus: "Tennessee Board of Regents", type: "generic", url: "https://www.tbr.edu/hr/employment-opportunities" },
   { campus: "Middle Tennessee State University", type: "generic", url: "https://careers.mtsu.edu/jobs/search?page=1&employment_type_uids%5B%5D=631bbbc303d4bf114ecc14a243ae4fd8&employment_type_uids%5B%5D=1c7cbdbbab7a83ed143e662427bb71fb&employment_type_uids%5B%5D=6dba428614ebe4b8b23f08b99fa1ae7d&employment_type_uids%5B%5D=481b6f9c12f58817f1891af748b2a200&query=" },
   { campus: "Remington College-Memphis Campus", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027240777_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter" },
   { campus: "Remington College-Nashville Campus", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027241619_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter" },
@@ -7861,7 +7882,7 @@ export function looksFacultyish(title) {
 
 export function isGenericFacultyPageChromeTitle(title) {
   const value = clean(title);
-  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|faculty\s*&\s*staff careers|faculty and staff faqs|faculty\s*&\s*adjunct-faculty openings|faculty\s*\/\s*staff webmail|(?:\d{4}[–—-]\d{2,4}\s+)?faculty salary scales|adjunct instructor salary schedule|message from the dean of students|cosmetology instructor training\s*\(short-term certificate\)|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
+  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|faculty\s*&\s*staff careers|faculty and staff faqs|faculty\s*&\s*adjunct-faculty openings|faculty\s*\/\s*staff webmail|(?:\d{4}[–—-]\d{2,4}\s+)?faculty salary scales|adjunct instructor salary schedule|adjunct faculty application process|adjunct faculty resources|faculty credentialing manual|faculty documents and forms|message from the dean of students|cosmetology instructor training\s*\(short-term certificate\)|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
 }
 
 /* ============================== CUNY ============================== */
@@ -11954,6 +11975,7 @@ async function scrapeIlAll(context) {
         if (type === "knox-faculty") return await scrapeKnoxFacultyJobs(context, url, campus, "IL");
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "IL");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "IL");
+        if (type === "applitrack") return await scrapeApplitrackAs(context, url, campus, "IL");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IL");
         if (type === "peoplesoft-fluid") return await scrapePeopleSoftFluidAs(context, url, campus, "IL");
         // No existing IL dispatch case for "workday" (function scrapeWorkdayAs
@@ -14149,6 +14171,7 @@ async function scrapeCunyJobs(context, careerUrl, campusName, sourceName) {
 // actively querying a site we've committed not to scrape, for a result we'd throw
 // away either way.
 const OVERRIDE_PLATFORM_DISPATCH = {
+  applitrack: (context, url, campusName, sourceName) => scrapeApplitrackAs(context, url, campusName, sourceName),
   adp: (context, url, campusName, sourceName) => scrapeAdpApi(url, campusName, sourceName),
   workday: (context, url, campusName, sourceName) => scrapeWorkdayAs(context, url, campusName, sourceName),
   schooljobs: (context, url, campusName, sourceName) => scrapeSchoolJobsAs(context, url, campusName, sourceName),
@@ -14187,6 +14210,51 @@ const OVERRIDE_PLATFORM_DISPATCH = {
   "rice-faculty": scrapeRiceFacultyApi,
   "cuny-jobs": scrapeCunyJobs,
 };
+
+export async function scrapeApplitrackAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1500);
+    const rows = await safeEvaluate(page, () => {
+      const clean = (value) => String(value || "").replace(/\s+/g, " ").trim();
+      const seen = new Set();
+      const out = [];
+      for (const anchor of document.querySelectorAll('a[href*="AppliTrackJobID="]')) {
+        const title = clean(anchor.textContent);
+        let url;
+        try { url = new URL(anchor.getAttribute("href"), location.href).toString(); } catch { continue; }
+        const id = new URL(url).searchParams.get("AppliTrackJobID");
+        if (!id || !title || seen.has(id)) continue;
+        seen.add(id);
+        out.push({ title, url });
+      }
+      return out;
+    });
+    return rows
+      .filter((job) => looksFacultyish(job.title) && !omitAdjunct(job.title))
+      .map((job) => {
+        const title = normalizeJobTitle(job.title) || clean(job.title);
+        const inferred = inferAcademicFieldsFromTitle(title);
+        return {
+          title,
+          url: job.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: null,
+          description: null,
+          department: inferred.department,
+          specialization: inferred.specialization,
+        };
+      });
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} AppliTrack scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
 
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
   const effectiveUrl = resolveCareerUrlOverride(campusName, startUrl);

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-24T16:34:31.520Z",
+  "updatedAt": "2026-08-24T16:51:19.910Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -830,6 +830,13 @@
       "career_url": "https://fa-exer-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
       "platform_type": "oracle",
       "notes": "Configured Workday tenant (butler.wd5.myworkdayjobs.com/BUJobs) is dead -- redirects to Workday's own \"currently unavailable\" page, and Butler's own HR page now links to Oracle Cloud HCM instead. Verified live: 1 posting, \"Adjunct - Nursing\" (BSN Program Adjunct Clinical Faculty) -- passes the filter since the title says \"Adjunct\" but not \"part-time\"/\"temp\"/\"admin\"."
+    },
+    {
+      "name": "CAAN Academy of Nursing",
+      "homepage_url": "https://caanacademy.org/",
+      "career_url": "https://www.caanacademy.org/employment-opportunities",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Cabrillo College",
@@ -2926,6 +2933,13 @@
       "notes": "Both homepage_url and career_url were the bare marketing homepage, no listings at all -- real board is the parent health system's own careers site, filtered to the School of Medicine. Platform tagged \"generic\" rather than \"icims\": the URL pattern is /job/<location>/<slug>/<reqid>/<atsid> (singular \"job\"), which doesn't match scrapeIcimsAs's narrower selectors (built for genuine icims.com tenants using plural \"/jobs/\" or \"job-\" patterns) -- generic DOM scraping already handles it fine. Verified live: 2 postings, \"Professor - Assistant, Associate, Full\" and \"Faculty Liaison - School of Medicine\", not excluded by omitAdjunct()."
     },
     {
+      "name": "Hagerstown Community College",
+      "homepage_url": "https://www.hagerstowncc.edu/",
+      "career_url": "https://www.hagerstowncc.edu/human-resources",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
       "name": "Harcum College",
       "homepage_url": "https://www.harcum.edu/s/1044/edu/start.aspx",
       "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=2B20FD7642D04B903043BFBC00E7A15E",
@@ -3053,6 +3067,13 @@
       "platform_type": "generic",
       "coverage_source": "Illinois Eastern Community Colleges",
       "notes": "Reviewed 2026-08-23. Olney Central is active and IECC's official employment page identifies campus-specific and district-wide faculty openings."
+    },
+    {
+      "name": "Illinois Valley Community College",
+      "homepage_url": "https://www.ivcc.edu/",
+      "career_url": "https://www.applitrack.com/ivcc/onlineapp/default.aspx?Category=Faculty+Full-Time",
+      "platform_type": "applitrack",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Independence Community College",
@@ -3298,6 +3319,13 @@
       "notes": "careers.kenyon.edu/695/cw/en-us/subscribe 404s (stale subscribe-page path). Confirmed live via headless browser: base URL (redirects to /jobs/search) shows department-filterable postings (Biology, Admissions, Accounting, etc). Confirmed PageUp via page source."
     },
     {
+      "name": "Kilgore College",
+      "homepage_url": "https://www.kilgore.edu/",
+      "career_url": "https://www.kilgore.edu/additional-resources/human-resources/",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
       "name": "Kishwaukee College",
       "homepage_url": "https://www.kish.edu/",
       "career_url": "https://kish.peopleadmin.com/",
@@ -3324,6 +3352,13 @@
       "career_url": "https://www.lakemichigancollege.edu/about/jobs",
       "platform_type": "generic",
       "notes": "Official institution-scoped employee hiring source, verified in the 2026-08-24 final two-year closeout."
+    },
+    {
+      "name": "Lakeshore Technical College",
+      "homepage_url": "https://gotoltc.edu/",
+      "career_url": "https://careers.lakeshore.edu/jobs",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Lamar State College-Port Arthur",
@@ -3416,6 +3451,13 @@
       "career_url": "https://www.jobs.linnbenton.edu/postings/search",
       "platform_type": "peopleadmin",
       "notes": "Official institution-scoped employee hiring source, verified in the 2026-08-24 final two-year closeout."
+    },
+    {
+      "name": "Little Priest Tribal College",
+      "homepage_url": "https://www.littlepriest.edu/",
+      "career_url": "https://www.littlepriest.edu/human-resources/",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Long Beach City College",
@@ -3625,6 +3667,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (5 faculty postings)."
     },
     {
+      "name": "Mississippi Delta Community College",
+      "homepage_url": "https://www.msdelta.edu/",
+      "career_url": "https://www.msdelta.edu/human-resources/employment-opportunities.php",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
       "name": "Mississippi Gulf Coast Community College",
       "homepage_url": "https://www.mgccc.edu/",
       "career_url": "https://mgccc.peopleadmin.com/",
@@ -3679,6 +3728,13 @@
       "career_url": "https://www.schooljobs.com/careers/mc3",
       "platform_type": "schooljobs",
       "notes": "Reviewed in the 2026-08-24 ten-state two-year pass; validated employee-hiring portal linked from an official institution page."
+    },
+    {
+      "name": "Moraine Park Technical College",
+      "homepage_url": "https://www.morainepark.edu/",
+      "career_url": "https://www.morainepark.edu/experience-mptc/jobs-and-careers/",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Moreno Valley College",
@@ -3859,6 +3915,13 @@
       "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
     },
     {
+      "name": "North Central Michigan College",
+      "homepage_url": "https://www.ncmich.edu/",
+      "career_url": "https://www.ncmich.edu/about-us/our-team/join-our-team.html",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
       "name": "North Central Texas College",
       "homepage_url": "https://www.nctc.edu/",
       "career_url": "https://employment.nctc.edu/",
@@ -4020,6 +4083,13 @@
       "career_url": "https://nsucareers.nova.edu/jobs/search/faculty-jobs",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (4 faculty postings)."
+    },
+    {
+      "name": "Nunez Community College",
+      "homepage_url": "https://www.nunez.edu/",
+      "career_url": "https://www.nunez.edu/careers",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Oakton College",
@@ -4253,6 +4323,13 @@
       "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
     },
     {
+      "name": "Pima Community College",
+      "homepage_url": "https://www.pima.edu/",
+      "career_url": "https://www.schooljobs.com/careers/pimacc",
+      "platform_type": "schooljobs",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
       "name": "Pine Technical & Community College",
       "homepage_url": "https://www.pine.edu/",
       "career_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545e552307f0000",
@@ -4337,6 +4414,13 @@
       "career_url": "https://www.schooljobs.com/careers/randolphedu",
       "platform_type": "schooljobs",
       "notes": "Reviewed in the 2026-08-24 five-state two-year pass; validated employee-hiring portal linked from an official institution page."
+    },
+    {
+      "name": "Ranger College",
+      "homepage_url": "https://www.rangercollege.edu/#gsc.tab=0",
+      "career_url": "https://www.rangercollege.edu/about-us/human-resources/index.php",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Raritan Valley Community College",
@@ -4436,6 +4520,13 @@
       "career_url": "https://vpaa.rice.edu/faculty/open-positions",
       "platform_type": "rice-faculty",
       "notes": "The former jobs.rice.edu/postings/search endpoint returns 404. Rice HR directs faculty applicants to this official VPAA Open Positions page, whose public JSON feed supplies current positions and stable Interfolio IDs; a dedicated feed adapter avoids treating navigation links as jobs."
+    },
+    {
+      "name": "Richard Bland College",
+      "homepage_url": "https://www.rbc.edu/",
+      "career_url": "https://www.jobs.virginia.gov/jobs/search?query=Richard+Bland+College",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Rider University",
@@ -4808,12 +4899,33 @@
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
     },
     {
+      "name": "Southern West Virginia Community and Technical College",
+      "homepage_url": "https://www.southernwv.edu/",
+      "career_url": "https://www.southernwv.edu/facultystaff/human-resources/",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
+      "name": "Southside College of Health Sciences",
+      "homepage_url": "https://www.schs.edu/",
+      "career_url": "https://www.schs.edu/employment-opportunities",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
       "name": "Southside Virginia Community College",
       "homepage_url": "https://www.southside.edu/",
       "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7883&query_position_type_id%5B%5D=9&commit=Search",
       "platform_type": "peopleadmin",
       "coverage_source": "Virginia Community College System",
       "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
+      "name": "Southwest Mississippi Community College",
+      "homepage_url": "https://www.smcc.edu/",
+      "career_url": "https://www.smcc.edu/employment-opportunities/",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Southwest Tennessee Community College",
@@ -4921,6 +5033,13 @@
       "notes": "Official institution-scoped employee hiring source, verified in the 2026-08-24 final two-year closeout."
     },
     {
+      "name": "State Technical College of Missouri",
+      "homepage_url": "https://www.statetechmo.edu/",
+      "career_url": "https://statetechmo.edu/human-resources/",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
       "name": "Sullivan County Community College",
       "homepage_url": "https://www.sunysullivan.edu/",
       "career_url": "https://sunysullivan.isolvedhire.com/",
@@ -4961,6 +5080,13 @@
       "career_url": "https://www.schooljobs.com/careers/templejc",
       "platform_type": "schooljobs",
       "notes": "Reviewed in the 2026-08-24 five-state two-year pass; validated employee-hiring portal linked from an official institution page."
+    },
+    {
+      "name": "Tennessee Board of Regents",
+      "homepage_url": "https://www.tbr.edu/",
+      "career_url": "https://www.tbr.edu/hr/employment-opportunities",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "Texas Tech University",
@@ -5503,6 +5629,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
     },
     {
+      "name": "Waukesha County Technical College",
+      "homepage_url": "https://www.wctc.edu/",
+      "career_url": "https://www.wctc.edu/WCTC/WCTC-Jobs",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
       "name": "Wayne County Community College District",
       "homepage_url": "https://www.wcccd.edu/",
       "career_url": "https://www.wcccd.edu/divisions/human-resources/jobs-at-wcccd",
@@ -5589,6 +5722,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (4 faculty postings)."
     },
     {
+      "name": "Western Technical College",
+      "homepage_url": "https://www.westerntc.edu/",
+      "career_url": "https://www.westerntc.edu/work-at-western",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
+    },
+    {
       "name": "Westminster University (Utah)",
       "homepage_url": "https://westminsteru.edu/about/human-resources/careers-at-westminster-university.html",
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8b104a38-45ac-4682-9e01-117585322eb0&ccId=19000101_000001&lang=en_US",
@@ -5601,6 +5741,13 @@
       "career_url": "https://www.schooljobs.com/careers/wcjc",
       "platform_type": "schooljobs",
       "notes": "Reviewed in the 2026-08-24 five-state two-year pass; validated employee-hiring portal linked from an official institution page."
+    },
+    {
+      "name": "White Earth Tribal and Community College",
+      "homepage_url": "https://www.wetcc.edu/",
+      "career_url": "https://www.wetcc.edu/employment-careers/",
+      "platform_type": "generic",
+      "notes": "Official institution-scoped employee hiring page verified in the 2026-08-24 remaining two-year deep pass."
     },
     {
       "name": "White Mountains Community College",
