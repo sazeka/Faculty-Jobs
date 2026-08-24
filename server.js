@@ -787,6 +787,11 @@ const MA_PRIVATE_CAMPUSES = [
   { campus: "Holyoke Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/holyokeedu" },
   { campus: "Quinsigamond Community College", type: "interviewexchange", url: "https://qcc.interviewexchange.com/static/clients/319QCM1/index.jsp" },
   { campus: "Springfield Technical Community College", type: "interviewexchange", url: "https://stcc.interviewexchange.com/static/clients/382STM1/index.jsp" },
+  { campus: "Greenfield Community College", type: "generic", url: "https://www.gcc.mass.edu/hr/careers/" },
+  { campus: "Middlesex Community College", type: "generic", url: "https://www.middlesex.edu/humanresources/employment.html" },
+  { campus: "Mount Wachusett Community College", type: "generic", url: "https://mwcc.edu/about/human-resources/jobs/" },
+  { campus: "Northern Essex Community College", type: "generic", url: "https://www.necc.mass.edu/employment/" },
+  { campus: "Roxbury Community College", type: "generic", url: "https://www.rcc.mass.edu/explore/work-at-rcc/" },
 ];
 
 // UC (AP Recruit)
@@ -1714,6 +1719,9 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Harrisburg Area Community College", type: "pageup", url: "https://careersmanager.pageuppeople.com/1009/cw/en-us/listing" },
   { campus: "Johnson College", type: "generic", url: "https://johnson.edu/human-resources/" },
   { campus: "Montgomery County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/mc3" },
+  { campus: "Northampton County Area Community College", type: "generic", url: "https://www.northampton.edu/about/working-at-ncc/employment-opportunities.html" },
+  { campus: "Orleans Technical College", type: "generic", url: "https://orleanstech.edu/jobs-at-orleans/" },
+  { campus: "Thaddeus Stevens College of Technology", type: "generic", url: "https://www.stevenscollege.edu/about/careers/" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -2401,6 +2409,9 @@ const MD_CAMPUSES = [
   { campus: "St. John's College", type: "generic", url: "https://www.sjc.edu/employment" },
   { campus: "United States Naval Academy", type: "generic", url: "https://www.usna.edu/Employment/" },
   { campus: "University of Maryland Global Campus", type: "generic", url: "https://www.umgc.edu/administration/jobs" },
+  { campus: "Harford Community College", type: "peopleadmin", url: "https://harford.peopleadmin.com/postings/search" },
+  { campus: "Howard Community College", type: "peopleadmin", url: "https://howardcc.peopleadmin.com/postings/search" },
+  { campus: "Wor-Wic Community College", type: "generic", url: "https://www.worwic.edu/About-Wor-Wic/Employment" },
 ];
 
 // DC (District of Columbia)
@@ -2589,6 +2600,7 @@ const AZ_CAMPUSES = [
   { campus: "Embry-Riddle Aeronautical University-Prescott", type: "generic", url: "https://prescott.erau.edu/" },
   { campus: "Estrella Mountain Community College", type: "generic", url: "https://www.estrellamountain.edu/" },
   { campus: "Yavapai College", type: "schooljobs", url: "https://www.schooljobs.com/careers/ycedu" },
+  { campus: "Mohave Community College", type: "generic", url: "https://www.mohave.edu/about/employee-services/" },
 ];
 
 
@@ -3187,6 +3199,12 @@ const OR_CAMPUSES = [
   { campus: "Klamath Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/klamathcc" },
   { campus: "Southwestern Oregon Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/socc" },
   { campus: "Portland Community College", type: "generic", url: "https://www.pcc.edu/hr/jobs/" },
+  { campus: "Linn-Benton Community College", type: "peopleadmin", url: "https://www.jobs.linnbenton.edu/postings/search" },
+  { campus: "Oregon Coast Community College", type: "generic", url: "https://oregoncoast.edu/about/human-resources/employment-opportunities/" },
+  { campus: "Rogue Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/roguecc" },
+  { campus: "Tillamook Bay Community College", type: "generic", url: "https://www.tillamookbaycc.edu/about-tbcc/jobs/" },
+  { campus: "Treasure Valley Community College", type: "generic", url: "https://www.tvcc.cc/hr/jobs.cfm" },
+  { campus: "Umpqua Community College", type: "generic", url: "https://umpqua.edu/about/governance-operations/human-resources/employment-opportunities/" },
 ];
 
 
@@ -3423,6 +3441,7 @@ const ME_CAMPUSES = [
   { campus: "Saint Joseph's College of Maine", type: "generic", url: "https://my.sjcme.edu/resources/human-resources/sjc-careers-page/" },
   { campus: "Washington County Community College", type: "generic", url: "https://wccc.me.edu/about-wccc/news-info/employment/" },
   { campus: "Maine College of Art & Design", type: "generic", url: "https://meca.edu/about/employment/" },
+  { campus: "Southern Maine Community College", type: "generic", url: "https://www.smccme.edu/about/employment/" },
 ];
 
 // VT (Vermont)
@@ -3720,6 +3739,9 @@ const NE_CAMPUSES = [
   { campus: "Peru State College", type: "peopleadmin", url: "https://nscs.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&435=&query_organizational_tier_3_id%5B%5D=any&1349%5B%5D=2&commit=Search" },
   { campus: "Western Nebraska Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/wncc" },
   { campus: "York University", type: "generic", url: "https://www.york.edu/about/employment.php" },
+  { campus: "Metropolitan Community College Area", type: "workday", url: "https://mccneb.wd5.myworkdayjobs.com/mccnebjobs" },
+  { campus: "Mid-Plains Community College", type: "generic", url: "https://mpcc.edu/faculty-staff/human-resources/employment-opportunities.php" },
+  { campus: "Northeast Community College", type: "generic", url: "https://northeast.edu/about-us/employment" },
 ];
 
 // IA (Iowa)
@@ -3820,6 +3842,10 @@ const IA_CAMPUSES = [
   { campus: "Mercy College of Health Sciences", type: "generic", url: "https://www.mchs.edu/about/employment/" },
   { campus: "Simpson College", type: "generic", url: "https://www.simpson.edu/about/departments-offices-centers/careers-at-simpson/" },
   { campus: "Marshalltown Community College", type: "generic", url: "https://www.iavalley.edu/join-our-team/index.html" },
+  { campus: "Indian Hills Community College", type: "generic", url: "https://www.indianhills.edu/about/employment.php" },
+  { campus: "Iowa Central Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/iowacentral" },
+  { campus: "Iowa Lakes Community College", type: "generic", url: "https://www.iowalakes.edu/employment/" },
+  { campus: "North Iowa Area Community College", type: "generic", url: "https://www.niacc.edu/about/employment/" },
 ];
 
 // WY (Wyoming)
@@ -3989,6 +4015,9 @@ const WI_CAMPUSES = [
   { campus: "Milwaukee Area Technical College", type: "generic", url: "https://www.matc.edu/who-we-are/offices/human-resources/index.html" },
   { campus: "Mid-State Technical College", type: "taleo", url: "https://phh.tbe.taleo.net/phh02/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=41&org=MIDSTECH" },
   { campus: "Northcentral Technical College", type: "workday", url: "https://ntc.wd1.myworkdayjobs.com/NTC" },
+  { campus: "Northeast Wisconsin Technical College", type: "generic", url: "https://www.nwtc.edu/about-nwtc/talent-and-culture/job-opportunities" },
+  { campus: "Northwood Technical College", type: "generic", url: "https://www.northwoodtech.edu/about/careers/" },
+  { campus: "Southwest Wisconsin Technical College", type: "generic", url: "https://swtc.edu/about/job-opportunities" },
 ];
 
 // CO (Colorado)
@@ -4583,6 +4612,10 @@ const MI_CAMPUSES = [
   { campus: "Kellogg Community College", type: "generic", url: "https://kellogg.edu/about/departments/hr/employment-opportunities/" },
   { campus: "St Clair County Community College", type: "generic", url: "https://sc4.edu/about/careers-at-sc4/" },
   { campus: "Wayne County Community College District", type: "generic", url: "https://www.wcccd.edu/divisions/human-resources/jobs-at-wcccd" },
+  { campus: "Kalamazoo Valley Community College", type: "peopleadmin", url: "https://jobs.kvcc.edu/postings/search" },
+  { campus: "Lake Michigan College", type: "generic", url: "https://www.lakemichigancollege.edu/about/jobs" },
+  { campus: "Muskegon Community College", type: "generic", url: "https://www.muskegoncc.edu/employment-opportunities/" },
+  { campus: "West Shore Community College", type: "generic", url: "https://www.westshore.edu/employment/" },
 ];
 
 // IL (Illinois)
@@ -4930,6 +4963,7 @@ const ID_CAMPUSES = [
   { campus: "College of Eastern Idaho", type: "schooljobs", url: "https://www.schooljobs.com/careers/cei" },
   { campus: "College of Southern Idaho", type: "generic", url: "https://www.csi.edu/" },
   { campus: "College of Western Idaho", type: "pageup", url: "https://careers.cwi.edu/cw/en-us/listing/" },
+  { campus: "North Idaho College", type: "pageup", url: "https://careers.pageuppeople.com/1027/cw/en/listing" },
 ];
 
 // IN (Indiana)
@@ -5077,6 +5111,7 @@ const WV_CAMPUSES = [
   { campus: "Shepherd University", type: "generic", url: "https://www.shepherd.edu/academics/faculty-jobs" },
   { campus: "West Virginia University at Parkersburg", type: "generic", url: "https://www.wvup.edu/faculty-staff/information-for-faculty-staff/employment-opportunities/" },
   { campus: "Wheeling University", type: "generic", url: "https://wheeling.edu/about/employment/" },
+  { campus: "West Virginia Northern Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/wvnccedu" },
 ];
 
 // TX (Texas)
@@ -5443,6 +5478,8 @@ const TX_CAMPUSES = [
   { campus: "Tarrant County College District", type: "generic", url: "https://www.tccd.edu/community/employment/" },
   { campus: "Temple College", type: "schooljobs", url: "https://www.schooljobs.com/careers/templejc" },
   { campus: "Wharton County Junior College", type: "schooljobs", url: "https://www.schooljobs.com/careers/wcjc" },
+  { campus: "Panola College", type: "generic", url: "https://www.panola.edu/employment" },
+  { campus: "Victoria College", type: "generic", url: "https://www.victoriacollege.edu/BusinessCommunity/HumanResources" },
 ];
 
 // FL (Florida)
@@ -5955,6 +5992,7 @@ const MS_CAMPUSES = [
   { campus: "Meridian Community College", type: "generic", url: "https://meridiancc.edu/about_mcc/employment/index.html" },
   { campus: "Mississippi Gulf Coast Community College", type: "peopleadmin", url: "https://mgccc.peopleadmin.com/" },
   { campus: "Northeast Mississippi Community College", type: "generic", url: "https://www.nemcc.edu/employees/employment/index.html" },
+  { campus: "Itawamba Community College", type: "generic", url: "https://www.iccms.edu/employment" },
 ];
 
 // LA (Louisiana)
@@ -6035,6 +6073,10 @@ const LA_CAMPUSES = [
   { campus: "Tulane University of Louisiana", type: "generic", url: "https://hr.tulane.edu/jobs" },
   { campus: "Southeastern Louisiana University", type: "generic", url: "https://www.southeastern.edu/admin/hr/jobs/" },
   { campus: "Northwest Louisiana Technical Community College", type: "generic", url: "https://www.nltcc.edu/human-resources/index" },
+  { campus: "Louisiana Delta Community College", type: "generic", url: "https://www.ladelta.edu/faculty-and-staff/human-resources/employment-opportunities/" },
+  { campus: "River Parishes Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/louisiana?department[0]=River%20Parishes%20Community%20College&sort=PositionTitle%7CAscending" },
+  { campus: "South Louisiana Community College", type: "generic", url: "https://www.solacc.edu/jobs" },
+  { campus: "Southern University at Shreveport", type: "generic", url: "https://www.susla.edu/index.cfm?action=newsroom.category&categoryID=careers" },
 ];
 
 // AR (Arkansas)
@@ -6346,6 +6388,11 @@ const MO_CAMPUSES = [
   { campus: "Park University", type: "generic", url: "https://www.park.edu/careers/" },
   { campus: "William Jewell College", type: "generic", url: "https://www.jewell.edu/employment" },
   { campus: "Stephens College", type: "generic", url: "https://stephens.edu/why-stephens/leadership/office-of-finance-administration/human-resources/" },
+  { campus: "Jefferson College", type: "generic", url: "https://www.jeffco.edu/human-resources/" },
+  { campus: "Metropolitan Community College-Kansas City", type: "peopleadmin", url: "https://jobs.mcckc.edu/postings/search" },
+  { campus: "Mineral Area College", type: "schooljobs", url: "https://www.schooljobs.com/careers/mineralarea" },
+  { campus: "Missouri State University-West Plains", type: "generic", url: "https://wp.missouristate.edu/EmploymentOpportunities/default.htm" },
+  { campus: "State Fair Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/sfcc" },
 ];
 
 // KY (Kentucky)
@@ -6466,6 +6513,10 @@ const TN_CAMPUSES = [
   { campus: "Rhodes College", type: "generic", url: "https://www.rhodes.edu/employment" },
   { campus: "The University of Tennessee System Office", type: "generic", url: "https://tennessee.edu/about/careers/" },
   { campus: "Union University", type: "peopleadmin", url: "https://jobs.uu.edu/postings/search" },
+  { campus: "Motlow State Community College", type: "generic", url: "https://www.motlow.edu/employees/hr/" },
+  { campus: "Nashville State Community College", type: "generic", url: "https://www.nscc.edu/faculty-staff/human-resources/job-opportunities.php" },
+  { campus: "Pellissippi State Community College", type: "generic", url: "https://www.pstcc.edu/hr/" },
+  { campus: "Southwest Tennessee Community College", type: "generic", url: "https://southwest.tn.edu/hr/jobs.php" },
 ];
 
 // AK (Alaska)
