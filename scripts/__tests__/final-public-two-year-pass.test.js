@@ -38,7 +38,7 @@ test("TX dispatcher uses the dedicated Southwest Texas extractor", () => {
   assert.match(dispatcher[0], /type === "swtx-employment"[\s\S]*scrapeSwtxEmploymentAs/);
 });
 
-test("unscoped California district boards remain excluded", () => {
-  assert.doesNotMatch(source, /Los Angeles City College.*laccd/);
-  assert.doesNotMatch(source, /San Bernardino Community College District.*schooljobs\.com\/careers\/sbccd/);
+test("California shared boards remain institution-scoped", () => {
+  assert.match(source, /Los Angeles City College[\s\S]{0,500}locationFilter: "Los Angeles City College"[\s\S]{0,160}employmentFilter: "Faculty - Full-Time"/);
+  assert.match(source, /San Bernardino Community College District[\s\S]{0,300}schooljobs\.com\/careers\/sbccd/);
 });

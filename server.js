@@ -810,6 +810,55 @@ const UC_CAMPUSES = [
 
 // California major private research universities
 const CA_PRIVATE_CAMPUSES = [
+  // LACCD's official academic CSOD board is shared across nine colleges, but
+  // its search form exposes durable, named campus checkboxes plus a separate
+  // employment-type checkbox. Apply both controls before reading results so
+  // a campus with no current full-time faculty opening correctly returns zero
+  // instead of inheriting another college's postings.
+  {
+    campus: "Los Angeles City College",
+    type: "csod",
+    url: "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd",
+    locationFilter: "Los Angeles City College",
+    employmentFilter: "Faculty - Full-Time",
+  },
+  {
+    campus: "Los Angeles Harbor College",
+    type: "csod",
+    url: "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd",
+    locationFilter: "Los Angeles Harbor College",
+    employmentFilter: "Faculty - Full-Time",
+  },
+  {
+    campus: "Los Angeles Pierce College",
+    type: "csod",
+    url: "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd",
+    locationFilter: "Pierce College",
+    employmentFilter: "Faculty - Full-Time",
+  },
+  {
+    campus: "Los Angeles Southwest College",
+    type: "csod",
+    url: "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd",
+    locationFilter: "Los Angeles Southwest College",
+    employmentFilter: "Faculty - Full-Time",
+  },
+  {
+    campus: "Los Angeles Trade Technical College",
+    type: "csod",
+    url: "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd",
+    locationFilter: "Los Angeles Trade -Technical College",
+    employmentFilter: "Faculty - Full-Time",
+  },
+  // This IPEDS institution is the district itself, so the district-scoped
+  // NEOGOV tenant is correctly attributed here. It is not used as a campus
+  // proxy; campus records retain their own independently scoped coverage.
+  {
+    campus: "San Bernardino Community College District",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/sbccd",
+    contentFilter: "Academic Full-Time",
+  },
   {
     campus: "Grossmont College",
     type: "workday",
@@ -9627,16 +9676,20 @@ async function scrapeCaPrivate(context) {
   const results = await mapWithConcurrency(
     CA_PRIVATE_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter }) => {
+    async ({ campus, type, url, locationFilter, employmentFilter, contentFilter }) => {
       try {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "CA Private");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "CA Private");
         if (type === "usc-jobs") return await scrapeUscJobsAs(url, campus, "CA Private");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CA Private");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CA Private");
-        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "CA Private", locationFilter || null);
+        if (type === "schooljobs") {
+          return await scrapeSchoolJobsAs(context, url, campus, "CA Private", locationFilter || null, contentFilter || null);
+        }
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "CA Private");
-        if (type === "csod") return await scrapeCsodAs(context, url, campus, "CA Private");
+        if (type === "csod") {
+          return await scrapeCsodAs(context, url, campus, "CA Private", { locationFilter, employmentFilter });
+        }
         // No existing CA Private dispatch case for "adp" or "oracle-cx" (both
         // functions already existed, used elsewhere) -- added while wiring
         // Fielding Graduate University (adp) and Loma Linda University
@@ -10524,11 +10577,55 @@ async function scrapeNjRutgers(context, startUrl, campusName) {
   }
 }
 
-async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
+async function scrapeNjCsod(
+  context,
+  startUrl,
+  campusName,
+  sourceLabel = "NJ",
+  locationFilter = null,
+  employmentFilter = null
+) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
+
+    let scopedSearchApplied = false;
+    if (locationFilter || employmentFilter) {
+      const filterButtons = page.locator('button[id$="_msDropdownCtrl_mselector_ms"]');
+      if ((await filterButtons.count().catch(() => 0)) < 2) {
+        throw new Error("Missing scoped CSOD filter buttons");
+      }
+      const applyCheckedFilter = async (groupIndex, optionName) => {
+        if (!optionName) return;
+        const button = filterButtons.nth(groupIndex);
+        await button.click({ timeout: 8000 });
+        // CSOD retains legacy WebForms filter selections in the session. Clear
+        // any prior choice so repeated campus scrapes cannot inherit another
+        // college's filter, even when they reuse the same browser process.
+        const groupMarker = groupIndex === 0 ? "rptCustomFields_ctl00" : "rptCustomFields_ctl01";
+        const checked = page.locator(`input[type="checkbox"][name*="${groupMarker}"]:checked`);
+        while ((await checked.count().catch(() => 0)) > 0) {
+          await checked.first().uncheck({ timeout: 8000 });
+        }
+        const checkbox = page.getByRole("checkbox", { name: optionName, exact: true });
+        if ((await checkbox.count().catch(() => 0)) !== 1) {
+          throw new Error(`Missing CSOD filter option: ${optionName}`);
+        }
+        await checkbox.check({ timeout: 8000 });
+      };
+
+      // Fail closed: if either named control disappears, throw and let the
+      // campus return no results rather than silently scraping the unscoped
+      // district-wide board.
+      await applyCheckedFilter(0, locationFilter);
+      await applyCheckedFilter(1, employmentFilter);
+      const search = page.getByRole("button", { name: "Search", exact: true });
+      if ((await search.count().catch(() => 0)) !== 1) throw new Error("Missing scoped CSOD Search button");
+      await search.click({ timeout: 8000 });
+      await page.waitForTimeout(2000);
+      scopedSearchApplied = true;
+    }
 
     // Bucket B round 24: some CSOD tenants (confirmed: Alamo Colleges
     // District's shared alamo.csod.com, used by San Antonio College, Palo
@@ -10544,7 +10641,7 @@ async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
     // that already show results immediately (most of them) are unaffected.
     const hasJobAnchorsAlready =
       (await page.locator('a[href*="JobDetails"], a[href*="/job/"]').count().catch(() => 0)) > 0;
-    if (!hasJobAnchorsAlready) {
+    if (!hasJobAnchorsAlready && !scopedSearchApplied) {
       const searchBtn = page.locator('a[id$="_btnSearch"], input[id$="_btnSearch"], button[id$="_btnSearch"]').first();
       if ((await searchBtn.count().catch(() => 0)) > 0) {
         await searchBtn.click({ timeout: 5000 }).catch(() => {});
@@ -10554,7 +10651,7 @@ async function scrapeNjCsod(context, startUrl, campusName, sourceLabel = "NJ") {
 
     // Try clicking on Faculty filter/category if present (UNM style)
     const facultyFilter = page.locator('a:has-text("Faculty"), button:has-text("Faculty"), [role="button"]:has-text("Faculty"), label:has-text("Faculty")').first();
-    if ((await facultyFilter.count().catch(() => 0)) > 0 && (await facultyFilter.isVisible().catch(() => false))) {
+    if (!scopedSearchApplied && (await facultyFilter.count().catch(() => 0)) > 0 && (await facultyFilter.isVisible().catch(() => false))) {
       await facultyFilter.click({ timeout: 5000 }).catch(() => {});
       await page.waitForTimeout(2000);
     }
@@ -11190,9 +11287,25 @@ async function scrapeExactHireAs(context, startUrl, campusName, sourceName) {
   }
 }
 
-export async function scrapeCsodAs(context, startUrl, campusName, sourceName) {
-  const items = await scrapeNjCsod(context, startUrl, campusName, sourceName);
-  return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
+export async function scrapeCsodAs(context, startUrl, campusName, sourceName, filters = {}) {
+  // Legacy CSOD keeps its custom-field selections in server-side session
+  // state. Give each scoped campus scrape an isolated cookie jar so parallel
+  // LACCD requests cannot overwrite one another's campus selection.
+  const needsIsolation = Boolean(filters.locationFilter || filters.employmentFilter);
+  const isolatedContext = needsIsolation ? await context.browser().newContext() : null;
+  try {
+    const items = await scrapeNjCsod(
+      isolatedContext || context,
+      startUrl,
+      campusName,
+      sourceName,
+      filters.locationFilter || null,
+      filters.employmentFilter || null
+    );
+    return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
+  } finally {
+    await isolatedContext?.close().catch(() => {});
+  }
 }
 
 async function scrapeWorkdayAs(context, startUrl, campusName, sourceName) {
