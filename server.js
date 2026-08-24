@@ -782,6 +782,8 @@ const MA_PRIVATE_CAMPUSES = [
   { campus: "Montserrat College of Art", type: "generic", url: "https://www.montserrat.edu/careers/" },
   { campus: "Quincy College", type: "generic", url: "https://quincycollege.edu/about/human-resources/" },
   { campus: "University of Massachusetts Chan Medical School", type: "academicjobsonline", url: "https://academicjobsonline.org/ajo/UMASSMED" },
+  { campus: "Massasoit Community College", type: "generic", url: "https://massasoit.edu/about/offices-priorities/human-resources/index.html" },
+  { campus: "North Shore Community College", type: "generic", url: "https://www.northshore.edu/hr/employment.html" },
 ];
 
 // UC (AP Recruit)
@@ -1232,6 +1234,8 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Occidental College", type: "pageup", url: "https://careers.oxy.edu/en-us/listing/" },
   { campus: "Santa Clara University", type: "workday", url: "https://wd1.myworkdaysite.com/en-US/recruiting/scu/scu" },
   { campus: "SUM Bible College and Theological Seminary", type: "generic", url: "https://www.sum.edu/employment/" },
+  { campus: "Las Positas College", type: "peopleadmin", url: "https://clpccd.peopleadmin.com/" },
+  { campus: "Moreno Valley College", type: "generic", url: "https://www.mvc.edu/admin/careers.php" },
 ];
 
 // NJ (multi-platform)
@@ -1330,6 +1334,8 @@ const NJ_PRIVATE_CAMPUSES = [
   { campus: "Pillar College", type: "generic", url: "https://www.pillar.edu/careers" },
   { campus: "Warren County Community College", type: "generic", url: "https://www.warren.edu/employment/" },
   { campus: "Salem Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/5128793052B923DB6B8BB21179616D44/career-page" },
+  { campus: "Ocean County College", type: "schooljobs", url: "https://www.schooljobs.com/careers/ocean" },
+  { campus: "Raritan Valley Community College", type: "generic", url: "https://www.raritanval.edu/employment-at-rvcc/" },
 ];
 
 // Claremont Colleges
@@ -1671,6 +1677,8 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Mercyhurst University", type: "generic", url: "https://www.mercyhurst.edu/human-resources/jobs" },
   { campus: "Pennsylvania College of Art and Design", type: "generic", url: "https://pcad.edu/employment/" },
   { campus: "Pennsylvania Academy of the Fine Arts", type: "generic", url: "https://pafa.isolvedhire.com/jobs/" },
+  { campus: "Pennsylvania Highlands Community College", type: "generic", url: "https://www.pennhighlands.edu/about/hr/employment/" },
+  { campus: "Reading Area Community College", type: "generic", url: "https://www.racc.edu/about-racc/human-resources" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -1874,6 +1882,9 @@ const NC_CAMPUSES = [
   { campus: "Montreat College", type: "generic", url: "https://www.montreat.edu/job-openings/" },
   { campus: "Queens University of Charlotte", type: "generic", url: "https://www.queens.edu/careers/why-work-at-queens/career-opportunities-at-queens/" },
   { campus: "Shaw University", type: "generic", url: "https://www.shawu.edu/meet-shaw/career-opportunities/" },
+  { campus: "McDowell Technical Community College", type: "generic", url: "https://www.mcdowelltech.edu/employment-opportunities" },
+  { campus: "Pitt Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/pittccedu" },
+  { campus: "Robeson Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/robeson" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -2074,6 +2085,17 @@ const VA_CAMPUSES = [
   { campus: "Virginia Military Institute", type: "generic", url: "https://www.vmi.edu/job-openings/" },
   { campus: "Radford University", type: "pageup", url: "https://careers.pageuppeople.com/1177/cw/en-us/search/" },
   { campus: "Roanoke College", type: "generic", url: "https://acaweb.roanoke.edu/faculty_jobs" },
+  { campus: "Germanna Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7876&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "Laurel Ridge Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7880&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "Mountain Empire Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7881&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "New River Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7890&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "Patrick & Henry Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7892&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "Paul D Camp Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7891&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "Piedmont Virginia Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7893&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "Southside Virginia Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7883&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "Virginia Highlands Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7894&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "Virginia Peninsula Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7887&query_position_type_id%5B%5D=9&commit=Search" },
+  { campus: "Virginia Western Community College", type: "peopleadmin", url: "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7895&query_position_type_id%5B%5D=9&commit=Search" },
 ];
 
 // SC (South Carolina) - major public research + private liberal arts
@@ -3095,6 +3117,7 @@ const OR_CAMPUSES = [
   { campus: "Western Seminary", type: "generic", url: "https://www.westernseminary.edu/about/employment" },
   { campus: "Klamath Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/klamathcc" },
   { campus: "Southwestern Oregon Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/socc" },
+  { campus: "Portland Community College", type: "generic", url: "https://www.pcc.edu/hr/jobs/" },
 ];
 
 
@@ -3269,6 +3292,7 @@ const WA_CAMPUSES = [
   { campus: "Green River College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/greenriveredu" },
   { campus: "Heritage University", type: "generic", url: "https://heritage.edu/faculty-staff/human-resources/" },
   { campus: "Whatcom Community College", type: "generic", url: "https://www.whatcom.edu/about-wcc/employment-hr/job-information" },
+  { campus: "Perry Technical Institute", type: "generic", url: "https://www.perrytech.edu/about/careers/" },
 ];
 
 
@@ -3468,6 +3492,9 @@ const MN_CAMPUSES = [
   { campus: "United Theological Seminary of the Twin Cities", type: "generic", url: "https://www.unitedseminary.edu/employment/" },
   { campus: "Luther Seminary", type: "generic", url: "https://www.luthersem.edu/about/employment/" },
   { campus: "Northwestern Health Sciences University", type: "generic", url: "https://www.nwhealth.edu/careers/" },
+  { campus: "Century College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545c6af0ef50001" },
+  { campus: "Northwest Technical College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545de1d40250000" },
+  { campus: "Pine Technical & Community College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545e552307f0000" },
 ];
 
 // ND (North Dakota)
@@ -3723,6 +3750,7 @@ const IA_CAMPUSES = [
   { campus: "William Penn University", type: "generic", url: "https://www.wmpenn.edu/get-to-know-wpu/employment/" },
   { campus: "Mercy College of Health Sciences", type: "generic", url: "https://www.mchs.edu/about/employment/" },
   { campus: "Simpson College", type: "generic", url: "https://www.simpson.edu/about/departments-offices-centers/careers-at-simpson/" },
+  { campus: "Marshalltown Community College", type: "generic", url: "https://www.iavalley.edu/join-our-team/index.html" },
 ];
 
 // WY (Wyoming)
@@ -3889,6 +3917,7 @@ const WI_CAMPUSES = [
   { campus: "University of Wisconsin-Whitewater", type: "generic", url: "https://www.uww.edu/employment" },
   { campus: "Madison Area Technical College", type: "generic", url: "https://madisoncollege.edu/about/careers/hiring-process" },
   { campus: "Marian University (WI)", type: "generic", url: "https://www.marianuniversity.edu/about-marian/" },
+  { campus: "Milwaukee Area Technical College", type: "generic", url: "https://www.matc.edu/who-we-are/offices/human-resources/index.html" },
 ];
 
 // CO (Colorado)
@@ -4262,6 +4291,7 @@ const NM_CAMPUSES = [
   { campus: "San Juan College", type: "generic", url: "https://www.sanjuancollege.edu/careers/" },
   { campus: "St. John's College (NM)", type: "generic", url: "https://www.sjc.edu/employment" },
   { campus: "University of the Southwest", type: "generic", url: "https://www.usw.edu/academics/faculty-jobs" },
+  { campus: "New Mexico State University-Dona Ana", type: "generic", url: "https://dacc.nmsu.edu/hr/" },
 ];
 
 // NV (Nevada)
@@ -4467,6 +4497,7 @@ const MI_CAMPUSES = [
   { campus: "Kettering University", type: "generic", url: "https://www.kettering.edu/careers" },
   { campus: "The University of Olivet", type: "generic", url: "https://www.uolivet.edu/employment/" },
   { campus: "Northern Michigan University", type: "generic", url: "https://jobs.nmu.edu/" },
+  { campus: "Monroe County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/monroeccc/" },
 ];
 
 // IL (Illinois)
@@ -4755,6 +4786,8 @@ const IL_CAMPUSES = [
   { campus: "University of St Francis", type: "peopleadmin", url: "https://stfrancis.peopleadmin.com/postings/search" },
   { campus: "Olivet Nazarene University", type: "generic", url: "https://www.olivet.edu/about/employment/" },
   { campus: "Rockford University", type: "generic", url: "https://www.rockford.edu/community/humanresources/faculty/" },
+  { campus: "Lewis and Clark Community College", type: "generic", url: "https://www.lc.edu/team-members/human-resources/index.html" },
+  { campus: "Prairie State College", type: "peopleadmin", url: "https://prairiestate.peopleadmin.com/" },
 ];
 
 // ID (Idaho)
@@ -5303,6 +5336,9 @@ const TX_CAMPUSES = [
   { campus: "Tarleton State University", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/System-wide_External?hiringCompany=0e1cd8ed350201e5696813cdeb4b340e" },
   { campus: "Texas A&M University-Kingsville", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/System-wide_External?hiringCompany=0e1cd8ed3502017afedc05cdeb4bbd0d" },
   { campus: "University of Texas Southwestern Medical Center", type: "generic", url: "https://jobs.utsouthwestern.edu/job-search-results/?category=Faculty+and+Physicians" },
+  { campus: "Lamar State College-Port Arthur", type: "schooljobs", url: "https://www.schooljobs.com/careers/lamarpa?page=1" },
+  { campus: "Lee College", type: "schooljobs", url: "https://www.schooljobs.com/careers/lee/" },
+  { campus: "Northeast Texas Community College", type: "generic", url: "https://www.ntcc.edu/hr" },
 ];
 
 // FL (Florida)
@@ -5805,6 +5841,8 @@ const MS_CAMPUSES = [
   { campus: "Pearl River Community College", type: "generic", url: "https://prcc.edu/about/employment-opportunities/" },
   { campus: "Mississippi Valley State University", type: "peopleadmin", url: "https://mvsu.peopleadmin.com/postings/search" },
   { campus: "Meridian Community College", type: "generic", url: "https://meridiancc.edu/about_mcc/employment/index.html" },
+  { campus: "Mississippi Gulf Coast Community College", type: "peopleadmin", url: "https://mgccc.peopleadmin.com/" },
+  { campus: "Northeast Mississippi Community College", type: "generic", url: "https://www.nemcc.edu/employees/employment/index.html" },
 ];
 
 // LA (Louisiana)
@@ -5884,6 +5922,7 @@ const LA_CAMPUSES = [
   { campus: "Grambling State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/gram" },
   { campus: "Tulane University of Louisiana", type: "generic", url: "https://hr.tulane.edu/jobs" },
   { campus: "Southeastern Louisiana University", type: "generic", url: "https://www.southeastern.edu/admin/hr/jobs/" },
+  { campus: "Northwest Louisiana Technical Community College", type: "generic", url: "https://www.nltcc.edu/human-resources/index" },
 ];
 
 // AR (Arkansas)
@@ -5932,6 +5971,7 @@ const AR_CAMPUSES = [
   { campus: "Williams Baptist University", type: "generic", url: "https://williamsbaptistuniversity.com/careers/" },
   { campus: "University of Arkansas Grantham", type: "generic", url: "https://www.uagrantham.edu/careers/" },
   { campus: "Philander Smith University", type: "generic", url: "https://www.philander.edu/about/careers/" },
+  { campus: "North Arkansas College", type: "generic", url: "https://www.northark.edu/employment-opportunities/" },
 ];
 
 // KS (Kansas)
@@ -6022,6 +6062,7 @@ const KS_CAMPUSES = [
   { campus: "Washburn University", type: "generic", url: "https://www.washburn.edu/faculty-staff/human-resources/employment-opportunities/index.html" },
   { campus: "McPherson College", type: "generic", url: "https://my.mcpherson.edu/ICS/Employment/" },
   { campus: "Tabor College", type: "generic", url: "https://tabor.edu/about/employment/" },
+  { campus: "Labette Community College", type: "generic", url: "https://www.labette.edu/hr/jobs/index.html" },
 ];
 
 // OK (Oklahoma)
@@ -6244,6 +6285,16 @@ const KY_CAMPUSES = [
   { campus: "Transylvania University", type: "generic", url: "https://www.transy.edu/employment-opportunities/" },
   { campus: "University of Louisville", type: "generic", url: "https://louisville.edu/careers" },
   { campus: "Lexington Theological Seminary", type: "generic", url: "https://lextheo.edu/about-the-seminary/employment-opportunities/" },
+  { campus: "Hazard Community and Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/hazard-jobs" },
+  { campus: "Henderson Community College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/henderson-jobs" },
+  { campus: "Jefferson Community and Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/jefferson-jobs" },
+  { campus: "Madisonville Community College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/madisonville-jobs" },
+  { campus: "Maysville Community and Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/maysville-jobs" },
+  { campus: "Owensboro Community and Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/owensboro-jobs" },
+  { campus: "Somerset Community College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/somerset-jobs" },
+  { campus: "Southcentral Kentucky Community and Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/southcentral-jobs" },
+  { campus: "Southeast Kentucky Community & Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/southeast-jobs" },
+  { campus: "West Kentucky Community and Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/westky-jobs" },
 ];
 
 // TN (Tennessee)
@@ -7595,6 +7646,11 @@ export function looksFacultyish(title) {
     // "teaching" immediately alongside it.
     /\bteaching\s+fellows?\b/.test(s)
   );
+}
+
+export function isGenericFacultyPageChromeTitle(title) {
+  const value = clean(title);
+  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
 }
 
 /* ============================== CUNY ============================== */
@@ -14454,6 +14510,7 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
       // link labelled "Faculty Experts" beside its real openings. It contains
       // a faculty keyword but is not a vacancy.
       .filter((j) => clean(j.title).toLowerCase() !== "faculty experts")
+      .filter((j) => !isGenericFacultyPageChromeTitle(j.title))
       .filter((j) => !isBareAtsBoardRoot(j.url));
 
     // Fallback only: if no inline jobs were found, the page likely hands off to an

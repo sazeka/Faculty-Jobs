@@ -15,7 +15,7 @@ const REVIEW_CSV_PATH = path.join(ROOT, "generated", "career-discovery-review.cs
 
 function usage() {
   console.log(
-    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--min-confidence 0.65] [--weak-only|--medium-only|--unresolved-only] [--level LEVEL] [--skip-report FILE] [--all-missing]"
+    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--concurrency N] [--min-confidence 0.65] [--weak-only|--medium-only|--unresolved-only|--all-targets] [--level LEVEL] [--skip-report FILE] [--all-missing]"
   );
 }
 
@@ -398,9 +398,11 @@ function parseArgs(argv) {
     weakOnly: false,
     mediumOnly: false,
     unresolvedOnly: false,
+    allTargets: false,
     level: null,
     skipReports: [],
     timeoutMs: 8000,
+    concurrency: 1,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -414,9 +416,11 @@ function parseArgs(argv) {
     else if (a === "--delay-ms" && args[i + 1]) out.delayMs = Math.max(0, Number(args[++i]));
     else if (a === "--min-confidence" && args[i + 1]) out.minConfidence = Math.max(0, Math.min(1, Number(args[++i])));
     else if (a === "--timeout-ms" && args[i + 1]) out.timeoutMs = Math.max(2000, Number(args[++i]));
+    else if (a === "--concurrency" && args[i + 1]) out.concurrency = Math.max(1, Math.min(12, Number(args[++i])));
     else if (a === "--weak-only") out.weakOnly = true;
     else if (a === "--medium-only") out.mediumOnly = true;
     else if (a === "--unresolved-only") out.unresolvedOnly = true;
+    else if (a === "--all-targets") out.allTargets = true;
     else if (a === "--level" && args[i + 1]) out.level = clean(args[++i]);
     else if (a === "--skip-report" && args[i + 1]) out.skipReports.push(args[++i]);
     else if (a === "--all-missing") out.scopeEligibleOnly = false;
@@ -505,7 +509,7 @@ function writeReviewCsv(results) {
 
 async function main() {
   const opts = parseArgs(process.argv);
-  const revisitMode = opts.weakOnly || opts.mediumOnly || opts.unresolvedOnly;
+  const revisitMode = opts.weakOnly || opts.mediumOnly || opts.unresolvedOnly || opts.allTargets;
   const reportOptions = {
     ...opts,
     skipReports: opts.skipReports.map((reportPath) => path.basename(reportPath)),
@@ -586,11 +590,14 @@ async function main() {
   let updated = 0;
   const results = [];
 
-  for (let i = 0; i < targets.length; i++) {
+  let nextTarget = 0;
+  let completed = 0;
+
+  async function processTarget(i) {
     const inst = targets[i];
     const name = clean(inst.name);
     const attemptedAt = new Date().toISOString();
-    console.log(`[${i + 1}/${targets.length}] ${name}`);
+    console.log(`[start ${i + 1}/${targets.length}] ${name}`);
 
     // Fast path: infer missing platform type from existing URL.
     if (clean(inst.career_url) && !clean(inst.platform_type)) {
@@ -610,7 +617,7 @@ async function main() {
         inst.last_discovery_confidence = 0;
         inst.discovery_attempts = Number(inst.discovery_attempts || 0) + 1;
       }
-      results.push({
+      results[i] = {
         name,
         state: inst.state || null,
         level: inst.level || null,
@@ -619,8 +626,10 @@ async function main() {
         platform_type: inferred,
         confidence: canApply ? 0.99 : 0,
         applied: opts.apply && canApply,
-      });
-      continue;
+      };
+      completed += 1;
+      console.log(`[done ${completed}/${targets.length}] ${name}: ${canApply ? "inferred_platform" : "no_infer"}`);
+      return;
     }
 
     const found = await discoverForInstitution(inst, opts.timeoutMs);
@@ -640,7 +649,7 @@ async function main() {
         applied = true;
       }
 
-      results.push({
+      results[i] = {
         name,
         state: inst.state || null,
         level: inst.level || null,
@@ -653,7 +662,7 @@ async function main() {
         applied,
         topCandidates: found.candidates,
         queryResults: found.queryResults || [],
-      });
+      };
     } else {
       if (opts.apply) {
         if (revisitMode) {
@@ -665,7 +674,7 @@ async function main() {
         inst.last_discovery_confidence = Number(found.best?.confidence || 0);
         inst.discovery_attempts = Number(inst.discovery_attempts || 0) + 1;
       }
-      results.push({
+      results[i] = {
         name,
         state: inst.state || null,
         level: inst.level || null,
@@ -675,11 +684,23 @@ async function main() {
         confidence: found.best?.confidence || 0,
         topCandidates: found.candidates || [],
         queryResults: found.queryResults || [],
-      });
+      };
     }
 
-    if (opts.delayMs > 0 && i < targets.length - 1) await sleep(opts.delayMs);
+    completed += 1;
+    console.log(`[done ${completed}/${targets.length}] ${name}: ${results[i]?.status || "unknown"}`);
+    if (opts.delayMs > 0) await sleep(opts.delayMs);
   }
+
+  async function worker() {
+    while (true) {
+      const i = nextTarget++;
+      if (i >= targets.length) return;
+      await processTarget(i);
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.min(opts.concurrency, targets.length) }, () => worker()));
 
   if (opts.apply) {
     master.generatedAt = new Date().toISOString();

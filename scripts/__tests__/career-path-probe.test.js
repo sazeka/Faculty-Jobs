@@ -48,6 +48,9 @@ test("career path probing rejects student career pages that previously scored as
     "https://www.regis.edu/academics/student-success/career-professional-development",
     "https://www.wccnet.edu/succeed/center-for-career-success",
     "https://www.widener.edu/academics/academic-resources-success/academic-career-support/career-design-development",
+    "https://www.midlandstech.edu/admissions/academic-and-career-advising",
+    "https://www.rcsj.edu/degrees-programs/academic-divisions/career-and-technical-education-division/",
+    "https://www.oiah.edu/student-services/career-placement/",
   ];
   for (const url of falsePositives) assert.equal(isRejectedCareerPage(url), true, url);
 });

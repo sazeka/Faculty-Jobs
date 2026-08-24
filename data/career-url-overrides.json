@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-19T17:11:00Z",
+  "updatedAt": "2026-08-24T12:49:24.970Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -69,7 +69,7 @@
       "homepage_url": "https://www.aamu.edu/",
       "career_url": "https://www.schooljobs.com/careers/aamu",
       "platform_type": "schooljobs",
-      "notes": "Was pointing at the homepage; route to AAMU's SchoolJobs portal (generic hand-off \u2192 schooljobs). Correct mapping; portal showed 0 postings at time of mapping (will capture faculty jobs when posted)."
+      "notes": "Was pointing at the homepage; route to AAMU's SchoolJobs portal (generic hand-off → schooljobs). Correct mapping; portal showed 0 postings at time of mapping (will capture faculty jobs when posted)."
     },
     {
       "name": "Alabama College of Osteopathic Medicine",
@@ -125,7 +125,7 @@
       "homepage_url": "https://www.albanytech.edu/",
       "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4901&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
       "platform_type": "generic",
-      "notes": "Was pointing at the homepage (0 jobs). Real postings live on Team Georgia Careers (careers.georgia.gov), agency-filtered to Albany Technical College \u2014 NOT on the tcsg.edu system-wide feed the TCSG scraper reads (that feed showed only non-faculty postings for this college at check time). Discovered via manual research; verified live (2 faculty postings, e.g. Biology Instructor BCHT, of 4 total openings)."
+      "notes": "Was pointing at the homepage (0 jobs). Real postings live on Team Georgia Careers (careers.georgia.gov), agency-filtered to Albany Technical College — NOT on the tcsg.edu system-wide feed the TCSG scraper reads (that feed showed only non-faculty postings for this college at check time). Discovered via manual research; verified live (2 faculty postings, e.g. Biology Instructor BCHT, of 4 total openings)."
     },
     {
       "name": "Albertus Magnus College",
@@ -251,7 +251,7 @@
       "homepage_url": "https://www.andersonuniversity.edu/",
       "career_url": "https://andersonuniversity.wd1.myworkdayjobs.com/AndersonUniversity",
       "platform_type": "workday",
-      "notes": "Was pointing at the homepage (0 jobs); route to Anderson University (SC) Workday portal (generic hand-off \u2192 workday). Verified live: 4 faculty postings."
+      "notes": "Was pointing at the homepage (0 jobs); route to Anderson University (SC) Workday portal (generic hand-off → workday). Verified live: 4 faculty postings."
     },
     {
       "name": "Andrews University",
@@ -331,19 +331,27 @@
       "notes": "Discovered via agent-career-discovery; verified live (6 faculty postings)."
     },
     {
+      "name": "Arizona State University - ASU California Center - Broadway",
+      "homepage_url": "https://california.asu.edu/",
+      "career_url": "https://facultypositions.asu.edu/",
+      "platform_type": "asu-table",
+      "coverage_source": "Arizona State University",
+      "notes": "Reviewed 2026-08-23. This is an active ASU teaching location, not an independent employer; faculty hiring is published through ASU's university-wide faculty source."
+    },
+    {
+      "name": "Arizona State University - ASU California Center - Grand",
+      "homepage_url": "https://california.asu.edu/",
+      "career_url": "https://facultypositions.asu.edu/",
+      "platform_type": "asu-table",
+      "coverage_source": "Arizona State University",
+      "notes": "Reviewed 2026-08-23. This is an active ASU teaching location, not an independent employer; faculty hiring is published through ASU's university-wide faculty source."
+    },
+    {
       "name": "Arizona Western College",
       "homepage_url": "https://www.azwestern.edu/",
       "career_url": "https://azwestern.csod.com/ats/careersite/search.aspx?site=1&c=azwestern",
       "platform_type": "csod",
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
-    },
-    {
-      "name": "Atlanta Technical College",
-      "homepage_url": "https://www.atlantatech.edu/",
-      "career_url": "https://www.tcsg.edu/about-tcsg/system-office-services/employment-opportunities/",
-      "platform_type": "generic",
-      "coverage_source": "TCSG",
-      "notes": "Atlanta Technical College is covered by the TCSG system-wide faculty scraper. TCSG's official Employment Opportunities page explicitly lists jobs for its system office and all 22 colleges, so use it instead of the college homepage for link health."
     },
     {
       "name": "Arkansas Northeastern College",
@@ -400,6 +408,14 @@
       "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4906&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
       "platform_type": "generic",
       "notes": "Was pointing at the homepage (0 jobs). Own site's Employment page (and a HireBridge portal it links to) list HR info/work-study only, no faculty; real faculty postings live on Team Georgia Careers agency-filtered to this college. Discovered via manual research; verified live (6 faculty postings, e.g. Adjunct Instructor - Surgical Technology, of 10 total openings)."
+    },
+    {
+      "name": "Atlanta Technical College",
+      "homepage_url": "https://www.atlantatech.edu/",
+      "career_url": "https://www.tcsg.edu/about-tcsg/system-office-services/employment-opportunities/",
+      "platform_type": "generic",
+      "coverage_source": "TCSG",
+      "notes": "Atlanta Technical College is covered by the TCSG system-wide faculty scraper. TCSG's official Employment Opportunities page explicitly lists jobs for its system office and all 22 colleges, so use it instead of the college homepage for link health."
     },
     {
       "name": "Auburn University at Montgomery",
@@ -682,6 +698,14 @@
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
     },
     {
+      "name": "Bluefield University - Edward Via College - Auburn",
+      "homepage_url": "https://www.vcom.edu/locations/auburn",
+      "career_url": "https://www.vcom.edu/employment/job-listings",
+      "platform_type": "generic",
+      "coverage_source": "Edward Via College of Osteopathic Medicine",
+      "notes": "Reviewed 2026-08-23. VCOM-Auburn is active and its faculty openings are listed on VCOM's shared campus-aware job board."
+    },
+    {
       "name": "Bluegrass Community and Technical College",
       "homepage_url": "https://bluegrass.kctcs.edu/",
       "career_url": "https://careers.kctcs.edu/bluegrass",
@@ -694,13 +718,6 @@
       "career_url": "https://bju.careers/bju-faculty/",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (8 faculty postings)."
-    },
-    {
-      "name": "Brigham Young University",
-      "homepage_url": "https://www.byu.edu/",
-      "career_url": "https://byu.wd1.myworkdayjobs.com/faculty-careers",
-      "platform_type": "workday",
-      "notes": "Replaced the retired yjobs.byu.edu redirect with the external Faculty Candidates Workday board linked from BYU Human Resources. Campus-specific and faculty-scoped."
     },
     {
       "name": "Boise State University",
@@ -736,6 +753,13 @@
       "career_url": "https://www.schooljobs.com/careers/bridgevalleyedu",
       "platform_type": "schooljobs",
       "notes": "Configured career_url was the bare homepage; real jobs page (offices/hr/jobs.html) hands off to this NEOGOV/schooljobs tenant. Verified live: 16 postings, e.g. \"Medical Laboratory Program Director and Faculty\", \"English Faculty\", not excluded by omitAdjunct()."
+    },
+    {
+      "name": "Brigham Young University",
+      "homepage_url": "https://www.byu.edu/",
+      "career_url": "https://byu.wd1.myworkdayjobs.com/faculty-careers",
+      "platform_type": "workday",
+      "notes": "Replaced the retired yjobs.byu.edu redirect with the external Faculty Candidates Workday board linked from BYU Human Resources. Campus-specific and faculty-scoped."
     },
     {
       "name": "Brigham Young University-Hawaii",
@@ -850,20 +874,20 @@
       "notes": "Was pointing at the bare homepage; route to their real employment page, which explicitly separates 'Academic Listings' from 'Non-Academic Listings'. Verified live: page correctly reads 'There are currently no academic listings' as of this check (0 faculty openings right now) but is the correct, real infrastructure so future faculty postings will be picked up."
     },
     {
-      "name": "California State University-Dominguez Hills",
-      "homepage_url": "https://www.csudh.edu/",
-      "career_url": "https://careers.csudh.edu/en-us/filter/?work-type=instructional+faculty+-+temporary%2Flecturer&work-type=non-instructional+faculty+(coach%2Fcounselor%2Flibrarian)",
-      "platform_type": "pageup",
-      "coverage_source": "CSU",
-      "notes": "Configured career_url was the bare homepage (0 scrapeable listings). CSUDH runs its own campus-specific PageUp instance (careers.csudh.edu), separate from the CSU system-wide board -- routed to its Faculty work-type filter. Verified live: 33 \"Instructional Faculty - Temporary/Lecturer\" postings (all titled \"Temporary Faculty Pool, <Dept>\", correctly excluded by omitAdjunct()'s \"temporary\" rule) + 5 \"Non-Instructional Faculty (Coach/Counselor/Librarian)\" postings (coach/counselor titles that don't contain faculty-keyword wording, so won't pass looksFacultyish() either) + 0 in \"Instructional Faculty \u2013 Tenured/Tenure-track\" right now. Net today: 0 real faculty jobs captured, but the URL/platform are now correct instead of pointing at a homepage that can never show anything -- will start surfacing real postings the moment a tenure-track/lecturer req opens that isn't titled \"Temporary...\"."
-    },
-    {
       "name": "California State University Maritime Academy",
       "homepage_url": "https://www.csum.edu/",
       "career_url": "https://jobs.csum.edu/en-us/listing/",
       "platform_type": "pageup",
       "coverage_source": "CSU",
       "notes": "The former homepage URL could never expose openings. Cal Maritime's official PageUp listing is live; employment positions transitioned to Cal Poly after the institutions integrated, but this campus-specific board remains the authoritative listing page."
+    },
+    {
+      "name": "California State University-Dominguez Hills",
+      "homepage_url": "https://www.csudh.edu/",
+      "career_url": "https://careers.csudh.edu/en-us/filter/?work-type=instructional+faculty+-+temporary%2Flecturer&work-type=non-instructional+faculty+(coach%2Fcounselor%2Flibrarian)",
+      "platform_type": "pageup",
+      "coverage_source": "CSU",
+      "notes": "Configured career_url was the bare homepage (0 scrapeable listings). CSUDH runs its own campus-specific PageUp instance (careers.csudh.edu), separate from the CSU system-wide board -- routed to its Faculty work-type filter. Verified live: 33 \"Instructional Faculty - Temporary/Lecturer\" postings (all titled \"Temporary Faculty Pool, <Dept>\", correctly excluded by omitAdjunct()'s \"temporary\" rule) + 5 \"Non-Instructional Faculty (Coach/Counselor/Librarian)\" postings (coach/counselor titles that don't contain faculty-keyword wording, so won't pass looksFacultyish() either) + 0 in \"Instructional Faculty – Tenured/Tenure-track\" right now. Net today: 0 real faculty jobs captured, but the URL/platform are now correct instead of pointing at a homepage that can never show anything -- will start surfacing real postings the moment a tenure-track/lecturer req opens that isn't titled \"Temporary...\"."
     },
     {
       "name": "California State University-Monterey Bay",
@@ -1187,6 +1211,14 @@
       "career_url": "https://www.centre.edu/about/employment-centre",
       "platform_type": "generic",
       "notes": "Was pointing at the bare homepage; real Employment at Centre page linked from nav. Verified live: page explicitly states 'Faculty postings are currently on hold. They will resume May 1, 2026' with separate View Faculty/Staff Positions links - real, correctly functioning employment infrastructure, just paused for faculty at check time."
+    },
+    {
+      "name": "Century College",
+      "homepage_url": "https://www.century.edu/",
+      "career_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545c6af0ef50001",
+      "platform_type": "workday",
+      "coverage_source": "Minnesota State System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Minnesota State System source."
     },
     {
       "name": "Cerritos College",
@@ -1729,18 +1761,18 @@
       "notes": "Old career_url was the bare homepage. Found a dedicated employment page on the college's own domain backed by a Paycom widget. Bot-protection blocked full verification of live count in this pass; a third-party job-board mirror confirms at least one recent faculty posting (Bookkeeping and Accounting Instructor) sourced from this channel. Recommend a follow-up browser-based recheck."
     },
     {
-      "name": "Community College of Beaver County",
-      "homepage_url": "https://www.ccbc.edu/",
-      "career_url": "https://ccbc.edu/employment/",
-      "platform_type": "generic",
-      "notes": "Was pointing at the bare homepage; the real employment page (linked from the homepage) lists current openings directly in HTML with Dayforce apply links. Verified live: about 12 postings, with 8 faculty (Adjunct Faculty - Professional Piloting, Air Traffic Control, Rad Tech, Nursing, Vet Tech, Nursing Clinical Obstetrics, Biology, Mathematics, plus Full-Time Faculty - Nursing)."
-    },
-    {
       "name": "Community College of Baltimore County",
       "homepage_url": "https://www.ccbcmd.edu/For/Job-Seekers/index.html",
       "career_url": "https://www.schooljobs.com/careers/ccbcmd",
       "platform_type": "schooljobs",
       "notes": "The official CCBC Job Seekers page links to this NEOGOV board. Route directly to the application board because the ccbcmd.edu/jobs short URL intermittently hangs before redirecting."
+    },
+    {
+      "name": "Community College of Beaver County",
+      "homepage_url": "https://www.ccbc.edu/",
+      "career_url": "https://ccbc.edu/employment/",
+      "platform_type": "generic",
+      "notes": "Was pointing at the bare homepage; the real employment page (linked from the homepage) lists current openings directly in HTML with Dayforce apply links. Verified live: about 12 postings, with 8 faculty (Adjunct Faculty - Professional Piloting, Air Traffic Control, Rad Tech, Nursing, Vet Tech, Nursing Clinical Obstetrics, Biology, Mathematics, plus Full-Time Faculty - Nursing)."
     },
     {
       "name": "Community College of Philadelphia",
@@ -1778,18 +1810,18 @@
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
     },
     {
-      "name": "Concordia University-Irvine",
-      "homepage_url": "https://www.cui.edu/",
-      "career_url": "https://cui.applicantpro.com/",
-      "platform_type": "generic",
-      "notes": "Replaced the university homepage with Concordia Irvine's institution-specific ApplicantPro board, linked from its official Employment Opportunities page."
-    },
-    {
       "name": "Concordia University-Chicago",
       "homepage_url": "https://www.cuchicago.edu/",
       "career_url": "https://cuchicago.applicantpro.com/jobs/",
       "platform_type": "generic",
       "notes": "Was pointing at a generic employment landing page (0 jobs shown); route to their ApplicantPro job board (linked from that page but not scraped itself). Verified live: 15 postings, 3 faculty (Adjunct Faculty - English Composition, Adjunct Faculty - Nursing, Assistant/Associate Professor of Health Science and Human Performance)."
+    },
+    {
+      "name": "Concordia University-Irvine",
+      "homepage_url": "https://www.cui.edu/",
+      "career_url": "https://cui.applicantpro.com/",
+      "platform_type": "generic",
+      "notes": "Replaced the university homepage with Concordia Irvine's institution-specific ApplicantPro board, linked from its official Employment Opportunities page."
     },
     {
       "name": "Concordia University-Saint Paul",
@@ -1827,6 +1859,13 @@
       "notes": "Was pointing at the bare homepage; Contra Costa College is one of three colleges under the Contra Costa Community College District, which shares a single PeopleAdmin job portal (4cdcareers.net). Scoped to Contra Costa College's own Location facet (449[]=3) instead of the unscoped district-wide search so postings aren't misattributed across Diablo Valley College / Los Medanos College / Brentwood / San Ramon / District Office. Verified live: facet genuinely filters server-side (8 CCC-specific postings, including 2 real faculty: Adjunct Instructor (TEMPORARY) - FAMA Studio Art and ...FAMA Art History). platform_type corrected from generic to peopleadmin to match server.js and avoid the applyCareerUrlOverridesInPlace silent-revert bug documented in round 14."
     },
     {
+      "name": "Conway School of Landscape Design",
+      "homepage_url": "https://csld.edu/",
+      "career_url": "https://csld.edu/people/",
+      "platform_type": "generic",
+      "notes": "The former /people/job-openings path returns 404. The school's current People page contains its Job Openings section; it may legitimately yield zero faculty jobs when only staff openings are posted."
+    },
+    {
       "name": "Copper Mountain Community College",
       "homepage_url": "https://www.cmccd.edu/",
       "career_url": "https://www.schooljobs.com/careers/cmccd",
@@ -1846,13 +1885,6 @@
       "career_url": "https://www.corban.edu/employment/",
       "platform_type": "generic",
       "notes": "Configured career_url was the bare homepage; the real employment page (server-rendered HTML, not JS) lists postings directly and hands off to ADP for full applicant portals. Verified live: 2 postings, \"Mental Health Nursing Adjunct Instructor\" and \"Adjunct Professor (Multiple Positions)\", not excluded by omitAdjunct()."
-    },
-    {
-      "name": "Conway School of Landscape Design",
-      "homepage_url": "https://csld.edu/",
-      "career_url": "https://csld.edu/people/",
-      "platform_type": "generic",
-      "notes": "The former /people/job-openings path returns 404. The school's current People page contains its Job Openings section; it may legitimately yield zero faculty jobs when only staff openings are posted."
     },
     {
       "name": "Cornell College",
@@ -1939,20 +1971,6 @@
       "notes": "Paycom ATS career portal."
     },
     {
-      "name": "CUNY Lehman College",
-      "homepage_url": "https://www.lehman.edu/",
-      "career_url": "https://cuny.jobs/campus/lehman-college/jobs/",
-      "platform_type": "cuny-jobs",
-      "notes": "Lehman's official Careers page links to this campus-filtered CUNY jobs feed, avoiding attribution of positions from other CUNY campuses."
-    },
-    {
-      "name": "CUNY Stella and Charles Guttman Community College",
-      "homepage_url": "https://guttman.cuny.edu/",
-      "career_url": "https://cuny.jobs/campus/guttman-community-college/jobs/",
-      "platform_type": "cuny-jobs",
-      "notes": "Guttman's official prospective-employees page links to this campus-filtered CUNY jobs feed and instructs applicants to select Guttman as the location."
-    },
-    {
       "name": "CUNY City College",
       "homepage_url": "https://www.ccny.cuny.edu/",
       "career_url": "https://cuny.jobs/campus/city-college-of-new-york/jobs/",
@@ -1979,6 +1997,20 @@
       "career_url": "https://www.laguardia.edu/employment/",
       "platform_type": "generic",
       "notes": "Old career_url (lagcc.cuny.edu) 308-redirects permanently to the college's rebranded domain laguardia.edu -- the institution migrated domains entirely. New page is a live institutional HR listing with 14 open postings incl. Adjunct Faculty Open Rank - Chemistry. homepage_url updated to match the new domain."
+    },
+    {
+      "name": "CUNY Lehman College",
+      "homepage_url": "https://www.lehman.edu/",
+      "career_url": "https://cuny.jobs/campus/lehman-college/jobs/",
+      "platform_type": "cuny-jobs",
+      "notes": "Lehman's official Careers page links to this campus-filtered CUNY jobs feed, avoiding attribution of positions from other CUNY campuses."
+    },
+    {
+      "name": "CUNY Stella and Charles Guttman Community College",
+      "homepage_url": "https://guttman.cuny.edu/",
+      "career_url": "https://cuny.jobs/campus/guttman-community-college/jobs/",
+      "platform_type": "cuny-jobs",
+      "notes": "Guttman's official prospective-employees page links to this campus-filtered CUNY jobs feed and instructs applicants to select Guttman as the location."
     },
     {
       "name": "Curry College",
@@ -2065,18 +2097,18 @@
       "notes": "Configured career_url pointed at one specific job requisition (/home/requisition/2850), long since expired/closed, rather than the general listing page on the same tenant. davenport.edu/careers links to the same tenant's \"External Candidates\" search page instead. Verified live: 6 postings, e.g. \"Adjunct Faculty-Grand Rapids-Nursing\", \"Adjunct Faculty-Online-Accounting (Casa Latina,Bilingual)\" -- not excluded by omitAdjunct() since none say \"part-time\"."
     },
     {
-      "name": "Davis & Elkins College",
-      "homepage_url": "https://www.dewv.edu/",
-      "career_url": "https://www.dewv.edu/human-resources/",
-      "platform_type": "generic",
-      "notes": "Replaced the college homepage with its official Human Resources page, which publishes current job postings directly, including faculty searches."
-    },
-    {
       "name": "Davidson College",
       "homepage_url": "https://www.davidson.edu/",
       "career_url": "https://fa-exci-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2",
       "platform_type": "oracle",
       "notes": "Configured Workday tenant is dead (persistent HTTP 500s, not a transient blip) -- Davidson does not run Workday. The real career site (employment.davidson.edu) redirects to an Oracle Cloud HCM instance instead. Verified live: 3 postings, \"Assistant Professor of Chemistry\" and \"Assistant Professor of Sociology\", not excluded by omitAdjunct()."
+    },
+    {
+      "name": "Davis & Elkins College",
+      "homepage_url": "https://www.dewv.edu/",
+      "career_url": "https://www.dewv.edu/human-resources/",
+      "platform_type": "generic",
+      "notes": "Replaced the college homepage with its official Human Resources page, which publishes current job postings directly, including faculty searches."
     },
     {
       "name": "Dawson Community College",
@@ -2097,7 +2129,7 @@
       "homepage_url": "https://www.dean.edu",
       "career_url": "https://dean.interviewexchange.com/static/clients/546DCM1/index.jsp",
       "platform_type": "interviewexchange",
-      "notes": "Round 10: HR office page (previous override target) has no per-job anchors -- its 'Employment Opportunities \u2192 Learn More' link hands off to dean.interviewexchange.com. Changed platform_type to interviewexchange for correctness. NOT verified live -- interviewexchange.com returned HTTP 403 'Hirezon / Interview Exchange - WAF' on direct fetch, consistent with rounds 1/5/6 precedent of this platform being bot-walled from this environment."
+      "notes": "Round 10: HR office page (previous override target) has no per-job anchors -- its 'Employment Opportunities → Learn More' link hands off to dean.interviewexchange.com. Changed platform_type to interviewexchange for correctness. NOT verified live -- interviewexchange.com returned HTTP 403 'Hirezon / Interview Exchange - WAF' on direct fetch, consistent with rounds 1/5/6 precedent of this platform being bot-walled from this environment."
     },
     {
       "name": "Del Mar College",
@@ -2773,6 +2805,14 @@
       "notes": "Georgia Piedmont is covered by the TCSG system-wide faculty scraper. Its official Careers page replaces the homepage-only URL and links to current full-time and adjunct opportunities."
     },
     {
+      "name": "Germanna Community College",
+      "homepage_url": "https://www.germanna.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7876&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
       "name": "Gonzaga University",
       "homepage_url": "https://www.gonzaga.edu/about/offices-services/human-resources/careers",
       "career_url": "https://employment.gonzaga.edu/",
@@ -2801,6 +2841,14 @@
       "notes": "Old URL (/s/1044/edu/start.aspx) redirects to the unrelated Harcum homepage -- confirmed broken. Found the live Employment Opportunities link on the HR page pointing to Paycom. Verified 12 postings incl. Nursing Faculty, Medical Lab Technician Adjunct Faculty, Adjunct Clinical Faculty (Dental Hygiene), Interior Design Adjunct Instructor."
     },
     {
+      "name": "Hazard Community and Technical College",
+      "homepage_url": "https://hazard.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/hazard-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
+    },
+    {
       "name": "Hazelden Betty Ford Graduate School",
       "homepage_url": "https://www.hazeldenbettyford.org/graduate-school-addiction-studies",
       "career_url": "https://jobs.hazeldenbettyford.org/careers-home/jobs",
@@ -2808,11 +2856,43 @@
       "notes": "Given homepage_url 404s; correct homepage is hazeldenbettyford.org/graduate-school-addiction-studies. Graduate School shares the Hazelden Betty Ford Foundation's single career portal, confirmed live with 63 openings foundation-wide; none currently faculty/instructor-titled for the Graduate School specifically, though 'Graduate School' appears as a department/contact category."
     },
     {
+      "name": "Henderson Community College",
+      "homepage_url": "https://henderson.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/henderson-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
+    },
+    {
       "name": "Hollins University",
       "homepage_url": null,
       "career_url": "https://www.hollins.edu/about-hollins/jobs/faculty-positions/",
       "platform_type": "generic",
       "notes": "Dedicated Faculty Positions sub-page (reached via Jobs at Hollins -> Faculty Positions) is the live listing. Confirmed 5 open tenure-track/teaching positions: Chemistry, English, Environmental Public Health, History, Sociology."
+    },
+    {
+      "name": "Illinois Eastern Community Colleges - Olney Central College",
+      "homepage_url": "https://iecc.edu/occ",
+      "career_url": "https://iecc.edu/jobs",
+      "platform_type": "generic",
+      "coverage_source": "Illinois Eastern Community Colleges",
+      "notes": "Reviewed 2026-08-23. Olney Central is active and IECC's official employment page identifies campus-specific and district-wide faculty openings."
+    },
+    {
+      "name": "Indiana University - Purdue University Indianapolis - Columbus Ctr",
+      "homepage_url": "https://columbus.iu.edu/",
+      "career_url": "https://jobs.iu.edu/",
+      "platform_type": "generic",
+      "coverage_source": "Indiana University",
+      "notes": "Reviewed 2026-08-23. The former IUPUI Columbus record is now IU Columbus; its official HR page directs full-time faculty applicants to IU's shared jobs system."
+    },
+    {
+      "name": "Indiana University - Purdue University Indianapolis - IU Fort Wayne",
+      "homepage_url": "https://fortwayne.iu.edu/",
+      "career_url": "https://jobs.iu.edu/",
+      "platform_type": "generic",
+      "coverage_source": "Indiana University",
+      "notes": "Reviewed 2026-08-23. IU Fort Wayne academic appointments are administered through Indiana University's shared jobs system."
     },
     {
       "name": "Iona University",
@@ -2827,6 +2907,14 @@
       "career_url": "https://isu.wd1.myworkdayjobs.com/IowaStateJobs",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+    },
+    {
+      "name": "Jefferson Community and Technical College",
+      "homepage_url": "https://jefferson.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/jefferson-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
     },
     {
       "name": "Johns Hopkins University",
@@ -2878,6 +2966,14 @@
       "notes": "Was pointing at jobs.kent.edu/ (the PageUp landing page with category tiles, no actual listings). The category tiles (STAFF/FACULTY/etc) are client-side filter buttons with no href, not navigable links. Real listing endpoint is jobs.kent.edu/jobs/search (same base path Kent State University at Stark already uses with a ?query= filter). Verified live via the pageup dispatch (now correctly wired via OVERRIDE_PLATFORM_DISPATCH): 3 real postings (Faculty Non-Tenure Track-9 Mo x2, Faculty Tenure Track-9 Mo)."
     },
     {
+      "name": "Kentucky Community and Technical College System",
+      "homepage_url": "https://systemoffice.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official system-wide career source with campus facets."
+    },
+    {
       "name": "Kenyon College",
       "homepage_url": "https://careers.kenyon.edu/postings/search",
       "career_url": "https://careers.kenyon.edu/",
@@ -2892,11 +2988,40 @@
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
     },
     {
+      "name": "Labette Community College",
+      "homepage_url": "https://www.labette.edu/",
+      "career_url": "https://www.labette.edu/hr/jobs/index.html",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Lamar State College-Port Arthur",
+      "homepage_url": "https://www.lamarpa.edu/",
+      "career_url": "https://www.schooljobs.com/careers/lamarpa?page=1",
+      "platform_type": "schooljobs",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; automatic identity and employee-hiring evidence validation."
+    },
+    {
       "name": "Lanier Technical College",
       "homepage_url": "https://www.laniertech.edu/",
       "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4956&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All",
       "platform_type": "generic",
       "notes": "Was pointing at the homepage (0 jobs). Discovered via manual research; verified live (16 faculty postings across nursing, welding, machining, psychology, cosmetology, etc., of 24 total openings) on Team Georgia Careers agency-filtered to this college."
+    },
+    {
+      "name": "Las Positas College",
+      "homepage_url": "https://www.laspositascollege.edu/",
+      "career_url": "https://clpccd.peopleadmin.com/",
+      "platform_type": "peopleadmin",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; automatic identity and employee-hiring evidence validation."
+    },
+    {
+      "name": "Laurel Ridge Community College",
+      "homepage_url": "https://www.laurelridge.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7880&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
     },
     {
       "name": "Lawrence University",
@@ -2906,11 +3031,32 @@
       "notes": "lawrence.edu/offices/hr/careers 301-redirects to lawrence.peopleadmin.com. 19 live postings including Assistant Professor of Biology (x2 Psychology), Visiting Assistant Professor of Theatre."
     },
     {
+      "name": "Lee College",
+      "homepage_url": "https://www.lee.edu/",
+      "career_url": "https://www.schooljobs.com/careers/lee/",
+      "platform_type": "schooljobs",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; automatic identity and employee-hiring evidence validation."
+    },
+    {
       "name": "Lewis & Clark College",
       "homepage_url": "https://www.lclark.edu/",
       "career_url": "https://lewisandclark.wd5.myworkdayjobs.com/Faculty",
       "platform_type": "workday",
       "notes": "Configured career_url (lclark.edu/offices/human_resources/jobs) is a category-links page (staff/student/faculty split by separate Workday portals), not a listing itself -- nothing to scrape there. Routed directly to the dedicated Faculty Workday portal. Verified live: 3 postings, \"Assistant Professor of Data Science\" and \"Visiting Assistant Professor in Psychology\" (both non-adjunct, pass filter) plus \"Adjunct Instructor / Lecturer in Computer Science\" (contains \"Adjunct\", also passes since no part-time wording)."
+    },
+    {
+      "name": "Lewis and Clark Community College",
+      "homepage_url": "https://www.lc.edu/",
+      "career_url": "https://www.lc.edu/team-members/human-resources/index.html",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Linfield University",
+      "homepage_url": "https://www.linfield.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/portal/F16D49EDEBF447BF71AEBC32D5AF6AB5/career-page",
+      "platform_type": "paycom",
+      "notes": "The former careers.linfield.edu host no longer resolves. Linfield's official Employment Opportunities page embeds this Paycom portal; validated live with HTTP 200."
     },
     {
       "name": "Luther College",
@@ -2924,7 +3070,15 @@
       "homepage_url": "https://www.macalester.edu/",
       "career_url": "https://www.macalester.edu/provost/positions-2/",
       "platform_type": "generic",
-      "notes": "Was pointing at a generic HR jobs landing page; route to the Provost's Office 'Faculty Openings' page (linked from that page), a manually-maintained faculty-specific listing distinct from Macalester's Workday staff board. Verified live: page loads correctly but explicitly states 'No positions currently available' for tenure-track faculty at time of check \u2014 kept as it is the correct, dedicated faculty-postings page."
+      "notes": "Was pointing at a generic HR jobs landing page; route to the Provost's Office 'Faculty Openings' page (linked from that page), a manually-maintained faculty-specific listing distinct from Macalester's Workday staff board. Verified live: page loads correctly but explicitly states 'No positions currently available' for tenure-track faculty at time of check — kept as it is the correct, dedicated faculty-postings page."
+    },
+    {
+      "name": "Madisonville Community College",
+      "homepage_url": "https://madisonville.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/madisonville-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
     },
     {
       "name": "Marist College",
@@ -2932,6 +3086,35 @@
       "career_url": "https://careers.marist.edu/",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+    },
+    {
+      "name": "Marshalltown Community College",
+      "homepage_url": "https://mcc.iavalley.edu/",
+      "career_url": "https://www.iavalley.edu/join-our-team/index.html",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Massasoit Community College",
+      "homepage_url": "https://www.massasoit.edu/",
+      "career_url": "https://massasoit.edu/about/offices-priorities/human-resources/index.html",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Maysville Community and Technical College",
+      "homepage_url": "https://maysville.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/maysville-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
+    },
+    {
+      "name": "McDowell Technical Community College",
+      "homepage_url": "https://www.mcdowelltech.edu/",
+      "career_url": "https://www.mcdowelltech.edu/employment-opportunities",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
     },
     {
       "name": "Miami University-Middletown",
@@ -2955,11 +3138,11 @@
       "notes": "Was pointing at the Institute's homepage; route to Middlebury's Workable careers board (linked as 'Employment'). Verified live: 'Faculty' category shows 8 open positions at time of check. Caveat: board is shared across all Middlebury College/Institute campuses and schools, not filtered to the Monterey Institute specifically."
     },
     {
-      "name": "Linfield University",
-      "homepage_url": "https://www.linfield.edu/",
-      "career_url": "https://www.paycomonline.net/v4/ats/web.php/portal/F16D49EDEBF447BF71AEBC32D5AF6AB5/career-page",
-      "platform_type": "paycom",
-      "notes": "The former careers.linfield.edu host no longer resolves. Linfield's official Employment Opportunities page embeds this Paycom portal; validated live with HTTP 200."
+      "name": "Milwaukee Area Technical College",
+      "homepage_url": "https://www.matc.edu/",
+      "career_url": "https://www.matc.edu/who-we-are/offices/human-resources/index.html",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
     },
     {
       "name": "Minnesota State System",
@@ -2969,11 +3152,32 @@
       "notes": "Discovered via agent-career-discovery; verified live (5 faculty postings)."
     },
     {
+      "name": "Mississippi Gulf Coast Community College",
+      "homepage_url": "https://www.mgccc.edu/",
+      "career_url": "https://mgccc.peopleadmin.com/",
+      "platform_type": "peopleadmin",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; automatic identity and employee-hiring evidence validation."
+    },
+    {
       "name": "Missouri State University",
       "homepage_url": "https://jobs.missouristate.edu/postings/search?query=&query_position_type_id%5B%5D=3",
       "career_url": "https://jobs.missouristate.edu/postings/search",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+    },
+    {
+      "name": "Monroe County Community College",
+      "homepage_url": "https://www.monroeccc.edu/",
+      "career_url": "https://www.schooljobs.com/careers/monroeccc/",
+      "platform_type": "schooljobs",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; automatic identity and employee-hiring evidence validation."
+    },
+    {
+      "name": "Moreno Valley College",
+      "homepage_url": "https://www.mvc.edu/",
+      "career_url": "https://www.mvc.edu/admin/careers.php",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
     },
     {
       "name": "Mount Holyoke College",
@@ -2983,11 +3187,49 @@
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
     },
     {
+      "name": "Mountain Empire Community College",
+      "homepage_url": "https://www.mecc.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7881&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
+      "name": "Multnomah University",
+      "homepage_url": "https://www.multnomah.edu/",
+      "career_url": "https://www.multnomah.edu/careers/",
+      "platform_type": "generic",
+      "coverage_source": "William Jessup University",
+      "notes": "Reviewed 2026-08-23. Multnomah remains active as Jessup University's Multnomah Campus and its official careers page links to Jessup's shared openings."
+    },
+    {
       "name": "New Mexico State University",
       "homepage_url": null,
       "career_url": "https://careers.nmsu.edu/",
       "platform_type": "pageup",
       "notes": "careers.nmsu.edu/faculty/jobs 404s. Confirmed live via headless browser: base URL (redirects to /jobs/search) shows a Category filter with Faculty (14 items), Post Doctoral (2 items), Temporary Faculty (5 items). Confirmed PageUp via page source."
+    },
+    {
+      "name": "New Mexico State University-Dona Ana",
+      "homepage_url": "https://dacc.nmsu.edu/",
+      "career_url": "https://dacc.nmsu.edu/hr/",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "New River Community College",
+      "homepage_url": "https://www.nr.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7890&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
+      "name": "North Arkansas College",
+      "homepage_url": "https://www.northark.edu/",
+      "career_url": "https://www.northark.edu/employment-opportunities/",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
     },
     {
       "name": "North Georgia Technical College",
@@ -2997,6 +3239,27 @@
       "notes": "Was pointing at the homepage (0 jobs). College's own Employment page links to Team Georgia Careers for external applicants (and a Taleo portal for internal state employees, deliberately not used here per this codebase's Taleo exclusion policy). Discovered via manual research; verified live (10 faculty postings, e.g. Welding Instructor, Electrical Systems Instructor, of 12 total openings)."
     },
     {
+      "name": "North Shore Community College",
+      "homepage_url": "https://www.northshore.edu/",
+      "career_url": "https://www.northshore.edu/hr/employment.html",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Northeast Mississippi Community College",
+      "homepage_url": "https://www.nemcc.edu/",
+      "career_url": "https://www.nemcc.edu/employees/employment/index.html",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Northeast Texas Community College",
+      "homepage_url": "https://www.ntcc.edu/",
+      "career_url": "https://www.ntcc.edu/hr",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
       "name": "Northern Kentucky University",
       "homepage_url": "https://jobs.nku.edu/postings/search",
       "career_url": "https://nku.wd108.myworkdayjobs.com/NKU_External",
@@ -3004,11 +3267,41 @@
       "notes": "Discovered via agent-career-discovery; verified live (1 faculty posting)."
     },
     {
+      "name": "Northland Community and Technical College - Aerospace",
+      "homepage_url": "https://minnesotanorth.edu/campuses/aviation-campus/",
+      "career_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers",
+      "platform_type": "workday",
+      "coverage_source": "Minnesota State System",
+      "notes": "Reviewed 2026-08-23. The former Northland Aerospace site is part of Minnesota North College and uses Minnesota State's shared Workday source."
+    },
+    {
+      "name": "Northwest Louisiana Technical Community College",
+      "homepage_url": "https://www.nltcc.edu/",
+      "career_url": "https://www.nltcc.edu/human-resources/index",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Northwest Technical College",
+      "homepage_url": "https://www.ntcmn.edu/",
+      "career_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545de1d40250000",
+      "platform_type": "workday",
+      "coverage_source": "Minnesota State System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Minnesota State System source."
+    },
+    {
       "name": "Nova Southeastern University",
       "homepage_url": "https://nsucareers.nova.edu/",
       "career_url": "https://nsucareers.nova.edu/jobs/search/faculty-jobs",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (4 faculty postings)."
+    },
+    {
+      "name": "Ocean County College",
+      "homepage_url": "https://www.ocean.edu/",
+      "career_url": "https://www.schooljobs.com/careers/ocean",
+      "platform_type": "schooljobs",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; automatic identity and employee-hiring evidence validation."
     },
     {
       "name": "Oconee Fall Line Technical College",
@@ -3050,7 +3343,7 @@
       "homepage_url": "https://jobs.odu.edu/postings/search",
       "career_url": "https://jobs.odu.edu/postings/search?query_position_type_id%5B%5D=1&commit=Search",
       "platform_type": "generic",
-      "notes": "Unfiltered default view returns Staff/Admin postings only, not the 2 faculty postings agent-career-discovery's own note claims \u2014 id 1 (\"Teaching and Research Faculty\" on the site's own dropdown) is the real Faculty filter, confirmed live to return 28+ real faculty postings. This override previously pointed at the unfiltered URL, which would have overridden a correct base-config URL fix (career-url-overrides.json's career_url always wins over the campus config's own url in resolveCareerUrlOverride) \u2014 updated 2026-08-03 after that exact regression was found."
+      "notes": "Unfiltered default view returns Staff/Admin postings only, not the 2 faculty postings agent-career-discovery's own note claims — id 1 (\"Teaching and Research Faculty\" on the site's own dropdown) is the real Faculty filter, confirmed live to return 28+ real faculty postings. This override previously pointed at the unfiltered URL, which would have overridden a correct base-config URL fix (career-url-overrides.json's career_url always wins over the campus config's own url in resolveCareerUrlOverride) — updated 2026-08-03 after that exact regression was found."
     },
     {
       "name": "Ottawa University-Surprise",
@@ -3058,6 +3351,14 @@
       "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=AB201C499D53A5D603D5BE296513B383",
       "platform_type": "paycom",
       "notes": "ottawa.edu/faculty/jobs 404s (site redesign moved/removed the page). Found the real Paycom portal link via ottawa.edu/careers. Verified live via scrapePaycomAs with locationFilter=Surprise: 2 real Surprise-AZ-scoped postings (Adjunct Instructor - Adult Professional & Graduate Studies - Surprise Arizona, Adjunct Instructor - MSN Nursing Program)."
+    },
+    {
+      "name": "Owensboro Community and Technical College",
+      "homepage_url": "https://owensboro.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/owensboro-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
     },
     {
       "name": "Pacific University",
@@ -3074,11 +3375,94 @@
       "notes": "Was pointing at the bare homepage (alamo.edu/pac); routed to Palo Alto College's dedicated Cornerstone OnDemand faculty job feed, reached via the college's own /employees/employment/ page. Page is explicitly headed 'Faculty Jobs at Palo Alto College' and is a distinct per-college site id from the combined Alamo Colleges District board (verified San Antonio College's equivalent site id shows different, SAC-labeled content, confirming these are genuinely per-college feeds, not a shared/misattributed board). Verified real infrastructure; 0 current listings visible at time of check."
     },
     {
+      "name": "Pardee RAND Graduate School - Virginia",
+      "homepage_url": "https://www.rand.edu/about/locations/arlington.html",
+      "career_url": "https://jobs.rand.org/",
+      "platform_type": "generic",
+      "coverage_source": "Pardee RAND Graduate School",
+      "notes": "Reviewed 2026-08-23. This is RAND's Arlington location rather than an independent college; employment is handled through RAND's shared careers source."
+    },
+    {
+      "name": "Patrick & Henry Community College",
+      "homepage_url": "https://www.patrickhenry.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7892&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
+      "name": "Paul D Camp Community College",
+      "homepage_url": "https://www.pdc.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7891&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
+      "name": "Pennsylvania Highlands Community College",
+      "homepage_url": "https://www.pennhighlands.edu/",
+      "career_url": "https://www.pennhighlands.edu/about/hr/employment/",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Pennsylvania State University-World Campus",
+      "homepage_url": "https://www.worldcampus.psu.edu/",
+      "career_url": "https://psu.wd1.myworkdayjobs.com/PSU_Academic?timeType=b9c7a8628206010c6cedcb3aa4474a00&jobFamily=57340197317201e0b53836bfde4ae85f",
+      "platform_type": "workday",
+      "coverage_source": "The Pennsylvania State University",
+      "notes": "Reviewed in the final four-year milestone. Penn State World Campus faculty hiring is published through Penn State's shared Academic Workday source; reuse that source instead of duplicating and misattributing all Penn State postings to World Campus."
+    },
+    {
+      "name": "Perry Technical Institute",
+      "homepage_url": "https://www.perrytech.edu/",
+      "career_url": "https://www.perrytech.edu/about/careers/",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Piedmont Virginia Community College",
+      "homepage_url": "https://www.pvcc.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7893&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
+      "name": "Pine Technical & Community College",
+      "homepage_url": "https://www.pine.edu/",
+      "career_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545e552307f0000",
+      "platform_type": "workday",
+      "coverage_source": "Minnesota State System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Minnesota State System source."
+    },
+    {
+      "name": "Pitt Community College",
+      "homepage_url": "https://pittcc.edu/",
+      "career_url": "https://www.schooljobs.com/careers/pittccedu",
+      "platform_type": "schooljobs",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; automatic identity and employee-hiring evidence validation."
+    },
+    {
       "name": "Polytechnic University of Puerto Rico-Miami",
       "homepage_url": "https://www.pupr.edu/hr/",
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=5388a0c5-18fe-449e-b500-098740269275&ccId=19000101_000001&lang=en_US",
       "platform_type": "generic",
       "notes": "pupr.edu/miami itself blocks bots (403) but pupr.edu/hr/ links to this ADP Workforce Now board (JS-rendered). Verified live via headless browser: 10 open postings including 'PROFESSOR - ORLANDO' and 2x 'PROFESOR (A)' tagged Faculty Full Time PR. One shared ADP portal covers all PUPR campuses including Miami; no Miami-specific posting open at check time but the portal is the institution's real, working career page."
+    },
+    {
+      "name": "Portland Community College",
+      "homepage_url": "https://www.pcc.edu/",
+      "career_url": "https://www.pcc.edu/hr/jobs/",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Prairie State College",
+      "homepage_url": "https://prairiestate.edu/",
+      "career_url": "https://prairiestate.peopleadmin.com/",
+      "platform_type": "peopleadmin",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; automatic identity and employee-hiring evidence validation."
     },
     {
       "name": "Presbyterian College",
@@ -3100,6 +3484,28 @@
       "career_url": "https://www.purdue.edu/hr/mgrres/rechireemp/faculty.php",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (7 faculty postings)."
+    },
+    {
+      "name": "Purdue University - Indianapolis",
+      "homepage_url": "https://www.purdue.edu/indianapolis/",
+      "career_url": "https://careers.purdue.edu/go/Faculty/7721500/",
+      "platform_type": "generic",
+      "coverage_source": "Purdue University",
+      "notes": "Reviewed 2026-08-23. Purdue University in Indianapolis is active and faculty hiring is published through Purdue's university-wide faculty careers source."
+    },
+    {
+      "name": "Raritan Valley Community College",
+      "homepage_url": "https://www.raritanval.edu/",
+      "career_url": "https://www.raritanval.edu/employment-at-rvcc/",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
+    },
+    {
+      "name": "Reading Area Community College",
+      "homepage_url": "https://www.racc.edu/",
+      "career_url": "https://www.racc.edu/about-racc/human-resources",
+      "platform_type": "generic",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; manual review of official-domain employee hiring evidence."
     },
     {
       "name": "Reed College",
@@ -3179,6 +3585,13 @@
       "notes": "Configured career_url (rider.edu/careers) is a generic student Career Development landing page with no listings; the real NEOGOV/schooljobs tenant was sitting unused in the homepage_url field instead. Swapped it in. Verified live: 7 postings, including \"Acting Assistant Professor of Management\" (Full-Time, Norm Brodsky College of Business) plus 6 \"Adjunct Faculty - <Dept>\" titles, none excluded by omitAdjunct(). CAVEAT: flaky against the scraper's fixed post-load wait, same family of issue as Alabama State/Delta College -- 2 of 5 test runs this session returned 0."
     },
     {
+      "name": "Robeson Community College",
+      "homepage_url": "https://www.robeson.edu/",
+      "career_url": "https://www.schooljobs.com/careers/robeson",
+      "platform_type": "schooljobs",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; automatic identity and employee-hiring evidence validation."
+    },
+    {
       "name": "Rochester Institute of Technology",
       "homepage_url": "https://rit.wd12.myworkdayjobs.com/careers",
       "career_url": "https://rit.wd12.myworkdayjobs.com/careers",
@@ -3249,11 +3662,35 @@
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
     },
     {
+      "name": "Somerset Community College",
+      "homepage_url": "https://somerset.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/somerset-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
+    },
+    {
       "name": "South Georgia Technical College",
       "homepage_url": "https://www.southgatech.edu/",
       "career_url": "https://www.easyhrweb.com/JC_SouthGATech/joblistings/joblistings.aspx",
       "platform_type": "generic",
       "notes": "Was pointing at the homepage (0 jobs). College uses its own EasyHRWeb JobCenter; Team Georgia Careers showed 0 current openings for this college at check time. Discovered via manual research; verified live (4 Adjunct faculty openings, of 5 total openings)."
+    },
+    {
+      "name": "Southcentral Kentucky Community and Technical College",
+      "homepage_url": "https://southcentral.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/southcentral-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
+    },
+    {
+      "name": "Southeast Kentucky Community & Technical College",
+      "homepage_url": "https://southeast.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/southeast-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
     },
     {
       "name": "Southern Crescent Technical College",
@@ -3289,6 +3726,14 @@
       "career_url": "https://www.schooljobs.com/careers/suu#",
       "platform_type": "schooljobs",
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
+    },
+    {
+      "name": "Southside Virginia Community College",
+      "homepage_url": "https://www.southside.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7883&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
     },
     {
       "name": "Southwestern College (KS)",
@@ -3494,6 +3939,22 @@
       "notes": "Discovered via agent-career-discovery; verified live (9 faculty postings)."
     },
     {
+      "name": "University of Maine",
+      "homepage_url": "https://umaine.edu/",
+      "career_url": "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+      "platform_type": "oracle-cx",
+      "coverage_source": "University of Maine System",
+      "notes": "Reviewed in the final four-year milestone. Faculty jobs are published in the University of Maine System's shared Oracle careers source."
+    },
+    {
+      "name": "University of Maine at Augusta",
+      "homepage_url": "https://www.uma.edu/",
+      "career_url": "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+      "platform_type": "oracle-cx",
+      "coverage_source": "University of Maine System",
+      "notes": "Reviewed in the final four-year milestone. Faculty jobs are published in the University of Maine System's shared Oracle careers source."
+    },
+    {
       "name": "University of Maine System",
       "homepage_url": "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
       "career_url": "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
@@ -3641,6 +4102,14 @@
       "notes": "Discovered via agent-career-discovery; verified live (48 faculty postings)."
     },
     {
+      "name": "University of Southern Maine",
+      "homepage_url": "https://usm.maine.edu/",
+      "career_url": "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+      "platform_type": "oracle-cx",
+      "coverage_source": "University of Maine System",
+      "notes": "Reviewed in the final four-year milestone. Faculty jobs are published in the University of Maine System's shared Oracle careers source."
+    },
+    {
       "name": "University of Virginia",
       "homepage_url": "https://jobs.virginia.edu/us/en/uva-faculty-positions",
       "career_url": "https://apply.interfolio.com/50272/positions",
@@ -3659,7 +4128,7 @@
       "homepage_url": "https://www.schooljobs.com/careers/uvu",
       "career_url": "https://www.schooljobs.com/careers/uvu",
       "platform_type": "schooljobs",
-      "notes": "Previous override pointed at a single job posting (student-fitness-instructor) that has since closed, hiding the rest of the board \u2014 0 jobs scraped despite 5 real faculty postings live on the board root. Pointed at the board itself instead."
+      "notes": "Previous override pointed at a single job posting (student-fitness-instructor) that has since closed, hiding the rest of the board — 0 jobs scraped despite 5 real faculty postings live on the board root. Pointed at the board itself instead."
     },
     {
       "name": "UW System Comprehensives",
@@ -3683,6 +4152,30 @@
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
     },
     {
+      "name": "Virginia Highlands Community College",
+      "homepage_url": "https://www.vhcc.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7894&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
+      "name": "Virginia Peninsula Community College",
+      "homepage_url": "https://vpcc.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7887&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
+      "name": "Virginia Western Community College",
+      "homepage_url": "https://www.virginiawestern.edu/",
+      "career_url": "https://jobs.vccs.edu/postings/search?query_organizational_tier_1_id%5B%5D=7895&query_position_type_id%5B%5D=9&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Virginia Community College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Virginia Community College System source."
+    },
+    {
       "name": "Washington Health System School of Nursing",
       "homepage_url": "https://whs.org/school-of-nursing",
       "career_url": "https://whs.org/career-education/career-opportunities/",
@@ -3695,6 +4188,14 @@
       "career_url": "https://wsu.wd5.myworkdayjobs.com/WSU_Jobs",
       "platform_type": "workday",
       "notes": "Discovered via agent-career-discovery; verified live (6 faculty postings)."
+    },
+    {
+      "name": "Washington State University - Global Campus",
+      "homepage_url": "https://online.wsu.edu/",
+      "career_url": "https://wsu.wd5.myworkdayjobs.com/WSU_Jobs?timeType=6b62c7b4591d0137a1e7b8ebd5055900&jobFamilyGroup=7a7d62448767019c28e399bff8053d45",
+      "platform_type": "workday",
+      "coverage_source": "Washington State University",
+      "notes": "Reviewed 2026-08-23. Global Campus is WSU's online campus and uses WSU's shared faculty Workday source."
     },
     {
       "name": "Washington University in St. Louis",
@@ -3723,6 +4224,14 @@
       "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4921&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All&search_api_fulltext=",
       "platform_type": "generic",
       "notes": "Was pointing at the homepage (0 jobs). Own site's Career Opportunities page links directly to this Team Georgia Careers agency-filtered URL. Discovered via manual research; verified live (14 faculty postings, e.g. Instructor Precision Manufacturing and Maintenance, Pharmacy Instructor, of 17 total openings)."
+    },
+    {
+      "name": "West Kentucky Community and Technical College",
+      "homepage_url": "https://westkentucky.kctcs.edu/",
+      "career_url": "https://careers.kctcs.edu/jobs/search/westky-jobs",
+      "platform_type": "pageup",
+      "coverage_source": "Kentucky Community and Technical College System",
+      "notes": "Reviewed in the complete 2026-08-24 two-year coverage pass; official campus-scoped Kentucky Community and Technical College System source."
     },
     {
       "name": "West Virginia State University",
@@ -3814,126 +4323,6 @@
       "career_url": "https://jobs.wright.edu/postings/search",
       "platform_type": "generic",
       "notes": "Was pointing at the bare PeopleAdmin-style homepage (jobs.wright.edu/, 0 jobs shown); routed to the postings search results page, linked from that homepage as 'Search Jobs'. Verified live: 71 postings, including real faculty listings (Assistant Professor/Associate Professor - Accounting; Instructor/Lecturer - Accounting)."
-    },
-    {
-      "name": "Pennsylvania State University-World Campus",
-      "homepage_url": "https://www.worldcampus.psu.edu/",
-      "career_url": "https://psu.wd1.myworkdayjobs.com/PSU_Academic?timeType=b9c7a8628206010c6cedcb3aa4474a00&jobFamily=57340197317201e0b53836bfde4ae85f",
-      "platform_type": "workday",
-      "coverage_source": "The Pennsylvania State University",
-      "notes": "Reviewed in the final four-year milestone. Penn State World Campus faculty hiring is published through Penn State's shared Academic Workday source; reuse that source instead of duplicating and misattributing all Penn State postings to World Campus."
-    },
-    {
-      "name": "University of Maine",
-      "homepage_url": "https://umaine.edu/",
-      "career_url": "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
-      "platform_type": "oracle-cx",
-      "coverage_source": "University of Maine System",
-      "notes": "Reviewed in the final four-year milestone. Faculty jobs are published in the University of Maine System's shared Oracle careers source."
-    },
-    {
-      "name": "University of Maine at Augusta",
-      "homepage_url": "https://www.uma.edu/",
-      "career_url": "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
-      "platform_type": "oracle-cx",
-      "coverage_source": "University of Maine System",
-      "notes": "Reviewed in the final four-year milestone. Faculty jobs are published in the University of Maine System's shared Oracle careers source."
-    },
-    {
-      "name": "University of Southern Maine",
-      "homepage_url": "https://usm.maine.edu/",
-      "career_url": "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
-      "platform_type": "oracle-cx",
-      "coverage_source": "University of Maine System",
-      "notes": "Reviewed in the final four-year milestone. Faculty jobs are published in the University of Maine System's shared Oracle careers source."
-    },
-    {
-      "name": "Arizona State University - ASU California Center - Broadway",
-      "homepage_url": "https://california.asu.edu/",
-      "career_url": "https://facultypositions.asu.edu/",
-      "platform_type": "asu-table",
-      "coverage_source": "Arizona State University",
-      "notes": "Reviewed 2026-08-23. This is an active ASU teaching location, not an independent employer; faculty hiring is published through ASU's university-wide faculty source."
-    },
-    {
-      "name": "Arizona State University - ASU California Center - Grand",
-      "homepage_url": "https://california.asu.edu/",
-      "career_url": "https://facultypositions.asu.edu/",
-      "platform_type": "asu-table",
-      "coverage_source": "Arizona State University",
-      "notes": "Reviewed 2026-08-23. This is an active ASU teaching location, not an independent employer; faculty hiring is published through ASU's university-wide faculty source."
-    },
-    {
-      "name": "Bluefield University - Edward Via College - Auburn",
-      "homepage_url": "https://www.vcom.edu/locations/auburn",
-      "career_url": "https://www.vcom.edu/employment/job-listings",
-      "platform_type": "generic",
-      "coverage_source": "Edward Via College of Osteopathic Medicine",
-      "notes": "Reviewed 2026-08-23. VCOM-Auburn is active and its faculty openings are listed on VCOM's shared campus-aware job board."
-    },
-    {
-      "name": "Illinois Eastern Community Colleges - Olney Central College",
-      "homepage_url": "https://iecc.edu/occ",
-      "career_url": "https://iecc.edu/jobs",
-      "platform_type": "generic",
-      "coverage_source": "Illinois Eastern Community Colleges",
-      "notes": "Reviewed 2026-08-23. Olney Central is active and IECC's official employment page identifies campus-specific and district-wide faculty openings."
-    },
-    {
-      "name": "Indiana University - Purdue University Indianapolis - Columbus Ctr",
-      "homepage_url": "https://columbus.iu.edu/",
-      "career_url": "https://jobs.iu.edu/",
-      "platform_type": "generic",
-      "coverage_source": "Indiana University",
-      "notes": "Reviewed 2026-08-23. The former IUPUI Columbus record is now IU Columbus; its official HR page directs full-time faculty applicants to IU's shared jobs system."
-    },
-    {
-      "name": "Indiana University - Purdue University Indianapolis - IU Fort Wayne",
-      "homepage_url": "https://fortwayne.iu.edu/",
-      "career_url": "https://jobs.iu.edu/",
-      "platform_type": "generic",
-      "coverage_source": "Indiana University",
-      "notes": "Reviewed 2026-08-23. IU Fort Wayne academic appointments are administered through Indiana University's shared jobs system."
-    },
-    {
-      "name": "Multnomah University",
-      "homepage_url": "https://www.multnomah.edu/",
-      "career_url": "https://www.multnomah.edu/careers/",
-      "platform_type": "generic",
-      "coverage_source": "William Jessup University",
-      "notes": "Reviewed 2026-08-23. Multnomah remains active as Jessup University's Multnomah Campus and its official careers page links to Jessup's shared openings."
-    },
-    {
-      "name": "Northland Community and Technical College - Aerospace",
-      "homepage_url": "https://minnesotanorth.edu/campuses/aviation-campus/",
-      "career_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers",
-      "platform_type": "workday",
-      "coverage_source": "Minnesota State System",
-      "notes": "Reviewed 2026-08-23. The former Northland Aerospace site is part of Minnesota North College and uses Minnesota State's shared Workday source."
-    },
-    {
-      "name": "Pardee RAND Graduate School - Virginia",
-      "homepage_url": "https://www.rand.edu/about/locations/arlington.html",
-      "career_url": "https://jobs.rand.org/",
-      "platform_type": "generic",
-      "coverage_source": "Pardee RAND Graduate School",
-      "notes": "Reviewed 2026-08-23. This is RAND's Arlington location rather than an independent college; employment is handled through RAND's shared careers source."
-    },
-    {
-      "name": "Purdue University - Indianapolis",
-      "homepage_url": "https://www.purdue.edu/indianapolis/",
-      "career_url": "https://careers.purdue.edu/go/Faculty/7721500/",
-      "platform_type": "generic",
-      "coverage_source": "Purdue University",
-      "notes": "Reviewed 2026-08-23. Purdue University in Indianapolis is active and faculty hiring is published through Purdue's university-wide faculty careers source."
-    },
-    {
-      "name": "Washington State University - Global Campus",
-      "homepage_url": "https://online.wsu.edu/",
-      "career_url": "https://wsu.wd5.myworkdayjobs.com/WSU_Jobs?timeType=6b62c7b4591d0137a1e7b8ebd5055900&jobFamilyGroup=7a7d62448767019c28e399bff8053d45",
-      "platform_type": "workday",
-      "coverage_source": "Washington State University",
-      "notes": "Reviewed 2026-08-23. Global Campus is WSU's online campus and uses WSU's shared faculty Workday source."
     }
   ]
 }
