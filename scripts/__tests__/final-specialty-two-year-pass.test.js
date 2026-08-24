@@ -23,7 +23,7 @@ test("campus-specific dispatchers support the newly introduced ATS types", () =>
 });
 
 test("ambiguous shared systems remain excluded from the final specialty pass", () => {
-  assert.doesNotMatch(source, /Georgia State University-Perimeter College.*facultycareers\.gsu\.edu/);
-  assert.doesNotMatch(source, /Grossmont College.*gcccd\.edu\/jobs/);
+  assert.match(source, /Georgia State University-Perimeter College[\s\S]{0,260}query_organizational_tier_2_id%5B%5D=429/);
+  assert.match(source, /Grossmont College[\s\S]{0,260}locations=ca95798f91ff0127dc8b3f75671b1cae/);
   assert.doesNotMatch(source, /San Bernardino Community College District.*schooljobs\.com\/careers\/sbccd/);
 });

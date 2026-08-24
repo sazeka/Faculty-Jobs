@@ -811,6 +811,16 @@ const UC_CAMPUSES = [
 // California major private research universities
 const CA_PRIVATE_CAMPUSES = [
   {
+    campus: "Grossmont College",
+    type: "workday",
+    url: "https://gcccd.wd1.myworkdayjobs.com/gcccdcareers?locations=ca95798f91ff0127dc8b3f75671b1cae",
+  },
+  {
+    campus: "Ohlone College",
+    type: "schooljobs",
+    url: "https://www.schooljobs.com/careers/ohlone",
+  },
+  {
     campus: "Stanford University",
     type: "pageup",
     url: "https://facultypositions.stanford.edu/en-us/listing/",
@@ -1430,6 +1440,7 @@ const CLAREMONT_CAMPUSES = [
 
 // PA (multi-platform)
 const PA_CAMPUSES = [
+  { campus: "Luzerne County Community College", type: "generic", url: "https://www.luzerne.edu/about/jobs/jobs.jsp" },
   { campus: "Lancaster County Career and Technology Center", type: "applitrack", url: "https://www.applitrack.com/lancasterctc/onlineapp/default.aspx?all=1" },
   {
     campus: "Cheyney University",
@@ -5180,6 +5191,7 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Southwest Texas College", type: "swtx-employment", url: "https://www.swtxc.edu/about/employment-opportunities/" },
   { campus: "Jacksonville College-Main Campus", type: "generic", url: "https://sites.google.com/jacksonville-college.edu/jchr/home" },
   { campus: "Texas State Technical College", type: "generic", url: "https://www.tstc.edu/work-at-tstc/" },
   { campus: "Kilgore College", type: "generic", url: "https://www.kilgore.edu/additional-resources/human-resources/" },
@@ -5853,6 +5865,11 @@ const FL_CAMPUSES = [
 // "the TCSG System Office, as well as our 22 Colleges", not just whichever
 // currently has an open posting.
 const GA_CAMPUSES = [
+  {
+    campus: "Georgia State University-Perimeter College",
+    type: "peopleadmin",
+    url: "https://facultycareers.gsu.edu/postings/search?query_position_type_id%5B%5D=3&query_position_type_id%5B%5D=4&query_organizational_tier_2_id%5B%5D=429&commit=Search",
+  },
   { campus: "Helms College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=CDA1B79B0620249447CBC9E755D51645" },
   { campus: "University of Georgia", type: "peopleadmin", url: "https://www.ugajobsearch.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&225=&436=&query_position_type_id%5B%5D=7&query_position_type_id%5B%5D=8&commit=Search" },
   { campus: "Georgia State University", type: "peopleadmin", url: "https://facultycareers.gsu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&435=&commit=Search" },
@@ -17714,6 +17731,79 @@ async function scrapeTamuFacultyPositions(context, startUrl, campusName, sourceN
   }
 }
 
+function decodeSwtxHtml(value) {
+  return String(value || "")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(parseInt(code, 16)))
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">");
+}
+
+function swtxCellText(html) {
+  return clean(decodeSwtxHtml(String(html || "").replace(/<[^>]+>/g, " ")));
+}
+
+export function extractSwtxEmploymentJobsFromHtml(html, startUrl, campusName = "Southwest Texas College", sourceName = "TX") {
+  const jobs = [];
+  const tables = String(html || "").match(/<table\b[\s\S]*?<\/table>/gi) || [];
+
+  for (const table of tables) {
+    const caption = table.match(/<caption\b[^>]*>([\s\S]*?)<\/caption>/i);
+    if (!caption || !/\bfaculty\b/i.test(swtxCellText(caption[1]))) continue;
+
+    for (const row of table.match(/<tr\b[\s\S]*?<\/tr>/gi) || []) {
+      const cells = [...row.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)].map((match) => match[1]);
+      if (cells.length < 2) continue;
+      const link = cells[0].match(/<a\b[^>]*href\s*=\s*["']([^"']+)["']/i);
+      const title = swtxCellText(cells[1]);
+      const href = link ? decodeSwtxHtml(link[1]) : "";
+      // This page sometimes omits appointment status from the visible title
+      // while preserving it in the official PDF filename (for example,
+      // Nursing-Faculty-...-Part-Time.pdf). Treat both as evidence so those
+      // postings cannot bypass the existing part-time safeguard.
+      if (!link || !title || !looksFacultyish(title) || omitAdjunct(title) || omitAdjunct(href)) continue;
+
+      let url;
+      try {
+        url = new URL(href, startUrl).toString();
+      } catch {
+        continue;
+      }
+      jobs.push({
+        title,
+        url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: cells.length > 3 ? swtxCellText(cells[3]) || null : null,
+        description: null,
+      });
+    }
+  }
+
+  return uniqByUrl(jobs);
+}
+
+async function scrapeSwtxEmploymentAs(startUrl, campusName, sourceName = "TX") {
+  try {
+    const response = await fetch(startUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const jobs = extractSwtxEmploymentJobsFromHtml(await response.text(), startUrl, campusName, sourceName);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty vacancy tables)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 async function scrapeTxAll(context) {
   const results = await mapWithConcurrency(
     TX_CAMPUSES,
@@ -17751,6 +17841,7 @@ async function scrapeTxAll(context) {
         // already exists and is dispatched by MA/ME/NY) -- added for
         // Brazosport College.
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "TX");
+        if (type === "swtx-employment") return await scrapeSwtxEmploymentAs(url, campus, "TX");
         if (type === "nau-search") {
           const base = await scrapeNauSearch(context, url, campus, "TX");
           return await enrichEnUsJobCardsFromDetails(context, base, {
