@@ -3238,6 +3238,7 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  { campus: "Northwest School of Wooden Boat Building", type: "generic", url: "https://nwswb.edu/employment/" },
   {
     campus: "University of Washington",
     type: "uw",
@@ -3411,6 +3412,8 @@ const WA_CAMPUSES = [
 
 // ME (Maine)
 const ME_CAMPUSES = [
+  { campus: "Northern Maine Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=910231577C34180857BE4AB5F766DEF5" },
+  { campus: "York County Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=E6927E90DEBB918D88790AD51A36C462" },
   {
     campus: "University of Maine System",
     type: "oracle-cx",
@@ -4174,6 +4177,7 @@ const CO_CAMPUSES = [
 
 // OH (Ohio)
 const OH_CAMPUSES = [
+  { campus: "Rosedale Bible College", type: "generic", url: "https://rosedale.edu/hiring/" },
   { campus: "Hocking College", type: "generic", url: "https://www.hocking.edu/careers" },
   { campus: "Southern State Community College", type: "generic", url: "https://www.sscc.edu/hr/work-at-sscc.shtml" },
   {
@@ -4412,6 +4416,11 @@ const OH_CAMPUSES = [
 
 // NM (New Mexico)
 const NM_CAMPUSES = [
+  {
+    campus: "University of New Mexico-Los Alamos Campus",
+    type: "csod",
+    url: "https://unm.csod.com/ux/ats/careersite/18/home?c=unm&cfdd[0][id]=255&cfdd[0][options][0]=1915&cfdd[0][options][1]=1916&cfdd[0][options][2]=1917",
+  },
   { campus: "Southwestern Indian Polytechnic Institute", type: "generic", url: "https://www.sipi.edu/apps/pages/humanresources" },
   {
     campus: "University of New Mexico",
@@ -4669,6 +4678,7 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  { campus: "Waubonsee Community College", type: "csod", url: "https://waubonsee.csod.com/ux/ats/careersite/11/home?c=waubonsee" },
   { campus: "Moraine Valley Community College", type: "peopleadmin", url: "https://jobs.morainevalley.edu/" },
   { campus: "CAAN Academy of Nursing", type: "generic", url: "https://www.caanacademy.org/employment-opportunities" },
   { campus: "Illinois Valley Community College", type: "applitrack", url: "https://www.applitrack.com/ivcc/onlineapp/default.aspx?Category=Faculty+Full-Time" },
@@ -5170,6 +5180,7 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Jacksonville College-Main Campus", type: "generic", url: "https://sites.google.com/jacksonville-college.edu/jchr/home" },
   { campus: "Texas State Technical College", type: "generic", url: "https://www.tstc.edu/work-at-tstc/" },
   { campus: "Kilgore College", type: "generic", url: "https://www.kilgore.edu/additional-resources/human-resources/" },
   { campus: "Ranger College", type: "generic", url: "https://www.rangercollege.edu/about-us/human-resources/index.php" },
@@ -5541,6 +5552,7 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "Ultimate Medical Academy", type: "generic", url: "https://job-boards.greenhouse.io/umaeducationinc/" },
   {
     campus: "University of Florida",
     type: "pageup",
@@ -5841,6 +5853,7 @@ const FL_CAMPUSES = [
 // "the TCSG System Office, as well as our 22 Colleges", not just whichever
 // currently has an open posting.
 const GA_CAMPUSES = [
+  { campus: "Helms College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=CDA1B79B0620249447CBC9E755D51645" },
   { campus: "University of Georgia", type: "peopleadmin", url: "https://www.ugajobsearch.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&225=&436=&query_position_type_id%5B%5D=7&query_position_type_id%5B%5D=8&commit=Search" },
   { campus: "Georgia State University", type: "peopleadmin", url: "https://facultycareers.gsu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&435=&commit=Search" },
   { campus: "Spelman College", type: "peopleadmin", url: "https://spelman.peopleadmin.com/postings/search?commit=Search&query_position_type_id%5B%5D=3&sort=225+asc&utf8=%E2%9C%93" },
@@ -6058,6 +6071,7 @@ const MS_CAMPUSES = [
 
 // LA (Louisiana)
 const LA_CAMPUSES = [
+  { campus: "Northshore Technical Community College", type: "generic", url: "https://www.northshorecollege.edu/resources/career-opportunities" },
   { campus: "Nunez Community College", type: "generic", url: "https://www.nunez.edu/careers" },
   { campus: "Louisiana State University", type: "workday", url: "https://lsu.wd1.myworkdayjobs.com/LSU?Job_Profiles=7a9995fc77aa101fe03ed2adb83abd3b&Job_Profiles=7a9995fc77aa101fe03fb0edd613be1b&Job_Profiles=7a9995fc77aa101fe03ea5230b41bd10&Job_Profiles=7a9995fc77aa101fe03c558ab5c0bac4&Job_Profiles=7a9995fc77aa101fe03fb8c46670be23&Job_Profiles=7a9995fc77aa101fe03fa8fe7ecdbe13&Job_Profiles=48b1ff5a2bae01637b1270c77c372403" },
   { campus: "Louisiana Tech University", type: "workday", url: "https://ulsltu.wd503.myworkdayjobs.com/LATECHCareers" },
@@ -6143,6 +6157,7 @@ const LA_CAMPUSES = [
 
 // AR (Arkansas)
 const AR_CAMPUSES = [
+  { campus: "Shorter College", type: "generic", url: "https://shortercollege.edu/careers/" },
   { campus: "University of Arkansas", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site?timeType=8676082fcc890179341a6d2e71495800&jobFamilyGroup=eaddfab9343f0113688d32d525e70000" },
   { campus: "University of Central Arkansas", type: "peopleadmin", url: "https://jobs.uca.edu/postings/search" },
   { campus: "Cossatot Community College of the University of Arkansas", type: "generic", url: "https://www.cccua.edu/about-ua-cossatot/human-resources/employment-opportunities.html" },
@@ -6605,6 +6620,7 @@ const AK_CAMPUSES = [
 
 // HI (Hawaii)
 const HI_CAMPUSES = [
+  { campus: "Hawaii Tokai International College", type: "dayforce", url: "https://www.dayforcehcm.com/api/HTIC/V1/JobFeeds" },
   { campus: "University of Hawaii System", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=faculty" },
   { campus: "Chaminade University of Honolulu", type: "generic", url: "https://chaminade.edu/employment-opportunities/" },
   { campus: "Brigham Young University-Hawaii", type: "generic", url: "https://www.byuh.edu/" },
@@ -17278,6 +17294,7 @@ async function scrapeGaAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "GA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "GA");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "GA");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "GA");
         if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "GA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "GA");
         return [];
@@ -17530,6 +17547,7 @@ async function scrapeHiAll(context) {
     async ({ campus, type, url, locationFilter, contentFilter }) => {
       try {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "HI", locationFilter || null, contentFilter || null);
+        if (type === "dayforce") return await scrapeDayforceApi(url, campus, "HI");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "HI");
         return [];
       } catch (e) {
