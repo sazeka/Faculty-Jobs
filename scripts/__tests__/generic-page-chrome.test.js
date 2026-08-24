@@ -14,6 +14,14 @@ test("generic career scraping rejects faculty-themed page chrome", () => {
   assert.equal(isGenericFacultyPageChromeTitle("LGBTQIA Faculty & Staff Liaison"), true);
   assert.equal(isGenericFacultyPageChromeTitle("Faculty Professional Development"), true);
   assert.equal(isGenericFacultyPageChromeTitle("Faculty Diversity Internship Program"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Faculty & Staff Careers"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Faculty and Staff FAQs"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Faculty & Adjunct-Faculty Openings"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Faculty/Staff Webmail"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("2025-2026 Faculty Salary Scales"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Adjunct Instructor Salary Schedule"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Message from the Dean of Students"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Cosmetology Instructor Training (Short-Term Certificate)"), true);
   assert.equal(isGenericFacultyPageChromeTitle("Northeast Faculty & Administration Application (PDF, 0.2 MB)"), true);
   assert.equal(isGenericFacultyPageChromeTitle("Faculty - Biology"), false);
   assert.equal(isGenericFacultyPageChromeTitle("Distinguished Faculty Fellow"), false);

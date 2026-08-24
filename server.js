@@ -784,6 +784,9 @@ const MA_PRIVATE_CAMPUSES = [
   { campus: "University of Massachusetts Chan Medical School", type: "academicjobsonline", url: "https://academicjobsonline.org/ajo/UMASSMED" },
   { campus: "Massasoit Community College", type: "generic", url: "https://massasoit.edu/about/offices-priorities/human-resources/index.html" },
   { campus: "North Shore Community College", type: "generic", url: "https://www.northshore.edu/hr/employment.html" },
+  { campus: "Holyoke Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/holyokeedu" },
+  { campus: "Quinsigamond Community College", type: "interviewexchange", url: "https://qcc.interviewexchange.com/static/clients/319QCM1/index.jsp" },
+  { campus: "Springfield Technical Community College", type: "interviewexchange", url: "https://stcc.interviewexchange.com/static/clients/382STM1/index.jsp" },
 ];
 
 // UC (AP Recruit)
@@ -1355,6 +1358,8 @@ const NJ_PRIVATE_CAMPUSES = [
   { campus: "Salem Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/5128793052B923DB6B8BB21179616D44/career-page" },
   { campus: "Ocean County College", type: "schooljobs", url: "https://www.schooljobs.com/careers/ocean" },
   { campus: "Raritan Valley Community College", type: "generic", url: "https://www.raritanval.edu/employment-at-rvcc/" },
+  { campus: "Hudson County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hccc" },
+  { campus: "UCNJ Union College of Union County, New Jersey", type: "peopleadmin", url: "https://ucc.peopleadmin.com/" },
 ];
 
 // Claremont Colleges
@@ -1698,6 +1703,9 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Pennsylvania Academy of the Fine Arts", type: "generic", url: "https://pafa.isolvedhire.com/jobs/" },
   { campus: "Pennsylvania Highlands Community College", type: "generic", url: "https://www.pennhighlands.edu/about/hr/employment/" },
   { campus: "Reading Area Community College", type: "generic", url: "https://www.racc.edu/about-racc/human-resources" },
+  { campus: "Harrisburg Area Community College", type: "pageup", url: "https://careersmanager.pageuppeople.com/1009/cw/en-us/listing" },
+  { campus: "Johnson College", type: "generic", url: "https://johnson.edu/human-resources/" },
+  { campus: "Montgomery County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/mc3" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -2245,6 +2253,14 @@ const SC_CAMPUSES = [
   { campus: "University of South Carolina Beaufort", type: "generic", url: "https://www.uscb.edu/human-resources/employment/index.html" },
   { campus: "University of South Carolina-Upstate", type: "generic", url: "https://uscupstate.edu/employment/" },
   { campus: "Voorhees University", type: "generic", url: "https://voorhees.edu/about-us/division-of-business-and-fiscal-affairs/faculty-employment-opportunities/" },
+  { campus: "Midlands Technical College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/sc/midlandstech" },
+  { campus: "Northeastern Technical College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/sc/netc" },
+  { campus: "Piedmont Technical College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/sc/ptc" },
+  { campus: "Technical College of the Lowcountry", type: "schooljobs", url: "https://www.governmentjobs.com/careers/sc/tcl" },
+  { campus: "Tri-County Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/tctc" },
+  { campus: "Trident Technical College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/sc/tridenttech" },
+  { campus: "Williamsburg Technical College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/sc/wiltech" },
+  { campus: "York Technical College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/sc/yorktech" },
 ];
 
 
@@ -3946,6 +3962,8 @@ const WI_CAMPUSES = [
   { campus: "Madison Area Technical College", type: "generic", url: "https://madisoncollege.edu/about/careers/hiring-process" },
   { campus: "Marian University (WI)", type: "generic", url: "https://www.marianuniversity.edu/about-marian/" },
   { campus: "Milwaukee Area Technical College", type: "generic", url: "https://www.matc.edu/who-we-are/offices/human-resources/index.html" },
+  { campus: "Mid-State Technical College", type: "taleo", url: "https://phh.tbe.taleo.net/phh02/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=41&org=MIDSTECH" },
+  { campus: "Northcentral Technical College", type: "workday", url: "https://ntc.wd1.myworkdayjobs.com/NTC" },
 ];
 
 // CO (Colorado)
@@ -4320,6 +4338,8 @@ const NM_CAMPUSES = [
   { campus: "St. John's College (NM)", type: "generic", url: "https://www.sjc.edu/employment" },
   { campus: "University of the Southwest", type: "generic", url: "https://www.usw.edu/academics/faculty-jobs" },
   { campus: "New Mexico State University-Dona Ana", type: "generic", url: "https://dacc.nmsu.edu/hr/" },
+  { campus: "Clovis Community College (NM)", type: "workday", url: "https://chess.wd1.myworkdayjobs.com/CCC" },
+  { campus: "Southeast New Mexico College", type: "schooljobs", url: "https://www.schooljobs.com/careers/senmc" },
 ];
 
 // NV (Nevada)
@@ -4526,6 +4546,11 @@ const MI_CAMPUSES = [
   { campus: "The University of Olivet", type: "generic", url: "https://www.uolivet.edu/employment/" },
   { campus: "Northern Michigan University", type: "generic", url: "https://jobs.nmu.edu/" },
   { campus: "Monroe County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/monroeccc/" },
+  { campus: "Glen Oaks Community College", type: "generic", url: "https://www.glenoaks.edu/about-gocc/college-operations/human-resources/jobs/index.php" },
+  { campus: "Gogebic Community College", type: "generic", url: "https://gogebic.edu/aboutus/HR/index.html" },
+  { campus: "Kellogg Community College", type: "generic", url: "https://kellogg.edu/about/departments/hr/employment-opportunities/" },
+  { campus: "St Clair County Community College", type: "generic", url: "https://sc4.edu/about/careers-at-sc4/" },
+  { campus: "Wayne County Community College District", type: "generic", url: "https://www.wcccd.edu/divisions/human-resources/jobs-at-wcccd" },
 ];
 
 // IL (Illinois)
@@ -5830,6 +5855,14 @@ const AL_CAMPUSES = [
   { campus: "Shelton State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/sheltonstate" },
   { campus: "University of Montevallo", type: "generic", url: "https://www.montevallo.edu/about-um/administration/human-resources/employment/" },
   { campus: "Huntingdon College", type: "generic", url: "https://www.huntingdon.edu/employment/" },
+  { campus: "Gadsden State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/gadsden" },
+  { campus: "George C Wallace Community College-Dothan", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/wallacedothan" },
+  { campus: "George C Wallace State Community College-Selma", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/wallaceselma" },
+  { campus: "H Councill Trenholm State Community College", type: "generic", url: "https://www.trenholmstate.edu/about-tscc/administration/human-resources/" },
+  { campus: "Lawson State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/lawson" },
+  { campus: "Lurleen B Wallace Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/lbw" },
+  { campus: "Reid State Technical College", type: "generic", url: "https://www.reidstate.edu/employment" },
+  { campus: "Southern Union State Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/accs/southernunionstate" },
 ];
 
 // MS (Mississippi)
@@ -6012,6 +6045,7 @@ const AR_CAMPUSES = [
   { campus: "University of Arkansas Grantham", type: "generic", url: "https://www.uagrantham.edu/careers/" },
   { campus: "Philander Smith University", type: "generic", url: "https://www.philander.edu/about/careers/" },
   { campus: "North Arkansas College", type: "generic", url: "https://www.northark.edu/employment-opportunities/" },
+  { campus: "Southern Arkansas University Tech", type: "schooljobs", url: "https://www.schooljobs.com/careers/sautech" },
 ];
 
 // KS (Kansas)
@@ -6103,6 +6137,7 @@ const KS_CAMPUSES = [
   { campus: "McPherson College", type: "generic", url: "https://my.mcpherson.edu/ICS/Employment/" },
   { campus: "Tabor College", type: "generic", url: "https://tabor.edu/about/employment/" },
   { campus: "Labette Community College", type: "generic", url: "https://www.labette.edu/hr/jobs/index.html" },
+  { campus: "Highland Community College (KS)", type: "generic", url: "https://www.highlandcc.edu/abouthcc/human-resources/" },
 ];
 
 // OK (Oklahoma)
@@ -7690,7 +7725,7 @@ export function looksFacultyish(title) {
 
 export function isGenericFacultyPageChromeTitle(title) {
   const value = clean(title);
-  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
+  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|faculty\s*&\s*staff careers|faculty and staff faqs|faculty\s*&\s*adjunct-faculty openings|faculty\s*\/\s*staff webmail|(?:\d{4}[–—-]\d{2,4}\s+)?faculty salary scales|adjunct instructor salary schedule|message from the dean of students|cosmetology instructor training\s*\(short-term certificate\)|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
 }
 
 /* ============================== CUNY ============================== */

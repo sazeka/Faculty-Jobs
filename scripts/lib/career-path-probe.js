@@ -46,6 +46,7 @@ export function isRejectedCareerPage(url, bodyText = "") {
     if (/^\/faculty\/?$/i.test(parsed.pathname)) return true;
     if (/schooljobs\.com$/i.test(parsed.hostname) && /\/jobs\/\d+/i.test(parsed.pathname)) return true;
     if (/myworkdayjobs\.com$|myworkdaysite\.com$/i.test(parsed.hostname) && /\/job\//i.test(parsed.pathname)) return true;
+    if (/csod\.com$/i.test(parsed.hostname) && /\/home\/requisition\/\d+/i.test(parsed.pathname)) return true;
     if (/recruiting\.paylocity\.com$/i.test(parsed.hostname) && /\/recruiting\/jobs\/details\//i.test(parsed.pathname)) return true;
     if (/insidehighered\.com$/i.test(parsed.hostname) && /\/job\/\d+/i.test(parsed.pathname)) return true;
   } catch {

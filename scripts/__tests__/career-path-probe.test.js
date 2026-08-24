@@ -59,6 +59,7 @@ test("career path probing rejects individual job details and faculty directories
   const nonBoards = [
     "https://www.schooljobs.com/careers/northweststate/jobs/5444125/industrial-technology-faculty",
     "https://osu.wd1.myworkdayjobs.com/en-US/OSUCareers/job/Business-Finance-Lecturer_R154017",
+    "https://unm.csod.com/ux/ats/careersite/18/home/requisition/37328?c=unm",
     "https://recruiting.paylocity.com/recruiting/jobs/Details/3272529/example/faculty-position",
     "https://careers.insidehighered.com/job/3523006/academic-advisor/",
     "https://lifewest.edu/faculty",
