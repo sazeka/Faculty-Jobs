@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { appointmentTrackHistory } from '../lib/trendsHistory.js'
 
 const props = defineProps({
   baseUrl: { type: String, default: '/' },
@@ -11,7 +12,7 @@ const error = ref(null)
 
 onMounted(async () => {
   try {
-    const res = await fetch(`${props.baseUrl}data/weekly-trends.json?v=institution-control-1`, {
+    const res = await fetch(`${props.baseUrl}data/weekly-trends.json?v=appointment-track-history-1`, {
       cache: 'no-store',
     })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -45,6 +46,7 @@ const sortedPositionTypes = computed(() => {
 })
 const maxTypeCount = computed(() => sortedPositionTypes.value[0]?.count || 1)
 const tenureStats = computed(() => trends.value?.stats?.tenureTrackBreakdown || null)
+const tenureHistory = computed(() => appointmentTrackHistory(trends.value?.history || []))
 
 const aiParagraphs = computed(() =>
   (trends.value?.aiSummary || '').split('\n\n').map(p => p.trim()).filter(Boolean)
@@ -106,9 +108,9 @@ function fmtWeek(s) {
 
     <hr class="fa-rule-thin" style="margin: 40px 0;" />
 
-    <!-- Appointment-track comparison -->
+    <!-- Appointment-track history -->
     <section v-if="tenureStats" class="tenure-comparison" aria-labelledby="tenure-comparison-title">
-      <div class="fa-label" id="tenure-comparison-title">Appointment track</div>
+      <div class="fa-label" id="tenure-comparison-title">Appointment track over time</div>
       <div class="tenure-metrics">
         <div class="tenure-metric">
           <div class="fa-meta">Tenure-track</div>
@@ -124,6 +126,32 @@ function fmtWeek(s) {
       <div class="tenure-ratio" aria-hidden="true">
         <div class="tenure-ratio-tt" :style="{ width: `${tenureStats.tenureTrackPct}%` }"></div>
         <div class="tenure-ratio-ntt" :style="{ width: `${tenureStats.nonTenureTrackPct}%` }"></div>
+      </div>
+      <div
+        v-if="tenureHistory.length"
+        class="tenure-history"
+        aria-label="Weekly share of classified tenure-track and non-tenure-track job listings"
+      >
+        <div
+          v-for="week in tenureHistory"
+          :key="week.weekEnd"
+          class="tenure-week"
+          :title="`${fmtWeek(week.weekEnd)}: ${fmt(week.tenureTrack)} tenure-track (${week.tenureTrackPct}%), ${fmt(week.nonTenureTrack)} non-tenure-track (${week.nonTenureTrackPct}%)`"
+        >
+          <div class="tenure-week-ntt" :style="{ height: `${week.nonTenureTrackPct}%` }"></div>
+          <div class="tenure-week-tt" :style="{ height: `${week.tenureTrackPct}%` }"></div>
+        </div>
+      </div>
+      <div v-if="tenureHistory.length" class="trends-spark-labels fa-meta">
+        <span>{{ fmtWeek(tenureHistory[0].weekEnd) }}</span>
+        <span>{{ fmtWeek(tenureHistory[tenureHistory.length - 1].weekEnd) }}</span>
+      </div>
+      <div v-if="tenureHistory.length === 1" class="fa-meta tenure-start-note">
+        Tracking starts this week; a new comparison point will be added after each weekly digest.
+      </div>
+      <div v-if="tenureHistory.length" class="tenure-legend fa-meta">
+        <span><i class="tenure-key tenure-key-tt"></i>Tenure-track</span>
+        <span><i class="tenure-key tenure-key-ntt"></i>Non-tenure-track</span>
       </div>
       <div class="fa-meta tenure-note">
         Based on {{ fmt(tenureStats.classified) }} listings with a known appointment track.
@@ -297,6 +325,29 @@ function fmtWeek(s) {
 }
 .tenure-ratio-tt { background: var(--sage); }
 .tenure-ratio-ntt { background: var(--accent); }
+.tenure-history {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  height: 132px;
+  margin-top: 24px;
+  border-bottom: 1px solid var(--rule);
+}
+.tenure-week {
+  display: flex;
+  flex: 0 0 calc((100% - 44px) / 12);
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 5px;
+}
+.tenure-week-tt { background: var(--sage); }
+.tenure-week-ntt { background: var(--accent); }
+.tenure-legend { display: flex; gap: 18px; margin-top: 12px; font-size: 10px; }
+.tenure-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.tenure-key { display: inline-block; width: 9px; height: 9px; }
+.tenure-key-tt { background: var(--sage); }
+.tenure-key-ntt { background: var(--accent); }
+.tenure-start-note { color: var(--ink-3); line-height: 1.5; margin-top: 10px; }
 .tenure-note {
   color: var(--ink-4);
   line-height: 1.6;
