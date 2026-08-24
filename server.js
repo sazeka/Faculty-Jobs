@@ -1281,6 +1281,7 @@ const CA_PRIVATE_CAMPUSES = [
 
 // NJ (multi-platform)
 const NJ_CAMPUSES = [
+  { campus: "Passaic County Community College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=40423bb9-2cb3-4ea1-a606-660bd59b0d8d&ccId=19000101_000001&lang=en_US" },
   {
     campus: "The College of New Jersey",
     type: "taleo",
@@ -1429,6 +1430,7 @@ const CLAREMONT_CAMPUSES = [
 
 // PA (multi-platform)
 const PA_CAMPUSES = [
+  { campus: "Lancaster County Career and Technology Center", type: "applitrack", url: "https://www.applitrack.com/lancasterctc/onlineapp/default.aspx?all=1" },
   {
     campus: "Cheyney University",
     type: "schooljobs",
@@ -1741,6 +1743,9 @@ const PA_PRIVATE_CAMPUSES = [
 
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
+  { campus: "Montgomery Community College", type: "generic", url: "https://www.montgomery.edu/about-mcc/employment/" },
+  { campus: "Western Piedmont Community College", type: "generic", url: "https://www.wpcc.edu/employment/" },
+  { campus: "Wilson Community College", type: "generic", url: "https://www.wilsoncc.edu/about-us/human-resources/" },
   {
     campus: "Appalachian State University",
     type: "peopleadmin",
@@ -2175,6 +2180,7 @@ const VA_CAMPUSES = [
 
 // SC (South Carolina) - major public research + private liberal arts
 const SC_CAMPUSES = [
+  { campus: "Orangeburg Calhoun Technical College", type: "generic", url: "https://www.octech.edu/about/human-resources/" },
   {
     campus: "University of South Carolina",
     type: "peopleadmin",
@@ -2549,6 +2555,7 @@ const NH_CAMPUSES = [
 
 // AZ (Arizona)
 const AZ_CAMPUSES = [
+  { campus: "Tohono O'odham Community College", type: "generic", url: "https://www.tocc.edu/human-resources-employment" },
   { campus: "Pima Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/pimacc" },
   {
     campus: "Arizona State University",
@@ -3607,6 +3614,7 @@ const MN_CAMPUSES = [
 
 // ND (North Dakota)
 const ND_CAMPUSES = [
+  { campus: "North Dakota State College of Science", type: "generic", url: "https://ndscs.edu/about/join-our-team/" },
   {
     campus: "University of North Dakota",
     type: "generic",
@@ -3668,6 +3676,7 @@ const ND_CAMPUSES = [
 
 // SD (South Dakota)
 const SD_CAMPUSES = [
+  { campus: "Mitchell Technical College", type: "generic", url: "https://www.mitchelltech.edu/careers/" },
   {
     campus: "South Dakota Board of Regents",
     type: "peopleadmin",
@@ -3706,6 +3715,7 @@ const SD_CAMPUSES = [
 
 // NE (Nebraska)
 const NE_CAMPUSES = [
+  { campus: "Southeast Community College Area", type: "generic", url: "https://www.southeast.edu/about/other-scc-departments/hr/index.php" },
   { campus: "Little Priest Tribal College", type: "generic", url: "https://www.littlepriest.edu/human-resources/" },
   {
     campus: "University of Nebraska-Lincoln",
@@ -3872,6 +3882,7 @@ const IA_CAMPUSES = [
 
 // WY (Wyoming)
 const WY_CAMPUSES = [
+  { campus: "Northern Wyoming Community College District", type: "generic", url: "https://www.sheridan.edu/student-services/hr/" },
   {
     campus: "University of Wyoming",
     type: "oracle-cx",
@@ -4163,6 +4174,8 @@ const CO_CAMPUSES = [
 
 // OH (Ohio)
 const OH_CAMPUSES = [
+  { campus: "Hocking College", type: "generic", url: "https://www.hocking.edu/careers" },
+  { campus: "Southern State Community College", type: "generic", url: "https://www.sscc.edu/hr/work-at-sscc.shtml" },
   {
     campus: "Ohio State University",
     type: "workday",
@@ -4399,6 +4412,7 @@ const OH_CAMPUSES = [
 
 // NM (New Mexico)
 const NM_CAMPUSES = [
+  { campus: "Southwestern Indian Polytechnic Institute", type: "generic", url: "https://www.sipi.edu/apps/pages/humanresources" },
   {
     campus: "University of New Mexico",
     type: "csod",
@@ -4509,6 +4523,7 @@ const UT_CAMPUSES = [
 
 // MI (Michigan)
 const MI_CAMPUSES = [
+  { campus: "Saginaw Chippewa Tribal College", type: "generic", url: "https://www.sagchip.edu/employment" },
   { campus: "North Central Michigan College", type: "generic", url: "https://www.ncmich.edu/about-us/our-team/join-our-team.html" },
   {
     campus: "Central Michigan University",
@@ -4654,6 +4669,7 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  { campus: "Moraine Valley Community College", type: "peopleadmin", url: "https://jobs.morainevalley.edu/" },
   { campus: "CAAN Academy of Nursing", type: "generic", url: "https://www.caanacademy.org/employment-opportunities" },
   { campus: "Illinois Valley Community College", type: "applitrack", url: "https://www.applitrack.com/ivcc/onlineapp/default.aspx?Category=Faculty+Full-Time" },
   // Was correctly wired as "peoplesoft-fluid" back on 2026-07-21 (commit
@@ -5096,6 +5112,7 @@ const IN_CAMPUSES = [
 
 // WV (West Virginia)
 const WV_CAMPUSES = [
+  { campus: "Mountwest Community and Technical College", type: "generic", url: "https://www.mctc.edu/hr/" },
   { campus: "Southern West Virginia Community and Technical College", type: "generic", url: "https://www.southernwv.edu/facultystaff/human-resources/" },
   {
     campus: "West Virginia University",
@@ -5153,6 +5170,7 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Texas State Technical College", type: "generic", url: "https://www.tstc.edu/work-at-tstc/" },
   { campus: "Kilgore College", type: "generic", url: "https://www.kilgore.edu/additional-resources/human-resources/" },
   { campus: "Ranger College", type: "generic", url: "https://www.rangercollege.edu/about-us/human-resources/index.php" },
   {
@@ -5982,6 +6000,8 @@ const AL_CAMPUSES = [
 
 // MS (Mississippi)
 const MS_CAMPUSES = [
+  { campus: "Mississippi Community College Board", type: "generic", url: "https://www.mccb.edu/hr/employment" },
+  { campus: "Northwest Mississippi Community College", type: "generic", url: "https://www.northwestms.edu/l/faculty-and-staff/hr" },
   { campus: "Mississippi Delta Community College", type: "generic", url: "https://www.msdelta.edu/human-resources/employment-opportunities.php" },
   { campus: "Southwest Mississippi Community College", type: "generic", url: "https://www.smcc.edu/employment-opportunities/" },
   { campus: "University of Mississippi", type: "workday", url: "https://olemiss.wd12.myworkdayjobs.com/External__Faculty" },
@@ -6179,6 +6199,9 @@ const AR_CAMPUSES = [
 
 // KS (Kansas)
 const KS_CAMPUSES = [
+  { campus: "Garden City Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/EDDDA7ABD200C6844CF6CF5EFE35BD11/career-page" },
+  { campus: "Salina Area Technical College", type: "generic", url: "https://salinatech.edu/hr/current-openings/" },
+  { campus: "Wichita State University-Campus of Applied Sciences and Technology", type: "generic", url: "https://wsutech.edu/jobs/" },
   { campus: "University of Kansas", type: "generic", url: "https://employment.ku.edu/jobs/faculty" },
   { campus: "Kansas State University", type: "generic", url: "https://careers.k-state.edu/jobs/search?query=faculty" },
   { campus: "Baker University", type: "generic", url: "https://www.bakeru.edu/about-baker/careers-baker" },
@@ -6277,6 +6300,7 @@ const KS_CAMPUSES = [
 
 // OK (Oklahoma)
 const OK_CAMPUSES = [
+  { campus: "Seminole State College", type: "generic", url: "https://www.sscok.edu/about-ssc/hr-employment/index.html" },
   { campus: "Oklahoma State University", type: "generic", url: "https://jobs.okstate.edu/faculty/jobs" },
   { campus: "University of Oklahoma", type: "interfolio", url: "https://apply.interfolio.com/16123/positions" },
   { campus: "University of Oklahoma Health Sciences Center", type: "interfolio", url: "https://apply.interfolio.com/46259/positions" },
@@ -9866,6 +9890,8 @@ async function scrapeNjPublic(context) {
         if (type === "csod") return await scrapeNjCsod(context, url, campus);
         if (type === "schooljobs") return await scrapeNjSchoolJobs(context, url, campus);
         if (type === "stockton") return await scrapeNjStockton(context, url, campus);
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "NJ");
+        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NJ");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} NJ scrape failed:`, e?.message || e);
@@ -10994,6 +11020,7 @@ async function scrapePaAll(context) {
         // already exists and is dispatched by CT/CA Private/NJ/MS/NY) --
         // added for American College of Financial Services.
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "PA");
+        if (type === "applitrack") return await scrapeApplitrackAs(context, url, campus, "PA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "PA");
         if (type === "enusfilter") {
           const page = await context.newPage();
@@ -13379,7 +13406,12 @@ export async function scrapePaycomAs(context, startUrl, campusName, sourceName, 
       ? jobs.filter((j) => (j.location || "").toLowerCase().includes(locationFilter.toLowerCase()))
       : jobs;
 
-    const filtered = scoped.filter((j) => !omitAdjunct(j.title));
+    // Paycom boards normally include every employee category. Keep only real
+    // faculty titles before labeling the result as Faculty; otherwise staff
+    // roles such as bus drivers and records assistants leak into the dataset.
+    const filtered = scoped
+      .filter((j) => looksFacultyish(j.title))
+      .filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length}`);
 
     return filtered.map((j) => ({
