@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-24T21:45:46.257Z",
+  "updatedAt": "2026-08-24T23:43:00.875Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -4860,6 +4860,13 @@
       "notes": "career_url was already correct but mistagged platform_type: \"generic\", so scrapeGenericJobPage's plain DOM anchor scraping couldn't handle Workday's SPA-rendered job cards -- same bug class as Bastyr University (existing override, see its own notes). Retagged to \"workday\" to route through scrapeWorkdayAs. Verified live via the real scraper: 0 current postings (genuinely no faculty reqs open right now -- Library Technical Assistant, Assistant Director Career Advising, Lab Manager, coaching roles are the only current openings, none faculty-titled). Applied for correctness."
     },
     {
+      "name": "Saint Elizabeth College of Nursing",
+      "homepage_url": "https://www.secon.edu/",
+      "career_url": "https://careers.mvhealthsystem.org/search/?q=instructor&sortColumn=referencedate&sortDirection=desc",
+      "platform_type": "mvhs-successfactors",
+      "notes": "Official parent-system employee source verified 2026-08-24. Exact Facility = COLLEGE OF NURSING; unrelated hospital jobs are excluded."
+    },
+    {
       "name": "Saint Joseph's University - Lancaster",
       "homepage_url": "https://www.sju.edu/lancaster",
       "career_url": "https://jobs.sju.edu/",
@@ -5257,11 +5264,25 @@
       "notes": "Reviewed in the 2026-08-24 ten-state two-year pass; manually verified official employee hiring source."
     },
     {
+      "name": "St Joseph School of Nursing",
+      "homepage_url": "https://www.sjson.edu/",
+      "career_url": "https://careers.covenanthealth.net/?keyword=instructor",
+      "platform_type": "covenant-health-search",
+      "notes": "Official parent-system employee source verified 2026-08-24. Exact Department = SCHOOL OF NURSING; unrelated hospital jobs are excluded."
+    },
+    {
       "name": "St. John's College (Santa Fe)",
       "homepage_url": "https://www.sjc.edu/santa-fe-job-openings",
       "career_url": "https://www.sjc.edu/employment",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
+    },
+    {
+      "name": "St. Joseph's College of Nursing",
+      "homepage_url": "https://www.sjhcon.edu/",
+      "career_url": "https://jobs.trinity-health.org/stjosephshealth/search-results?keywords=College%20of%20Nursing",
+      "platform_type": "trinity-health-search",
+      "notes": "Official parent-system employee source verified 2026-08-24. Posting title contains College of Nursing; unrelated hospital jobs are excluded."
     },
     {
       "name": "St. Mary's College of Maryland",

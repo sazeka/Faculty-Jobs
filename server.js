@@ -2609,6 +2609,10 @@ const NH_CAMPUSES = [
   { campus: "NHTI-Concord's Community College", type: "generic", url: "https://ccsnh.hrmdirect.com/employment/job-openings.php?search=true&cust_sort1=19507" },
   { campus: "River Valley Community College", type: "generic", url: "https://ccsnh.hrmdirect.com/employment/job-openings.php?search=true&cust_sort1=19509" },
   { campus: "White Mountains Community College", type: "generic", url: "https://ccsnh.hrmdirect.com/employment/job-openings.php?search=true&cust_sort1=19510" },
+  // The hospital's Symphony Talent board mixes multiple facilities. Its
+  // rendered result rows carry an exact department cell, so only SCHOOL OF
+  // NURSING rows are eligible for attribution to the degree-granting school.
+  { campus: "St Joseph School of Nursing", type: "covenant-health-search", url: "https://careers.covenanthealth.net/?keyword=instructor", departmentFilter: "SCHOOL OF NURSING" },
 ];
 
 
@@ -2971,6 +2975,13 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Elmezzi Graduate School of Molecular Medicine", type: "generic", url: "https://www.northwell.edu/education-and-resources/elmezzi-graduate-school-of-molecular-medicine" },
   { campus: "Samaritan Hospital School of Nursing", type: "generic", url: "https://www.sphp.com/careers/schools-of-nursing/samaritan-hospital-school-of-nursing" },
   { campus: "St. Peter's Hospital College of Nursing", type: "trinity-health-search", url: "https://jobs.trinity-health.org/stpetershealthpartners/search-results?keywords=instructor", titleFilter: "St Peters" },
+  // Each parent-system board below exposes a durable school-specific marker:
+  // MVHS renders an exact "COLLEGE OF NURSING" facility column, while St.
+  // Joseph's own college site links to Trinity Health and its posting titles
+  // identify the College of Nursing. Keep the filters mandatory so unrelated
+  // hospital educators are never attributed to either degree-granting college.
+  { campus: "Saint Elizabeth College of Nursing", type: "mvhs-successfactors", url: "https://careers.mvhealthsystem.org/search/?q=instructor&sortColumn=referencedate&sortDirection=desc", facilityFilter: "COLLEGE OF NURSING" },
+  { campus: "St. Joseph's College of Nursing", type: "trinity-health-search", url: "https://jobs.trinity-health.org/stjosephshealth/search-results?keywords=College%20of%20Nursing", titleFilter: "College of Nursing" },
   { campus: "CVPH Medical Center School of Radiologic Technology", type: "generic", url: "https://www.cvph.org/Residency-and-Education/School-of-Radiology/" },
   { campus: "Memorial Hospital School of Radiation Therapy Technology", type: "generic", url: "https://www.mskcc.org/hcp-education-training/school-radiation-therapy" },
   { campus: "Mesivta Torah Vodaath Rabbinical Seminary", type: "generic", url: "https://independentrabbinicalcolleges.org/index.html" },
@@ -11094,7 +11105,7 @@ async function scrapeNhAll(context) {
   const results = await mapWithConcurrency(
     NH_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, departmentFilter }) => {
       try {
         // Handle any explicit platform types if added later
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NH");
@@ -11102,6 +11113,7 @@ async function scrapeNhAll(context) {
         if (type === "workday") return await scrapeWorkdayApi(context, url, campus, "NH");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NH");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NH");
+        if (type === "covenant-health-search") return await scrapeCovenantHealthSearchAs(context, url, campus, "NH", departmentFilter || null);
 
         // Fallback: try en-us/filter-style extractor
         const page = await context.newPage();
@@ -11535,6 +11547,93 @@ async function scrapePeopleAdminHttpFallback(startUrl, campusName, sourceName) {
   }
 }
 
+// Convert rows from a shared hospital board only after an exact department or
+// facility match. Keeping this as a pure helper makes the no-cross-attribution
+// rule regression-testable without contacting a live careers site.
+export function buildScopedHospitalFacultyJobs(rows, campusName, sourceName, scopeFilter) {
+  const expected = clean(scopeFilter).toLowerCase();
+  if (!expected) return [];
+  return uniqByUrl(
+    (Array.isArray(rows) ? rows : [])
+      .filter((row) => clean(row?.scopeText).toLowerCase() === expected)
+      .map((row) => ({
+        title: normalizeJobTitle(row?.title),
+        url: clean(row?.url),
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: clean(row?.location) || null,
+        description: null,
+      }))
+      .filter((job) => job.url && looksFacultyish(job.title))
+      .filter((job) => !omitAdjunct(job.title))
+  );
+}
+
+// SAP SuccessFactors listing used by Mohawk Valley Health System. The public
+// results table includes a dedicated Facility column; Saint Elizabeth faculty
+// jobs are the rows whose facility is exactly "COLLEGE OF NURSING".
+export async function scrapeMvhsSuccessFactorsAs(context, searchUrl, campusName, sourceName, facilityFilter) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, searchUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForSelector("tr.data-row", { timeout: 15_000 }).catch(() => {});
+    const rows = await safeEvaluate(page, () =>
+      Array.from(document.querySelectorAll("tr.data-row")).map((row) => {
+        const anchor = row.querySelector("a.jobTitle-link");
+        const cleanText = (value) => (value || "").replace(/\s+/g, " ").trim();
+        return {
+          title: cleanText(anchor?.textContent),
+          url: anchor?.href || null,
+          scopeText: cleanText(row.querySelector(".jobFacility")?.textContent),
+          location: cleanText(row.querySelector("td.colLocation .jobLocation")?.textContent),
+        };
+      })
+    );
+    const jobs = buildScopedHospitalFacultyJobs(rows, campusName, sourceName, facilityFilter);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (MVHS facility-scoped)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} MVHS scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Symphony Talent board used by Covenant Health. Search results expose the
+// department as the first result-cell after the title; require the exact
+// SCHOOL OF NURSING marker so hospital clinical roles cannot leak in.
+export async function scrapeCovenantHealthSearchAs(context, searchUrl, campusName, sourceName, departmentFilter) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, searchUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForSelector("#widget-jobsearch-results-list .job", { timeout: 20_000 }).catch(() => {});
+    await page.waitForTimeout(1000);
+    const rows = await safeEvaluate(page, () =>
+      Array.from(document.querySelectorAll("#widget-jobsearch-results-list .job")).map((row) => {
+        const anchor = row.querySelector(".jobTitle a[href*='/job/']");
+        const cells = Array.from(row.querySelectorAll("[role='cell']"));
+        const cleanText = (value) => (value || "").replace(/\s+/g, " ").trim();
+        return {
+          title: cleanText(anchor?.textContent),
+          url: anchor?.href || null,
+          scopeText: cleanText(cells[0]?.textContent),
+          location: cleanText(cells[cells.length - 1]?.textContent),
+        };
+      })
+    );
+    const jobs = buildScopedHospitalFacultyJobs(rows, campusName, sourceName, departmentFilter);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (Covenant department-scoped)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Covenant Health scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 // Trinity Health-family Phenom-based hospital career sites (e.g.
 // jobs.trinity-health.org/<facility>/search-results?keywords=...). Real ATS
 // discovered for St. Peter's Hospital College of Nursing (NY): the college's
@@ -11550,7 +11649,7 @@ async function scrapePeopleAdminHttpFallback(startUrl, campusName, sourceName) {
 // substring" shape as the Bemidji State/iecc-campus/ultipro-ukg precedents
 // elsewhere in this file. Each posting anchor's accessible name is
 // "<title> Job ID is <id>" -- stripped back to the real title.
-async function scrapeTrinityHealthSearchAs(context, searchUrl, campusName, sourceName, titleFilter = null) {
+export async function scrapeTrinityHealthSearchAs(context, searchUrl, campusName, sourceName, titleFilter = null) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, searchUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -13431,7 +13530,7 @@ async function scrapeNyPrivate(context) {
   const results = await mapWithConcurrency(
     NY_PRIVATE_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter, jobFamilyFilter, titleFilter, departmentFilter }) => {
+    async ({ campus, type, url, locationFilter, jobFamilyFilter, titleFilter, departmentFilter, facilityFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NY");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NY");
@@ -13452,6 +13551,7 @@ async function scrapeNyPrivate(context) {
         if (type === "silc-accordion") return await scrapeSilcAccordionAs(context, url, campus, "NY");
         if (type === "vizirecruiter") return await scrapeViziRecruiterApi(url, campus, "NY", jobFamilyFilter || null);
         if (type === "trinity-health-search") return await scrapeTrinityHealthSearchAs(context, url, campus, "NY", titleFilter || null);
+        if (type === "mvhs-successfactors") return await scrapeMvhsSuccessFactorsAs(context, url, campus, "NY", facilityFilter || null);
         if (type === "healthcaresource") return await scrapeHealthcareSourceAs(context, url, campus, "NY", departmentFilter || null);
         if (type === "enusfilter") {
           const page = await context.newPage();
