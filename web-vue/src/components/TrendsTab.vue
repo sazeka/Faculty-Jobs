@@ -183,7 +183,9 @@ function fmtWeek(s) {
               v-for="week in controlHistory"
               :key="week.weekEnd"
               class="control-week"
-              :title="`${fmtWeek(week.weekEnd)}: ${fmt(week.publicJobs)} public (${week.publicPct}%), ${fmt(week.privateNonprofitJobs)} private nonprofit (${week.privateNonprofitPct}%)`"
+              tabindex="0"
+              :aria-label="`${fmtWeek(week.weekEnd)}: ${week.publicPct}% public and ${week.privateNonprofitPct}% private nonprofit`"
+              :data-tooltip="`${fmtWeek(week.weekEnd)} · Public ${week.publicPct}% · Private ${week.privateNonprofitPct}%`"
             >
               <div class="control-week-private" :style="{ height: `${week.privateNonprofitPct}%` }"></div>
               <div class="control-week-public" :style="{ height: `${week.publicPct}%` }"></div>
@@ -396,6 +398,7 @@ function fmtWeek(s) {
   align-items: stretch;
   gap: 4px;
   height: 112px;
+  margin-top: 48px;
   border-bottom: 1px solid var(--rule);
 }
 .control-week {
@@ -404,7 +407,40 @@ function fmtWeek(s) {
   flex-direction: column;
   justify-content: flex-end;
   min-width: 5px;
+  position: relative;
+  outline: none;
 }
+.control-week::after {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 2;
+  padding: 7px 9px;
+  transform: translateX(-50%) translateY(3px);
+  background: var(--ink);
+  color: var(--paper);
+  content: attr(data-tooltip);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: .02em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease;
+  white-space: nowrap;
+}
+.control-week:first-child::after { left: 0; transform: translateX(0) translateY(3px); }
+.control-week:last-child:not(:first-child)::after { right: 0; left: auto; transform: translateX(0) translateY(3px); }
+.control-week:hover::after,
+.control-week:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.control-week:first-child:hover::after,
+.control-week:first-child:focus-visible::after,
+.control-week:last-child:not(:first-child):hover::after,
+.control-week:last-child:not(:first-child):focus-visible::after { transform: translateX(0) translateY(0); }
+.control-week:focus-visible { box-shadow: 0 0 0 2px var(--ink); }
 .control-week-public { background: var(--sage); }
 .control-week-private { background: var(--accent); }
 .control-legend { display: flex; gap: 18px; margin-top: 12px; font-size: 10px; }
