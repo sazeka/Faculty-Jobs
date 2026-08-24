@@ -1258,6 +1258,11 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "South Orange County Community College District", type: "schooljobs", url: "https://www.schooljobs.com/careers/socccd" },
   { campus: "Ventura County Community College System Office", type: "schooljobs", url: "https://www.schooljobs.com/careers/vcccd", locationFilter: "District Administrative Center" },
   { campus: "West Hills Community College District", type: "schooljobs", url: "https://www.schooljobs.com/careers/whccd", locationFilter: "District Office" },
+  { campus: "Monterey Peninsula College", type: "generic", url: "https://www.mpc.edu/about/human-resources/employment.html" },
+  { campus: "Mt San Antonio College", type: "peopleadmin", url: "https://hrjobs.mtsac.edu/postings/search" },
+  { campus: "Mt San Jacinto Community College District", type: "generic", url: "https://www.msjc.edu/humanresources/" },
+  { campus: "San Joaquin Delta College", type: "generic", url: "https://www.deltacollege.edu/jobs-delta" },
+  { campus: "Sierra College", type: "generic", url: "https://www.sierracollege.edu/administration/human-resources/recruitment-employment-opportunities/" },
 ];
 
 // NJ (multi-platform)
@@ -1360,6 +1365,9 @@ const NJ_PRIVATE_CAMPUSES = [
   { campus: "Raritan Valley Community College", type: "generic", url: "https://www.raritanval.edu/employment-at-rvcc/" },
   { campus: "Hudson County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hccc" },
   { campus: "UCNJ Union College of Union County, New Jersey", type: "peopleadmin", url: "https://ucc.peopleadmin.com/" },
+  { campus: "Mercer County Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/mcccedu" },
+  { campus: "Rowan College at Burlington County", type: "schooljobs", url: "https://www.governmentjobs.com/careers/bccedu" },
+  { campus: "Sussex County Community College", type: "generic", url: "https://sussex.edu/about-sussex/jobs/" },
 ];
 
 // Claremont Colleges
@@ -1920,6 +1928,13 @@ const NC_CAMPUSES = [
   { campus: "Sandhills Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sandhills" },
   { campus: "Stanly Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/stanlyedu" },
   { campus: "Wake Technical Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/waketechedu" },
+  { campus: "Haywood Community College", type: "generic", url: "https://www.haywood.edu/human-resources/index.php" },
+  { campus: "Pamlico Community College", type: "generic", url: "https://pamlicocc.edu/employment/" },
+  { campus: "Rockingham Community College", type: "generic", url: "https://rockinghamcc.edu/about/employment/" },
+  { campus: "Rowan-Cabarrus Community College", type: "peopleadmin", url: "https://rcccjobs.com/postings/search" },
+  { campus: "Southeastern Community College (NC)", type: "generic", url: "https://sccnc.edu/about-scc/human-resources/jobs/" },
+  { campus: "Southwestern Community College (NC)", type: "generic", url: "https://www.southwesterncc.edu/jobs-scc" },
+  { campus: "Vance-Granville Community College", type: "generic", url: "https://www.vgcc.edu/hr/" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -2493,6 +2508,12 @@ const NH_CAMPUSES = [
   { campus: "Antioch University-New England", type: "generic", url: "https://www.antioch.edu/employment" },
   { campus: "Lakes Region Community College", type: "generic", url: "https://www.lrcc.edu/about/employment-opportunities" },
   { campus: "Thomas More College of Liberal Arts", type: "generic", url: "https://thomasmorecollege.edu/2020/02/employment-opportunities-oakcrest-school/" },
+  { campus: "Great Bay Community College", type: "generic", url: "https://ccsnh.hrmdirect.com/employment/job-openings.php?search=true&cust_sort1=19504" },
+  { campus: "Manchester Community College", type: "generic", url: "https://ccsnh.hrmdirect.com/employment/job-openings.php?search=true&cust_sort1=19506" },
+  { campus: "Nashua Community College", type: "generic", url: "https://ccsnh.hrmdirect.com/employment/job-openings.php?search=true&cust_sort1=19508" },
+  { campus: "NHTI-Concord's Community College", type: "generic", url: "https://ccsnh.hrmdirect.com/employment/job-openings.php?search=true&cust_sort1=19507" },
+  { campus: "River Valley Community College", type: "generic", url: "https://ccsnh.hrmdirect.com/employment/job-openings.php?search=true&cust_sort1=19509" },
+  { campus: "White Mountains Community College", type: "generic", url: "https://ccsnh.hrmdirect.com/employment/job-openings.php?search=true&cust_sort1=19510" },
 ];
 
 
@@ -3051,6 +3072,10 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "St Bonaventure University", type: "generic", url: "https://www.sbu.edu/about/career-opportunities" },
   { campus: "SUNY College at Geneseo", type: "peopleadmin", url: "https://jobs.geneseo.edu/postings/search" },
   { campus: "Nassau Community College", type: "interviewexchange", url: "http://ncc.interviewexchange.com/" },
+  { campus: "Fulton-Montgomery Community College", type: "generic", url: "https://fmcc.edu/about-fmcc/employment-opportunities" },
+  { campus: "Monroe Community College", type: "generic", url: "https://www.monroecc.edu/depts/humres/" },
+  { campus: "North Country Community College", type: "generic", url: "https://www.nccc.edu/about/human-resources/careers.html" },
+  { campus: "Sullivan County Community College", type: "generic", url: "https://sunysullivan.isolvedhire.com/" },
 ];
 
 // OR (Oregon)
@@ -4340,6 +4365,13 @@ const NM_CAMPUSES = [
   { campus: "New Mexico State University-Dona Ana", type: "generic", url: "https://dacc.nmsu.edu/hr/" },
   { campus: "Clovis Community College (NM)", type: "workday", url: "https://chess.wd1.myworkdayjobs.com/CCC" },
   { campus: "Southeast New Mexico College", type: "schooljobs", url: "https://www.schooljobs.com/careers/senmc" },
+  { campus: "New Mexico Junior College", type: "generic", url: "https://www.nmjc.edu/about/human_resources/index.aspx" },
+  { campus: "New Mexico State University-Alamogordo", type: "generic", url: "https://alamogordo.nmsu.edu/business-office/human-resources.html" },
+  { campus: "New Mexico State University-Grants", type: "generic", url: "https://grants.nmsu.edu/webpages/itwebpage/humanresources.html" },
+  { campus: "Santa Fe Community College", type: "generic", url: "https://www.sfcc.edu/employment-opportunities/" },
+  { campus: "University of New Mexico-Gallup Campus", type: "generic", url: "https://www.gallup.unm.edu/hr/index.html" },
+  { campus: "University of New Mexico-Taos Campus", type: "generic", url: "https://taos.unm.edu/employment/" },
+  { campus: "University of New Mexico-Valencia County Campus", type: "generic", url: "https://valencia.unm.edu/campus-resources/human-resources/index.html" },
 ];
 
 // NV (Nevada)
@@ -4846,6 +4878,13 @@ const IL_CAMPUSES = [
   { campus: "Kishwaukee College", type: "peopleadmin", url: "https://kish.peopleadmin.com/" },
   { campus: "Lincoln Land Community College", type: "peopleadmin", url: "https://llcc.peopleadmin.com/" },
   { campus: "Oakton College", type: "interviewexchange", url: "https://oakton.interviewexchange.com/static/clients/357OCM1/index.jsp" },
+  { campus: "Illinois Central College", type: "generic", url: "https://icc.edu/employment-opportunities/" },
+  { campus: "John Wood Community College", type: "generic", url: "https://www.jwcc.edu/about/employment/" },
+  { campus: "Kankakee Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/kankakeecc" },
+  { campus: "Morton College", type: "generic", url: "https://www.morton.edu/human-resources" },
+  { campus: "Sauk Valley Community College", type: "generic", url: "https://www.svcc.edu/employees/opportunities/index.html" },
+  { campus: "Southeastern Illinois College", type: "generic", url: "https://sic.edu/employment/sic-positions/" },
+  { campus: "Spoon River College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=a1f9fed4-6d14-468e-b3ee-266b22902534&ccId=19000101_000001&type=MP&lang=en_US" },
 ];
 
 // ID (Idaho)
@@ -6046,6 +6085,12 @@ const AR_CAMPUSES = [
   { campus: "Philander Smith University", type: "generic", url: "https://www.philander.edu/about/careers/" },
   { campus: "North Arkansas College", type: "generic", url: "https://www.northark.edu/employment-opportunities/" },
   { campus: "Southern Arkansas University Tech", type: "schooljobs", url: "https://www.schooljobs.com/careers/sautech" },
+  { campus: "NorthWest Arkansas Community College", type: "workday", url: "https://nwacc.wd1.myworkdayjobs.com/NWACC_External_Career_Site" },
+  { campus: "Phillips Community College of the University of Arkansas", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf2401858e792259c401c306" },
+  { campus: "University of Arkansas Community College Rich Mountain", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf2401ab0e02fb58c4011f06" },
+  { campus: "University of Arkansas Community College-Batesville", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf24011c8d3b2559c401cf06" },
+  { campus: "University of Arkansas Community College-Morrilton", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf24019adc09f758c4011306" },
+  { campus: "University of Arkansas-Pulaski Technical College", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf24017c59cf3b59c4010b07" },
 ];
 
 // KS (Kansas)
@@ -6138,6 +6183,12 @@ const KS_CAMPUSES = [
   { campus: "Tabor College", type: "generic", url: "https://tabor.edu/about/employment/" },
   { campus: "Labette Community College", type: "generic", url: "https://www.labette.edu/hr/jobs/index.html" },
   { campus: "Highland Community College (KS)", type: "generic", url: "https://www.highlandcc.edu/abouthcc/human-resources/" },
+  { campus: "Independence Community College", type: "generic", url: "https://www.indycc.edu/human_resources/index.html" },
+  { campus: "Johnson County Community College", type: "generic", url: "https://www.jccc.edu/about/leadership-governance/administration/human-resources/" },
+  { campus: "Kansas City Kansas Community College", type: "generic", url: "https://kckcc.applicantstack.com/x/openings" },
+  { campus: "Manhattan Area Technical College", type: "generic", url: "https://manhattantech.edu/index.php/careers" },
+  { campus: "Neosho County Community College", type: "generic", url: "https://www.neosho.edu/HR" },
+  { campus: "Pratt Community College", type: "generic", url: "https://prattcc.edu/how-to-apply-2/" },
 ];
 
 // OK (Oklahoma)
@@ -6192,6 +6243,10 @@ const OK_CAMPUSES = [
   { campus: "Rose State College", type: "generic", url: "https://rose.edu/about/our-college/human-resources/job-listings/" },
   { campus: "Randall University", type: "generic", url: "https://ru.edu/about-randall/jobs/" },
   { campus: "Southern Nazarene University", type: "generic", url: "https://www.snu.edu/snu-careers" },
+  { campus: "Northeastern Oklahoma A&M College", type: "generic", url: "https://jobs.okstate.edu/neo-a-m-home" },
+  { campus: "Northern Oklahoma College", type: "generic", url: "https://www.noc.edu/about-noc/employment-opportunities/" },
+  { campus: "Oklahoma City Community College", type: "peopleadmin", url: "https://www.occcjobs.com/postings/search" },
+  { campus: "Western Oklahoma State College", type: "generic", url: "https://jobs.wosc.edu/" },
 ];
 
 // MO (Missouri)

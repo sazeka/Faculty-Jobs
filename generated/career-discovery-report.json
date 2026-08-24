@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-24T14:53:28.256Z",
+  "generatedAt": "2026-08-24T15:43:00.759Z",
   "options": {
     "apply": true,
-    "limit": 96,
+    "limit": 100,
     "delayMs": 0,
     "minConfidence": 0.65,
     "scopeEligibleOnly": true,
@@ -12,25 +12,25 @@
     "allTargets": true,
     "level": "2-year",
     "states": [
-      "MI",
-      "NM",
+      "CA",
+      "NY",
+      "IL",
+      "NC",
       "KS",
+      "NM",
       "NJ",
-      "PA",
       "AR",
-      "MA",
-      "SC",
-      "WI",
-      "AL"
+      "OK",
+      "NH"
     ],
     "skipReports": [],
     "timeoutMs": 8000,
     "concurrency": 8
   },
-  "scanned": 96,
-  "updated": 24,
-  "unresolved": 72,
-  "discovered": 24,
+  "scanned": 100,
+  "updated": 7,
+  "unresolved": 93,
+  "discovered": 7,
   "inferredPlatform": 0,
   "results": [
     {
@@ -53,7 +53,7 @@
           "query": "Rowan College of South Jersey-Gloucester Campus faculty jobs careers",
           "ok": true,
           "reason": null,
-          "count": 9
+          "count": 8
         },
         {
           "query": "Rowan College of South Jersey-Gloucester Campus academic jobs",
@@ -118,66 +118,6 @@
       ]
     },
     {
-      "name": "Lawson State Community College",
-      "state": "AL",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/accs/lawson",
-      "platform_type": "schooljobs",
-      "confidence": 0.99,
-      "method": "duckduckgo_html",
-      "query": "Lawson State Community College faculty jobs careers",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/accs/lawson",
-          "confidence": 0.99,
-          "platform_type": "schooljobs",
-          "query": "Lawson State Community College faculty jobs careers",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/lawsonstate",
-          "confidence": 0.99,
-          "platform_type": "schooljobs",
-          "query": "Lawson State Community College faculty jobs careers",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Lawson State Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 9
-        },
-        {
-          "query": "Lawson State Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lawson State Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lawson State Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
       "name": "Kansas City Kansas Community College",
       "state": "KS",
       "level": "2-year",
@@ -220,65 +160,8 @@
       ]
     },
     {
-      "name": "Kellogg Community College",
-      "state": "MI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.6,
-      "topCandidates": [
-        {
-          "url": "https://kellogg.edu/about/departments/hr/employment-opportunities/",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "Kellogg Community College faculty jobs careers",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://jobs.kellogg.edu/postings/search",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "Kellogg Community College faculty jobs careers",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": false,
-          "reason": "homepage_http_403",
-          "count": 0
-        },
-        {
-          "query": "Kellogg Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 10
-        },
-        {
-          "query": "Kellogg Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Kellogg Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Kellogg Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Lake Michigan College",
-      "state": "MI",
+      "name": "Manchester Community College",
+      "state": "NH",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -290,70 +173,28 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 2
+          "count": 5
         },
         {
-          "query": "Lake Michigan College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 9
-        },
-        {
-          "query": "Lake Michigan College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lake Michigan College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lake Michigan College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Lawrence Memorial Hospital School of Nursing",
-      "state": "MA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lawrence Memorial Hospital School of Nursing faculty jobs careers",
+          "query": "Manchester Community College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 10
         },
         {
-          "query": "Lawrence Memorial Hospital School of Nursing academic jobs",
+          "query": "Manchester Community College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Lawrence Memorial Hospital School of Nursing faculty employment",
+          "query": "Manchester Community College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Lawrence Memorial Hospital School of Nursing human resources faculty positions",
+          "query": "Manchester Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -361,8 +202,8 @@
       ]
     },
     {
-      "name": "Luzerne County Community College",
-      "state": "PA",
+      "name": "NHTI-Concord's Community College",
+      "state": "NH",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -377,25 +218,25 @@
           "count": 3
         },
         {
-          "query": "Luzerne County Community College faculty jobs careers",
+          "query": "NHTI-Concord's Community College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 10
         },
         {
-          "query": "Luzerne County Community College academic jobs",
+          "query": "NHTI-Concord's Community College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Luzerne County Community College faculty employment",
+          "query": "NHTI-Concord's Community College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Luzerne County Community College human resources faculty positions",
+          "query": "NHTI-Concord's Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -403,75 +244,19 @@
       ]
     },
     {
-      "name": "Middlesex Community College",
-      "state": "MA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Middlesex Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Middlesex Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Middlesex Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Middlesex Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Midlands Technical College",
-      "state": "SC",
+      "name": "Oklahoma City Community College",
+      "state": "OK",
       "level": "2-year",
       "status": "unresolved",
       "reason": "candidate_found",
       "error": null,
-      "confidence": 0.6,
+      "confidence": 0.45,
       "topCandidates": [
         {
-          "url": "https://www.midlandstech.edu/student-resources/student-support/careers-program",
-          "confidence": 0.6,
+          "url": "https://www.occc.edu/human-resources/careers.html",
+          "confidence": 0.45,
           "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.midlandstech.edu/programs-and-courses/career-assessment",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.midlandstech.edu/admissions/admissions-requirements/career-development-student",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
+          "query": "Oklahoma City Community College faculty jobs careers",
           "validation": "employee_hiring_evidence"
         }
       ],
@@ -480,28 +265,28 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 4
+          "count": 2
         },
         {
-          "query": "Midlands Technical College faculty jobs careers",
+          "query": "Oklahoma City Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Oklahoma City Community College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Midlands Technical College academic jobs",
+          "query": "Oklahoma City Community College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Midlands Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Midlands Technical College human resources faculty positions",
+          "query": "Oklahoma City Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -509,8 +294,8 @@
       ]
     },
     {
-      "name": "Mount Wachusett Community College",
-      "state": "MA",
+      "name": "Oklahoma Technical College",
+      "state": "OK",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -525,109 +310,25 @@
           "count": 0
         },
         {
-          "query": "Mount Wachusett Community College faculty jobs careers",
+          "query": "Oklahoma Technical College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Oklahoma Technical College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Mount Wachusett Community College academic jobs",
+          "query": "Oklahoma Technical College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Mount Wachusett Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Mount Wachusett Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Northeastern Technical College",
-      "state": "SC",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": false,
-          "reason": "homepage_fetch_error",
-          "count": 0
-        },
-        {
-          "query": "Northeastern Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northeastern Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northeastern Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northeastern Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Northwood Technical College",
-      "state": "WI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": false,
-          "reason": "homepage_http_403",
-          "count": 0
-        },
-        {
-          "query": "Northwood Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northwood Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northwood Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northwood Technical College human resources faculty positions",
+          "query": "Oklahoma Technical College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -654,7 +355,7 @@
           "query": "Seminary Bnos Chaim faculty jobs careers",
           "ok": true,
           "reason": null,
-          "count": 0
+          "count": 10
         },
         {
           "query": "Seminary Bnos Chaim academic jobs",
@@ -677,44 +378,35 @@
       ]
     },
     {
-      "name": "Southern Union State Community College",
-      "state": "AL",
+      "name": "Seminole State College",
+      "state": "OK",
       "level": "2-year",
       "status": "discovered",
-      "career_url": "http://www.schooljobs.com/careers/accs/southernunionstate",
-      "platform_type": "schooljobs",
+      "career_url": "https://okgov.wd1.myworkdayjobs.com/okgovjobs",
+      "platform_type": "workday",
       "confidence": 0.95,
       "method": "duckduckgo_html",
       "query": "official homepage links",
       "applied": true,
       "topCandidates": [
         {
-          "url": "http://www.schooljobs.com/careers/accs/southernunionstate",
+          "url": "https://okgov.wd1.myworkdayjobs.com/okgovjobs",
           "confidence": 0.95,
-          "platform_type": "schooljobs",
+          "platform_type": "workday",
           "query": "official homepage links",
           "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.suscc.edu/about/hr-employment-opportuniti",
-          "linkLabel": "full-time positions"
+          "viaOfficialPage": "https://www.sscok.edu/academics/library/career-center/index.html",
+          "linkLabel": "state of oklahoma careers"
         },
         {
-          "url": "https://www.schooljobs.com/careers/accs/southernunionstate/transferjobs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.suscc.edu/about/hr-employment-opportuniti",
-          "linkLabel": "other part-time positions"
-        },
-        {
-          "url": "https://www.suscc.edu/about/hr-employment-opportuniti",
+          "url": "https://www.sscok.edu/about-ssc/hr-employment/index.html",
           "confidence": 0.45,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
         },
         {
-          "url": "https://www.suscc.edu/about/overview",
+          "url": "https://www.sscok.edu/academics/library/career-center/index.html",
           "confidence": 0.25,
           "platform_type": "generic",
           "query": "official homepage links",
@@ -729,25 +421,25 @@
           "count": 2
         },
         {
-          "query": "Southern Union State Community College faculty jobs careers",
+          "query": "Seminole State College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Southern Union State Community College academic jobs",
+          "query": "Seminole State College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Southern Union State Community College faculty employment",
+          "query": "Seminole State College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Southern Union State Community College human resources faculty positions",
+          "query": "Seminole State College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -797,120 +489,8 @@
       ]
     },
     {
-      "name": "Springfield Technical Community College",
-      "state": "MA",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://stcc.interviewexchange.com/static/clients/382STM1/index.jsp",
-      "platform_type": "interviewexchange",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://stcc.interviewexchange.com/static/clients/382STM1/index.jsp",
-          "confidence": 0.95,
-          "platform_type": "interviewexchange",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.stcc.edu/about-stcc/employment/",
-          "linkLabel": "current openings"
-        },
-        {
-          "url": "https://www.stcc.edu/about-stcc/employment/",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Springfield Technical Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Springfield Technical Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Springfield Technical Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Springfield Technical Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Southwest Wisconsin Technical College",
-      "state": "WI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.25,
-      "topCandidates": [
-        {
-          "url": "https://www.swtc.edu/about/job-opportunities",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Southwest Wisconsin Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Southwest Wisconsin Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Southwest Wisconsin Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Southwest Wisconsin Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Tri-County Technical College",
-      "state": "SC",
+      "name": "St Joseph School of Nursing",
+      "state": "NH",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -925,87 +505,25 @@
           "count": 0
         },
         {
-          "query": "Tri-County Technical College faculty jobs careers",
+          "query": "St Joseph School of Nursing faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Tri-County Technical College academic jobs",
+          "query": "St Joseph School of Nursing academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Tri-County Technical College faculty employment",
+          "query": "St Joseph School of Nursing faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Tri-County Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Trident Technical College",
-      "state": "SC",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.governmentjobs.com/careers/sc/tridenttech",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.governmentjobs.com/careers/sc/tridenttech",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.tridenttech.edu/about/departments/hr/index.html",
-          "linkLabel": "view job openings"
-        },
-        {
-          "url": "https://www.tridenttech.edu/about/departments/hr/index.html",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Trident Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Trident Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Trident Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Trident Technical College human resources faculty positions",
+          "query": "St Joseph School of Nursing human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1105,8 +623,8 @@
       ]
     },
     {
-      "name": "Valley Forge Military College",
-      "state": "PA",
+      "name": "Clary Sage College",
+      "state": "OK",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -1116,670 +634,30 @@
       "queryResults": [
         {
           "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Clary Sage College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Valley Forge Military College faculty jobs careers",
+          "query": "Clary Sage College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Valley Forge Military College academic jobs",
+          "query": "Clary Sage College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Valley Forge Military College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Valley Forge Military College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Western Technical College",
-      "state": "WI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://www.westerntc.edu/why-western/become-career-ready",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Western Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Western Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Western Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Western Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "York Technical College",
-      "state": "SC",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.governmentjobs.com/careers/sc/yorktech",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.governmentjobs.com/careers/sc/yorktech",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.yorktech.edu/human-resources/",
-          "linkLabel": "explore career opportunities at york tech"
-        },
-        {
-          "url": "https://www.yorktech.edu/human-resources/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "York Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "York Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "York Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "York Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Gadsden State Community College",
-      "state": "AL",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/accs/gadsden",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/accs/gadsden",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.gadsdenstate.edu/about-us/employment",
-          "linkLabel": "full-time faculty and staff positions"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/gadsden/promotionaljobs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.gadsdenstate.edu/about-us/employment",
-          "linkLabel": "part-time faculty/adjunct positions"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/gadsden/transferjobs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.gadsdenstate.edu/about-us/employment",
-          "linkLabel": "part-time support staff positions"
-        },
-        {
-          "url": "https://www.gadsdenstate.edu/about-us/employment",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Gadsden State Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Gadsden State Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Gadsden State Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Gadsden State Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "George C Wallace State Community College-Selma",
-      "state": "AL",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/accs/wallaceselma",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/accs/wallaceselma",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.wccs.edu/business-finance/employment-opportunities",
-          "linkLabel": "faculty and staff"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/wallaceselma/promotionaljobs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.wccs.edu/business-finance/employment-opportunities",
-          "linkLabel": "faculty/adjunct"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/wallaceselma/transferjobs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.wccs.edu/business-finance/employment-opportunities",
-          "linkLabel": "staff"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.wccs.edu/business-finance/employment-opportunities",
-          "linkLabel": "accs job postings"
-        },
-        {
-          "url": "https://www.wccs.edu/business-finance/employment-opportunities",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "George C Wallace State Community College-Selma faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "George C Wallace State Community College-Selma academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "George C Wallace State Community College-Selma faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "George C Wallace State Community College-Selma human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Gogebic Community College",
-      "state": "MI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://gogebic.edu/aboutus/HR/index.html",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Gogebic Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Gogebic Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Gogebic Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Gogebic Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Greenfield Community College",
-      "state": "MA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.25,
-      "topCandidates": [
-        {
-          "url": "https://www.gcc.mass.edu/hr/",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 5
-        },
-        {
-          "query": "Greenfield Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Greenfield Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Greenfield Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Greenfield Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Harrisburg Area Community College",
-      "state": "PA",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://careersmanager.pageuppeople.com/1009/cw/en-us/listing",
-      "platform_type": "pageup",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://careersmanager.pageuppeople.com/1009/cw/en-us/listing",
-          "confidence": 0.95,
-          "platform_type": "pageup",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.hacc.edu/CareerServices/EmployerServices/index.cfm",
-          "linkLabel": "careers"
-        },
-        {
-          "url": "https://careers.hacc.edu/jobs/search",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.hacc.edu/CareerServices/EmployerServices/index.cfm",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Harrisburg Area Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Harrisburg Area Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Harrisburg Area Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Harrisburg Area Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Highland Community College (KS)",
-      "state": "KS",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://www.highlandcc.edu/abouthcc/human-resources/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Highland Community College (KS) faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Highland Community College (KS) academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Highland Community College (KS) faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Highland Community College (KS) human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Holyoke Community College",
-      "state": "MA",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.governmentjobs.com/careers/holyokeedu",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.governmentjobs.com/careers/holyokeedu",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.hcc.edu/courses-and-programs/preparing-for-college/transition-to-college-and-careers",
-          "linkLabel": "employment"
-        },
-        {
-          "url": "https://www.governmentjobs.com/careers/holyokeedu",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.hcc.edu/career-pathways-grant-for-early-childhood-educators",
-          "linkLabel": "employment"
-        },
-        {
-          "url": "https://www.hcc.edu/courses-and-programs/preparing-for-college/transition-to-college-and-careers",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.hcc.edu/career-pathways-grant-for-early-childhood-educators",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 4
-        },
-        {
-          "query": "Holyoke Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Holyoke Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Holyoke Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Holyoke Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Hudson County Community College",
-      "state": "NJ",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/hccc",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/hccc",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.hccc.edu/administration/hr/careers/index.html",
-          "linkLabel": "view job openings"
-        },
-        {
-          "url": "https://www.hccc.edu/administration/hr/careers/index.html",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 5
-        },
-        {
-          "query": "Hudson County Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Hudson County Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Hudson County Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Hudson County Community College human resources faculty positions",
+          "query": "Clary Sage College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -1955,48 +833,6 @@
       ]
     },
     {
-      "name": "Technical College of the Lowcountry",
-      "state": "SC",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Technical College of the Lowcountry faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Technical College of the Lowcountry academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Technical College of the Lowcountry faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Technical College of the Lowcountry human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
       "name": "University of New Mexico-Taos Campus",
       "state": "NM",
       "level": "2-year",
@@ -2039,8 +875,8 @@
       ]
     },
     {
-      "name": "West Shore Community College",
-      "state": "MI",
+      "name": "White Mountains Community College",
+      "state": "NH",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -2052,112 +888,28 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 1
+          "count": 2
         },
         {
-          "query": "West Shore Community College faculty jobs careers",
+          "query": "White Mountains Community College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "West Shore Community College academic jobs",
+          "query": "White Mountains Community College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "West Shore Community College faculty employment",
+          "query": "White Mountains Community College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "West Shore Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Williamsburg Technical College",
-      "state": "SC",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Williamsburg Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Williamsburg Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Williamsburg Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Williamsburg Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Lancaster County Career and Technology Center",
-      "state": "PA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lancaster County Career and Technology Center faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lancaster County Career and Technology Center academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lancaster County Career and Technology Center faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lancaster County Career and Technology Center human resources faculty positions",
+          "query": "White Mountains Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -2249,50 +1001,8 @@
       ]
     },
     {
-      "name": "Moraine Park Technical College",
-      "state": "WI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Moraine Park Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Moraine Park Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Moraine Park Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Moraine Park Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Muskegon Community College",
-      "state": "MI",
+      "name": "Northern Oklahoma College",
+      "state": "OK",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -2307,25 +1017,25 @@
           "count": 2
         },
         {
-          "query": "Muskegon Community College faculty jobs careers",
+          "query": "Northern Oklahoma College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Muskegon Community College academic jobs",
+          "query": "Northern Oklahoma College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Muskegon Community College faculty employment",
+          "query": "Northern Oklahoma College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Muskegon Community College human resources faculty positions",
+          "query": "Northern Oklahoma College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -2333,8 +1043,8 @@
       ]
     },
     {
-      "name": "Northeast Wisconsin Technical College",
-      "state": "WI",
+      "name": "Northeastern Oklahoma A&M College",
+      "state": "OK",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -2346,238 +1056,28 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 2
+          "count": 15
         },
         {
-          "query": "Northeast Wisconsin Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northeast Wisconsin Technical College academic jobs",
+          "query": "Northeastern Oklahoma A&M College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Northeast Wisconsin Technical College faculty employment",
+          "query": "Northeastern Oklahoma A&M College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Northeast Wisconsin Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Northern Essex Community College",
-      "state": "MA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Northern Essex Community College faculty jobs careers",
+          "query": "Northeastern Oklahoma A&M College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Northern Essex Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northern Essex Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northern Essex Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Orangeburg Calhoun Technical College",
-      "state": "SC",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 5
-        },
-        {
-          "query": "Orangeburg Calhoun Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Orangeburg Calhoun Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Orangeburg Calhoun Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Orangeburg Calhoun Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Orleans Technical College",
-      "state": "PA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Orleans Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Orleans Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Orleans Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Orleans Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Pittsburgh Institute of Mortuary Science Inc",
-      "state": "PA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Pittsburgh Institute of Mortuary Science Inc faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Pittsburgh Institute of Mortuary Science Inc academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Pittsburgh Institute of Mortuary Science Inc faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Pittsburgh Institute of Mortuary Science Inc human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Reid State Technical College",
-      "state": "AL",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Reid State Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Reid State Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Reid State Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Reid State Technical College human resources faculty positions",
+          "query": "Northeastern Oklahoma A&M College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -2627,48 +1127,6 @@
       ]
     },
     {
-      "name": "Saginaw Chippewa Tribal College",
-      "state": "MI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Saginaw Chippewa Tribal College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Saginaw Chippewa Tribal College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Saginaw Chippewa Tribal College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Saginaw Chippewa Tribal College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
       "name": "Shorter College",
       "state": "AR",
       "level": "2-year",
@@ -2704,56 +1162,6 @@
         },
         {
           "query": "Shorter College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "St Clair County Community College",
-      "state": "MI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://sc4.edu/about/careers-at-sc4/",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "St Clair County Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "St Clair County Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "St Clair County Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "St Clair County Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -2803,8 +1211,8 @@
       ]
     },
     {
-      "name": "Thaddeus Stevens College of Technology",
-      "state": "PA",
+      "name": "Western Oklahoma State College",
+      "state": "OK",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -2816,70 +1224,28 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 1
+          "count": 0
         },
         {
-          "query": "Thaddeus Stevens College of Technology faculty jobs careers",
+          "query": "Western Oklahoma State College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Thaddeus Stevens College of Technology academic jobs",
+          "query": "Western Oklahoma State College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Thaddeus Stevens College of Technology faculty employment",
+          "query": "Western Oklahoma State College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Thaddeus Stevens College of Technology human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Waukesha County Technical College",
-      "state": "WI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Waukesha County Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Waukesha County Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Waukesha County Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Waukesha County Technical College human resources faculty positions",
+          "query": "Western Oklahoma State College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -2929,8 +1295,8 @@
       ]
     },
     {
-      "name": "H Councill Trenholm State Community College",
-      "state": "AL",
+      "name": "Nashua Community College",
+      "state": "NH",
       "level": "2-year",
       "status": "unresolved",
       "reason": "no_candidates",
@@ -2942,28 +1308,70 @@
           "query": "official homepage links",
           "ok": true,
           "reason": null,
-          "count": 5
+          "count": 10
         },
         {
-          "query": "H Councill Trenholm State Community College faculty jobs careers",
+          "query": "Nashua Community College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "H Councill Trenholm State Community College academic jobs",
+          "query": "Nashua Community College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "H Councill Trenholm State Community College faculty employment",
+          "query": "Nashua Community College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "H Councill Trenholm State Community College human resources faculty positions",
+          "query": "Nashua Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Great Bay Community College",
+      "state": "NH",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Great Bay Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Great Bay Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Great Bay Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Great Bay Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -3042,364 +1450,6 @@
       ]
     },
     {
-      "name": "Johnson College",
-      "state": "PA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://johnson.edu/human-resources/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Johnson College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Johnson College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Johnson College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Johnson College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Mid-State Technical College",
-      "state": "WI",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://phh.tbe.taleo.net/phh02/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=41&org=MIDSTECH",
-      "platform_type": "taleo",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://phh.tbe.taleo.net/phh02/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=41&org=MIDSTECH",
-          "confidence": 0.95,
-          "platform_type": "taleo",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.mstc.edu/about-us/careers-at-mid-state",
-          "linkLabel": "view career opportunities"
-        },
-        {
-          "url": "https://phh.tbe.taleo.net/phh02/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=44&org=MIDSTECH",
-          "confidence": 0.95,
-          "platform_type": "taleo",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.mstc.edu/about-us/careers-at-mid-state",
-          "linkLabel": "view part-time openings"
-        },
-        {
-          "url": "https://phh.tbe.taleo.net/dispatcher/servlet/DispatcherServlet?org=MIDSTECH&act=redirectCwsV2&cws=45",
-          "confidence": 0.95,
-          "platform_type": "taleo",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.mstc.edu/about-us/careers-at-mid-state",
-          "linkLabel": "view tutoring openings"
-        },
-        {
-          "url": "https://www.mstc.edu/about-us/careers-at-mid-state",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.mstc.edu/about-us/careers-at-mid-state/equal-opportunity-employer",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.mstc.edu/programs-and-courses/find-your-program/career-path-assessment",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.mstc.edu/programs-and-courses/find-your-program/adaptive-career-awareness-series",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 4
-        },
-        {
-          "query": "Mid-State Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Mid-State Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Mid-State Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Mid-State Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Montgomery County Community College",
-      "state": "PA",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/mc3",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/mc3",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.mc3.edu/employment-opportunities",
-          "linkLabel": "employment posting"
-        },
-        {
-          "url": "https://www.mc3.edu/employment-opportunities",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Montgomery County Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Montgomery County Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Montgomery County Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Montgomery County Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Northcentral Technical College",
-      "state": "WI",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://ntc.wd1.myworkdayjobs.com/NTC",
-      "platform_type": "workday",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://ntc.wd1.myworkdayjobs.com/NTC",
-          "confidence": 0.95,
-          "platform_type": "workday",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.ntc.edu/careers",
-          "linkLabel": "view faculty/staff openings"
-        },
-        {
-          "url": "https://www.ntc.edu/careers",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Northcentral Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northcentral Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northcentral Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northcentral Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Piedmont Technical College",
-      "state": "SC",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.governmentjobs.com/careers/sc/ptc",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.governmentjobs.com/careers/sc/ptc",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.ptc.edu/about/human-resources/employment",
-          "linkLabel": "careers.sc.gov"
-        },
-        {
-          "url": "https://www.ptc.edu/about/human-resources/employment",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.ptc.edu/academics/dual-enrollment/career-quick-start",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.ptc.edu/college-resources/career-resources/employer-services",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.ptc.edu/college-resources/career-resources/internet-job-resources",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 13
-        },
-        {
-          "query": "Piedmont Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Piedmont Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Piedmont Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Piedmont Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
       "name": "Neosho County Community College",
       "state": "KS",
       "level": "2-year",
@@ -3409,14 +1459,14 @@
       "confidence": 0.4,
       "topCandidates": [
         {
-          "url": "https://www.neosho.edu/HVAC",
+          "url": "https://www.neosho.edu/welding-technology",
           "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
         },
         {
-          "url": "https://www.neosho.edu/welding-technology",
+          "url": "https://www.neosho.edu/HVAC",
           "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
@@ -3450,6 +1500,56 @@
         },
         {
           "query": "Neosho County Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "River Valley Community College",
+      "state": "NH",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.4,
+      "topCandidates": [
+        {
+          "url": "https://www.rivervalley.edu/student-support/advising-career-and-transfer-center-act/",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "River Valley Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "River Valley Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "River Valley Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "River Valley Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -3492,188 +1592,6 @@
         },
         {
           "query": "Phillips Community College of the University of Arkansas human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Kalamazoo Valley Community College",
-      "state": "MI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Kalamazoo Valley Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Kalamazoo Valley Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Kalamazoo Valley Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Kalamazoo Valley Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Lakeshore Technical College",
-      "state": "WI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "no_candidates",
-      "error": null,
-      "confidence": 0,
-      "topCandidates": [],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Lakeshore Technical College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lakeshore Technical College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lakeshore Technical College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lakeshore Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Lurleen B Wallace Community College",
-      "state": "AL",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/accs/lbw",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/accs/lbw",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.lbwcc.edu/about/careers-at-lbwcc",
-          "linkLabel": "full-time positions"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/lbw/transferjobs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.lbwcc.edu/about/careers-at-lbwcc",
-          "linkLabel": "part-time staff positions"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/lbw/promotionaljobs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.lbwcc.edu/about/careers-at-lbwcc",
-          "linkLabel": "part-time faculty/adjunct"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/lbw/jobInterestCards/categories",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.lbwcc.edu/about/careers-at-lbwcc",
-          "linkLabel": "sign up for job alerts!"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/helpandsupport/applicationguide",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.lbwcc.edu/about/careers-at-lbwcc",
-          "linkLabel": "online employment application guide"
-        },
-        {
-          "url": "https://www.lbwcc.edu/about/careers-at-lbwcc",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Lurleen B Wallace Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lurleen B Wallace Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lurleen B Wallace Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Lurleen B Wallace Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -3807,56 +1725,6 @@
       ]
     },
     {
-      "name": "North Central Michigan College",
-      "state": "MI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.25,
-      "topCandidates": [
-        {
-          "url": "https://www.ncmich.edu/about-us/our-team/join-our-team.html",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "North Central Michigan College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "North Central Michigan College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "North Central Michigan College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "North Central Michigan College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
       "name": "NorthWest Arkansas Community College",
       "state": "AR",
       "level": "2-year",
@@ -3892,84 +1760,6 @@
         },
         {
           "query": "NorthWest Arkansas Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Quinsigamond Community College",
-      "state": "MA",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://qcc.interviewexchange.com/static/clients/319QCM1/index.jsp",
-      "platform_type": "interviewexchange",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://qcc.interviewexchange.com/static/clients/319QCM1/index.jsp",
-          "confidence": 0.95,
-          "platform_type": "interviewexchange",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.qcc.edu/learn-qcc/advance-your-career",
-          "linkLabel": "employment opportunities"
-        },
-        {
-          "url": "https://qcc.interviewexchange.com/static/clients/319QCM1/index.jsp",
-          "confidence": 0.95,
-          "platform_type": "interviewexchange",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.qcc.edu/learn-qcc/amazon-career-choice",
-          "linkLabel": "employment opportunities"
-        },
-        {
-          "url": "https://www.qcc.edu/learn-qcc/advance-your-career",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.qcc.edu/learn-qcc/amazon-career-choice",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Quinsigamond Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Quinsigamond Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Quinsigamond Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Quinsigamond Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -4034,82 +1824,6 @@
         },
         {
           "query": "Salina Area Technical College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Southeast New Mexico College",
-      "state": "NM",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/senmc",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/senmc",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://senmc.edu/human-resources/index.html",
-          "linkLabel": "career opportunities"
-        },
-        {
-          "url": "https://senmc.edu/human-resources/index.html",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://senmc.edu/human-resources/nondiscrimination-and-equal-opportunity.html",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://senmc.edu/hsi-grant-services/transfer-career-internship/index.html",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Southeast New Mexico College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Southeast New Mexico College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Southeast New Mexico College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Southeast New Mexico College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -4278,184 +1992,6 @@
         },
         {
           "query": "Independence Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Northampton County Area Community College",
-      "state": "PA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.4,
-      "topCandidates": [
-        {
-          "url": "https://www.northampton.edu/student-experience-and-support/career-development/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.northampton.edu/student-experience-and-support/career-development/job-shadow-employers.html",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "Northampton County Area Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northampton County Area Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northampton County Area Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Northampton County Area Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Roxbury Community College",
-      "state": "MA",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.25,
-      "topCandidates": [
-        {
-          "url": "https://www.rcc.mass.edu/succeed/career-development-internships.html",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Roxbury Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Roxbury Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Roxbury Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Roxbury Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "UCNJ Union College of Union County, New Jersey",
-      "state": "NJ",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "http://ucc.peopleadmin.com/",
-      "platform_type": "peopleadmin",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "http://ucc.peopleadmin.com/",
-          "confidence": 0.95,
-          "platform_type": "peopleadmin",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.ucc.edu/administration/human-resources/",
-          "linkLabel": "view faculty and staff openings"
-        },
-        {
-          "url": "https://ucc.peopleadmin.com/",
-          "confidence": 0.95,
-          "platform_type": "peopleadmin",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.ucc.edu/administration/human-resources/",
-          "linkLabel": "employment at ucnj"
-        },
-        {
-          "url": "https://www.ucc.edu/administration/human-resources/",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 5
-        },
-        {
-          "query": "UCNJ Union College of Union County, New Jersey faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "UCNJ Union College of Union County, New Jersey academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "UCNJ Union College of Union County, New Jersey faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "UCNJ Union College of Union County, New Jersey human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
@@ -4755,150 +2291,6 @@
       ]
     },
     {
-      "name": "Wayne County Community College District",
-      "state": "MI",
-      "level": "2-year",
-      "status": "unresolved",
-      "reason": "candidate_found",
-      "error": null,
-      "confidence": 0.45,
-      "topCandidates": [
-        {
-          "url": "https://www.wcccd.edu/divisions/human-resources/jobs-at-wcccd",
-          "confidence": 0.45,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.wcccd.edu/career-planning-and-placement",
-          "confidence": 0.25,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Wayne County Community College District faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Wayne County Community College District academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Wayne County Community College District faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Wayne County Community College District human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "George C Wallace Community College-Dothan",
-      "state": "AL",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/accs/wallacedothan",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/accs/wallacedothan",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://wallace.edu/about/human-resources/",
-          "linkLabel": "full-time faculty and staff positions"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/wallacedothan/promotionaljobs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://wallace.edu/about/human-resources/",
-          "linkLabel": "part-time/adjunct positions"
-        },
-        {
-          "url": "https://www.schooljobs.com/careers/accs/wallacedothan/transferjobs",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://wallace.edu/about/human-resources/",
-          "linkLabel": "part-time staff positions"
-        },
-        {
-          "url": "https://wallace.edu/programs-training/career-technical-programs/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://wallace.edu/about/human-resources/",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 2
-        },
-        {
-          "query": "George C Wallace Community College-Dothan faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "George C Wallace Community College-Dothan academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "George C Wallace Community College-Dothan faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "George C Wallace Community College-Dothan human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
       "name": "Garden City Community College",
       "state": "KS",
       "level": "2-year",
@@ -4941,70 +2333,8 @@
       ]
     },
     {
-      "name": "Clovis Community College (NM)",
-      "state": "NM",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://chess.wd1.myworkdayjobs.com/CCC",
-      "platform_type": "workday",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://chess.wd1.myworkdayjobs.com/CCC",
-          "confidence": 0.95,
-          "platform_type": "workday",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.clovis.edu/hr/index.aspx",
-          "linkLabel": "apply for jobs"
-        },
-        {
-          "url": "https://www.clovis.edu/hr/index.aspx",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 3
-        },
-        {
-          "query": "Clovis Community College (NM) faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Clovis Community College (NM) academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Clovis Community College (NM) faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Clovis Community College (NM) human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Glen Oaks Community College",
-      "state": "MI",
+      "name": "San Joaquin Delta College",
+      "state": "CA",
       "level": "2-year",
       "status": "unresolved",
       "reason": "candidate_found",
@@ -5012,90 +2342,14 @@
       "confidence": 0.6,
       "topCandidates": [
         {
-          "url": "https://www.glenoaks.edu/about-gocc/college-operations/human-resources/jobs/index.php",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        }
-      ],
-      "queryResults": [
-        {
-          "query": "official homepage links",
-          "ok": true,
-          "reason": null,
-          "count": 1
-        },
-        {
-          "query": "Glen Oaks Community College faculty jobs careers",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Glen Oaks Community College academic jobs",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Glen Oaks Community College faculty employment",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        },
-        {
-          "query": "Glen Oaks Community College human resources faculty positions",
-          "ok": true,
-          "reason": null,
-          "count": 0
-        }
-      ]
-    },
-    {
-      "name": "Southern Arkansas University Tech",
-      "state": "AR",
-      "level": "2-year",
-      "status": "discovered",
-      "career_url": "https://www.schooljobs.com/careers/sautech",
-      "platform_type": "schooljobs",
-      "confidence": 0.95,
-      "method": "duckduckgo_html",
-      "query": "official homepage links",
-      "applied": true,
-      "topCandidates": [
-        {
-          "url": "https://www.schooljobs.com/careers/sautech",
-          "confidence": 0.95,
-          "platform_type": "schooljobs",
-          "query": "official homepage links",
-          "validation": "official_employee_page_ats_link",
-          "viaOfficialPage": "https://www.sautech.edu/employment",
-          "linkLabel": "view current job openings and apply online &rarr;"
-        },
-        {
-          "url": "https://www.sautech.edu/student-community-employment",
+          "url": "https://www.deltacollege.edu/student-support/careers-jobs",
           "confidence": 0.6,
           "platform_type": "generic",
           "query": "official homepage links",
           "validation": "employee_hiring_evidence"
         },
         {
-          "url": "https://www.sautech.edu/employment",
-          "confidence": 0.6,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.sautech.edu/arkansas-career-pathways",
-          "confidence": 0.4,
-          "platform_type": "generic",
-          "query": "official homepage links",
-          "validation": "employee_hiring_evidence"
-        },
-        {
-          "url": "https://www.sautech.edu/rocket-high-career-academy",
+          "url": "https://www.deltacollege.edu/academics/your-guide-transfer-and-career-pathways-tracs",
           "confidence": 0.4,
           "platform_type": "generic",
           "query": "official homepage links",
@@ -5110,25 +2364,2342 @@
           "count": 5
         },
         {
-          "query": "Southern Arkansas University Tech faculty jobs careers",
+          "query": "San Joaquin Delta College faculty jobs careers",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Southern Arkansas University Tech academic jobs",
+          "query": "San Joaquin Delta College academic jobs",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Southern Arkansas University Tech faculty employment",
+          "query": "San Joaquin Delta College faculty employment",
           "ok": true,
           "reason": null,
           "count": 0
         },
         {
-          "query": "Southern Arkansas University Tech human resources faculty positions",
+          "query": "San Joaquin Delta College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Monterey Peninsula College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.mpc.edu/academics/career-academic-pathways/public-safety-education/index.html",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 14
+        },
+        {
+          "query": "Monterey Peninsula College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Monterey Peninsula College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Monterey Peninsula College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Monterey Peninsula College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "CAAN Academy of Nursing",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.5,
+      "topCandidates": [
+        {
+          "url": "https://www.caanacademy.org/employment-opportunities",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.caanacademy.org/employment-opportunities62d0620e",
+          "confidence": 0.5,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "CAAN Academy of Nursing faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "CAAN Academy of Nursing academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "CAAN Academy of Nursing faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "CAAN Academy of Nursing human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "John Wood Community College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.45,
+      "topCandidates": [
+        {
+          "url": "https://www.jwcc.edu/about/employment/",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.jwcc.edu/about/employment/nondiscrimination-statement/",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.jwcc.edu/paths/train-for-a-career/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.jwcc.edu/admissions/high-school/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 4
+        },
+        {
+          "query": "John Wood Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "John Wood Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "John Wood Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "John Wood Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Kankakee Community College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://www.governmentjobs.com/careers/kankakeecc",
+      "platform_type": "schooljobs",
+      "confidence": 0.95,
+      "method": "duckduckgo_html",
+      "query": "official homepage links",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://www.governmentjobs.com/careers/kankakeecc",
+          "confidence": 0.95,
+          "platform_type": "schooljobs",
+          "query": "official homepage links",
+          "validation": "official_employee_page_ats_link",
+          "viaOfficialPage": "https://www.kcc.edu/about/human-resources/job-openings/",
+          "linkLabel": "full-time jobs"
+        },
+        {
+          "url": "https://www.governmentjobs.com/careers/kankakeecc/promotionaljobs",
+          "confidence": 0.95,
+          "platform_type": "schooljobs",
+          "query": "official homepage links",
+          "validation": "official_employee_page_ats_link",
+          "viaOfficialPage": "https://www.kcc.edu/about/human-resources/job-openings/",
+          "linkLabel": "part-time jobs"
+        },
+        {
+          "url": "https://www.kcc.edu/admissions/health-careers-requirements/",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.kcc.edu/about/human-resources/job-openings/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.kcc.edu/about/human-resources/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Kankakee Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Kankakee Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Kankakee Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Kankakee Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Spoon River College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=a1f9fed4-6d14-468e-b3ee-266b22902534&ccId=19000101_000001&type=MP&lang=en_US",
+      "platform_type": "adp",
+      "confidence": 0.95,
+      "method": "duckduckgo_html",
+      "query": "official homepage links",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=a1f9fed4-6d14-468e-b3ee-266b22902534&ccId=19000101_000001&type=MP&lang=en_US",
+          "confidence": 0.95,
+          "platform_type": "adp",
+          "query": "official homepage links",
+          "validation": "official_employee_page_ats_link",
+          "viaOfficialPage": "https://www.src.edu/about-src/employment",
+          "linkLabel": "​current src openings"
+        },
+        {
+          "url": "https://www.src.edu/about-src/employment",
+          "confidence": 0.45,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Spoon River College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Spoon River College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Spoon River College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Spoon River College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "San Bernardino Valley College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.4,
+      "topCandidates": [
+        {
+          "url": "https://www.valleycollege.edu/academics/career-technical-training/index.php",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 5
+        },
+        {
+          "query": "San Bernardino Valley College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "San Bernardino Valley College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "San Bernardino Valley College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "San Bernardino Valley College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Waubonsee Community College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.4,
+      "topCandidates": [
+        {
+          "url": "https://www.waubonsee.edu/programs-courses/career-programs",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Waubonsee Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Waubonsee Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Waubonsee Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Waubonsee Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Mt San Antonio College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.25,
+      "topCandidates": [
+        {
+          "url": "https://www.mtsac.edu/hr/title5/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Mt San Antonio College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Mt San Antonio College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Mt San Antonio College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Mt San Antonio College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Riverside City College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "discovered",
+      "career_url": "https://pa379.peopleadmin.com/",
+      "platform_type": "peopleadmin",
+      "confidence": 0.95,
+      "method": "duckduckgo_html",
+      "query": "official homepage links",
+      "applied": true,
+      "topCandidates": [
+        {
+          "url": "https://pa379.peopleadmin.com/",
+          "confidence": 0.95,
+          "platform_type": "peopleadmin",
+          "query": "official homepage links",
+          "validation": "official_employee_page_ats_link",
+          "viaOfficialPage": "https://www.rcc.edu/student-support/career-center.html",
+          "linkLabel": "employment opportunities"
+        },
+        {
+          "url": "https://www.rcc.edu/student-support/career-center.html",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Riverside City College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Riverside City College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Riverside City College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Riverside City College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Sauk Valley Community College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.25,
+      "topCandidates": [
+        {
+          "url": "https://www.svcc.edu/academics/programs/individual/career-degrees.html",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Sauk Valley Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Sauk Valley Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Sauk Valley Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Sauk Valley Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Los Angeles City College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Los Angeles City College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles City College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles City College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles City College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Los Angeles Harbor College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Harbor College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Harbor College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Harbor College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Harbor College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Los Angeles Pierce College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Pierce College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Pierce College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Pierce College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Pierce College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Los Angeles Trade Technical College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Trade Technical College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Trade Technical College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Trade Technical College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Trade Technical College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Los Angeles Southwest College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Southwest College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Southwest College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Southwest College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Los Angeles Southwest College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Morton College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Morton College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Morton College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Morton College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Morton College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Mt San Jacinto Community College District",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Mt San Jacinto Community College District faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Mt San Jacinto Community College District academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Mt San Jacinto Community College District faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Mt San Jacinto Community College District human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "New York Seminary",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "New York Seminary faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "New York Seminary academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "New York Seminary faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "New York Seminary human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Norco College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Norco College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Norco College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Norco College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Norco College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "North Country Community College",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "North Country Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "North Country Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "North Country Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "North Country Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Ohel Margulia Seminary",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Ohel Margulia Seminary faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Ohel Margulia Seminary academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Ohel Margulia Seminary faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Ohel Margulia Seminary human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Ohlone College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Ohlone College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Ohlone College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Ohlone College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Ohlone College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Rockingham Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Rockingham Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Rockingham Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Rockingham Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Rockingham Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Saint Elizabeth College of Nursing",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Saint Elizabeth College of Nursing faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Saint Elizabeth College of Nursing academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Saint Elizabeth College of Nursing faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Saint Elizabeth College of Nursing human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Seminar L'moros Bais Yaakov",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Seminar L'moros Bais Yaakov faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Seminar L'moros Bais Yaakov academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Seminar L'moros Bais Yaakov faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Seminar L'moros Bais Yaakov human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Southeastern Illinois College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Southeastern Illinois College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southeastern Illinois College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southeastern Illinois College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southeastern Illinois College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Sullivan County Community College",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 4
+        },
+        {
+          "query": "Sullivan County Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Sullivan County Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Sullivan County Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Sullivan County Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Wilson Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Wilson Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Wilson Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Wilson Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Wilson Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Young Americans College of the Performing Arts",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_503",
+          "count": 0
+        },
+        {
+          "query": "Young Americans College of the Performing Arts faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Young Americans College of the Performing Arts academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Young Americans College of the Performing Arts faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Young Americans College of the Performing Arts human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "American Academy McAllister Institute of Funeral Service",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "American Academy McAllister Institute of Funeral Service faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "American Academy McAllister Institute of Funeral Service academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "American Academy McAllister Institute of Funeral Service faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "American Academy McAllister Institute of Funeral Service human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Montgomery Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 5
+        },
+        {
+          "query": "Montgomery Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Montgomery Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Montgomery Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Montgomery Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Bnos Zion Of Bobov Seminary",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Bnos Zion Of Bobov Seminary faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Bnos Zion Of Bobov Seminary academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Bnos Zion Of Bobov Seminary faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Bnos Zion Of Bobov Seminary human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Grossmont College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Grossmont College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Grossmont College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Grossmont College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Grossmont College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Hypnosis Motivation Institute",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Hypnosis Motivation Institute faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Hypnosis Motivation Institute academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Hypnosis Motivation Institute faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Hypnosis Motivation Institute human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Illinois Central College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Illinois Central College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Illinois Central College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Illinois Central College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Illinois Central College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "ICOHS College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "ICOHS College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "ICOHS College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "ICOHS College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "ICOHS College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Rowan-Cabarrus Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Rowan-Cabarrus Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Rowan-Cabarrus Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Rowan-Cabarrus Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Rowan-Cabarrus Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Southeastern Community College (NC)",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 4
+        },
+        {
+          "query": "Southeastern Community College (NC) faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southeastern Community College (NC) academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southeastern Community College (NC) faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southeastern Community College (NC) human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Southwestern Community College (NC)",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Southwestern Community College (NC) faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southwestern Community College (NC) academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southwestern Community College (NC) faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southwestern Community College (NC) human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "St. Joseph's College of Nursing",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "St. Joseph's College of Nursing faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "St. Joseph's College of Nursing academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "St. Joseph's College of Nursing faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "St. Joseph's College of Nursing human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Vance-Granville Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "Vance-Granville Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Vance-Granville Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Vance-Granville Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Vance-Granville Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Pamlico Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 6
+        },
+        {
+          "query": "Pamlico Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Pamlico Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Pamlico Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Pamlico Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "San Bernardino Community College District",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 3
+        },
+        {
+          "query": "San Bernardino Community College District faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "San Bernardino Community College District academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "San Bernardino Community College District faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "San Bernardino Community College District human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Sierra College",
+      "state": "CA",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://www.sierracollege.edu/student-services/career-transfer-internship/prepare-for-a-career/gainful-employment-data/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 17
+        },
+        {
+          "query": "Sierra College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Sierra College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Sierra College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Sierra College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Western Piedmont Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Western Piedmont Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Western Piedmont Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Western Piedmont Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Western Piedmont Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Haywood Community College",
+      "state": "NC",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Haywood Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Haywood Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Haywood Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Haywood Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Monroe Community College",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Monroe Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Monroe Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Monroe Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Monroe Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Illinois Valley Community College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Illinois Valley Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Illinois Valley Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Illinois Valley Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Illinois Valley Community College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Cochran School of Nursing",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Cochran School of Nursing faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Cochran School of Nursing academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Cochran School of Nursing faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Cochran School of Nursing human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Generations College",
+      "state": "IL",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Generations College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Generations College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Generations College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Generations College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Fulton-Montgomery Community College",
+      "state": "NY",
+      "level": "2-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_http_403",
+          "count": 0
+        },
+        {
+          "query": "Fulton-Montgomery Community College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fulton-Montgomery Community College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fulton-Montgomery Community College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Fulton-Montgomery Community College human resources faculty positions",
           "ok": true,
           "reason": null,
           "count": 0
