@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { excludePreviouslyReported, isRejectedCareerPage } from "./lib/career-path-probe.js";
+import { canonicalizeDiscoveredCareerUrl, excludePreviouslyReported, isRejectedCareerPage } from "./lib/career-path-probe.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,7 +15,7 @@ const REVIEW_CSV_PATH = path.join(ROOT, "generated", "career-discovery-review.cs
 
 function usage() {
   console.log(
-    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--concurrency N] [--min-confidence 0.65] [--weak-only|--medium-only|--unresolved-only|--all-targets] [--level LEVEL] [--skip-report FILE] [--all-missing]"
+    "Usage: node scripts/discover-career-pages.js [--apply] [--limit N] [--delay-ms N] [--concurrency N] [--min-confidence 0.65] [--weak-only|--medium-only|--unresolved-only|--all-targets] [--level LEVEL] [--states CA,NC] [--skip-report FILE] [--all-missing]"
   );
 }
 
@@ -39,8 +39,10 @@ function inferPlatformFromUrl(url) {
   if (u.includes("taleo.net")) return "taleo";
   if (u.includes("peopleadmin.com")) return "peopleadmin";
   if (u.includes("schooljobs.com")) return "schooljobs";
+  if (u.includes("governmentjobs.com")) return "schooljobs";
   if (u.includes("csod.com")) return "csod";
   if (u.includes("paycomonline.net")) return "paycom";
+  if (u.includes("workforcenow.adp.com")) return "adp";
   if (u.includes("interviewexchange.com")) return "interviewexchange";
   if (u.includes("jobvite.com")) return "jobvite";
   if (u.includes("interfolio.com")) return "interfolio";
@@ -200,6 +202,30 @@ function extractOfficialCareerLinks(html, baseUrl) {
   return links;
 }
 
+function extractEmployeeAtsLinks(html, baseUrl) {
+  const links = [];
+  const seen = new Set();
+  const anchorRe = /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let match;
+  while ((match = anchorRe.exec(String(html || ""))) !== null) {
+    const label = normalize(match[2].replace(/<[^>]+>/g, " "));
+    if (!/job|career|employment|opportunit|position|opening|apply|faculty|staff/.test(label)) continue;
+    if (/student|internship|career services|career center|career counseling/.test(label)) continue;
+
+    let url;
+    try {
+      url = canonicalizeDiscoveredCareerUrl(new URL(match[1].replace(/&amp;/gi, "&").replace(/&#38;/g, "&"), baseUrl).toString());
+    } catch {
+      continue;
+    }
+    if (seen.has(url) || looksBadCandidate(url)) continue;
+    if (inferPlatformFromUrl(url) === "generic") continue;
+    seen.add(url);
+    links.push({ url, label });
+  }
+  return links;
+}
+
 async function fetchOfficialHomepageLinks(inst, timeoutMs = 12000) {
   const homepage = clean(inst.homepage_url);
   if (!homepage) return { ok: false, reason: "missing_homepage", urls: [] };
@@ -355,6 +381,20 @@ async function discoverForInstitution(inst, timeoutMs = 12000) {
         platform_type: inferPlatformFromUrl(finalUrl),
         validation: employeeEvidence ? "employee_hiring_evidence" : "recognized_ats",
       });
+
+      if (officialDomain && employeeEvidence) {
+        for (const linked of extractEmployeeAtsLinks(body, finalUrl)) {
+          validated.push({
+            url: linked.url,
+            confidence: 0.95,
+            platform_type: inferPlatformFromUrl(linked.url),
+            query: candidate.query,
+            validation: "official_employee_page_ats_link",
+            viaOfficialPage: finalUrl,
+            linkLabel: linked.label,
+          });
+        }
+      }
     } catch (error) {
       rejected.push({ ...candidate, reason: error?.name === "AbortError" ? "candidate_timeout" : "candidate_fetch_error" });
     } finally {
@@ -400,6 +440,7 @@ function parseArgs(argv) {
     unresolvedOnly: false,
     allTargets: false,
     level: null,
+    states: [],
     skipReports: [],
     timeoutMs: 8000,
     concurrency: 1,
@@ -422,6 +463,12 @@ function parseArgs(argv) {
     else if (a === "--unresolved-only") out.unresolvedOnly = true;
     else if (a === "--all-targets") out.allTargets = true;
     else if (a === "--level" && args[i + 1]) out.level = clean(args[++i]);
+    else if (a === "--states" && args[i + 1]) {
+      out.states = args[++i]
+        .split(",")
+        .map((state) => clean(state).toUpperCase())
+        .filter(Boolean);
+    }
     else if (a === "--skip-report" && args[i + 1]) out.skipReports.push(args[++i]);
     else if (a === "--all-missing") out.scopeEligibleOnly = false;
   }
@@ -547,6 +594,11 @@ async function main() {
 
   if (opts.level) {
     targets = targets.filter((r) => normalize(r.level) === normalize(opts.level));
+  }
+
+  if (opts.states.length > 0) {
+    const states = new Set(opts.states);
+    targets = targets.filter((r) => states.has(clean(r.state).toUpperCase()));
   }
 
   for (const reportPath of opts.skipReports) {

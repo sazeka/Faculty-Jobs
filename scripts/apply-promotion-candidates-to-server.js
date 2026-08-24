@@ -176,6 +176,13 @@ function main() {
           let next = original;
           next = next.replace(/(type:\s*")[^"]*(")/, `$1${escapeJs(typeToApply)}$2`);
           next = next.replace(/(url:\s*")[^"]*(")/, `$1${escapeJs(item.career_url)}$2`);
+          if (item.locationFilter) {
+            if (/locationFilter:\s*"[^"]*"/.test(next)) {
+              next = next.replace(/(locationFilter:\s*")[^"]*(")/, `$1${escapeJs(item.locationFilter)}$2`);
+            } else {
+              next = next.replace(/\s*},$/, `, locationFilter: "${escapeJs(item.locationFilter)}" },`);
+            }
+          }
           if (next !== original) {
             outText = outText.slice(0, openBrace) + next + outText.slice(closeComma + 2);
             updated.push({ name: item.name, state: item.state });
@@ -193,7 +200,8 @@ function main() {
       continue;
     }
 
-    const entry = `  { campus: "${escapeJs(item.name)}", type: "${escapeJs(item.platform_type)}", url: "${escapeJs(item.career_url)}" },`;
+    const locationFilter = item.locationFilter ? `, locationFilter: "${escapeJs(item.locationFilter)}"` : "";
+    const entry = `  { campus: "${escapeJs(item.name)}", type: "${escapeJs(item.platform_type)}", url: "${escapeJs(item.career_url)}"${locationFilter} },`;
     if (!toInsertByArray.has(arrayName)) toInsertByArray.set(arrayName, []);
     toInsertByArray.get(arrayName).push({
       name: item.name,

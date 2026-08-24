@@ -1236,6 +1236,25 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "SUM Bible College and Theological Seminary", type: "generic", url: "https://www.sum.edu/employment/" },
   { campus: "Las Positas College", type: "peopleadmin", url: "https://clpccd.peopleadmin.com/" },
   { campus: "Moreno Valley College", type: "generic", url: "https://www.mvc.edu/admin/careers.php" },
+  { campus: "Columbia College", type: "peopleadmin", url: "https://yosemite.peopleadmin.com/" },
+  { campus: "Fullerton College", type: "peopleadmin", url: "https://nocccd.peopleadmin.com/postings/search?query=Fullerton+College&query_position_type_id%5B%5D=2&commit=Search" },
+  { campus: "Irvine Valley College", type: "schooljobs", url: "https://www.schooljobs.com/careers/socccd", locationFilter: "Irvine Valley" },
+  { campus: "Long Beach City College", type: "generic", url: "https://www.lbcc.edu/careers" },
+  { campus: "Los Medanos College", type: "peopleadmin", url: "https://www.4cdcareers.net/postings/search?449%5B%5D=5&453%5B%5D=2&453%5B%5D=3&commit=Search" },
+  { campus: "Madera Community College", type: "peopleadmin", url: "https://scccd.peopleadmin.com/postings/search?615%5B%5D=14&query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search" },
+  { campus: "Mendocino College", type: "schooljobs", url: "https://www.schooljobs.com/careers/mendocinoedu" },
+  { campus: "Napa Valley College", type: "schooljobs", url: "https://www.schooljobs.com/careers/napavalley" },
+  { campus: "Orange Coast College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cccd/promotionaljobs", locationFilter: "Orange Coast College" },
+  { campus: "Pasadena City College", type: "schooljobs", url: "https://www.schooljobs.com/careers/pasadenaedu" },
+  { campus: "Peralta Community College System Office", type: "schooljobs", url: "https://www.schooljobs.com/careers/peralta" },
+  { campus: "Reedley College", type: "peopleadmin", url: "https://scccd.peopleadmin.com/postings/search?615%5B%5D=3&query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search" },
+  { campus: "Sacramento City College", type: "schooljobs", url: "https://www.schooljobs.com/careers/losriosccd", locationFilter: "Sacramento City College" },
+  { campus: "Saddleback College", type: "schooljobs", url: "https://www.schooljobs.com/careers/socccd", locationFilter: "Saddleback" },
+  { campus: "San Jose City College", type: "peopleadmin", url: "https://sjeccd.peopleadmin.com/postings/search?query=San+Jose+City+College&1333%5B%5D=1&1333%5B%5D=4&commit=Search" },
+  { campus: "Santa Barbara City College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sbcc" },
+  { campus: "South Orange County Community College District", type: "schooljobs", url: "https://www.schooljobs.com/careers/socccd" },
+  { campus: "Ventura County Community College System Office", type: "schooljobs", url: "https://www.schooljobs.com/careers/vcccd", locationFilter: "District Administrative Center" },
+  { campus: "West Hills Community College District", type: "schooljobs", url: "https://www.schooljobs.com/careers/whccd", locationFilter: "District Office" },
 ];
 
 // NJ (multi-platform)
@@ -1885,6 +1904,14 @@ const NC_CAMPUSES = [
   { campus: "McDowell Technical Community College", type: "generic", url: "https://www.mcdowelltech.edu/employment-opportunities" },
   { campus: "Pitt Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/pittccedu" },
   { campus: "Robeson Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/robeson" },
+  { campus: "Isothermal Community College", type: "generic", url: "https://www.isothermal.edu/employees/human-resources/employment-opportunities.html" },
+  { campus: "James Sprunt Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/jamesspruntcc" },
+  { campus: "Johnston Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/johnstonccedu/ftfaculty" },
+  { campus: "Randolph Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/randolphedu" },
+  { campus: "Roanoke-Chowan Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/roanokechowan" },
+  { campus: "Sandhills Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sandhills" },
+  { campus: "Stanly Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/stanlyedu" },
+  { campus: "Wake Technical Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/waketechedu" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -3007,6 +3034,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Webb Institute", type: "generic", url: "https://www.webb.edu/employment/" },
   { campus: "St Bonaventure University", type: "generic", url: "https://www.sbu.edu/about/career-opportunities" },
   { campus: "SUNY College at Geneseo", type: "peopleadmin", url: "https://jobs.geneseo.edu/postings/search" },
+  { campus: "Nassau Community College", type: "interviewexchange", url: "http://ncc.interviewexchange.com/" },
 ];
 
 // OR (Oregon)
@@ -4788,6 +4816,11 @@ const IL_CAMPUSES = [
   { campus: "Rockford University", type: "generic", url: "https://www.rockford.edu/community/humanresources/faculty/" },
   { campus: "Lewis and Clark Community College", type: "generic", url: "https://www.lc.edu/team-members/human-resources/index.html" },
   { campus: "Prairie State College", type: "peopleadmin", url: "https://prairiestate.peopleadmin.com/" },
+  { campus: "John A Logan College", type: "generic", url: "https://www.jalc.edu/employment-opportunities/" },
+  { campus: "Joliet Junior College", type: "workday", url: "https://jjc.wd1.myworkdayjobs.com/JJCHR?workerSubType=a2e815caee300163b0e5239b0d019203" },
+  { campus: "Kishwaukee College", type: "peopleadmin", url: "https://kish.peopleadmin.com/" },
+  { campus: "Lincoln Land Community College", type: "peopleadmin", url: "https://llcc.peopleadmin.com/" },
+  { campus: "Oakton College", type: "interviewexchange", url: "https://oakton.interviewexchange.com/static/clients/357OCM1/index.jsp" },
 ];
 
 // ID (Idaho)
@@ -5339,6 +5372,13 @@ const TX_CAMPUSES = [
   { campus: "Lamar State College-Port Arthur", type: "schooljobs", url: "https://www.schooljobs.com/careers/lamarpa?page=1" },
   { campus: "Lee College", type: "schooljobs", url: "https://www.schooljobs.com/careers/lee/" },
   { campus: "Northeast Texas Community College", type: "generic", url: "https://www.ntcc.edu/hr" },
+  { campus: "Howard College", type: "generic", url: "https://www.howardcollege.edu/careers.html" },
+  { campus: "North Central Texas College", type: "peopleadmin", url: "https://employment.nctc.edu/" },
+  { campus: "Paris Junior College", type: "generic", url: "https://www.parisjc.edu/hr/jobs/index.php" },
+  { campus: "South Plains College", type: "peopleadmin", url: "https://southplainscollege.peopleadmin.com/" },
+  { campus: "Tarrant County College District", type: "generic", url: "https://www.tccd.edu/community/employment/" },
+  { campus: "Temple College", type: "schooljobs", url: "https://www.schooljobs.com/careers/templejc" },
+  { campus: "Wharton County Junior College", type: "schooljobs", url: "https://www.schooljobs.com/careers/wcjc" },
 ];
 
 // FL (Florida)
@@ -7650,7 +7690,7 @@ export function looksFacultyish(title) {
 
 export function isGenericFacultyPageChromeTitle(title) {
   const value = clean(title);
-  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
+  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
 }
 
 /* ============================== CUNY ============================== */

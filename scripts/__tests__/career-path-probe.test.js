@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { compareDiscoveryPriority, excludePreviouslyReported, isRejectedCareerPage } from "../lib/career-path-probe.js";
+import { canonicalizeDiscoveredCareerUrl, compareDiscoveryPriority, excludePreviouslyReported, isRejectedCareerPage } from "../lib/career-path-probe.js";
 
 test("career path probing rejects fabricated faculty/jobs and soft-404 pages", () => {
   assert.equal(isRejectedCareerPage("https://example.edu/faculty/jobs"), true);
@@ -80,4 +80,23 @@ test("career discovery can skip every institution from the previous batch report
   const rows = [{ name: "First College" }, { name: "Second University" }, { name: "Third Institute" }];
   const priorResults = [{ name: " first   college " }, { name: "SECOND UNIVERSITY" }];
   assert.deepEqual(excludePreviouslyReported(rows, priorResults), [{ name: "Third Institute" }]);
+});
+
+test("career discovery canonicalizes redirect, job-detail, and session URLs", () => {
+  assert.equal(
+    canonicalizeDiscoveredCareerUrl("https://www.schooljobs.com/careers/example/jobs/1234/faculty-role?pagetype=promotionalJobs"),
+    "https://www.schooljobs.com/careers/example",
+  );
+  assert.equal(
+    canonicalizeDiscoveredCareerUrl("https://outlook.office.com.invalid/"),
+    "https://outlook.office.com.invalid/",
+  );
+  assert.equal(
+    canonicalizeDiscoveredCareerUrl("https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.schooljobs.com%2Fcareers%2Fcollege%2Fjobs%2F123%2Frole&data=x"),
+    "https://www.schooljobs.com/careers/college",
+  );
+  assert.equal(
+    canonicalizeDiscoveredCareerUrl("https://college.interviewexchange.com/static/clients/123/index.jsp;jsessionid=ABC123"),
+    "https://college.interviewexchange.com/static/clients/123/index.jsp",
+  );
 });

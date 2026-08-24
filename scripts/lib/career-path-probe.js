@@ -1,5 +1,37 @@
 import { isSuspiciousSyntheticCareerUrl } from "./institution-audit.js";
 
+export function canonicalizeDiscoveredCareerUrl(value) {
+  let url = String(value || "").trim();
+  if (!url) return url;
+
+  try {
+    const parsed = new URL(url);
+    if (/safelinks\.protection\.outlook\.com$/i.test(parsed.hostname) && parsed.searchParams.get("url")) {
+      url = parsed.searchParams.get("url");
+    }
+  } catch {
+    return url;
+  }
+
+  try {
+    const parsed = new URL(url);
+    parsed.hash = "";
+    if (/schooljobs\.com$/i.test(parsed.hostname)) {
+      const match = parsed.pathname.match(/^(\/careers\/[^/]+)(?:\/(?:jobs\/\d+|jobinterestcards)(?:\/.*)?)?$/i);
+      if (match) {
+        parsed.pathname = match[1];
+        parsed.search = "";
+      }
+    }
+    if (/interviewexchange\.com$/i.test(parsed.hostname)) {
+      parsed.pathname = parsed.pathname.replace(/;jsessionid=[^/?;]+/gi, "");
+    }
+    return parsed.toString().replace(/\/$/, parsed.pathname === "/" ? "/" : "");
+  } catch {
+    return url;
+  }
+}
+
 export function isRejectedCareerPage(url, bodyText = "") {
   const value = String(url || "").trim();
   if (isSuspiciousSyntheticCareerUrl(value)) return true;
