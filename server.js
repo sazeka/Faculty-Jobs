@@ -4118,6 +4118,15 @@ const MT_CAMPUSES = [
 
 // WI (Wisconsin)
 const WI_CAMPUSES = [
+  // Herzing's official UKG board exposes stable physical-location IDs for
+  // each campus. Crawl it once from the Wisconsin route (the system's Madison
+  // home campus), then split jobs only when a posting names exactly one known
+  // campus location. Remote, multi-campus, and unknown locations fail closed.
+  {
+    campus: "Herzing University-Madison",
+    type: "herzing-ukg",
+    url: "https://recruiting2.ultipro.com/HER1009HRZ/JobBoard/267d2e37-abff-4559-8a18-a754503d3749",
+  },
   { campus: "University of Wisconsin-Green Bay", type: "workday", url: "https://wisconsin.wd1.myworkdayjobs.com/en-US/UW_Comprehensives?Institution=5adf054562b610142325cf0d5f910000" },
   { campus: "Lakeshore Technical College", type: "generic", url: "https://careers.lakeshore.edu/jobs" },
   { campus: "Moraine Park Technical College", type: "generic", url: "https://www.morainepark.edu/experience-mptc/jobs-and-careers/" },
@@ -14084,6 +14093,102 @@ async function scrapeUltiproUkgAs(context, startUrl, campusName, sourceName, loc
   }
 }
 
+const HERZING_UKG_LOCATION_CONTROLS = new Map([
+  ["c2d25b7f-450e-5167-ac35-7b90ffc3c832", { college: "Herzing University-Akron", state: "OH" }],
+  ["d187b300-0705-5f7f-9755-716afbf78f98", { college: "Herzing University-Atlanta", state: "GA" }],
+  ["6a99e2ad-12be-53fe-a016-57189e1b51d5", { college: "Herzing University-Birmingham", state: "AL" }],
+  ["e6207fbe-c5a3-5b10-8297-0b0f81609bce", { college: "Herzing University-Brookfield", state: "WI" }],
+  ["55541c66-4a71-5930-8d3b-cfe787b8ebcd", { college: "Herzing University-Kenosha", state: "WI" }],
+  ["1ecc406d-feae-5da3-9538-23f825b73f43", { college: "Herzing University-Madison", state: "WI" }],
+  ["e1b5a67d-0540-50f9-8adb-b615d6704a01", { college: "Herzing University-Minneapolis", state: "MN" }],
+  ["cf941be5-7919-5b32-9903-cbb8d0055b45", { college: "Herzing University-Nashville", state: "TN" }],
+  ["0381b4e8-5956-5022-90bb-4bd76d8b5711", { college: "Herzing University-New Orleans", state: "LA" }],
+  ["ced19389-0496-5e08-a96f-87f962eef3db", { college: "Herzing University-Orlando", state: "FL" }],
+  ["f4b3b305-28a3-5e75-b34f-5144fa117671", { college: "Herzing University-Tampa", state: "FL" }],
+]);
+
+export function splitHerzingUkgLocation(opportunity) {
+  const locations = opportunity?.Locations || opportunity?.locations;
+  if (!Array.isArray(locations) || locations.length !== 1) return null;
+  const id = String(locations[0]?.Id || locations[0]?.id || "").trim();
+  return HERZING_UKG_LOCATION_CONTROLS.get(id) || null;
+}
+
+export async function scrapeHerzingUkgAs(context, startUrl, sourceName = "Herzing") {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    const opportunities = await safeEvaluate(page, async () => {
+      const endpoint = `${location.pathname.replace(/\/$/, "")}/JobBoardView/LoadSearchResults`;
+      const filters = [4, 5, 6, 37].map((fieldName) => ({
+        t: "TermsSearchFilterDto",
+        fieldName,
+        extra: null,
+        values: [],
+      }));
+      const all = [];
+      let totalCount = Number.POSITIVE_INFINITY;
+      for (let skip = 0; skip < totalCount; skip += 100) {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            opportunitySearch: { Top: 100, Skip: skip, QueryString: "", Filters: filters },
+            matchCriteria: {
+              PreferredJobs: [],
+              Educations: [],
+              LicenseAndCertifications: [],
+              Skills: [],
+              hasNoLicenses: false,
+              SkippedSkills: [],
+            },
+          }),
+        });
+        if (!response.ok) throw new Error(`Herzing UKG endpoint returned HTTP ${response.status}`);
+        const payload = await response.json();
+        const batch = Array.isArray(payload?.opportunities) ? payload.opportunities : [];
+        totalCount = Number(payload?.totalCount ?? batch.length);
+        all.push(...batch);
+        if (!batch.length || all.length >= totalCount) break;
+      }
+      return all;
+    });
+
+    const jobs = [];
+    for (const opportunity of opportunities || []) {
+      const title = normalizeJobTitle(opportunity?.Title) || clean(opportunity?.Title);
+      if (opportunity?.FullTime !== true) continue;
+      if (opportunity?.JobCategoryName !== "Academics") continue;
+      if (!looksFacultyish(title) || omitAdjunct(title)) continue;
+      const campus = splitHerzingUkgLocation(opportunity);
+      if (!campus) continue;
+      const location = opportunity.Locations[0];
+      const city = clean(location?.Address?.City || location?.LocalizedDescription);
+      const state = clean(location?.Address?.State?.Code || campus.state);
+      jobs.push({
+        title,
+        url: `${startUrl.replace(/\/$/, "")}/OpportunityDetail?opportunityId=${encodeURIComponent(opportunity.Id)}`,
+        source: sourceName,
+        category: "Faculty",
+        college: campus.college,
+        state: campus.state,
+        location: city ? `${city}, ${state}` : null,
+        description: clean(opportunity?.BriefDescription) || null,
+        postedDate: opportunity?.PostedDate || null,
+      });
+    }
+
+    const filtered = uniqByUrl(jobs);
+    console.log(`Herzing UKG listings scraped once and campus-scoped: ${filtered.length}`);
+    return filtered;
+  } catch (e) {
+    console.error(`❌ Herzing UKG scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 // "SILC" accordion widget (Colgate University's Drupal theme, class prefix
 // `silc-accordion__`). Each posting is a `<button class="silc-accordion__
 // label">` (the real title) paired via aria-controls/aria-labelledby with a
@@ -17526,6 +17631,7 @@ async function scrapeWiAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "WI");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "WI");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "WI");
+        if (type === "herzing-ukg") return await scrapeHerzingUkgAs(context, url, "Herzing");
         // No existing WI dispatch case for "ultipro-ukg" (function
         // scrapeUltiproUkgAs already exists and is dispatched by NY/VA) --
         // added for Bryant & Stratton College-Wauwatosa.
