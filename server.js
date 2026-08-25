@@ -6447,6 +6447,9 @@ const LA_CAMPUSES = [
   { campus: "Tulane University of Louisiana", type: "generic", url: "https://hr.tulane.edu/jobs" },
   { campus: "Southeastern Louisiana University", type: "generic", url: "https://www.southeastern.edu/admin/hr/jobs/" },
   { campus: "Northwest Louisiana Technical Community College", type: "generic", url: "https://www.nltcc.edu/human-resources/index" },
+  // Official institution-owned PeopleAdmin board. The host is exclusive to
+  // Nicholls and exposes canonical /postings/:id job details.
+  { campus: "Nicholls State University", type: "peopleadmin", url: "https://jobs.nicholls.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&1667%5B%5D=3&commit=Search" },
   { campus: "Louisiana Delta Community College", type: "generic", url: "https://www.ladelta.edu/faculty-and-staff/human-resources/employment-opportunities/" },
   { campus: "River Parishes Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/louisiana?department[0]=River%20Parishes%20Community%20College&sort=PositionTitle%7CAscending" },
   { campus: "South Louisiana Community College", type: "generic", url: "https://www.solacc.edu/jobs" },
@@ -6458,6 +6461,9 @@ const LA_CAMPUSES = [
   { campus: "Southern University System Vacancies", type: "southern-system-vacancies", url: "https://www.sus.edu/news/category/position-vacancy-announcements" },
   { campus: "Southern University at New Orleans", type: "southern-vacancies", url: "https://www.suno.edu/news/category/position-vacancy-announcements" },
   { campus: "Southern University at Shreveport", type: "generic", url: "https://www.susla.edu/index.cfm?action=newsroom.category&categoryID=careers" },
+  // UNO's official careers page links directly to this institution-specific
+  // Workday tenant; it is not the broader University of Louisiana board.
+  { campus: "University of New Orleans", type: "workday", url: "https://ulsuno.wd1.myworkdayjobs.com/UniversityOfNewOrleans" },
 ];
 
 // AR (Arkansas)
