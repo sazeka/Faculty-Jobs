@@ -6,6 +6,8 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const exclusionsPage = fs.readFileSync(path.join(ROOT, "web-vue/public/policy-exclusions.html"), "utf8");
+const publicCopy = fs.readFileSync(path.join(ROOT, "public/policy-exclusions.html"), "utf8");
+const docsCopy = fs.readFileSync(path.join(ROOT, "docs/policy-exclusions.html"), "utf8");
 
 test("policy exclusions page uses the Faculty Atlas visual system", () => {
   assert.match(exclusionsPage, /--paper:\s*#fff/);
@@ -14,5 +16,15 @@ test("policy exclusions page uses the Faculty Atlas visual system", () => {
   assert.match(exclusionsPage, /Newsreader/);
   assert.match(exclusionsPage, /JetBrains Mono/);
   assert.match(exclusionsPage, /Faculty <i>Atlas<\/i>/);
+  assert.match(exclusionsPage, /position:\s*sticky/);
+  assert.match(exclusionsPage, /background:\s*var\(--paper\)/);
+  assert.match(exclusionsPage, /<nav class="nav" aria-label="Primary navigation">/);
+  assert.match(exclusionsPage, /<hr class="masthead-rule" \/>/);
+  assert.match(exclusionsPage, /<div class="edition-bar">/);
   assert.doesNotMatch(exclusionsPage, /#f8f4ec|linear-gradient\(180deg, #fbf8f2/);
+});
+
+test("all deployed policy exclusions copies share the same site shell", () => {
+  assert.equal(publicCopy, exclusionsPage);
+  assert.equal(docsCopy, exclusionsPage);
 });
