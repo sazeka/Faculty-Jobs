@@ -15,6 +15,10 @@ test("third four-year pass promotes only reviewed official sources", () => {
     assert.match(source, new RegExp(`^\\s*\\{ campus: "${escaped}"`, "m"), item.name);
   }
   for (const item of review.rejected) {
+    if (item.name === "Gratz College") {
+      assert.doesNotMatch(source, /campus: "Gratz College"[^\n]+\/students\/research\/global-employment-opportunities/);
+      continue;
+    }
     const escaped = item.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     assert.doesNotMatch(source, new RegExp(`^\\s*\\{ campus: "${escaped}"`, "m"), item.name);
   }

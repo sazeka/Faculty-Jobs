@@ -1505,6 +1505,7 @@ const CLAREMONT_CAMPUSES = [
 
 // PA (multi-platform)
 const PA_CAMPUSES = [
+  { campus: "Gratz College", type: "generic", url: "https://www.gratz.edu/employment" },
   { campus: "Luzerne County Community College", type: "generic", url: "https://www.luzerne.edu/about/jobs/jobs.jsp" },
   { campus: "Lancaster County Career and Technology Center", type: "applitrack", url: "https://www.applitrack.com/lancasterctc/onlineapp/default.aspx?all=1" },
   {
