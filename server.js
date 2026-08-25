@@ -1363,6 +1363,27 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "University of the Pacific", type: "peopleadmin", url: "https://pacific.peopleadmin.com/postings/search?query_position_type_id%5B%5D=6&commit=Search" },
   { campus: "Solano Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/solanocc" },
   { campus: "Pacific School of Religion", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=bdb6d78d-6a79-44b2-97af-ca9e47c87201" },
+  // Pitzer's official employment page separates staff and faculty. The
+  // faculty link is an employer-specific AcademicJobsOnline roster, avoiding
+  // the shared Claremont staff Workday tenant entirely.
+  { campus: "Pitzer College", type: "academicjobsonline", url: "https://academicjobsonline.org/ajo/Pitzer%20College/Office%20of%20the%20Dean%20of%20Faculty" },
+  // The University HR page exposes distinct PeopleAdmin links for Faculty and
+  // Adjunct Faculty. Use only the regular Faculty position type (id 2).
+  { campus: "University of La Verne", type: "peopleadmin", url: "https://laverne.peopleadmin.com/postings/search?query_position_type_id%5B%5D=2&commit=Search" },
+  // USF's official careers page links directly to this dedicated full-time
+  // faculty Workday site, separate from staff and part-time academic roles.
+  { campus: "University of San Francisco", type: "workday", url: "https://usfca.wd5.myworkdayjobs.com/USF_Full-Time_Faculty" },
+  // WesternU has California and Oregon campuses on one PeopleAdmin board.
+  // Require both the Faculty position type and California location facets.
+  { campus: "Western University of Health Sciences", type: "peopleadmin", url: "https://jobs.westernu.edu/postings/search?query_position_type_id%5B%5D=2&2711%5B%5D=1&commit=Search" },
+  // This institution-authored Provost page is exclusively for faculty
+  // vacancies. It currently has no openings, but retains stable faculty-page
+  // markers that let validation distinguish a healthy zero from a failure.
+  { campus: "Westmont College", type: "generic", url: "https://www.westmont.edu/office-provost/open-positions" },
+  // Workday's Instructional Faculty job-family facet excludes the staff and
+  // academic-affairs families. Two residual administrative/support titles in
+  // that family are rejected explicitly before publication.
+  { campus: "Samuel Merritt University", type: "workday", url: "https://samuelmerritt.wd1.myworkdayjobs.com/smucareers?jobFamily=354364828a5e010b8f2897b83ce40000", excludeTitleFilter: "\\b(?:associate dean|simulation educator)\\b" },
 ];
 
 // NJ (multi-platform)
@@ -10076,18 +10097,24 @@ async function scrapeCaPrivate(context) {
   const results = await mapWithConcurrency(
     CA_PRIVATE_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter, employmentFilter, contentFilter }) => {
+    async ({ campus, type, url, locationFilter, employmentFilter, contentFilter, excludeTitleFilter }) => {
       try {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "CA Private");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "CA Private");
         if (type === "usc-jobs") return await scrapeUscJobsAs(url, campus, "CA Private");
-        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CA Private");
+        if (type === "workday") {
+          const jobs = await scrapeWorkdayAs(context, url, campus, "CA Private");
+          return excludeTitleFilter
+            ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || ""))
+            : jobs;
+        }
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CA Private");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "CA Private");
         if (type === "schooljobs") {
           return await scrapeSchoolJobsAs(context, url, campus, "CA Private", locationFilter || null, contentFilter || null);
         }
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "CA Private");
+        if (type === "academicjobsonline") return await scrapeAcademicJobsOnlineAs(context, url, campus, "CA Private");
         if (type === "csod") {
           return await scrapeCsodAs(context, url, campus, "CA Private", { locationFilter, employmentFilter });
         }
@@ -15922,7 +15949,7 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
 
 // AcademicJobsOnline (AJO) scraper: uses aria-labelledby/adjacent span text
 // because listing link text is often an internal code (e.g., "APO").
-async function scrapeAcademicJobsOnlineAs(context, startUrl, campusName, sourceName) {
+export async function scrapeAcademicJobsOnlineAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });

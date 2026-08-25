@@ -15,6 +15,13 @@ test("third four-year pass promotes only reviewed official sources", () => {
     assert.match(source, new RegExp(`^\\s*\\{ campus: "${escaped}"`, "m"), item.name);
   }
   for (const item of review.rejected) {
+    if (item.name === "Pitzer College") {
+      // The rejected candidate was explicitly a shared staff board. A later
+      // review found the separate faculty-only AJO roster linked by Pitzer.
+      assert.doesNotMatch(source, /campus: "Pitzer College"[^\n]+theclaremontcolleges\.wd1\.myworkdayjobs\.com/);
+      assert.match(source, /campus: "Pitzer College"[^\n]+academicjobsonline\.org\/ajo\/Pitzer/);
+      continue;
+    }
     if (item.name === "Gratz College") {
       assert.doesNotMatch(source, /campus: "Gratz College"[^\n]+\/students\/research\/global-employment-opportunities/);
       continue;
