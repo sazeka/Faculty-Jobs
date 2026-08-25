@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-25T17:43:47.807Z",
+  "updatedAt": "2026-08-25T17:49:50.906Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -4352,8 +4352,9 @@
       "name": "Oklahoma State University",
       "homepage_url": null,
       "career_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
-      "platform_type": "pageup",
-      "notes": "Known filtered URL still works as-is (no URL change). 90 postings shown, heavily faculty/adjunct/instructor across Stillwater, OKC, Tulsa, and Okmulgee campuses. platform_type was recorded as generic; corrected to pageup to match the underlying PageUp-hosted okstate.edu jobs board."
+      "platform_type": "okstate-system",
+      "notes": "Verified live 2026-08-25 on the official Oklahoma State faculty board. One PageUp scan is split by the row's exact Posting Campus department code (STW/TUL/CHS/OKM/OKC); unmatched rows fail closed. Current qualifying faculty jobs: 35.",
+      "coverage_source": "Oklahoma State University System"
     },
     {
       "name": "Old Dominion University",
@@ -6888,6 +6889,27 @@
       "platform_type": "seattle-colleges-district",
       "coverage_source": "Seattle Colleges",
       "notes": "Verified live 2026-08-25 from Seattle Colleges' official Careers page: district-scoped ctcLink SiteId=060. The board is scraped once and jobs are assigned only when Location or title explicitly identifies South Seattle College; ambiguous districtwide rows fail closed. Current qualifying faculty jobs: 0."
+    },
+    {
+      "name": "Oklahoma State University Center for Health Sciences",
+      "career_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
+      "platform_type": "okstate-system",
+      "coverage_source": "Oklahoma State University System",
+      "notes": "Verified live 2026-08-25 on the official Oklahoma State faculty board. One PageUp scan is split by the row's exact Posting Campus department code (STW/TUL/CHS/OKM/OKC); unmatched rows fail closed. Current qualifying faculty jobs: 7."
+    },
+    {
+      "name": "Oklahoma State University Institute of Technology",
+      "career_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
+      "platform_type": "okstate-system",
+      "coverage_source": "Oklahoma State University System",
+      "notes": "Verified live 2026-08-25 on the official Oklahoma State faculty board. One PageUp scan is split by the row's exact Posting Campus department code (STW/TUL/CHS/OKM/OKC); unmatched rows fail closed. Current qualifying faculty jobs: 11."
+    },
+    {
+      "name": "Oklahoma State University-Oklahoma City",
+      "career_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
+      "platform_type": "okstate-system",
+      "coverage_source": "Oklahoma State University System",
+      "notes": "Verified live 2026-08-25 on the official Oklahoma State faculty board. One PageUp scan is split by the row's exact Posting Campus department code (STW/TUL/CHS/OKM/OKC); unmatched rows fail closed. Current qualifying faculty jobs: 29."
     }
   ]
 }

@@ -6603,7 +6603,10 @@ const KS_CAMPUSES = [
 const OK_CAMPUSES = [
   { campus: "Southwestern Oklahoma State University", type: "csod", url: "https://swosu.csod.com/ux/ats/careersite/6/home?c=swosu" },
   { campus: "Seminole State College", type: "generic", url: "https://www.sscok.edu/about-ssc/hr-employment/index.html" },
-  { campus: "Oklahoma State University", type: "generic", url: "https://jobs.okstate.edu/faculty/jobs" },
+  // One official PageUp board covers Stillwater/Tulsa, the Center for Health
+  // Sciences, OSUIT, and OSU-OKC. Each row exposes a durable department code
+  // (STW/TUL/CHS/OKM/OKC), so scrape once and split only on that exact field.
+  { campus: "Oklahoma State University System", type: "okstate-system", url: "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=" },
   { campus: "University of Oklahoma", type: "interfolio", url: "https://apply.interfolio.com/16123/positions" },
   { campus: "University of Oklahoma Health Sciences Center", type: "interfolio", url: "https://apply.interfolio.com/46259/positions" },
   { campus: "Autry Technology Center", type: "generic", url: "https://autrytech.tedk12.com/hire/index.aspx" },
@@ -16073,6 +16076,14 @@ export async function scrapePageUpAs(context, startUrl, campusName, sourceName) 
           return m ? clean(m[1]) : null;
         };
 
+        const inferDepartmentFromCard = (card, cardText) => {
+          const explicit = clean(card?.querySelector?.("[data-label='Department'], [aria-label^='Department:'], .department")?.textContent);
+          if (explicit) return explicit.replace(/^Department:\s*/i, "");
+          const t = clean(cardText || "");
+          const coded = t.match(/\b([A-Z][A-Z &,/'-]{2,80}\s+\((?:STW|TUL|CHS|OKM|OKC)\))/);
+          return coded ? clean(coded[1]) : null;
+        };
+
 
         const out = [];
         const anchors = Array.from(document.querySelectorAll("a[href]"));
@@ -16094,7 +16105,8 @@ export async function scrapePageUpAs(context, startUrl, campusName, sourceName) 
           const card = a.closest("article, li, tr, div, section") || a.parentElement;
           const cardText = clean(card?.innerText || "");
           const location = inferLocationFromCard(card, cardText);
-          out.push({ title, url, location });
+          const department = inferDepartmentFromCard(card, cardText);
+          out.push({ title, url, location, department });
         }
 
         const unique = [];
@@ -16123,7 +16135,8 @@ export async function scrapePageUpAs(context, startUrl, campusName, sourceName) 
           const txt = clean(a.textContent).toLowerCase();
           const href = a.getAttribute("href") || "";
           if (!href) continue;
-          if (txt.includes("more jobs") || txt === "next" || /\bpage\s*\d+\b/i.test(txt)) {
+          const label = clean(`${a.getAttribute("aria-label") || ""} ${a.closest("li")?.getAttribute("aria-label") || ""}`).toLowerCase();
+          if (txt.includes("more jobs") || txt === "next" || label === "next page" || /\bpage\s*\d+\b/i.test(txt)) {
             return href;
           }
         }
@@ -16149,6 +16162,8 @@ export async function scrapePageUpAs(context, startUrl, campusName, sourceName) 
       college: campusName,
       location: j.location || null,
       description: null,
+      department: j.department || null,
+      specialization: j.department || null,
     }));
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
@@ -18489,6 +18504,10 @@ async function scrapeOkAll(context) {
     MAX_PARALLEL_CAMPUSES,
     async ({ campus, type, url }) => {
       try {
+        if (type === "okstate-system") {
+          const jobs = await scrapePageUpAs(context, url, campus, "OK");
+          return jobs.map(splitOklahomaStateCampus).filter(Boolean);
+        }
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OK");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OK");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OK");
@@ -18502,6 +18521,20 @@ async function scrapeOkAll(context) {
     }
   );
   return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+export function splitOklahomaStateCampus(job) {
+  if (clean(job?.college) !== "Oklahoma State University System") return job;
+
+  const department = clean(job?.department || "").toUpperCase();
+  const campus =
+    /\(CHS\)$|CENTER FOR HEALTH SCIENCES/.test(department) ? "Oklahoma State University Center for Health Sciences" :
+    /\(OKM\)$|INSTITUTE OF TECHNOLOGY/.test(department) ? "Oklahoma State University Institute of Technology" :
+    /\(OKC\)$|^OKLAHOMA CITY/.test(department) ? "Oklahoma State University-Oklahoma City" :
+    /\((?:STW|TUL)\)$/.test(department) ? "Oklahoma State University" :
+    null;
+
+  return campus ? { ...job, college: campus } : null;
 }
 
 async function scrapeMoAll(context) {

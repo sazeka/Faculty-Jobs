@@ -1,0 +1,56 @@
+{
+  "generatedAt": "2026-08-25T17:49:50.906Z",
+  "scope": "Four Oklahoma State institutions on one official system board",
+  "baseline": {
+    "eligibleUniverse": 3312,
+    "covered": 2482,
+    "missing": 723,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 74.94
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2485,
+    "missing": 720,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 75.03
+  },
+  "appliedCount": 4,
+  "newlyCoveredCount": 3,
+  "currentFacultyJobCount": 82,
+  "ambiguousQualifyingJobCount": 0,
+  "applied": [
+    {
+      "name": "Oklahoma State University",
+      "platform_type": "okstate-system",
+      "career_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
+      "currentFacultyJobCount": 35
+    },
+    {
+      "name": "Oklahoma State University Center for Health Sciences",
+      "platform_type": "okstate-system",
+      "career_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
+      "currentFacultyJobCount": 7
+    },
+    {
+      "name": "Oklahoma State University Institute of Technology",
+      "platform_type": "okstate-system",
+      "career_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
+      "currentFacultyJobCount": 11
+    },
+    {
+      "name": "Oklahoma State University-Oklahoma City",
+      "platform_type": "okstate-system",
+      "career_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
+      "currentFacultyJobCount": 29
+    }
+  ],
+  "safeguards": [
+    "The system board is fetched once, avoiding redundant scans and duplicate job URLs.",
+    "Only exact CHS, OKM, OKC, STW, or TUL department codes assign a row to a campus.",
+    "Rows without a recognized institution code fail closed.",
+    "Existing appointment-track evidence safeguards remain unchanged."
+  ]
+}
