@@ -3055,6 +3055,23 @@ const NY_PRIVATE_CAMPUSES = [
     excludeTitleFilter: "\b(?:CSTEP|current students only)\b",
   },
   {
+    campus: "Hebrew Union College-Jewish Institute of Religion",
+    type: "generic",
+    url: "https://recruiting.paylocity.com/recruiting/jobs/All/727c7840-07f6-4cdf-b2dc-29819ba3b3ca/Hebrew-Union-College",
+  },
+  {
+    campus: "Wagner College",
+    type: "oracle-cloud-api",
+    url: "https://fa-exad-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+  },
+  // This page mixes St. Bernard's own opening with unrelated community jobs.
+  // The dedicated parser emits only the exact institution-authored section.
+  {
+    campus: "St Bernard's School of Theology and Ministry",
+    type: "stbernards-faculty",
+    url: "https://stbernards.edu/job-postings",
+  },
+  {
     campus: "St. John's University",
     type: "stjohns",
     url: "https://www.stjohns.edu/recruitment/faculty-positions",
@@ -11881,6 +11898,37 @@ export async function scrapeAppOneRssAs(feedUrl, campusName, sourceName, exclude
   }
 }
 
+export function parseStBernardsFacultyJobs(html, pageUrl, campusName, sourceName) {
+  const match = String(html || "").match(/<h4\b[^>]*>\s*<strong>\s*(St\. Bernard(?:'|’|&rsquo;)s Faculty Search\s+Visiting Faculty Position \(Open Rank\))\s*<\/strong>\s*<\/h4>([\s\S]*?)(?=<h4\b|$)/i);
+  if (!match) return [];
+  const title = clean(stripHtmlToText(match[1]).replace(/&rsquo;/gi, "’"));
+  const description = clean(stripHtmlToText(match[2]));
+  if (!/St\. Bernard(?:'|’)s School of Theology and Ministry/i.test(description)) return [];
+  if (!/seeking applications for a full-time, non-tenure track/i.test(description)) return [];
+  return [{
+    title,
+    url: pageUrl,
+    source: sourceName,
+    category: "Faculty",
+    college: campusName,
+    location: null,
+    description,
+  }];
+}
+
+export async function scrapeStBernardsFacultyAs(context, pageUrl, campusName, sourceName) {
+  try {
+    const response = await context.request.get(pageUrl, { timeout: 45_000 });
+    if (!response.ok()) throw new Error(`HTTP ${response.status()} for ${pageUrl}`);
+    const jobs = parseStBernardsFacultyJobs(await response.text(), pageUrl, campusName, sourceName);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (exact institution section)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} St. Bernard's scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 export async function scrapeCsodAs(context, startUrl, campusName, sourceName, filters = {}) {
   // Legacy CSOD keeps its custom-field selections in server-side session
   // state. Give each scoped campus scrape an isolated cookie jar so parallel
@@ -14151,6 +14199,7 @@ async function scrapeNyPrivate(context) {
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "NY");
         if (type === "exacthire") return await scrapeExactHireAs(context, url, campus, "NY");
         if (type === "appone-rss") return await scrapeAppOneRssAs(url, campus, "NY", excludeTitleFilter || null);
+        if (type === "stbernards-faculty") return await scrapeStBernardsFacultyAs(context, url, campus, "NY");
         if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "NY", locationFilter || null);
         if (type === "silc-accordion") return await scrapeSilcAccordionAs(context, url, campus, "NY");
         if (type === "vizirecruiter") return await scrapeViziRecruiterApi(url, campus, "NY", jobFamilyFilter || null);

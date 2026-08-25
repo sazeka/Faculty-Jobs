@@ -1,0 +1,73 @@
+{
+  "generatedAt": "2026-08-25T19:31:04.670Z",
+  "scope": "Three specialized New York institutions with exact hiring controls",
+  "baseline": {
+    "eligible_universe": 3312,
+    "covered": 2514,
+    "missing": 691,
+    "excluded_policy": 107,
+    "pending_review": 0
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2517,
+    "missing": 688,
+    "excludedPolicy": 107,
+    "pendingReview": 0
+  },
+  "appliedCount": 3,
+  "newlyCoveredCount": 3,
+  "currentFacultyJobCount": 6,
+  "applied": [
+    {
+      "name": "Hebrew Union College-Jewish Institute of Religion",
+      "url": "https://recruiting.paylocity.com/recruiting/jobs/All/727c7840-07f6-4cdf-b2dc-29819ba3b3ca/Hebrew-Union-College",
+      "officialSource": "https://huc.edu/about-huc/careers-at-huc/",
+      "platformType": "generic",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "rawBoardJobCount": 6,
+      "currentFacultyJobCount": 0,
+      "invalidJobCount": 0,
+      "sampleTitles": []
+    },
+    {
+      "name": "Wagner College",
+      "url": "https://fa-exad-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+      "officialSource": "https://fa-exad-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+      "platformType": "oracle-cloud-api",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "rawBoardJobCount": null,
+      "currentFacultyJobCount": 5,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "Nicolais School of Business - Assistant Professor",
+        "Evelyn L. Sprio School of Nursing - Associated Clinical Faculty of Practice",
+        "Social and Behavioral Sciences - Psychology Department - Professor",
+        "Social and Behavioral Sciences - Psychology Department - Professor",
+        "Humanities - History - Adjunct Faculty"
+      ]
+    },
+    {
+      "name": "St Bernard's School of Theology and Ministry",
+      "url": "https://stbernards.edu/job-postings",
+      "officialSource": "https://stbernards.edu/job-postings",
+      "platformType": "stbernards-faculty",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "rawBoardJobCount": null,
+      "currentFacultyJobCount": 1,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "St. Bernard's Faculty Search Visiting Faculty Position (Open Rank)"
+      ]
+    }
+  ],
+  "safeguards": [
+    "Hebrew Union uses the Paylocity tenant linked from its official careers page and proves healthy zero against six live jobs.",
+    "Wagner uses its dedicated Oracle Recruiting tenant and the existing faculty-title evidence filter.",
+    "St. Bernard's emits only its exact institution-authored faculty section, never unrelated community postings.",
+    "Existing appointment-track evidence safeguards remain unchanged."
+  ]
+}
