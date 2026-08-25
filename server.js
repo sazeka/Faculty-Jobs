@@ -4757,6 +4757,18 @@ const MI_CAMPUSES = [
     url: "https://jobs.oakland.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&242=&243%5B%5D=1&query_position_type_id%5B%5D=1&commit=Search",
   },
   {
+    campus: "University of Michigan-Dearborn",
+    type: "umich-campus",
+    url: "https://careers.umich.edu/search-jobs?career_interest=All&department=&field_job_modes_of_work_target_id=All&job_id=&position=All&regular_temporary=R&title=&work_location=1&page=0",
+    locationFilter: "Dearborn Campus",
+  },
+  {
+    campus: "University of Michigan-Flint",
+    type: "umich-campus",
+    url: "https://careers.umich.edu/search-jobs?career_interest=All&department=&field_job_modes_of_work_target_id=All&job_id=&position=All&regular_temporary=R&title=&work_location=2&page=0",
+    locationFilter: "Flint Campus",
+  },
+  {
     campus: "University of Michigan",
     type: "umich",
     url: "https://careers.umich.edu/",
@@ -9683,7 +9695,7 @@ async function scrapeMaPrivate(context) {
   const results = await mapWithConcurrency(
     MA_PRIVATE_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MA");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "MA");
@@ -11466,7 +11478,11 @@ async function scrapeMiAll(context) {
           }
           return await scrapeNauSearch(context, url, campus, "MI");
         }
-        if (type === "umich") return await scrapeUmichCareers(context, url, campus, "MI");
+        if (type === "umich-campus") return await scrapeUmichCampusAs(context, url, campus, "MI", locationFilter);
+        if (type === "umich") {
+          const jobs = await scrapeUmichCareers(context, url, campus, "MI");
+          return jobs.filter((job) => !/^(?:Dearborn|Flint) Campus$/i.test(clean(job.location || "")));
+        }
         return [];
       } catch (e) {
         console.error(`❌ ${campus} MI scrape failed:`, e?.message || e);
@@ -16994,7 +17010,7 @@ async function fetchEnUsJobDetails(context, urls, concurrency = 6) {
 // University of Michigan (careers.umich.edu) search scraper
 // - Appends Department/Organization to title when available
 // - Captures campus/location when present in listing cards
-async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
+export async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     const jobs = [];
@@ -17013,6 +17029,7 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
       // whole scrape intermittently return 0 jobs. Instead, stop paginating
       // but keep what's been gathered so far.
       let batch;
+      let hasNextPage = false;
       try {
         await gotoWithRetry(page, url, { waitUntil: "domcontentloaded", timeout: 60_000 });
         await page.waitForTimeout(900);
@@ -17048,6 +17065,10 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
 
         const extractFromCard = (card) => {
           if (!card) return { dept: null, loc: null };
+          if (card.tagName === "TR") {
+            const cells = Array.from(card.querySelectorAll("td")).map((cell) => clean(cell.textContent));
+            if (cells.length >= 5) return { dept: cells[3] || null, loc: cells[4] || null };
+          }
           const txt = clean(card.innerText || "");
           const dept = pickField(txt, ["Department", "Organization", "Unit", "Division", "School", "College"]);
           const loc =
@@ -17079,7 +17100,7 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
           const href = abs(a.getAttribute("href"));
           if (!href || !isJobUrl(href)) continue;
 
-          const card = a.closest("article,.views-row,li,div") || a.parentElement;
+          const card = a.closest("tr,article,.views-row,li,div") || a.parentElement;
 
           let title = clean(a.textContent);
           if (!title || title.length < 4 || /view|apply|learn more/i.test(title)) {
@@ -17097,6 +17118,7 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
         const seen = new Set();
         return out.filter((x) => (x.url && !seen.has(x.url) ? (seen.add(x.url), true) : false));
         });
+        hasNextPage = (await page.locator('a[rel="next"], .pager__item--next a, li[aria-label="Next page"] a, a[aria-label="Next page"]').count().catch(() => 0)) > 0;
       } catch (e) {
         console.error(
           `❌ ${campusName} ${sourceName} page ${pageNo} failed, stopping pagination and keeping ${jobs.length} job(s) already collected:`,
@@ -17143,6 +17165,7 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
 
       // Stop when a page yields nothing new (best-effort)
       if (added === 0 && pageNo > 0) break;
+      if (!hasNextPage) break;
     }
 
     console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
@@ -17153,6 +17176,16 @@ async function scrapeUmichCareers(context, startUrl, campusName, sourceName) {
   } finally {
     await page.close().catch(() => {});
   }
+}
+
+export async function scrapeUmichCampusAs(context, startUrl, campusName, sourceName, locationFilter) {
+  const expected = clean(locationFilter || "").toLowerCase();
+  if (!expected) return [];
+  const jobs = await scrapeUmichCareers(context, startUrl, campusName, sourceName);
+  return jobs
+    .filter((job) => clean(job.location || "").toLowerCase() === expected)
+    .filter((job) => looksFacultyish(job.title))
+    .filter((job) => !omitAdjunct(job.title));
 }
 
 

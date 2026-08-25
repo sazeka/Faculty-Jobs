@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-08-25T18:01:50.008Z",
+  "scope": "University of Michigan Dearborn and Flint exact work-location controls",
+  "baseline": {
+    "eligibleUniverse": 3312,
+    "covered": 2485,
+    "missing": 720,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 75.03
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2487,
+    "missing": 718,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 75.09
+  },
+  "appliedCount": 2,
+  "newlyCoveredCount": 2,
+  "currentFacultyJobCount": 12,
+  "applied": [
+    {
+      "name": "University of Michigan-Dearborn",
+      "platform_type": "umich-campus",
+      "career_url": "https://careers.umich.edu/search-jobs?career_interest=All&department=&field_job_modes_of_work_target_id=All&job_id=&position=All&regular_temporary=R&title=&work_location=1&page=0",
+      "location": "Dearborn Campus",
+      "currentFacultyJobCount": 1
+    },
+    {
+      "name": "University of Michigan-Flint",
+      "platform_type": "umich-campus",
+      "career_url": "https://careers.umich.edu/search-jobs?career_interest=All&department=&field_job_modes_of_work_target_id=All&job_id=&position=All&regular_temporary=R&title=&work_location=2&page=0",
+      "location": "Flint Campus",
+      "currentFacultyJobCount": 11
+    }
+  ],
+  "safeguards": [
+    "Dearborn and Flint use official numeric work-location controls plus exact row-location checks.",
+    "The Ann Arbor scraper rejects Dearborn and Flint rows to prevent cross-campus attribution.",
+    "Pagination stops when the official next-page control is absent.",
+    "Existing appointment-track evidence safeguards remain unchanged."
+  ]
+}
