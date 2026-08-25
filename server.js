@@ -5102,6 +5102,12 @@ const ID_CAMPUSES = [
 // IN (Indiana)
 const IN_CAMPUSES = [
   {
+    campus: "Mid-America College of Funeral Service",
+    type: "paylocity-shared",
+    url: "https://recruiting.paylocity.com/recruiting/jobs/All/aef0ebce-1684-4c34-9d19-5e97f0ed0071/Pierce-Mortuary-Colleges-Inc",
+    locationFilter: "MID-AMERICA",
+  },
+  {
     campus: "Indiana University",
     type: "peopleadmin",
     url: "https://indiana.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
@@ -5931,6 +5937,12 @@ const GA_CAMPUSES = [
     url: "https://facultycareers.gsu.edu/postings/search?query_position_type_id%5B%5D=3&query_position_type_id%5B%5D=4&query_organizational_tier_2_id%5B%5D=429&commit=Search",
   },
   { campus: "Helms College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=CDA1B79B0620249447CBC9E755D51645" },
+  {
+    campus: "Gupton Jones College of Funeral Service",
+    type: "paylocity-shared",
+    url: "https://recruiting.paylocity.com/recruiting/jobs/All/aef0ebce-1684-4c34-9d19-5e97f0ed0071/Pierce-Mortuary-Colleges-Inc",
+    locationFilter: "GUPTON-JONES",
+  },
   { campus: "University of Georgia", type: "peopleadmin", url: "https://www.ugajobsearch.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&225=&436=&query_position_type_id%5B%5D=7&query_position_type_id%5B%5D=8&commit=Search" },
   { campus: "Georgia State University", type: "peopleadmin", url: "https://facultycareers.gsu.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&435=&commit=Search" },
   { campus: "Spelman College", type: "peopleadmin", url: "https://spelman.peopleadmin.com/postings/search?commit=Search&query_position_type_id%5B%5D=3&sort=225+asc&utf8=%E2%9C%93" },
@@ -11722,13 +11734,33 @@ export async function scrapeTrinityHealthSearchAs(context, searchUrl, campusName
 // by Dallas Institute of Funeral Service, Mid-America College of Funeral
 // Service, Gupton-Jones College of Funeral Service) -- each posting's own
 // location tag (e.g. "DALLAS", "MID-AMERICA") lives in a sibling column, not
-// inside the title anchor's own text, so a locationFilter is required to
+// inside the title anchor's own text, so an exact locationFilter is required to
 // avoid misattributing one sibling's posting to another (same shape as the
 // Bemidji State/UltiPro-UKG precedents). Confirmed via raw DOM read: walking
 // up 3 ancestor levels from the title `<a>` reaches a
-// `div.row.job-listing-job-item` container whose own textContent includes
-// both the title and the location tag.
-async function scrapePaylocitySharedAs(context, startUrl, campusName, sourceName, locationFilter = null) {
+// `div.row.job-listing-job-item`; its `.location-column` holds the scope tag.
+export function buildScopedPaylocityFacultyJobs(rows, campusName, sourceName, locationFilter = null) {
+  const normalizeScope = (value) => clean(value).toUpperCase();
+  const expectedLocation = normalizeScope(locationFilter);
+  const scoped = expectedLocation
+    ? (rows || []).filter((row) => normalizeScope(row?.location) === expectedLocation)
+    : (rows || []);
+
+  return uniqByUrl(scoped)
+    .filter((job) => looksFacultyish(job.title))
+    .filter((job) => !omitAdjunct(job.title))
+    .map((job) => ({
+      title: normalizeJobTitle(job.title),
+      url: job.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: job.location || null,
+      description: null,
+    }));
+}
+
+export async function scrapePaylocitySharedAs(context, startUrl, campusName, sourceName, locationFilter = null) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -11745,29 +11777,16 @@ async function scrapePaylocitySharedAs(context, startUrl, campusName, sourceName
         const title = clean(a.textContent);
         if (!url || !title || title.length < 4) continue;
         const container = a.closest(".job-listing-job-item") || a.closest("div.row") || a.parentElement;
-        out.push({ title, url, containerText: clean(container?.textContent || "") });
+        const location = clean(container?.querySelector(".location-column")?.textContent || "");
+        out.push({ title, url, location });
       }
       return out;
     });
 
-    const scoped = locationFilter
-      ? jobs.filter((j) => (j.containerText || "").toUpperCase().includes(locationFilter.toUpperCase()))
-      : jobs;
-
-    const filtered = uniqByUrl(scoped)
-      .filter((j) => looksFacultyish(j.title))
-      .filter((j) => !omitAdjunct(j.title));
+    const filtered = buildScopedPaylocityFacultyJobs(jobs, campusName, sourceName, locationFilter);
 
     console.log(`${campusName} ${sourceName} Paylocity (shared) listings scraped: ${filtered.length}`);
-    return filtered.map((j) => ({
-      title: normalizeJobTitle(j.title),
-      url: j.url,
-      source: sourceName,
-      category: "Faculty",
-      college: campusName,
-      location: null,
-      description: null,
-    }));
+    return filtered;
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} Paylocity (shared) scrape failed:`, e?.message || e);
     return [];
@@ -17361,6 +17380,7 @@ async function scrapeInAll(context) {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "IN");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "IN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IN");
+        if (type === "paylocity-shared") return await scrapePaylocitySharedAs(context, url, campus, "IN", locationFilter || null);
         if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "IN", locationFilter || null);
         if (type === "adp-career-center") return await scrapeAdpCareerCenterAs(context, url, campus, "IN");
         return [];
@@ -17518,13 +17538,14 @@ async function scrapeGaAll(context) {
   const results = await mapWithConcurrency(
     GA_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "GA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "GA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "GA");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "GA");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "GA");
+        if (type === "paylocity-shared") return await scrapePaylocitySharedAs(context, url, campus, "GA", locationFilter || null);
         if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "GA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "GA");
         return [];
