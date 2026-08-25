@@ -1306,9 +1306,18 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "William Jessup University", type: "generic", url: "https://jessup.edu/about/employment/" },
   { campus: "Golden Gate University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=1A449B35167BB40706C055A54E4FB0DA" },
   { campus: "Los Angeles Pacific University", type: "generic", url: "https://www.lapu.edu/resources/employment" },
+  // LMU's official "Join Our Faculty" page links to this Workday view with
+  // the university's faculty job-family facet already applied. Verified live
+  // against the Workday API: 16 current faculty openings, all attributed to
+  // Loyola Marymount University.
+  { campus: "Loyola Marymount University", type: "workday", url: "https://lmu.wd1.myworkdayjobs.com/Careers?jobFamilyGroup=203baa23bdff01ca267c14ea190e2e97" },
   { campus: "National University", type: "workday", url: "https://nus.wd1.myworkdayjobs.com/Careers" },
   { campus: "Southern California University of Health Sciences", type: "generic", url: "https://www.scuhs.edu/about-scu/careers/" },
   { campus: "Occidental College", type: "pageup", url: "https://careers.oxy.edu/en-us/listing/" },
+  // Pepperdine's official Seaver faculty-employment page links to this
+  // PageUp search with Teaching + Faculty facets. Keeping both facet IDs in
+  // the URL prevents staff openings from entering the institution feed.
+  { campus: "Pepperdine University", type: "pageup", url: "https://jobs.pepperdine.edu/jobs/search?dropdown_field_1_uids%5B%5D=6ca14a4d12d8dc1eb17fa054d2411e33&dropdown_field_3_uids%5B%5D=dcaa7a03ab89b8b42952f428d59046b3&page=1&query=" },
   { campus: "Santa Clara University", type: "workday", url: "https://wd1.myworkdaysite.com/en-US/recruiting/scu/scu" },
   { campus: "SUM Bible College and Theological Seminary", type: "generic", url: "https://www.sum.edu/employment/" },
   { campus: "Las Positas College", type: "peopleadmin", url: "https://clpccd.peopleadmin.com/" },
