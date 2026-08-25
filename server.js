@@ -544,6 +544,10 @@ const CT_PRIVATE_CAMPUSES = [
     type: "generic",
     url: "https://academicpositions.yale.edu/",
   },
+  { campus: "University of Connecticut-Avery Point", type: "pageup-campus", url: "https://careers.pageuppeople.com/967/cw/en-us/listing/?location=UConn%20Avery%20Point", locationFilter: "UConn Avery Point" },
+  { campus: "University of Connecticut-Hartford Campus", type: "pageup-campus", url: "https://careers.pageuppeople.com/967/cw/en-us/listing/?location=UConn%20Hartford", locationFilter: "UConn Hartford" },
+  { campus: "University of Connecticut-Stamford", type: "pageup-campus", url: "https://careers.pageuppeople.com/967/cw/en-us/listing/?location=UConn%20Stamford", locationFilter: "UConn Stamford" },
+  { campus: "University of Connecticut-Waterbury Campus", type: "pageup-campus", url: "https://careers.pageuppeople.com/967/cw/en-us/listing/?location=UConn%20Waterbury", locationFilter: "UConn Waterbury" },
   {
     campus: "University of Connecticut",
     type: "pageup",
@@ -1372,6 +1376,9 @@ const NJ_CAMPUSES = [
     type: "workday",
     url: "https://montclair.wd1.myworkdayjobs.com/JobOpportunities?jobFamilyGroup=0c89f3515631109bdddc974975dae955",
   },
+  { campus: "Rutgers University-Newark", type: "rutgers", url: "https://jobs.rutgers.edu/postings/search?utf8=%E2%9C%93&query=&query_position_type_id%5B%5D=6&2182%5B%5D=3&2201%5B%5D=1&commit=Search" },
+  { campus: "Rutgers University-Camden", type: "rutgers", url: "https://jobs.rutgers.edu/postings/search?utf8=%E2%9C%93&query=&query_position_type_id%5B%5D=6&2182%5B%5D=3&2201%5B%5D=2&commit=Search" },
+  { campus: "Rutgers University-New Brunswick", type: "rutgers", url: "https://jobs.rutgers.edu/postings/search?utf8=%E2%9C%93&query=&query_position_type_id%5B%5D=6&2182%5B%5D=3&2201%5B%5D=3&commit=Search" },
   {
     campus: "Rutgers, The State University of New Jersey",
     type: "rutgers",
@@ -2604,6 +2611,9 @@ const RI_PRIVATE_CAMPUSES = [
 
 // NH (New Hampshire)
 const NH_CAMPUSES = [
+  { campus: "University of New Hampshire College of Professional Studies Online", type: "workday", url: "https://usnh.wd5.myworkdayjobs.com/Careers?locations=1ec6efc4979310011704df0483390000&timeType=1550a879b33f10037951f18fd1800000&workerSubType=b4f41dd8de101000c45c0d3fc2a10001" },
+  { campus: "University of New Hampshire-Franklin Pierce School of Law", type: "workday", url: "https://usnh.wd5.myworkdayjobs.com/Careers?locations=1ec6efc497931001170554505e2d0000&timeType=1550a879b33f10037951f18fd1800000&workerSubType=b4f41dd8de101000c45c0d3fc2a10001" },
+  { campus: "University of New Hampshire-Main Campus", type: "workday", url: "https://usnh.wd5.myworkdayjobs.com/Careers?locations=1ec6efc49793100117073793de1e0000&timeType=1550a879b33f10037951f18fd1800000&workerSubType=b4f41dd8de101000c45c0d3fc2a10001" },
   {
     campus: "University of New Hampshire System",
     // UNH and other USNH campuses surface jobs at jobs.usnh.edu
@@ -5197,6 +5207,11 @@ const IN_CAMPUSES = [
     url: "https://recruiting.paylocity.com/recruiting/jobs/All/aef0ebce-1684-4c34-9d19-5e97f0ed0071/Pierce-Mortuary-Colleges-Inc",
     locationFilter: "MID-AMERICA",
   },
+  { campus: "Indiana University-Bloomington", type: "peopleadmin", url: "https://indiana.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_organizational_tier_1_id%5B%5D=236&query_position_type_id%5B%5D=1&commit=Search" },
+  { campus: "Indiana University-Indianapolis", type: "peopleadmin", url: "https://indiana.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_organizational_tier_1_id%5B%5D=532&query_position_type_id%5B%5D=1&commit=Search" },
+  { campus: "Indiana University-Kokomo", type: "peopleadmin", url: "https://indiana.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_organizational_tier_1_id%5B%5D=513&query_position_type_id%5B%5D=1&commit=Search" },
+  { campus: "Indiana University-South Bend", type: "peopleadmin", url: "https://indiana.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_organizational_tier_1_id%5B%5D=475&query_position_type_id%5B%5D=1&commit=Search" },
+  { campus: "Indiana University-Southeast", type: "peopleadmin", url: "https://indiana.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_organizational_tier_1_id%5B%5D=550&query_position_type_id%5B%5D=1&commit=Search" },
   {
     campus: "Indiana University",
     type: "peopleadmin",
@@ -8694,11 +8709,14 @@ async function scrapeCtPrivate(context) {
   const results = await mapWithConcurrency(
     CT_PRIVATE_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CT");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CT");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "CT");
+        if (type === "pageup-campus") {
+          return await scrapePageUpCampusAs(context, url, campus, "CT", locationFilter);
+        }
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "CT");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CT");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "CT");
@@ -15729,7 +15747,9 @@ export async function scrapePageUpAs(context, startUrl, campusName, sourceName) 
           }
         };
 
-        const inferLocationFromCard = (cardText) => {
+        const inferLocationFromCard = (card, cardText) => {
+          const explicit = clean(card?.querySelector?.(".location, [data-label='Location'], [aria-label='Location']")?.textContent);
+          if (explicit) return explicit;
           const t = clean(cardText || "");
           if (!t) return null;
           const m =
@@ -15760,7 +15780,7 @@ export async function scrapePageUpAs(context, startUrl, campusName, sourceName) 
 
           const card = a.closest("article, li, tr, div, section") || a.parentElement;
           const cardText = clean(card?.innerText || "");
-          const location = inferLocationFromCard(cardText);
+          const location = inferLocationFromCard(card, cardText);
           out.push({ title, url, location });
         }
 
@@ -15822,6 +15842,64 @@ export async function scrapePageUpAs(context, startUrl, campusName, sourceName) 
     return [];
   } finally {
     await page.close().catch(() => {});
+  }
+}
+
+// PageUp's server-rendered listing exposes exact location text on every job
+// card, but some tenants (confirmed at UConn) preserve the requested location
+// checkbox without filtering the HTML result set. Read the compact public HTML
+// directly and fail closed on the exact card location. This avoids launching
+// four slow full-catalog browser sessions for UConn's regional campuses.
+export async function scrapePageUpCampusAs(context, startUrl, campusName, sourceName, locationFilter) {
+  if (!clean(locationFilter)) return [];
+  const jobs = [];
+  const seen = new Set();
+  const visited = new Set();
+  let currentUrl = startUrl;
+
+  try {
+    for (let safety = 0; safety < 40 && currentUrl && !visited.has(currentUrl); safety++) {
+      visited.add(currentUrl);
+      const response = await context.request.get(currentUrl, { timeout: 45_000 });
+      if (!response.ok()) throw new Error(`HTTP ${response.status()} for ${currentUrl}`);
+      const html = await response.text();
+      const anchors = [...html.matchAll(/<a\b([^>]*\bclass=["'][^"']*\bjob-link\b[^"']*["'][^>]*)>([\s\S]*?)<\/a>/gi)];
+
+      for (let index = 0; index < anchors.length; index++) {
+        const match = anchors[index];
+        const attrs = match[1] || "";
+        const href = attrs.match(/\bhref=["']([^"']+)["']/i)?.[1];
+        if (!href) continue;
+        const url = new URL(href.replace(/&amp;/g, "&"), currentUrl).toString();
+        if (seen.has(url)) continue;
+        const title = clean(stripHtmlToText(match[2] || ""));
+        if (!title) continue;
+        const nextIndex = anchors[index + 1]?.index ?? html.length;
+        const tail = html.slice((match.index || 0) + match[0].length, nextIndex);
+        const location = clean(stripHtmlToText(tail.match(/<span\b[^>]*class=["'][^"']*\blocation\b[^"']*["'][^>]*>([\s\S]*?)<\/span>/i)?.[1] || ""));
+        if (location.toLowerCase() !== clean(locationFilter).toLowerCase()) continue;
+        if (!(looksFacultyish(title) || /\bpost[\s-]?doc(?:toral)?\b|\bfellow\b/i.test(title))) continue;
+        if (omitAdjunct(title)) continue;
+        seen.add(url);
+        jobs.push({
+          title,
+          url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location,
+          description: null,
+        });
+      }
+
+      const moreHref = html.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:title=["']More Jobs["']|class=["'][^"']*\bmore-link\b)/i)?.[1];
+      currentUrl = moreHref ? new URL(moreHref.replace(/&amp;/g, "&"), currentUrl).toString() : null;
+    }
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (exact PageUp location)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} exact PageUp scrape failed:`, e?.message || e);
+    return [];
   }
 }
 
