@@ -1384,6 +1384,18 @@ const CA_PRIVATE_CAMPUSES = [
   // academic-affairs families. Two residual administrative/support titles in
   // that family are rejected explicitly before publication.
   { campus: "Samuel Merritt University", type: "workday", url: "https://samuelmerritt.wd1.myworkdayjobs.com/smucareers?jobFamily=354364828a5e010b8f2897b83ce40000", excludeTitleFilter: "\\b(?:associate dean|simulation educator)\\b" },
+  // Southwestern publishes current openings as institution-authored detail
+  // pages below /employment-sw/. A dedicated parser is required because the
+  // same index also links to standing faculty directories and contains a
+  // non-faculty "Faculty and Academic Services Coordinator" opening.
+  { campus: "Southwestern Law School", type: "southwestern-law", url: "https://www.swlaw.edu/employment-sw" },
+  // SFCM's own footer links to this exact, single-employer Paylocity tenant.
+  // The generic scraper safely retains only faculty-like titles from it.
+  { campus: "San Francisco Conservatory of Music", type: "generic", url: "https://recruiting.paylocity.com/recruiting/jobs/All/a77350b7-382e-4ebc-be83-5ce68f2b9d07/San-Francisco-Conservatory-of-Music" },
+  // Institution-authored careers page. It currently advertises four staff
+  // positions and no faculty openings; validation requires both the careers
+  // page marker and current-position evidence before accepting that zero.
+  { campus: "Southern California Institute of Architecture", type: "generic", url: "https://www.sciarc.edu/institution/resources/careers" },
 ];
 
 // NJ (multi-platform)
@@ -10115,6 +10127,7 @@ async function scrapeCaPrivate(context) {
         }
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "CA Private");
         if (type === "academicjobsonline") return await scrapeAcademicJobsOnlineAs(context, url, campus, "CA Private");
+        if (type === "southwestern-law") return await scrapeSouthwesternLawFacultyAs(context, url, campus, "CA Private");
         if (type === "csod") {
           return await scrapeCsodAs(context, url, campus, "CA Private", { locationFilter, employmentFilter });
         }
@@ -15941,6 +15954,63 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
     });
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Southwestern Law School publishes a mixed staff/faculty employment index.
+// Restrict extraction to its own current-opening detail subtree and require an
+// academic rank in the title. This intentionally rejects standing faculty
+// directories and staff roles that merely mention faculty services.
+export async function scrapeSouthwesternLawFacultyAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1000);
+    const rows = await safeEvaluate(page, () => {
+      const clean = (value) => (value || "").replace(/\s+/g, " ").trim();
+      const seenTitles = new Set();
+      const out = [];
+      for (const anchor of document.querySelectorAll("a[href]")) {
+        let url;
+        try {
+          url = new URL(anchor.getAttribute("href"), location.href);
+        } catch {
+          continue;
+        }
+        if (url.hostname !== location.hostname) continue;
+        if (!/^\/employment-sw\/[^/]+\/?$/.test(url.pathname)) continue;
+        const title = clean(anchor.textContent);
+        if (!title || title.length > 180) continue;
+        if (!/\b(?:adjunct\s+)?(?:assistant|associate|full|visiting|clinical)?\s*professor\b|\btenure[-\s]?track\b/i.test(title)) continue;
+        const key = title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+        if (seenTitles.has(key)) continue;
+        seenTitles.add(key);
+        out.push({ title, url: url.toString() });
+      }
+      return out;
+    });
+    const jobs = rows.filter((row) => !omitAdjunct(row.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (Southwestern faculty index)`);
+    return jobs.map((row) => {
+      const title = normalizeJobTitle(row.title);
+      const inferred = inferAcademicFieldsFromTitle(title);
+      return {
+        title,
+        url: row.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: "Los Angeles, CA",
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Southwestern scrape failed:`, e?.message || e);
     return [];
   } finally {
     await page.close().catch(() => {});

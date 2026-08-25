@@ -1,0 +1,92 @@
+{
+  "generatedAt": "2026-08-25T20:13:25.906Z",
+  "scope": "Three specialized California institutions with exact employer evidence",
+  "baseline": {
+    "eligible_universe": 3312,
+    "covered": 2525,
+    "missing": 680,
+    "excluded_policy": 107,
+    "pending_review": 0
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2528,
+    "missing": 677,
+    "excludedPolicy": 107,
+    "pendingReview": 0
+  },
+  "appliedCount": 3,
+  "newlyCoveredCount": 3,
+  "currentFacultyJobCount": 6,
+  "applied": [
+    {
+      "name": "Southwestern Law School",
+      "url": "https://www.swlaw.edu/employment-sw",
+      "officialSource": "https://www.swlaw.edu/employment-sw",
+      "platformType": "southwestern-law",
+      "expectedHost": "www.swlaw.edu",
+      "sourceStatus": 200,
+      "loadError": null,
+      "scrapeError": null,
+      "healthySource": true,
+      "healthyZero": false,
+      "requiredMarkersPresent": true,
+      "healthyZeroMarkersPresent": true,
+      "currentFacultyJobCount": 5,
+      "invalidJobCount": 0,
+      "forbiddenTitleCount": 0,
+      "sampleTitles": [
+        "Adjunct Associate Professor, Online J.D. Program",
+        "Associate Professor of Law (Non-Tenure Track), Academic Success and Bar Preparation",
+        "Associate Professor of Law, Legal Analysis, Writing, and Skills",
+        "Director of the Legal Writing Center and Associate Professor of Law or Professor of Law (non-tenure-track)",
+        "Associate Professor of Law Doctrinal (Tenure-Track) Faculty"
+      ]
+    },
+    {
+      "name": "San Francisco Conservatory of Music",
+      "url": "https://recruiting.paylocity.com/recruiting/jobs/All/a77350b7-382e-4ebc-be83-5ce68f2b9d07/San-Francisco-Conservatory-of-Music",
+      "officialSource": "https://sfcm.edu/",
+      "platformType": "generic",
+      "expectedHost": "recruiting.paylocity.com",
+      "sourceStatus": 200,
+      "loadError": null,
+      "scrapeError": null,
+      "healthySource": true,
+      "healthyZero": false,
+      "requiredMarkersPresent": true,
+      "healthyZeroMarkersPresent": true,
+      "currentFacultyJobCount": 1,
+      "invalidJobCount": 0,
+      "forbiddenTitleCount": 0,
+      "sampleTitles": [
+        "Early Childhood Music Instructor (Smart Start)"
+      ]
+    },
+    {
+      "name": "Southern California Institute of Architecture",
+      "url": "https://www.sciarc.edu/institution/resources/careers",
+      "officialSource": "https://www.sciarc.edu/institution/resources/careers",
+      "platformType": "generic",
+      "expectedHost": "www.sciarc.edu",
+      "sourceStatus": 200,
+      "loadError": null,
+      "scrapeError": null,
+      "healthySource": true,
+      "healthyZero": true,
+      "requiredMarkersPresent": true,
+      "healthyZeroMarkersPresent": true,
+      "currentFacultyJobCount": 0,
+      "invalidJobCount": 0,
+      "forbiddenTitleCount": 0,
+      "sampleTitles": []
+    }
+  ],
+  "safeguards": [
+    "Southwestern accepts only institution-authored /employment-sw/ detail pages whose titles carry an academic rank.",
+    "Southwestern rejects standing faculty directories, duplicate titles, and staff roles that merely mention faculty services.",
+    "SFCM uses the exact Paylocity employer tenant linked from sfcm.edu.",
+    "SCI-Arc healthy-zero evidence requires both the official Open Positions page and current non-faculty listing markers.",
+    "Existing appointment-track evidence safeguards remain unchanged."
+  ]
+}
