@@ -6647,6 +6647,11 @@ const KY_CAMPUSES = [
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
+  {
+    campus: "William R Moore College of Technology",
+    type: "mooretech-news",
+    url: "https://www.mooretech.edu/news",
+  },
   { campus: "Tennessee Board of Regents", type: "generic", url: "https://www.tbr.edu/hr/employment-opportunities" },
   { campus: "Middle Tennessee State University", type: "generic", url: "https://careers.mtsu.edu/jobs/search?page=1&employment_type_uids%5B%5D=631bbbc303d4bf114ecc14a243ae4fd8&employment_type_uids%5B%5D=1c7cbdbbab7a83ed143e662427bb71fb&employment_type_uids%5B%5D=6dba428614ebe4b8b23f08b99fa1ae7d&employment_type_uids%5B%5D=481b6f9c12f58817f1891af748b2a200&query=" },
   { campus: "Remington College-Memphis Campus", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8a43162b-bbe7-4cdf-af0d-a628a4f65790&ccId=9201027240777_2&lang=en_US&&source=EN&selectedMenuKey=CareerCenter" },
@@ -17746,6 +17751,53 @@ async function scrapeKyAll(context) {
   return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
 }
 
+export function extractMooreTechFacultyJobsFromHtml(html, startUrl, campusName = "William R Moore College of Technology", sourceName = "TN") {
+  const jobs = [];
+  const anchorPattern = /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let match;
+
+  while ((match = anchorPattern.exec(String(html || "")))) {
+    const rawTitle = stripHtmlToText(match[2]);
+    if (!/^Moore Tech Hiring:/i.test(rawTitle)) continue;
+    const title = clean(rawTitle.replace(/^Moore Tech Hiring:\s*/i, ""));
+    if (!title || !looksFacultyish(title) || omitAdjunct(title)) continue;
+
+    let url;
+    try {
+      url = new URL(match[1], startUrl).toString();
+    } catch {
+      continue;
+    }
+    jobs.push({
+      title: normalizeJobTitle(title),
+      url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: "Memphis, TN",
+      description: null,
+    });
+  }
+
+  return uniqByUrl(jobs);
+}
+
+export async function scrapeMooreTechFacultyNews(startUrl, campusName = "William R Moore College of Technology", sourceName = "TN") {
+  try {
+    const response = await fetch(startUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyJobs/1.0" },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const jobs = extractMooreTechFacultyJobsFromHtml(await response.text(), startUrl, campusName, sourceName);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (official hiring news)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 async function scrapeTnAll(context) {
   const results = await mapWithConcurrency(
     TN_CAMPUSES,
@@ -17758,6 +17810,7 @@ async function scrapeTnAll(context) {
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "TN");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "TN");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "TN");
+        if (type === "mooretech-news") return await scrapeMooreTechFacultyNews(url, campus, "TN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "TN");
         return [];
       } catch (e) {
