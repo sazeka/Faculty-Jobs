@@ -6437,6 +6437,13 @@ const LA_CAMPUSES = [
     url: "https://eqtm.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/fmolhs-careers/jobs?keyword=franu&lastSelectedFacet=LOCATIONS&mode=location&selectedLocationsFacet=300000004524509%3B300000004524395",
   },
   { campus: "Louisiana Christian University", type: "generic", url: "https://lcuniversity.edu/faculty-employment-opportunities/" },
+  // LSU's shared Workday tenant exposes an exact hiring-company facet for
+  // Alexandria. Combine it with Faculty and Full time facets so neither
+  // other LSU campuses nor part-time pools can leak into this route.
+  { campus: "Louisiana State University-Alexandria", type: "workday-required-facets", url: "https://lsu.wd1.myworkdayjobs.com/LSU?hiringCompany=7a9995fc77aa101f333e7b1c1f7228b5&workerSubType=7a9995fc77aa101fcf3b27f556ddb30b&timeType=e73b4240f6b9101d9904209ae3608beb" },
+  // LSU Health New Orleans' official HR site links to this dedicated PageUp
+  // board. Both Category and Employment Type are fixed to Faculty.
+  { campus: "Louisiana State University Health Sciences Center-New Orleans", type: "pageup", url: "https://careers.lsuhsc.edu/jobs/search?category_uids%5B%5D=df2c5db8a34fb1e5184495ac918184df&employment_type_uids%5B%5D=9290c84c437e451fd084a786a6367d37" },
   { campus: "Louisiana State University Health Sciences Center-Shreveport", type: "generic", url: "https://www.lsuhs.edu/about/employment" },
   { campus: "Louisiana State University-Eunice", type: "generic", url: "https://www.lsue.edu/jobs/" },
   { campus: "Louisiana State University-Shreveport", type: "generic", url: "https://www.lsus.edu/faculty-and-staff/human-resources/employment-opportunities" },
@@ -10550,7 +10557,7 @@ async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") 
 }
 
 // Fast API-based Workday scraper (replaces slow browser scraping)
-async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ") {
+async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ", { requireApi = false } = {}) {
   try {
     let apiUrl = null;
     // Parse Workday URLs to extract company+site:
@@ -10579,6 +10586,10 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
     }
 
     if (!apiUrl) {
+      if (requireApi) {
+        console.error(`❌ ${campusName} ${sourceLabel}: required Workday API URL could not be parsed; failing closed`);
+        return [];
+      }
       console.log(`${campusName} ${sourceLabel}: Could not parse Workday URL, falling back to browser`);
       return await scrapeNjWorkdayBrowser(context, startUrl, campusName, sourceLabel);
     }
@@ -10622,6 +10633,10 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
 
       if (!response.ok) {
         if (page === 0) {
+          if (requireApi) {
+            console.error(`❌ ${campusName} ${sourceLabel}: required Workday facets were rejected (HTTP ${response.status}); failing closed`);
+            return [];
+          }
           console.log(`${campusName} ${sourceLabel}: API failed, falling back to browser`);
           return await scrapeNjWorkdayBrowser(context, startUrl, campusName, sourceLabel);
         }
@@ -10658,6 +10673,10 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
     console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length} (API)`);
     return filtered;
   } catch (e) {
+    if (requireApi) {
+      console.error(`❌ ${campusName} ${sourceLabel}: required Workday API failed; failing closed - ${e.message}`);
+      return [];
+    }
     console.log(`${campusName} ${sourceLabel}: API error, falling back to browser - ${e.message}`);
     return await scrapeNjWorkdayBrowser(context, startUrl, campusName, sourceLabel);
   }
@@ -11732,6 +11751,11 @@ export async function scrapeCsodAs(context, startUrl, campusName, sourceName, fi
 
 export async function scrapeWorkdayAs(context, startUrl, campusName, sourceName) {
   const items = await scrapeNjWorkday(context, startUrl, campusName, sourceName);
+  return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
+}
+
+export async function scrapeWorkdayRequiredFacetsAs(context, startUrl, campusName, sourceName) {
+  const items = await scrapeWorkdayApi(context, startUrl, campusName, sourceName, { requireApi: true });
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
 
@@ -18584,6 +18608,7 @@ async function scrapeLaAll(context) {
     async ({ campus, type, url }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "LA");
+        if (type === "workday-required-facets") return await scrapeWorkdayRequiredFacetsAs(context, url, campus, "LA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "LA");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "LA");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "LA");
@@ -18592,6 +18617,7 @@ async function scrapeLaAll(context) {
         // already exists and is dispatched by TX) -- added for Franciscan
         // Missionaries of Our Lady University.
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "LA");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "LA");
         if (type === "southern-system-vacancies") return await scrapeSouthernSystemVacancies(context, url, "LA");
         if (type === "southern-vacancies") return await scrapeSouthernVacancyFeed(context, url, campus, "LA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "LA");

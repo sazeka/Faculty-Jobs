@@ -16,6 +16,18 @@ test("fifth four-year pass promotes only reviewed institution-scoped sources", (
   }
   for (const item of review.rejected) {
     const escaped = item.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    // Alexandria was correctly rejected in pass 5 when only the broad LSU
+    // tenant was known. It was later promoted after the tenant exposed an
+    // exact campus + Faculty + Full time combination; keep that exception
+    // conditional on every newly validated scope control remaining present.
+    if (item.name === "Louisiana State University-Alexandria") {
+      const row = source.match(/^\s*\{ campus: "Louisiana State University-Alexandria"[^\n]+/m)?.[0] || "";
+      assert.match(row, /type: "workday-required-facets"/);
+      assert.match(row, /hiringCompany=/);
+      assert.match(row, /workerSubType=/);
+      assert.match(row, /timeType=/);
+      continue;
+    }
     assert.doesNotMatch(source, new RegExp(`^\\s*\\{ campus: "${escaped}"`, "m"), item.name);
   }
 });

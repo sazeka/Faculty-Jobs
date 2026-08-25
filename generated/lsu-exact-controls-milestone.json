@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-08-25T18:20:49.108Z",
+  "scope": "LSU Alexandria and LSU Health New Orleans exact faculty controls",
+  "baseline": {
+    "eligibleUniverse": 3312,
+    "covered": 2493,
+    "missing": 712,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 75.27
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2495,
+    "missing": 710,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 75.33
+  },
+  "appliedCount": 2,
+  "newlyCoveredCount": 2,
+  "currentFacultyJobCount": 83,
+  "applied": [
+    {
+      "name": "Louisiana State University-Alexandria",
+      "url": "https://lsu.wd1.myworkdayjobs.com/LSU?hiringCompany=7a9995fc77aa101f333e7b1c1f7228b5&workerSubType=7a9995fc77aa101fcf3b27f556ddb30b&timeType=e73b4240f6b9101d9904209ae3608beb",
+      "officialPage": "https://www.lsua.edu/about/job-opportunities/",
+      "platformType": "workday-required-facets",
+      "requiredMarkers": [
+        "hiringCompany",
+        "workerSubType",
+        "timeType"
+      ],
+      "missingMarkerCount": 0,
+      "currentFacultyJobCount": 8,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "Assistant Professor of Finance",
+        "Assistant Professor of Management",
+        "Assistant Professor of Molecular Biology, Genomics, or Bioinformatics",
+        "Assistant Professor of Information Technology (Tenure-Track)",
+        "Instructor of Mathematics",
+        "Instructor of Biology",
+        "Instructor of Chemistry",
+        "Aviation Instructor/Program Coordinator"
+      ]
+    },
+    {
+      "name": "Louisiana State University Health Sciences Center-New Orleans",
+      "url": "https://careers.lsuhsc.edu/jobs/search?category_uids%5B%5D=df2c5db8a34fb1e5184495ac918184df&employment_type_uids%5B%5D=9290c84c437e451fd084a786a6367d37",
+      "officialPage": "https://www.lsuhsc.edu/administration/hrm/talentacquisition.aspx",
+      "platformType": "pageup",
+      "requiredMarkers": [
+        "category_uids[]",
+        "employment_type_uids[]"
+      ],
+      "missingMarkerCount": 0,
+      "currentFacultyJobCount": 75,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "ASSISTANT PROFESSOR / ASSOCIATE PROFESSOR / PROFESSOR - CLINICAL, CARDIOLOGY",
+        "ASSISTANT PROFESSOR/ ASSOCIATE PROFESSOR-CLINICAL PULMONARY/CRITICAL CARE",
+        "ASSISTANT PROFESSOR - CLINICAL, PSYCHOLOGY",
+        "INSTRUCTOR/ ASSOCIATE PROFESSOR/ ASSISTANT PROFESSOR/ PROFESSOR-CLINICAL",
+        "ASSISTANT PROFESSOR / ASSOCIATE PROFESSOR / PROFESSOR - CLINICAL, OB GYN",
+        "ASSISTANT PROFESSOR / ASSOCIATE PROFESSOR / PROFESSOR",
+        "ASSISTANT PROFESSOR/ ASSOCIATE PROFESSOR/ PROFESSOR",
+        "INSTRUCTOR OR ASSISTANT PROFESSOR - CLINICAL - NURSE ANESTHESIA PROGRAM"
+      ]
+    }
+  ],
+  "safeguards": [
+    "Alexandria requires exact hiring-company, Faculty, and Full time Workday facets.",
+    "Required Workday facets fail closed instead of falling back to an unscoped browser scrape.",
+    "LSU Health uses a dedicated official PageUp host with both Category and Employment Type fixed to Faculty.",
+    "Existing appointment-track evidence safeguards remain unchanged."
+  ]
+}
