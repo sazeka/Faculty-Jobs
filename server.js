@@ -2738,7 +2738,11 @@ const AZ_CAMPUSES = [
   // The configured URL is an HR qualifications/policy page with no job links at
   // all — the real board is a schooljobs.com (NEOGOV) tenant.
   { campus: "Central Arizona College", type: "generic", url: "https://www.schooljobs.com/careers/centralaz" },
-  { campus: "Chandler-Gilbert Community College", type: "generic", url: "https://www.maricopa.edu/about/careers/faculty" },
+  // The district's official faculty page exposes an exact Business Unit field
+  // on every posting and a fixed option for each of its ten colleges plus the
+  // district office. Crawl it once and fail closed on that exact value instead
+  // of assigning the whole shared board to any one campus.
+  { campus: "Maricopa Community College System Office", type: "maricopa-faculty", url: "https://www.maricopa.edu/about/careers/faculty" },
   // schooljobs.com is a client-rendered SPA; "generic" only reads anchors once on
   // page 1 without the platform's own pagination — "schooljobs" already exists
   // and handles both.
@@ -2748,7 +2752,6 @@ const AZ_CAMPUSES = [
   { campus: "Dine College", type: "generic", url: "https://dinecollege.isolvedhire.com/jobs" },
   { campus: "Eastern Arizona College", type: "generic", url: "https://eac.edu/careers/open-positions" },
   { campus: "Embry-Riddle Aeronautical University-Prescott", type: "generic", url: "https://prescott.erau.edu/" },
-  { campus: "Estrella Mountain Community College", type: "generic", url: "https://www.estrellamountain.edu/" },
   { campus: "Yavapai College", type: "schooljobs", url: "https://www.schooljobs.com/careers/ycedu" },
   { campus: "Mohave Community College", type: "generic", url: "https://www.mohave.edu/about/employee-services/" },
 ];
@@ -11446,6 +11449,109 @@ export async function scrapeHawaiiSystemAs(context, startUrl, sourceName = "HI")
   return items.map((job) => ({ ...job, source: sourceName }));
 }
 
+export function splitMaricopaBusinessUnit(job) {
+  const unit = clean(job?.businessUnit || "").toLowerCase();
+  const exactUnits = new Map([
+    ["estrella mountain college", "Estrella Mountain Community College"],
+    ["chandler/gilbert college", "Chandler-Gilbert Community College"],
+    ["gateway college", "GateWay Community College"],
+    ["glendale college", "Glendale Community College (AZ)"],
+    ["mesa college", "Mesa Community College"],
+    ["paradise valley college", "Paradise Valley Community College"],
+    ["phoenix college", "Phoenix College"],
+    ["rio salado college", "Rio Salado College"],
+    ["scottsdale college", "Scottsdale Community College"],
+    ["south mountain college", "South Mountain Community College"],
+    ["maricopa community colleges", "Maricopa Community College System Office"],
+  ]);
+  return exactUnits.get(unit) || null;
+}
+
+export async function scrapeMaricopaFacultyAs(context, startUrl, sourceName = "AZ") {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForSelector("#searchUnit, .job-listing, .jobs-summary", {
+      state: "attached",
+      timeout: 20_000,
+    });
+
+    const rows = [];
+    const seen = new Set();
+    for (let safety = 0; safety < 50; safety++) {
+      const batch = await safeEvaluate(page, () => {
+        const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+        return [...document.querySelectorAll(".job-listing")].map((card) => {
+          const fields = {};
+          for (const field of card.querySelectorAll(".job-details .field")) {
+            const labelNode = field.querySelector(".job-field-label");
+            const label = cleanText(labelNode?.textContent).replace(/:$/, "").toLowerCase();
+            const value = cleanText(labelNode?.nextElementSibling?.textContent);
+            if (label) fields[label] = value;
+          }
+          const anchor = card.querySelector(".job-title a[href]");
+          let url = null;
+          try { url = new URL(anchor?.getAttribute("href") || "", location.href).toString(); } catch {}
+          return {
+            title: cleanText(anchor?.textContent),
+            url,
+            jobId: fields["job id"] || null,
+            location: fields.location || null,
+            department: fields.department || null,
+            businessUnit: fields["business unit"] || null,
+            positionType: fields.type || null,
+            postedDate: fields["posted date"] || null,
+          };
+        });
+      });
+
+      for (const row of batch) {
+        if (!row?.url || !row.title || seen.has(row.url)) continue;
+        seen.add(row.url);
+        rows.push(row);
+      }
+
+      const next = page.locator('nav[aria-label="Page navigation"] a[aria-label="Next"]').first();
+      if ((await next.count().catch(() => 0)) === 0) break;
+      const disabled = await next.evaluate((anchor) => anchor.closest("li")?.classList.contains("disabled") || false).catch(() => true);
+      if (disabled || !(await next.isVisible().catch(() => false))) break;
+      const before = await page.locator(".job-listing .job-title a[href]").first().getAttribute("href").catch(() => null);
+      await next.click({ timeout: 5000 });
+      await page.waitForFunction(
+        (prior) => document.querySelector(".job-listing .job-title a[href]")?.getAttribute("href") !== prior,
+        before,
+        { timeout: 10_000 },
+      ).catch(() => {});
+      const after = await page.locator(".job-listing .job-title a[href]").first().getAttribute("href").catch(() => null);
+      if (!after || after === before) break;
+    }
+
+    return rows
+      .filter((row) => /^full-time faculty$/i.test(clean(row.positionType)))
+      .map((row) => ({ ...row, campus: splitMaricopaBusinessUnit(row) }))
+      .filter((row) => row.campus)
+      .filter((row) => !omitAdjunct(row.title))
+      .map((row) => {
+        const title = normalizeJobTitle(row.title) || clean(row.title);
+        const inferred = inferAcademicFieldsFromTitle(title);
+        return {
+          title,
+          url: row.url,
+          source: sourceName,
+          category: "Faculty",
+          college: row.campus,
+          location: row.location || null,
+          description: null,
+          department: cleanDepartmentField(row.department || inferred.department),
+          specialization: cleanDepartmentField(inferred.specialization),
+          postedDate: row.postedDate || null,
+        };
+      });
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 // ExactHire ATS (a React/MUI SPA): job cards render the title in an <h6> next to a
 // bare arrow-icon <a href="/job/ID"> with no link text of its own, so a plain
 // anchor-text scrape finds nothing. Walk up from each jobDetailsLink anchor to its
@@ -13537,6 +13643,7 @@ async function scrapeAzAll(context) {
     (async () => {
       try {
         if (type === "asu-table") return await scrapeAsuFacultyPositionsTable(context, campus, url);
+        if (type === "maricopa-faculty") return await scrapeMaricopaFacultyAs(context, url, "AZ");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "AZ", locationFilter || null);
         if (type === "nau-search") {
           const base = await scrapeNauSearch(context, url, campus, "AZ");
