@@ -1396,6 +1396,19 @@ const CA_PRIVATE_CAMPUSES = [
   // positions and no faculty openings; validation requires both the careers
   // page marker and current-position evidence before accepting that zero.
   { campus: "Southern California Institute of Architecture", type: "generic", url: "https://www.sciarc.edu/institution/resources/careers" },
+  // Vanguard renders its current employee roster as Finalsite fsPostLink
+  // cards backed by its exact AppOne employer account. The dedicated adapter
+  // expands Load More and rejects unrelated Faculty Services navigation.
+  { campus: "Vanguard University of Southern California", type: "vanguard", url: "https://www.vanguard.edu/resources/human-resources/vu-careers" },
+  // Life West's Paycom tenant combines its California and Nebraska campuses.
+  // Keep only postings whose official title carries the Hayward, CA scope.
+  { campus: "Life Chiropractic College West", type: "life-west-ca", url: "https://lifewest.edu/careers" },
+  // These institution-authored current-opportunities pages are durable exact
+  // employee sources. Each currently has no faculty opening; live validation
+  // requires page-specific hiring evidence before accepting the healthy zero.
+  { campus: "Hope International University", type: "generic", url: "https://www.hiu.edu/about-hiu/human-resources/hiu-career-opportunities/" },
+  { campus: "San Diego Christian College", type: "generic", url: "https://sdcc.edu/employment/" },
+  { campus: "Westminster Theological Seminary in California", type: "generic", url: "https://www.wscal.edu/employment/" },
 ];
 
 // NJ (multi-platform)
@@ -8416,7 +8429,7 @@ export function looksFacultyish(title) {
 
 export function isGenericFacultyPageChromeTitle(title) {
   const value = clean(title);
-  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty employee opportunities|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|faculty\s*&\s*staff careers|faculty and staff faqs|faculty\s*&\s*adjunct-faculty openings|faculty\s*\/\s*staff webmail|(?:\d{4}[–—-]\d{2,4}\s+)?faculty salary scales|adjunct instructor salary schedule|adjunct faculty application process|adjunct faculty resources|faculty credentialing manual|faculty documents and forms|message from the dean of students|cosmetology instructor training\s*\(short-term certificate\)|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
+  return /^(?:[^a-z0-9]*application for faculty jobs|early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty employee opportunities|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|faculty\s*&\s*staff careers|faculty and staff faqs|faculty\s*&\s*adjunct-faculty openings|faculty\s*\/\s*staff webmail|(?:\d{4}[–—-]\d{2,4}\s+)?faculty salary scales|adjunct instructor salary schedule|adjunct faculty application process|adjunct faculty resources|faculty credentialing manual|faculty documents and forms|message from the dean of students|cosmetology instructor training\s*\(short-term certificate\)|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
 }
 
 /* ============================== CUNY ============================== */
@@ -10128,6 +10141,8 @@ async function scrapeCaPrivate(context) {
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "CA Private");
         if (type === "academicjobsonline") return await scrapeAcademicJobsOnlineAs(context, url, campus, "CA Private");
         if (type === "southwestern-law") return await scrapeSouthwesternLawFacultyAs(context, url, campus, "CA Private");
+        if (type === "vanguard") return await scrapeVanguardFacultyAs(context, url, campus, "CA Private");
+        if (type === "life-west-ca") return await scrapeLifeWestCaliforniaAs(context, url, campus, "CA Private");
         if (type === "csod") {
           return await scrapeCsodAs(context, url, campus, "CA Private", { locationFilter, employmentFilter });
         }
@@ -16015,6 +16030,85 @@ export async function scrapeSouthwesternLawFacultyAs(context, startUrl, campusNa
   } finally {
     await page.close().catch(() => {});
   }
+}
+
+// Vanguard's official current-openings page exposes exact AppOne detail URLs
+// in Finalsite cards. Expand its finite Load More list and accept only cards
+// with a faculty title and a numeric requisition id.
+export async function scrapeVanguardFacultyAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1500);
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const button = page.locator("button.fsLoadMoreButton:visible").first();
+      if (!(await button.count())) break;
+      const before = await page.locator("a.fsPostLink").count();
+      await button.click().catch(() => {});
+      await page.waitForFunction(
+        (prior) => document.querySelectorAll("a.fsPostLink").length > prior || !document.querySelector("button.fsLoadMoreButton"),
+        before,
+        { timeout: 5000 }
+      ).catch(() => {});
+      const after = await page.locator("a.fsPostLink").count();
+      if (after <= before) break;
+    }
+
+    const rows = await safeEvaluate(page, () => {
+      const clean = (value) => (value || "").replace(/\s+/g, " ").trim();
+      const out = [];
+      const seen = new Set();
+      for (const anchor of document.querySelectorAll("a.fsPostLink[href]")) {
+        let url;
+        try {
+          url = new URL(anchor.getAttribute("href"), location.href);
+        } catch {
+          continue;
+        }
+        if (url.hostname !== "recruiting.myapps.paychex.com") continue;
+        if (!/^\/appone\/MainInfoReq\.asp$/i.test(url.pathname)) continue;
+        if (!/^\d+$/.test(url.searchParams.get("R_ID") || "")) continue;
+        const title = clean(anchor.textContent).replace(/\s*\(opens in new window\/tab\)\s*$/i, "").trim();
+        if (!title || seen.has(url.toString())) continue;
+        seen.add(url.toString());
+        out.push({ title, url: url.toString() });
+      }
+      return out;
+    });
+    const jobs = rows
+      .map((row) => ({ ...row, title: normalizeJobTitle(row.title) }))
+      .filter((row) => looksFacultyish(row.title))
+      .filter((row) => !isGenericFacultyPageChromeTitle(row.title))
+      .filter((row) => !omitAdjunct(row.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (Vanguard official roster)`);
+    return jobs.map((row) => {
+      const inferred = inferAcademicFieldsFromTitle(row.title);
+      return {
+        title: row.title,
+        url: row.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: "Costa Mesa, CA",
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Vanguard scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Life West operates California and Nebraska campuses on one Paycom tenant.
+// The employer includes the campus in every current faculty title, allowing a
+// strict fail-closed California split without relying on broad body text.
+export async function scrapeLifeWestCaliforniaAs(context, startUrl, campusName, sourceName) {
+  const jobs = await scrapeGenericJobPage(context, startUrl, campusName, sourceName);
+  return jobs.filter((job) => /\(\s*Hayward,\s*CA\s*\)\s*$/i.test(job.title || ""));
 }
 
 // AcademicJobsOnline (AJO) scraper: uses aria-labelledby/adjacent span text
