@@ -534,6 +534,7 @@ const CUNY_URL = "https://cuny.jobs/job-category/faculty/jobs/";
 const CT_URL = "https://www.ct.edu/hr/jobs";
 
 const CT_PRIVATE_CAMPUSES = [
+  { campus: "University of Saint Joseph", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=35a5d7d3-e147-49ce-99d9-63ae0a4ffb39&ccId=19000101_000001&lang=en_US" },
   {
     campus: "Yale University",
     // Was pointing at an entirely unrelated institution (Cleveland Clinic
@@ -629,6 +630,7 @@ const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type
 
 // Massachusetts private universities + liberal arts colleges
 const MA_PRIVATE_CAMPUSES = [
+  { campus: "Suffolk University", type: "workday", url: "https://suffolk.wd1.myworkdayjobs.com/External" },
   {
     campus: "Harvard University",
     type: "peopleadmin-dept",
@@ -2041,6 +2043,7 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Longwood University", type: "interviewexchange", url: "https://longwood.interviewexchange.com/static/clients/565LUM1/index.jsp" },
   { campus: "University of Virginia's College at Wise", type: "interfolio", url: "https://apply.interfolio.com/50272/positions" },
   { campus: "Norfolk State University", type: "workday", url: "https://nsu.wd501.myworkdayjobs.com/nsu" },
   { campus: "Richard Bland College", type: "generic", url: "https://www.jobs.virginia.gov/jobs/search?query=Richard+Bland+College" },
@@ -2256,6 +2259,7 @@ const VA_CAMPUSES = [
 
 // SC (South Carolina) - major public research + private liberal arts
 const SC_CAMPUSES = [
+  { campus: "Greenville Technical College", type: "csod", url: "https://gvltec.csod.com/ux/ats/careersite/1/home?c=gvltec" },
   { campus: "Orangeburg Calhoun Technical College", type: "generic", url: "https://www.octech.edu/about/human-resources/" },
   {
     campus: "University of South Carolina",
@@ -2421,6 +2425,7 @@ const DE_CAMPUSES = [
 
 // MD (Maryland) - major research universities + liberal arts colleges
 const MD_CAMPUSES = [
+  { campus: "Maryland Institute College of Art", type: "workday", url: "https://mica.wd5.myworkdayjobs.com/Faculty" },
   { campus: "Hagerstown Community College", type: "generic", url: "https://www.hagerstowncc.edu/human-resources" },
   {
     campus: "University of Maryland, Baltimore",
@@ -3328,6 +3333,8 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  { campus: "Lake Washington Institute of Technology", type: "schooljobs", url: "https://www.schooljobs.com/careers/lwtc" },
+  { campus: "Olympic College", type: "schooljobs", url: "https://www.schooljobs.com/careers/olympic" },
   { campus: "Highline College", type: "schooljobs", url: "https://www.schooljobs.com/careers/highline" },
   { campus: "Shoreline Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/shorelinecc" },
   { campus: "Skagit Valley College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/skagitedu" },
@@ -3615,6 +3622,8 @@ const VT_CAMPUSES = [
 
 // MN (Minnesota)
 const MN_CAMPUSES = [
+  { campus: "Martin Luther College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=8C7EC27E66B8E44D82FD7F25E9526B76" },
+  { campus: "St Catherine University", type: "peopleadmin", url: "https://stcatherine.peopleadmin.com/" },
   { campus: "White Earth Tribal and Community College", type: "generic", url: "https://www.wetcc.edu/employment-careers/" },
   {
     campus: "University of Minnesota",
@@ -4160,6 +4169,7 @@ const WI_CAMPUSES = [
 
 // CO (Colorado)
 const CO_CAMPUSES = [
+  { campus: "University of Colorado System Office", type: "taleo", url: "https://cu.taleo.net/careersection/2/moresearch.ftl?lang=en&radiusType=K&searchExpanded=true&organization=4300103016&radius=1&portal=101430233" },
   {
     campus: "CU Boulder",
     type: "cu-boulder",
@@ -5674,6 +5684,8 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "Lake-Sumter State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/lsscedu" },
+  { campus: "Lake-Sumter State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/lsscedu/promotionaljobs" },
   { campus: "Gulf Coast State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/gulfcoast" },
   { campus: "The College of the Florida Keys", type: "schooljobs", url: "https://www.governmentjobs.com/careers/cfkedu" },
   { campus: "Pasco-Hernando State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/phsc", excludeTitleFilter: "\\b(?:office assistant|faculty support)\\b" },
@@ -6151,6 +6163,7 @@ const AL_CAMPUSES = [
 
 // MS (Mississippi)
 const MS_CAMPUSES = [
+  { campus: "William Carey University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=E66B3C1689D7CACD88837E5AD889588C" },
   { campus: "Mississippi Community College Board", type: "generic", url: "https://www.mccb.edu/hr/employment" },
   { campus: "Northwest Mississippi Community College", type: "generic", url: "https://www.northwestms.edu/l/faculty-and-staff/hr" },
   { campus: "Mississippi Delta Community College", type: "generic", url: "https://www.msdelta.edu/human-resources/employment-opportunities.php" },
@@ -6513,6 +6526,8 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "Saint Louis Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/stlcc" },
+  { campus: "Southeast Missouri State University", type: "schooljobs", url: "https://www.governmentjobs.com/careers/semoedu/promotionaljobs" },
   { campus: "Missouri Western State University", type: "peopleadmin", url: "https://mwsu.peopleadmin.com/" },
   { campus: "Northwest Missouri State University", type: "workday", url: "https://nwmissouri.wd108.myworkdayjobs.com/External", excludeTitleFilter: "\\b(?:upward bound|act prep)\\b" },
   { campus: "State Technical College of Missouri", type: "generic", url: "https://statetechmo.edu/human-resources/" },
@@ -6620,6 +6635,7 @@ const MO_CAMPUSES = [
 
 // KY (Kentucky)
 const KY_CAMPUSES = [
+  { campus: "Midway University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0360F3B5A2EC741788B51C99C6E17513&jpt=" },
   { campus: "Northern Kentucky University", type: "peopleadmin", url: "https://jobs.nku.edu/postings/search" },
   { campus: "Murray State University", type: "peopleadmin", url: "https://www.murraystatejobs.com/postings/search" },
   { campus: "Morehead State University", type: "peopleadmin", url: "https://moreheadstate.peopleadmin.com/postings/search" },
@@ -8635,6 +8651,7 @@ async function scrapeCtPrivate(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CT");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CT");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "CT");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "CT");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CT");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "CT");
         if (type === "yale") return await scrapeYaleAcademicPositions(context, campus, "CT");
@@ -11002,6 +11019,7 @@ async function scrapeVaAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "VA");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "VA");
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "VA");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "VA");
         // No existing VA dispatch case for "ultipro-ukg" (function
         // scrapeUltiproUkgAs already exists and is dispatched by NY) --
         // added for Bryant & Stratton College-Virginia Beach.
@@ -11046,6 +11064,7 @@ async function scrapeScAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "SC");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "SC");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "SC");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "SC");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "SC");
         return [];
       } catch (e) {
@@ -16836,6 +16855,8 @@ async function scrapeMnAll(context) {
         if (type === "umn") return await scrapePeopleSoftHrsBasic(context, url, campus, "MN");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MN");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "MN");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "MN");
+        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MN");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "MN");
         // "schooljobs" was missing from this dispatch chain entirely even though
         // scrapeSchoolJobsAs already exists and MN_CAMPUSES has a correctly
@@ -17782,6 +17803,7 @@ async function scrapeMoAll(context) {
         }
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MO");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "MO");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MO");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MO");
         if (type === "umsystem-hrs") return await scrapeUmsystemHrsJobs(context, url, campus, "MO");
         return [];
@@ -17809,6 +17831,7 @@ async function scrapeKyAll(context) {
         // exists and is dispatched by other states) -- added for Frontier
         // Nursing University.
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "KY");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "KY");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "KY");
         return [];
       } catch (e) {
