@@ -6474,6 +6474,9 @@ const LA_CAMPUSES = [
   { campus: "Southern University at New Orleans", type: "southern-vacancies", url: "https://www.suno.edu/news/category/position-vacancy-announcements" },
   { campus: "Southern University at Shreveport", type: "generic", url: "https://www.susla.edu/index.cfm?action=newsroom.category&categoryID=careers" },
   { campus: "University of Holy Cross", type: "generic", url: "https://uhcno.edu/hr/jobs/index.php" },
+  // Exact State of Louisiana department scope for the UL System Board Office.
+  // The official filtered board is healthy even when it has zero openings.
+  { campus: "University of Louisiana-System Administration", type: "schooljobs", url: "https://www.governmentjobs.com/careers/louisiana?department%5B0%5D=HED-Bd%20Supervisors%20U%20of%20LA%20Sys&sort=PostingDate%7CDescending" },
   // UNO's official careers page links directly to this institution-specific
   // Workday tenant; it is not the broader University of Louisiana board.
   { campus: "University of New Orleans", type: "workday", url: "https://ulsuno.wd1.myworkdayjobs.com/UniversityOfNewOrleans" },
