@@ -56,14 +56,12 @@
 
       .wrap {
         min-height: 100vh;
-        padding: 0 var(--pad) 56px;
       }
 
       .masthead {
         position: sticky;
         top: 0;
         z-index: 100;
-        margin: 0 calc(var(--pad) * -1);
         padding: 24px var(--pad) 0;
         background: var(--paper);
         border-bottom: 1px solid var(--rule-2);
@@ -90,6 +88,7 @@
       }
 
       .wordmark-name {
+        display: block;
         font-family: var(--font-display);
         font-size: 26px;
         letter-spacing: -0.01em;
@@ -107,14 +106,19 @@
       }
 
       .wordmark-subtitle {
+        display: block;
         margin-top: 3px;
         color: var(--ink-3);
         font-size: 9px;
         letter-spacing: 0.18em;
       }
 
+      main {
+        padding: 0 var(--pad);
+      }
+
       .intro {
-        padding: 70px 0 52px;
+        padding: 56px 0 64px;
         border-bottom: 4px double var(--rule);
       }
 
@@ -254,11 +258,80 @@
       .sources a, .reason a { color: var(--accent); text-underline-offset: 2px; }
 
       .footer {
+        margin-top: 80px;
+        padding: 48px var(--pad);
+        border-top: 2px solid var(--ink);
+        background: var(--paper);
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 48px;
+        margin-bottom: 48px;
+      }
+
+      .footer-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 16px;
+        color: var(--ink);
+        font-family: var(--font-display);
+        font-size: 22px;
+        text-transform: none;
+      }
+
+      .footer-copy {
+        max-width: 320px;
+        margin: 0;
+        color: var(--ink-2);
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-style: italic;
+        line-height: 1.55;
+        text-transform: none;
+      }
+
+      .footer-heading {
+        margin-bottom: 16px;
+        color: var(--ink-2);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        columns: auto;
+      }
+
+      .footer-links li {
+        padding: 0;
+        border: 0;
+        font-family: var(--font-body);
+        font-size: 14px;
+        text-transform: none;
+      }
+
+      .footer-links a {
+        color: var(--ink-2);
+        text-decoration: none;
+      }
+
+      .footer-links a:hover { color: var(--accent); }
+
+      .footer-bottom {
         display: flex;
         justify-content: space-between;
         gap: 20px;
         padding-top: 24px;
-        border-top: 1px solid var(--rule);
+        border-top: 1px solid var(--rule-2);
         color: var(--ink-3);
         font-size: 10px;
         letter-spacing: 0.05em;
@@ -266,16 +339,17 @@
 
       @media (max-width: 720px) {
         :root { --pad: 18px; }
-        .wrap { padding-bottom: 40px; }
         .masthead { padding-top: 16px; }
-        .masthead-top { align-items: flex-start; gap: 12px; padding-bottom: 14px; }
-        .nav { gap: 18px; }
+        .masthead-top { align-items: flex-start; flex-wrap: wrap; gap: 12px; padding-bottom: 14px; }
+        .nav { flex-wrap: wrap; gap: 18px; }
         .wordmark-subtitle { display: none; }
         .edition-bar { align-items: flex-start; gap: 4px; }
         .edition-bar span:last-child { display: none; }
-        .intro { padding: 48px 0 36px; }
+        .intro { padding: 28px 0 36px; }
         ul { columns: 1; }
-        .footer { flex-direction: column; }
+        .footer { padding: 36px var(--pad); }
+        .footer-grid { grid-template-columns: 1fr; gap: 28px; margin-bottom: 28px; }
+        .footer-bottom { flex-direction: column; gap: 4px; }
       }
     </style>
   </head>
@@ -353,8 +427,37 @@
       </main>
 
       <footer class="footer">
-        <span>Faculty Atlas · An independent academic directory</span>
-        <span>Policy-safe coverage, transparently documented</span>
+        <div class="footer-grid">
+          <div>
+            <div class="footer-brand">
+              <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
+                <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.2" />
+                <path d="M 32 8 L 36 32 L 32 28 L 28 32 Z" fill="currentColor" />
+                <circle cx="32" cy="32" r="1.8" fill="currentColor" />
+              </svg>
+              <span>Faculty <i>Atlas</i></span>
+            </div>
+            <p class="footer-copy">Faculty Atlas catalogs open faculty posts across North American higher education. Curated automatically, free to browse.</p>
+          </div>
+          <div>
+            <div class="footer-heading">Browse</div>
+            <ul class="footer-links">
+              <li><a href="./index.html">All postings</a></li>
+              <li><a href="./index.html#trends">Weekly digest</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">About</div>
+            <ul class="footer-links">
+              <li><a href="./inclusion-criteria.html">Inclusion criteria</a></li>
+              <li><a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer">GitHub</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>Faculty Atlas · An independent academic directory</span>
+          <span>Policy-safe coverage, transparently documented</span>
+        </div>
       </footer>
     </div>
 
