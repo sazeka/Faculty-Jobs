@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-08-25T17:43:47.807Z",
+  "scope": "Three Seattle Colleges institutions on one official district board",
+  "baseline": {
+    "eligibleUniverse": 3312,
+    "covered": 2479,
+    "missing": 726,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 74.85
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2482,
+    "missing": 723,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 74.94
+  },
+  "appliedCount": 3,
+  "newlyCoveredCount": 3,
+  "currentFacultyJobCount": 1,
+  "ambiguousQualifyingJobCount": 0,
+  "applied": [
+    {
+      "name": "North Seattle College",
+      "platform_type": "seattle-colleges-district",
+      "career_url": "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=060",
+      "currentFacultyJobCount": 1
+    },
+    {
+      "name": "Seattle Central College",
+      "platform_type": "seattle-colleges-district",
+      "career_url": "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=060",
+      "currentFacultyJobCount": 0
+    },
+    {
+      "name": "South Seattle College",
+      "platform_type": "seattle-colleges-district",
+      "career_url": "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=060",
+      "currentFacultyJobCount": 0
+    }
+  ],
+  "safeguards": [
+    "The district board is fetched once, avoiding redundant scans and duplicate job URLs.",
+    "Only explicit campus evidence in Location or title assigns a job to North, Central, or South.",
+    "Ambiguous Multiple or districtwide rows fail closed instead of being guessed onto a college.",
+    "Existing non-adjunct and tenure-classification evidence safeguards remain unchanged."
+  ]
+}

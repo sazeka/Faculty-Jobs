@@ -3376,6 +3376,12 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  // Seattle Colleges publishes one official districtwide ctcLink board
+  // (SiteId=060) for North, Central, and South. Scrape it once, then split
+  // rows only when the listing's Location or title explicitly names a campus.
+  // This prevents both duplicate scans and districtwide/"Multiple" jobs from
+  // being guessed onto an individual college.
+  { campus: "Seattle Colleges", type: "seattle-colleges", url: "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=060" },
   { campus: "Wenatchee Valley College", type: "schooljobs", url: "https://www.schooljobs.com/careers/wvc" },
   { campus: "Lake Washington Institute of Technology", type: "schooljobs", url: "https://www.schooljobs.com/careers/lwtc" },
   { campus: "Olympic College", type: "schooljobs", url: "https://www.schooljobs.com/careers/olympic" },
@@ -12303,7 +12309,7 @@ async function scrapePeopleSoftAs(context, startUrl, campusName, sourceName) {
 //      Northwestern posting URL via web search and reverse-engineering it:
 //      the same .GBL component the search page lives on, with
 //      Page=HRS_APP_JBPST_FL and JobOpeningId swapped in.
-async function scrapePeopleSoftFluidAs(context, startUrl, campusName, sourceName) {
+export async function scrapePeopleSoftFluidAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -17188,6 +17194,10 @@ async function scrapeWaAll(context) {
   const tasks = WA_CAMPUSES.map(({ campus, type, url }) =>
     (async () => {
       try {
+        if (type === "seattle-colleges") {
+          const jobs = await scrapePeopleSoftFluidAs(context, url, campus, "WA");
+          return jobs.map(splitSeattleCollegesCampus).filter(Boolean);
+        }
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "WA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "WA");
         if (type === "uw") return await scrapeUwAcademicJobs(context, url, campus, "WA");
@@ -17219,6 +17229,19 @@ async function scrapeWaAll(context) {
   return uniqByUrl(
     settled.flatMap((r) => (r.status === "fulfilled" ? r.value : []))
   );
+}
+
+export function splitSeattleCollegesCampus(job) {
+  if (clean(job?.college) !== "Seattle Colleges") return job;
+
+  const evidence = clean(`${job?.location || ""} ${job?.title || ""}`).toLowerCase();
+  const campus =
+    /\bnorth seattle college\b/.test(evidence) ? "North Seattle College" :
+    /\bseattle central college\b|\bseattle maritime academy\b|\bhealth education center\b|\bwood technology center\b/.test(evidence) ? "Seattle Central College" :
+    /\bsouth seattle college\b|\bs\.\s*seattle\b|\bgeorgetown campus\b|\bnewholly\b/.test(evidence) ? "South Seattle College" :
+    null;
+
+  return campus ? { ...job, college: campus } : null;
 }
 
 
