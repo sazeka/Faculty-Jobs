@@ -2040,6 +2040,7 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Norfolk State University", type: "workday", url: "https://nsu.wd501.myworkdayjobs.com/nsu" },
   { campus: "Richard Bland College", type: "generic", url: "https://www.jobs.virginia.gov/jobs/search?query=Richard+Bland+College" },
   { campus: "Southside College of Health Sciences", type: "generic", url: "https://www.schs.edu/employment-opportunities" },
   {
@@ -3325,6 +3326,8 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  { campus: "Pierce College District", type: "schooljobs", url: "https://www.governmentjobs.com/careers/piercedist/promotionaljobs" },
+  { campus: "Renton Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/rentontc" },
   { campus: "Northwest School of Wooden Boat Building", type: "generic", url: "https://nwswb.edu/employment/" },
   {
     campus: "University of Washington",
@@ -3805,6 +3808,7 @@ const SD_CAMPUSES = [
 
 // NE (Nebraska)
 const NE_CAMPUSES = [
+  { campus: "Nebraska Methodist College of Nursing & Allied Health", type: "workday", url: "https://bestcare.wd1.myworkdayjobs.com/bestcare?locations=a1637a810ec9100a06b06175f28a0000" },
   { campus: "Southeast Community College Area", type: "generic", url: "https://www.southeast.edu/about/other-scc-departments/hr/index.php" },
   { campus: "Little Priest Tribal College", type: "generic", url: "https://www.littlepriest.edu/human-resources/" },
   {
@@ -5125,6 +5129,7 @@ const ID_CAMPUSES = [
 
 // IN (Indiana)
 const IN_CAMPUSES = [
+  { campus: "Rose-Hulman Institute of Technology", type: "csod", url: "https://rosehulman.csod.com/ux/ats/careersite/9/home?c=rosehulman" },
   {
     campus: "Mid-America College of Funeral Service",
     type: "paylocity-shared",
@@ -5659,6 +5664,7 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "Pasco-Hernando State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/phsc", excludeTitleFilter: "\\b(?:office assistant|faculty support)\\b" },
   { campus: "Ultimate Medical Academy", type: "generic", url: "https://job-boards.greenhouse.io/umaeducationinc/" },
   {
     campus: "University of Florida",
@@ -6189,6 +6195,7 @@ const MS_CAMPUSES = [
 
 // LA (Louisiana)
 const LA_CAMPUSES = [
+  { campus: "Northwestern State University of Louisiana", type: "schooljobs", url: "https://www.governmentjobs.com/careers/louisiana/northwesternstate" },
   { campus: "Northshore Technical Community College", type: "generic", url: "https://www.northshorecollege.edu/resources/career-opportunities" },
   { campus: "Nunez Community College", type: "generic", url: "https://www.nunez.edu/careers" },
   { campus: "Louisiana State University", type: "workday", url: "https://lsu.wd1.myworkdayjobs.com/LSU?Job_Profiles=7a9995fc77aa101fe03ed2adb83abd3b&Job_Profiles=7a9995fc77aa101fe03fb0edd613be1b&Job_Profiles=7a9995fc77aa101fe03ea5230b41bd10&Job_Profiles=7a9995fc77aa101fe03c558ab5c0bac4&Job_Profiles=7a9995fc77aa101fe03fb8c46670be23&Job_Profiles=7a9995fc77aa101fe03fa8fe7ecdbe13&Job_Profiles=48b1ff5a2bae01637b1270c77c372403" },
@@ -6492,6 +6499,8 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "Missouri Western State University", type: "peopleadmin", url: "https://mwsu.peopleadmin.com/" },
+  { campus: "Northwest Missouri State University", type: "workday", url: "https://nwmissouri.wd108.myworkdayjobs.com/External", excludeTitleFilter: "\\b(?:upward bound|act prep)\\b" },
   { campus: "State Technical College of Missouri", type: "generic", url: "https://statetechmo.edu/human-resources/" },
   {
     campus: "University of Missouri",
@@ -17423,6 +17432,7 @@ async function scrapeInAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IN");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "IN");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "IN");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "IN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IN");
         if (type === "paylocity-shared") return await scrapePaylocitySharedAs(context, url, campus, "IN", locationFilter || null);
         if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "IN", locationFilter || null);
@@ -17660,6 +17670,7 @@ async function scrapeLaAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "LA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "LA");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "LA");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "LA");
         // No existing LA dispatch case for "oracle-cx" (function scrapeOracleCxAs
         // already exists and is dispatched by TX) -- added for Franciscan
         // Missionaries of Our Lady University.
@@ -17747,9 +17758,12 @@ async function scrapeMoAll(context) {
   const results = await mapWithConcurrency(
     MO_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
-        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MO");
+        if (type === "workday") {
+          const jobs = await scrapeWorkdayAs(context, url, campus, "MO");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title)) : jobs;
+        }
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MO");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "MO");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MO");
@@ -18192,7 +18206,7 @@ async function scrapeFlAll(context) {
   const results = await mapWithConcurrency(
     FL_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter }) => {
+    async ({ campus, type, url, locationFilter, excludeTitleFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "FL");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "FL");
@@ -18202,7 +18216,10 @@ async function scrapeFlAll(context) {
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "FL", locationFilter || null);
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "FL");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "FL");
-        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "FL");
+        if (type === "schooljobs") {
+          const jobs = await scrapeSchoolJobsAs(context, url, campus, "FL");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title)) : jobs;
+        }
         if (type === "fsu-peoplesoft") return await scrapeFsuPeopleSoftJobs(context, url, campus, "FL");
         if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "FL");
         if (type === "ucf-search") return await scrapeUcfSearchAs(context, url, campus, "FL");
