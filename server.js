@@ -630,6 +630,10 @@ const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type
 
 // Massachusetts private universities + liberal arts colleges
 const MA_PRIVATE_CAMPUSES = [
+  { campus: "Simmons University", type: "workday", url: "https://simmons.wd504.myworkdayjobs.com/Simmons-Careers" },
+  { campus: "Western New England University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=3C67A483237F6A324625AB95D568B0C1" },
+  { campus: "Worcester Polytechnic Institute", type: "workday", url: "https://wpi.wd5.myworkdayjobs.com/WPI_External_Career_Site" },
+  { campus: "Massachusetts College of Liberal Arts", type: "interviewexchange", url: "https://mcla.interviewexchange.com/static/clients/456MCM1/index.jsp" },
   { campus: "Suffolk University", type: "workday", url: "https://suffolk.wd1.myworkdayjobs.com/External" },
   {
     campus: "Harvard University",
@@ -1350,6 +1354,8 @@ const CA_PRIVATE_CAMPUSES = [
 
 // NJ (multi-platform)
 const NJ_CAMPUSES = [
+  { campus: "Saint Elizabeth University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=08c27dfd-4a66-473e-ac0f-70b2d10bc070&ccId=19000101_000001&source=CC2&lang=en_US&selectedMenuKey=CurrentOpenings" },
+  { campus: "Georgian Court University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=0674ba22-8f97-458a-80c0-91217826b19b&ccId=9151465763873_19553&lang=en_US" },
   { campus: "Passaic County Community College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=40423bb9-2cb3-4ea1-a606-660bd59b0d8d&ccId=19000101_000001&lang=en_US" },
   {
     campus: "The College of New Jersey",
@@ -1818,6 +1824,7 @@ const PA_PRIVATE_CAMPUSES = [
 
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
+  { campus: "Johnson C Smith University", type: "schooljobs", url: "https://www.schooljobs.com/careers/jcsu" },
   { campus: "High Point University", type: "workday", url: "https://highpoint.wd503.myworkdayjobs.com/Highpoint-Faculty" },
   { campus: "Montgomery Community College", type: "generic", url: "https://www.montgomery.edu/about-mcc/employment/" },
   { campus: "Western Piedmont Community College", type: "generic", url: "https://www.wpcc.edu/employment/" },
@@ -2043,6 +2050,7 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Sweet Briar College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0DB1CFB7BAA1AF7EF9E6616BC163C95A" },
   { campus: "Longwood University", type: "interviewexchange", url: "https://longwood.interviewexchange.com/static/clients/565LUM1/index.jsp" },
   { campus: "University of Virginia's College at Wise", type: "interfolio", url: "https://apply.interfolio.com/50272/positions" },
   { campus: "Norfolk State University", type: "workday", url: "https://nsu.wd501.myworkdayjobs.com/nsu" },
@@ -3213,6 +3221,7 @@ const NY_PRIVATE_CAMPUSES = [
 
 // OR (Oregon)
 const OR_CAMPUSES = [
+  { campus: "Oregon Health & Science University", type: "icims", url: "https://careersat-ohsu.icims.com/jobs/intro" },
   {
     campus: "University of Oregon",
     type: "enusfilter",
@@ -3333,6 +3342,7 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  { campus: "Wenatchee Valley College", type: "schooljobs", url: "https://www.schooljobs.com/careers/wvc" },
   { campus: "Lake Washington Institute of Technology", type: "schooljobs", url: "https://www.schooljobs.com/careers/lwtc" },
   { campus: "Olympic College", type: "schooljobs", url: "https://www.schooljobs.com/careers/olympic" },
   { campus: "Highline College", type: "schooljobs", url: "https://www.schooljobs.com/careers/highline" },
@@ -3577,6 +3587,7 @@ const ME_CAMPUSES = [
 
 // VT (Vermont)
 const VT_CAMPUSES = [
+  { campus: "Norwich University", type: "interviewexchange", url: "https://norwich.interviewexchange.com/static/clients/518NUM1/index.jsp" },
   {
     campus: "University of Vermont",
     type: "peopleadmin",
@@ -3622,6 +3633,7 @@ const VT_CAMPUSES = [
 
 // MN (Minnesota)
 const MN_CAMPUSES = [
+  { campus: "Hamline University", type: "workday", url: "https://hamline.wd5.myworkdayjobs.com/Faculty_Career_Site" },
   { campus: "Martin Luther College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=8C7EC27E66B8E44D82FD7F25E9526B76" },
   { campus: "St Catherine University", type: "peopleadmin", url: "https://stcatherine.peopleadmin.com/" },
   { campus: "White Earth Tribal and Community College", type: "generic", url: "https://www.wetcc.edu/employment-careers/" },
@@ -4067,6 +4079,7 @@ const MT_CAMPUSES = [
 
 // WI (Wisconsin)
 const WI_CAMPUSES = [
+  { campus: "University of Wisconsin-Green Bay", type: "workday", url: "https://wisconsin.wd1.myworkdayjobs.com/en-US/UW_Comprehensives?Institution=5adf054562b610142325cf0d5f910000" },
   { campus: "Lakeshore Technical College", type: "generic", url: "https://careers.lakeshore.edu/jobs" },
   { campus: "Moraine Park Technical College", type: "generic", url: "https://www.morainepark.edu/experience-mptc/jobs-and-careers/" },
   { campus: "Waukesha County Technical College", type: "generic", url: "https://www.wctc.edu/WCTC/WCTC-Jobs" },
@@ -4530,6 +4543,7 @@ const OH_CAMPUSES = [
 
 // NM (New Mexico)
 const NM_CAMPUSES = [
+  { campus: "Northern New Mexico College", type: "workday", url: "https://chess.wd1.myworkdayjobs.com/nnmcjobs" },
   { campus: "Western New Mexico University", type: "peopleadmin", url: "https://wnmu.peopleadmin.com/" },
   {
     campus: "University of New Mexico-Los Alamos Campus",
@@ -4794,6 +4808,7 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  { campus: "Rush University", type: "generic", url: "https://www.rush.edu/rush-careers/career-areas/faculty-and-providers" },
   { campus: "Saint Xavier University", type: "schooljobs", url: "https://www.schooljobs.com/careers/sxuedu" },
   { campus: "Waubonsee Community College", type: "csod", url: "https://waubonsee.csod.com/ux/ats/careersite/11/home?c=waubonsee" },
   { campus: "Moraine Valley Community College", type: "peopleadmin", url: "https://jobs.morainevalley.edu/" },
@@ -5684,6 +5699,7 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "Tallahassee State College", type: "workday", url: "https://tscfl.wd12.myworkdayjobs.com/en-US/TSC_External_Career_Site/jobs?jobFamilyGroup=88ce6bf2369610a6541c104e02c3315b&workerSubType=cb0c8f1c5fbf10ec7c87484d61a505c5&workerSubType=3270bd056e3210a44c108a51d23b0fab" },
   { campus: "Lake-Sumter State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/lsscedu" },
   { campus: "Lake-Sumter State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/lsscedu/promotionaljobs" },
   { campus: "Gulf Coast State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/gulfcoast" },
@@ -6222,6 +6238,8 @@ const MS_CAMPUSES = [
 
 // LA (Louisiana)
 const LA_CAMPUSES = [
+  { campus: "University of Louisiana at Monroe", type: "schooljobs", url: "https://www.governmentjobs.com/careers/ulm" },
+  { campus: "University of Louisiana at Lafayette", type: "csod", url: "https://louisiana.csod.com/ats/careersite/search.aspx?site=1&c=louisiana" },
   { campus: "Northwestern State University of Louisiana", type: "schooljobs", url: "https://www.governmentjobs.com/careers/louisiana/northwesternstate" },
   { campus: "Northshore Technical Community College", type: "generic", url: "https://www.northshorecollege.edu/resources/career-opportunities" },
   { campus: "Nunez Community College", type: "generic", url: "https://www.nunez.edu/careers" },
@@ -6467,6 +6485,7 @@ const KS_CAMPUSES = [
 
 // OK (Oklahoma)
 const OK_CAMPUSES = [
+  { campus: "Southwestern Oklahoma State University", type: "csod", url: "https://swosu.csod.com/ux/ats/careersite/6/home?c=swosu" },
   { campus: "Seminole State College", type: "generic", url: "https://www.sscok.edu/about-ssc/hr-employment/index.html" },
   { campus: "Oklahoma State University", type: "generic", url: "https://jobs.okstate.edu/faculty/jobs" },
   { campus: "University of Oklahoma", type: "interfolio", url: "https://apply.interfolio.com/16123/positions" },
@@ -6526,6 +6545,7 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "Lincoln University (MO)", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=6105d53b-aeb8-4656-a07d-2743bd4a2423&ccId=19000101_000001&lang=en_US&selectedMenuKey=CareerCenter" },
   { campus: "Saint Louis Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/stlcc" },
   { campus: "Southeast Missouri State University", type: "schooljobs", url: "https://www.governmentjobs.com/careers/semoedu/promotionaljobs" },
   { campus: "Missouri Western State University", type: "peopleadmin", url: "https://mwsu.peopleadmin.com/" },
@@ -6635,6 +6655,7 @@ const MO_CAMPUSES = [
 
 // KY (Kentucky)
 const KY_CAMPUSES = [
+  { campus: "Western Kentucky University", type: "generic", url: "https://www.wku.edu/hr/careers/" },
   { campus: "Midway University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0360F3B5A2EC741788B51C99C6E17513&jpt=" },
   { campus: "Northern Kentucky University", type: "peopleadmin", url: "https://jobs.nku.edu/postings/search" },
   { campus: "Murray State University", type: "peopleadmin", url: "https://www.murraystatejobs.com/postings/search" },
@@ -6715,6 +6736,7 @@ const KY_CAMPUSES = [
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
+  { campus: "The University of Tennessee-Chattanooga", type: "interfolio", url: "https://apply.interfolio.com/56358/positions" },
   { campus: "The University of the South", type: "schooljobs", url: "https://www.schooljobs.com/careers/sewanee" },
   {
     campus: "William R Moore College of Technology",
@@ -9556,6 +9578,7 @@ async function scrapeMaPrivate(context) {
         if (type === "peopleclick") return await scrapePeopleClickAs(context, url, campus, "MA");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "MA");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "MA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MA");
         return [];
       } catch (e) {
@@ -16732,6 +16755,7 @@ async function scrapeOrAll(context) {
         // live: Chemeketa 2 real faculty postings (Nursing Instructor, Welding
         // Instructor); Clackamas confirmed separately.
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "OR");
+        if (type === "icims") return await scrapeIcimsAs(context, url, campus, "OR");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OR");
         return [];
       } catch (e) {
@@ -16832,6 +16856,7 @@ async function scrapeVtAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "VT");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "VT");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "VT");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "VT");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} VT scrape failed:`, e?.message || e);
@@ -17708,6 +17733,7 @@ async function scrapeLaAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "LA");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "LA");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "LA");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "LA");
         // No existing LA dispatch case for "oracle-cx" (function scrapeOracleCxAs
         // already exists and is dispatched by TX) -- added for Franciscan
         // Missionaries of Our Lady University.
@@ -17781,6 +17807,7 @@ async function scrapeOkAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OK");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OK");
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "OK");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "OK");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} OK scrape failed:`, e?.message || e);
@@ -17903,6 +17930,7 @@ async function scrapeTnAll(context) {
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "TN");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "TN");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "TN");
+        if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "TN");
         if (type === "mooretech-news") return await scrapeMooreTechFacultyNews(url, campus, "TN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "TN");
         return [];
