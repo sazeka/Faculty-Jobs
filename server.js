@@ -3557,6 +3557,10 @@ const WA_CAMPUSES = [
 const ME_CAMPUSES = [
   { campus: "Northern Maine Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=910231577C34180857BE4AB5F766DEF5" },
   { campus: "York County Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=E6927E90DEBB918D88790AD51A36C462" },
+  { campus: "University of Maine at Farmington", type: "oracle-cloud-api", url: "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=ORGANIZATIONS&selectedOrganizationsFacet=300000014113586&selectedCategoriesFacet=300000014335735" },
+  { campus: "University of Maine at Fort Kent", type: "oracle-cloud-api", url: "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=ORGANIZATIONS&selectedOrganizationsFacet=300000014113599&selectedCategoriesFacet=300000014335735" },
+  { campus: "University of Maine at Presque Isle", type: "oracle-cloud-api", url: "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=ORGANIZATIONS&selectedOrganizationsFacet=300000014113651&selectedCategoriesFacet=300000014335735" },
+  { campus: "University of Maine-System Central Office", type: "oracle-cloud-api", url: "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=ORGANIZATIONS&selectedOrganizationsFacet=300000014113664&selectedCategoriesFacet=300000014335735" },
   {
     campus: "University of Maine System",
     type: "oracle-cx",
@@ -14331,7 +14335,7 @@ function mapApiJobs(rows, campusName, sourceName) {
 // Oracle Cloud HCM (Recruiting) "CandidateExperience" sites expose a REST feed at
 // /hcmRestApi/.../recruitingCEJobRequisitions. Preserve the CE URL's facet params
 // (e.g. selectedCategoriesFacet for a faculty filter). Returns [] for non-Oracle URLs.
-async function scrapeOracleCloudApi(ceUrl, campusName, sourceName) {
+export async function scrapeOracleCloudApi(ceUrl, campusName, sourceName) {
   let u;
   try { u = new URL(ceUrl); } catch { return []; }
   if (!/\.oraclecloud\.com$/i.test(u.hostname)) return [];
@@ -16928,6 +16932,7 @@ async function scrapeMeAll(context) {
     async ({ campus, type, url }) => {
       try {
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "ME");
+        if (type === "oracle-cloud-api") return await scrapeOracleCloudApi(url, campus, "ME");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "ME");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "ME");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "ME");
@@ -17007,8 +17012,21 @@ async function scrapeMnAll(context) {
 
   const jobs = results
     .flatMap((x) => (Array.isArray(x) ? x : []))
+    .map(splitUmnCampus)
     .map(splitMinnStateSystemCollege);
   return uniqByUrl(jobs).filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
+}
+
+export function splitUmnCampus(job) {
+  if (clean(job?.college) !== "University of Minnesota") return job;
+  const campusByLocation = {
+    crookston: "University of Minnesota-Crookston",
+    duluth: "University of Minnesota-Duluth",
+    morris: "University of Minnesota-Morris",
+    rochester: "University of Minnesota-Rochester",
+  };
+  const campus = campusByLocation[clean(job?.location).toLowerCase()];
+  return campus ? { ...job, college: campus } : job;
 }
 
 /* ============================== ND ============================== */
@@ -17198,7 +17216,7 @@ function splitMinnStateSystemCollege(job) {
 // JOB_FAMILY_LABEL field — filters by title regex instead. See
 // scrapeUmsystemHrsJobs for the variant that does expose job family/business
 // unit fields (University of Missouri System).
-async function scrapePeopleSoftHrsBasic(context, startUrl, campusName, sourceName) {
+export async function scrapePeopleSoftHrsBasic(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
