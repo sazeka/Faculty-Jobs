@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { canonicalizeDiscoveredCareerUrl, excludePreviouslyReported, isRejectedCareerPage } from "./lib/career-path-probe.js";
+import { canonicalizeDiscoveredCareerUrl, excludePreviouslyReported, isRejectedCareerPage, shouldReplaceDiscoveredPlatform } from "./lib/career-path-probe.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -690,7 +690,13 @@ async function main() {
     if (found.ok && found.best && found.best.confidence >= opts.minConfidence) {
       if (opts.apply) {
         if (revisitMode || !clean(inst.career_url)) inst.career_url = found.best.url;
-        if (revisitMode || !clean(inst.platform_type)) inst.platform_type = found.best.platform_type || inferPlatformFromUrl(found.best.url);
+        // "generic" is the master-file default, not reliable evidence that the
+        // discovered board is actually generic. Replace it when the validated
+        // URL identifies a supported ATS (Workday, ADP, iCIMS, etc.), otherwise
+        // promotion silently wires a specialized board to the wrong scraper.
+        if (shouldReplaceDiscoveredPlatform(inst.platform_type, revisitMode)) {
+          inst.platform_type = found.best.platform_type || inferPlatformFromUrl(found.best.url);
+        }
         inst.last_checked_at = new Date().toISOString();
         inst.last_discovery_attempt_at = attemptedAt;
         inst.last_discovery_status = "discovered";

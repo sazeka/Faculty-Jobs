@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildScopedHospitalFacultyJobs } from "../../server.js";
+import { canonicalizeUrl } from "../lib/url-normalization.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const readJson = (name) => JSON.parse(fs.readFileSync(path.join(ROOT, name), "utf8"));
@@ -29,7 +30,7 @@ test("the three verified nursing schools have scoped production sources", () => 
   for (const source of report.acceptedSources) {
     const institution = byName.get(source.name);
     assert.equal(institution?.coverage_status, "covered", source.name);
-    assert.equal(institution?.career_url, source.career_url, source.name);
+    assert.equal(canonicalizeUrl(institution?.career_url), canonicalizeUrl(source.career_url), source.name);
     assert.equal(institution?.platform_type, source.platform_type, source.name);
   }
 });

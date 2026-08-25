@@ -5,6 +5,7 @@ import { isGenericFacultyPageChromeTitle } from "../../server.js";
 test("generic career scraping rejects faculty-themed page chrome", () => {
   assert.equal(isGenericFacultyPageChromeTitle("Early Alert Form - Faculty/Staff"), true);
   assert.equal(isGenericFacultyPageChromeTitle("Distinguished Faculty"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Faculty Employee Opportunities"), true);
   assert.equal(isGenericFacultyPageChromeTitle("Faculty and Staff"), true);
   assert.equal(isGenericFacultyPageChromeTitle("New Faculty Experience"), true);
   assert.equal(isGenericFacultyPageChromeTitle("Faculty CV & Syllabi"), true);

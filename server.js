@@ -1336,6 +1336,7 @@ const CA_PRIVATE_CAMPUSES = [
   // SBCCD uses NEOGOV for both colleges; the location field is rendered on
   // every card and is already enforced by scrapeSchoolJobsAs.
   { campus: "San Bernardino Valley College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sbccd", locationFilter: "San Bernardino Valley College" },
+  { campus: "Notre Dame de Namur University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=fde135bd-bf6a-4ebd-965f-43a1d08a2241&ccId=19000101_000001&lang=en_US" },
 ];
 
 // NJ (multi-platform)
@@ -1799,6 +1800,7 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Northampton County Area Community College", type: "generic", url: "https://www.northampton.edu/about/working-at-ncc/employment-opportunities.html" },
   { campus: "Orleans Technical College", type: "generic", url: "https://orleanstech.edu/jobs-at-orleans/" },
   { campus: "Thaddeus Stevens College of Technology", type: "generic", url: "https://www.stevenscollege.edu/about/careers/" },
+  { campus: "Misericordia University", type: "generic", url: "https://www.misericordia.edu/campus-community/other-offices/human-resources/employment-opportunities/faculty-employee-opportunities" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -2953,8 +2955,8 @@ const NY_PRIVATE_CAMPUSES = [
     type: "generic",
     url: "https://www.pratt.edu/administrative-departments/human-resources/open-positions/faculty-positions/",
   },
-  // NYIT: iCIMS portal is fully JS-rendered inside iframe wrapper; skipped for now
-  // { campus: "New York Institute of Technology", type: "icims", url: "https://careers-nyit.icims.com/jobs/intro" },
+  // NYIT: the iframe-aware iCIMS scraper handles this JavaScript-rendered portal.
+  { campus: "New York Institute of Technology", type: "icims", url: "https://careers-nyit.icims.com/jobs/intro" },
   {
     campus: "Marist College",
     type: "generic",
@@ -3185,6 +3187,8 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Monroe Community College", type: "generic", url: "https://www.monroecc.edu/depts/humres/" },
   { campus: "North Country Community College", type: "generic", url: "https://www.nccc.edu/about/human-resources/careers.html" },
   { campus: "Sullivan County Community College", type: "generic", url: "https://sunysullivan.isolvedhire.com/" },
+  { campus: "Molloy University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=f1758074-bb0b-4d6b-8d46-3a90ce325365&ccId=19000101_000001&lang=en_US" },
+  { campus: "The Rockefeller University", type: "icims", url: "https://careers-rockefelleruniversity.icims.com/" },
 ];
 
 // OR (Oregon)
@@ -4483,6 +4487,9 @@ const OH_CAMPUSES = [
   { campus: "The University of Findlay", type: "generic", url: "https://www.findlay.edu/offices/business-affairs/human-resources/Pages/default.aspx" },
   { campus: "Tiffin University", type: "generic", url: "https://www.tiffin.edu/about/offices-departments/human-resources/join-our-team/" },
   { campus: "Wilmington College", type: "generic", url: "https://www.wilmington.edu/about/employment" },
+  { campus: "Marietta College", type: "interviewexchange", url: "https://marietta.interviewexchange.com/static/clients/465MCM1/index.jsp" },
+  { campus: "Miami University-Oxford", type: "workday", url: "https://miamioh.wd5.myworkdayjobs.com/miamioh-staff", excludeTitleFilter: "\\b(?:student|youth)\\b" },
+  { campus: "Northeast Ohio Medical University", type: "peopleadmin", url: "https://neomed.peopleadmin.com/" },
 ];
 
 // NM (New Mexico)
@@ -5626,6 +5633,7 @@ const TX_CAMPUSES = [
   { campus: "Wharton County Junior College", type: "schooljobs", url: "https://www.schooljobs.com/careers/wcjc" },
   { campus: "Panola College", type: "generic", url: "https://www.panola.edu/employment" },
   { campus: "Victoria College", type: "generic", url: "https://www.victoriacollege.edu/BusinessCommunity/HumanResources" },
+  { campus: "Texas A & M University-Corpus Christi", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/TAMUCC_External" },
 ];
 
 // FL (Florida)
@@ -8016,7 +8024,7 @@ export function looksFacultyish(title) {
 
 export function isGenericFacultyPageChromeTitle(title) {
   const value = clean(title);
-  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|faculty\s*&\s*staff careers|faculty and staff faqs|faculty\s*&\s*adjunct-faculty openings|faculty\s*\/\s*staff webmail|(?:\d{4}[–—-]\d{2,4}\s+)?faculty salary scales|adjunct instructor salary schedule|adjunct faculty application process|adjunct faculty resources|faculty credentialing manual|faculty documents and forms|message from the dean of students|cosmetology instructor training\s*\(short-term certificate\)|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
+  return /^(?:early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty employee opportunities|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|faculty\s*&\s*staff careers|faculty and staff faqs|faculty\s*&\s*adjunct-faculty openings|faculty\s*\/\s*staff webmail|(?:\d{4}[–—-]\d{2,4}\s+)?faculty salary scales|adjunct instructor salary schedule|adjunct faculty application process|adjunct faculty resources|faculty credentialing manual|faculty documents and forms|message from the dean of students|cosmetology instructor training\s*\(short-term certificate\)|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
 }
 
 /* ============================== CUNY ============================== */
@@ -11337,7 +11345,7 @@ export async function scrapeCsodAs(context, startUrl, campusName, sourceName, fi
   }
 }
 
-async function scrapeWorkdayAs(context, startUrl, campusName, sourceName) {
+export async function scrapeWorkdayAs(context, startUrl, campusName, sourceName) {
   const items = await scrapeNjWorkday(context, startUrl, campusName, sourceName);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
 }
@@ -12495,7 +12503,7 @@ async function extractInterviewExchangeJobs(page) {
   }).catch(() => []);
 }
 
-async function scrapeInterviewExchangeAs(context, startUrl, campusName, sourceName) {
+export async function scrapeInterviewExchangeAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -13559,6 +13567,7 @@ async function scrapeNyPrivate(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NY");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NY");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "NY");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "NY", locationFilter || null);
         if (type === "interfolio") return await scrapeInterfolioAs(context, url, campus, "NY");
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "NY");
         if (type === "nyu") return await scrapeNyuFaculty(context, url);
@@ -15735,7 +15744,7 @@ function extractIcimsJobsInPage() {
   return out;
 }
 
-async function scrapeIcimsAs(context, startUrl, campusName, sourceName) {
+export async function scrapeIcimsAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
@@ -17230,9 +17239,13 @@ async function scrapeOhAll(context) {
   const results = await mapWithConcurrency(
     OH_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
-        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OH");
+        if (type === "workday") {
+          const jobs = await scrapeWorkdayAs(context, url, campus, "OH");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title)) : jobs;
+        }
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "OH");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OH");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "OH");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "OH");

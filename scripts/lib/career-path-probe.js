@@ -73,3 +73,8 @@ export function excludePreviouslyReported(institutions, reportResults) {
   const skippedNames = new Set((reportResults || []).map((item) => key(item?.name)).filter(Boolean));
   return (institutions || []).filter((item) => !skippedNames.has(key(item?.name)));
 }
+
+export function shouldReplaceDiscoveredPlatform(currentPlatform, revisitMode = false) {
+  const current = String(currentPlatform || "").replace(/\s+/g, " ").trim().toLowerCase();
+  return Boolean(revisitMode || !current || current === "generic");
+}

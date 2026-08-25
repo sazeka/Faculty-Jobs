@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { canonicalizeDiscoveredCareerUrl, compareDiscoveryPriority, excludePreviouslyReported, isRejectedCareerPage } from "../lib/career-path-probe.js";
+import { canonicalizeDiscoveredCareerUrl, compareDiscoveryPriority, excludePreviouslyReported, isRejectedCareerPage, shouldReplaceDiscoveredPlatform } from "../lib/career-path-probe.js";
 
 test("career path probing rejects fabricated faculty/jobs and soft-404 pages", () => {
   assert.equal(isRejectedCareerPage("https://example.edu/faculty/jobs"), true);
@@ -81,6 +81,13 @@ test("career discovery can skip every institution from the previous batch report
   const rows = [{ name: "First College" }, { name: "Second University" }, { name: "Third Institute" }];
   const priorResults = [{ name: " first   college " }, { name: "SECOND UNIVERSITY" }];
   assert.deepEqual(excludePreviouslyReported(rows, priorResults), [{ name: "Third Institute" }]);
+});
+
+test("career discovery replaces placeholder generic platforms with validated ATS types", () => {
+  assert.equal(shouldReplaceDiscoveredPlatform("generic"), true);
+  assert.equal(shouldReplaceDiscoveredPlatform(""), true);
+  assert.equal(shouldReplaceDiscoveredPlatform("workday"), false);
+  assert.equal(shouldReplaceDiscoveredPlatform("workday", true), true);
 });
 
 test("career discovery canonicalizes redirect, job-detail, and session URLs", () => {
