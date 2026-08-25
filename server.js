@@ -2961,6 +2961,43 @@ const NY_PRIVATE_CAMPUSES = [
     type: "interfolio-inst",
     url: "https://apply.interfolio.com/11646/positions",
   },
+  // Houghton's institution-owned faculty page contains both real position
+  // announcements and a navigation link titled "Faculty Application". Keep
+  // the exact-title rejection local to this source so the application form is
+  // never published as a job.
+  {
+    campus: "Houghton University",
+    type: "generic",
+    url: "https://www.houghton.edu/employment/faculty-openings/",
+    excludeTitleFilter: "^Faculty Application$",
+  },
+  // Skidmore HR's official "current openings" link resolves to this dedicated
+  // Oracle Recruiting tenant. The API adapter still applies the normal
+  // faculty-title evidence filter, so a healthy zero-faculty result remains
+  // covered without admitting staff roles.
+  {
+    campus: "Skidmore College",
+    type: "oracle-cloud-api",
+    url: "https://eodq.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX/jobs",
+  },
+  // Vassar's Dean of the Faculty links to this exact Workday job-family facet.
+  {
+    campus: "Vassar College",
+    type: "workday",
+    url: "https://vassar.wd1.myworkdayjobs.com/en-US/Vassar-External?jobFamilyGroup=71e2c39500161003e7c502c9a45f8212",
+  },
+  // Both PeopleAdmin boards expose first-party position-type controls. The
+  // query values below come directly from each institution's Faculty tile.
+  {
+    campus: "St Lawrence University",
+    type: "peopleadmin",
+    url: "https://employment.stlawu.edu/postings/search?435=&commit=Search&query=&query_position_type_id%5B%5D=2&query_v0_posted_at_date=",
+  },
+  {
+    campus: "St. John Fisher University",
+    type: "peopleadmin",
+    url: "https://jobs.sjf.edu/postings/search?435=&commit=Search&query=&query_organizational_tier_3_id=any&query_position_type_id=3&query_v0_posted_at_date=&utf8=%E2%9C%93",
+  },
   {
     campus: "St. John's University",
     type: "stjohns",
@@ -13982,7 +14019,7 @@ async function scrapeNyPrivate(context) {
   const results = await mapWithConcurrency(
     NY_PRIVATE_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter, jobFamilyFilter, titleFilter, departmentFilter, facilityFilter }) => {
+    async ({ campus, type, url, locationFilter, jobFamilyFilter, titleFilter, departmentFilter, facilityFilter, excludeTitleFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NY");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NY");
@@ -13993,7 +14030,13 @@ async function scrapeNyPrivate(context) {
         if (type === "nyu") return await scrapeNyuFaculty(context, url);
         if (type === "stjohns") return await scrapeStJohnsDirectoryAs(context, url, campus, "NY");
         if (type === "jobvite") return await scrapeJobviteAs(url, campus, "NY");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NY");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "NY");
+          if (!excludeTitleFilter) return jobs;
+          const reject = new RegExp(excludeTitleFilter, "i");
+          return jobs.filter((job) => !reject.test(job?.title || ""));
+        }
+        if (type === "oracle-cloud-api") return await scrapeOracleCloudApi(url, campus, "NY");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "NY");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "NY");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "NY");
