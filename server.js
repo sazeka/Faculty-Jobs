@@ -1337,6 +1337,8 @@ const CA_PRIVATE_CAMPUSES = [
   // every card and is already enforced by scrapeSchoolJobsAs.
   { campus: "San Bernardino Valley College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sbccd", locationFilter: "San Bernardino Valley College" },
   { campus: "Notre Dame de Namur University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=fde135bd-bf6a-4ebd-965f-43a1d08a2241&ccId=19000101_000001&lang=en_US" },
+  { campus: "Touro University California", type: "icims", url: "https://tuccareers-touro.icims.com/" },
+  { campus: "Yosemite Community College District Office", type: "peopleadmin", url: "https://yosemite.peopleadmin.com/" },
 ];
 
 // NJ (multi-platform)
@@ -1801,6 +1803,8 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Orleans Technical College", type: "generic", url: "https://orleanstech.edu/jobs-at-orleans/" },
   { campus: "Thaddeus Stevens College of Technology", type: "generic", url: "https://www.stevenscollege.edu/about/careers/" },
   { campus: "Misericordia University", type: "generic", url: "https://www.misericordia.edu/campus-community/other-offices/human-resources/employment-opportunities/faculty-employee-opportunities" },
+  { campus: "York College of Pennsylvania", type: "schooljobs", url: "https://www.governmentjobs.com/careers/ycp/faculty" },
+  { campus: "Immaculata University", type: "interviewexchange", url: "https://immaculata.interviewexchange.com/static/clients/534IMM1/index.jsp" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -4490,6 +4494,7 @@ const OH_CAMPUSES = [
   { campus: "Marietta College", type: "interviewexchange", url: "https://marietta.interviewexchange.com/static/clients/465MCM1/index.jsp" },
   { campus: "Miami University-Oxford", type: "workday", url: "https://miamioh.wd5.myworkdayjobs.com/miamioh-staff", excludeTitleFilter: "\\b(?:student|youth)\\b" },
   { campus: "Northeast Ohio Medical University", type: "peopleadmin", url: "https://neomed.peopleadmin.com/" },
+  { campus: "University of Mount Union", type: "schooljobs", url: "https://www.schooljobs.com/careers/mountunion/faculty" },
 ];
 
 // NM (New Mexico)
@@ -9719,6 +9724,7 @@ async function scrapeCaPrivate(context) {
         if (type === "usc-jobs") return await scrapeUscJobsAs(url, campus, "CA Private");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CA Private");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CA Private");
+        if (type === "icims") return await scrapeIcimsAs(context, url, campus, "CA Private");
         if (type === "schooljobs") {
           return await scrapeSchoolJobsAs(context, url, campus, "CA Private", locationFilter || null, contentFilter || null);
         }
@@ -11188,6 +11194,7 @@ async function scrapePaAll(context) {
         // added for American College of Financial Services.
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "PA");
         if (type === "applitrack") return await scrapeApplitrackAs(context, url, campus, "PA");
+        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "PA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "PA");
         if (type === "enusfilter") {
           const page = await context.newPage();
