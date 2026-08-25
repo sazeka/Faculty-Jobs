@@ -30,6 +30,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { synchronizeJobCount } from "./lib/dataset-invariants.js";
+import { attachUniversityCoverage } from "./lib/site-coverage.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -38,6 +39,7 @@ const PUBLIC_JOBS    = path.join(ROOT, "public",    "jobs.json");
 const DOCS_JOBS      = path.join(ROOT, "docs",      "jobs.json");
 const PRESENCE_PATH  = path.join(ROOT, "generated", "job-presence.json");
 const REPORT_PATH    = path.join(ROOT, "generated", "job-presence-report.json");
+const COVERAGE_PATH  = path.join(ROOT, "generated", "coverage-report.json");
 // site-stats.json carries the global "new" counts the homepage shows, so the
 // figure is computed once per scrape for everyone (not per-browser localStorage).
 // Written into every served data dir; the daily commit step git-adds docs/data
@@ -244,7 +246,7 @@ for (const job of cleanedJobs) {
   if (stateSystem) stateSet.add(stateSystem);
 }
 
-const siteStats = {
+const siteStats = attachUniversityCoverage({
   generatedAt: new Date().toISOString(),
   scrapeDate: today,
   total: cleanedJobs.length,
@@ -252,7 +254,7 @@ const siteStats = {
   stateSystems: stateSet.size,
   newToday,
   newThisWeek,
-};
+}, readJson(COVERAGE_PATH));
 
 console.log(`  New today        : ${newToday.toLocaleString()}`);
 console.log(`  New this week    : ${newThisWeek.toLocaleString()}`);

@@ -36,8 +36,20 @@ const heroTotal = computed(() =>
   jobsLoaded.value ? qualitySummary.value.total : (Number(siteStats.value?.total) || 0))
 const heroInstitutions = computed(() =>
   jobsLoaded.value ? qualitySummary.value.uniqueColleges : (Number(siteStats.value?.uniqueColleges) || 0))
-const heroStates = computed(() =>
-  jobsLoaded.value ? stateCount.value : (Number(siteStats.value?.stateSystems) || 0))
+const universityCoverage = computed(() => siteStats.value?.universityCoverage || null)
+const heroCoveragePercent = computed(() => {
+  const value = Number(universityCoverage.value?.percent)
+  if (!Number.isFinite(value)) return '—'
+  return `${value.toFixed(1)}%`
+})
+const coverageDetail = computed(() => {
+  const covered = Number(universityCoverage.value?.covered)
+  const total = Number(universityCoverage.value?.total)
+  const excluded = Number(universityCoverage.value?.excluded)
+  if (!Number.isFinite(covered) || !Number.isFinite(total)) return 'Audited U.S. university coverage'
+  const excludedText = Number.isFinite(excluded) ? `; ${excluded.toLocaleString()} policy-excluded` : ''
+  return `${covered.toLocaleString()} of ${total.toLocaleString()} eligible U.S. institutions covered${excludedText}`
+})
 
 const filters = ref(createDefaultFilters())
 
@@ -106,9 +118,6 @@ const topRegions = computed(() => {
     .slice(0, 7)
     .map(([name, count], i) => ({ rank: i + 1, name, count }))
 })
-
-// State count
-const stateCount = computed(() => new Set(jobs.value.map(j => j.state || j.source).filter(Boolean)).size)
 
 // Scraped date label
 const scrapedLabel = computed(() => {
@@ -238,7 +247,10 @@ onMounted(async () => {
         <div class="fa-meta" style="display: flex; gap: 24px;">
           <span><b style="font-weight: 600; color: var(--ink);">{{ heroTotal.toLocaleString() }}</b> posts</span>
           <span><b style="font-weight: 600; color: var(--ink);">{{ heroInstitutions.toLocaleString() }}</b> institutions</span>
-          <span><b style="font-weight: 600; color: var(--ink);">{{ heroStates }}</b> state systems</span>
+          <span :title="coverageDetail">
+            <b style="font-weight: 600; color: var(--ink);">{{ heroCoveragePercent }}</b> U.S. university coverage
+            · <a :href="`${baseUrl}policy-exclusions.html`" class="fa-inline-link">excluded</a>
+          </span>
           <span v-if="siteViews !== null"><b style="font-weight: 600; color: var(--ink);">{{ siteViews.toLocaleString() }}</b> visitors</span>
         </div>
       </div>
@@ -276,8 +288,11 @@ onMounted(async () => {
             <div class="fa-stat-label">{{ heroNewLabel }}</div>
           </div>
           <div class="fa-stat">
-            <div class="fa-stat-val">{{ heroStates }}</div>
-            <div class="fa-stat-label">state systems</div>
+            <div class="fa-stat-val" :title="coverageDetail">{{ heroCoveragePercent }}</div>
+            <div class="fa-stat-label">
+              U.S. universities covered ·
+              <a :href="`${baseUrl}policy-exclusions.html`" class="fa-inline-link">view excluded</a>
+            </div>
           </div>
         </div>
 
@@ -659,6 +674,13 @@ onMounted(async () => {
   align-items: center;
   padding: 10px 0;
 }
+.fa-inline-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 2px;
+}
+.fa-inline-link:hover { color: var(--accent); }
 
 /* ─── Hero ─── */
 .fa-hero {

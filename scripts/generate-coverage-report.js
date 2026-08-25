@@ -2,6 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { attachUniversityCoverage } from "./lib/site-coverage.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +12,11 @@ const INSTITUTIONS_PATH = path.join(ROOT, "data", "institutions-master.json");
 const RULES_PATH = path.join(ROOT, "data", "policy-rules.json");
 const EXCLUSIONS_PATH = path.join(ROOT, "generated", "policy-excluded-colleges.json");
 const OUT_PATH = path.join(ROOT, "generated", "coverage-report.json");
+const SITE_STATS_PATHS = [
+  path.join(ROOT, "docs", "data", "site-stats.json"),
+  path.join(ROOT, "public", "data", "site-stats.json"),
+  path.join(ROOT, "web-vue", "public", "data", "site-stats.json"),
+];
 
 function readJson(p) {
   return JSON.parse(fs.readFileSync(p, "utf8"));
@@ -102,7 +108,22 @@ function main() {
 
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
   fs.writeFileSync(OUT_PATH, JSON.stringify(report, null, 2) + "\n", "utf8");
+  for (const siteStatsPath of SITE_STATS_PATHS) {
+    let siteStats = {};
+    try {
+      siteStats = readJson(siteStatsPath);
+    } catch {
+      // Coverage should still be available on a fresh checkout before a scrape.
+    }
+    fs.mkdirSync(path.dirname(siteStatsPath), { recursive: true });
+    fs.writeFileSync(
+      siteStatsPath,
+      JSON.stringify(attachUniversityCoverage(siteStats, report), null, 2) + "\n",
+      "utf8"
+    );
+  }
   console.log(`Wrote ${path.relative(ROOT, OUT_PATH)} (eligible universe: ${report.totals.eligible_universe})`);
+  console.log("Synced audited university coverage into site-stats.json");
 }
 
 main();

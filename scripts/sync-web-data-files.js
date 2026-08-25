@@ -12,6 +12,7 @@ const ROOT = path.resolve(__dirname, "..");
 const SOURCES = [
   ["public/jobs.json", "web-vue/public/jobs.json"],
   ["public/college-coords.json", "web-vue/public/college-coords.json"],
+  ["public/data/site-stats.json", "web-vue/public/data/site-stats.json"],
 ];
 
 function clean(value) {

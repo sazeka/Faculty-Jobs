@@ -130,8 +130,9 @@
       <h1>Data Policy Exclusions</h1>
       <p class="lead">
         This page lists universities excluded from scraping under the current policy-safe standard.
-        The list combines all high-confidence vendor-policy exclusions into one set.
-        Last reviewed: February 22, 2026.
+        The list combines all current policy exclusions into one audited set. Institutions may be excluded because
+        they are outside the project scope, duplicate a separately tracked campus, lack an institution-scoped board,
+        or use a recruiting platform whose terms prohibit automated extraction.
       </p>
 
       <div id="platformCards"></div>
@@ -185,6 +186,8 @@
               .map((x) => ({
                 college: x?.college || null,
                 career_url: x?.career_url || null,
+                reason: x?.reason || null,
+                platform_type: x?.platform_type || null,
                 sources: Array.isArray(x?.sources) ? x.sources : [],
               }))
               .filter((x) => x.college)
@@ -215,7 +218,7 @@
         const reason = document.createElement("p");
         reason.className = "reason";
         reason.innerHTML =
-          `These universities are excluded because their recruiting platforms publish terms that disallow automated extraction. ` +
+          `These institutions are omitted under Faculty Atlas's policy-safe coverage rules. Hover an institution for its specific exclusion reason. ` +
           `Policy sources: ` +
           policySourceLinks
             .map((src) => `<a href="${src.href}" target="_blank" rel="noreferrer">${src.label}</a>`)
@@ -225,6 +228,7 @@
         for (const item of items.sort((a, b) => String(a.college || "").localeCompare(String(b.college || "")))) {
           const college = item.college;
           const li = document.createElement("li");
+          if (item.reason) li.title = item.reason;
           const n = counts.get(college) || 0;
           const label = n > 0 ? `${college} (${n})` : college;
           const url = item.career_url;
