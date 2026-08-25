@@ -1816,6 +1816,7 @@ const PA_PRIVATE_CAMPUSES = [
 
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
+  { campus: "High Point University", type: "workday", url: "https://highpoint.wd503.myworkdayjobs.com/Highpoint-Faculty" },
   { campus: "Montgomery Community College", type: "generic", url: "https://www.montgomery.edu/about-mcc/employment/" },
   { campus: "Western Piedmont Community College", type: "generic", url: "https://www.wpcc.edu/employment/" },
   { campus: "Wilson Community College", type: "generic", url: "https://www.wilsoncc.edu/about-us/human-resources/" },
@@ -3327,6 +3328,7 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  { campus: "Highline College", type: "schooljobs", url: "https://www.schooljobs.com/careers/highline" },
   { campus: "Shoreline Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/shorelinecc" },
   { campus: "Skagit Valley College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/skagitedu" },
   { campus: "Pierce College District", type: "schooljobs", url: "https://www.governmentjobs.com/careers/piercedist/promotionaljobs" },
@@ -4518,6 +4520,7 @@ const OH_CAMPUSES = [
 
 // NM (New Mexico)
 const NM_CAMPUSES = [
+  { campus: "Western New Mexico University", type: "peopleadmin", url: "https://wnmu.peopleadmin.com/" },
   {
     campus: "University of New Mexico-Los Alamos Campus",
     type: "csod",
@@ -5134,6 +5137,7 @@ const ID_CAMPUSES = [
 
 // IN (Indiana)
 const IN_CAMPUSES = [
+  { campus: "Indiana University-Northwest", type: "peopleadmin", url: "https://indiana.peopleadmin.com/postings/search?&query=&query_v0_posted_at_date=&query_organizational_tier_2_id=any&query_organizational_tier_3_id=any&query_organizational_tier_1_id=441&query_position_type_id=&commit=Search" },
   { campus: "Saint Mary's College", type: "generic", url: "https://www.saintmarys.edu/hr/employment/faculty" },
   { campus: "Rose-Hulman Institute of Technology", type: "csod", url: "https://rosehulman.csod.com/ux/ats/careersite/9/home?c=rosehulman" },
   {
@@ -5670,6 +5674,7 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "Gulf Coast State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/gulfcoast" },
   { campus: "The College of the Florida Keys", type: "schooljobs", url: "https://www.governmentjobs.com/careers/cfkedu" },
   { campus: "Pasco-Hernando State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/phsc", excludeTitleFilter: "\\b(?:office assistant|faculty support)\\b" },
   { campus: "Ultimate Medical Academy", type: "generic", url: "https://job-boards.greenhouse.io/umaeducationinc/" },
