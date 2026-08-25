@@ -2040,6 +2040,7 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "University of Virginia's College at Wise", type: "interfolio", url: "https://apply.interfolio.com/50272/positions" },
   { campus: "Norfolk State University", type: "workday", url: "https://nsu.wd501.myworkdayjobs.com/nsu" },
   { campus: "Richard Bland College", type: "generic", url: "https://www.jobs.virginia.gov/jobs/search?query=Richard+Bland+College" },
   { campus: "Southside College of Health Sciences", type: "generic", url: "https://www.schs.edu/employment-opportunities" },
@@ -3326,6 +3327,8 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  { campus: "Shoreline Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/shorelinecc" },
+  { campus: "Skagit Valley College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/skagitedu" },
   { campus: "Pierce College District", type: "schooljobs", url: "https://www.governmentjobs.com/careers/piercedist/promotionaljobs" },
   { campus: "Renton Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/rentontc" },
   { campus: "Northwest School of Wooden Boat Building", type: "generic", url: "https://nwswb.edu/employment/" },
@@ -4560,6 +4563,7 @@ const NM_CAMPUSES = [
 
 // NV (Nevada)
 const NV_CAMPUSES = [
+  { campus: "Truckee Meadows Community College", type: "workday", url: "https://nshe.wd1.myworkdayjobs.com/TMCC-External" },
   {
     campus: "University of Nevada, Reno",
     type: "workday",
@@ -4777,6 +4781,7 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  { campus: "Saint Xavier University", type: "schooljobs", url: "https://www.schooljobs.com/careers/sxuedu" },
   { campus: "Waubonsee Community College", type: "csod", url: "https://waubonsee.csod.com/ux/ats/careersite/11/home?c=waubonsee" },
   { campus: "Moraine Valley Community College", type: "peopleadmin", url: "https://jobs.morainevalley.edu/" },
   { campus: "CAAN Academy of Nursing", type: "generic", url: "https://www.caanacademy.org/employment-opportunities" },
@@ -5129,6 +5134,7 @@ const ID_CAMPUSES = [
 
 // IN (Indiana)
 const IN_CAMPUSES = [
+  { campus: "Saint Mary's College", type: "generic", url: "https://www.saintmarys.edu/hr/employment/faculty" },
   { campus: "Rose-Hulman Institute of Technology", type: "csod", url: "https://rosehulman.csod.com/ux/ats/careersite/9/home?c=rosehulman" },
   {
     campus: "Mid-America College of Funeral Service",
@@ -5664,6 +5670,7 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "The College of the Florida Keys", type: "schooljobs", url: "https://www.governmentjobs.com/careers/cfkedu" },
   { campus: "Pasco-Hernando State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/phsc", excludeTitleFilter: "\\b(?:office assistant|faculty support)\\b" },
   { campus: "Ultimate Medical Academy", type: "generic", url: "https://job-boards.greenhouse.io/umaeducationinc/" },
   {
@@ -6051,6 +6058,8 @@ const GA_CAMPUSES = [
 
 // AL (Alabama)
 const AL_CAMPUSES = [
+  { campus: "Tuskegee University", type: "peopleadmin", url: "https://tuskegee.peopleadmin.com/" },
+  { campus: "University of North Alabama", type: "schooljobs", url: "https://www.schooljobs.com/careers/una" },
   { campus: "University of Alabama", type: "peopleadmin", url: "https://careers.ua.edu/faculty/jobs" },
   // auemployment.com (PeopleAdmin) is now a dead tenant -- its own homepage
   // banner says Auburn migrated to a new hiring platform effective March 2,
@@ -6685,6 +6694,7 @@ const KY_CAMPUSES = [
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
+  { campus: "The University of the South", type: "schooljobs", url: "https://www.schooljobs.com/careers/sewanee" },
   {
     campus: "William R Moore College of Technology",
     type: "mooretech-news",
@@ -10986,6 +10996,7 @@ async function scrapeVaAll(context) {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "VA");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "VA");
+        if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "VA");
         // No existing VA dispatch case for "ultipro-ukg" (function
         // scrapeUltiproUkgAs already exists and is dispatched by NY) --
         // added for Bryant & Stratton College-Virginia Beach.
@@ -17863,6 +17874,7 @@ async function scrapeTnAll(context) {
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "TN");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "TN");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "TN");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "TN");
         if (type === "mooretech-news") return await scrapeMooreTechFacultyNews(url, campus, "TN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "TN");
         return [];
