@@ -1,0 +1,74 @@
+{
+  "generatedAt": "2026-08-25T18:10:43.994Z",
+  "scope": "Southern University System exact institution routing",
+  "baseline": {
+    "eligibleUniverse": 3312,
+    "covered": 2487,
+    "missing": 718,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 75.09
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2491,
+    "missing": 714,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 75.21
+  },
+  "appliedCount": 4,
+  "newlyCoveredCount": 4,
+  "scanCount": 2,
+  "currentFacultyJobCount": 7,
+  "applied": [
+    {
+      "name": "Southern University and A & M College",
+      "url": "https://www.sus.edu/news/category/position-vacancy-announcements",
+      "platformType": "southern-system-vacancies",
+      "currentFacultyJobCount": 5,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "Instructor of Mathematics",
+        "Assistant Professor of English",
+        "Chairperson of Educational Leadership",
+        "Counselor / Instructor of the Dolores Margaret Richard Spikes Honors College",
+        "Chair- Professor of Mechanical Engineering"
+      ]
+    },
+    {
+      "name": "Southern University Law Center",
+      "url": "https://www.sus.edu/news/category/position-vacancy-announcements",
+      "platformType": "southern-system-vacancies",
+      "currentFacultyJobCount": 0,
+      "invalidJobCount": 0,
+      "sampleTitles": []
+    },
+    {
+      "name": "Southern University-Board and System",
+      "url": "https://www.sus.edu/news/category/position-vacancy-announcements",
+      "platformType": "southern-system-vacancies",
+      "currentFacultyJobCount": 0,
+      "invalidJobCount": 0,
+      "sampleTitles": []
+    },
+    {
+      "name": "Southern University at New Orleans",
+      "url": "https://www.suno.edu/news/category/position-vacancy-announcements",
+      "platformType": "southern-vacancies",
+      "currentFacultyJobCount": 2,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "Spanish Instructor (Summer Program)",
+        "Clinical Coordinator/Assistant Professor of HIMS"
+      ]
+    }
+  ],
+  "safeguards": [
+    "The shared Southern System feed is scanned once for three institutions.",
+    "Only exact SUBR, SULC, SU SYSTEM, or SUS title prefixes can assign a shared-feed row.",
+    "Unprefixed, SUAREC, SUNO, and SUSLA shared-feed rows fail closed.",
+    "Explicitly expired application deadlines are rejected.",
+    "Existing appointment-track evidence safeguards remain unchanged."
+  ]
+}

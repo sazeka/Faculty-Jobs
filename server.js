@@ -6450,6 +6450,13 @@ const LA_CAMPUSES = [
   { campus: "Louisiana Delta Community College", type: "generic", url: "https://www.ladelta.edu/faculty-and-staff/human-resources/employment-opportunities/" },
   { campus: "River Parishes Community College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/louisiana?department[0]=River%20Parishes%20Community%20College&sort=PositionTitle%7CAscending" },
   { campus: "South Louisiana Community College", type: "generic", url: "https://www.solacc.edu/jobs" },
+  // The Southern University System publishes one shared vacancy feed for
+  // Baton Rouge, the Law Center, and the system office. A dedicated scraper
+  // reads that feed once and accepts only rows with an exact campus prefix;
+  // unprefixed rows and SUAREC/SUSLA rows fail closed. SUNO owns a separate,
+  // institution-scoped vacancy feed, so it gets one independent scan.
+  { campus: "Southern University System Vacancies", type: "southern-system-vacancies", url: "https://www.sus.edu/news/category/position-vacancy-announcements" },
+  { campus: "Southern University at New Orleans", type: "southern-vacancies", url: "https://www.suno.edu/news/category/position-vacancy-announcements" },
   { campus: "Southern University at Shreveport", type: "generic", url: "https://www.susla.edu/index.cfm?action=newsroom.category&categoryID=careers" },
 ];
 
@@ -18457,6 +18464,113 @@ async function scrapeMsAll(context) {
   return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
 }
 
+export function southernSystemCampusFromTitle(title) {
+  const value = clean(title);
+  if (/^SUBR\s*\|/i.test(value)) return "Southern University and A & M College";
+  if (/^SULC\s*\|/i.test(value)) return "Southern University Law Center";
+  if (/^(?:SU\s+SYSTEM|SUS)\s*\|/i.test(value)) return "Southern University-Board and System";
+  return null;
+}
+
+export function southernVacancyIsOpen(text, now = new Date()) {
+  const value = clean(text);
+  const deadline = value.match(/application\s+deadline\s*:\s*([A-Za-z]+\s+\d{1,2},\s+\d{4})/i)?.[1];
+  if (!deadline) return true;
+  const parsed = new Date(`${deadline} 23:59:59 UTC`);
+  if (Number.isNaN(parsed.getTime())) return true;
+  return parsed.getTime() >= new Date(now).getTime();
+}
+
+async function extractSouthernVacancyRows(context, startUrl) {
+  const page = await context.newPage();
+  const rows = [];
+  try {
+    const expectedHost = new URL(startUrl).hostname;
+    let totalPages = 1;
+    for (let pageNumber = 1; pageNumber <= Math.min(totalPages, 10); pageNumber++) {
+      const pageUrl = new URL(startUrl);
+      if (pageNumber > 1) pageUrl.searchParams.set("pn", String(pageNumber));
+      await gotoWithRetry(page, pageUrl.toString(), { waitUntil: "domcontentloaded", timeout: 45_000 });
+      const payload = await page.evaluate(({ expectedHost }) => {
+        const cleanText = (s) => String(s || "").replace(/\s+/g, " ").trim();
+        const items = [];
+        let maxPage = 1;
+        for (const anchor of document.querySelectorAll('a[href*="/news/"]')) {
+          let parsed;
+          try { parsed = new URL(anchor.getAttribute("href") || "", location.href); } catch { continue; }
+          if (parsed.hostname !== expectedHost) continue;
+          const pn = Number(parsed.searchParams.get("pn"));
+          if (Number.isInteger(pn) && pn > maxPage) maxPage = pn;
+          if (!/^\/news\/(?!category(?:\/|$))[^/?#]+/i.test(parsed.pathname)) continue;
+          const title = cleanText(anchor.textContent);
+          if (!title) continue;
+          items.push({
+            title,
+            url: parsed.toString(),
+            summary: cleanText(anchor.parentElement?.innerText || title),
+          });
+        }
+        return { items, maxPage };
+      }, { expectedHost });
+      rows.push(...(payload?.items || []));
+      totalPages = Math.max(totalPages, Number(payload?.maxPage) || 1);
+    }
+    return rows;
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+export async function scrapeSouthernVacancyFeed(context, startUrl, campusName, sourceName) {
+  try {
+    const rows = await extractSouthernVacancyRows(context, startUrl);
+    return uniqByUrl(rows
+      .filter((row) => southernVacancyIsOpen(row.summary))
+      .filter((row) => looksFacultyish(row.title) || /\b(?:position\s+type\s*:\s*full-time\s+faculty|tenure-track)\b/i.test(row.summary))
+      .filter((row) => !omitAdjunct(row.title))
+      .map((row) => ({
+        title: normalizeJobTitle(row.title) || clean(row.title),
+        url: row.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: null,
+        description: row.summary || null,
+      })));
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Southern vacancy scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+export async function scrapeSouthernSystemVacancies(context, startUrl, sourceName) {
+  try {
+    const rows = await extractSouthernVacancyRows(context, startUrl);
+    return uniqByUrl(rows
+      .map((row) => ({ ...row, campus: southernSystemCampusFromTitle(row.title) }))
+      .filter((row) => row.campus)
+      .filter((row) => southernVacancyIsOpen(row.summary))
+      .map((row) => ({
+        ...row,
+        title: clean(row.title.replace(/^[^|]+\|\s*/, "")),
+      }))
+      .filter((row) => looksFacultyish(row.title) || /\b(?:position\s+type\s*:\s*full-time\s+faculty|tenure-track)\b/i.test(row.summary))
+      .filter((row) => !omitAdjunct(row.title))
+      .map((row) => ({
+        title: normalizeJobTitle(row.title) || clean(row.title),
+        url: row.url,
+        source: sourceName,
+        category: "Faculty",
+        college: row.campus,
+        location: null,
+        description: row.summary || null,
+      })));
+  } catch (e) {
+    console.error(`❌ Southern University System ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 async function scrapeLaAll(context) {
   const results = await mapWithConcurrency(
     LA_CAMPUSES,
@@ -18472,6 +18586,8 @@ async function scrapeLaAll(context) {
         // already exists and is dispatched by TX) -- added for Franciscan
         // Missionaries of Our Lady University.
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "LA");
+        if (type === "southern-system-vacancies") return await scrapeSouthernSystemVacancies(context, url, "LA");
+        if (type === "southern-vacancies") return await scrapeSouthernVacancyFeed(context, url, campus, "LA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "LA");
         return [];
       } catch (e) {
