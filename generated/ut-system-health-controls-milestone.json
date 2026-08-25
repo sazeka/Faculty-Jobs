@@ -1,0 +1,67 @@
+{
+  "generatedAt": "2026-08-25T17:32:45.711Z",
+  "scope": "Five previously unresolved University of Texas System institutions",
+  "baseline": {
+    "eligibleUniverse": 3312,
+    "covered": 2474,
+    "missing": 731,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 74.7
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2479,
+    "missing": 726,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 74.85
+  },
+  "appliedCount": 5,
+  "newlyCoveredCount": 5,
+  "currentFacultyJobCount": 504,
+  "applied": [
+    {
+      "name": "The University of Texas Permian Basin",
+      "platform_type": "peoplesoft-hrs",
+      "career_url": "https://zahr-prd-candidate-ada.utshare.utsystem.edu/psc/ZAHRPRDADA/EMPLOYEE/UTZ_CG/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Action=U&FOCUS=Applicant&Page=HRS_APP_SCHJOB&SiteId=10",
+      "scopeEvidence": "Official UTPB footer Careers link and exact UTShare SiteId=10",
+      "currentFacultyJobCount": 30
+    },
+    {
+      "name": "The University of Texas System Office",
+      "platform_type": "peoplesoft-hrs",
+      "career_url": "https://zahr-prd-candidate-ada.utshare.utsystem.edu/psp/ZAHRPRDADA/EMPLOYEE/HRMS/c/HRS_HRAM.HRS_APP_SCHJOB.GBL?Action=U&FOCUS=Applicant&Page=HRS_APP_SCHJOB&SiteId=8",
+      "scopeEvidence": "Official UT System Administration Careers link and exact UTShare SiteId=8",
+      "currentFacultyJobCount": 0
+    },
+    {
+      "name": "The University of Texas Health Science Center at Houston",
+      "platform_type": "phenom-faculty-category",
+      "career_url": "https://careers.uth.tmc.edu/us/en/c/faculty-physicians-jobs",
+      "scopeEvidence": "Institution-owned Phenom Faculty & Physicians category plus faculty-title evidence",
+      "currentFacultyJobCount": 109
+    },
+    {
+      "name": "The University of Texas Health Science Center at San Antonio",
+      "platform_type": "selectminds-faculty-search",
+      "career_url": "https://uthscsa.referrals.selectminds.com/faculty",
+      "scopeEvidence": "Institution-dedicated SelectMinds portal with exact Category: Faculty on every accepted row",
+      "currentFacultyJobCount": 224
+    },
+    {
+      "name": "The University of Texas Medical Branch at Galveston",
+      "platform_type": "selectminds-faculty-saved-search",
+      "career_url": "https://applyjobs.utmb.edu/landing-pages/79/jobs-matching-custom-search",
+      "scopeEvidence": "Official UTMB Faculty & Physicians saved search plus faculty-title evidence",
+      "currentFacultyJobCount": 141
+    }
+  ],
+  "safeguards": [
+    "Only canonical job-detail URLs on the institution-owned host are accepted.",
+    "San Antonio rows require exact Category: Faculty evidence.",
+    "Houston and UTMB mixed Faculty & Physicians boards also require faculty-title evidence.",
+    "Existing non-adjunct and tenure-classification evidence safeguards remain unchanged.",
+    "PeopleSoft routes use exact SiteId controls and click the exact View All Jobs action."
+  ]
+}

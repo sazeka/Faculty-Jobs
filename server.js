@@ -5424,6 +5424,46 @@ const TX_CAMPUSES = [
     url: "https://zahr-prd-candidate-ada.utshare.utsystem.edu/psc/ZAHRPRDADA/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&Page=HRS_APP_SCHJOB&Action=U&FOCUS=Applicant&SiteId=21",
   },
   {
+    // UTPB's own footer links directly to this UTShare tenant. SiteId=10 is
+    // institution-specific; no title or location inference is used to assign
+    // another UT institution's jobs to this record.
+    campus: "The University of Texas Permian Basin",
+    type: "peoplesoft-hrs",
+    url: "https://zahr-prd-candidate-ada.utshare.utsystem.edu/psc/ZAHRPRDADA/EMPLOYEE/UTZ_CG/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Action=U&FOCUS=Applicant&Page=HRS_APP_SCHJOB&SiteId=10",
+  },
+  {
+    // UT System Administration's official careers page links to SiteId=8.
+    // It currently has no faculty-titled roles, but the exact board makes the
+    // record auditable without sweeping member-campus jobs into the office.
+    campus: "The University of Texas System Office",
+    type: "peoplesoft-hrs",
+    url: "https://zahr-prd-candidate-ada.utshare.utsystem.edu/psp/ZAHRPRDADA/EMPLOYEE/HRMS/c/HRS_HRAM.HRS_APP_SCHJOB.GBL?Action=U&FOCUS=Applicant&Page=HRS_APP_SCHJOB&SiteId=8",
+  },
+  {
+    // Current institution-owned Phenom category reached from UTHealth
+    // Houston's faculty landing page. The path itself is category-scoped and
+    // the scraper also requires the official Faculty & Physicians label.
+    campus: "The University of Texas Health Science Center at Houston",
+    type: "phenom-faculty-category",
+    url: "https://careers.uth.tmc.edu/us/en/c/faculty-physicians-jobs",
+  },
+  {
+    // Dedicated faculty-only SelectMinds portal. An empty search creates the
+    // complete current result set; each accepted row must still carry the
+    // portal's exact Category: Faculty evidence.
+    campus: "The University of Texas Health Science Center at San Antonio",
+    type: "selectminds-faculty-search",
+    url: "https://uthscsa.referrals.selectminds.com/faculty",
+  },
+  {
+    // UTMB's official Faculty & Physicians landing page exposes this saved
+    // search. The adapter paginates it, but keeps only faculty-evidenced titles
+    // so physician-only clinical roles cannot enter the faculty dataset.
+    campus: "The University of Texas Medical Branch at Galveston",
+    type: "selectminds-faculty-saved-search",
+    url: "https://applyjobs.utmb.edu/landing-pages/79/jobs-matching-custom-search",
+  },
+  {
     campus: "University of North Texas",
     type: "generic",
     url: "https://careers.untsystem.edu/jobs/search/search-page-unt-faculty",
@@ -17489,7 +17529,8 @@ export async function scrapePeopleSoftHrsBasic(context, startUrl, campusName, so
     // suffix UMN's URL uses) land on a blank "Search Jobs" shell and need an
     // explicit "View All Jobs" postback click before any rows exist.
     await safeEvaluate(page, () => {
-      const link = document.querySelector('a[href*="NAV_PB"]');
+      const links = Array.from(document.querySelectorAll('a[href*="NAV_PB"]'));
+      const link = links.find((item) => /^view all jobs$/i.test((item.textContent || "").replace(/\s+/g, " ").trim())) || links[0];
       if (link) link.click();
     }).catch(() => {});
     await page.waitForTimeout(1500);
@@ -17555,6 +17596,241 @@ export async function scrapePeopleSoftHrsBasic(context, startUrl, campusName, so
     return jobs;
   } catch (e) {
     console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+function canonicalSelectMindsJobUrl(rawUrl, expectedHost) {
+  try {
+    const parsed = new URL(rawUrl);
+    if (expectedHost && parsed.hostname !== expectedHost) return null;
+    if (!/^\/(?:faculty\/)?jobs\/[^/]+-\d+\/?$/i.test(parsed.pathname)) return null;
+    parsed.hash = "";
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
+export function normalizeSelectMindsFacultyRows(
+  rows,
+  { expectedHost = null, requireCategory = null, requireTitleEvidence = false } = {},
+) {
+  const jobs = [];
+  const seen = new Set();
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const title = clean(row?.title || "");
+    const category = clean(row?.category || "");
+    const url = canonicalSelectMindsJobUrl(row?.url, expectedHost);
+    if (!title || !url || seen.has(url)) continue;
+    if (requireCategory && category.toLowerCase() !== clean(requireCategory).toLowerCase()) continue;
+    if (requireTitleEvidence && !looksFacultyish(title)) continue;
+    if (omitAdjunct(title)) continue;
+    seen.add(url);
+    jobs.push({
+      title,
+      url,
+      location: clean(row?.location || "") || null,
+      category: category || null,
+    });
+  }
+  return jobs;
+}
+
+// SelectMinds/Taleo Social Sourcing portals. The San Antonio portal is a
+// dedicated Faculty site whose empty search yields the full current set; the
+// UTMB URL is a saved Faculty & Physicians search. Both use the same audited
+// job-row and AJAX pagination controls. We accept only canonical detail URLs,
+// require exact category evidence where the portal supplies it, and optionally
+// require faculty language in the title for mixed Faculty & Physicians pages.
+export async function scrapeSelectMindsFacultyAs(
+  context,
+  startUrl,
+  campusName,
+  sourceName,
+  { clickSearch = false, requireCategory = null, requireTitleEvidence = false } = {},
+) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+
+    if (clickSearch) {
+      const submit = page.locator("#jSearchSubmit").first();
+      if ((await submit.count().catch(() => 0)) === 0) return [];
+      await submit.click({ timeout: 10_000 });
+    }
+
+    await page.waitForSelector(".jResultsContent .job_list_row", { state: "attached", timeout: 25_000 });
+    const expectedHost = new URL(page.url()).hostname;
+    const jobs = [];
+    const seen = new Set();
+
+    for (let safety = 0; safety < 100; safety++) {
+      const snapshot = await safeEvaluate(page, () => {
+        const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+        const active = document.querySelector("#jResultsArea .jResultsContent.jResultsActive") ||
+          document.querySelector("#jResultsArea .jResultsContent");
+        if (!active) return { currentPage: 0, totalPages: 0, rows: [] };
+        const rows = [...active.querySelectorAll(".job_list_row")].map((card) => {
+          const anchor = card.querySelector("a.job_link[href]");
+          const rawText = card.innerText || "";
+          const category = rawText.match(/(?:^|\n)\s*Category:\s*([^\n]+)/i)?.[1] || "";
+          const locationAnchor = card.querySelector('a[href*="other-jobs-matching/location-only"]');
+          return {
+            title: cleanText(anchor?.textContent),
+            url: anchor?.href || "",
+            category: cleanText(category),
+            location: cleanText(locationAnchor?.textContent).replace(/^[^A-Za-z0-9]+/, ""),
+          };
+        });
+        return {
+          currentPage: Number(active.querySelector("#jPaginateCurrPage")?.textContent || 0),
+          totalPages: Number(active.querySelector("#jPaginateNumPages")?.textContent || 0),
+          rows,
+        };
+      });
+
+      const normalized = normalizeSelectMindsFacultyRows(snapshot?.rows, {
+        expectedHost,
+        requireCategory,
+        requireTitleEvidence,
+      });
+      for (const row of normalized) {
+        if (seen.has(row.url)) continue;
+        seen.add(row.url);
+        jobs.push({
+          title: row.title,
+          url: row.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: row.location,
+          description: null,
+        });
+      }
+
+      const currentPage = Number(snapshot?.currentPage || 0);
+      const totalPages = Number(snapshot?.totalPages || 0);
+      if (!currentPage || !totalPages || currentPage >= totalPages) break;
+
+      const next = page.locator("#jResultsArea .jResultsContent.jResultsActive .jPagination a.next, #jResultsArea .jResultsContent .jPagination a.next").first();
+      if ((await next.count().catch(() => 0)) === 0) break;
+      await next.click({ timeout: 10_000 });
+      await page.waitForFunction(
+        (prior) => Number((document.querySelector("#jResultsArea .jResultsContent.jResultsActive") || document.querySelector("#jResultsArea .jResultsContent"))?.querySelector("#jPaginateCurrPage")?.textContent || 0) !== prior,
+        currentPage,
+        { timeout: 15_000 },
+      ).catch(() => {});
+      const after = await safeEvaluate(page, () => Number((document.querySelector("#jResultsArea .jResultsContent.jResultsActive") || document.querySelector("#jResultsArea .jResultsContent"))?.querySelector("#jPaginateCurrPage")?.textContent || 0)).catch(() => currentPage);
+      if (!after || after === currentPage) break;
+    }
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (SelectMinds faculty scope)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} SelectMinds scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+function canonicalPhenomJobUrl(rawUrl, expectedHost) {
+  try {
+    const parsed = new URL(rawUrl);
+    if (expectedHost && parsed.hostname !== expectedHost) return null;
+    if (!/^\/us\/en\/job\/[A-Za-z0-9]+\/[^/]+\/?$/i.test(parsed.pathname)) return null;
+    parsed.search = "";
+    parsed.hash = "";
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
+export function normalizePhenomFacultyRows(rows, { expectedHost = null } = {}) {
+  const jobs = [];
+  const seen = new Set();
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const title = clean(row?.title || "");
+    const category = clean(row?.category || "");
+    const url = canonicalPhenomJobUrl(row?.url, expectedHost);
+    if (!title || !url || seen.has(url)) continue;
+    if (category.toLowerCase() !== "faculty & physicians") continue;
+    if (!looksFacultyish(title) || omitAdjunct(title)) continue;
+    seen.add(url);
+    jobs.push({ title, url, category, location: clean(row?.location || "") || null });
+  }
+  return jobs;
+}
+
+// Phenom category pages expose stable offset pagination. The category URL and
+// every accepted card must both say Faculty & Physicians; titles must also pass
+// the existing faculty-title safeguard so physician-only clinical roles remain
+// excluded.
+export async function scrapePhenomFacultyCategoryAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    const base = new URL(startUrl);
+    const expectedHost = base.hostname;
+    const jobs = [];
+    const seen = new Set();
+
+    for (let offset = 0; offset <= 2000; offset += 10) {
+      const pageUrl = new URL(base);
+      if (offset > 0) {
+        pageUrl.searchParams.set("from", String(offset));
+        pageUrl.searchParams.set("s", "1");
+      }
+      await gotoWithRetry(page, pageUrl.toString(), { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await page.waitForSelector(".jobs-list-item", { state: "attached", timeout: 25_000 });
+
+      const snapshot = await safeEvaluate(page, () => {
+        const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+        const rows = [...document.querySelectorAll(".jobs-list-item")].map((card) => {
+          const anchor = card.querySelector('a[href*="/us/en/job/"]');
+          const text = card.innerText || "";
+          return {
+            title: cleanText(anchor?.textContent),
+            url: anchor?.href || "",
+            category: cleanText(text.match(/(?:^|\n)\s*Category\s*\n\s*([^\n]+)/i)?.[1] || ""),
+            location: cleanText(text.split(/\n/).find((line) => /\bTexas\b/i.test(line)) || ""),
+          };
+        });
+        const total = Number((document.body?.innerText || "").match(/Showing\s+\d+\s*-\s*\d+\s+of\s+([\d,]+)\s+jobs/i)?.[1]?.replace(/,/g, "") || 0);
+        return { rows, total };
+      });
+
+      const normalized = normalizePhenomFacultyRows(snapshot?.rows, { expectedHost });
+      let newRows = 0;
+      for (const row of normalized) {
+        if (seen.has(row.url)) continue;
+        seen.add(row.url);
+        newRows++;
+        jobs.push({
+          title: row.title,
+          url: row.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: row.location,
+          description: null,
+        });
+      }
+
+      const total = Number(snapshot?.total || 0);
+      if (!Array.isArray(snapshot?.rows) || snapshot.rows.length === 0) break;
+      if (total && offset + 10 >= total) break;
+      if (!newRows && offset > 0) break;
+    }
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (Phenom faculty category)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Phenom scrape failed:`, e?.message || e);
     return [];
   } finally {
     await page.close().catch(() => {});
@@ -18628,6 +18904,18 @@ async function scrapeTxAll(context) {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "TX");
         if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "TX");
         if (type === "peoplesoft-hrs") return await scrapePeopleSoftHrsBasic(context, url, campus, "TX");
+        if (type === "selectminds-faculty-search") {
+          return await scrapeSelectMindsFacultyAs(context, url, campus, "TX", {
+            clickSearch: true,
+            requireCategory: "Faculty",
+          });
+        }
+        if (type === "selectminds-faculty-saved-search") {
+          return await scrapeSelectMindsFacultyAs(context, url, campus, "TX", {
+            requireTitleEvidence: true,
+          });
+        }
+        if (type === "phenom-faculty-category") return await scrapePhenomFacultyCategoryAs(context, url, campus, "TX");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "TX");
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "TX");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "TX");

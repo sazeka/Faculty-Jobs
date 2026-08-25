@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-25T17:10:10.399Z",
+  "updatedAt": "2026-08-25T17:32:45.711Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -6832,6 +6832,41 @@
       "platform_type": "workday",
       "coverage_source": "Texas A&M University System",
       "notes": "Verified 2026-08-25 through the official Texas A&M System Workday API: exact System Member facet 0e1cd8ed350201b6eb631acdeb4b7c0e (West Texas A&M University), combined with official Faculty and Full-time facets. Existing strict faculty-title safeguards remain active."
+    },
+    {
+      "name": "The University of Texas Permian Basin",
+      "career_url": "https://zahr-prd-candidate-ada.utshare.utsystem.edu/psc/ZAHRPRDADA/EMPLOYEE/UTZ_CG/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Action=U&FOCUS=Applicant&Page=HRS_APP_SCHJOB&SiteId=10",
+      "platform_type": "peoplesoft-hrs",
+      "coverage_source": "University of Texas System",
+      "notes": "Verified live 2026-08-25 from UTPB's official footer Careers link: exact institution-specific UTShare SiteId=10. Production validation returned 30 current faculty-titled jobs with the existing non-adjunct safeguard intact."
+    },
+    {
+      "name": "The University of Texas System Office",
+      "career_url": "https://zahr-prd-candidate-ada.utshare.utsystem.edu/psp/ZAHRPRDADA/EMPLOYEE/HRMS/c/HRS_HRAM.HRS_APP_SCHJOB.GBL?Action=U&FOCUS=Applicant&Page=HRS_APP_SCHJOB&SiteId=8",
+      "platform_type": "peoplesoft-hrs",
+      "coverage_source": "University of Texas System",
+      "notes": "Verified live 2026-08-25 from the UT System Administration official Careers page: exact office-specific UTShare SiteId=8. No faculty-titled jobs are current, and the scoped route prevents member-campus attribution."
+    },
+    {
+      "name": "The University of Texas Health Science Center at Houston",
+      "career_url": "https://careers.uth.tmc.edu/us/en/c/faculty-physicians-jobs",
+      "platform_type": "phenom-faculty-category",
+      "coverage_source": "University of Texas System",
+      "notes": "Verified live 2026-08-25 through UTHealth Houston's current institution-owned Phenom Faculty & Physicians category. Full offset pagination returned 109 jobs with both exact category and faculty-title evidence; physician-only titles remain excluded."
+    },
+    {
+      "name": "The University of Texas Health Science Center at San Antonio",
+      "career_url": "https://uthscsa.referrals.selectminds.com/faculty",
+      "platform_type": "selectminds-faculty-search",
+      "coverage_source": "University of Texas System",
+      "notes": "Verified live 2026-08-25 through the institution's dedicated SelectMinds Faculty portal. The production adapter paginated the complete search and accepted 224 canonical rows carrying exact Category: Faculty evidence."
+    },
+    {
+      "name": "The University of Texas Medical Branch at Galveston",
+      "career_url": "https://applyjobs.utmb.edu/landing-pages/79/jobs-matching-custom-search",
+      "platform_type": "selectminds-faculty-saved-search",
+      "coverage_source": "University of Texas System",
+      "notes": "Verified live 2026-08-25 through UTMB's official Faculty & Physicians saved search. The production adapter paginated all 25 result pages and retained 141 faculty-evidenced titles while rejecting physician-only roles."
     }
   ]
 }
