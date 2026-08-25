@@ -5737,6 +5737,14 @@ const TX_CAMPUSES = [
   { campus: "Saint Edward's University", type: "generic", url: "https://www.stedwards.edu/careers-st-edwards" },
   { campus: "Hardin-Simmons University", type: "generic", url: "https://www.hsutx.edu/work-at-hsu/" },
   { campus: "Stephen F Austin State University", type: "peopleadmin", url: "https://careers.sfasu.edu/postings/search" },
+  // Exact Texas A&M System Member + Faculty + Full-time Workday facets.
+  // These routes are institution-scoped at the API rather than inferred from
+  // title or location text.
+  { campus: "Prairie View A & M University", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/System-wide_External?hiringCompany=0e1cd8ed3502019a54103fcdeb4b960f&workerSubType=0e1cd8ed3502012ddf607157e74b7d04&ztimeType=b7fe0524c23001befb2bf6461c464400" },
+  { campus: "Texas A & M International University", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/System-wide_External?hiringCompany=0e1cd8ed3502018b6cdd0ecdeb4b0f0e&workerSubType=0e1cd8ed3502012ddf607157e74b7d04&ztimeType=b7fe0524c23001befb2bf6461c464400" },
+  { campus: "Texas A & M University-System Office", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/System-wide_External?hiringCompany=0e1cd8ed3502010d591c2dcdeb4b000f&workerSubType=0e1cd8ed3502012ddf607157e74b7d04&ztimeType=b7fe0524c23001befb2bf6461c464400" },
+  { campus: "Texas A&M University-Central Texas", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/System-wide_External?hiringCompany=0e1cd8ed35020137762026cdeb4bc50e&workerSubType=0e1cd8ed3502012ddf607157e74b7d04&ztimeType=b7fe0524c23001befb2bf6461c464400" },
+  { campus: "West Texas A & M University", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/System-wide_External?hiringCompany=0e1cd8ed350201b6eb631acdeb4b7c0e&workerSubType=0e1cd8ed3502012ddf607157e74b7d04&ztimeType=b7fe0524c23001befb2bf6461c464400" },
   { campus: "Tarleton State University", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/System-wide_External?hiringCompany=0e1cd8ed350201e5696813cdeb4b340e" },
   { campus: "Texas A&M University-Kingsville", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/System-wide_External?hiringCompany=0e1cd8ed3502017afedc05cdeb4bbd0d" },
   { campus: "University of Texas Southwestern Medical Center", type: "generic", url: "https://jobs.utsouthwestern.edu/job-search-results/?category=Faculty+and+Physicians" },
