@@ -3029,6 +3029,32 @@ const NY_PRIVATE_CAMPUSES = [
     excludeTitleFilter: "^CS Faculty$",
   },
   {
+    campus: "St. Francis College",
+    type: "generic",
+    url: "https://www.sfc.edu/why-sfc/careers-at-sfc",
+    excludeTitleFilter: "Faculty Positions$",
+  },
+  {
+    campus: "The Cooper Union for the Advancement of Science and Art",
+    type: "generic",
+    url: "https://cooper.edu/work/employment-opportunities",
+    excludeTitleFilter: "^(?:Faculty-Student Senate|Faculty of Humanities & Social Sciences)$",
+  },
+  {
+    campus: "Villa Maria College",
+    type: "generic",
+    url: "https://www.villa.edu/about-us/employment-opportunities/",
+  },
+  // Vaughn embeds a dedicated AppOne tenant. Its public RSS endpoint is the
+  // stable, institution-scoped listing feed; the HTML search shell contains
+  // no job anchors until a form submission.
+  {
+    campus: "Vaughn College of Aeronautics and Technology",
+    type: "appone-rss",
+    url: "https://client.hrservicesinc.com/downloads/rss/portals/22048.xml",
+    excludeTitleFilter: "\b(?:CSTEP|current students only)\b",
+  },
+  {
     campus: "St. John's University",
     type: "stjohns",
     url: "https://www.stjohns.edu/recruitment/faculty-positions",
@@ -11812,6 +11838,49 @@ export async function scrapeExactHireAs(context, startUrl, campusName, sourceNam
   }
 }
 
+export function parseAppOneRssJobs(xml, campusName, sourceName, excludeTitleFilter = null) {
+  const reject = excludeTitleFilter ? new RegExp(excludeTitleFilter, "i") : null;
+  const jobs = [];
+  for (const match of String(xml || "").matchAll(/<item>([\s\S]*?)<\/item>/gi)) {
+    const item = match[1] || "";
+    const rawTitle = item.match(/<title>\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*<\/title>/i)?.[1]
+      || item.match(/<title>([\s\S]*?)<\/title>/i)?.[1]
+      || "";
+    const rawLink = item.match(/<link>([\s\S]*?)<\/link>/i)?.[1] || "";
+    const rawDescription = item.match(/<description>\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*<\/description>/i)?.[1] || "";
+    const title = clean(stripHtmlToText(rawTitle)
+      .replace(/\s*\([A-Z]{2},\s*[^)]+\)\s*$/i, "")
+      .replace(/\s+\?\s+/g, " – "));
+    const url = clean(rawLink).replace(/&amp;/gi, "&");
+    if (!title || !/^https:\/\/www\.appone\.com\/MainInfoReq\.asp\?/i.test(url)) continue;
+    if (!looksFacultyish(title) || omitAdjunct(title) || reject?.test(title)) continue;
+    jobs.push({
+      title,
+      url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: null,
+      description: clean(stripHtmlToText(rawDescription)) || null,
+    });
+  }
+  return uniqByUrl(jobs);
+}
+
+export async function scrapeAppOneRssAs(feedUrl, campusName, sourceName, excludeTitleFilter = null) {
+  try {
+    const response = await fetch(feedUrl, { headers: { "user-agent": "FacultyAtlas/1.0 (+https://www.facultyatlas.org/)" } });
+    if (!response.ok) throw new Error(`HTTP ${response.status} for ${feedUrl}`);
+    const xml = await response.text();
+    const jobs = parseAppOneRssJobs(xml, campusName, sourceName, excludeTitleFilter);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (AppOne RSS)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} AppOne RSS scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 export async function scrapeCsodAs(context, startUrl, campusName, sourceName, filters = {}) {
   // Legacy CSOD keeps its custom-field selections in server-side session
   // state. Give each scoped campus scrape an isolated cookie jar so parallel
@@ -14081,6 +14150,7 @@ async function scrapeNyPrivate(context) {
         if (type === "saashr") return await scrapeSaasHrApi(url, campus, "NY");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "NY");
         if (type === "exacthire") return await scrapeExactHireAs(context, url, campus, "NY");
+        if (type === "appone-rss") return await scrapeAppOneRssAs(url, campus, "NY", excludeTitleFilter || null);
         if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "NY", locationFilter || null);
         if (type === "silc-accordion") return await scrapeSilcAccordionAs(context, url, campus, "NY");
         if (type === "vizirecruiter") return await scrapeViziRecruiterApi(url, campus, "NY", jobFamilyFilter || null);
