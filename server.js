@@ -6851,19 +6851,15 @@ const AK_CAMPUSES = [
 // HI (Hawaii)
 const HI_CAMPUSES = [
   { campus: "Hawaii Tokai International College", type: "dayforce", url: "https://www.dayforcehcm.com/api/HTIC/V1/JobFeeds" },
-  { campus: "University of Hawaii System", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=faculty" },
+  { campus: "University of Hawaii System", type: "schooljobs-hawaii", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=faculty" },
   { campus: "Chaminade University of Honolulu", type: "generic", url: "https://chaminade.edu/employment-opportunities/" },
   { campus: "Brigham Young University-Hawaii", type: "generic", url: "https://www.byuh.edu/" },
   { campus: "Hawaii Pacific University", type: "generic", url: "https://www.hpu.edu/hpu-careers/job-listings.html" },
   { campus: "Kapiolani Community College", type: "generic", url: "https://www.kapiolani.hawaii.edu/faculty-staff/human-resources/employment-checklists/" },
   { campus: "Windward Community College", type: "generic", url: "https://windward.hawaii.edu/about-wcc/employment-opportunities/" },
-  // The University of Hawaii uses one NEOGOV tenant. Its keyword search is
-  // intentionally loose, so each branch also requires an exact department/
-  // hiring-unit marker from the rendered job card before attribution.
-  { campus: "Hawaii Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=Hawai%27i%20Community%20College", contentFilter: "Hawai'i Community College" },
-  { campus: "Honolulu Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=Honolulu%20Community%20College", contentFilter: "Honolulu Community College" },
-  { campus: "Kauai Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=Kaua%27i%20Community%20College", contentFilter: "Kaua'i Community College" },
-  { campus: "Leeward Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=Leeward%20Community%20College", contentFilter: "Leeward Community College" },
+  // One pass over the shared NEOGOV tenant is split by the exact official
+  // data-department-name carried on each job link. This replaces four duplicate
+  // board crawls and also attributes the four university campuses safely.
 ];
 
 /* ============================== EXPRESS ============================== */
@@ -10923,7 +10919,7 @@ export function matchesSchoolJobsCampusScope(job, locationFilter = null, content
   return true;
 }
 
-async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "NJ", locationFilter = null, contentFilter = null) {
+async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "NJ", locationFilter = null, contentFilter = null, campusResolver = null) {
   const page = await context.newPage();
   try {
     const jobs = [];
@@ -10961,7 +10957,8 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "
           const metaLi = card ? card.querySelector("ul.list-meta li") : null;
           const location_ = metaLi ? clean(metaLi.textContent) : "";
           const cardText = card ? clean(card.textContent) : title;
-          out.push({ title, url, location: location_, cardText });
+          const departmentName = clean(a.getAttribute("data-department-name") || "");
+          out.push({ title, url, location: location_, cardText, departmentName });
         }
         return out;
       });
@@ -10985,7 +10982,12 @@ async function scrapeNjSchoolJobs(context, startUrl, campusName, sourceLabel = "
 
     const filtered = scoped.filter((j) => looksFacultyish(j.title)).filter((j) => !omitAdjunct(j.title));
     console.log(`${campusName} ${sourceLabel} listings scraped: ${filtered.length}`);
-    return filtered.map((j) => toNjJob(clean(j.title), j.url, campusName));
+    return filtered.map((j) => {
+      const resolvedCampus = typeof campusResolver === "function" ? campusResolver(j) : null;
+      const job = toNjJob(clean(j.title), j.url, resolvedCampus || campusName);
+      const department = cleanDepartmentField(j.departmentName);
+      return department ? { ...job, department } : job;
+    });
   } finally {
     await page.close().catch(() => {});
   }
@@ -11406,6 +11408,42 @@ async function scrapeMiAll(context) {
 export async function scrapeSchoolJobsAs(context, startUrl, campusName, sourceName, locationFilter = null, contentFilter = null) {
   const items = await scrapeNjSchoolJobs(context, startUrl, campusName, sourceName, locationFilter, contentFilter);
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
+}
+
+export function splitHawaiiSchoolJobsCampus(job) {
+  const department = clean(job?.departmentName || "")
+    .replace(/[ʻ’]/g, "'")
+    .replace(/^\(EVA\)\s*/i, "")
+    .toLowerCase();
+  const exactPrefixes = [
+    ["university of hawai'i at hilo", "University of Hawaii at Hilo"],
+    ["university of hawai'i at manoa", "University of Hawaii at Manoa"],
+    ["university of hawai'i maui college", "University of Hawaii Maui College"],
+    ["university of hawai'i - west o'ahu", "University of Hawaii-West Oahu"],
+    ["hawai'i community college", "Hawaii Community College"],
+    ["honolulu community college", "Honolulu Community College"],
+    ["kapi'olani community college", "Kapiolani Community College"],
+    ["kaua'i community college", "Kauai Community College"],
+    ["leeward community college", "Leeward Community College"],
+    ["windward community college", "Windward Community College"],
+  ];
+  for (const [prefix, campus] of exactPrefixes) {
+    if (department === prefix || department.startsWith(`${prefix} -`)) return campus;
+  }
+  return null;
+}
+
+export async function scrapeHawaiiSystemAs(context, startUrl, sourceName = "HI") {
+  const items = await scrapeNjSchoolJobs(
+    context,
+    startUrl,
+    "University of Hawaii System",
+    sourceName,
+    null,
+    null,
+    splitHawaiiSchoolJobsCampus,
+  );
+  return items.map((job) => ({ ...job, source: sourceName }));
 }
 
 // ExactHire ATS (a React/MUI SPA): job cards render the title in an <h6> next to a
@@ -18094,6 +18132,7 @@ async function scrapeHiAll(context) {
     MAX_PARALLEL_CAMPUSES,
     async ({ campus, type, url, locationFilter, contentFilter }) => {
       try {
+        if (type === "schooljobs-hawaii") return await scrapeHawaiiSystemAs(context, url, "HI");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "HI", locationFilter || null, contentFilter || null);
         if (type === "dayforce") return await scrapeDayforceApi(url, campus, "HI");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "HI");
