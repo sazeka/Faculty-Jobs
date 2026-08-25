@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import FilterBar from './components/FilterBar.vue'
 import ActiveChips from './components/ActiveChips.vue'
 import JobCard from './components/JobCard.vue'
@@ -16,7 +16,7 @@ import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || ''
 const baseUrl = import.meta.env.BASE_URL || '/'
 
-const { jobs, scrapedAt, loadError, loadJobs, qualitySummary, newJobsCount, newThisWeek, siteStats } = useJobsData()
+const { jobs, scrapedAt, loadError, loadJobs, loadFullDescriptions, descriptionsLoading, qualitySummary, newJobsCount, newThisWeek, siteStats } = useJobsData()
 
 // Prefer the global, daily-computed "new this week" figure; fall back to the
 // per-visitor count only if site-stats.json hasn't loaded.
@@ -40,6 +40,16 @@ const heroStates = computed(() =>
   jobsLoaded.value ? stateCount.value : (Number(siteStats.value?.stateSystems) || 0))
 
 const filters = ref(createDefaultFilters())
+
+// The initial listing index intentionally excludes multi-KB posting bodies.
+// Fetch them only when a visitor enters a query that may need full-text search.
+let descriptionSearchTimer
+watch(() => filters.value.q, (query) => {
+  clearTimeout(descriptionSearchTimer)
+  if (String(query || '').trim().split(/\s+/).some((term) => term.length >= 2)) {
+    descriptionSearchTimer = setTimeout(() => loadFullDescriptions().catch(() => {}), 350)
+  }
+})
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
 const { stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
   useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob })
@@ -284,6 +294,9 @@ onMounted(async () => {
             aria-label="Search jobs"
             @input="updateFilters({ q: $event.target.value })"
           />
+        </div>
+        <div v-if="descriptionsLoading" class="fa-meta" style="margin-top: 6px; font-size: 10px;">
+          Expanding full-text search…
         </div>
 
         <!-- Quick filter tags -->

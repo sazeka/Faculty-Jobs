@@ -42,7 +42,7 @@ function computeQualitySummary(jobs, scrapedAt) {
   const bySource = new Map()
 
   for (const job of jobs) {
-    if (clean(job?.description)) withDescription += 1
+    if (job?.hasDescription || clean(job?.description)) withDescription += 1
     if (clean(job?.department)) withDepartment += 1
     if (/^https:\/\//i.test(String(job?.url || ''))) secureUrls += 1
     if (clean(job?.college)) colleges.add(clean(job.college))
@@ -105,22 +105,45 @@ async function loadFromChunks(baseUrl) {
     }
   }
 
-  const jobs = []
-  for (const chunk of chunks) {
-    const chunkPath = String(chunk?.path || '')
-    if (!chunkPath) continue
-    const chunkResponse = await fetchWithTimeout(`${baseUrl}data/${chunkPath}`)
-    if (!chunkResponse.ok) throw new Error(`${chunkPath} returned ${chunkResponse.status}`)
-    const payload = await readJsonSafe(chunkResponse, chunkPath)
-    const rows = Array.isArray(payload?.jobs) ? payload.jobs : []
-    jobs.push(...rows)
+  // Fetch a bounded number in parallel. This path is now used only as a legacy
+  // initial-load fallback and for opt-in full-description search.
+  const rowsByChunk = new Array(chunks.length)
+  let nextChunk = 0
+  async function worker() {
+    while (nextChunk < chunks.length) {
+      const index = nextChunk++
+      const chunkPath = String(chunks[index]?.path || '')
+      if (!chunkPath) {
+        rowsByChunk[index] = []
+        continue
+      }
+      const chunkResponse = await fetchWithTimeout(`${baseUrl}data/${chunkPath}`)
+      if (!chunkResponse.ok) throw new Error(`${chunkPath} returned ${chunkResponse.status}`)
+      const payload = await readJsonSafe(chunkResponse, chunkPath)
+      rowsByChunk[index] = Array.isArray(payload?.jobs) ? payload.jobs : []
+    }
   }
+  await Promise.all(Array.from({ length: Math.min(6, chunks.length) }, () => worker()))
+  const jobs = rowsByChunk.flat()
 
   return {
     jobs,
     scrapedAt: manifest?.scrapedAt || null,
     transport: 'chunks',
     manifest,
+  }
+}
+
+async function loadListingIndex(baseUrl) {
+  const response = await fetchWithTimeout(`${baseUrl}data/jobs-index.json`)
+  if (!response.ok) throw new Error(`jobs-index.json returned ${response.status}`)
+  const payload = await readJsonSafe(response, 'jobs-index.json')
+  if (!Array.isArray(payload?.jobs)) throw new Error('jobs-index.json has no jobs array')
+  return {
+    jobs: payload.jobs,
+    scrapedAt: payload.scrapedAt || null,
+    transport: 'compact index',
+    manifest: null,
   }
 }
 
@@ -183,6 +206,8 @@ export function useJobsData() {
   const scrapedAt = ref(null)
   const loadError = ref('')
   const transport = ref('jobs.json')
+  const fullDescriptionsLoaded = ref(false)
+  const descriptionsLoading = ref(false)
   const baseUrl = import.meta.env.BASE_URL || '/'
   let _initialLastVisit = null
   try {
@@ -233,16 +258,20 @@ export function useJobsData() {
     try {
       let payload
       try {
-        payload = await loadFromChunks(baseUrl)
-      } catch (_manifestErr) {
-        const response = await fetchWithTimeout(`${baseUrl}jobs.json`)
-        if (!response.ok) throw new Error(`jobs.json returned ${response.status}`)
-        const raw = await readJsonSafe(response, 'jobs.json')
-        payload = {
-          jobs: Array.isArray(raw?.jobs) ? raw.jobs : [],
-          scrapedAt: raw?.scrapedAt || null,
-          transport: 'jobs.json',
-          manifest: null,
+        payload = await loadListingIndex(baseUrl)
+      } catch (_indexErr) {
+        try {
+          payload = await loadFromChunks(baseUrl)
+        } catch (_manifestErr) {
+          const response = await fetchWithTimeout(`${baseUrl}jobs.json`)
+          if (!response.ok) throw new Error(`jobs.json returned ${response.status}`)
+          const raw = await readJsonSafe(response, 'jobs.json')
+          payload = {
+            jobs: Array.isArray(raw?.jobs) ? raw.jobs : [],
+            scrapedAt: raw?.scrapedAt || null,
+            transport: 'jobs.json',
+            manifest: null,
+          }
         }
       }
 
@@ -298,6 +327,40 @@ export function useJobsData() {
     }
   }
 
+  let descriptionsPromise = null
+  async function loadFullDescriptions() {
+    if (fullDescriptionsLoaded.value) return
+    if (descriptionsPromise) return descriptionsPromise
+
+    descriptionsLoading.value = true
+    descriptionsPromise = (async () => {
+      try {
+        const payload = await loadFromChunks(baseUrl)
+        const details = new Map()
+        for (const job of payload.jobs) {
+          const key = clean(job?.canonicalJobId) || clean(job?.url)
+          if (key) details.set(key, job)
+        }
+        jobs.value = jobs.value.map((job) => {
+          const key = clean(job?.canonicalJobId) || clean(job?.url)
+          const full = details.get(key)
+          if (!full) return job
+          return {
+            ...job,
+            description: full.description || null,
+            summary: full.summary || null,
+            hasDescription: Boolean(clean(full.description) || clean(full.summary)),
+          }
+        })
+        fullDescriptionsLoaded.value = true
+      } finally {
+        descriptionsLoading.value = false
+        descriptionsPromise = null
+      }
+    })()
+    return descriptionsPromise
+  }
+
   onMounted(() => {
     loadJobs()
     loadSiteStats()
@@ -309,11 +372,14 @@ export function useJobsData() {
     scrapedAt,
     loadError,
     loadJobs,
+    loadFullDescriptions,
     qualitySummary,
     newJobsCount,
     newThisWeek,
     siteStats,
     transport,
     lastVisitAt,
+    fullDescriptionsLoaded,
+    descriptionsLoading,
   }
 }

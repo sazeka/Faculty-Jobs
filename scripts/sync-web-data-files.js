@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
+import { buildListingIndex } from "./lib/jobs-listing-index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +32,11 @@ function slug(value) {
 function writeJson(filePath, value) {
   ensureDir(path.dirname(filePath));
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+}
+
+function writeCompactJson(filePath, value) {
+  ensureDir(path.dirname(filePath));
+  fs.writeFileSync(filePath, `${JSON.stringify(value)}\n`, "utf8");
 }
 
 function sha1Hex(value) {
@@ -96,6 +102,7 @@ function buildJobsChunks(sourcePath, outDir) {
   };
 
   writeJson(path.join(outDir, "jobs-manifest.json"), manifest);
+  writeCompactJson(path.join(outDir, "jobs-index.json"), buildListingIndex(payload, jobs));
 }
 
 for (const [srcRel, dstRel] of SOURCES) {
@@ -119,4 +126,4 @@ for (const [srcRel, dstRel] of SOURCES) {
 
 const jobsSource = path.join(ROOT, "public", "jobs.json");
 buildJobsChunks(jobsSource, path.join(ROOT, "web-vue", "public", "data"));
-console.log("Built web chunk manifest: web-vue/public/data/jobs-manifest.json");
+console.log("Built compact listing index + chunk manifest in web-vue/public/data");

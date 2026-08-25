@@ -7,6 +7,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
+import { buildListingIndex } from "./lib/jobs-listing-index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -17,6 +18,7 @@ function sha1Hex(v) { return createHash("sha1").update(String(v || "")).digest("
 function slug(v) { return clean(v).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "unknown"; }
 function ensureDir(d) { fs.mkdirSync(d, { recursive: true }); }
 function writeJson(p, v) { ensureDir(path.dirname(p)); fs.writeFileSync(p, `${JSON.stringify(v, null, 2)}\n`, "utf8"); }
+function writeCompactJson(p, v) { ensureDir(path.dirname(p)); fs.writeFileSync(p, `${JSON.stringify(v)}\n`, "utf8"); }
 
 function attachCanonicalIds(jobs) {
   return jobs.map((job) => {
@@ -59,6 +61,7 @@ function buildJobsChunks(payload, outDir) {
     chunks: chunkEntries,
   };
   writeJson(path.join(outDir, "jobs-manifest.json"), manifest);
+  writeCompactJson(path.join(outDir, "jobs-index.json"), buildListingIndex(payload, jobs));
   return { sources: chunkEntries.length, totalJobs: jobs.length };
 }
 

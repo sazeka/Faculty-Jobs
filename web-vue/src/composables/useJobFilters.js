@@ -151,7 +151,7 @@ function deriveConfidenceBadges(job) {
   } else {
     badges.push({ kind: 'warn', label: 'Missing Department' })
   }
-  if (!clean(job?.description) || !clean(job?.location)) {
+  if (!(job?.hasDescription || clean(job?.description)) || !clean(job?.location)) {
     badges.push({ kind: 'warn', label: 'Missing Metadata' })
   }
   return badges
@@ -179,6 +179,7 @@ function normalizeJob(job) {
     department,
     description: job?.description || null,
     summary: job?.summary || null,
+    hasDescription: Boolean(job?.hasDescription || clean(job?.description) || clean(job?.summary)),
     specialization: job?.specialization || null,
     discipline: null, // set after object creation
     openUntilFilled: Boolean(job?.openUntilFilled),
