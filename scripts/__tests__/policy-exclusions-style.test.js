@@ -10,10 +10,10 @@ const publicCopy = fs.readFileSync(path.join(ROOT, "public/policy-exclusions.htm
 const docsCopy = fs.readFileSync(path.join(ROOT, "docs/policy-exclusions.html"), "utf8");
 
 test("policy exclusions page uses the Faculty Atlas visual system", () => {
-  assert.match(exclusionsPage, /--paper:\s*#f2ecdf/);
-  assert.match(exclusionsPage, /--paper-2:\s*#e8e0ce/);
-  assert.match(exclusionsPage, /--ink:\s*#15110d/);
-  assert.match(exclusionsPage, /--accent:\s*#7a1f23/);
+  assert.match(exclusionsPage, /--paper:\s*#FFFFFF/);
+  assert.match(exclusionsPage, /--paper-2:\s*#E1E8EB/);
+  assert.match(exclusionsPage, /--ink:\s*#0E1B24/);
+  assert.match(exclusionsPage, /--accent:\s*#C2410C/);
   assert.match(exclusionsPage, /Instrument Serif/);
   assert.match(exclusionsPage, /Newsreader/);
   assert.match(exclusionsPage, /JetBrains Mono/);
@@ -24,7 +24,7 @@ test("policy exclusions page uses the Faculty Atlas visual system", () => {
   assert.match(exclusionsPage, /<hr class="masthead-rule" \/>/);
   assert.match(exclusionsPage, /<div class="edition-bar">/);
   assert.match(exclusionsPage, /<text x="32" y="6"[^>]*>N<\/text>/);
-  assert.doesNotMatch(exclusionsPage, /#fff;|#c2410c|#f8f4ec|linear-gradient\(180deg, #fbf8f2/);
+  assert.doesNotMatch(exclusionsPage, /#f2ecdf|#e8e0ce|#15110d|#7a1f23|linear-gradient\(180deg, #fbf8f2/i);
 });
 
 test("all deployed policy exclusions copies share the same site shell", () => {
