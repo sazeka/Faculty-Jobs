@@ -545,17 +545,7 @@
           if (item.reason) li.title = item.reason;
           const n = counts.get(college) || 0;
           const label = n > 0 ? `${college} (${n})` : college;
-          const url = item.career_url;
-          if (url) {
-            const a = document.createElement("a");
-            a.href = url;
-            a.target = "_blank";
-            a.rel = "noreferrer";
-            a.textContent = label;
-            li.appendChild(a);
-          } else {
-            li.textContent = label;
-          }
+          li.textContent = label;
           list.appendChild(li);
         }
 

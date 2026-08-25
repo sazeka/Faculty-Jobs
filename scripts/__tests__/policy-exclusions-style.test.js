@@ -29,6 +29,8 @@ test("policy exclusions page uses the Faculty Atlas visual system", () => {
   assert.match(exclusionsPage, /\.footer-grid\s*\{[^}]*grid-template-columns:\s*2fr 1fr 1fr/s);
   assert.match(exclusionsPage, /<div class="footer-brand">/);
   assert.match(exclusionsPage, /<div class="footer-bottom">/);
+  assert.match(exclusionsPage, /li\.textContent = label;/);
+  assert.doesNotMatch(exclusionsPage, /a\.href = url;/);
   assert.doesNotMatch(exclusionsPage, /#f2ecdf|#e8e0ce|#15110d|#7a1f23|linear-gradient\(180deg, #fbf8f2/i);
 });
 
