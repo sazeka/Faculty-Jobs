@@ -3900,6 +3900,7 @@ const NE_CAMPUSES = [
 
 // IA (Iowa)
 const IA_CAMPUSES = [
+  { campus: "Grand View University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/DC20BB66F0C9CF9F562615950604C1D5/career-page" },
   {
     campus: "University of Iowa",
     type: "generic",
@@ -16998,6 +16999,7 @@ async function scrapeIaAll(context) {
         if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "IA");
         if (type === "adp-career-center") return await scrapeAdpCareerCenterAs(context, url, campus, "IA");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "IA");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "IA");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "IA");
         // No existing IA dispatch case for "saashr" (function scrapeSaasHrApi
         // already exists and is dispatched by NY) -- added for Buena Vista
