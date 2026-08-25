@@ -4506,6 +4506,7 @@ const OH_CAMPUSES = [
   { campus: "Ohio Northern University", type: "workday", url: "https://onu.wd501.myworkdayjobs.com/ONU" },
   { campus: "John Carroll University", type: "peopleadmin", url: "https://jcu.peopleadmin.com/" },
   { campus: "Heidelberg University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=e95d68be-1e4e-4259-96d9-6c28cf64c801&ccId=19000101_000001&lang=en_US" },
+  { campus: "Marion Technical College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=6305797d-3336-45ce-9507-c61ca821c1bd&ccId=19000101_000001&lang=en_US" },
 ];
 
 // NM (New Mexico)
