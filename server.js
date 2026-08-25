@@ -1339,6 +1339,11 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Notre Dame de Namur University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=fde135bd-bf6a-4ebd-965f-43a1d08a2241&ccId=19000101_000001&lang=en_US" },
   { campus: "Touro University California", type: "icims", url: "https://tuccareers-touro.icims.com/" },
   { campus: "Yosemite Community College District Office", type: "peopleadmin", url: "https://yosemite.peopleadmin.com/" },
+  { campus: "Otis College of Art and Design", type: "csod", url: "https://otis.csod.com/ux/ats/careersite/4/home?c=otis" },
+  { campus: "Point Loma Nazarene University", type: "workday", url: "https://pointloma.wd1.myworkdayjobs.com/PLNUCareers" },
+  { campus: "University of the Pacific", type: "peopleadmin", url: "https://pacific.peopleadmin.com/postings/search?query_position_type_id%5B%5D=6&commit=Search" },
+  { campus: "Solano Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/solanocc" },
+  { campus: "Pacific School of Religion", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=bdb6d78d-6a79-44b2-97af-ca9e47c87201" },
 ];
 
 // NJ (multi-platform)
@@ -1805,6 +1810,8 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Misericordia University", type: "generic", url: "https://www.misericordia.edu/campus-community/other-offices/human-resources/employment-opportunities/faculty-employee-opportunities" },
   { campus: "York College of Pennsylvania", type: "schooljobs", url: "https://www.governmentjobs.com/careers/ycp/faculty" },
   { campus: "Immaculata University", type: "interviewexchange", url: "https://immaculata.interviewexchange.com/static/clients/534IMM1/index.jsp" },
+  { campus: "Juniata College", type: "peopleadmin", url: "https://juniata.peopleadmin.com/" },
+  { campus: "Robert Morris University", type: "pageup", url: "https://careers.pageuppeople.com/856/cw/en-us/listing/", excludeTitleFilter: "\\b(?:group fitness|hockey program)\\b" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -3193,6 +3200,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Sullivan County Community College", type: "generic", url: "https://sunysullivan.isolvedhire.com/" },
   { campus: "Molloy University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=f1758074-bb0b-4d6b-8d46-3a90ce325365&ccId=19000101_000001&lang=en_US" },
   { campus: "The Rockefeller University", type: "icims", url: "https://careers-rockefelleruniversity.icims.com/" },
+  { campus: "Metropolitan College of New York", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/0AFB6B93B59D609A2037FAB5547D9B02/career-page" },
 ];
 
 // OR (Oregon)
@@ -4495,6 +4503,9 @@ const OH_CAMPUSES = [
   { campus: "Miami University-Oxford", type: "workday", url: "https://miamioh.wd5.myworkdayjobs.com/miamioh-staff", excludeTitleFilter: "\\b(?:student|youth)\\b" },
   { campus: "Northeast Ohio Medical University", type: "peopleadmin", url: "https://neomed.peopleadmin.com/" },
   { campus: "University of Mount Union", type: "schooljobs", url: "https://www.schooljobs.com/careers/mountunion/faculty" },
+  { campus: "Ohio Northern University", type: "workday", url: "https://onu.wd501.myworkdayjobs.com/ONU" },
+  { campus: "John Carroll University", type: "peopleadmin", url: "https://jcu.peopleadmin.com/" },
+  { campus: "Heidelberg University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=e95d68be-1e4e-4259-96d9-6c28cf64c801&ccId=19000101_000001&lang=en_US" },
 ];
 
 // NM (New Mexico)
@@ -5639,6 +5650,10 @@ const TX_CAMPUSES = [
   { campus: "Panola College", type: "generic", url: "https://www.panola.edu/employment" },
   { campus: "Victoria College", type: "generic", url: "https://www.victoriacollege.edu/BusinessCommunity/HumanResources" },
   { campus: "Texas A & M University-Corpus Christi", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/TAMUCC_External" },
+  { campus: "Our Lady of the Lake University", type: "interviewexchange", url: "https://ollusa.interviewexchange.com/static/clients/485OLM1/index.jsp" },
+  { campus: "South Texas College", type: "workday", url: "https://southtexascollege.wd12.myworkdayjobs.com/STC" },
+  { campus: "Texas A&M University-San Antonio", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/TAMUSA_External" },
+  { campus: "Galveston College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=eb7db213-0a7d-4f21-8e8e-1ac6faf5d455&ccId=19000101_000001&lang=en_US" },
 ];
 
 // FL (Florida)
@@ -11177,14 +11192,17 @@ async function scrapePaAll(context) {
   const results = await mapWithConcurrency(
     campuses,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "PA");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "PA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "PA");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "PA");
         if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "PA");
-        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "PA");
+        if (type === "pageup") {
+          const jobs = await scrapePageUpAs(context, url, campus, "PA");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title)) : jobs;
+        }
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "PA");
         if (type === "interfolio-links") return await scrapeInterfolioLinksFromPageAs(url, campus, "PA");
         if (type === "lafayette-faculty") return await scrapeLafayetteFacultyPageAs(url, campus, "PA");
