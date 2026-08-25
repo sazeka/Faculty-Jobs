@@ -1,0 +1,90 @@
+{
+  "generatedAt": "2026-08-25T18:29:02.317Z",
+  "scope": "Four Louisiana independent-college official hiring pages",
+  "baseline": {
+    "eligibleUniverse": 3312,
+    "covered": 2495,
+    "missing": 710,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 75.33
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2499,
+    "missing": 706,
+    "excludedPolicy": 107,
+    "pendingReview": 0,
+    "coveragePercent": 75.45
+  },
+  "appliedCount": 4,
+  "newlyCoveredCount": 4,
+  "currentFacultyJobCount": 8,
+  "applied": [
+    {
+      "name": "New Orleans Baptist Theological Seminary",
+      "url": "https://www.nobts.edu/human-resources/job-openings.html",
+      "platformType": "generic",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "explicitNoOpenings": false,
+      "currentFacultyJobCount": 0,
+      "invalidJobCount": 0,
+      "sampleTitles": [],
+      "requireCurrentFacultyJobs": false
+    },
+    {
+      "name": "Saint Joseph Seminary College",
+      "url": "https://www.sjasc.edu/employment-opportunities",
+      "platformType": "generic",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "explicitNoOpenings": true,
+      "currentFacultyJobCount": 0,
+      "invalidJobCount": 0,
+      "sampleTitles": [],
+      "requireCurrentFacultyJobs": false
+    },
+    {
+      "name": "University of Holy Cross",
+      "url": "https://uhcno.edu/hr/jobs/index.php",
+      "platformType": "generic",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "explicitNoOpenings": false,
+      "currentFacultyJobCount": 3,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "Adjunct Instructor – Doctorate in Executive Leadership Program",
+        "Adjunct Instructor - Accounting",
+        "Adjunct Instructor - Physics"
+      ],
+      "requireCurrentFacultyJobs": true
+    },
+    {
+      "name": "Xavier University of Louisiana",
+      "url": "https://jobs.xula.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search",
+      "platformType": "peopleadmin",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "explicitNoOpenings": false,
+      "currentFacultyJobCount": 5,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "Health Sciences Librarian",
+        "Assistant/Associate Professor of Anatomy (XOCOM)",
+        "Assistant or Associate Professor of Microbiology (XOCOM)",
+        "Assistant/Associate Professor of Physiology - XOCOM",
+        "Assistant/Associate Professor of Speech-Language Pathology"
+      ],
+      "requireCurrentFacultyJobs": true
+    }
+  ],
+  "safeguards": [
+    "Every source is an institution-owned employee hiring page or dedicated ATS host.",
+    "Xavier is fixed to its PeopleAdmin Faculty position type.",
+    "Saint Joseph's navigation-only Faculty Members label is explicitly rejected.",
+    "A healthy official source remains coverage evidence when it explicitly has zero current openings.",
+    "Existing appointment-track evidence safeguards remain unchanged."
+  ]
+}

@@ -6449,10 +6449,15 @@ const LA_CAMPUSES = [
   { campus: "Louisiana State University-Shreveport", type: "generic", url: "https://www.lsus.edu/faculty-and-staff/human-resources/employment-opportunities" },
   { campus: "Loyola University New Orleans", type: "generic", url: "https://www.loyno.edu/about/employment" },
   { campus: "McNeese State University", type: "generic", url: "https://www.mcneese.edu/about-us/leadership-team/business-affairs/division-of-business-affairs/employment/" },
+  { campus: "New Orleans Baptist Theological Seminary", type: "generic", url: "https://www.nobts.edu/human-resources/job-openings.html" },
   { campus: "SOWELA Technical Community College", type: "generic", url: "https://www.sowela.edu/about/careers/" },
   { campus: "Grambling State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/gram" },
   { campus: "Tulane University of Louisiana", type: "generic", url: "https://hr.tulane.edu/jobs" },
   { campus: "Southeastern Louisiana University", type: "generic", url: "https://www.southeastern.edu/admin/hr/jobs/" },
+  // This official page currently says the institution is not hiring. The
+  // shared navigation includes a "Faculty Members" directory link, so reject
+  // that exact chrome title rather than publishing it as a vacancy.
+  { campus: "Saint Joseph Seminary College", type: "generic", url: "https://www.sjasc.edu/employment-opportunities", excludeTitleFilter: "^Faculty Members$" },
   { campus: "Northwest Louisiana Technical Community College", type: "generic", url: "https://www.nltcc.edu/human-resources/index" },
   // Official institution-owned PeopleAdmin board. The host is exclusive to
   // Nicholls and exposes canonical /postings/:id job details.
@@ -6468,9 +6473,11 @@ const LA_CAMPUSES = [
   { campus: "Southern University System Vacancies", type: "southern-system-vacancies", url: "https://www.sus.edu/news/category/position-vacancy-announcements" },
   { campus: "Southern University at New Orleans", type: "southern-vacancies", url: "https://www.suno.edu/news/category/position-vacancy-announcements" },
   { campus: "Southern University at Shreveport", type: "generic", url: "https://www.susla.edu/index.cfm?action=newsroom.category&categoryID=careers" },
+  { campus: "University of Holy Cross", type: "generic", url: "https://uhcno.edu/hr/jobs/index.php" },
   // UNO's official careers page links directly to this institution-specific
   // Workday tenant; it is not the broader University of Louisiana board.
   { campus: "University of New Orleans", type: "workday", url: "https://ulsuno.wd1.myworkdayjobs.com/UniversityOfNewOrleans" },
+  { campus: "Xavier University of Louisiana", type: "peopleadmin", url: "https://jobs.xula.edu/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=3&commit=Search" },
 ];
 
 // AR (Arkansas)
@@ -18605,7 +18612,7 @@ async function scrapeLaAll(context) {
   const results = await mapWithConcurrency(
     LA_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "LA");
         if (type === "workday-required-facets") return await scrapeWorkdayRequiredFacetsAs(context, url, campus, "LA");
@@ -18620,7 +18627,12 @@ async function scrapeLaAll(context) {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "LA");
         if (type === "southern-system-vacancies") return await scrapeSouthernSystemVacancies(context, url, "LA");
         if (type === "southern-vacancies") return await scrapeSouthernVacancyFeed(context, url, campus, "LA");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "LA");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "LA");
+          return excludeTitleFilter
+            ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || ""))
+            : jobs;
+        }
         return [];
       } catch (e) {
         console.error(`❌ ${campus} LA scrape failed:`, e?.message || e);
