@@ -2433,6 +2433,7 @@ const DE_CAMPUSES = [
 
 // MD (Maryland) - major research universities + liberal arts colleges
 const MD_CAMPUSES = [
+  { campus: "Notre Dame of Maryland University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=ac3ea3a3-1795-4ceb-80c1-668296dbec35&" },
   { campus: "Maryland Institute College of Art", type: "workday", url: "https://mica.wd5.myworkdayjobs.com/Faculty" },
   { campus: "Hagerstown Community College", type: "generic", url: "https://www.hagerstowncc.edu/human-resources" },
   {
