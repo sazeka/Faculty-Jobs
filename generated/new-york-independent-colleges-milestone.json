@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-08-25T19:05:30.763Z",
+  "scope": "Five independent New York institutions with official hiring paths",
+  "baseline": {
+    "eligible_universe": 3312,
+    "covered": 2505,
+    "missing": 700,
+    "excluded_policy": 107,
+    "pending_review": 0
+  },
+  "result": {
+    "eligibleUniverse": 3312,
+    "covered": 2510,
+    "missing": 695,
+    "excludedPolicy": 107,
+    "pendingReview": 0
+  },
+  "appliedCount": 5,
+  "newlyCoveredCount": 5,
+  "currentFacultyJobCount": 11,
+  "applied": [
+    {
+      "name": "Manhattan School of Music",
+      "url": "https://www.msmnyc.edu/about/employment-at-msm/",
+      "platformType": "generic",
+      "officialSource": "https://www.msmnyc.edu/about/employment-at-msm/",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "currentFacultyJobCount": 1,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "Faculty Position—Humanities"
+      ],
+      "requireCurrentFacultyJobs": true
+    },
+    {
+      "name": "Manhattanville University",
+      "url": "https://mville.exacthire.com/All_Open_Jobs_at_All_Locations?jobs=%5B%5D",
+      "platformType": "exacthire",
+      "officialSource": "https://www.mville.edu/offices/human-resources/human-resources.php",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "currentFacultyJobCount": 7,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "Adjunct Instructor for General Biology Lecture",
+        "Adjunct Instructor, Psychology and/or Lifespan Development for Nursing",
+        "Clinical Adjunct Nursing Faculty",
+        "Clinical Adjunct Nursing Faculty, Psych (CT RN License Preferred)",
+        "Clinical Assistant Professor: Full Time Faculty, Pre-Licensure Nursing",
+        "Clinical Coordinator for the Family Nurse Practitioner (FNP) Licensure Program and Clinical Assistant Professor",
+        "Director of Clinical Education, Nursing (prelicensure) and Clinical Assistant Professor"
+      ],
+      "requireCurrentFacultyJobs": true
+    },
+    {
+      "name": "Northeast College of Health Sciences",
+      "url": "https://www.northeastcollege.edu/employment-opportunities",
+      "platformType": "generic",
+      "officialSource": "https://www.northeastcollege.edu/employment-opportunities",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "currentFacultyJobCount": 3,
+      "invalidJobCount": 0,
+      "sampleTitles": [
+        "FT Faculty - Anatomy/Microbiology - Long Island Campus",
+        "FT Faculty - Doctor of Chiropractic Program",
+        "FT Instructor-Clinical Educator/IPE"
+      ],
+      "requireCurrentFacultyJobs": true
+    },
+    {
+      "name": "New York School of Interior Design",
+      "url": "https://www.nysid.edu/work-at-nysid",
+      "platformType": "generic",
+      "officialSource": "https://www.nysid.edu/work-at-nysid",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "currentFacultyJobCount": 0,
+      "invalidJobCount": 0,
+      "sampleTitles": [],
+      "requireCurrentFacultyJobs": false
+    },
+    {
+      "name": "New York Academy of Art",
+      "url": "https://nyaa.edu/about/employment/",
+      "platformType": "generic",
+      "officialSource": "https://nyaa.edu/about/employment/",
+      "sourceStatus": 200,
+      "healthySource": true,
+      "currentFacultyJobCount": 0,
+      "invalidJobCount": 0,
+      "sampleTitles": [],
+      "requireCurrentFacultyJobs": false
+    }
+  ],
+  "safeguards": [
+    "Only institution-owned employment pages or an institution-linked dedicated ATS tenant are used.",
+    "Faculty directories and faculty-news links are rejected by exact title.",
+    "Existing appointment-track evidence safeguards remain unchanged.",
+    "Russell Sage remains unresolved because its faculty-only board is intermittently inaccessible to automation."
+  ]
+}

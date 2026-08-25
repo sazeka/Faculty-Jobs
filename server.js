@@ -2998,6 +2998,36 @@ const NY_PRIVATE_CAMPUSES = [
     type: "peopleadmin",
     url: "https://jobs.sjf.edu/postings/search?435=&commit=Search&query=&query_organizational_tier_3_id=any&query_position_type_id=3&query_v0_posted_at_date=&utf8=%E2%9C%93",
   },
+  // Institution-owned employment pages and dedicated ATS tenant. The two
+  // generic-page exclusions are exact navigation labels, not broad faculty
+  // keywords, so legitimate openings remain eligible.
+  {
+    campus: "Manhattan School of Music",
+    type: "generic",
+    url: "https://www.msmnyc.edu/about/employment-at-msm/",
+    excludeTitleFilter: "^(?:Faculty Overview|Faculty in the News|College Faculty Emeriti)$|Instructional Designer",
+  },
+  {
+    campus: "Manhattanville University",
+    type: "exacthire",
+    url: "https://mville.exacthire.com/All_Open_Jobs_at_All_Locations?jobs=%5B%5D",
+  },
+  {
+    campus: "Northeast College of Health Sciences",
+    type: "generic",
+    url: "https://www.northeastcollege.edu/employment-opportunities",
+  },
+  {
+    campus: "New York School of Interior Design",
+    type: "generic",
+    url: "https://www.nysid.edu/work-at-nysid",
+  },
+  {
+    campus: "New York Academy of Art",
+    type: "generic",
+    url: "https://nyaa.edu/about/employment/",
+    excludeTitleFilter: "^CS Faculty$",
+  },
   {
     campus: "St. John's University",
     type: "stjohns",
@@ -11722,7 +11752,7 @@ export async function scrapeMaricopaFacultyAs(context, startUrl, sourceName = "A
 // bare arrow-icon <a href="/job/ID"> with no link text of its own, so a plain
 // anchor-text scrape finds nothing. Walk up from each jobDetailsLink anchor to its
 // card and pull the <h6> sibling instead. Clicks "Load More" to reveal the full list.
-async function scrapeExactHireAs(context, startUrl, campusName, sourceName) {
+export async function scrapeExactHireAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -11746,8 +11776,15 @@ async function scrapeExactHireAs(context, startUrl, campusName, sourceName) {
         let url;
         try { url = new URL(href, location.href).toString(); } catch { continue; }
         if (seen.has(url)) continue;
-        const h = a.parentElement ? a.parentElement.querySelector("h6, h2, h3") : null;
-        const title = clean(h ? h.textContent : "");
+        let card = a.parentElement;
+        let heading = null;
+        let checkbox = null;
+        for (let depth = 0; card && depth < 4; depth++, card = card.parentElement) {
+          heading = card.querySelector("h6, h2, h3");
+          checkbox = card.querySelector('input[type="checkbox"][value]');
+          if (heading || checkbox) break;
+        }
+        const title = clean(heading ? heading.textContent : checkbox?.value || "");
         if (!title) continue;
         seen.add(url);
         out.push({ title, url });
@@ -14043,6 +14080,7 @@ async function scrapeNyPrivate(context) {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NY");
         if (type === "saashr") return await scrapeSaasHrApi(url, campus, "NY");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "NY");
+        if (type === "exacthire") return await scrapeExactHireAs(context, url, campus, "NY");
         if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "NY", locationFilter || null);
         if (type === "silc-accordion") return await scrapeSilcAccordionAs(context, url, campus, "NY");
         if (type === "vizirecruiter") return await scrapeViziRecruiterApi(url, campus, "NY", jobFamilyFilter || null);
