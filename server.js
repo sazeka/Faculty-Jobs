@@ -4833,6 +4833,7 @@ const NM_CAMPUSES = [
 
 // NV (Nevada)
 const NV_CAMPUSES = [
+  { campus: "Great Basin College", type: "workday", url: "https://nshe.wd1.myworkdayjobs.com/GBC-external" },
   { campus: "Truckee Meadows Community College", type: "workday", url: "https://nshe.wd1.myworkdayjobs.com/TMCC-External" },
   {
     campus: "University of Nevada, Reno",
@@ -5523,6 +5524,7 @@ const IN_CAMPUSES = [
 
 // WV (West Virginia)
 const WV_CAMPUSES = [
+  { campus: "Glenville State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/glenvilleedu" },
   { campus: "Mountwest Community and Technical College", type: "generic", url: "https://www.mctc.edu/hr/" },
   { campus: "Southern West Virginia Community and Technical College", type: "generic", url: "https://www.southernwv.edu/facultystaff/human-resources/" },
   {
@@ -6314,6 +6316,13 @@ const FL_CAMPUSES = [
 // "the TCSG System Office, as well as our 22 Colleges", not just whichever
 // currently has an open posting.
 const GA_CAMPUSES = [
+  {
+    campus: "Georgia Institute of Technology-Main Campus",
+    type: "usg-site",
+    url: "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=03000",
+    excludeTitleFilter: "^(?:Faculty Support Coordinator\\b|Dummy Faculty Job Code$)",
+  },
+  { campus: "Georgia Military College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/10157A1AD949DDFC26908FA0C8684BC5/career-page" },
   {
     campus: "Georgia State University-Perimeter College",
     type: "peopleadmin",
@@ -9391,10 +9400,22 @@ function parseUsgJobsFromText(text) {
   return jobs;
 }
 
-async function scrapeUsgFaculty(context) {
+async function scrapeUsgPortalRows(context, startUrl) {
   const page = await context.newPage();
-  await gotoWithRetry(page, USG_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
   await page.waitForTimeout(4000);
+
+  // Site-scoped OneUSG portals (including Georgia Tech) initially render a
+  // welcome screen instead of the listings grid. The shared USG URL opens the
+  // grid directly, so only click through when no rows are present yet.
+  const initialText = await safeEvaluate(page, () => document.body.innerText);
+  if (parseUsgJobsFromText(initialText || "").length === 0) {
+    const viewAll = page.getByText("View All Jobs", { exact: true });
+    if (await viewAll.count()) {
+      await viewAll.first().click();
+      await page.waitForTimeout(5000);
+    }
+  }
 
   const seenIds = new Map();
   let stableRounds = 0;
@@ -9418,10 +9439,15 @@ async function scrapeUsgFaculty(context) {
     stableRounds = newCount > seenIds.size ? 0 : stableRounds + 1;
   }
   await page.close().catch(() => {});
+  return [...seenIds.values()];
+}
+
+async function scrapeUsgFaculty(context) {
+  const rows = await scrapeUsgPortalRows(context, USG_URL);
 
   let unmatched = 0;
   const jobs = [];
-  for (const j of seenIds.values()) {
+  for (const j of rows) {
     if (!looksFacultyish(j.title)) continue;
     const campus = mapUsgBusinessUnitToCampus(j.businessUnit);
     if (!campus) { unmatched++; continue; }
@@ -9440,6 +9466,25 @@ async function scrapeUsgFaculty(context) {
   }
   console.log(`USG listing scraped: ${jobs.length} faculty postings across ${new Set(jobs.map((j) => j.college)).size} campuses`);
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+async function scrapeUsgSiteAs(context, startUrl, campusName, sourceName, excludeTitleFilter = null) {
+  const rows = await scrapeUsgPortalRows(context, startUrl);
+  const excludeRe = excludeTitleFilter ? new RegExp(excludeTitleFilter, "i") : null;
+  const jobs = rows
+    .filter((job) => looksFacultyish(job.title))
+    .filter((job) => !excludeRe?.test(job.title))
+    .map((job) => ({
+      title: clean(job.title),
+      url: `${startUrl}#jobId=${job.jobId}`,
+      source: sourceName,
+      category: "faculty",
+      college: campusName,
+      location: job.location || null,
+      description: null,
+    }));
+  console.log(`${campusName} ${sourceName} OneUSG listings scraped: ${jobs.length}`);
+  return uniqByUrl(jobs).filter((job) => !omitAdjunct(job.title));
 }
 
 /* ============================== TCSG ============================== */
@@ -18836,6 +18881,7 @@ async function scrapeWvAll(context) {
       try {
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "WV");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "WV");
+        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "WV");
         if (type === "wvsu-faculty-pdf") return await scrapeWvsuFacultyPdfAs(url, campus, "WV");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "WV");
         return [];
@@ -18854,9 +18900,10 @@ async function scrapeGaAll(context) {
   const results = await mapWithConcurrency(
     GA_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter }) => {
+    async ({ campus, type, url, locationFilter, excludeTitleFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "GA");
+        if (type === "usg-site") return await scrapeUsgSiteAs(context, url, campus, "GA", excludeTitleFilter);
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "GA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "GA");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "GA");
