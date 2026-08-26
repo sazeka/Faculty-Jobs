@@ -2521,6 +2521,7 @@ const DE_CAMPUSES = [
 
 // MD (Maryland) - major research universities + liberal arts colleges
 const MD_CAMPUSES = [
+  { campus: "Hood College", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/HOO1003HOODC/JobBoard/58a51caa-edd5-4489-a43e-478413a6c821/?q=&o=postedDateDesc" },
   { campus: "Notre Dame of Maryland University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=ac3ea3a3-1795-4ceb-80c1-668296dbec35&" },
   { campus: "Maryland Institute College of Art", type: "workday", url: "https://mica.wd5.myworkdayjobs.com/Faculty" },
   { campus: "Hagerstown Community College", type: "generic", url: "https://www.hagerstowncc.edu/human-resources" },
@@ -4065,6 +4066,7 @@ const SD_CAMPUSES = [
 
 // NE (Nebraska)
 const NE_CAMPUSES = [
+  { campus: "Hastings College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=47560b19-b691-4f4c-9de8-ff510ff2a256&ccId=19000101_000001&type=MP&lang=en_US&selectedMenuKey=CareerCenter" },
   { campus: "Nebraska Methodist College of Nursing & Allied Health", type: "workday", url: "https://bestcare.wd1.myworkdayjobs.com/bestcare?locations=a1637a810ec9100a06b06175f28a0000" },
   { campus: "Southeast Community College Area", type: "generic", url: "https://www.southeast.edu/about/other-scc-departments/hr/index.php" },
   { campus: "Little Priest Tribal College", type: "generic", url: "https://www.littlepriest.edu/human-resources/" },
@@ -6743,6 +6745,7 @@ const AR_CAMPUSES = [
 
 // KS (Kansas)
 const KS_CAMPUSES = [
+  { campus: "Haskell Indian Nations University", type: "generic", url: "https://www.usajobs.gov/Search/Results?k=Haskell%20Indian%20Nations%20University" },
   { campus: "Garden City Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/EDDDA7ABD200C6844CF6CF5EFE35BD11/career-page" },
   { campus: "Salina Area Technical College", type: "generic", url: "https://salinatech.edu/hr/current-openings/" },
   { campus: "Wichita State University-Campus of Applied Sciences and Technology", type: "generic", url: "https://wsutech.edu/jobs/" },
@@ -6907,6 +6910,7 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "Harris-Stowe State University", type: "adp", url: "https://workforcenow.adp.com/jobs/apply/posting.html?client=10376&ccId=19000101_000001&type=MP&lang=en_US" },
   { campus: "Lincoln University (MO)", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=6105d53b-aeb8-4656-a07d-2743bd4a2423&ccId=19000101_000001&lang=en_US&selectedMenuKey=CareerCenter" },
   { campus: "Saint Louis Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/stlcc" },
   { campus: "Southeast Missouri State University", type: "schooljobs", url: "https://www.governmentjobs.com/careers/semoedu/promotionaljobs" },
@@ -11613,6 +11617,7 @@ async function scrapeMdAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MD");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "MD");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MD");
+        if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "MD");
         // No existing MD dispatch case for "adp" (function scrapeAdpAs
         // already exists and is dispatched by several other states) --
         // added for Capitol Technology University.
@@ -15174,7 +15179,9 @@ async function scrapeAdpApi(careersUrl, campusName, sourceName, locationFilter =
   // institution on the cloud variant, including Avila University (MO),
   // already configured with type "adp" and a cloud URL before this fix.
   if (!/^workforcenow(?:\.cloud)?\.adp\.com$/i.test(u.hostname)) return [];
-  const cid = u.searchParams.get("cid");
+  // Older ADP links emitted by institution HR pages use `client` for the
+  // same tenant identifier that modern career-center links call `cid`.
+  const cid = u.searchParams.get("cid") || u.searchParams.get("client");
   const ccId = u.searchParams.get("ccId");
   const lang = u.searchParams.get("lang") || "en_US";
   if (!cid || !ccId) return [];
@@ -18136,6 +18143,7 @@ async function scrapeNeAll(context) {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NE");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "NE");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "NE");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NE");
         if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "NE");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NE");
