@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-08-27T05:10:00Z",
+  "method": "Official employee-link verification plus focused live production-adapter scrapes; exact faculty-category, position-type, and job-card boundaries were enforced",
+  "baselineMissing": 613,
+  "newlyCoveredCount": 4,
+  "projectedMissing": 609,
+  "facultyJobCount": 11,
+  "results": [
+    {
+      "name": "Lac Courte Oreilles Ojibwe University",
+      "url": "https://www.lco.edu/employment",
+      "platform": "lco-employment",
+      "healthySource": true,
+      "facultyJobCount": 1,
+      "scopeEvidence": "The university's official employment page explicitly advertises an all-disciplines adjunct faculty applicant pool; exact text parsing excludes its non-vacancy Faculty Credentialing Standards link."
+    },
+    {
+      "name": "Landmark College",
+      "url": "https://www.landmark.edu/about/employment/category/faculty",
+      "platform": "generic-faculty-category",
+      "healthySource": true,
+      "facultyJobCount": 0,
+      "scopeEvidence": "Landmark publishes an exact Faculty employment category. The category is live and currently has no qualifying faculty-titled opening."
+    },
+    {
+      "name": "Lane Community College",
+      "url": "https://jobs.lanecc.edu/postings/search?512%5B%5D=3&512%5B%5D=4&commit=Search&page=1&sort=511+desc",
+      "platform": "peopleadmin",
+      "healthySource": true,
+      "facultyJobCount": 7,
+      "scopeEvidence": "The official PeopleAdmin search uses Lane's contracted-faculty and contracted-part-time-faculty position-type ids and returned seven current instructor pools."
+    },
+    {
+      "name": "Lee University",
+      "url": "https://www.leeuniversity.edu/human-resources/positions/",
+      "platform": "lee-job-manager",
+      "healthySource": true,
+      "facultyJobCount": 3,
+      "scopeEvidence": "The exact parser accepts only official job cards labeled Faculty, rejects part-time cards under the existing policy, and cannot confuse application or directory links with vacancies."
+    }
+  ]
+}

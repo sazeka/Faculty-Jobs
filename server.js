@@ -3477,6 +3477,11 @@ const NY_PRIVATE_CAMPUSES = [
 
 // OR (Oregon)
 const OR_CAMPUSES = [
+  {
+    campus: "Lane Community College",
+    type: "peopleadmin",
+    url: "https://jobs.lanecc.edu/postings/search?512%5B%5D=3&512%5B%5D=4&commit=Search&page=1&sort=511+desc",
+  },
   { campus: "Oregon Health & Science University", type: "icims", url: "https://careersat-ohsu.icims.com/jobs/intro" },
   {
     campus: "University of Oregon",
@@ -3854,6 +3859,11 @@ const ME_CAMPUSES = [
 
 // VT (Vermont)
 const VT_CAMPUSES = [
+  {
+    campus: "Landmark College",
+    type: "generic",
+    url: "https://www.landmark.edu/about/employment/category/faculty",
+  },
   { campus: "Norwich University", type: "interviewexchange", url: "https://norwich.interviewexchange.com/static/clients/518NUM1/index.jsp" },
   {
     campus: "University of Vermont",
@@ -4349,6 +4359,11 @@ const MT_CAMPUSES = [
 
 // WI (Wisconsin)
 const WI_CAMPUSES = [
+  {
+    campus: "Lac Courte Oreilles Ojibwe University",
+    type: "lco-employment",
+    url: "https://www.lco.edu/employment",
+  },
   // Herzing's official UKG board exposes stable physical-location IDs for
   // each campus. Crawl it once from the Wisconsin route (the system's Madison
   // home campus), then split jobs only when a posting names exactly one known
@@ -7214,6 +7229,11 @@ const KY_CAMPUSES = [
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
+  {
+    campus: "Lee University",
+    type: "lee-job-manager",
+    url: "https://www.leeuniversity.edu/human-resources/positions/",
+  },
   { campus: "The University of Tennessee-Chattanooga", type: "interfolio", url: "https://apply.interfolio.com/56358/positions" },
   { campus: "The University of the South", type: "schooljobs", url: "https://www.schooljobs.com/careers/sewanee" },
   {
@@ -18837,6 +18857,7 @@ async function scrapeWiAll(context) {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "WI");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "WI");
         if (type === "herzing-ukg") return await scrapeHerzingUkgAs(context, url, "Herzing");
+        if (type === "lco-employment") return await scrapeLcoFacultyAs(url, campus, "WI");
         // No existing WI dispatch case for "ultipro-ukg" (function
         // scrapeUltiproUkgAs already exists and is dispatched by NY/VA) --
         // added for Bryant & Stratton College-Wauwatosa.
@@ -19476,6 +19497,76 @@ async function scrapeArAll(context) {
   return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
 }
 
+export function parseLcoFacultyJobs(html, pageUrl, campusName = "Lac Courte Oreilles Ojibwe University", sourceName = "WI") {
+  const pageText = stripHtmlToText(String(html || ""));
+  const poolPattern = /Adjunct Faculty\s*\(Open Applicant Pool for All Disciplines for\s*In-person Instruction\s*\)/i;
+  if (!poolPattern.test(pageText)) return [];
+  return [{
+    title: "Adjunct Faculty (Open Applicant Pool for All Disciplines for In-person Instruction)",
+    url: pageUrl,
+    source: sourceName,
+    category: "Faculty",
+    college: campusName,
+    location: "Hayward, WI",
+    description: null,
+  }];
+}
+
+export async function scrapeLcoFacultyAs(pageUrl, campusName = "Lac Courte Oreilles Ojibwe University", sourceName = "WI") {
+  try {
+    const response = await fetch(pageUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyAtlas/1.0" },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const jobs = parseLcoFacultyJobs(await response.text(), pageUrl, campusName, sourceName);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (exact faculty pool)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+export function parseLeeFacultyJobs(html, campusName = "Lee University", sourceName = "TN") {
+  const jobs = [];
+  const source = String(html || "");
+  for (const match of source.matchAll(/<li\b([^>]*)>([\s\S]*?)(?=<li\b[^>]*class=["'][^"']*\bpost-\d+\b|<\/ul>)/gi)) {
+    const attributes = match[1] || "";
+    const block = match[2] || "";
+    if (!/\bjob_listing\b/i.test(attributes) || !/\bjob-type-faculty\b/i.test(attributes)) continue;
+    const href = block.match(/<a\b[^>]*href=["']([^"']+)["']/i)?.[1] || "";
+    const title = clean(stripHtmlToText(block.match(/<h3\b[^>]*>([\s\S]*?)<\/h3>/i)?.[1] || ""));
+    if (!href || !title || !looksFacultyish(title) || omitAdjunct(title) || /\bjob-type-part-time\b/i.test(attributes)) continue;
+    jobs.push({
+      title: normalizeJobTitle(title),
+      url: href,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: "Cleveland, TN",
+      description: null,
+    });
+  }
+  return uniqByUrl(jobs);
+}
+
+export async function scrapeLeeFacultyAs(pageUrl, campusName = "Lee University", sourceName = "TN") {
+  try {
+    const response = await fetch(pageUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyAtlas/1.0" },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const jobs = parseLeeFacultyJobs(await response.text(), campusName, sourceName);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty job cards)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 export function parseKansasChristianFacultyJobs(html, pageUrl, campusName = "Kansas Christian College", sourceName = "KS") {
   const source = String(html || "");
   const start = source.search(/<h2\b[^>]*>\s*Available Positions at KCC\s*<\/h2>/i);
@@ -19813,6 +19904,7 @@ async function scrapeTnAll(context) {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "TN");
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "TN");
         if (type === "mooretech-news") return await scrapeMooreTechFacultyNews(url, campus, "TN");
+        if (type === "lee-job-manager") return await scrapeLeeFacultyAs(url, campus, "TN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "TN");
         return [];
       } catch (e) {

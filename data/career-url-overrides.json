@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-27T04:10:00.000Z",
+  "updatedAt": "2026-08-27T05:10:00.000Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -7661,6 +7661,34 @@
       "platform_type": "kuyper-employment",
       "coverage_source": "Kuyper College",
       "notes": "Verified live 2026-08-26 through Kuyper's official mixed employment board. The exact parser requires Organization: Kuyper College so outside companies and ministries cannot be attributed to the college; the current Kuyper listing is administrative, yielding a healthy zero faculty result."
+    },
+    {
+      "name": "Lac Courte Oreilles Ojibwe University",
+      "career_url": "https://www.lco.edu/employment",
+      "platform_type": "lco-employment",
+      "coverage_source": "Lac Courte Oreilles Ojibwe University",
+      "notes": "Verified live 2026-08-26 through the university's official employment page. The exact parser captures the explicitly advertised all-disciplines adjunct faculty pool while excluding the unrelated Faculty Credentialing Standards document that the generic link scraper misclassified."
+    },
+    {
+      "name": "Landmark College",
+      "career_url": "https://www.landmark.edu/about/employment/category/faculty",
+      "platform_type": "generic-faculty-category",
+      "coverage_source": "Landmark College",
+      "notes": "Verified live 2026-08-26 through Landmark's exact Faculty employment category. The category is healthy but currently contains no qualifying faculty-titled vacancy, so the production adapter correctly returns zero."
+    },
+    {
+      "name": "Lane Community College",
+      "career_url": "https://jobs.lanecc.edu/postings/search?512%5B%5D=3&512%5B%5D=4&commit=Search&page=1&sort=511+desc",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Lane Community College",
+      "notes": "Verified live 2026-08-26 through Lane's official PeopleAdmin board using its exact contracted-faculty and contracted-part-time-faculty position-type facets. Production validation returned seven current instructor pools without importing nonfaculty position types."
+    },
+    {
+      "name": "Lee University",
+      "career_url": "https://www.leeuniversity.edu/human-resources/positions/",
+      "platform_type": "lee-job-manager",
+      "coverage_source": "Lee University",
+      "notes": "Verified live 2026-08-26 through Lee's official WordPress Job Manager board. The exact parser requires the Faculty job-card class and excludes part-time cards, application downloads, and faculty-directory navigation; three current full-time faculty openings remain."
     }
   ]
 }
