@@ -5595,6 +5595,10 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Houston Christian University", type: "generic", url: "https://hc.edu/about-hcu/campus-resources/job-opportunities/?marvel-activate=false" },
+  { campus: "Houston Community College", type: "selectminds-faculty-saved-search", url: "https://hccs.referrals.selectminds.com/" },
+  { campus: "Howard Payne University", type: "generic", url: "https://www.hputx.edu/campus-offices/human-resources/open-positions/" },
+  { campus: "Huston-Tillotson University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=E3C84A4796E238298FDC7FBE2CE0C62C&fromClientSide=true" },
   { campus: "Southwest Texas College", type: "swtx-employment", url: "https://www.swtxc.edu/about/employment-opportunities/" },
   { campus: "Jacksonville College-Main Campus", type: "generic", url: "https://sites.google.com/jacksonville-college.edu/jchr/home" },
   { campus: "Texas State Technical College", type: "generic", url: "https://www.tstc.edu/work-at-tstc/" },

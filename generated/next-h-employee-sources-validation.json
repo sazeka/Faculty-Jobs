@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-08-26T23:15:00Z",
+  "method": "Official HR-link verification plus focused live production-adapter scrapes; explicit healthy-zero pages and a known bot-restricted official board were retained fail-closed",
+  "baselineMissing": 642,
+  "newlyCoveredCount": 4,
+  "projectedMissing": 638,
+  "facultyJobCount": 4,
+  "results": [
+    {
+      "name": "Houston Christian University",
+      "url": "https://hc.edu/about-hcu/campus-resources/job-opportunities/?marvel-activate=false",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 4,
+      "scopeEvidence": "The official page exposes institution-owned detail URLs carrying stable ClearCompany job identifiers."
+    },
+    {
+      "name": "Houston Community College",
+      "url": "https://hccs.referrals.selectminds.com/",
+      "platform": "selectminds-faculty-saved-search",
+      "healthySource": true,
+      "botBlocked": true,
+      "facultyJobCount": 0,
+      "healthEvidence": "The official HCC careers page links directly to this institution-specific employee board; automated Chromium currently receives SelectMinds' access-restricted page, so the route fails closed."
+    },
+    {
+      "name": "Howard Payne University",
+      "url": "https://www.hputx.edu/campus-offices/human-resources/open-positions/",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 0,
+      "healthEvidence": "The official open-positions page is reachable and currently contains no department or position entries."
+    },
+    {
+      "name": "Huston-Tillotson University",
+      "url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=E3C84A4796E238298FDC7FBE2CE0C62C&fromClientSide=true",
+      "platform": "paycom",
+      "healthySource": true,
+      "facultyJobCount": 0,
+      "healthEvidence": "The official HR page embeds this exact Paycom tenant; it currently has no qualifying active faculty postings."
+    }
+  ]
+}
