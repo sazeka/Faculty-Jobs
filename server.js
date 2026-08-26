@@ -4431,6 +4431,15 @@ const WI_CAMPUSES = [
 
 // CO (Colorado)
 const CO_CAMPUSES = [
+  {
+    campus: "Iliff School of Theology",
+    type: "generic",
+    url: "https://www.iliff.edu/about/career-opportunities/",
+    // The official page currently lists three staff roles and no faculty
+    // opening. Exclude navigation/directory links that otherwise look like
+    // jobs to the generic faculty-title matcher.
+    excludeTitleFilter: "^(Iliff Faculty|All Faculty|Professor Emeritus)$",
+  },
   { campus: "University of Colorado System Office", type: "taleo", url: "https://cu.taleo.net/careersection/2/moresearch.ftl?lang=en&radiusType=K&searchExpanded=true&organization=4300103016&radius=1&portal=101430233" },
   {
     campus: "CU Boulder",
@@ -5074,6 +5083,26 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  {
+    campus: "Illinois College of Optometry",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=9a5d9078-a7f4-44dd-ab39-0a99d4ed592e&ccId=19000101_000001&lang=en_US&selectedMenuKey=CurrentOpenings",
+  },
+  {
+    campus: "Illinois Institute of Technology",
+    type: "generic",
+    url: "https://www.iit.edu/hr/careers",
+    // Illinois Tech's official page now hands applicants to a ClearCompany
+    // portal that presents an authentication shell to automated browsers.
+    // Keep the durable institution-owned hand-off and fail closed instead of
+    // treating navigation links as faculty vacancies.
+    excludeTitleFilter: "^(Faculty and Staff|DEI Training for Faculty and Staff)$",
+  },
+  {
+    campus: "Illinois Wesleyan University",
+    type: "generic",
+    url: "https://www.iwu.edu/human-resources/job-openings/",
+  },
   { campus: "Garrett-Evangelical Theological Seminary", type: "generic", url: "https://mygets.garrett.edu/ICS/Employees/Human_Resources/", excludeTitleFilter: "^Adjunct Faculty$" },
   { campus: "Rush University", type: "generic", url: "https://www.rush.edu/rush-careers/career-areas/faculty-and-providers" },
   { campus: "Saint Xavier University", type: "schooljobs", url: "https://www.schooljobs.com/careers/sxuedu" },
@@ -18728,7 +18757,7 @@ async function scrapeCoAll(context) {
   const results = await mapWithConcurrency(
     CO_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "CO");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "CO");
@@ -18737,7 +18766,12 @@ async function scrapeCoAll(context) {
         if (type === "cu-boulder") return await scrapeCuBoulder(context, url, campus, "CO");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CO");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "CO");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CO");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "CO");
+          return excludeTitleFilter
+            ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || ""))
+            : jobs;
+        }
         return [];
       } catch (e) {
         console.error(`❌ ${campus} CO scrape failed:`, e?.message || e);

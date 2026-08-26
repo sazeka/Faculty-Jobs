@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-08-26T23:55:00Z",
+  "method": "Official HR-link verification plus focused live production-adapter scrapes; explicit healthy-zero and authentication-restricted sources were retained fail-closed",
+  "baselineMissing": 638,
+  "newlyCoveredCount": 4,
+  "projectedMissing": 634,
+  "facultyJobCount": 4,
+  "results": [
+    {
+      "name": "Iliff School of Theology",
+      "url": "https://www.iliff.edu/about/career-opportunities/",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 0,
+      "healthEvidence": "The official career-opportunities page is reachable and currently lists three staff openings; faculty-directory and emeritus navigation links are explicitly excluded."
+    },
+    {
+      "name": "Illinois College of Optometry",
+      "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=9a5d9078-a7f4-44dd-ab39-0a99d4ed592e&ccId=19000101_000001&lang=en_US&selectedMenuKey=CurrentOpenings",
+      "platform": "adp",
+      "healthySource": true,
+      "facultyJobCount": 1,
+      "scopeEvidence": "ICO's institution-authored jobs page links this exact ADP tenant, which returned one current Full Time Faculty posting."
+    },
+    {
+      "name": "Illinois Institute of Technology",
+      "url": "https://www.iit.edu/hr/careers",
+      "platform": "generic",
+      "healthySource": true,
+      "authRestricted": true,
+      "facultyJobCount": 0,
+      "healthEvidence": "The official HR page links an institution-specific ClearCompany employee portal; that portal currently presents an authentication shell to automated Chromium, so the route fails closed."
+    },
+    {
+      "name": "Illinois Wesleyan University",
+      "url": "https://www.iwu.edu/human-resources/job-openings/",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 3,
+      "scopeEvidence": "The official current-openings page returned three non-adjunct assistant-professor postings after the global adjunct exclusion."
+    }
+  ]
+}
