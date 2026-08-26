@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-08-27T04:10:00Z",
+  "method": "Official HR-link verification plus focused live production-adapter scrapes; mixed boards require an exact employer and Kentucky State uses only its published faculty categories",
+  "baselineMissing": 617,
+  "newlyCoveredCount": 4,
+  "projectedMissing": 613,
+  "facultyJobCount": 38,
+  "results": [
+    {
+      "name": "Kansas Health Science University",
+      "url": "https://tcsedsystem.wd1.myworkdayjobs.com/KHSC",
+      "platform": "workday",
+      "healthySource": true,
+      "facultyJobCount": 5,
+      "scopeEvidence": "The university's official careers page links to the KHSC-specific site within TCS Education System's Workday tenant."
+    },
+    {
+      "name": "Kentucky Christian University",
+      "url": "https://www.kcu.edu/job-postings/",
+      "platform": "kcu-job-manager",
+      "healthySource": true,
+      "facultyJobCount": 5,
+      "scopeEvidence": "The official public job endpoint is paginated and also carries outside ministry listings; only cards whose employer equals Kentucky Christian University are eligible."
+    },
+    {
+      "name": "Kentucky State University",
+      "url": "https://www.kysu.edu/president/human-resources/employment.php",
+      "platform": "adp-faculty-categories",
+      "healthySource": true,
+      "facultyJobCount": 28,
+      "scopeEvidence": "Kentucky State Human Resources publishes separate ADP centers for Faculty and Adjunct jobs; only those two ccIds are crawled."
+    },
+    {
+      "name": "Kuyper College",
+      "url": "https://www.kuyper.edu/employment/",
+      "platform": "kuyper-employment",
+      "healthySource": true,
+      "facultyJobCount": 0,
+      "scopeEvidence": "Kuyper's mixed board is accepted only where the Organization field equals Kuyper College; its current college posting is administrative, so the faculty result is zero."
+    }
+  ]
+}

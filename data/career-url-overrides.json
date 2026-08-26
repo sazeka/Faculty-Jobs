@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-27T03:10:00.000Z",
+  "updatedAt": "2026-08-27T04:10:00.000Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -7633,6 +7633,34 @@
       "platform_type": "workday",
       "coverage_source": "Keene State College",
       "notes": "Verified live 2026-08-26 through the official shared USNH Workday board using Keene State College's exact location facet together with full-time and Faculty worker-type facets. Production validation found two current faculty openings without importing other USNH campuses."
+    },
+    {
+      "name": "Kansas Health Science University",
+      "career_url": "https://tcsedsystem.wd1.myworkdayjobs.com/KHSC",
+      "platform_type": "workday",
+      "coverage_source": "Kansas Health Science University",
+      "notes": "Verified live 2026-08-26 through the KHSC-specific Workday site linked by the university's official careers page. Production validation found five current faculty-titled openings."
+    },
+    {
+      "name": "Kentucky Christian University",
+      "career_url": "https://www.kcu.edu/job-postings/",
+      "platform_type": "kcu-job-manager",
+      "coverage_source": "Kentucky Christian University",
+      "notes": "Verified live 2026-08-26 through the university's official WordPress Job Manager board. The production parser requires the employer field to equal Kentucky Christian University, excluding the board's many outside church and ministry postings; five current faculty openings remain."
+    },
+    {
+      "name": "Kentucky State University",
+      "career_url": "https://www.kysu.edu/president/human-resources/employment.php",
+      "platform_type": "adp-faculty-categories",
+      "coverage_source": "Kentucky State University",
+      "notes": "Verified live 2026-08-26 through the separate Faculty and Adjunct Career Center ADP links published by Kentucky State Human Resources. The two exact category feeds currently return 28 qualifying faculty openings while staff, student, and work-study categories remain excluded."
+    },
+    {
+      "name": "Kuyper College",
+      "career_url": "https://www.kuyper.edu/employment/",
+      "platform_type": "kuyper-employment",
+      "coverage_source": "Kuyper College",
+      "notes": "Verified live 2026-08-26 through Kuyper's official mixed employment board. The exact parser requires Organization: Kuyper College so outside companies and ministries cannot be attributed to the college; the current Kuyper listing is administrative, yielding a healthy zero faculty result."
     }
   ]
 }

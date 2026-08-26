@@ -4961,6 +4961,7 @@ const UT_CAMPUSES = [
 
 // MI (Michigan)
 const MI_CAMPUSES = [
+  { campus: "Kuyper College", type: "kuyper-employment", url: "https://www.kuyper.edu/employment/" },
   // Jackson College's HR page separates regular and adjunct vacancies. The
   // institution-labeled "Adjunct positions" control resolves to this exact
   // SchoolJobs route; the default board currently contains no faculty jobs.
@@ -6837,6 +6838,7 @@ const AR_CAMPUSES = [
 
 // KS (Kansas)
 const KS_CAMPUSES = [
+  { campus: "Kansas Health Science University", type: "workday", url: "https://tcsedsystem.wd1.myworkdayjobs.com/KHSC" },
   { campus: "Kansas Christian College", type: "kansas-christian", url: "https://kansaschristian.edu/employment-opportunities/" },
   { campus: "Haskell Indian Nations University", type: "generic", url: "https://www.usajobs.gov/Search/Results?k=Haskell%20Indian%20Nations%20University" },
   { campus: "Garden City Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/EDDDA7ABD200C6844CF6CF5EFE35BD11/career-page" },
@@ -7120,6 +7122,17 @@ const MO_CAMPUSES = [
 
 // KY (Kentucky)
 const KY_CAMPUSES = [
+  { campus: "Kentucky Christian University", type: "kcu-job-manager", url: "https://www.kcu.edu/job-postings/" },
+  {
+    campus: "Kentucky State University",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=20a5f81e-e1b1-4bfa-95e5-0dd898080de7&ccId=2641351383_637&lang=en_US",
+  },
+  {
+    campus: "Kentucky State University",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=20a5f81e-e1b1-4bfa-95e5-0dd898080de7&ccId=168064444822_5603&lang=en_US",
+  },
   { campus: "Western Kentucky University", type: "generic", url: "https://www.wku.edu/hr/careers/" },
   { campus: "Midway University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0360F3B5A2EC741788B51C99C6E17513&jpt=" },
   { campus: "Northern Kentucky University", type: "peopleadmin", url: "https://jobs.nku.edu/postings/search" },
@@ -11901,6 +11914,7 @@ async function scrapeMiAll(context) {
         if (type === "kzoo-faculty") return await scrapeKzooFacultyJobs(context, url, campus, "MI");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MI");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "MI");
+        if (type === "kuyper-employment") return await scrapeKuyperFacultyAs(url, campus, "MI");
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -19494,6 +19508,112 @@ export function parseKansasChristianFacultyJobs(html, pageUrl, campusName = "Kan
   return uniqByUrl(jobs);
 }
 
+export function parseKentuckyChristianFacultyJobs(html, campusName = "Kentucky Christian University", sourceName = "KY") {
+  const jobs = [];
+  const source = String(html || "");
+  for (const match of source.matchAll(/<li\b[^>]*class=["'][^"']*\bpost-\d+\b[^"']*\bjob_listing\b[^"']*["'][^>]*>([\s\S]*?)(?=<li\b[^>]*class=["'][^"']*\bpost-\d+\b|$)/gi)) {
+    const block = match[1] || "";
+    const url = block.match(/<a\b[^>]*href=["']([^"']+)["']/i)?.[1] || "";
+    const title = clean(stripHtmlToText(block.match(/<h3\b[^>]*>([\s\S]*?)<\/h3>/i)?.[1] || ""));
+    const employer = clean(stripHtmlToText(block.match(/<div\b[^>]*class=["'][^"']*\bcompany\b[^"']*["'][^>]*>[\s\S]*?<strong\b[^>]*>([\s\S]*?)<\/strong>/i)?.[1] || ""));
+    if (employer !== campusName || !url || !title || !looksFacultyish(title) || omitAdjunct(title)) continue;
+    jobs.push({
+      title: normalizeJobTitle(title),
+      url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: "Grayson, KY",
+      description: null,
+    });
+  }
+  return uniqByUrl(jobs);
+}
+
+export async function scrapeKentuckyChristianFacultyAs(pageUrl, campusName = "Kentucky Christian University", sourceName = "KY") {
+  try {
+    const endpoint = new URL("/wp-admin/admin-ajax.php", pageUrl).toString();
+    const jobs = [];
+    let maxPages = 1;
+    for (let page = 1; page <= Math.min(maxPages, 20); page++) {
+      const body = new URLSearchParams({
+        action: "job_manager_get_listings",
+        search_keywords: "",
+        search_location: "",
+        per_page: "50",
+        page: String(page),
+        show_pagination: "false",
+        order: "DESC",
+        orderby: "featured",
+        post_id: "26066",
+      });
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "X-Requested-With": "XMLHttpRequest",
+          "User-Agent": "Mozilla/5.0 FacultyAtlas/1.0",
+        },
+        body,
+        signal: AbortSignal.timeout(30_000),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const payload = await response.json();
+      maxPages = Math.max(1, Number(payload?.max_num_pages) || 1);
+      jobs.push(...parseKentuckyChristianFacultyJobs(payload?.html || "", campusName, sourceName));
+    }
+    const unique = uniqByUrl(jobs);
+    console.log(`${campusName} ${sourceName} listings scraped: ${unique.length} (exact employer)`);
+    return unique;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+export function parseKuyperFacultyJobs(html, pageUrl, campusName = "Kuyper College", sourceName = "MI") {
+  const jobs = [];
+  for (const match of String(html || "").matchAll(/<details\b[^>]*class=["'][^"']*\bitem\b[^"']*["'][^>]*>([\s\S]*?)<\/details>/gi)) {
+    const block = match[1] || "";
+    const title = clean(stripHtmlToText(block.match(/\bTitle:\s*([\s\S]*?)<br\s*\/?\s*>/i)?.[1] || ""));
+    const employer = clean(stripHtmlToText(block.match(/\bOrganization:\s*([\s\S]*?)<br\s*\/?\s*>/i)?.[1] || ""));
+    if (employer !== campusName || !title || !looksFacultyish(title) || omitAdjunct(title)) continue;
+    const href = block.match(/<a\b[^>]*href=["']([^"']+)["']/i)?.[1] || pageUrl;
+    let url;
+    try {
+      url = new URL(href, pageUrl).toString();
+    } catch {
+      continue;
+    }
+    jobs.push({
+      title: normalizeJobTitle(title),
+      url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: "Grand Rapids, MI",
+      description: null,
+    });
+  }
+  return uniqByUrl(jobs);
+}
+
+export async function scrapeKuyperFacultyAs(pageUrl, campusName = "Kuyper College", sourceName = "MI") {
+  try {
+    const response = await fetch(pageUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyAtlas/1.0" },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const jobs = parseKuyperFacultyJobs(await response.text(), pageUrl, campusName, sourceName);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (exact employer)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 export async function scrapeKansasChristianFacultyAs(pageUrl, campusName = "Kansas Christian College", sourceName = "KS") {
   try {
     const response = await fetch(pageUrl, {
@@ -19619,6 +19739,7 @@ async function scrapeKyAll(context) {
         // Nursing University.
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "KY");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "KY");
+        if (type === "kcu-job-manager") return await scrapeKentuckyChristianFacultyAs(url, campus, "KY");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "KY");
         return [];
       } catch (e) {
