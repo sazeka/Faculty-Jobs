@@ -822,6 +822,7 @@ const UC_CAMPUSES = [
 
 // California major private research universities
 const CA_PRIVATE_CAMPUSES = [
+  { campus: "Graduate Theological Union", type: "generic", url: "https://www.gtu.edu/about/employment" },
   // LACCD's official academic CSOD board is shared across nine colleges, but
   // its search form exposes durable, named campus checkboxes plus a separate
   // employment-type checkbox. Apply both controls before reading results so
@@ -1908,6 +1909,7 @@ const PA_PRIVATE_CAMPUSES = [
 
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
+  { campus: "Guilford College", type: "workday", url: "https://guilford.wd1.myworkdayjobs.com/Guilford_Careers" },
   { campus: "Johnson C Smith University", type: "schooljobs", url: "https://www.schooljobs.com/careers/jcsu" },
   { campus: "High Point University", type: "workday", url: "https://highpoint.wd503.myworkdayjobs.com/Highpoint-Faculty" },
   { campus: "Montgomery Community College", type: "generic", url: "https://www.montgomery.edu/about-mcc/employment/" },
@@ -3558,6 +3560,7 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  { campus: "Great Northern University", type: "generic", url: "https://gnu.edu/about/employment/faculty-positions/" },
   // Seattle Colleges publishes one official districtwide ctcLink board
   // (SiteId=060) for North, Central, and South. Scrape it once, then split
   // rows only when the listing's Location or title explicitly names a campus.
@@ -4124,6 +4127,7 @@ const NE_CAMPUSES = [
 
 // IA (Iowa)
 const IA_CAMPUSES = [
+  { campus: "Graceland University-Lamoni", type: "oracle-cx", url: "https://ibqcjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=CATEGORIES&selectedCategoriesFacet=300000009203194" },
   { campus: "Grand View University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/DC20BB66F0C9CF9F562615950604C1D5/career-page" },
   {
     campus: "University of Iowa",
@@ -20249,7 +20253,7 @@ async function scrapeInterfolioAs(context, startUrl, campusName, sourceName) {
 }
 
 // Oracle HCM Candidate Experience (public jobs pages)
-async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
+export async function scrapeOracleCxAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
     // Capture any XHR/Fetch calls the site makes to Oracle HCM REST endpoints.
