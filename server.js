@@ -5458,6 +5458,23 @@ const ID_CAMPUSES = [
 
 // IN (Indiana)
 const IN_CAMPUSES = [
+  {
+    campus: "Indiana Institute of Technology",
+    type: "paycom",
+    url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=9B7DD7DDF4B46DE388E0D590C86BBE1D",
+  },
+  {
+    campus: "Indiana Wesleyan University-Marion",
+    type: "pageup-campus",
+    url: "https://careers.indwes.edu/en/listing/",
+    locationFilter: "Marion, IN",
+  },
+  {
+    campus: "Indiana Wesleyan University-National & Global",
+    type: "pageup-campus",
+    url: "https://careers.indwes.edu/en/listing/",
+    locationFilter: "Remote (within United States)",
+  },
   { campus: "Grace College and Theological Seminary", type: "generic", url: "https://www.grace.edu/about/grace-college/employment/current-openings/" },
   { campus: "Indiana University-Northwest", type: "peopleadmin", url: "https://indiana.peopleadmin.com/postings/search?&query=&query_v0_posted_at_date=&query_organizational_tier_2_id=any&query_organizational_tier_3_id=any&query_organizational_tier_1_id=441&query_position_type_id=&commit=Search" },
   { campus: "Saint Mary's College", type: "generic", url: "https://www.saintmarys.edu/hr/employment/faculty" },
@@ -7188,6 +7205,7 @@ const TN_CAMPUSES = [
 
 // AK (Alaska)
 const AK_CAMPUSES = [
+  { campus: "Ilisagvik College", type: "generic", url: "https://ilisagvik.bamboohr.com/careers" },
   { campus: "University of Alaska System", type: "generic", url: "https://careers.alaska.edu/jobs/search/faculty-jobs" },
   // "/faculty/jobs" actually redirects to the faculty bio/directory page (a
   // list of current faculty members with their degrees), not job postings.
@@ -18947,8 +18965,10 @@ async function scrapeInAll(context) {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IN");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "IN");
+        if (type === "pageup-campus") return await scrapePageUpCampusAs(context, url, campus, "IN", locationFilter);
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "IN");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "IN");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "IN");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IN");
         if (type === "paylocity-shared") return await scrapePaylocitySharedAs(context, url, campus, "IN", locationFilter || null);
         if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "IN", locationFilter || null);

@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-08-27T00:30:00Z",
+  "method": "Official homepage/HR-link verification plus focused live production-adapter scrapes; shared parent coverage and exact PageUp card locations prevent duplicate or cross-campus attribution",
+  "baselineMissing": 634,
+  "newlyCoveredCount": 5,
+  "projectedMissing": 629,
+  "facultyJobCount": 21,
+  "results": [
+    {
+      "name": "Ilisagvik College",
+      "url": "https://ilisagvik.bamboohr.com/careers",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 8,
+      "scopeEvidence": "The college homepage links this exact BambooHR tenant as both Jobs and Careers."
+    },
+    {
+      "name": "Indiana Institute of Technology",
+      "url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=9B7DD7DDF4B46DE388E0D590C86BBE1D",
+      "platform": "paycom",
+      "healthySource": true,
+      "facultyJobCount": 4,
+      "scopeEvidence": "Indiana Tech Human Resources links this exact institution-wide Paycom tenant."
+    },
+    {
+      "name": "Indiana Institute of Technology-College of Professional Studies",
+      "url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=9B7DD7DDF4B46DE388E0D590C86BBE1D",
+      "platform": "paycom-shared-parent",
+      "healthySource": true,
+      "facultyJobCount": 0,
+      "coverageSource": "Indiana Institute of Technology",
+      "scopeEvidence": "This IPEDS component shares Indiana Tech's institution-wide employee board; the board is crawled once under the parent identity to prevent duplicate publication."
+    },
+    {
+      "name": "Indiana Wesleyan University-Marion",
+      "url": "https://careers.indwes.edu/en/listing/",
+      "platform": "pageup-campus",
+      "healthySource": true,
+      "facultyJobCount": 7,
+      "locationFilter": "Marion, IN",
+      "scopeEvidence": "The production adapter accepted only cards whose server-rendered location exactly equals Marion, IN."
+    },
+    {
+      "name": "Indiana Wesleyan University-National & Global",
+      "url": "https://careers.indwes.edu/en/listing/",
+      "platform": "pageup-campus",
+      "healthySource": true,
+      "facultyJobCount": 2,
+      "locationFilter": "Remote (within United States)",
+      "scopeEvidence": "The production adapter accepted only cards whose server-rendered location exactly equals Remote (within United States)."
+    }
+  ]
+}
