@@ -2136,6 +2136,8 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Hampden-Sydney College", type: "generic", url: "https://www.hsc.edu/human-resources/job-openings" },
+  { campus: "Hampton University", type: "hampton-faculty", url: "https://home.hamptonu.edu/hr/jobs/" },
   { campus: "Sweet Briar College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0DB1CFB7BAA1AF7EF9E6616BC163C95A" },
   { campus: "Longwood University", type: "interviewexchange", url: "https://longwood.interviewexchange.com/static/clients/565LUM1/index.jsp" },
   { campus: "University of Virginia's College at Wise", type: "interfolio", url: "https://apply.interfolio.com/50272/positions" },
@@ -6682,6 +6684,8 @@ const LA_CAMPUSES = [
 
 // AR (Arkansas)
 const AR_CAMPUSES = [
+  { campus: "Harding University", type: "harding-faculty", url: "https://www.harding.edu/about/offices-departments/hr/faculty-jobs/" },
+  { campus: "Hendrix College", type: "generic", url: "https://www.hendrix.edu/resources/resources.aspx?id=2148" },
   { campus: "Shorter College", type: "generic", url: "https://shortercollege.edu/careers/" },
   { campus: "University of Arkansas", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site?timeType=8676082fcc890179341a6d2e71495800&jobFamilyGroup=eaddfab9343f0113688d32d525e70000" },
   { campus: "University of Central Arkansas", type: "peopleadmin", url: "https://jobs.uca.edu/postings/search" },
@@ -11514,6 +11518,7 @@ async function scrapeVaAll(context) {
         if (type === "vt-search") return await scrapeKeywordSearchJobsAs(context, url, campus, "VA", { queryParam: "query", pathPattern: "/jobs/" });
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "VA");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "VA");
+        if (type === "hampton-faculty") return await scrapeHamptonFacultyAs(context, url, campus, "VA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "VA");
         if (type === "enusfilter") {
           const page = await context.newPage();
@@ -15463,6 +15468,112 @@ export async function scrapeApplitrackAs(context, startUrl, campusName, sourceNa
   }
 }
 
+// Hampton publishes current faculty openings as dated, institution-owned
+// WordPress posts. The all-jobs page also contains a SchoolJobs promotional
+// link and staff posts, so accept only dated Hampton HR detail URLs whose own
+// anchor titles satisfy the site's faculty-title policy.
+export async function scrapeHamptonFacultyAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+    const rows = await safeEvaluate(page, () => {
+      const clean = (value) => (value || "").replace(/\s+/g, " ").trim();
+      const out = [];
+      const seen = new Set();
+      for (const anchor of document.querySelectorAll("a[href]")) {
+        let url;
+        try {
+          url = new URL(anchor.getAttribute("href"), location.href);
+        } catch {
+          continue;
+        }
+        if (url.hostname !== "home.hamptonu.edu") continue;
+        if (!/^\/hr\/\d{4}\/\d{2}\/\d{2}\/[^/]+\/?$/.test(url.pathname)) continue;
+        const title = clean(anchor.textContent).replace(/\s*Details\s*[»›]?\s*$/i, "").trim();
+        if (!title || title.length > 220 || seen.has(url.toString())) continue;
+        seen.add(url.toString());
+        out.push({ title, url: url.toString() });
+      }
+      return out;
+    });
+    const jobs = rows
+      .map((row) => ({ ...row, title: normalizeJobTitle(row.title) }))
+      .filter((row) => looksFacultyish(row.title))
+      .filter((row) => !isGenericFacultyPageChromeTitle(row.title))
+      .filter((row) => !omitAdjunct(row.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (Hampton dated faculty posts)`);
+    return jobs.map((row) => {
+      const inferred = inferAcademicFieldsFromTitle(row.title);
+      return {
+        title: row.title,
+        url: row.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: "Hampton, VA",
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} Hampton scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Harding's official faculty page renders every current vacancy as an h3
+// rather than as a conventional job-card link. Preserve each heading as a
+// separately addressable record with a stable fragment; this avoids collapsing
+// the whole live roster to one URL while keeping users on the official page.
+export async function scrapeHardingFacultyAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1000);
+    const titles = await safeEvaluate(page, () => {
+      const clean = (value) => (value || "").replace(/\s+/g, " ").trim();
+      return Array.from(document.querySelectorAll("h3"), (heading) => clean(heading.textContent)).filter(Boolean);
+    });
+    const seen = new Set();
+    const jobs = titles
+      .map((title) => normalizeJobTitle(title))
+      .filter((title) => looksFacultyish(title))
+      .filter((title) => !isGenericFacultyPageChromeTitle(title))
+      .filter((title) => !omitAdjunct(title))
+      .filter((title) => {
+        const key = title.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (Harding faculty headings)`);
+    return jobs.map((title, index) => {
+      const inferred = inferAcademicFieldsFromTitle(title);
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 90) || `position-${index + 1}`;
+      return {
+        title,
+        url: `${startUrl.replace(/#.*$/, "")}#${slug}`,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: "Searcy, AR",
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} Harding scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
   const effectiveUrl = resolveCareerUrlOverride(campusName, startUrl);
   const overridePlatform = resolveCareerUrlOverridePlatform(campusName);
@@ -19173,6 +19284,7 @@ async function scrapeArAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "AR");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "AR");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "AR");
+        if (type === "harding-faculty") return await scrapeHardingFacultyAs(context, url, campus, "AR");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "AR");
         return [];
       } catch (e) {
