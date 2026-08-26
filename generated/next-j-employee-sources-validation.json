@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-08-27T01:05:00Z",
+  "method": "Official HR-link verification plus focused live production-adapter scrapes; employee faculty routes were selected instead of student career services",
+  "baselineMissing": 629,
+  "newlyCoveredCount": 4,
+  "projectedMissing": 625,
+  "facultyJobCount": 87,
+  "results": [
+    {
+      "name": "Jackson College",
+      "url": "https://www.schooljobs.com/careers/jccmi/transferjobs",
+      "platform": "schooljobs",
+      "healthySource": true,
+      "facultyJobCount": 53,
+      "scopeEvidence": "Jackson College's employee careers page labels this exact route Adjunct Positions; its separate student-employment route was rejected."
+    },
+    {
+      "name": "Jacksonville State University",
+      "url": "https://careers.jsu.edu/jobs/search/search-page-jsu-careers-faculty",
+      "platform": "pageup",
+      "healthySource": true,
+      "facultyJobCount": 26,
+      "scopeEvidence": "Jax State Human Resources links this exact Faculty Jobs category search."
+    },
+    {
+      "name": "James A. Rhodes State College",
+      "url": "https://www.schooljobs.com/careers/rhodesstate",
+      "platform": "schooljobs",
+      "healthySource": true,
+      "facultyJobCount": 7,
+      "scopeEvidence": "The college's official jobs URL redirects to this exact institution-specific SchoolJobs tenant."
+    },
+    {
+      "name": "John Brown University",
+      "url": "https://www.jbu.edu/human-resources/faculty-job-listings/",
+      "platform": "jbu-faculty",
+      "healthySource": true,
+      "facultyJobCount": 1,
+      "scopeEvidence": "The narrow parser accepts only child detail links under JBU's official faculty-listings path, capturing Physician Assistant Program Director while rejecting navigation and faculty-employment policy links."
+    }
+  ]
+}

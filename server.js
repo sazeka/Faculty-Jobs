@@ -4554,6 +4554,7 @@ const CO_CAMPUSES = [
 
 // OH (Ohio)
 const OH_CAMPUSES = [
+  { campus: "James A. Rhodes State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/rhodesstate" },
   { campus: "Rosedale Bible College", type: "generic", url: "https://rosedale.edu/hiring/" },
   { campus: "Hocking College", type: "generic", url: "https://www.hocking.edu/careers" },
   { campus: "Southern State Community College", type: "generic", url: "https://www.sscc.edu/hr/work-at-sscc.shtml" },
@@ -4925,6 +4926,10 @@ const UT_CAMPUSES = [
 
 // MI (Michigan)
 const MI_CAMPUSES = [
+  // Jackson College's HR page separates regular and adjunct vacancies. The
+  // institution-labeled "Adjunct positions" control resolves to this exact
+  // SchoolJobs route; the default board currently contains no faculty jobs.
+  { campus: "Jackson College", type: "schooljobs", url: "https://www.schooljobs.com/careers/jccmi/transferjobs" },
   { campus: "Saginaw Chippewa Tribal College", type: "generic", url: "https://www.sagchip.edu/employment" },
   { campus: "North Central Michigan College", type: "generic", url: "https://www.ncmich.edu/about-us/our-team/join-our-team.html" },
   {
@@ -6470,6 +6475,7 @@ const GA_CAMPUSES = [
 
 // AL (Alabama)
 const AL_CAMPUSES = [
+  { campus: "Jacksonville State University", type: "pageup", url: "https://careers.jsu.edu/jobs/search/search-page-jsu-careers-faculty" },
   { campus: "Tuskegee University", type: "peopleadmin", url: "https://tuskegee.peopleadmin.com/" },
   { campus: "University of North Alabama", type: "schooljobs", url: "https://www.schooljobs.com/careers/una" },
   { campus: "University of Alabama", type: "peopleadmin", url: "https://careers.ua.edu/faculty/jobs" },
@@ -6736,6 +6742,7 @@ const LA_CAMPUSES = [
 
 // AR (Arkansas)
 const AR_CAMPUSES = [
+  { campus: "John Brown University", type: "jbu-faculty", url: "https://www.jbu.edu/human-resources/faculty-job-listings/" },
   { campus: "Harding University", type: "harding-faculty", url: "https://www.harding.edu/about/offices-departments/hr/faculty-jobs/" },
   { campus: "Hendrix College", type: "generic", url: "https://www.hendrix.edu/resources/resources.aspx?id=2148" },
   { campus: "Shorter College", type: "generic", url: "https://shortercollege.edu/careers/" },
@@ -15632,6 +15639,47 @@ export async function scrapeHardingFacultyAs(context, startUrl, campusName, sour
   }
 }
 
+// John Brown's faculty page labels one current role "Physician Assistant
+// Program Director", which is explicitly under "Present faculty
+// opportunities" but does not satisfy a generic faculty-title heuristic.
+// Restrict extraction to child detail URLs beneath the official faculty jobs
+// path so the role is included without admitting faculty-directory chrome.
+export async function scrapeJbuFacultyAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(900);
+    const items = await safeEvaluate(page, () => {
+      const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+      const rootPath = "/human-resources/faculty-job-listings/";
+      const seen = new Set();
+      const out = [];
+      for (const anchor of document.querySelectorAll("a[href]")) {
+        let url;
+        try { url = new URL(anchor.getAttribute("href"), location.href); }
+        catch { continue; }
+        if (!url.pathname.startsWith(rootPath) || url.pathname === rootPath) continue;
+        const title = clean(anchor.textContent);
+        if (!title || seen.has(url.href)) continue;
+        seen.add(url.href);
+        out.push({ title, url: url.href });
+      }
+      return out;
+    });
+    return (items || []).map((job) => ({
+      title: clean(job.title),
+      url: job.url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: "Siloam Springs, AR",
+      description: null,
+    }));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 export async function scrapeGenericJobPage(context, startUrl, campusName, sourceName) {
   const effectiveUrl = resolveCareerUrlOverride(campusName, startUrl);
   const overridePlatform = resolveCareerUrlOverridePlatform(campusName);
@@ -19159,6 +19207,7 @@ async function scrapeAlAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "AL");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "AL");
         if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "AL");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "AL");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "AL");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "AL");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "AL");
@@ -19351,6 +19400,7 @@ async function scrapeArAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "AR");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "AR");
         if (type === "harding-faculty") return await scrapeHardingFacultyAs(context, url, campus, "AR");
+        if (type === "jbu-faculty") return await scrapeJbuFacultyAs(context, url, campus, "AR");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "AR");
         return [];
       } catch (e) {
