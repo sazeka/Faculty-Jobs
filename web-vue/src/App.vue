@@ -252,7 +252,7 @@ async function reportBadListing(job) {
           charted.
         </h1>
         <h1 v-else class="fa-display fa-hero-headline fa-hero-headline-returning">
-          Return to the<br /><i style="color: var(--accent);">faculty market.</i>
+          Navigate the<br /><i style="color: var(--accent);">academic job market.</i>
         </h1>
         <p style="font-family: var(--font-body); font-size: 15px; color: var(--ink-2); margin-top: 28px; max-width: 480px; line-height: 1.6; font-style: italic;">
           {{ hadPriorVisit ? 'Your latest catalog is ready to search.' : 'A scholarly directory of open faculty posts — free to browse, no account required.' }}
