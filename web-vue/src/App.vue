@@ -234,7 +234,6 @@ async function reportBadListing(job) {
           <span><b style="font-weight: 600; color: var(--ink);">{{ heroInstitutions.toLocaleString() }}</b> institutions</span>
           <span :title="coverageDetail">
             <b style="font-weight: 600; color: var(--ink);">{{ heroCoveragePercent }}</b> U.S. university coverage
-            · <a :href="`${baseUrl}policy-exclusions.html`" class="fa-inline-link">excluded</a>
           </span>
         </div>
       </div>
