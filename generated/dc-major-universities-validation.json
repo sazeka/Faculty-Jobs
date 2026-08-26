@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-08-26T20:29:43Z",
+  "method": "Live CAMPUS_ALLOWLIST=DC production scrape plus direct public Workday health check for the healthy-zero source",
+  "baselineMissing": 672,
+  "newlyCoveredCount": 4,
+  "projectedMissing": 668,
+  "facultyJobCount": 79,
+  "results": [
+    {
+      "name": "American University",
+      "url": "https://american.wd1.myworkdayjobs.com/AU",
+      "platform": "workday",
+      "healthySource": true,
+      "facultyJobCount": 30
+    },
+    {
+      "name": "Gallaudet University",
+      "url": "https://gallaudet.wd1.myworkdayjobs.com/GUCareers",
+      "platform": "workday",
+      "healthySource": true,
+      "facultyJobCount": 0,
+      "rawBoardJobCount": 26,
+      "healthEvidence": "Public Workday API returned HTTP 200; no faculty-titled openings were present."
+    },
+    {
+      "name": "George Washington University",
+      "url": "https://www.gwu.jobs/postings/search?397=&commit=Search&query=&query_position_type_id%5B%5D=4&query_v0_posted_at_date=&utf8=%E2%9C%93",
+      "platform": "peopleadmin",
+      "healthySource": true,
+      "facultyJobCount": 41
+    },
+    {
+      "name": "Georgetown University",
+      "url": "https://apply.interfolio.com/11780/positions",
+      "platform": "interfolio",
+      "healthySource": true,
+      "facultyJobCount": 8
+    }
+  ]
+}

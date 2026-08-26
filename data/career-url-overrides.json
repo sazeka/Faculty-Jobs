@@ -240,6 +240,13 @@
       "notes": "Old URL pointed at one specific job posting (jobs/5203260/english-assistant-professor) rather than the district-wide board -- American River College is part of the Los Rios Community College District, which shares one schooljobs.com/careers/losriosccd tenant across all its colleges. Verified live: 55 real postings including several Adjunct titles (Accounting Adjunct Assistant Professor Pool, Adjunct College Nurse Clinician Pool, Adjunct Counselor Pool, Adjunct Librarian Pool). CAVEAT: this override dispatch path (OVERRIDE_PLATFORM_DISPATCH['schooljobs']) does not pass through scrapeSchoolJobsAs's locationFilter param the way the hardcoded per-state array entries can (see Bossier Parish/West Hills CCD precedent) -- career-url-overrides.json has no field for it and the dispatch map does not thread one through. Folsom Lake College (server.js line ~1137) already points at this same unfiltered board today, so this isn't a new duplication risk -- both colleges will show the full district's listings rather than a scoped subset until locationFilter support is added to the override mechanism."
     },
     {
+      "name": "American University",
+      "homepage_url": "https://www.american.edu/",
+      "career_url": "https://american.wd1.myworkdayjobs.com/AU",
+      "platform_type": "workday",
+      "notes": "Official institution-owned Workday tenant verified 2026-08-26; live faculty-title scrape returned 30 current postings."
+    },
+    {
       "name": "Ana G. Mendez University",
       "homepage_url": "https://www.agmu.edu/",
       "career_url": "https://jobs.agmu.edu/page-jobs-category?lang=en-us&cat=Facultad",
@@ -2799,6 +2806,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
     },
     {
+      "name": "Gallaudet University",
+      "homepage_url": "https://gallaudet.edu/",
+      "career_url": "https://gallaudet.wd1.myworkdayjobs.com/GUCareers",
+      "platform_type": "workday",
+      "notes": "Official careers page links directly to this institution-owned Workday tenant. Verified 2026-08-26: public API healthy with 26 openings and no faculty-titled opening that day."
+    },
+    {
       "name": "Gadsden State Community College",
       "homepage_url": "https://www.gadsdenstate.edu/",
       "career_url": "https://www.schooljobs.com/careers/accs/gadsden",
@@ -2853,6 +2867,20 @@
       "career_url": "https://provost.gmu.edu/faculty/faculty-appointments",
       "platform_type": "generic",
       "notes": "Discovered via agent-career-discovery; verified live (5 faculty postings)."
+    },
+    {
+      "name": "George Washington University",
+      "homepage_url": "https://www.gwu.edu/",
+      "career_url": "https://www.gwu.jobs/postings/search?397=&commit=Search&query=&query_position_type_id%5B%5D=4&query_v0_posted_at_date=&utf8=%E2%9C%93",
+      "platform_type": "peopleadmin",
+      "notes": "Official GW employment site Faculty/Librarian facet verified 2026-08-26; live scrape returned 41 faculty postings after global safeguards."
+    },
+    {
+      "name": "Georgetown University",
+      "homepage_url": "https://www.georgetown.edu/",
+      "career_url": "https://apply.interfolio.com/11780/positions",
+      "platform_type": "interfolio",
+      "notes": "Georgetown's official careers page links this institution-specific Interfolio board for academic positions. Verified 2026-08-26; live scrape returned 8 faculty postings."
     },
     {
       "name": "Georgia Northwestern Technical College",
