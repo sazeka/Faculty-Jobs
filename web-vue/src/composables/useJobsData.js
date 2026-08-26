@@ -216,6 +216,9 @@ export function useJobsData() {
     // Ignore in restricted/private browsing environments.
   }
   const lastVisitAt = ref(_initialLastVisit)
+  // Fixed for this page load so a first-time visitor does not switch to the
+  // compact returning-user layout as soon as this visit is persisted.
+  const hadPriorVisit = Boolean(_initialLastVisit)
 
   const qualitySummary = computed(() => computeQualitySummary(jobs.value, scrapedAt.value))
   // Per-user "new since you last looked" (kept for any local use).
@@ -224,7 +227,7 @@ export function useJobsData() {
   // data/site-stats.json produced by the job-presence agent each scrape.
   const siteStats = ref(null)
   const newThisWeek = computed(() => {
-    const n = Number(siteStats.value?.newThisWeek)
+    const n = Number(siteStats.value?.newPostingsThisWeek ?? siteStats.value?.newThisWeek)
     return Number.isFinite(n) ? n : null
   })
 
@@ -381,5 +384,6 @@ export function useJobsData() {
     lastVisitAt,
     fullDescriptionsLoaded,
     descriptionsLoading,
+    hadPriorVisit,
   }
 }

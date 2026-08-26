@@ -25,4 +25,6 @@ test("normalizes stored tenure strings and explicit title language", () => {
   assert.equal(normalizeTenureTrack("non-tenure-track"), false);
   assert.equal(normalizeTenureTrack("unknown", "Tenure Track Assistant Professor"), true);
   assert.equal(normalizeTenureTrack("unknown", "Assistant Professor of Biology"), null);
+  assert.equal(normalizeTenureTrack(true, "Clinical Professor (Non-Tenured Track)"), false);
+  assert.equal(normalizeTenureTrack(false, "Tenure-Track Assistant Professor"), true);
 });

@@ -31,6 +31,13 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 import { attachUniversityCoverage } from "./lib/site-coverage.js";
+import { normalizeTenureTrack } from "../web-vue/src/lib/jobClassification.js";
+import {
+  classifySourceLink,
+  institutionTitleConflict,
+  sanitizePostingDate,
+  summarizeCatalog,
+} from "../web-vue/src/lib/listingTrust.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -196,6 +203,20 @@ const cleanedJobs   = todayJobs.filter((j) => !purgedIds.has(j.canonicalJobId));
 for (const job of cleanedJobs) {
   const p = presence.jobs[job.canonicalJobId];
   if (p && p.firstSeen) job.firstSeen = p.firstSeen;
+
+  // Persist the same trust guardrails used by the frontend so downstream
+  // exports cannot present a future source date or a title/status conflict as
+  // authoritative. Ambiguous institution and search-page links remain usable,
+  // but are explicitly flagged for review rather than silently "verified."
+  const flags = new Set(Array.isArray(job.qualityFlags) ? job.qualityFlags : []);
+  const safeDate = sanitizePostingDate(job.datePosted, new Date(`${today}T12:00:00Z`));
+  if (job.datePosted && !safeDate) flags.add("posting-date-suppressed");
+  job.datePosted = safeDate;
+  job.tenureTrack = normalizeTenureTrack(job.tenureTrack, job.titleClean || job.title || "");
+  if (institutionTitleConflict(job.titleClean || job.title || "", job.college)) flags.add("institution-title-conflict");
+  const linkQuality = classifySourceLink(job.url);
+  if (linkQuality !== "direct") flags.add(`${linkQuality}-source-link`);
+  if (flags.size) job.qualityFlags = [...flags].sort();
 }
 const trackedCount  = Object.keys(presence.jobs).length;
 const todayCount    = todayIds.size;
@@ -223,16 +244,27 @@ if (purgedCount > 0) {
 presence.lastRunDate = today;
 
 // ── Global "new" counts for the homepage (computed once, same for everyone) ────
-// firstSeen on the latest scrape date = added today; within the last 7 days =
-// new this week. Restrict to jobs still present today (lastSeen === today).
+// "New" means a consolidated posting was first cataloged by Faculty Atlas,
+// not that the institution necessarily posted it on that date. Count canonical
+// groups, using the earliest firstSeen in each group, so newly discovered
+// duplicates cannot inflate the number.
 const weekCutoff = daysAgoDateString(6);
 let newToday = 0;
 let newThisWeek = 0;
-for (const entry of Object.values(presence.jobs)) {
-  if (entry.lastSeen !== today) continue;
-  if (entry.firstSeen === today) newToday += 1;
-  if (entry.firstSeen >= weekCutoff) newThisWeek += 1;
+const firstSeenByGroup = new Map();
+for (const job of cleanedJobs) {
+  const groupId = String(job?.canonicalGroupId || job?.canonicalJobId || job?.url || '').trim();
+  const firstSeen = String(job?.firstSeen || '').trim();
+  if (!groupId || !firstSeen) continue;
+  const existing = firstSeenByGroup.get(groupId);
+  if (!existing || firstSeen < existing) firstSeenByGroup.set(groupId, firstSeen);
 }
+for (const firstSeen of firstSeenByGroup.values()) {
+  if (firstSeen === today) newToday += 1;
+  if (firstSeen >= weekCutoff) newThisWeek += 1;
+}
+
+const catalogSummary = summarizeCatalog(cleanedJobs, new Date(`${today}T12:00:00Z`));
 
 // Institution and state-system counts, so the homepage hero can show them
 // instantly from this tiny file instead of waiting for every job chunk to load.
@@ -250,10 +282,14 @@ const siteStats = attachUniversityCoverage({
   generatedAt: new Date().toISOString(),
   scrapeDate: today,
   total: cleanedJobs.length,
+  ...catalogSummary,
   uniqueColleges: collegeSet.size,
   stateSystems: stateSet.size,
   newToday,
   newThisWeek,
+  newPostingsToday: newToday,
+  newPostingsThisWeek: newThisWeek,
+  newDefinition: "Consolidated postings first cataloged by Faculty Atlas; not necessarily newly posted by the institution.",
 }, readJson(COVERAGE_PATH));
 
 console.log(`  New today        : ${newToday.toLocaleString()}`);
@@ -266,6 +302,7 @@ const report = {
   purgedCount,
   newToday,
   newThisWeek,
+  catalogSummary,
   purgedJobs,
 };
 

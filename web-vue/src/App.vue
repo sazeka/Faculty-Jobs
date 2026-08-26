@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import FilterBar from './components/FilterBar.vue'
 import ActiveChips from './components/ActiveChips.vue'
 import JobCard from './components/JobCard.vue'
@@ -16,12 +16,12 @@ import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || ''
 const baseUrl = import.meta.env.BASE_URL || '/'
 
-const { jobs, scrapedAt, loadError, loadJobs, loadFullDescriptions, descriptionsLoading, qualitySummary, newJobsCount, newThisWeek, siteStats } = useJobsData()
+const { jobs, scrapedAt, loadError, loadJobs, loadFullDescriptions, descriptionsLoading, qualitySummary, newJobsCount, newThisWeek, siteStats, hadPriorVisit } = useJobsData()
 
 // Prefer the global, daily-computed "new this week" figure; fall back to the
 // per-visitor count only if site-stats.json hasn't loaded.
 const heroNew = computed(() => (newThisWeek.value != null ? newThisWeek.value : newJobsCount.value))
-const heroNewLabel = computed(() => (newThisWeek.value != null ? 'new this week' : 'new since last visit'))
+const heroNewLabel = computed(() => (newThisWeek.value != null ? 'new to Atlas this week' : 'new since last visit'))
 
 // Hero counts. Once the job chunks load, the computed values are authoritative.
 // Until then (first visit, cold cache) fall back to site-stats.json — a tiny
@@ -32,8 +32,12 @@ const jobsLoaded = computed(() => jobs.value.length > 0)
 // (no cache yet, no load error). Used to show a loading message in the posts
 // section instead of the "no matches" empty state.
 const isInitialLoading = computed(() => !jobsLoaded.value && !loadError.value)
+const heroSourceRecords = computed(() =>
+  jobsLoaded.value ? catalogSummary.value.sourceRecords : (Number(siteStats.value?.sourceRecords ?? siteStats.value?.total) || 0))
 const heroTotal = computed(() =>
-  jobsLoaded.value ? qualitySummary.value.total : (Number(siteStats.value?.total) || 0))
+  jobsLoaded.value ? catalogSummary.value.searchablePostings : (Number(siteStats.value?.searchablePostings ?? siteStats.value?.total) || 0))
+const heroTotalLabel = computed(() =>
+  jobsLoaded.value || siteStats.value?.searchablePostings != null ? 'searchable postings' : 'source records loading')
 const heroInstitutions = computed(() =>
   jobsLoaded.value ? qualitySummary.value.uniqueColleges : (Number(siteStats.value?.uniqueColleges) || 0))
 const universityCoverage = computed(() => siteStats.value?.universityCoverage || null)
@@ -63,7 +67,7 @@ watch(() => filters.value.q, (query) => {
   }
 })
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
-const { stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
+const { catalogSummary, stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
   useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob })
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({ filtersRef: filters, updateFilters })
 const { alertsWithCounts, addAlert, removeAlert, subscribeAlert, subscribeStatus, subscribeError } = useAlerts({ filtersRef: filters, countMatches })
@@ -86,7 +90,6 @@ async function copyShareLink() {
 const hoveredCollege = ref(null)
 const activeTab = ref('jobs')
 const showAllJobs = ref(false)
-const siteViews = ref(null)
 const showMethodology = ref(false)
 const excludedColleges = ref(null)
 const filterDrawerOpen = ref(false)
@@ -168,24 +171,6 @@ async function reportBadListing(job) {
   }
 }
 
-// GoatCounter site code (the CODE in CODE.goatcounter.com). Its public counter
-// endpoint returns the live total visit count for the on-page number; the beacon
-// script in index.html does the actual tracking. Replace with your code.
-const GOATCOUNTER_CODE = 'facultyatlas'
-
-onMounted(async () => {
-  if (!GOATCOUNTER_CODE || GOATCOUNTER_CODE.startsWith('__')) return
-  try {
-    const res = await fetch(`https://${GOATCOUNTER_CODE}.goatcounter.com/counter/TOTAL.json`)
-    if (res.ok) {
-      const d = await res.json()
-      // GoatCounter returns counts as formatted strings (e.g. "1,234").
-      const raw = d.count_unique ?? d.count ?? ''
-      const n = parseInt(String(raw).replace(/[^0-9]/g, ''), 10)
-      siteViews.value = Number.isFinite(n) ? n : null
-    }
-  } catch { /* unavailable */ }
-})
 </script>
 
 <template>
@@ -245,30 +230,32 @@ onMounted(async () => {
           <span v-if="scrapedLabel" style="color: var(--accent);">● Updated {{ scrapedLabel }}</span>
         </div>
         <div class="fa-meta" style="display: flex; gap: 24px;">
-          <span><b style="font-weight: 600; color: var(--ink);">{{ heroTotal.toLocaleString() }}</b> posts</span>
+          <span><b style="font-weight: 600; color: var(--ink);">{{ heroTotal.toLocaleString() }}</b> {{ heroTotalLabel }}</span>
           <span><b style="font-weight: 600; color: var(--ink);">{{ heroInstitutions.toLocaleString() }}</b> institutions</span>
           <span :title="coverageDetail">
             <b style="font-weight: 600; color: var(--ink);">{{ heroCoveragePercent }}</b> U.S. university coverage
             · <a :href="`${baseUrl}policy-exclusions.html`" class="fa-inline-link">excluded</a>
           </span>
-          <span v-if="siteViews !== null"><b style="font-weight: 600; color: var(--ink);">{{ siteViews.toLocaleString() }}</b> visitors</span>
         </div>
       </div>
     </header>
 
     <!-- ═══ HERO ═══ -->
     <template v-if="activeTab !== 'trends'">
-    <section class="fa-hero">
+    <section class="fa-hero" :class="{ 'fa-hero-compact': hadPriorVisit }">
       <div class="fa-hero-left">
         <div class="fa-label" style="margin-bottom: 24px;">The Atlas · {{ todayStr }}</div>
-        <h1 class="fa-display fa-hero-headline">
+        <h1 v-if="!hadPriorVisit" class="fa-display fa-hero-headline">
           Thousands of<br />
           <i style="color: var(--accent);">open positions</i><br />
           in academia,<br />
           charted.
         </h1>
+        <h1 v-else class="fa-display fa-hero-headline fa-hero-headline-returning">
+          Return to the<br /><i style="color: var(--accent);">faculty market.</i>
+        </h1>
         <p style="font-family: var(--font-body); font-size: 15px; color: var(--ink-2); margin-top: 28px; max-width: 480px; line-height: 1.6; font-style: italic;">
-          A scholarly directory of open faculty posts — free to browse, no account required.
+          {{ hadPriorVisit ? 'Your latest catalog is ready to search.' : 'A scholarly directory of open faculty posts — free to browse, no account required.' }}
         </p>
       </div>
 
@@ -277,11 +264,11 @@ onMounted(async () => {
         <div class="fa-stat-grid">
           <div class="fa-stat">
             <div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div>
-            <div class="fa-stat-label">open posts today</div>
+            <div class="fa-stat-label">{{ heroTotalLabel }}</div>
           </div>
           <div class="fa-stat">
             <div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div>
-            <div class="fa-stat-label">institutions tracked</div>
+            <div class="fa-stat-label">institutions represented</div>
           </div>
           <div class="fa-stat">
             <div class="fa-stat-val" style="color: var(--accent);">+{{ heroNew.toLocaleString() }}</div>
@@ -341,7 +328,10 @@ onMounted(async () => {
     <hr class="fa-rule-double" style="margin: 0 var(--pad);" />
     <div class="fa-tagline-bar">
       <div class="fa-meta" style="font-style: italic; color: var(--ink-2); font-family: var(--font-body); font-size: 14px; letter-spacing: 0;">
-        A focused search experience designed for professional academic hiring workflows.
+        <template v-if="jobsLoaded">
+          {{ heroSourceRecords.toLocaleString() }} source records are consolidated into {{ heroTotal.toLocaleString() }} searchable postings; expired postings are hidden by default.
+        </template>
+        <template v-else>Loading the consolidated catalog summary…</template>
       </div>
       <div v-if="loadError" class="fa-meta" style="color: var(--accent);">⚠ {{ loadError }}</div>
     </div>
@@ -450,6 +440,9 @@ onMounted(async () => {
             <div class="fa-results-toolbar">
               <div class="fa-meta">
                 <b style="color: var(--ink);">{{ filteredJobs.length.toLocaleString() }}</b> postings
+                <span v-if="catalogSummary.duplicateRecords || catalogSummary.closedPostings" :title="`${catalogSummary.duplicateRecords.toLocaleString()} duplicate source records consolidated; ${catalogSummary.closedPostings.toLocaleString()} expired postings hidden by default`">
+                  · from {{ catalogSummary.sourceRecords.toLocaleString() }} source records ⓘ
+                </span>
               </div>
               <div style="display: flex; gap: 12px; align-items: center;">
                 <button class="fa-filters-toggle" @click="copyShareLink" :title="'Copy a link to this filtered view'">
@@ -521,8 +514,8 @@ onMounted(async () => {
             <div class="fa-display" style="font-size: 22px;">Faculty <i>Atlas</i></div>
           </div>
           <p style="font-size: 14px; line-height: 1.55; color: var(--ink-2); max-width: 320px; font-style: italic; margin: 0;">
-            Faculty Atlas catalogs every open faculty post across North American higher education.
-            Curated automatically, free to browse.
+            Faculty Atlas is building a transparent catalog of publicly accessible faculty postings across U.S. higher education.
+            Updated automatically and free to browse.
           </p>
         </div>
         <div>
@@ -530,7 +523,7 @@ onMounted(async () => {
           <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
             <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ tenureTrackOnly: false, newOnly: false })">All postings</button></li>
             <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ tenureTrackOnly: true })">Tenure-track only</button></li>
-            <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ newOnly: true })">New postings</button></li>
+            <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ newOnly: true })">New to Atlas</button></li>
             <li><button class="fa-footer-link" @click="activeTab = 'trends'">Weekly digest</button></li>
           </ul>
         </div>
@@ -544,7 +537,6 @@ onMounted(async () => {
       </div>
       <div class="fa-footer-bottom">
         <div class="fa-meta">Faculty Atlas · An independent academic directory</div>
-        <div v-if="siteViews !== null" class="fa-meta">{{ siteViews.toLocaleString() }} visitors</div>
       </div>
     </footer>
 
@@ -564,7 +556,7 @@ onMounted(async () => {
 
             <div class="fa-modal-section">
               <div class="fa-label" style="margin-bottom: 10px;">How it works</div>
-              <p>Faculty Atlas automatically scrapes open faculty listings from university employment portals across North America. An automated pipeline runs daily, fetching job data from institutional systems and normalizing it into a unified format. Listings are deduplicated, classified by discipline, and published to this site within minutes of the scrape completing.</p>
+              <p>Faculty Atlas collects publicly accessible faculty listings from institutional employment portals. An automated pipeline runs daily, normalizes source records into a unified format, consolidates duplicates, and hides expired postings by default. The headline catalog count refers to consolidated, searchable postings; source-record totals can be higher.</p>
             </div>
 
             <div class="fa-modal-section">
@@ -579,12 +571,12 @@ onMounted(async () => {
 
             <div class="fa-modal-section">
               <div class="fa-label" style="margin-bottom: 10px;">Freshness & "New" listings</div>
-              <p>The catalog is updated daily. A listing is marked <b>New</b> when it appears in the dataset for the first time after your last visit — this is tracked locally in your browser and requires no account. Listings removed from the source institution are dropped from the catalog at the next scrape.</p>
+              <p>The catalog is updated daily. <b>New to Atlas</b> means a consolidated posting was first cataloged after your previous visit; it does not claim that the institution posted the job on that date. The weekly figure likewise measures postings first cataloged by Faculty Atlas. This is tracked locally in your browser and requires no account.</p>
             </div>
 
             <div class="fa-modal-section">
               <div class="fa-label" style="margin-bottom: 10px;">Limitations</div>
-              <p>Faculty Atlas covers institutions with publicly accessible employment portals. Private institutions without standardized career pages, and positions posted only through disciplinary societies (Chronicle of Higher Education, H-Net, MLA Job List, etc.) are not currently included. Closing dates are parsed from source postings and may occasionally be missing or inaccurate.</p>
+              <p>Coverage is limited to institutions and platforms that expose publicly accessible listings, so this is not a claim of complete North American coverage. Dates, tenure status, institution attribution, and links are checked for obvious contradictions; suspect values are suppressed or visibly flagged, but source data can still be incomplete. Positions posted only through disciplinary societies are not currently included.</p>
             </div>
 
             <div class="fa-modal-section">
@@ -698,6 +690,17 @@ onMounted(async () => {
   letter-spacing: -0.025em;
 }
 .fa-hero-right { padding-bottom: 8px; align-self: center; }
+.fa-hero-compact {
+  padding-top: 32px;
+  padding-bottom: 36px;
+  grid-template-columns: minmax(0, 1fr) 460px;
+  align-items: center;
+}
+.fa-hero-compact .fa-hero-headline-returning {
+  font-size: 76px;
+  line-height: 0.92;
+}
+.fa-hero-compact .fa-hero-left > p { margin-top: 16px !important; }
 .fa-stat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -944,6 +947,8 @@ onMounted(async () => {
 @media (max-width: 1100px) {
   .fa-hero-headline { font-size: 88px; }
   .fa-hero { gap: 40px; }
+  .fa-hero-compact { grid-template-columns: minmax(0, 1fr) 400px; }
+  .fa-hero-compact .fa-hero-headline-returning { font-size: 62px; }
 }
 
 /* ─── Mobile ─── */
@@ -965,6 +970,8 @@ onMounted(async () => {
     gap: 28px;
   }
   .fa-hero-headline { font-size: 56px; }
+  .fa-hero-compact { grid-template-columns: 1fr; padding: 24px var(--pad) 30px; }
+  .fa-hero-compact .fa-hero-headline-returning { font-size: 48px; }
   .fa-hero-coords { display: none; }
   .fa-stat-grid { margin-bottom: 20px; }
   .fa-stat-val { font-size: 34px; }

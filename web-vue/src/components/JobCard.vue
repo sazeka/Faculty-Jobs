@@ -88,7 +88,7 @@ function indexStr(n) {
       </div>
       <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
         <span v-if="props.job.isClosed" class="fa-tag" style="background: var(--ink-3); color: #fff; border-color: var(--ink-3);">Closed</span>
-        <span v-if="props.job.isNew" class="fa-tag fa-tag-accent">New</span>
+        <span v-if="props.job.isNew" class="fa-tag fa-tag-accent" title="First cataloged by Faculty Atlas since your previous visit">New to Atlas</span>
         <span
           v-for="pt in (props.job.positionTypes || []).filter((p) => p && p !== 'Faculty')"
           :key="pt"
@@ -98,6 +98,14 @@ function indexStr(n) {
         </span>
         <span v-if="props.job.duplicateCount > 1" class="fa-tag">
           {{ props.job.duplicateCount }}x grouped
+        </span>
+        <span
+          v-for="badge in props.job.confidenceBadges || []"
+          :key="badge.label"
+          class="fa-tag fa-tag-warning"
+          :title="badge.detail || badge.label"
+        >
+          ⚠ {{ badge.label }}
         </span>
       </div>
     </div>
@@ -114,7 +122,7 @@ function indexStr(n) {
     <div>
       <div class="fa-meta" style="font-size: 10px; margin-bottom: 4px;"
         :title="getPostedLabel(props.job) && getPostedLabel(props.job).verb === 'Posted' ? 'Posting date from the source listing' : 'Date this listing was first seen by Faculty Atlas'">
-        {{ getPostedLabel(props.job) && getPostedLabel(props.job).verb === 'Listed' ? 'LISTED' : 'POSTED' }}
+        {{ getPostedLabel(props.job) && getPostedLabel(props.job).verb === 'Listed' ? 'ATLAS LISTED' : 'SOURCE POSTED' }}
       </div>
       <div v-if="getPostedLabel(props.job)" class="fa-display" style="font-size: 20px;">
         {{ getPostedLabel(props.job).date }}
@@ -138,6 +146,7 @@ function indexStr(n) {
     <!-- Actions -->
     <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
       <a
+        v-if="props.job.linkQuality !== 'invalid'"
         :href="props.job.url"
         target="_blank"
         rel="noreferrer"
@@ -145,6 +154,7 @@ function indexStr(n) {
         :aria-label="`Open posting: ${props.job.title}`"
         @click.stop
       >→</a>
+      <span v-else class="fa-listing-arrow" title="No safe source link is available" aria-label="No safe source link">—</span>
       <button
         type="button"
         class="fa-meta"
@@ -158,4 +168,9 @@ function indexStr(n) {
 
 <style scoped>
 .fa-listing-emphasized { background: rgba(122, 31, 35, 0.04); }
+.fa-tag-warning {
+  color: #8a4b12;
+  border-color: rgba(138, 75, 18, 0.35);
+  background: rgba(180, 104, 30, 0.06);
+}
 </style>

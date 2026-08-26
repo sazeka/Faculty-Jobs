@@ -38,16 +38,15 @@ export function getPositionTypes(title) {
 }
 
 export function normalizeTenureTrack(value, title = '') {
+  // Explicit title language is the most visible source evidence and wins over
+  // stale or contradictory enrichment. Professor rank alone is never enough.
+  const rawTitle = String(title || '').toLowerCase()
+  if (/\bnon[\s-]?tenure|\bntt\b/.test(rawTitle)) return false
+  if (/tenure[\s-]?track|tenure[\s-]?stream|tenure[\s-]?eligible|\btenured\b/.test(rawTitle)) return true
+
   if (value === true || value === false) return value
   const status = String(value || '').toLowerCase().trim()
   if (/\bnon[\s-]?tenure|\bntt\b/.test(status)) return false
   if (/tenure[\s-]?track|tenure[\s-]?stream|tenure[\s-]?eligible|\btenured\b/.test(status)) return true
-
-  // Enrichment can legitimately remain "unknown" even when the raw title
-  // explicitly states the track. Use only explicit title language; professor
-  // rank alone is not enough to infer tenure status.
-  const rawTitle = String(title || '').toLowerCase()
-  if (/\bnon[\s-]?tenure|\bntt\b/.test(rawTitle)) return false
-  if (/tenure[\s-]?track|tenure[\s-]?stream|tenure[\s-]?eligible|\btenured\b/.test(rawTitle)) return true
   return null
 }

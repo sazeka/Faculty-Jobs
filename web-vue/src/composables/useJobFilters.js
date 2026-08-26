@@ -2,6 +2,7 @@ import { computed } from 'vue'
 import { ALL_FILTER_VALUE, createDefaultFilters } from '../config/appConfig.js'
 import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxonomy.js'
 import { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
+import { classifySourceLink, institutionTitleConflict, sanitizePostingDate } from '../lib/listingTrust.js'
 import { inferAlaskaCampus } from '../../../scripts/lib/alaska-campus.js'
 
 export { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
@@ -141,7 +142,7 @@ function normalizeForKey(value) {
   return clean(value).toLowerCase().replace(/[^a-z0-9]+/g, ' ')
 }
 
-function deriveConfidenceBadges(job) {
+function deriveConfidenceBadges(job, { datePosted, linkQuality, institutionConflict }) {
   const badges = []
   if (/^https:\/\//i.test(String(job?.url || ''))) {
     badges.push({ kind: 'good', label: 'Verified Link' })
@@ -154,6 +155,16 @@ function deriveConfidenceBadges(job) {
   if (!(job?.hasDescription || clean(job?.description)) || !clean(job?.location)) {
     badges.push({ kind: 'warn', label: 'Missing Metadata' })
   }
+  if (job?.datePosted && !datePosted) badges.push({ kind: 'warn', label: 'Posting date suppressed', detail: 'The supplied posting date was invalid or in the future.' })
+  if (linkQuality === 'search-page') badges.push({ kind: 'warn', label: 'Search-page link', detail: 'This source did not provide a stable direct link to the posting.' })
+  if (linkQuality === 'invalid') badges.push({ kind: 'warn', label: 'Invalid source link', detail: 'The supplied source link could not be safely opened.' })
+  if (institutionConflict) {
+    badges.push({
+      kind: 'warn',
+      label: 'Institution needs review',
+      detail: `The title names ${institutionConflict.explicitInstitution}, but the source record names ${institutionConflict.listedInstitution}.`,
+    })
+  }
   return badges
 }
 
@@ -161,8 +172,11 @@ function normalizeJob(job) {
   const normalizedTitle = stripDateTextFromTitle(job?.titleClean || job?.title || '(No title)')
   const title = normalizedTitle || '(No title)'
   const college = normalizeSystemCollege(job)
+  const institutionConflict = institutionTitleConflict(title, college)
   const department = cleanDepartment(job?.department)
   const state = inferState(job)
+  const datePosted = sanitizePostingDate(job?.datePosted)
+  const linkQuality = classifySourceLink(job?.url)
   const derivedGroupKey = [normalizeForKey(title), normalizeForKey(college), normalizeForKey(department || ''), normalizeForKey(state || '')]
     .filter(Boolean)
     .join('|')
@@ -171,7 +185,7 @@ function normalizeJob(job) {
 
   const normalized = {
     title,
-    url: job?.url || '#',
+    url: linkQuality === 'invalid' ? '#' : (job?.url || '#'),
     source: job?.source || null,
     college,
     location: job?.location || null,
@@ -193,10 +207,13 @@ function normalizeJob(job) {
     positionTypes: job?.rank ? [job.rank] : getPositionTypes(job?.titleClean || job?.title || ''),
     positionType: job?.rank || getPositionType(job?.titleClean || job?.title || ''),
     state,
-    datePosted: job?.datePosted || null,
+    datePosted,
+    dateProvenance: datePosted ? 'source' : (job?.firstSeen ? 'atlas' : null),
     firstSeen: job?.firstSeen || null,
     isNew: Boolean(job?._isNew),
-    confidenceBadges: deriveConfidenceBadges(job),
+    linkQuality,
+    institutionConflict,
+    confidenceBadges: deriveConfidenceBadges(job, { datePosted, linkQuality, institutionConflict }),
     canonicalJobId,
     canonicalGroupId,
     duplicateGroupKey: canonicalGroupId || normalizeForKey(job?.url || title),
@@ -293,6 +310,17 @@ function dedupeGroupedJobs(jobs) {
 
 export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   const normalizedJobs = computed(() => dedupeGroupedJobs(jobsRef.value.map(normalizeJob)))
+  const catalogSummary = computed(() => {
+    const groupedPostings = normalizedJobs.value.length
+    const closedPostings = normalizedJobs.value.filter((job) => job.isClosed).length
+    return {
+      sourceRecords: jobsRef.value.length,
+      groupedPostings,
+      searchablePostings: groupedPostings - closedPostings,
+      duplicateRecords: Math.max(0, jobsRef.value.length - groupedPostings),
+      closedPostings,
+    }
+  })
   const allStateValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.state))
   const allPositionTypeValues = computed(() =>
     [...new Set(normalizedJobs.value.flatMap((job) => job.positionTypes || []).filter(Boolean))].sort((a, b) => a.localeCompare(b))
@@ -536,6 +564,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   }
 
   return {
+    catalogSummary,
     stateOptions,
     positionTypeOptions,
     tenureTrackCount,
