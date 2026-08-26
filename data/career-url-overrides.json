@@ -2827,6 +2827,13 @@
       "notes": "Official institution-scoped employee hiring source verified in the 2026-08-24 remaining-public-colleges pass."
     },
     {
+      "name": "Garrett-Evangelical Theological Seminary",
+      "homepage_url": "https://www.garrett.edu/",
+      "career_url": "https://mygets.garrett.edu/ICS/Employees/Human_Resources/",
+      "platform_type": "generic",
+      "notes": "Garrett-Evangelical's official Human Resources page contains the employee-facing Faculty and Staff Openings section. Verified live 2026-08-26: the page explicitly reports no current openings; the persistent Adjunct Faculty employee-resource navigation link is excluded as page chrome."
+    },
+    {
       "name": "Gateway Community and Technical College",
       "homepage_url": "https://gateway.kctcs.edu/index.aspx",
       "career_url": "https://careers.kctcs.edu/jobs/search/gateway-jobs?page=1&query=&category_uids%5B%5D=7bf29a1b2c109f72dcf4f573996c912e&category_uids%5B%5D=23ff5099afa2deb8b85349a245f8b261",
@@ -2955,11 +2962,32 @@
       "notes": "Discovered via agent-career-discovery; verified live (2 faculty postings)."
     },
     {
+      "name": "Gordon College",
+      "homepage_url": "https://www.gordon.edu/",
+      "career_url": "https://www.gordon.edu/offices-services/human-resources/jobs/open-faculty-positions",
+      "platform_type": "gordon-faculty",
+      "notes": "Gordon College's official HR site provides a faculty-only openings page. Verified live 2026-08-26: 1 qualifying full-time faculty posting after part-time adjunct exclusions."
+    },
+    {
+      "name": "Gordon-Conwell Theological Seminary",
+      "homepage_url": "https://www.gordonconwell.edu/",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=6e5262c5-1aaf-4346-9e79-a476a84dc88c&lang=en_US",
+      "platform_type": "adp",
+      "notes": "Gordon-Conwell's official employment page links to this institution-specific ADP Workforce Now career center for all faculty and staff openings. Verified live 2026-08-26: 1 faculty posting."
+    },
+    {
       "name": "Governors State University",
       "homepage_url": "https://www.govst.edu/",
       "career_url": "https://www.schooljobs.com/careers/govst",
       "platform_type": "schooljobs",
       "notes": "Configured career_url (govst.edu/employment-opportunities) is a promotional HR landing page with no listings; the real NEOGOV/schooljobs tenant was sitting unused in the homepage_url field instead. Swapped it in. Verified live: 46 postings, mostly \"Adjunct Faculty, <Dept> AY\" titles, not excluded by omitAdjunct() since they don't say \"part-time\"."
+    },
+    {
+      "name": "Grace College and Theological Seminary",
+      "homepage_url": "https://www.grace.edu/",
+      "career_url": "https://www.grace.edu/about/grace-college/employment/current-openings/",
+      "platform_type": "generic",
+      "notes": "Grace College's official employment page separates current Faculty and Staff openings. Verified live 2026-08-26: 5 qualifying faculty postings after shared part-time safeguards."
     },
     {
       "name": "Great Bay Community College",

@@ -634,6 +634,8 @@ const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type
 
 // Massachusetts private universities + liberal arts colleges
 const MA_PRIVATE_CAMPUSES = [
+  { campus: "Gordon College", type: "gordon-faculty", url: "https://www.gordon.edu/offices-services/human-resources/jobs/open-faculty-positions" },
+  { campus: "Gordon-Conwell Theological Seminary", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=6e5262c5-1aaf-4346-9e79-a476a84dc88c&lang=en_US" },
   { campus: "Simmons University", type: "workday", url: "https://simmons.wd504.myworkdayjobs.com/Simmons-Careers" },
   { campus: "Western New England University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=3C67A483237F6A324625AB95D568B0C1" },
   { campus: "Worcester Polytechnic Institute", type: "workday", url: "https://wpi.wd5.myworkdayjobs.com/WPI_External_Career_Site" },
@@ -5064,6 +5066,7 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  { campus: "Garrett-Evangelical Theological Seminary", type: "generic", url: "https://mygets.garrett.edu/ICS/Employees/Human_Resources/", excludeTitleFilter: "^Adjunct Faculty$" },
   { campus: "Rush University", type: "generic", url: "https://www.rush.edu/rush-careers/career-areas/faculty-and-providers" },
   { campus: "Saint Xavier University", type: "schooljobs", url: "https://www.schooljobs.com/careers/sxuedu" },
   { campus: "Waubonsee Community College", type: "csod", url: "https://waubonsee.csod.com/ux/ats/careersite/11/home?c=waubonsee" },
@@ -5418,6 +5421,7 @@ const ID_CAMPUSES = [
 
 // IN (Indiana)
 const IN_CAMPUSES = [
+  { campus: "Grace College and Theological Seminary", type: "generic", url: "https://www.grace.edu/about/grace-college/employment/current-openings/" },
   { campus: "Indiana University-Northwest", type: "peopleadmin", url: "https://indiana.peopleadmin.com/postings/search?&query=&query_v0_posted_at_date=&query_organizational_tier_2_id=any&query_organizational_tier_3_id=any&query_organizational_tier_1_id=441&query_position_type_id=&commit=Search" },
   { campus: "Saint Mary's College", type: "generic", url: "https://www.saintmarys.edu/hr/employment/faculty" },
   { campus: "Rose-Hulman Institute of Technology", type: "csod", url: "https://rosehulman.csod.com/ux/ats/careersite/9/home?c=rosehulman" },
@@ -9964,6 +9968,8 @@ async function scrapeMaPrivate(context) {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "MA");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "MA");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "MA");
+        if (type === "gordon-faculty") return await scrapeGordonFacultyAs(context, url, campus, "MA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MA");
         return [];
       } catch (e) {
@@ -9975,6 +9981,43 @@ async function scrapeMaPrivate(context) {
 
   const jobs = results.flatMap((x) => (Array.isArray(x) ? x : []));
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
+}
+
+export async function scrapeGordonFacultyAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+    const rows = await safeEvaluate(page, () => {
+      const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+      return [...document.querySelectorAll("h5")].map((heading) => {
+        const title = cleanText(heading.textContent);
+        let container = heading.parentElement;
+        let link = null;
+        for (let depth = 0; container && depth < 5 && !link; depth++, container = container.parentElement) {
+          link = [...container.querySelectorAll("a[href]")].find((anchor) => /^(?:view position|apply)$/i.test(cleanText(anchor.textContent)));
+        }
+        return { title, url: link?.href || location.href };
+      });
+    });
+
+    const jobs = (rows || [])
+      .filter((row) => /\b(?:faculty|professor|lecturer|instructor|dean)\b/i.test(row.title || ""))
+      .map((row) => ({
+        title: clean(row.title),
+        url: row.url,
+        source: sourceName,
+        category: "faculty",
+        college: campusName,
+        location: "Wenham, MA",
+        description: null,
+      }));
+    const filtered = uniqByUrl(jobs).filter((job) => !omitAdjunct(job.title));
+    console.log(`${campusName} ${sourceName} faculty-page listings scraped: ${filtered.length}`);
+    return filtered;
+  } finally {
+    await page.close().catch(() => {});
+  }
 }
 
 async function scrapeUscJobsAs(startUrl, campusName, sourceName) {
@@ -12991,7 +13034,7 @@ async function scrapeIlAll(context) {
   const results = await mapWithConcurrency(
     IL_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter }) => {
+    async ({ campus, type, url, locationFilter, excludeTitleFilter }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IL");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "IL");
@@ -13018,7 +13061,12 @@ async function scrapeIlAll(context) {
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "IL");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "IL");
         if (type === "applitrack") return await scrapeApplitrackAs(context, url, campus, "IL");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IL");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "IL");
+          return excludeTitleFilter
+            ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || ""))
+            : jobs;
+        }
         if (type === "peoplesoft-fluid") return await scrapePeopleSoftFluidAs(context, url, campus, "IL");
         // No existing IL dispatch case for "workday" (function scrapeWorkdayAs
         // already exists and is dispatched elsewhere, e.g. CA) -- added for
