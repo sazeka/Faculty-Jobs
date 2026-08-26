@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-08-26T20:36:52Z",
+  "method": "Live CAMPUS_ALLOWLIST=DC production scrape against official institution hiring sources, followed by source-specific false-positive controls",
+  "baselineMissing": 668,
+  "newlyCoveredCount": 4,
+  "projectedMissing": 664,
+  "facultyJobCount": 120,
+  "results": [
+    {
+      "name": "Howard University",
+      "url": "https://howard.wd1.myworkdayjobs.com/HU",
+      "platform": "workday",
+      "healthySource": true,
+      "rawBoardJobCount": 158,
+      "facultyJobCount": 17,
+      "excludedFalsePositiveCount": 2
+    },
+    {
+      "name": "The Catholic University of America",
+      "url": "https://provost.catholic.edu/faculty-positions/index.html",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 9,
+      "excludedFalsePositiveCount": 3
+    },
+    {
+      "name": "Trinity Washington University",
+      "url": "https://www2.trinitydc.edu/hr/employment-openings/",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 1
+    },
+    {
+      "name": "University of the District of Columbia",
+      "url": "https://udc.applicantstack.com/x/openings",
+      "platform": "generic",
+      "healthySource": true,
+      "rawBoardJobCount": 116,
+      "facultyJobCount": 93
+    }
+  ]
+}

@@ -10,6 +10,9 @@ const promotionSource = fs.readFileSync(
 const validation = JSON.parse(
   fs.readFileSync(new URL("../../generated/dc-major-universities-validation.json", import.meta.url), "utf8")
 );
+const remainingValidation = JSON.parse(
+  fs.readFileSync(new URL("../../generated/dc-remaining-major-universities-validation.json", import.meta.url), "utf8")
+);
 
 test("District of Columbia promotion candidates have a live scraper route", () => {
   assert.match(promotionSource, /DC:\s*"DC_CAMPUSES"/);
@@ -24,6 +27,10 @@ test("major unresolved DC universities use official faculty hiring systems", () 
   assert.match(serverSource, /Gallaudet University", type: "workday", url: "https:\/\/gallaudet\.wd1\.myworkdayjobs\.com\/GUCareers"/);
   assert.match(serverSource, /George Washington University", type: "peopleadmin", url: "https:\/\/www\.gwu\.jobs\/postings\/search\?[^"\n]*query_position_type_id%5B%5D=4/);
   assert.match(serverSource, /Georgetown University", type: "interfolio", url: "https:\/\/apply\.interfolio\.com\/11780\/positions"/);
+  assert.match(serverSource, /Howard University", type: "workday", url: "https:\/\/howard\.wd1\.myworkdayjobs\.com\/HU"/);
+  assert.match(serverSource, /The Catholic University of America", type: "generic", url: "https:\/\/provost\.catholic\.edu\/faculty-positions\/index\.html"/);
+  assert.match(serverSource, /Trinity Washington University", type: "generic", url: "https:\/\/www2\.trinitydc\.edu\/hr\/employment-openings\/"/);
+  assert.match(serverSource, /University of the District of Columbia", type: "generic", url: "https:\/\/udc\.applicantstack\.com\/x\/openings"/);
 });
 
 test("DC dispatcher supports each newly introduced platform", () => {
@@ -41,4 +48,17 @@ test("all four DC controls retain live validation evidence", () => {
   assert.equal(validation.results.length, 4);
   for (const result of validation.results) assert.equal(result.healthySource, true);
   assert.equal(validation.results.find((row) => row.name === "Gallaudet University")?.rawBoardJobCount, 26);
+});
+
+test("remaining major DC controls retain live validation and false-positive evidence", () => {
+  assert.equal(remainingValidation.newlyCoveredCount, 4);
+  assert.equal(remainingValidation.projectedMissing, remainingValidation.baselineMissing - 4);
+  assert.equal(remainingValidation.facultyJobCount, 120);
+  assert.equal(remainingValidation.results.length, 4);
+  for (const result of remainingValidation.results) assert.equal(result.healthySource, true);
+  assert.equal(remainingValidation.results.find((row) => row.name === "Howard University")?.facultyJobCount, 17);
+  assert.equal(remainingValidation.results.find((row) => row.name === "The Catholic University of America")?.facultyJobCount, 9);
+  assert.equal(remainingValidation.results.find((row) => row.name === "University of the District of Columbia")?.rawBoardJobCount, 116);
+  assert.match(serverSource, /Howard University"[^\n]*excludeTitleFilter: "\^\(\?:Chief Financial Officer\\\\b\|Faculty Services Coordinator\$\)"/);
+  assert.match(serverSource, /The Catholic University of America"[^\n]*excludeTitleFilter: "\^Faculty \(\?:Handbook\|Newsletters and Updates\|Positions Overview\)\$"/);
 });

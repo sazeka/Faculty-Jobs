@@ -2612,15 +2612,19 @@ const MD_CAMPUSES = [
 
 // DC (District of Columbia)
 const DC_CAMPUSES = [
-  // Four institution-owned faculty hiring systems verified 2026-08-26.
+  // Institution-owned faculty hiring systems verified 2026-08-26.
   // GW's PeopleAdmin URL is explicitly scoped to Faculty/Librarian postings;
   // Georgetown's Interfolio board is the academic-positions link published by
-  // the university careers site. The two Workday tenants are institution-owned
+  // the university careers site. The three Workday tenants are institution-owned
   // and the shared Workday adapter applies the faculty-title guardrail.
   { campus: "American University", type: "workday", url: "https://american.wd1.myworkdayjobs.com/AU" },
   { campus: "Gallaudet University", type: "workday", url: "https://gallaudet.wd1.myworkdayjobs.com/GUCareers" },
   { campus: "George Washington University", type: "peopleadmin", url: "https://www.gwu.jobs/postings/search?397=&commit=Search&query=&query_position_type_id%5B%5D=4&query_v0_posted_at_date=&utf8=%E2%9C%93" },
   { campus: "Georgetown University", type: "interfolio", url: "https://apply.interfolio.com/11780/positions" },
+  { campus: "Howard University", type: "workday", url: "https://howard.wd1.myworkdayjobs.com/HU", excludeTitleFilter: "^(?:Chief Financial Officer\\b|Faculty Services Coordinator$)" },
+  { campus: "The Catholic University of America", type: "generic", url: "https://provost.catholic.edu/faculty-positions/index.html", excludeTitleFilter: "^Faculty (?:Handbook|Newsletters and Updates|Positions Overview)$" },
+  { campus: "Trinity Washington University", type: "generic", url: "https://www2.trinitydc.edu/hr/employment-openings/" },
+  { campus: "University of the District of Columbia", type: "generic", url: "https://udc.applicantstack.com/x/openings" },
   { campus: "Wesley Theological Seminary", type: "generic", url: "https://www.wesleyseminary.edu/careers/" },
   { campus: "The Chicago School at Washington DC", type: "workday", url: "https://tcsedsystem.wd1.myworkdayjobs.com/TCSPP?locations=0cec31c30163019ffea5a764e149a600" },
 ];
@@ -11531,15 +11535,18 @@ async function scrapeDcAll(context) {
   const results = await mapWithConcurrency(
     DC_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
-        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "DC");
-        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "DC");
-        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "DC");
-        if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "DC");
-        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "DC");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "DC");
-        return [];
+        let jobs = [];
+        if (type === "peopleadmin") jobs = await scrapePeopleAdminAs(context, url, campus, "DC");
+        else if (type === "schooljobs") jobs = await scrapeSchoolJobsAs(context, url, campus, "DC");
+        else if (type === "workday") jobs = await scrapeWorkdayAs(context, url, campus, "DC");
+        else if (type === "interfolio") jobs = await scrapeInterfolioPositionsAs(context, url, campus, "DC");
+        else if (type === "interviewexchange") jobs = await scrapeInterviewExchangeAs(context, url, campus, "DC");
+        else if (type === "generic") jobs = await scrapeGenericJobPage(context, url, campus, "DC");
+        if (!excludeTitleFilter) return jobs;
+        const reject = new RegExp(excludeTitleFilter, "i");
+        return jobs.filter((job) => !reject.test(job.title || ""));
       } catch (e) {
         console.error(`❌ ${campus} DC scrape failed:`, e?.message || e);
         return [];
