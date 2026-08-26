@@ -823,6 +823,20 @@ const UC_CAMPUSES = [
 // California major private research universities
 const CA_PRIVATE_CAMPUSES = [
   { campus: "Graduate Theological Union", type: "generic", url: "https://www.gtu.edu/about/employment" },
+  // Institution-owned employee openings page. The generic adapter correctly
+  // keeps the current adjunct animation opening and the global policy filter
+  // rejects its explicitly part-time lecturer posting.
+  { campus: "John Paul the Great Catholic University", type: "generic", url: "https://jpcatholic.edu/JPadmin/jpopenings.php" },
+  // The employment page currently states that there are no openings. Its
+  // footer also links to four endowed-professorship donation pages whose link
+  // text looks faculty-like, so exclude those exact navigation labels rather
+  // than publishing false vacancies.
+  {
+    campus: "Institute of Buddhist Studies",
+    type: "generic",
+    url: "https://www.shin-ibs.edu/about/employment/",
+    excludeTitleFilter: "^(?:The Eshinni and Kakushinni Professor of Women and Buddhist Studies|Noboru and Yaeko Hanyu Professor of Buddhist Chaplaincy|H\\.E\\. Kosho Ohtani Professor of Shin Buddhist Studies|Yoshitaka Tamai Professor of Jodo Shinshu Buddhist Studies)$",
+  },
   // LACCD's official academic CSOD board is shared across nine colleges, but
   // its search form exposes durable, named campus checkboxes plus a separate
   // employment-type checkbox. Apply both controls before reading results so
@@ -2025,7 +2039,12 @@ const NC_CAMPUSES = [
     type: "peopleadmin",
     url: "https://spartantalent.uncg.edu/postings/search?query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=2&commit=Search",
   },
-  { campus: "Johnson & Wales University-Charlotte", type: "generic", url: "https://www.jwu.edu/faculty/jobs" },
+  {
+    campus: "Johnson & Wales University-Charlotte",
+    type: "pageup-campus",
+    url: "https://jobs.jwu.edu/en-us/listing/",
+    locationFilter: "Charlotte, North Carolina",
+  },
   { campus: "Alamance Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/alamanceccedu?jobType[0]=Full-Time%20Exempt&jobType[1]=Full-Time%20Non-Exempt&sort=PositionTitle%7CAscending" },
   { campus: "Asheville-Buncombe Technical Community College", type: "generic", url: "https://abtech.edu/employment" },
   { campus: "Barton College", type: "generic", url: "https://www.barton.edu/" },
@@ -2680,7 +2699,18 @@ const RI_PRIVATE_CAMPUSES = [
     type: "interviewexchange",
     url: "https://salve.interviewexchange.com/static/clients/288SRM1/faculty.jsp",
   },
-  { campus: "Johnson & Wales University-Providence", type: "generic", url: "https://www.jwu.edu/faculty/jobs" },
+  {
+    campus: "Johnson & Wales University-Providence",
+    type: "pageup-campus",
+    url: "https://jobs.jwu.edu/en-us/listing/",
+    locationFilter: "Providence, Rhode Island",
+  },
+  {
+    campus: "Johnson & Wales University-Online",
+    type: "pageup-campus",
+    url: "https://jobs.jwu.edu/en-us/listing/",
+    locationFilter: "Non-Campus Location",
+  },
   { campus: "College Unbound", type: "generic", url: "https://collegeunbound.edu/connect/careers" },
   { campus: "Community College of Rhode Island", type: "generic", url: "https://www.ccri.edu/" },
   { campus: "Roger Williams University", type: "generic", url: "https://www.rwu.edu/who-we-are/administrative-offices/human-resources/employment" },
@@ -7187,6 +7217,7 @@ const TN_CAMPUSES = [
   { campus: "Fisk University", type: "generic", url: "https://www.fisk.edu/about/administration/division-of-human-resources/employment-opportunities-at-fisk" },
   { campus: "Freed-Hardeman University", type: "generic", url: "https://recruiting.paylocity.com/recruiting/jobs/All/b4cbe30c-f4c8-4962-b4f9-b6dc9388b0f3/Freed-Hardeman-University?location=All%20Locations&department=Faculty" },
   { campus: "Jackson State Community College", type: "generic", url: "https://jscc.edu/about/administration/hr/careers/" },
+  { campus: "Johnson University", type: "generic", url: "https://johnsonu.edu/employment-opportunities/" },
   { campus: "King University", type: "generic", url: "https://www.king.edu/about/employment-opportunities/" },
   { campus: "Lane College", type: "generic", url: "https://www.lanecollege.edu/employment" },
   { campus: "Mid-South Christian College", type: "generic", url: "https://www.midsouthchristian.edu/academics/faculty-jobs" },
@@ -10325,7 +10356,12 @@ async function scrapeCaPrivate(context) {
         // (oracle-cx) during the generic-scraper long tail investigation.
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "CA Private", locationFilter || null);
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "CA Private");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "CA Private");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "CA Private");
+          return excludeTitleFilter
+            ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || ""))
+            : jobs;
+        }
         return [];
       } catch (e) {
         console.error(`❌ ${campus} CA private scrape failed:`, e?.message || e);
@@ -11535,7 +11571,7 @@ async function scrapeNcAll(context) {
   const results = await mapWithConcurrency(
     NC_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
 
 if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NC");
@@ -11544,6 +11580,7 @@ if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NC")
 if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "NC");
 if (type === "duke-search") return await scrapeKeywordSearchJobsAs(context, url, campus, "NC", { queryParam: "q", pathPattern: "/job/" });
 if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NC");
+if (type === "pageup-campus") return await scrapePageUpCampusAs(context, url, campus, "NC", locationFilter);
 if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NC");
 
         return [];
@@ -11725,13 +11762,14 @@ async function scrapeRiAll(context) {
   const results = await mapWithConcurrency(
     [...RI_CAMPUSES, ...RI_PRIVATE_CAMPUSES],
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, locationFilter }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "RI");
         if (type === "peopleadmin-dept") return await scrapePeopleAdminWithDept(context, url, campus, "RI");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "RI");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "RI");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "RI");
+        if (type === "pageup-campus") return await scrapePageUpCampusAs(context, url, campus, "RI", locationFilter);
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "RI");
         return [];
       } catch (e) {

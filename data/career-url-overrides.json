@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-27T01:05:00.000Z",
+  "updatedAt": "2026-08-27T02:10:00.000Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -3463,16 +3463,18 @@
     {
       "name": "Johnson & Wales University-Charlotte",
       "homepage_url": "https://www.jwu.edu/campuses/charlotte/",
-      "career_url": "https://jobs.jwu.edu/",
-      "platform_type": "pageup-charlotte",
-      "notes": "The former /faculty/jobs URL returns 404. JWU's official employment landing page routes applicants to this shared PageUp board, which redirects to /en-us/listing/. The dedicated dispatch filters extracted rows to Charlotte so Providence and other campus jobs are not misattributed."
+      "career_url": "https://jobs.jwu.edu/en-us/listing/",
+      "platform_type": "pageup-campus",
+      "coverage_source": "Johnson & Wales University-Charlotte",
+      "notes": "Verified live 2026-08-26 through JWU's official shared PageUp board with the exact Charlotte, North Carolina card-location boundary. Production validation found 13 current faculty-titled openings without importing Providence or online postings."
     },
     {
       "name": "Johnson & Wales University-Providence",
       "homepage_url": null,
-      "career_url": "https://jobs.jwu.edu/",
-      "platform_type": "pageup",
-      "notes": "PageUp-powered board with 86 total openings; 7 Providence-based faculty/adjunct postings (Nursing, DPT Program Director/Faculty, Economics, Public Health, Nutrition, Ed.D. Educational Leadership). Note: careers.jwu.edu is a separate employer-relations page with no listings -- do not use that URL."
+      "career_url": "https://jobs.jwu.edu/en-us/listing/",
+      "platform_type": "pageup-campus",
+      "coverage_source": "Johnson & Wales University-Providence",
+      "notes": "Verified live 2026-08-26 through JWU's official shared PageUp board with the exact Providence, Rhode Island card-location boundary. Production validation found 36 current faculty-titled openings without importing Charlotte or online postings."
     },
     {
       "name": "Johnson College",
@@ -7575,6 +7577,34 @@
       "platform_type": "jbu-faculty",
       "coverage_source": "John Brown University",
       "notes": "Verified live 2026-08-26 through JBU's institution-authored Faculty Employment Opportunities page. A dedicated same-path detail extractor found one current faculty role whose title does not contain a generic faculty keyword."
+    },
+    {
+      "name": "John Paul the Great Catholic University",
+      "career_url": "https://jpcatholic.edu/JPadmin/jpopenings.php",
+      "platform_type": "generic",
+      "coverage_source": "John Paul the Great Catholic University",
+      "notes": "Verified live 2026-08-26 through the university's institution-owned employee openings page. Production validation found one current qualifying faculty opening; the explicitly part-time lecturer listing is excluded by policy."
+    },
+    {
+      "name": "Johnson University",
+      "career_url": "https://johnsonu.edu/employment-opportunities/",
+      "platform_type": "generic",
+      "coverage_source": "Johnson University",
+      "notes": "Verified live 2026-08-26 through Johnson University's official employment-opportunities page. Production validation found two current faculty-titled openings."
+    },
+    {
+      "name": "Johnson & Wales University-Online",
+      "career_url": "https://jobs.jwu.edu/en-us/listing/",
+      "platform_type": "pageup-campus",
+      "coverage_source": "Johnson & Wales University-Online",
+      "notes": "Verified live 2026-08-26 through JWU's official shared PageUp board with the exact Non-Campus Location card boundary. Production validation found two current online faculty openings without importing campus-based postings."
+    },
+    {
+      "name": "Institute of Buddhist Studies",
+      "career_url": "https://www.shin-ibs.edu/about/employment/",
+      "platform_type": "generic",
+      "coverage_source": "Institute of Buddhist Studies",
+      "notes": "Verified live 2026-08-26 through the institute's official employment page, which currently states there are no openings. Four endowed-professorship donation links are explicitly rejected so this healthy zero does not become false vacancies."
     }
   ]
 }

@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-08-27T02:10:00Z",
+  "method": "Official employee-page verification plus focused live production-adapter scrapes; shared PageUp rows were assigned only through exact card-location values",
+  "baselineMissing": 625,
+  "newlyCoveredCount": 4,
+  "projectedMissing": 621,
+  "facultyJobCount": 5,
+  "results": [
+    {
+      "name": "John Paul the Great Catholic University",
+      "url": "https://jpcatholic.edu/JPadmin/jpopenings.php",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 1,
+      "scopeEvidence": "The institution-owned employee openings page currently lists Adjunct Professor of 2D Animation; its explicitly part-time lecturer role is excluded by policy."
+    },
+    {
+      "name": "Johnson University",
+      "url": "https://johnsonu.edu/employment-opportunities/",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 2,
+      "scopeEvidence": "Johnson University's official employment page links directly to two current faculty openings."
+    },
+    {
+      "name": "Johnson & Wales University-Online",
+      "url": "https://jobs.jwu.edu/en-us/listing/",
+      "platform": "pageup-campus",
+      "healthySource": true,
+      "facultyJobCount": 2,
+      "locationFilter": "Non-Campus Location",
+      "scopeEvidence": "The official shared PageUp board labels both online faculty rows with the exact Non-Campus Location value."
+    },
+    {
+      "name": "Institute of Buddhist Studies",
+      "url": "https://www.shin-ibs.edu/about/employment/",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 0,
+      "scopeEvidence": "The official employment page explicitly states there are no current openings; four endowed-professorship donation links are rejected as navigation rather than vacancies."
+    }
+  ],
+  "repairedExistingControls": [
+    {
+      "name": "Johnson & Wales University-Charlotte",
+      "locationFilter": "Charlotte, North Carolina",
+      "facultyJobCount": 13
+    },
+    {
+      "name": "Johnson & Wales University-Providence",
+      "locationFilter": "Providence, Rhode Island",
+      "facultyJobCount": 36
+    }
+  ]
+}
