@@ -13,6 +13,9 @@ const validation = JSON.parse(
 const remainingValidation = JSON.parse(
   fs.readFileSync(new URL("../../generated/dc-remaining-major-universities-validation.json", import.meta.url), "utf8")
 );
+const specializedValidation = JSON.parse(
+  fs.readFileSync(new URL("../../generated/dc-specialized-institutions-validation.json", import.meta.url), "utf8")
+);
 
 test("District of Columbia promotion candidates have a live scraper route", () => {
   assert.match(promotionSource, /DC:\s*"DC_CAMPUSES"/);
@@ -61,4 +64,19 @@ test("remaining major DC controls retain live validation and false-positive evid
   assert.equal(remainingValidation.results.find((row) => row.name === "University of the District of Columbia")?.rawBoardJobCount, 116);
   assert.match(serverSource, /Howard University"[^\n]*excludeTitleFilter: "\^\(\?:Chief Financial Officer\\\\b\|Faculty Services Coordinator\$\)"/);
   assert.match(serverSource, /The Catholic University of America"[^\n]*excludeTitleFilter: "\^Faculty \(\?:Handbook\|Newsletters and Updates\|Positions Overview\)\$"/);
+});
+
+test("specialized DC institutions use employee sources and reject student job boards", () => {
+  const dcConfig = serverSource.match(/const DC_CAMPUSES = \[[\s\S]*?\n\];/);
+  assert.ok(dcConfig);
+  assert.match(dcConfig[0], /NewU University", type: "generic", url: "https:\/\/newu\.university\/careers\/"/);
+  assert.match(dcConfig[0], /Pontifical Faculty of the Immaculate Conception at the Dominican House of Studies", type: "generic", url: "https:\/\/dhs\.edu\/careers\/"/);
+  assert.doesNotMatch(dcConfig[0], /Institute of World Politics/);
+  assert.doesNotMatch(dcConfig[0], /Pontifical John Paul II Institute/);
+  assert.equal(specializedValidation.newlyCoveredCount, 2);
+  assert.equal(specializedValidation.projectedMissing, specializedValidation.baselineMissing - 2);
+  assert.equal(specializedValidation.facultyJobCount, 0);
+  assert.equal(specializedValidation.results.length, 2);
+  for (const result of specializedValidation.results) assert.equal(result.healthySource, true);
+  assert.equal(specializedValidation.reviewedUnresolved.length, 2);
 });

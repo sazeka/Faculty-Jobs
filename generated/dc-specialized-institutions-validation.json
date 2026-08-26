@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-08-26T20:36:52Z",
+  "method": "Official-site review plus live CAMPUS_ALLOWLIST=DC production scrape; student/alumni job boards were rejected as employee sources",
+  "baselineMissing": 664,
+  "newlyCoveredCount": 2,
+  "projectedMissing": 662,
+  "facultyJobCount": 0,
+  "results": [
+    {
+      "name": "NewU University",
+      "url": "https://newu.university/careers/",
+      "platform": "generic",
+      "healthySource": true,
+      "facultyJobCount": 0,
+      "healthEvidence": "Official careers page states that teaching and administrative openings are posted here and linked to Indeed when available; no current faculty opening was present."
+    },
+    {
+      "name": "Pontifical Faculty of the Immaculate Conception at the Dominican House of Studies",
+      "url": "https://dhs.edu/careers/",
+      "platform": "generic",
+      "healthySource": true,
+      "currentStaffOpeningCount": 2,
+      "facultyJobCount": 0,
+      "excludedFalsePositiveCount": 2
+    }
+  ],
+  "reviewedUnresolved": [
+    {
+      "name": "Institute of World Politics",
+      "reason": "Official-site search found student and alumni career services but no public employee or faculty openings source."
+    },
+    {
+      "name": "Pontifical John Paul II Institute for Studies on Marriage and Family",
+      "reason": "Its Job Postings page advertises positions submitted by outside employers for students and alumni, not employment at the Institute."
+    }
+  ]
+}

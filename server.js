@@ -2622,6 +2622,8 @@ const DC_CAMPUSES = [
   { campus: "George Washington University", type: "peopleadmin", url: "https://www.gwu.jobs/postings/search?397=&commit=Search&query=&query_position_type_id%5B%5D=4&query_v0_posted_at_date=&utf8=%E2%9C%93" },
   { campus: "Georgetown University", type: "interfolio", url: "https://apply.interfolio.com/11780/positions" },
   { campus: "Howard University", type: "workday", url: "https://howard.wd1.myworkdayjobs.com/HU", excludeTitleFilter: "^(?:Chief Financial Officer\\b|Faculty Services Coordinator$)" },
+  { campus: "NewU University", type: "generic", url: "https://newu.university/careers/", excludeTitleFilter: "^(?:TEACHING AND ADMINISTRATIVE Positions|Volunteer Positions)$" },
+  { campus: "Pontifical Faculty of the Immaculate Conception at the Dominican House of Studies", type: "generic", url: "https://dhs.edu/careers/", excludeTitleFilter: "^Pontifical Faculty$" },
   { campus: "The Catholic University of America", type: "generic", url: "https://provost.catholic.edu/faculty-positions/index.html", excludeTitleFilter: "^Faculty (?:Handbook|Newsletters and Updates|Positions Overview)$" },
   { campus: "Trinity Washington University", type: "generic", url: "https://www2.trinitydc.edu/hr/employment-openings/" },
   { campus: "University of the District of Columbia", type: "generic", url: "https://udc.applicantstack.com/x/openings" },
