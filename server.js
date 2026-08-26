@@ -2718,6 +2718,11 @@ const RI_PRIVATE_CAMPUSES = [
 
 // NH (New Hampshire)
 const NH_CAMPUSES = [
+  {
+    campus: "Keene State College",
+    type: "workday",
+    url: "https://usnh.wd5.myworkdayjobs.com/Careers?locations=1ec6efc4979310011705058226c60000&timeType=1550a879b33f10037951f18fd1800000&workerSubType=b4f41dd8de101000c45c0d3fc2a10001",
+  },
   { campus: "University of New Hampshire College of Professional Studies Online", type: "workday", url: "https://usnh.wd5.myworkdayjobs.com/Careers?locations=1ec6efc4979310011704df0483390000&timeType=1550a879b33f10037951f18fd1800000&workerSubType=b4f41dd8de101000c45c0d3fc2a10001" },
   { campus: "University of New Hampshire-Franklin Pierce School of Law", type: "workday", url: "https://usnh.wd5.myworkdayjobs.com/Careers?locations=1ec6efc497931001170554505e2d0000&timeType=1550a879b33f10037951f18fd1800000&workerSubType=b4f41dd8de101000c45c0d3fc2a10001" },
   { campus: "University of New Hampshire-Main Campus", type: "workday", url: "https://usnh.wd5.myworkdayjobs.com/Careers?locations=1ec6efc49793100117073793de1e0000&timeType=1550a879b33f10037951f18fd1800000&workerSubType=b4f41dd8de101000c45c0d3fc2a10001" },
@@ -6832,6 +6837,7 @@ const AR_CAMPUSES = [
 
 // KS (Kansas)
 const KS_CAMPUSES = [
+  { campus: "Kansas Christian College", type: "kansas-christian", url: "https://kansaschristian.edu/employment-opportunities/" },
   { campus: "Haskell Indian Nations University", type: "generic", url: "https://www.usajobs.gov/Search/Results?k=Haskell%20Indian%20Nations%20University" },
   { campus: "Garden City Community College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/EDDDA7ABD200C6844CF6CF5EFE35BD11/career-page" },
   { campus: "Salina Area Technical College", type: "generic", url: "https://salinatech.edu/hr/current-openings/" },
@@ -6997,6 +7003,12 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  {
+    campus: "Kansas City Art Institute",
+    type: "adp",
+    url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=b8eda22f-d280-4db8-a8b7-bc0ed820ee60&ccId=19000101_000003&lang=en_US",
+  },
+  { campus: "Kansas City University", type: "workday", url: "https://kansascity.wd1.myworkdayjobs.com/Jobs" },
   { campus: "Harris-Stowe State University", type: "adp", url: "https://workforcenow.adp.com/jobs/apply/posting.html?client=10376&ccId=19000101_000001&type=MP&lang=en_US" },
   { campus: "Lincoln University (MO)", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=6105d53b-aeb8-4656-a07d-2743bd4a2423&ccId=19000101_000001&lang=en_US&selectedMenuKey=CareerCenter" },
   { campus: "Saint Louis Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/stlcc" },
@@ -19450,6 +19462,54 @@ async function scrapeArAll(context) {
   return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
 }
 
+export function parseKansasChristianFacultyJobs(html, pageUrl, campusName = "Kansas Christian College", sourceName = "KS") {
+  const source = String(html || "");
+  const start = source.search(/<h2\b[^>]*>\s*Available Positions at KCC\s*<\/h2>/i);
+  if (start < 0) return [];
+  const remainder = source.slice(start);
+  const nextHeading = remainder.slice(1).search(/<h2\b[^>]*>/i);
+  const section = nextHeading >= 0 ? remainder.slice(0, nextHeading + 1) : remainder;
+  const jobs = [];
+
+  for (const match of section.matchAll(/<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    const title = clean(stripHtmlToText(match[2]));
+    if (!title || !looksFacultyish(title) || omitAdjunct(title)) continue;
+    let url;
+    try {
+      url = new URL(match[1], pageUrl).toString();
+    } catch {
+      continue;
+    }
+    jobs.push({
+      title: normalizeJobTitle(title),
+      url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: "Overland Park, KS",
+      description: null,
+    });
+  }
+
+  return uniqByUrl(jobs);
+}
+
+export async function scrapeKansasChristianFacultyAs(pageUrl, campusName = "Kansas Christian College", sourceName = "KS") {
+  try {
+    const response = await fetch(pageUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyAtlas/1.0" },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const jobs = parseKansasChristianFacultyJobs(await response.text(), pageUrl, campusName, sourceName);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (exact KCC section)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 async function scrapeKsAll(context) {
   const results = await mapWithConcurrency(
     KS_CAMPUSES,
@@ -19467,6 +19527,7 @@ async function scrapeKsAll(context) {
         // already exists and is dispatched by several other states) --
         // added for Dodge City Community College.
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "KS");
+        if (type === "kansas-christian") return await scrapeKansasChristianFacultyAs(url, campus, "KS");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "KS");
         return [];
       } catch (e) {
