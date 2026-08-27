@@ -361,11 +361,13 @@ export function useLeafletMap({ jobsRef, selectedCollegeRef, hoveredCollegeRef, 
       doubleClickZoom: true,
     }).setView(MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM, { animate: false })
 
-    // Muted CARTO Positron basemap so the markers stand out.
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    // Standard OpenStreetMap tiles require no API key. CARTO's former public
+    // Positron endpoint now watermarks anonymous requests with "API key
+    // required", which obscures the map.
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: MAX_MAP_ZOOM,
-      subdomains: 'abcd',
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: 'abc',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
     }).addTo(mapInstance.value)
 
     // Cluster overlapping campus markers; the cluster bubble sums their job counts.
