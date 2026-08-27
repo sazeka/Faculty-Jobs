@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-08-27T06:10:00Z",
+  "method": "Official employee-link verification plus focused live production-adapter scrapes; institution, faculty-section, application-link, and appointment safeguards were enforced",
+  "baselineMissing": 609,
+  "newlyCoveredCount": 4,
+  "projectedMissing": 605,
+  "facultyJobCount": 56,
+  "results": [
+    {
+      "name": "Lake Superior College",
+      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545d78218ff0000",
+      "platform": "workday",
+      "healthySource": true,
+      "facultyJobCount": 1,
+      "scopeEvidence": "Lake Superior College's official employment page publishes this exact Minnesota State Workday Institution facet; it returned one qualifying flight-instructor opening."
+    },
+    {
+      "name": "Lebanon Valley College",
+      "url": "https://www.lvc.edu/human-resources/employment/faculty-openings/",
+      "platform": "lvc-faculty",
+      "healthySource": true,
+      "facultyJobCount": 4,
+      "scopeEvidence": "The parser reads LVC's separate faculty and adjunct pages, requires each heading to have an official ADP application link, and rejects blocks that explicitly say part-time."
+    },
+    {
+      "name": "Lenoir-Rhyne University",
+      "url": "https://www.lr.edu/work-at-lr/open-adjunct-faculty-positions",
+      "platform": "lr-faculty",
+      "healthySource": true,
+      "facultyJobCount": 9,
+      "scopeEvidence": "The official page states that its Hickory and Asheville lists are current adjunct faculty openings; the parser accepts only university-owned detail paths and rejects explicit Part-time Faculty titles."
+    },
+    {
+      "name": "Liberty University",
+      "url": "https://liberty.wd5.myworkdayjobs.com/lu_job_board_faculty",
+      "platform": "workday",
+      "healthySource": true,
+      "facultyJobCount": 42,
+      "scopeEvidence": "Liberty's official employee careers page links directly to this faculty-only Workday site, which returned 42 qualifying current openings."
+    }
+  ]
+}

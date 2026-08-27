@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-27T05:10:00.000Z",
+  "updatedAt": "2026-08-27T06:10:00.000Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -7689,6 +7689,34 @@
       "platform_type": "lee-job-manager",
       "coverage_source": "Lee University",
       "notes": "Verified live 2026-08-26 through Lee's official WordPress Job Manager board. The exact parser requires the Faculty job-card class and excludes part-time cards, application downloads, and faculty-directory navigation; three current full-time faculty openings remain."
+    },
+    {
+      "name": "Lake Superior College",
+      "career_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545d78218ff0000",
+      "platform_type": "workday",
+      "coverage_source": "Lake Superior College",
+      "notes": "Verified live 2026-08-27 through the exact Minnesota State Workday Institution facet published on Lake Superior College's official employment page. Production validation returned one current faculty-qualified flight-instructor opening without importing other Minnesota State institutions."
+    },
+    {
+      "name": "Lebanon Valley College",
+      "career_url": "https://www.lvc.edu/human-resources/employment/faculty-openings/",
+      "platform_type": "lvc-faculty",
+      "coverage_source": "Lebanon Valley College",
+      "notes": "Verified live 2026-08-27 through LVC's separate official faculty and adjunct opening pages. The exact parser requires a job heading paired with an ADP application link and excludes the explicitly part-time clinical role; four qualifying openings remain."
+    },
+    {
+      "name": "Lenoir-Rhyne University",
+      "career_url": "https://www.lr.edu/work-at-lr/open-adjunct-faculty-positions",
+      "platform_type": "lr-faculty",
+      "coverage_source": "Lenoir-Rhyne University",
+      "notes": "Verified live 2026-08-27 through the university's official current adjunct-faculty page. The exact parser reads only the Hickory and Asheville opening groups, preserves their official detail links, and excludes cards explicitly titled Part-time Faculty; nine qualifying adjunct openings remain."
+    },
+    {
+      "name": "Liberty University",
+      "career_url": "https://liberty.wd5.myworkdayjobs.com/lu_job_board_faculty",
+      "platform_type": "workday",
+      "coverage_source": "Liberty University",
+      "notes": "Verified live 2026-08-27 through the Faculty Jobs Workday site linked directly from Liberty's official employee careers page. Production validation returned 42 current faculty openings from the faculty-only tenant."
     }
   ]
 }

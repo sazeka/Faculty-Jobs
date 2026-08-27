@@ -1584,6 +1584,7 @@ const CLAREMONT_CAMPUSES = [
 
 // PA (multi-platform)
 const PA_CAMPUSES = [
+  { campus: "Lebanon Valley College", type: "lvc-faculty", url: "https://www.lvc.edu/human-resources/employment/faculty-openings/" },
   { campus: "Gratz College", type: "generic", url: "https://www.gratz.edu/employment" },
   { campus: "Luzerne County Community College", type: "generic", url: "https://www.luzerne.edu/about/jobs/jobs.jsp" },
   { campus: "Lancaster County Career and Technology Center", type: "applitrack", url: "https://www.applitrack.com/lancasterctc/onlineapp/default.aspx?all=1" },
@@ -1923,6 +1924,7 @@ const PA_PRIVATE_CAMPUSES = [
 
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
+  { campus: "Lenoir-Rhyne University", type: "lr-faculty", url: "https://www.lr.edu/work-at-lr/open-adjunct-faculty-positions" },
   { campus: "Guilford College", type: "workday", url: "https://guilford.wd1.myworkdayjobs.com/Guilford_Careers" },
   { campus: "Johnson C Smith University", type: "schooljobs", url: "https://www.schooljobs.com/careers/jcsu" },
   { campus: "High Point University", type: "workday", url: "https://highpoint.wd503.myworkdayjobs.com/Highpoint-Faculty" },
@@ -2155,6 +2157,7 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Liberty University", type: "workday", url: "https://liberty.wd5.myworkdayjobs.com/lu_job_board_faculty" },
   { campus: "Hampden-Sydney College", type: "generic", url: "https://www.hsc.edu/human-resources/job-openings" },
   { campus: "Hampton University", type: "hampton-faculty", url: "https://home.hamptonu.edu/hr/jobs/" },
   { campus: "Sweet Briar College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0DB1CFB7BAA1AF7EF9E6616BC163C95A" },
@@ -3910,6 +3913,7 @@ const VT_CAMPUSES = [
 
 // MN (Minnesota)
 const MN_CAMPUSES = [
+  { campus: "Lake Superior College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545d78218ff0000" },
   { campus: "Hamline University", type: "workday", url: "https://hamline.wd5.myworkdayjobs.com/Faculty_Career_Site" },
   { campus: "Martin Luther College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=8C7EC27E66B8E44D82FD7F25E9526B76" },
   { campus: "St Catherine University", type: "peopleadmin", url: "https://stcatherine.peopleadmin.com/" },
@@ -11626,6 +11630,7 @@ if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus
 if (type === "duke-search") return await scrapeKeywordSearchJobsAs(context, url, campus, "NC", { queryParam: "q", pathPattern: "/job/" });
 if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NC");
 if (type === "pageup-campus") return await scrapePageUpCampusAs(context, url, campus, "NC", locationFilter);
+if (type === "lr-faculty") return await scrapeLenoirRhyneFacultyAs(url, campus, "NC");
 if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NC");
 
         return [];
@@ -11888,6 +11893,7 @@ async function scrapePaAll(context) {
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "PA");
         if (type === "interfolio-links") return await scrapeInterfolioLinksFromPageAs(url, campus, "PA");
         if (type === "lafayette-faculty") return await scrapeLafayetteFacultyPageAs(url, campus, "PA");
+        if (type === "lvc-faculty") return await scrapeLebanonValleyFacultyAs(url, campus, "PA");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "PA");
         // No existing PA dispatch case for "paycom" (function scrapePaycomAs
         // already exists and is dispatched by CT/CA Private/NJ/MS/NY) --
@@ -19495,6 +19501,115 @@ async function scrapeArAll(context) {
     }
   );
   return uniqByUrl(results.flatMap((x) => (Array.isArray(x) ? x : []))).filter((j) => !omitAdjunct(j.title));
+}
+
+function decodeFacultySourceHtml(value) {
+  return String(value || "")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(parseInt(code, 16)))
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'");
+}
+
+export function parseLebanonValleyFacultyJobs(html, pageUrl, campusName = "Lebanon Valley College", sourceName = "PA") {
+  const jobs = [];
+  for (const match of String(html || "").matchAll(/<h4\b[^>]*>([\s\S]*?)<\/h4>([\s\S]*?)(?=<h4\b|<section\b|$)/gi)) {
+    const title = clean(decodeFacultySourceHtml(stripHtmlToText(match[1])));
+    const block = match[2] || "";
+    const href = block.match(/<a\b[^>]*href=["']([^"']*workforcenow\.adp\.com[^"']*)["']/i)?.[1] || "";
+    if (!title || !href || !looksFacultyish(title) || omitAdjunct(title) || /\bpart[\s-]?time\b/i.test(stripHtmlToText(block))) continue;
+    let url;
+    try {
+      url = new URL(decodeFacultySourceHtml(href), pageUrl).toString();
+    } catch {
+      continue;
+    }
+    jobs.push({
+      title: normalizeJobTitle(title),
+      url,
+      source: sourceName,
+      category: "Faculty",
+      college: campusName,
+      location: "Annville, PA",
+      description: null,
+    });
+  }
+  return uniqByUrl(jobs);
+}
+
+export async function scrapeLebanonValleyFacultyAs(pageUrl, campusName = "Lebanon Valley College", sourceName = "PA") {
+  try {
+    const adjunctUrl = new URL("../adjunct-openings/", pageUrl).toString();
+    const pages = await Promise.all([pageUrl, adjunctUrl].map(async (url) => {
+      const response = await fetch(url, {
+        headers: { "User-Agent": "Mozilla/5.0 FacultyAtlas/1.0" },
+        signal: AbortSignal.timeout(30_000),
+      });
+      if (!response.ok) throw new Error(`${url} HTTP ${response.status}`);
+      return [await response.text(), url];
+    }));
+    const jobs = uniqByUrl(pages.flatMap(([html, url]) => parseLebanonValleyFacultyJobs(html, url, campusName, sourceName)));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty opening sections)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
+export function parseLenoirRhyneFacultyJobs(html, pageUrl, campusName = "Lenoir-Rhyne University", sourceName = "NC") {
+  const source = String(html || "");
+  if (!/Listed below are all current adjunct faculty position openings at Lenoir-Rhyne University/i.test(stripHtmlToText(source))) return [];
+  const jobs = [];
+  for (const group of source.matchAll(/<h5\b[^>]*>([\s\S]*?)<\/h5>\s*<ul\b[^>]*>([\s\S]*?)<\/ul>/gi)) {
+    const city = clean(decodeFacultySourceHtml(stripHtmlToText(group[1])));
+    for (const item of group[2].matchAll(/<li\b[^>]*>([\s\S]*?)<\/li>/gi)) {
+      const block = item[1] || "";
+      const anchor = block.match(/<a\b([^>]*)href=["']([^"']+)["']([^>]*)>([\s\S]*?)<\/a>/i);
+      if (!anchor || !/^\/work-at-lr\//i.test(anchor[2])) continue;
+      const attributes = `${anchor[1]} ${anchor[3]}`;
+      const titleAttribute = attributes.match(/\btitle=["']([^"']+)["']/i)?.[1] || "";
+      const visible = clean(decodeFacultySourceHtml(stripHtmlToText(block)));
+      const rawTitle = titleAttribute
+        ? clean(decodeFacultySourceHtml(titleAttribute))
+        : `Adjunct Faculty - ${visible}`;
+      if (!rawTitle || !looksFacultyish(rawTitle) || omitAdjunct(rawTitle)) continue;
+      let url;
+      try {
+        url = new URL(decodeFacultySourceHtml(anchor[2]), pageUrl).toString();
+      } catch {
+        continue;
+      }
+      jobs.push({
+        title: normalizeJobTitle(rawTitle),
+        url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: city ? `${city}, NC` : "Hickory, NC",
+        description: null,
+      });
+    }
+  }
+  return uniqByUrl(jobs);
+}
+
+export async function scrapeLenoirRhyneFacultyAs(pageUrl, campusName = "Lenoir-Rhyne University", sourceName = "NC") {
+  try {
+    const response = await fetch(pageUrl, {
+      headers: { "User-Agent": "Mozilla/5.0 FacultyAtlas/1.0" },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const jobs = parseLenoirRhyneFacultyJobs(await response.text(), pageUrl, campusName, sourceName);
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (exact faculty opening groups)`);
+    return jobs;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} scrape failed:`, e?.message || e);
+    return [];
+  }
 }
 
 export function parseLcoFacultyJobs(html, pageUrl, campusName = "Lac Courte Oreilles Ojibwe University", sourceName = "WI") {
