@@ -7040,16 +7040,19 @@ const MO_CAMPUSES = [
   {
     campus: "University of Missouri",
     type: "umsystem-hrs",
+    businessUnit: "University of MO-Columbia",
     url: "https://erecruit.umsystem.edu/psc/tamext/COLUM/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=9",
   },
   {
     campus: "University of Missouri-Kansas City",
     type: "umsystem-hrs",
+    businessUnit: "University of MO-Kansas City",
     url: "https://erecruit.umsystem.edu/psc/tamext/KCITY/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=8",
   },
   {
     campus: "University of Missouri-St. Louis",
     type: "umsystem-hrs",
+    businessUnit: "University of MO-St. Louis",
     url: "https://erecruit.umsystem.edu/psp/tamext/STLOU/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=11",
   },
   { campus: "Missouri State University", type: "generic", url: "https://jobs.missouristate.edu/postings/search" },
@@ -18785,8 +18788,13 @@ export async function scrapePhenomFacultyCategoryAs(context, startUrl, campusNam
 // "Teaching & Research Faculty"), so filter on that instead of title regexes
 // — far more precise, and it happens to catch clinical/physician-faculty
 // titles that don't contain "professor/lecturer/instructor".
-async function scrapeUmsystemHrsJobs(context, startUrl, campusName, sourceName) {
-  const page = await context.newPage();
+async function scrapeUmsystemHrsJobs(context, startUrl, campusName, sourceName, expectedBusinessUnit = null) {
+  // All three campuses live on erecruit.umsystem.edu and PeopleSoft scopes the
+  // selected business unit through session cookies. Sharing the main scraping
+  // context lets concurrent campus pages overwrite one another's session.
+  const browser = context.browser?.();
+  const pageContext = browser ? await browser.newContext() : context;
+  const page = await pageContext.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(2000);
@@ -18815,29 +18823,44 @@ async function scrapeUmsystemHrsJobs(context, startUrl, campusName, sourceName) 
         const jobIdEl = idx !== null ? document.getElementById(`HRS_APP_JBSCH_I_HRS_JOB_OPENING_ID$${idx}`) : null;
         const locationEl = idx !== null ? document.getElementById(`LOCATION$${idx}`) : null;
         const familyEl = idx !== null ? document.getElementById(`JOB_FAMILY_LABEL$${idx}`) : null;
+        const businessUnitEl = idx !== null ? document.getElementById(`HRS_BU_DESCR$${idx}`) : null;
+        const departmentEl = idx !== null ? document.getElementById(`HRS_APP_JBSCH_I_HRS_DEPT_DESCR$${idx}`) : null;
         const jobId = clean(jobIdEl?.textContent || "");
         const location = clean(locationEl?.textContent || "");
         const jobFamily = clean(familyEl?.textContent || "");
+        const businessUnit = clean(businessUnitEl?.textContent || "");
+        const department = clean(departmentEl?.textContent || "");
 
         const dedupe = `${jobId || title}|${title}`;
         if (seen.has(dedupe)) continue;
         seen.add(dedupe);
-        out.push({ title, jobId, location, jobFamily });
+        out.push({ title, jobId, location, jobFamily, businessUnit, department });
       }
       return out;
     });
 
+    const detailBase = startUrl.split("?")[0];
+    const siteIdMatch = /[?&]SiteId=([^&]+)/i.exec(startUrl);
+    const siteId = siteIdMatch ? siteIdMatch[1] : "1";
     const jobs = (items || [])
+      // The three campus boards share one domain and browser context. PeopleSoft
+      // session cookies can occasionally make one concurrent page return another
+      // campus's rows, so never trust the board URL alone for attribution.
+      .filter((j) => !expectedBusinessUnit || j.businessUnit === expectedBusinessUnit)
       .filter((j) => /faculty/i.test(j.jobFamily) || looksFacultyish(j.title))
       .filter((j) => !omitAdjunct(j.title))
       .map((j) => ({
         title: clean(j.title),
-        url: `${startUrl}#${encodeURIComponent(j.jobId || j.title)}`,
+        // PeopleSoft supports a stable detail view even though the result title
+        // is rendered as a span rather than an anchor.
+        url: `${detailBase}?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=${encodeURIComponent(siteId)}&JobOpeningId=${encodeURIComponent(j.jobId)}&PostingSeq=1`,
         source: sourceName,
         category: "Faculty",
         college: campusName,
         location: j.location || null,
         description: null,
+        department: j.department || null,
+        specialization: j.department || null,
       }));
 
     console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length}`);
@@ -18847,6 +18870,7 @@ async function scrapeUmsystemHrsJobs(context, startUrl, campusName, sourceName) 
     return [];
   } finally {
     await page.close().catch(() => {});
+    if (pageContext !== context) await pageContext.close().catch(() => {});
   }
 }
 
@@ -19908,7 +19932,7 @@ async function scrapeMoAll(context) {
   const results = await mapWithConcurrency(
     MO_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, excludeTitleFilter }) => {
+    async ({ campus, type, url, excludeTitleFilter, businessUnit }) => {
       try {
         if (type === "workday") {
           const jobs = await scrapeWorkdayAs(context, url, campus, "MO");
@@ -19918,7 +19942,7 @@ async function scrapeMoAll(context) {
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "MO");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MO");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MO");
-        if (type === "umsystem-hrs") return await scrapeUmsystemHrsJobs(context, url, campus, "MO");
+        if (type === "umsystem-hrs") return await scrapeUmsystemHrsJobs(context, url, campus, "MO", businessUnit);
         return [];
       } catch (e) {
         console.error(`❌ ${campus} MO scrape failed:`, e?.message || e);
