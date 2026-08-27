@@ -2,25 +2,25 @@
    cool blue-grey paper, deep navy-black ink, vermillion accent + teal) */
 
 :root {
-  --paper:    #FFFFFF;
-  --paper-2:  #E1E8EB;
-  --paper-3:  #CFD9DE;
-  --ink:      #0E1B24;
-  --ink-2:    #2B3A44;
-  --ink-3:    #51626C;
-  --ink-4:    #8497A1;
-  --rule:     #14222B;
-  --rule-2:   rgba(14, 27, 36, 0.18);
-  --accent:   #C2410C;
-  --accent-2: #9A3309;
-  --sage:     #1E6A6E;
-  --ocean:    #2A6F8E;
+  --paper:    #FFFEFA;
+  --paper-2:  #F1EEE7;
+  --paper-3:  #DFE7E7;
+  --ink:      #12263A;
+  --ink-2:    #344C5A;
+  --ink-3:    #64737A;
+  --ink-4:    #929C9E;
+  --rule:     #12263A;
+  --rule-2:   #D8D4CA;
+  --accent:   #C85D32;
+  --accent-2: #A94422;
+  --sage:     #347A78;
+  --ocean:    #2E7197;
 
   --font-display: "Instrument Serif", "Cormorant Garamond", "Times New Roman", serif;
   --font-body:    "Newsreader", "Source Serif Pro", Georgia, serif;
   --font-mono:    "JetBrains Mono", ui-monospace, monospace;
 
-  --pad: 72px;
+  --pad: 34px;
 }
 
 /* ─── Base ─── */
@@ -32,7 +32,7 @@ body {
   margin: 0;
   font-family: var(--font-body);
   color: var(--ink);
-  background: var(--paper);
+  background: var(--paper-2);
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "ss01", "onum";
   font-variant-numeric: oldstyle-nums;

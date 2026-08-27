@@ -57,9 +57,6 @@ function getStartLabel(job) {
   return String(s)
 }
 
-function indexStr(n) {
-  return String(n + 1).padStart(5, '0')
-}
 </script>
 
 <template>
@@ -69,108 +66,50 @@ function indexStr(n) {
     @mouseenter="emit('hover-college', props.job.college || null)"
     @mouseleave="emit('hover-college', null)"
   >
-    <!-- № -->
-    <div class="fa-listing-num">№ {{ indexStr(props.index) }}</div>
-
-    <!-- Title + institution -->
-    <div>
-      <div class="fa-listing-title">
-        {{ props.job.title }}
-        <i v-if="trackLabel(props.job)" style="font-size: 0.8em; color: var(--ink-3);">
-          ({{ trackLabel(props.job) }})
-        </i>
-      </div>
-      <div class="fa-listing-inst">
-        {{ props.job.college }}
-        <span v-if="props.job.department" class="fa-meta" style="font-style: normal; font-size: 11px;">
-          · {{ props.job.department }}
-        </span>
-      </div>
-      <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
-        <span v-if="props.job.isClosed" class="fa-tag" style="background: var(--ink-3); color: #fff; border-color: var(--ink-3);">Closed</span>
-        <span v-if="props.job.isNew" class="fa-tag fa-tag-accent" title="First cataloged by Faculty Atlas since your previous visit">New to Atlas</span>
-        <span
-          v-for="pt in (props.job.positionTypes || []).filter((p) => p && p !== 'Faculty')"
-          :key="pt"
-          class="fa-tag"
-        >
-          {{ pt }}
-        </span>
-        <span v-if="props.job.duplicateCount > 1" class="fa-tag">
-          {{ props.job.duplicateCount }}x grouped
-        </span>
-        <span
-          v-for="badge in props.job.confidenceBadges || []"
-          :key="badge.label"
-          class="fa-tag fa-tag-warning"
-          :title="badge.detail || badge.label"
-        >
-          ⚠ {{ badge.label }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Location -->
-    <div>
-      <div class="fa-listing-meta" style="color: var(--ink-2); font-size: 12px;">
-        {{ props.job.location || props.job.state || '—' }}
-      </div>
-      <div v-if="props.job.state" class="fa-listing-coord">{{ props.job.state }}</div>
-    </div>
-
-    <!-- Posted / first-seen date -->
-    <div>
-      <div class="fa-meta" style="font-size: 10px; margin-bottom: 4px;"
-        :title="getPostedLabel(props.job) && getPostedLabel(props.job).verb === 'Posted' ? 'Posting date from the source listing' : 'Date this listing was first seen by Faculty Atlas'">
-        {{ getPostedLabel(props.job) && getPostedLabel(props.job).verb === 'Listed' ? 'ATLAS LISTED' : 'SOURCE POSTED' }}
-      </div>
-      <div v-if="getPostedLabel(props.job)" class="fa-display" style="font-size: 20px;">
-        {{ getPostedLabel(props.job).date }}
-      </div>
-      <div v-else class="fa-meta">—</div>
-      <div v-if="getStartLabel(props.job)" class="fa-meta" style="font-size: 10px; margin-top: 4px; color: var(--ink-3);"
-        title="Anticipated start date stated in the posting">
-        Starts {{ getStartLabel(props.job) }}
-      </div>
-    </div>
-
-    <!-- Deadline -->
-    <div>
-      <div class="fa-meta" style="font-size: 10px; margin-bottom: 4px;">DEADLINE</div>
-      <div v-if="getDeadlineLabel(props.job)" class="fa-display" style="font-size: 20px;">
-        {{ getDeadlineLabel(props.job) }}
-      </div>
-      <div v-else class="fa-meta">—</div>
-    </div>
-
-    <!-- Actions -->
-    <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+    <div class="fa-listing-main">
       <a
         v-if="props.job.linkQuality !== 'invalid'"
         :href="props.job.url"
         target="_blank"
         rel="noreferrer"
-        class="fa-listing-arrow"
+        class="fa-listing-title"
         :aria-label="`Open posting: ${props.job.title}`"
-        @click.stop
-      >→</a>
-      <span v-else class="fa-listing-arrow" title="No safe source link is available" aria-label="No safe source link">—</span>
-      <button
-        type="button"
-        class="fa-meta"
-        style="background: none; border: none; cursor: pointer; padding: 0; color: var(--ink-3); font-size: 10px; letter-spacing: 0.08em;"
-        :style="{ color: props.saved ? 'var(--accent)' : 'var(--ink-3)' }"
-        @click.stop="emit('toggle-save', props.job.url)"
-      >{{ props.saved ? '★' : '☆' }}</button>
+      >{{ props.job.title }}</a>
+      <div v-else class="fa-listing-title">{{ props.job.title }}</div>
+
+      <div class="fa-listing-inst">
+        {{ props.job.college || 'Institution not specified' }}
+        <span v-if="props.job.location || props.job.state"> · {{ props.job.location || props.job.state }}</span>
+      </div>
+
+      <div class="fa-listing-tags">
+        <span v-if="props.job.isClosed" class="fa-tag fa-tag-closed">Closed</span>
+        <span v-if="props.job.isNew" class="fa-tag fa-tag-accent" title="First cataloged by Faculty Atlas since your previous visit">New to Atlas</span>
+        <span v-if="trackLabel(props.job)" class="fa-tag">{{ trackLabel(props.job) }}</span>
+        <span v-for="pt in (props.job.positionTypes || []).filter((p) => p && p !== 'Faculty').slice(0, 2)" :key="pt" class="fa-tag">{{ pt }}</span>
+        <span v-if="props.job.discipline" class="fa-tag">{{ props.job.discipline }}</span>
+        <span v-if="props.job.duplicateCount > 1" class="fa-tag">{{ props.job.duplicateCount }} grouped</span>
+        <span v-for="badge in props.job.confidenceBadges || []" :key="badge.label" class="fa-tag fa-tag-warning" :title="badge.detail || badge.label">⚠ {{ badge.label }}</span>
+      </div>
+    </div>
+
+    <div class="fa-listing-side">
+      <button type="button" class="fa-save-button" :class="{ saved: props.saved }" :aria-label="props.saved ? 'Remove saved job' : 'Save job'" @click.stop="emit('toggle-save', props.job.url)">
+        {{ props.saved ? '♥' : '♡' }}
+      </button>
+      <div class="fa-listing-date" :title="getPostedLabel(props.job)?.verb">
+        {{ getPostedLabel(props.job)?.date || 'Date unavailable' }}
+      </div>
+      <div v-if="getDeadlineLabel(props.job)" class="fa-listing-deadline">Deadline {{ getDeadlineLabel(props.job) }}</div>
+      <div v-else-if="getStartLabel(props.job)" class="fa-listing-deadline">Starts {{ getStartLabel(props.job) }}</div>
     </div>
   </article>
 </template>
 
 <style scoped>
-.fa-listing-emphasized { background: rgba(122, 31, 35, 0.04); }
+.fa-listing-emphasized { background: rgba(46, 113, 151, 0.06); }
 .fa-tag-warning {
-  color: #8a4b12;
-  border-color: rgba(138, 75, 18, 0.35);
-  background: rgba(180, 104, 30, 0.06);
+  color: #8a4b12 !important;
+  background: rgba(180, 104, 30, 0.1) !important;
 }
 </style>

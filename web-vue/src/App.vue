@@ -93,6 +93,13 @@ const showAllJobs = ref(false)
 const showMethodology = ref(false)
 const excludedColleges = ref(null)
 const filterDrawerOpen = ref(false)
+const catalogSection = ref(null)
+const savedCount = computed(() => savedJobs.value.size)
+
+function focusCatalog() {
+  activeTab.value = 'jobs'
+  requestAnimationFrame(() => catalogSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+}
 
 async function openMethodology() {
   showMethodology.value = true
@@ -174,369 +181,183 @@ async function reportBadListing(job) {
 </script>
 
 <template>
-  <div class="fa-screen fa-grain">
-
-    <!-- ═══ HEADER ═══ -->
+  <div class="fa-screen">
     <header class="fa-header">
-      <div class="fa-header-top">
-        <!-- Wordmark -->
-        <div class="fa-wordmark">
-          <svg width="34" height="34" viewBox="0 0 64 64" class="fa-compass-svg">
-            <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.2"/>
-            <circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.5"/>
-            <g stroke="currentColor" stroke-width="0.5">
-              <line v-for="i in 32" :key="i"
-                :x1="32 + Math.cos(((i-1)/32)*Math.PI*2) * (((i-1)%8===0)?22:((i-1)%4===0)?26:28)"
-                :y1="32 + Math.sin(((i-1)/32)*Math.PI*2) * (((i-1)%8===0)?22:((i-1)%4===0)?26:28)"
-                :x2="32 + Math.cos(((i-1)/32)*Math.PI*2) * 30"
-                :y2="32 + Math.sin(((i-1)/32)*Math.PI*2) * 30"
-              />
-            </g>
-            <path d="M 32 8 L 36 32 L 32 28 L 28 32 Z" fill="currentColor"/>
-            <path d="M 32 56 L 28 32 L 32 36 L 36 32 Z" fill="none" stroke="currentColor" stroke-width="0.8"/>
-            <circle cx="32" cy="32" r="1.8" fill="currentColor"/>
-            <text x="32" y="6" text-anchor="middle" font-family="serif" font-size="6" font-style="italic" fill="currentColor">N</text>
-          </svg>
-          <div>
-            <div class="fa-display" style="font-size: 26px; letter-spacing: -0.01em;">
-              Faculty <i>Atlas</i>
-            </div>
-            <div class="fa-meta" style="font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 2px;">
-              A Directory of Open Academic Posts
-            </div>
-          </div>
-        </div>
+      <button class="fa-wordmark" type="button" aria-label="Faculty Atlas home" @click="focusCatalog">
+        <svg width="38" height="38" viewBox="0 0 64 64" class="fa-compass-svg" aria-hidden="true">
+          <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          <circle cx="32" cy="32" r="20" fill="none" stroke="currentColor" stroke-width=".6" opacity=".55"/>
+          <path d="M32 7l4 25-4-4-4 4z" fill="currentColor"/>
+          <path d="M32 57l-4-25 4 4 4-4z" fill="none" stroke="currentColor" stroke-width="1"/>
+          <circle cx="32" cy="32" r="2" fill="currentColor"/>
+        </svg>
+        <span class="fa-display">Faculty <i>Atlas</i></span>
+      </button>
 
-        <!-- Nav -->
-        <nav class="fa-nav">
-          <button
-            v-for="t in ['Jobs', 'Trends']"
-            :key="t"
-            class="fa-meta fa-nav-link"
-            :class="{ active: activeTab === t.toLowerCase() }"
-            @click="activeTab = t.toLowerCase()"
-          >{{ t }}</button>
-          <a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer"
-            class="fa-meta fa-nav-link">GitHub</a>
-        </nav>
-      </div>
+      <nav class="fa-nav" aria-label="Primary navigation">
+        <button class="fa-nav-link" :class="{ active: activeTab === 'jobs' || activeTab === 'map' }" @click="focusCatalog">Explore jobs</button>
+        <button class="fa-nav-link" :class="{ active: activeTab === 'trends' }" @click="activeTab = 'trends'">Market trends</button>
+        <button class="fa-nav-link" @click="openMethodology">About the data</button>
+      </nav>
 
-      <hr class="fa-rule" />
-
-      <!-- Edition bar -->
-      <div class="fa-edition-bar">
-        <div class="fa-meta" style="display: flex; gap: 24px;">
-          <span>{{ todayStr }}</span>
-          <span v-if="scrapedLabel" style="color: var(--accent);">● Updated {{ scrapedLabel }}</span>
-        </div>
-        <div class="fa-meta" style="display: flex; gap: 24px;">
-          <span><b style="font-weight: 600; color: var(--ink);">{{ heroTotal.toLocaleString() }}</b> {{ heroTotalLabel }}</span>
-          <span><b style="font-weight: 600; color: var(--ink);">{{ heroInstitutions.toLocaleString() }}</b> institutions</span>
-          <span :title="coverageDetail">
-            <b style="font-weight: 600; color: var(--ink);">{{ heroCoveragePercent }}</b> U.S. university coverage
-          </span>
-        </div>
-      </div>
+      <button class="fa-saved-button" :class="{ active: filters.savedOnly }" @click="activeTab = 'jobs'; updateFilters({ savedOnly: !filters.savedOnly })">
+        {{ filters.savedOnly ? '♥' : '♡' }} Saved · {{ savedCount }}
+      </button>
     </header>
 
-    <!-- ═══ HERO ═══ -->
     <template v-if="activeTab !== 'trends'">
-    <section class="fa-hero" :class="{ 'fa-hero-compact': hadPriorVisit }">
-      <div class="fa-hero-left">
-        <div class="fa-label" style="margin-bottom: 24px;">The Atlas · {{ todayStr }}</div>
-        <h1 v-if="!hadPriorVisit" class="fa-display fa-hero-headline">
-          Thousands of<br />
-          <i style="color: var(--accent);">open positions</i><br />
-          in academia,<br />
-          charted.
-        </h1>
-        <h1 v-else class="fa-display fa-hero-headline fa-hero-headline-returning">
-          Navigate the<br /><i style="color: var(--accent);">academic job market.</i>
-        </h1>
-        <p style="font-family: var(--font-body); font-size: 15px; color: var(--ink-2); margin-top: 28px; max-width: 480px; line-height: 1.6; font-style: italic;">
-          {{ hadPriorVisit ? 'Your latest catalog is ready to search.' : 'A scholarly directory of open faculty posts — free to browse, no account required.' }}
-        </p>
-      </div>
-
-      <div class="fa-hero-right">
-        <!-- Stat grid -->
-        <div class="fa-stat-grid">
-          <div class="fa-stat">
-            <div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div>
-            <div class="fa-stat-label">{{ heroTotalLabel }}</div>
-          </div>
-          <div class="fa-stat">
-            <div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div>
-            <div class="fa-stat-label">institutions represented</div>
-          </div>
-          <div class="fa-stat">
-            <div class="fa-stat-val" style="color: var(--accent);">+{{ heroNew.toLocaleString() }}</div>
-            <div class="fa-stat-label">{{ heroNewLabel }}</div>
-          </div>
-          <div class="fa-stat">
-            <div class="fa-stat-val" :title="coverageDetail">{{ heroCoveragePercent }}</div>
-            <div class="fa-stat-label">
-              U.S. universities covered ·
-              <a :href="`${baseUrl}policy-exclusions.html`" class="fa-inline-link">view excluded</a>
-            </div>
-          </div>
+      <section class="fa-hero">
+        <div class="fa-hero-copy">
+          <div class="fa-label">The academic job market, mapped</div>
+          <h1 class="fa-display">Find where your scholarship <i>could go next.</i></h1>
+          <p>A transparent, independent catalog of faculty openings across North America—updated every day and free to search.</p>
         </div>
+        <div class="fa-stat-grid" aria-label="Catalog summary">
+          <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
+          <div class="fa-stat"><div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div><div class="fa-stat-label">Institutions</div></div>
+          <div class="fa-stat"><div class="fa-stat-val">+{{ heroNew.toLocaleString() }}</div><div class="fa-stat-label">This week</div></div>
+        </div>
+      </section>
 
-        <!-- Search box -->
-        <div class="fa-label" style="margin-bottom: 10px;">Search the Atlas</div>
+      <section class="fa-search-band" aria-label="Search the catalog">
         <div class="fa-search-box">
-          <span style="color: var(--ink-3); font-family: var(--font-display); font-size: 20px; font-style: italic; flex-shrink: 0;">⌕</span>
+          <span aria-hidden="true">⌕</span>
           <input
             class="fa-input"
-            style="border: 0; padding: 0; font-size: 15px;"
             :value="filters.q"
             type="search"
-            placeholder='e.g. "tenure-track astronomy, west coast"'
+            placeholder="Search by field, institution, title, or place…"
             aria-label="Search jobs"
             @input="updateFilters({ q: $event.target.value })"
+            @keydown.enter="focusCatalog"
           />
+          <button type="button" @click="focusCatalog">Search</button>
         </div>
-        <div v-if="descriptionsLoading" class="fa-meta" style="margin-top: 6px; font-size: 10px;">
-          Expanding full-text search…
+        <div class="fa-search-meta">
+          <span v-if="descriptionsLoading">Expanding full-text search…</span>
+          <a :href="`${baseUrl}policy-exclusions.html`" :title="coverageDetail">{{ heroCoveragePercent }} U.S. university coverage</a>
+        </div>
+        <div v-if="loadError" class="fa-load-error">⚠ {{ loadError }}</div>
+      </section>
+    </template>
+
+    <TrendsTab v-if="activeTab === 'trends'" :base-url="baseUrl" />
+
+    <section v-if="activeTab === 'jobs'" ref="catalogSection" class="fa-catalog-shell">
+      <Teleport to="body">
+        <div v-if="filterDrawerOpen" class="fa-drawer-backdrop" @click="filterDrawerOpen = false" />
+      </Teleport>
+
+      <aside class="fa-filters-col" :class="{ 'is-open': filterDrawerOpen }">
+        <div class="fa-drawer-header">
+          <span class="fa-label">Refine results</span>
+          <button class="fa-drawer-close" aria-label="Close filters" @click="filterDrawerOpen = false">✕</button>
+        </div>
+        <FilterBar
+          :filters="filters"
+          :state-options="stateOptions"
+          :position-type-options="positionTypeOptions"
+          :tenure-track-count="tenureTrackCount"
+          :discipline-options="disciplineOptions"
+          :college-options="collegeOptions"
+          :department-options="departmentOptions"
+          :city-options="cityOptions"
+          :subscribe-status="subscribeStatus"
+          :subscribe-error="subscribeError"
+          @update:filters="updateFilters"
+          @reset-filters="resetFilters"
+          @subscribe-alert="subscribeAlert"
+          @refresh-data="loadJobs"
+        />
+      </aside>
+
+      <main class="fa-results-col">
+        <ActiveChips v-if="activeFilterChips.length" :chips="activeFilterChips" @clear-chip="clearFilterChip" />
+        <div class="fa-results-toolbar">
+          <div>
+            <h2 class="fa-display">{{ filteredJobs.length.toLocaleString() }} academic roles</h2>
+            <span v-if="jobsLoaded">From {{ catalogSummary.sourceRecords.toLocaleString() }} verified source records</span>
+            <span v-else>Loading the latest catalog…</span>
+          </div>
+          <div class="fa-toolbar-actions">
+            <button class="fa-tool-button" @click="copyShareLink">{{ shareCopied ? '✓ Copied' : '⎘ Share' }}</button>
+            <button class="fa-tool-button fa-filters-toggle" @click="filterDrawerOpen = true">⊞ Filters</button>
+            <select :value="filters.sortBy" aria-label="Sort jobs" @change="updateFilters({ sortBy: $event.target.value })">
+              <option value="recent">Newest first</option>
+              <option value="relevance">Most relevant</option>
+              <option value="title-asc">Title A–Z</option>
+              <option value="university">University</option>
+              <option value="state">State</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Quick filter tags -->
-        <div style="display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;">
-          <button
-            class="fa-tag"
-            :class="{ 'fa-tag-filled': filters.tenureTrackOnly }"
-            @click="updateFilters({ tenureTrackOnly: !filters.tenureTrackOnly })"
-          >Tenure-Track</button>
-          <button
-            class="fa-tag"
-            :class="{ 'fa-tag-filled': filters.newOnly }"
-            @click="updateFilters({ newOnly: !filters.newOnly })"
-          >New Only</button>
-          <button
-            v-for="opt in positionTypeOptions.slice(0, 4)"
-            :key="opt.value"
-            class="fa-tag"
-            :class="{ 'fa-tag-filled': filters.positionType === opt.value }"
-            @click="updateFilters({ positionType: filters.positionType === opt.value ? 'all' : opt.value })"
-          >{{ opt.label }}</button>
+        <div v-if="isInitialLoading && filteredJobs.length === 0" class="fa-empty-state">
+          <p class="fa-display">Loading postings…</p><span>Fetching the latest faculty listings.</span>
         </div>
+        <div v-else-if="filteredJobs.length === 0" class="fa-empty-state">
+          <p class="fa-display">No postings match your filters.</p>
+          <button class="fa-btn fa-btn-ghost" @click="resetFilters">Clear filters</button>
+        </div>
+        <div v-else class="fa-job-list">
+          <JobCard
+            v-for="(job, i) in displayedJobs"
+            :key="job.canonicalGroupId || job.canonicalJobId || job.url"
+            :job="job"
+            :index="i"
+            :saved="isSavedJob(job.url)"
+            :emphasized="Boolean(hoveredCollege) && job.college === hoveredCollege"
+            @toggle-save="toggleSavedJob"
+            @hover-college="handleHoverCollege"
+            @report-bad-listing="reportBadListing"
+          />
+        </div>
+        <div v-if="!showAllJobs && filteredJobs.length > LISTINGS_PAGE" class="fa-show-more">
+          <button class="fa-btn fa-btn-ghost" @click="showAllJobs = true">Show all {{ filteredJobs.length.toLocaleString() }} postings →</button>
+        </div>
+      </main>
+
+      <aside class="fa-map-rail">
+        <div class="fa-map-rail-head">
+          <span>Results on the map</span>
+          <button @click="activeTab = 'map'">Expand ↗</button>
+        </div>
+        <MapPanel
+          :jobs="filteredJobs"
+          :selected-college="filters.college !== ALL_FILTER_VALUE ? filters.college : null"
+          :hovered-college="hoveredCollege"
+          @select-college="handleMapCollegeSelect"
+          @select-state="(s) => updateFilters({ state: s })"
+          @hover-college="handleHoverCollege"
+        />
+        <div class="fa-map-summary">
+          <strong class="fa-display">Explore openings by place.</strong>
+          <span>Select a marker to filter the catalog by institution.</span>
+        </div>
+      </aside>
+    </section>
+
+    <section v-if="activeTab === 'map'" class="fa-map-page">
+      <div class="fa-map-page-head">
+        <div><div class="fa-label">Geographic explorer</div><h2 class="fa-display">Openings across the map</h2></div>
+        <button class="fa-btn fa-btn-ghost" @click="activeTab = 'jobs'">← Back to catalog</button>
+      </div>
+      <div class="fa-map-page-grid">
+        <MapPanel
+          :jobs="filteredJobs"
+          :selected-college="filters.college !== ALL_FILTER_VALUE ? filters.college : null"
+          :hovered-college="hoveredCollege"
+          @select-college="handleMapCollegeSelect"
+          @select-state="(s) => updateFilters({ state: s })"
+          @hover-college="handleHoverCollege"
+        />
+        <div class="fa-region-list"><div class="fa-label">Top regions</div><button v-for="r in topRegions" :key="r.name" @click="updateFilters({ state: r.name }); activeTab = 'jobs'"><span>{{ r.name }}</span><strong>{{ r.count.toLocaleString() }}</strong></button></div>
       </div>
     </section>
 
-    <!-- Double rule + tagline -->
-    <hr class="fa-rule-double" style="margin: 0 var(--pad);" />
-    <div class="fa-tagline-bar">
-      <div class="fa-meta" style="font-style: italic; color: var(--ink-2); font-family: var(--font-body); font-size: 14px; letter-spacing: 0;">
-        <template v-if="jobsLoaded">
-          {{ heroSourceRecords.toLocaleString() }} source records are consolidated into {{ heroTotal.toLocaleString() }} searchable postings; expired postings are hidden by default.
-        </template>
-        <template v-else>Loading the consolidated catalog summary…</template>
-      </div>
-      <div v-if="loadError" class="fa-meta" style="color: var(--accent);">⚠ {{ loadError }}</div>
-    </div>
-    <hr class="fa-rule" style="margin: 0 var(--pad);" />
-    </template>
-
-    <!-- ═══ TRENDS TAB ═══ -->
-    <TrendsTab v-if="activeTab === 'trends'" :base-url="baseUrl" />
-
-    <!-- ═══ MAP TAB ═══ -->
-    <template v-if="activeTab === 'map'">
-      <section class="fa-section" style="padding-top: 2px;">
-        <div class="fa-section-head">
-          <div>
-            <div class="fa-label">§ III</div>
-            <h2 class="fa-display" style="font-size: 48px; margin: 4px 0 0;">By <i>geography</i></h2>
-          </div>
-          <div class="fa-viewtoggle" role="group" aria-label="Toggle catalog and map view">
-            <button type="button" :class="{ active: activeTab === 'jobs' }" @click="activeTab = 'jobs'">Catalog</button>
-            <button type="button" :class="{ active: activeTab === 'map' }" @click="activeTab = 'map'">Map</button>
-          </div>
-        </div>
-        <div class="fa-geo-grid">
-          <div class="fa-map-container" style="min-height: 400px;">
-            <MapPanel
-              style="width: 100%; height: 100%;"
-              :jobs="filteredJobs"
-              :selected-college="filters.college !== ALL_FILTER_VALUE ? filters.college : null"
-              :hovered-college="hoveredCollege"
-              @select-college="handleMapCollegeSelect"
-              @select-state="(s) => updateFilters({ state: s })"
-              @hover-college="handleHoverCollege"
-            />
-          </div>
-          <div>
-            <div class="fa-label" style="margin-bottom: 16px;">Top Regions</div>
-            <div style="border-top: 1px solid var(--rule);">
-              <div v-for="r in topRegions" :key="r.name" class="fa-region-row">
-                <span class="fa-meta" style="font-size: 10px; width: 20px;">{{ String(r.rank).padStart(2, '0') }}</span>
-                <span class="fa-display" style="font-size: 20px; flex: 1;">{{ r.name }}</span>
-                <span class="fa-num" style="font-size: 18px;">{{ r.count.toLocaleString() }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </template>
-
-    <!-- ═══ JOBS TAB ═══ -->
-    <template v-if="activeTab === 'jobs'">
-      <!-- § I — Today's catalog -->
-      <section class="fa-section" style="padding-top: 2px;">
-        <div class="fa-section-head">
-          <div>
-            <div class="fa-label">§ I</div>
-            <h2 class="fa-display" style="font-size: 48px; margin: 4px 0 0;">Today's <i>catalog</i></h2>
-          </div>
-          <div style="display: flex; gap: 24px; align-items: baseline;">
-            <span class="fa-meta">
-              Showing <b style="color: var(--ink);">{{ displayedJobs.length.toLocaleString() }}</b>
-              of <b style="color: var(--ink);">{{ filteredJobs.length.toLocaleString() }}</b>
-            </span>
-            <div class="fa-viewtoggle" role="group" aria-label="Toggle catalog and map view">
-              <button type="button" :class="{ active: activeTab === 'jobs' }" @click="activeTab = 'jobs'">Catalog</button>
-              <button type="button" :class="{ active: activeTab === 'map' }" @click="activeTab = 'map'">Map</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Active chips -->
-        <ActiveChips v-if="activeFilterChips.length" :chips="activeFilterChips" style="margin-bottom: 20px;" @clear-chip="clearFilterChip" />
-
-        <div class="fa-catalog-layout">
-          <!-- Sidebar / mobile drawer -->
-          <aside class="fa-filters-col" :class="{ 'is-open': filterDrawerOpen }">
-            <div class="fa-drawer-header">
-              <span class="fa-label">Filters</span>
-              <button class="fa-drawer-close" aria-label="Close filters" @click="filterDrawerOpen = false">✕</button>
-            </div>
-            <FilterBar
-              :filters="filters"
-              :state-options="stateOptions"
-              :position-type-options="positionTypeOptions"
-              :tenure-track-count="tenureTrackCount"
-              :discipline-options="disciplineOptions"
-              :college-options="collegeOptions"
-              :department-options="departmentOptions"
-              :city-options="cityOptions"
-              :subscribe-status="subscribeStatus"
-              :subscribe-error="subscribeError"
-              @update:filters="updateFilters"
-              @reset-filters="resetFilters"
-              @subscribe-alert="subscribeAlert"
-              @refresh-data="loadJobs"
-            />
-          </aside>
-
-          <!-- Mobile backdrop -->
-          <Teleport to="body">
-            <div v-if="filterDrawerOpen" class="fa-drawer-backdrop" @click="filterDrawerOpen = false" />
-          </Teleport>
-
-          <!-- Results -->
-          <div class="fa-results-col">
-            <!-- Toolbar -->
-            <div class="fa-results-toolbar">
-              <div class="fa-meta">
-                <b style="color: var(--ink);">{{ filteredJobs.length.toLocaleString() }}</b> postings
-                <span v-if="catalogSummary.duplicateRecords || catalogSummary.closedPostings" :title="`${catalogSummary.duplicateRecords.toLocaleString()} duplicate source records consolidated; ${catalogSummary.closedPostings.toLocaleString()} expired postings hidden by default`">
-                  · from {{ catalogSummary.sourceRecords.toLocaleString() }} source records ⓘ
-                </span>
-              </div>
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <button class="fa-filters-toggle" @click="copyShareLink" :title="'Copy a link to this filtered view'">
-                  {{ shareCopied ? '✓ Copied' : '⎘ Copy link' }}
-                </button>
-                <button class="fa-filters-toggle" @click="filterDrawerOpen = true">⊞ Filters</button>
-                <select
-                  class="fa-meta"
-                  style="background: none; border: none; cursor: pointer; color: var(--ink); font-family: var(--font-mono);"
-                  :value="filters.sortBy"
-                  @change="updateFilters({ sortBy: $event.target.value })"
-                >
-                  <option value="recent">Sort: Most recent</option>
-                  <option value="relevance">Sort: Relevance</option>
-                  <option value="title-asc">Sort: Title A–Z</option>
-                  <option value="university">Sort: University</option>
-                  <option value="state">Sort: State</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Listing rows -->
-            <div v-if="isInitialLoading && filteredJobs.length === 0" style="padding: 48px 0; text-align: center;">
-              <p class="fa-display" style="font-size: 28px; color: var(--ink-3);">Loading postings…</p>
-              <p class="fa-meta" style="margin-top: 8px;">Fetching the latest faculty listings.</p>
-            </div>
-
-            <div v-else-if="filteredJobs.length === 0" style="padding: 48px 0; text-align: center;">
-              <p class="fa-display" style="font-size: 28px; color: var(--ink-3);">No postings match your filters.</p>
-              <button class="fa-btn fa-btn-ghost" style="margin-top: 16px;" @click="resetFilters">Clear filters</button>
-            </div>
-
-            <div v-else style="border-top: 1px solid var(--rule);">
-              <JobCard
-                v-for="(job, i) in displayedJobs"
-                :key="job.canonicalGroupId || job.canonicalJobId || job.url"
-                :job="job"
-                :index="i"
-                :saved="isSavedJob(job.url)"
-                :emphasized="Boolean(hoveredCollege) && job.college === hoveredCollege"
-                @toggle-save="toggleSavedJob"
-                @hover-college="handleHoverCollege"
-                @report-bad-listing="reportBadListing"
-              />
-            </div>
-
-            <!-- Show more -->
-            <div v-if="!showAllJobs && filteredJobs.length > LISTINGS_PAGE" class="fa-show-more">
-              <button class="fa-btn fa-btn-ghost" @click="showAllJobs = true">
-                Show all {{ filteredJobs.length.toLocaleString() }} postings →
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    </template>
-
-    <!-- ═══ FOOTER ═══ -->
     <footer class="fa-footer">
-      <div class="fa-footer-grid">
-        <div>
-          <div class="fa-wordmark" style="margin-bottom: 16px;">
-            <svg width="28" height="28" viewBox="0 0 64 64">
-              <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.2"/>
-              <path d="M 32 8 L 36 32 L 32 28 L 28 32 Z" fill="currentColor"/>
-              <circle cx="32" cy="32" r="1.8" fill="currentColor"/>
-            </svg>
-            <div class="fa-display" style="font-size: 22px;">Faculty <i>Atlas</i></div>
-          </div>
-          <p style="font-size: 14px; line-height: 1.55; color: var(--ink-2); max-width: 320px; font-style: italic; margin: 0;">
-            Faculty Atlas is building a transparent catalog of publicly accessible faculty postings across U.S. higher education.
-            Updated automatically and free to browse.
-          </p>
-        </div>
-        <div>
-          <div class="fa-label" style="margin-bottom: 16px;">Browse</div>
-          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
-            <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ tenureTrackOnly: false, newOnly: false })">All postings</button></li>
-            <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ tenureTrackOnly: true })">Tenure-track only</button></li>
-            <li><button class="fa-footer-link" @click="activeTab = 'jobs'; updateFilters({ newOnly: true })">New to Atlas</button></li>
-            <li><button class="fa-footer-link" @click="activeTab = 'trends'">Weekly digest</button></li>
-          </ul>
-        </div>
-        <div>
-          <div class="fa-label" style="margin-bottom: 16px;">About</div>
-          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
-            <li><button class="fa-footer-link" @click="openMethodology">Methodology</button></li>
-            <li><a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer" class="fa-footer-link">GitHub</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="fa-footer-bottom">
-        <div class="fa-meta">Faculty Atlas · An independent academic directory</div>
-      </div>
+      <div><strong>Updated {{ scrapedLabel || 'daily' }}</strong><span> · Source links verified nightly</span></div>
+      <div><button @click="openMethodology">Open data methodology</button><a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer">GitHub</a></div>
     </footer>
 
     <!-- ═══ METHODOLOGY MODAL ═══ -->
@@ -1016,6 +837,436 @@ async function reportBadListing(job) {
   /* Modal */
   .fa-modal-backdrop { padding: 16px 12px; }
   .fa-modal { padding: 24px 20px 32px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Search-first redesign
+   ═══════════════════════════════════════════════════════════════════════════ */
+.fa-screen {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.fa-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 28px;
+  min-height: 72px;
+  padding: 0 var(--pad);
+  color: #fff;
+  background: var(--ink);
+  border: 0;
+}
+.fa-header .fa-wordmark {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0;
+  border: 0;
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+}
+.fa-header .fa-wordmark .fa-display { font-size: 25px; line-height: 1; }
+.fa-header .fa-wordmark i { color: #f4a27c; }
+.fa-compass-svg { color: #f4a27c; }
+.fa-nav {
+  justify-self: center;
+  display: flex;
+  align-self: stretch;
+  gap: 6px;
+}
+.fa-nav-link {
+  appearance: none;
+  padding: 3px 13px 0;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  color: rgba(255, 255, 255, .64);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.fa-nav-link:hover,
+.fa-nav-link.active { color: #fff; border-bottom-color: #f4a27c; }
+.fa-saved-button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  padding: 9px 14px;
+  color: #fff;
+  background: rgba(255, 255, 255, .05);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fa-saved-button:hover,
+.fa-saved-button.active { border-color: #f4a27c; color: #f4a27c; }
+
+.fa-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 42px;
+  padding: 38px var(--pad) 26px;
+  background-color: var(--paper);
+  background-image: linear-gradient(rgba(18, 38, 58, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(18, 38, 58, .035) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border-bottom: 1px solid var(--rule-2);
+}
+.fa-hero-copy .fa-label { margin-bottom: 9px; color: var(--accent); font-weight: 600; }
+.fa-hero h1 {
+  max-width: 760px;
+  margin: 0;
+  font-size: clamp(46px, 5.2vw, 72px);
+  line-height: .98;
+  letter-spacing: -.035em;
+}
+.fa-hero h1 i { color: var(--accent); }
+.fa-hero-copy p {
+  max-width: 680px;
+  margin: 14px 0 0;
+  color: var(--ink-3);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.fa-stat-grid {
+  display: flex;
+  gap: 25px;
+  margin: 0 0 3px;
+  border: 0;
+}
+.fa-stat { min-width: 90px; padding: 0; }
+.fa-stat-val { font-size: 29px; color: var(--ink); }
+.fa-stat:last-child .fa-stat-val { color: var(--ink); }
+.fa-stat-label { margin-top: 4px; font-size: 9px; font-weight: 600; letter-spacing: .08em; }
+
+.fa-search-band {
+  position: relative;
+  padding: 18px var(--pad);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule-2);
+}
+.fa-search-box {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  width: min(980px, 100%);
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #b9bec0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(21, 38, 49, .08);
+}
+.fa-search-box > span { padding-left: 18px; color: var(--ocean); font-size: 22px; }
+.fa-search-box .fa-input { border: 0; padding: 16px 13px; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 14px; }
+.fa-search-box > button {
+  align-self: stretch;
+  border: 0;
+  padding: 0 25px;
+  color: #fff;
+  background: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.fa-search-box > button:hover { background: var(--accent-2); }
+.fa-search-meta {
+  display: flex;
+  justify-content: space-between;
+  width: min(980px, 100%);
+  margin: 8px auto 0;
+  color: var(--ink-4);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+.fa-search-meta a { color: var(--ocean); text-decoration: none; }
+.fa-search-meta a:hover { color: var(--accent); }
+.fa-load-error { max-width: 980px; margin: 8px auto 0; color: var(--accent); font-family: var(--font-mono); font-size: 10px; }
+
+.fa-catalog-shell {
+  display: grid;
+  grid-template-columns: 235px minmax(460px, 1fr) minmax(260px, 320px);
+  align-items: start;
+  min-height: 660px;
+  scroll-margin-top: 72px;
+}
+.fa-filters-col {
+  position: sticky;
+  top: 72px;
+  max-height: calc(100vh - 72px);
+  overflow-y: auto;
+  padding: 22px 20px 36px 26px;
+  border: 0;
+  border-right: 1px solid var(--rule-2);
+  background: var(--paper-2);
+  scrollbar-width: thin;
+}
+.fa-filters-col .fa-sidebar-inner > .fa-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px !important;
+  padding-bottom: 12px !important;
+  border-bottom-color: var(--rule-2) !important;
+  color: var(--ink);
+  font-weight: 600;
+}
+.fa-filters-col .fa-display { font-family: var(--font-mono); font-size: 10px !important; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
+.fa-filters-col .fa-sidebar-inner > div { margin-bottom: 18px !important; }
+.fa-filters-col .fa-input { padding: 6px 0; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 12px !important; }
+.fa-filters-col .fa-facet-item { gap: 8px; padding: 3px 0; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 11px; }
+.fa-filters-col .fa-check { width: 14px; height: 14px; border-radius: 3px; }
+.fa-filters-col .fa-check.checked { border-color: var(--ocean); background: var(--ocean); }
+.fa-filters-col .fa-meta { font-size: 9px !important; }
+.fa-filters-col .fa-btn { height: auto; min-height: 30px; padding: 7px 9px; border-color: var(--rule-2); font-size: 9px; letter-spacing: .04em; }
+
+.fa-results-col { min-width: 0; padding: 22px 26px 36px; background: var(--paper); }
+.fa-results-col .active-filters { margin: 0 0 14px; }
+.fa-results-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin: 0;
+  padding: 0 0 15px;
+  border-bottom: 2px solid var(--ink);
+}
+.fa-results-toolbar h2 { margin: 0; font-size: 25px; line-height: 1; }
+.fa-results-toolbar > div > span { display: block; margin-top: 5px; color: var(--ink-4); font-family: var(--font-mono); font-size: 9px; }
+.fa-toolbar-actions { display: flex; align-items: center; gap: 10px; }
+.fa-toolbar-actions select {
+  max-width: 130px;
+  border: 0;
+  outline: 0;
+  color: var(--ocean);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fa-tool-button {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  color: var(--ocean);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fa-tool-button:hover { color: var(--accent); }
+.fa-filters-toggle { display: none; }
+.fa-job-list { border-top: 0; }
+.fa-empty-state { padding: 56px 20px; text-align: center; }
+.fa-empty-state p { margin: 0 0 12px; color: var(--ink-3); font-size: 28px; }
+.fa-empty-state span { color: var(--ink-4); font-family: var(--font-mono); font-size: 10px; }
+
+.fa-listing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: stretch;
+  padding: 18px 2px;
+  border-bottom: 1px solid var(--rule-2);
+  transition: background .15s;
+}
+.fa-listing:hover { background: rgba(18, 38, 58, .025); }
+.fa-listing-main { min-width: 0; }
+.fa-listing-title {
+  display: inline;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.12;
+  text-decoration: none;
+}
+a.fa-listing-title:hover { color: var(--accent); }
+.fa-listing-inst { margin-top: 5px; color: var(--ink-2); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 11px; font-style: normal; }
+.fa-listing-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.fa-listing .fa-tag {
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #4f6874;
+  background: #edf2f3;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  cursor: default;
+}
+.fa-listing .fa-tag-accent { color: #a94422; background: #f8e9e1; }
+.fa-listing .fa-tag-closed { color: #fff; background: var(--ink-3); }
+.fa-listing-side { display: flex; min-width: 88px; flex-direction: column; align-items: flex-end; color: var(--ink-4); font-family: var(--font-mono); }
+.fa-save-button { appearance: none; margin-bottom: auto; border: 0; padding: 0; color: var(--ink-4); background: transparent; font-size: 21px; line-height: 1; cursor: pointer; }
+.fa-save-button:hover,
+.fa-save-button.saved { color: var(--accent); }
+.fa-listing-date { margin-top: 16px; font-size: 9px; }
+.fa-listing-deadline { margin-top: 5px; font-size: 8px; text-align: right; }
+.fa-show-more { padding: 26px 0; }
+
+.fa-map-rail {
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 72px);
+  min-height: 590px;
+  overflow: hidden;
+  border-left: 1px solid var(--rule-2);
+  background: var(--paper-3);
+}
+.fa-map-rail-head {
+  position: absolute;
+  z-index: 700;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 17px 12px;
+  color: var(--ink);
+  background: linear-gradient(var(--paper-3), rgba(223, 231, 231, .84), transparent);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.fa-map-rail-head button { border: 0; color: var(--ocean); background: transparent; font-size: 9px; cursor: pointer; }
+.fa-map-rail .map-panel { height: 100% !important; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+.fa-map-rail .map-top-row,
+.fa-map-rail .map-note { display: none; }
+.fa-map-rail .leaflet-map-wrap,
+.fa-map-rail .leaflet-map { min-height: 100%; height: 100%; }
+.fa-map-rail .map-legend { display: none; }
+.fa-map-summary {
+  position: absolute;
+  z-index: 700;
+  left: 16px;
+  right: 16px;
+  bottom: 18px;
+  padding: 13px 14px;
+  border: 1px solid rgba(18, 38, 58, .12);
+  border-radius: 7px;
+  background: rgba(255, 254, 250, .94);
+  box-shadow: 0 8px 24px rgba(25, 43, 53, .12);
+}
+.fa-map-summary strong { display: block; font-size: 16px; font-weight: 400; }
+.fa-map-summary span { display: block; margin-top: 4px; color: var(--ink-3); font-size: 10px; }
+
+.fa-map-page { padding: 36px var(--pad) 54px; background: var(--paper); }
+.fa-map-page-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 22px; }
+.fa-map-page-head h2 { margin: 5px 0 0; font-size: 45px; }
+.fa-map-page-grid { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 26px; }
+.fa-map-page-grid > .map-panel { min-height: 620px; padding: 0; overflow: hidden; border: 1px solid var(--rule-2); border-radius: 0; box-shadow: none; }
+.fa-map-page-grid .leaflet-map-wrap { min-height: 560px; }
+.fa-region-list { padding-top: 10px; }
+.fa-region-list .fa-label { margin-bottom: 14px; }
+.fa-region-list button { display: flex; justify-content: space-between; width: 100%; padding: 12px 0; border: 0; border-bottom: 1px solid var(--rule-2); color: var(--ink); background: transparent; font-family: var(--font-body); font-size: 15px; cursor: pointer; }
+.fa-region-list button:hover { color: var(--accent); }
+
+.fa-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin: 0;
+  padding: 13px var(--pad);
+  border: 0;
+  color: rgba(255, 255, 255, .45);
+  background: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+.fa-footer strong { color: #f4a27c; }
+.fa-footer button,
+.fa-footer a { border: 0; color: rgba(255, 255, 255, .58); background: transparent; font: inherit; text-decoration: none; cursor: pointer; }
+.fa-footer > div:last-child { display: flex; gap: 18px; }
+.fa-footer button:hover,
+.fa-footer a:hover { color: #fff; }
+
+@media (max-width: 1120px) {
+  .fa-catalog-shell { grid-template-columns: 220px minmax(420px, 1fr); }
+  .fa-map-rail { display: none; }
+  .fa-hero h1 { font-size: 56px; }
+}
+
+@media (max-width: 767px) {
+  :root { --pad: 18px; }
+  .fa-header { grid-template-columns: 1fr auto; min-height: 64px; padding: 0 var(--pad); }
+  .fa-header .fa-wordmark .fa-display { font-size: 23px; }
+  .fa-header .fa-wordmark svg { width: 34px; height: 34px; }
+  .fa-nav { display: none; }
+  .fa-saved-button { padding: 7px 10px; }
+  .fa-hero { grid-template-columns: 1fr; gap: 28px; padding: 28px var(--pad) 24px; }
+  .fa-hero h1 { font-size: clamp(39px, 11.5vw, 54px); }
+  .fa-hero-copy p { font-size: 15px; }
+  .fa-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .fa-stat { min-width: 0; }
+  .fa-stat-val { font-size: 26px; }
+  .fa-search-band { padding: 14px var(--pad); }
+  .fa-search-box > span { padding-left: 13px; }
+  .fa-search-box .fa-input { min-width: 0; padding: 14px 9px; font-size: 13px; }
+  .fa-search-box > button { padding: 0 14px; }
+  .fa-catalog-shell { display: block; scroll-margin-top: 64px; }
+  .fa-filters-col {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    max-height: none;
+    padding: 20px var(--pad) 40px;
+    border: 0;
+    background: var(--paper-2);
+  }
+  .fa-filters-col.is-open { display: block; }
+  .fa-drawer-header { display: flex; }
+  .fa-drawer-backdrop { display: block; }
+  .fa-results-col { padding: 20px var(--pad) 32px; }
+  .fa-results-toolbar { align-items: flex-start; }
+  .fa-results-toolbar h2 { font-size: 22px; }
+  .fa-results-toolbar > div > span { max-width: 175px; }
+  .fa-toolbar-actions { gap: 9px; flex-wrap: wrap; justify-content: flex-end; }
+  .fa-tool-button.fa-filters-toggle { display: inline-block; }
+  .fa-toolbar-actions select { max-width: 86px; }
+  .fa-listing { padding: 17px 0; }
+  .fa-listing > .fa-listing-main {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .fa-listing > .fa-listing-side {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .fa-listing-title { font-size: 19px; }
+  .fa-listing-side { min-width: 64px; }
+  .fa-listing-deadline { display: none; }
+  .fa-map-page { padding: 28px var(--pad); }
+  .fa-map-page-head { align-items: flex-start; gap: 18px; }
+  .fa-map-page-head h2 { font-size: 32px; }
+  .fa-map-page-grid { grid-template-columns: 1fr; }
+  .fa-map-page-grid > .map-panel { min-height: 480px; }
+  .fa-map-page-grid .leaflet-map-wrap { min-height: 420px; }
+  .fa-region-list { display: none; }
+  .fa-footer { align-items: flex-start; padding: 13px var(--pad); }
+  .fa-footer > div:last-child { display: none; }
 }
 
 /* ── Map markers + legend ── (these lived in the orphaned style.css, which is

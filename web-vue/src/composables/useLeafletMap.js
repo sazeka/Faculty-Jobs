@@ -295,7 +295,10 @@ export function useLeafletMap({ jobsRef, selectedCollegeRef, hoveredCollegeRef, 
     if (!hasInitialMapFit && mappable.length > 0) {
       const bounds = L.latLngBounds(mappable.map((g) => g.point))
       if (bounds.isValid()) {
-        mapInstance.value.fitBounds(bounds, { padding: [28, 28], maxZoom: 8 })
+        // Initial fitting can happen while the responsive rail is settling.
+        // Avoid Leaflet's zoom animation here: animated fitting against a
+        // newly-mounted sticky container can race its internal map pane setup.
+        mapInstance.value.fitBounds(bounds, { padding: [28, 28], maxZoom: 8, animate: false })
         hasInitialMapFit = true
         const center = mapInstance.value.getCenter()
         initialMapView = { center: [center.lat, center.lng], zoom: mapInstance.value.getZoom() }
@@ -356,7 +359,7 @@ export function useLeafletMap({ jobsRef, selectedCollegeRef, hoveredCollegeRef, 
       minZoom: 3,
       maxZoom: MAX_MAP_ZOOM,
       doubleClickZoom: true,
-    }).setView(MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM)
+    }).setView(MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM, { animate: false })
 
     // Muted CARTO Positron basemap so the markers stand out.
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
