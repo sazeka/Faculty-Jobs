@@ -210,7 +210,7 @@ async function reportBadListing(job) {
       <section class="fa-hero">
         <div class="fa-hero-copy">
           <div class="fa-label">The academic job market, mapped</div>
-          <h1 class="fa-display">Find where your scholarship <i>could go next.</i></h1>
+          <h1 class="fa-display">Navigate the <i>academic job market.</i></h1>
           <p>A transparent, independent catalog of faculty openings across North America—updated every day and free to search.</p>
           <div class="fa-stat-grid" aria-label="Catalog summary">
             <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
