@@ -216,7 +216,6 @@ async function reportBadListing(job) {
         <div class="fa-hero-visual">
           <div class="fa-hero-art" aria-hidden="true">
             <img :src="heroAtlasUrl" alt="" width="1536" height="1024" decoding="async" fetchpriority="high" />
-            <span class="fa-hero-art-label">A field guide to academic opportunity</span>
           </div>
           <div class="fa-stat-grid" aria-label="Catalog summary">
             <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
@@ -921,15 +920,17 @@ async function reportBadListing(job) {
 
 .fa-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(390px, 520px);
+  grid-template-columns: minmax(0, 1.08fr) minmax(390px, .92fr);
   align-items: center;
-  gap: clamp(36px, 5vw, 76px);
+  gap: clamp(30px, 3.5vw, 56px);
   padding: 40px var(--pad) 34px;
+  overflow: hidden;
   background-color: var(--paper);
   background-image: linear-gradient(rgba(18, 38, 58, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(18, 38, 58, .035) 1px, transparent 1px);
   background-size: 24px 24px;
   border-bottom: 1px solid var(--rule-2);
 }
+.fa-hero-copy { position: relative; z-index: 2; }
 .fa-hero-copy .fa-label { margin-bottom: 9px; color: var(--accent); font-weight: 600; }
 .fa-hero h1 {
   max-width: 760px;
@@ -947,22 +948,27 @@ async function reportBadListing(job) {
   line-height: 1.55;
 }
 .fa-hero-visual {
+  position: relative;
+  display: flex;
+  align-self: stretch;
+  align-items: flex-end;
+  min-height: 286px;
   min-width: 0;
-  border: 1px solid rgba(18, 38, 58, .24);
-  background: var(--ink);
-  box-shadow: 12px 12px 0 rgba(197, 91, 52, .12);
 }
 .fa-hero-art {
-  position: relative;
-  aspect-ratio: 16 / 8.7;
+  position: absolute;
+  inset: -40px calc(-1 * var(--pad)) -34px -118px;
   overflow: hidden;
-  background: #ede5d5;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 24%, #000 100%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 24%, #000 100%);
 }
 .fa-hero-art::after {
   content: '';
   position: absolute;
   inset: 0;
-  border: 8px solid rgba(255, 252, 245, .22);
+  background:
+    linear-gradient(to bottom, var(--paper) 0%, transparent 18%, transparent 82%, var(--paper) 100%),
+    linear-gradient(to right, var(--paper) 0%, transparent 42%);
   pointer-events: none;
 }
 .fa-hero-art img {
@@ -970,39 +976,31 @@ async function reportBadListing(job) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 54% 56%;
-  filter: saturate(.88) contrast(1.02);
-}
-.fa-hero-art-label {
-  position: absolute;
-  left: 14px;
-  bottom: 13px;
-  padding: 6px 8px 5px;
-  color: var(--ink);
-  background: rgba(245, 239, 226, .9);
-  font-family: var(--font-mono);
-  font-size: 8px;
-  font-weight: 650;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  object-position: 58% 55%;
+  opacity: .72;
+  filter: saturate(.78) contrast(.98);
 }
 .fa-stat-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
-  margin: 0;
-  border: 0;
-  color: #fff;
+  width: 100%;
+  margin: 0 0 10px;
+  border-top: 1px solid rgba(18, 38, 58, .3);
+  color: var(--ink);
+  background: linear-gradient(to bottom, rgba(245, 239, 226, .34), rgba(245, 239, 226, .08));
 }
 .fa-stat {
   min-width: 0;
-  padding: 14px 15px 13px;
-  border-right: 1px solid rgba(255, 255, 255, .16);
+  padding: 13px 14px 12px;
+  border-right: 1px solid rgba(18, 38, 58, .16);
 }
 .fa-stat:last-child { border-right: 0; }
-.fa-stat-val { font-size: 29px; color: #fff; }
-.fa-stat:last-child .fa-stat-val { color: #f4a27c; }
-.fa-stat-label { margin-top: 4px; color: rgba(255, 255, 255, .58); font-size: 8px; font-weight: 600; letter-spacing: .08em; }
+.fa-stat-val { font-size: 29px; color: var(--ink); text-shadow: 0 1px 0 rgba(255, 252, 245, .9); }
+.fa-stat:last-child .fa-stat-val { color: var(--accent); }
+.fa-stat-label { margin-top: 4px; color: var(--ink-3); font-size: 8px; font-weight: 600; letter-spacing: .08em; }
 
 .fa-search-band {
   position: relative;
@@ -1258,7 +1256,7 @@ a.fa-listing-title:hover { color: var(--accent); }
   .fa-catalog-shell { grid-template-columns: 220px minmax(420px, 1fr); }
   .fa-map-rail { display: none; }
   .fa-hero h1 { font-size: 56px; }
-  .fa-hero { grid-template-columns: minmax(0, 1fr) minmax(360px, 440px); gap: 36px; }
+  .fa-hero { grid-template-columns: minmax(0, 1fr) minmax(350px, .82fr); gap: 30px; }
 }
 
 @media (max-width: 767px) {
@@ -1271,9 +1269,14 @@ a.fa-listing-title:hover { color: var(--accent); }
   .fa-hero { grid-template-columns: 1fr; gap: 24px; padding: 28px var(--pad) 26px; }
   .fa-hero h1 { font-size: clamp(39px, 11.5vw, 54px); }
   .fa-hero-copy p { font-size: 15px; }
-  .fa-hero-visual { box-shadow: 7px 7px 0 rgba(197, 91, 52, .12); }
-  .fa-hero-art { aspect-ratio: 16 / 9.4; }
-  .fa-hero-art-label { left: 10px; bottom: 9px; font-size: 7px; }
+  .fa-hero-visual { min-height: 150px; }
+  .fa-hero-art {
+    inset: -22px calc(-1 * var(--pad)) -26px calc(-1 * var(--pad));
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 80%, transparent 100%);
+  }
+  .fa-hero-art::after { background: linear-gradient(to right, rgba(245, 239, 226, .42), transparent 55%); }
+  .fa-hero-art img { object-position: 55% 56%; opacity: .62; }
   .fa-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
   .fa-stat { min-width: 0; }
   .fa-stat-val { font-size: clamp(22px, 6vw, 26px); }
