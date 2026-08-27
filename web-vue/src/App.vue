@@ -212,15 +212,15 @@ async function reportBadListing(job) {
           <div class="fa-label">The academic job market, mapped</div>
           <h1 class="fa-display">Find where your scholarship <i>could go next.</i></h1>
           <p>A transparent, independent catalog of faculty openings across North America—updated every day and free to search.</p>
-        </div>
-        <div class="fa-hero-visual">
-          <div class="fa-hero-art" aria-hidden="true">
-            <img :src="heroAtlasUrl" alt="" width="1536" height="1024" decoding="async" fetchpriority="high" />
-          </div>
           <div class="fa-stat-grid" aria-label="Catalog summary">
             <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
             <div class="fa-stat"><div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div><div class="fa-stat-label">Institutions</div></div>
             <div class="fa-stat"><div class="fa-stat-val">+{{ heroNew.toLocaleString() }}</div><div class="fa-stat-label">This week</div></div>
+          </div>
+        </div>
+        <div class="fa-hero-visual">
+          <div class="fa-hero-art" aria-hidden="true">
+            <img :src="heroAtlasUrl" alt="" width="1536" height="1024" decoding="async" fetchpriority="high" />
           </div>
         </div>
       </section>
@@ -949,9 +949,7 @@ async function reportBadListing(job) {
 }
 .fa-hero-visual {
   position: relative;
-  display: flex;
   align-self: stretch;
-  align-items: flex-end;
   min-height: 286px;
   min-width: 0;
 }
@@ -981,24 +979,20 @@ async function reportBadListing(job) {
   filter: saturate(.78) contrast(.98);
 }
 .fa-stat-grid {
-  position: relative;
-  z-index: 1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
-  width: 100%;
-  margin: 0 0 10px;
-  border-top: 1px solid rgba(18, 38, 58, .3);
+  gap: clamp(20px, 3vw, 34px);
+  width: min(440px, 100%);
+  margin: 25px 0 0;
+  border: 0;
   color: var(--ink);
-  background: linear-gradient(to bottom, rgba(245, 239, 226, .34), rgba(245, 239, 226, .08));
+  background: none;
 }
 .fa-stat {
   min-width: 0;
-  padding: 13px 14px 12px;
-  border-right: 1px solid rgba(18, 38, 58, .16);
+  padding: 0;
 }
-.fa-stat:last-child { border-right: 0; }
-.fa-stat-val { font-size: 29px; color: var(--ink); text-shadow: 0 1px 0 rgba(255, 252, 245, .9); }
+.fa-stat-val { font-size: 29px; color: var(--ink); }
 .fa-stat:last-child .fa-stat-val { color: var(--accent); }
 .fa-stat-label { margin-top: 4px; color: var(--ink-3); font-size: 8px; font-weight: 600; letter-spacing: .08em; }
 
@@ -1277,7 +1271,7 @@ a.fa-listing-title:hover { color: var(--accent); }
   }
   .fa-hero-art::after { background: linear-gradient(to right, rgba(245, 239, 226, .42), transparent 55%); }
   .fa-hero-art img { object-position: 55% 56%; opacity: .62; }
-  .fa-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .fa-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 21px; }
   .fa-stat { min-width: 0; }
   .fa-stat-val { font-size: clamp(22px, 6vw, 26px); }
   .fa-search-band { padding: 14px var(--pad); }
