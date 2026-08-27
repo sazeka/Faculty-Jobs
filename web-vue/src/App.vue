@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import heroAtlasUrl from './assets/hero-atlas-v2.jpg'
 import FilterBar from './components/FilterBar.vue'
 import ActiveChips from './components/ActiveChips.vue'
 import JobCard from './components/JobCard.vue'
@@ -212,10 +213,16 @@ async function reportBadListing(job) {
           <h1 class="fa-display">Find where your scholarship <i>could go next.</i></h1>
           <p>A transparent, independent catalog of faculty openings across North America—updated every day and free to search.</p>
         </div>
-        <div class="fa-stat-grid" aria-label="Catalog summary">
-          <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
-          <div class="fa-stat"><div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div><div class="fa-stat-label">Institutions</div></div>
-          <div class="fa-stat"><div class="fa-stat-val">+{{ heroNew.toLocaleString() }}</div><div class="fa-stat-label">This week</div></div>
+        <div class="fa-hero-visual">
+          <div class="fa-hero-art" aria-hidden="true">
+            <img :src="heroAtlasUrl" alt="" width="1536" height="1024" decoding="async" fetchpriority="high" />
+            <span class="fa-hero-art-label">A field guide to academic opportunity</span>
+          </div>
+          <div class="fa-stat-grid" aria-label="Catalog summary">
+            <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
+            <div class="fa-stat"><div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div><div class="fa-stat-label">Institutions</div></div>
+            <div class="fa-stat"><div class="fa-stat-val">+{{ heroNew.toLocaleString() }}</div><div class="fa-stat-label">This week</div></div>
+          </div>
         </div>
       </section>
 
@@ -914,10 +921,10 @@ async function reportBadListing(job) {
 
 .fa-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: 42px;
-  padding: 38px var(--pad) 26px;
+  grid-template-columns: minmax(0, 1fr) minmax(390px, 520px);
+  align-items: center;
+  gap: clamp(36px, 5vw, 76px);
+  padding: 40px var(--pad) 34px;
   background-color: var(--paper);
   background-image: linear-gradient(rgba(18, 38, 58, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(18, 38, 58, .035) 1px, transparent 1px);
   background-size: 24px 24px;
@@ -939,16 +946,63 @@ async function reportBadListing(job) {
   font-size: 16px;
   line-height: 1.55;
 }
-.fa-stat-grid {
-  display: flex;
-  gap: 25px;
-  margin: 0 0 3px;
-  border: 0;
+.fa-hero-visual {
+  min-width: 0;
+  border: 1px solid rgba(18, 38, 58, .24);
+  background: var(--ink);
+  box-shadow: 12px 12px 0 rgba(197, 91, 52, .12);
 }
-.fa-stat { min-width: 90px; padding: 0; }
-.fa-stat-val { font-size: 29px; color: var(--ink); }
-.fa-stat:last-child .fa-stat-val { color: var(--ink); }
-.fa-stat-label { margin-top: 4px; font-size: 9px; font-weight: 600; letter-spacing: .08em; }
+.fa-hero-art {
+  position: relative;
+  aspect-ratio: 16 / 8.7;
+  overflow: hidden;
+  background: #ede5d5;
+}
+.fa-hero-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 8px solid rgba(255, 252, 245, .22);
+  pointer-events: none;
+}
+.fa-hero-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 54% 56%;
+  filter: saturate(.88) contrast(1.02);
+}
+.fa-hero-art-label {
+  position: absolute;
+  left: 14px;
+  bottom: 13px;
+  padding: 6px 8px 5px;
+  color: var(--ink);
+  background: rgba(245, 239, 226, .9);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 650;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.fa-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  border: 0;
+  color: #fff;
+}
+.fa-stat {
+  min-width: 0;
+  padding: 14px 15px 13px;
+  border-right: 1px solid rgba(255, 255, 255, .16);
+}
+.fa-stat:last-child { border-right: 0; }
+.fa-stat-val { font-size: 29px; color: #fff; }
+.fa-stat:last-child .fa-stat-val { color: #f4a27c; }
+.fa-stat-label { margin-top: 4px; color: rgba(255, 255, 255, .58); font-size: 8px; font-weight: 600; letter-spacing: .08em; }
 
 .fa-search-band {
   position: relative;
@@ -1204,6 +1258,7 @@ a.fa-listing-title:hover { color: var(--accent); }
   .fa-catalog-shell { grid-template-columns: 220px minmax(420px, 1fr); }
   .fa-map-rail { display: none; }
   .fa-hero h1 { font-size: 56px; }
+  .fa-hero { grid-template-columns: minmax(0, 1fr) minmax(360px, 440px); gap: 36px; }
 }
 
 @media (max-width: 767px) {
@@ -1213,12 +1268,15 @@ a.fa-listing-title:hover { color: var(--accent); }
   .fa-header .fa-wordmark svg { width: 34px; height: 34px; }
   .fa-nav { display: none; }
   .fa-saved-button { padding: 7px 10px; }
-  .fa-hero { grid-template-columns: 1fr; gap: 28px; padding: 28px var(--pad) 24px; }
+  .fa-hero { grid-template-columns: 1fr; gap: 24px; padding: 28px var(--pad) 26px; }
   .fa-hero h1 { font-size: clamp(39px, 11.5vw, 54px); }
   .fa-hero-copy p { font-size: 15px; }
-  .fa-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .fa-hero-visual { box-shadow: 7px 7px 0 rgba(197, 91, 52, .12); }
+  .fa-hero-art { aspect-ratio: 16 / 9.4; }
+  .fa-hero-art-label { left: 10px; bottom: 9px; font-size: 7px; }
+  .fa-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
   .fa-stat { min-width: 0; }
-  .fa-stat-val { font-size: 26px; }
+  .fa-stat-val { font-size: clamp(22px, 6vw, 26px); }
   .fa-search-band { padding: 14px var(--pad); }
   .fa-search-box > span { padding-left: 13px; }
   .fa-search-box .fa-input { min-width: 0; padding: 14px 9px; font-size: 13px; }
