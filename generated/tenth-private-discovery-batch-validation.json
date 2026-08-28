@@ -1,0 +1,173 @@
+{
+  "generatedAt": "2026-08-28T21:00:00.000Z",
+  "scope": "The 45 private-nonprofit institutions not resolved by the prior alphabetical discovery batches",
+  "reviewedCount": 45,
+  "promotedCount": 11,
+  "heldCount": 34,
+  "safeguards": [
+    "Only institution-owned employee pages, institution-specific ATS tenants, or official pages linking those sources were promoted.",
+    "Every promoted board was checked live through the production parser; current faculty-title counts may legitimately be zero.",
+    "Shared health-system boards were held unless institution-level attribution could be proved.",
+    "Missouri Valley College was held because the current generic parser returns a known navigation false positive alongside its real adjunct page."
+  ],
+  "liveChecks": [
+    {
+      "name": "Marian University",
+      "publishedFacultyMatches": 21
+    },
+    {
+      "name": "Maryville University of Saint Louis",
+      "publishedFacultyMatches": 1
+    },
+    {
+      "name": "Meharry Medical College",
+      "publishedFacultyMatches": 15
+    },
+    {
+      "name": "Meredith College",
+      "publishedFacultyMatches": 0
+    },
+    {
+      "name": "Midland University",
+      "publishedFacultyMatches": 2
+    },
+    {
+      "name": "Moravian University",
+      "publishedFacultyMatches": 11
+    },
+    {
+      "name": "Mount Carmel College of Nursing",
+      "publishedFacultyMatches": 0
+    },
+    {
+      "name": "Mount Marty University",
+      "publishedFacultyMatches": 1
+    },
+    {
+      "name": "Mount Mary University",
+      "publishedFacultyMatches": 1
+    },
+    {
+      "name": "Mount St. Mary's University",
+      "publishedFacultyMatches": 4
+    },
+    {
+      "name": "Muhlenberg College",
+      "publishedFacultyMatches": 3
+    }
+  ],
+  "promoted": [
+    {
+      "name": "Marian University",
+      "url": "https://marian.rec.pro.ukg.net/MAR1500MNUI/JobBoard/fde73847-46d9-4c8a-924e-a28b5c630bfc/?o=postedDateDesc&q=",
+      "platformType": "ultipro-ukg",
+      "evidence": "The official Human Resources page links this institution-specific UKG board."
+    },
+    {
+      "name": "Maryville University of Saint Louis",
+      "url": "https://www.maryville.edu/employment/",
+      "platformType": "generic",
+      "evidence": "The official employment page exposes separate faculty/staff and adjunct application paths."
+    },
+    {
+      "name": "Meharry Medical College",
+      "url": "https://meharrymedicalcollege.wd12.myworkdayjobs.com/external",
+      "platformType": "workday",
+      "evidence": "The official Working at Meharry page links this institution-specific Workday site."
+    },
+    {
+      "name": "Meredith College",
+      "url": "https://www.meredith.edu/human-resources/applying-for-a-position/",
+      "platformType": "generic",
+      "evidence": "The official Human Resources application page links the college's current vacancy system."
+    },
+    {
+      "name": "Midland University",
+      "url": "https://www.paycomonline.net/v4/ats/web.php/portal/3971D0B7A1DB06DA25282DE787EC51E9/career-page",
+      "platformType": "paycom",
+      "evidence": "The official university careers page links this institution-specific Paycom board."
+    },
+    {
+      "name": "Moravian University",
+      "url": "https://ibtsjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2",
+      "platformType": "oracle-cx",
+      "evidence": "The official job-opportunities route resolves to this institution-specific Oracle site."
+    },
+    {
+      "name": "Mount Carmel College of Nursing",
+      "url": "https://www.mccn.edu/about/employment-opportunities",
+      "platformType": "generic",
+      "evidence": "The college's official employment page explicitly covers nursing faculty opportunities."
+    },
+    {
+      "name": "Mount Marty University",
+      "url": "https://recruitingbypaycor.com/career/CareerHome.action?clientId=8a7883c68ab5129a018abce5b6dc034a",
+      "platformType": "generic",
+      "evidence": "The official careers page links this institution-specific Paycor board."
+    },
+    {
+      "name": "Mount Mary University",
+      "url": "https://mtmary.applicantpro.com/jobs/",
+      "platformType": "generic",
+      "evidence": "The official university site links this institution-specific ApplicantPro board."
+    },
+    {
+      "name": "Mount St. Mary's University",
+      "url": "https://msmu.wd1.myworkdayjobs.com/en-US/MSMU/",
+      "platformType": "workday",
+      "evidence": "The official employment-opportunities page links this institution-specific Workday site."
+    },
+    {
+      "name": "Muhlenberg College",
+      "url": "https://muhlenberg.wd1.myworkdayjobs.com/MuhlenbergCareers",
+      "platformType": "workday",
+      "evidence": "The official Human Resources page links this institution-specific Workday site."
+    }
+  ],
+  "held": [
+    {
+      "reason": "A parent health system, hospital, or partner institution operates the visible board, but no durable institution-level scope was verified.",
+      "names": [
+        "Cochran School of Nursing",
+        "Jefferson Regional School of Nursing",
+        "Longy School of Music of Bard College",
+        "Mayo Clinic College of Medicine and Science",
+        "MGH Institute of Health Professions",
+        "Mount Sinai Phillips School of Nursing"
+      ]
+    },
+    {
+      "reason": "No durable institution-owned public employee vacancy index was verified, or the available page could not be extracted without known false positives.",
+      "names": [
+        "American Academy McAllister Institute of Funeral Service",
+        "Assumption College for Sisters",
+        "Bnos Zion Of Bobov Seminary",
+        "Huntington Junior College",
+        "Hypnosis Motivation Institute",
+        "ICOHS College",
+        "John A Gupton College",
+        "Lakeland University",
+        "Lakewood University",
+        "Lancaster Theological Seminary",
+        "Machzikei Hadath Rabbinical College",
+        "Maranatha Baptist University",
+        "Maryland University of Integrative Health",
+        "Marymount Manhattan College",
+        "Massachusetts School of Law",
+        "Mechon L'hoyroa",
+        "Memphis Theological Seminary",
+        "Mesivta of Eastern Parkway-Yeshiva Zichron Meilech",
+        "Mesivtha Tifereth Jerusalem of America",
+        "Mid-America Christian University",
+        "Mid-Atlantic Christian University",
+        "Midwestern Baptist Theological Seminary",
+        "Midwives College of Utah",
+        "Milwaukee Institute of Art & Design",
+        "Minneapolis College of Art and Design",
+        "Mission University",
+        "Missouri Baptist University",
+        "Missouri Valley College"
+      ]
+    }
+  ]
+}

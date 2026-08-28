@@ -1700,6 +1700,8 @@ const PA_CAMPUSES = [
 ];
 
 const PA_PRIVATE_CAMPUSES = [
+  { campus: "Moravian University", type: "oracle-cx", url: "https://ibtsjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2" },
+  { campus: "Muhlenberg College", type: "workday", url: "https://muhlenberg.wd1.myworkdayjobs.com/MuhlenbergCareers" },
   { campus: "Thomas Jefferson University", type: "workday", url: "https://jeffersonhealth.wd5.myworkdayjobs.com/ThomasJeffersonExternal", titleFilter: "\\b(?:faculty|professor|instructor|lecturer|dean)\\b" },
   { campus: "Westminster College (PA)", type: "generic", url: "https://my.westminster.edu/ICS/Campus_Life/Campus_Groups/Human_Resources__Employment/Employment_Opportunities.jnz" },
   { campus: "Saint Joseph's University - Philadelphia", type: "generic", url: "https://www.sju.edu/offices/human-resources/working-at-sju" },
@@ -1973,6 +1975,7 @@ const PA_PRIVATE_CAMPUSES = [
 
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
+  { campus: "Meredith College", type: "generic", url: "https://www.meredith.edu/human-resources/applying-for-a-position/" },
   { campus: "North Carolina Wesleyan University", type: "faculty-headings", url: "https://ncwu.edu/community/careers/current-openings/faculty-teaching-positions/" },
   { campus: "Methodist University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/24375BA29C8AE0EA98AC3A9FD8D2FDCE/career-page" },
   { campus: "Greensboro College", type: "generic", url: "https://www.greensboro.edu/employment/" },
@@ -2607,6 +2610,7 @@ const DE_CAMPUSES = [
 
 // MD (Maryland) - major research universities + liberal arts colleges
 const MD_CAMPUSES = [
+  { campus: "Mount St. Mary's University", type: "workday", url: "https://msmu.wd1.myworkdayjobs.com/en-US/MSMU/" },
   { campus: "Washington College", type: "generic", url: "https://www.washcoll.edu/people_departments/offices/human-resources/employment/index.php" },
   { campus: "Stevenson University", type: "generic", url: "https://www.stevenson.edu/human-resources/", excludeTitleFilter: "^Faculty Policies$" },
   { campus: "McDaniel College", type: "interviewexchange", url: "https://mcdaniel.interviewexchange.com/static/clients/561MCM1/index.jsp" },
@@ -4182,6 +4186,7 @@ const ND_CAMPUSES = [
 
 // SD (South Dakota)
 const SD_CAMPUSES = [
+  { campus: "Mount Marty University", type: "generic", url: "https://recruitingbypaycor.com/career/CareerHome.action?clientId=8a7883c68ab5129a018abce5b6dc034a" },
   { campus: "Oglala Lakota College", type: "generic", url: "https://www.olc.edu/resources/human-resources/open-positions/" },
   { campus: "Sinte Gleska University", type: "generic", url: "https://www.sintegleska.edu/job-opportunities.html" },
   { campus: "Mitchell Technical College", type: "generic", url: "https://www.mitchelltech.edu/careers/" },
@@ -4223,6 +4228,7 @@ const SD_CAMPUSES = [
 
 // NE (Nebraska)
 const NE_CAMPUSES = [
+  { campus: "Midland University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/3971D0B7A1DB06DA25282DE787EC51E9/career-page" },
   { campus: "Union Adventist University", type: "generic", url: "https://uau.edu/?p=21590" },
   { campus: "Nebraska Indian Community College", type: "generic", url: "https://www.thenicc.edu/Alumni-Visitors/employment-opportunities.php" },
   { campus: "University of Nebraska at Kearney", type: "generic", url: "https://jobs.nebraska.edu/UniversityNebraskaSystem/go/University-of-Nebraska-at-Kearney/9754600/" },
@@ -4483,6 +4489,7 @@ const MT_CAMPUSES = [
 
 // WI (Wisconsin)
 const WI_CAMPUSES = [
+  { campus: "Mount Mary University", type: "generic", url: "https://mtmary.applicantpro.com/jobs/" },
   { campus: "Viterbo University", type: "generic", url: "https://www.viterbo.edu/human-resources/job-announcements" },
   { campus: "Saint Norbert College", type: "generic", url: "https://my.snc.edu/humanresources/open-positions/" },
   { campus: "Wisconsin Lutheran College", type: "wlc-faculty", url: "https://www.wlc.edu/about-wlc/offices-resources/human-resources/index.html" },
@@ -4736,6 +4743,7 @@ const CO_CAMPUSES = [
 
 // OH (Ohio)
 const OH_CAMPUSES = [
+  { campus: "Mount Carmel College of Nursing", type: "generic", url: "https://www.mccn.edu/about/employment-opportunities" },
   { campus: "Walsh University", type: "generic", url: "https://www.walsh.edu/careers.html" },
   { campus: "Ohio Dominican University", type: "generic", url: "https://ohiodominican.applicantpro.com/jobs/" },
   { campus: "Gods Bible School and College", type: "generic", url: "https://www.gbs.edu/about-us/careers/gbsc-positions/" },
@@ -5683,6 +5691,7 @@ const ID_CAMPUSES = [
 
 // IN (Indiana)
 const IN_CAMPUSES = [
+  { campus: "Marian University", type: "ultipro-ukg", url: "https://marian.rec.pro.ukg.net/MAR1500MNUI/JobBoard/fde73847-46d9-4c8a-924e-a28b5c630bfc/?o=postedDateDesc&q=" },
   { campus: "Taylor University", type: "schooljobs", url: "https://www.schooljobs.com/careers/tayloredu?jobType%5B0%5D=Adjunct&jobType%5B1%5D=Full+Time+Faculty&jobType%5B2%5D=Full-Time&jobType%5B3%5D=Part-Time&sort=PostingDate%7CDescending" },
   { campus: "Trine University", type: "generic", url: "https://www.trine.edu/human-resources/careers/index.aspx" },
   { campus: "University of Indianapolis", type: "generic", url: "https://jobs.keldair.com/uindy" },
@@ -7274,6 +7283,7 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "Maryville University of Saint Louis", type: "generic", url: "https://www.maryville.edu/employment/" },
   { campus: "Webster University", type: "adp", url: "https://recruiting.adp.com/srccar/public/RTI.home?c=1180715&d=ExternalCareerSite" },
   { campus: "Ranken Technical College", type: "generic", url: "https://ranken.edu/about-us/careers-at-ranken/" },
   { campus: "Saint Louis University", type: "workday", url: "https://slu.wd5.myworkdayjobs.com/Careers?jobFamilyGroup=540e12fab86101bf4168b74e74018188" },
@@ -7502,6 +7512,7 @@ const KY_CAMPUSES = [
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
+  { campus: "Meharry Medical College", type: "workday", url: "https://meharrymedicalcollege.wd12.myworkdayjobs.com/external" },
   { campus: "Tusculum University", type: "generic", url: "https://www3.tusculum.edu/hr/employment-opportunities/" },
   { campus: "Vanderbilt University", type: "oracle-cx", url: "https://ecsr.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1" },
   { campus: "Lincoln Memorial University", type: "peopleadmin", url: "https://careers.lmunet.edu/postings/search?797%5B%5D=4&commit=Search&query=&query_position_type_id%5B%5D=any&query_v0_posted_at_date=" },
@@ -12171,6 +12182,7 @@ async function scrapePaAll(context) {
         // already exists and is dispatched by CT/CA Private/NJ/MS/NY) --
         // added for American College of Financial Services.
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "PA");
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "PA");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "PA");
         if (type === "applitrack") return await scrapeApplitrackAs(context, url, campus, "PA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "PA");
@@ -18886,6 +18898,7 @@ async function scrapeNeAll(context) {
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "NE");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NE");
         if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "NE");
+        if (type === "paycom") return await scrapePaycomAs(context, url, campus, "NE");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NE");
         return [];
       } catch (e) {
