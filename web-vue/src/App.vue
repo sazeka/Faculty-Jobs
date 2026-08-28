@@ -132,19 +132,6 @@ const displayedJobs = computed(() =>
   showAllJobs.value ? filteredJobs.value : filteredJobs.value.slice(0, LISTINGS_PAGE)
 )
 
-// Top states by job count from real data
-const topRegions = computed(() => {
-  const counts = new Map()
-  for (const job of jobs.value) {
-    const s = job.state || job.source || null
-    if (s) counts.set(s, (counts.get(s) || 0) + 1)
-  }
-  return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 7)
-    .map(([name, count], i) => ({ rank: i + 1, name, count }))
-})
-
 // Scraped date label
 const scrapedLabel = computed(() => {
   if (!scrapedAt.value) return null
@@ -382,7 +369,6 @@ async function reportBadListing(job) {
           @select-state="(s) => updateFilters({ state: s })"
           @hover-college="handleHoverCollege"
         />
-        <div class="fa-region-list"><div class="fa-label">Top regions</div><button v-for="r in topRegions" :key="r.name" @click="updateFilters({ state: r.name }); activeTab = 'jobs'"><span>{{ r.name }}</span><strong>{{ r.count.toLocaleString() }}</strong></button></div>
       </div>
     </section>
 
@@ -1257,13 +1243,9 @@ a.fa-listing-title:hover { color: var(--accent); }
 .fa-map-page { padding: 36px var(--pad) 54px; background: var(--paper); }
 .fa-map-page-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 22px; }
 .fa-map-page-head h2 { margin: 5px 0 0; font-size: 45px; }
-.fa-map-page-grid { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 26px; }
+.fa-map-page-grid { display: block; }
 .fa-map-page-grid > .map-panel { min-height: 620px; padding: 0; overflow: hidden; border: 1px solid var(--rule-2); border-radius: 0; box-shadow: none; }
 .fa-map-page-grid .leaflet-map-wrap { min-height: 560px; }
-.fa-region-list { padding-top: 10px; }
-.fa-region-list .fa-label { margin-bottom: 14px; }
-.fa-region-list button { display: flex; justify-content: space-between; width: 100%; padding: 12px 0; border: 0; border-bottom: 1px solid var(--rule-2); color: var(--ink); background: transparent; font-family: var(--font-body); font-size: 15px; cursor: pointer; }
-.fa-region-list button:hover { color: var(--accent); }
 
 .fa-footer {
   display: flex;
@@ -1356,10 +1338,8 @@ a.fa-listing-title:hover { color: var(--accent); }
   .fa-map-page { padding: 28px var(--pad); }
   .fa-map-page-head { align-items: flex-start; gap: 18px; }
   .fa-map-page-head h2 { font-size: 32px; }
-  .fa-map-page-grid { grid-template-columns: 1fr; }
   .fa-map-page-grid > .map-panel { min-height: 480px; }
   .fa-map-page-grid .leaflet-map-wrap { min-height: 420px; }
-  .fa-region-list { display: none; }
   .fa-footer { align-items: flex-start; padding: 13px var(--pad); }
   .fa-footer > div:last-child { display: none; }
 }
