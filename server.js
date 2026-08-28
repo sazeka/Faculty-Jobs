@@ -2377,6 +2377,7 @@ const VA_CAMPUSES = [
 
 // SC (South Carolina) - major public research + private liberal arts
 const SC_CAMPUSES = [
+  { campus: "Medical University of South Carolina", type: "workday", url: "https://musc.wd1.myworkdayjobs.com/MUSC" },
   { campus: "Greenville Technical College", type: "csod", url: "https://gvltec.csod.com/ux/ats/careersite/1/home?c=gvltec" },
   { campus: "Orangeburg Calhoun Technical College", type: "generic", url: "https://www.octech.edu/about/human-resources/" },
   {
@@ -4180,6 +4181,7 @@ const NE_CAMPUSES = [
 
 // IA (Iowa)
 const IA_CAMPUSES = [
+  { campus: "Morningside University", type: "generic", url: "https://www.morningside.edu/?job_category=full-time" },
   { campus: "Graceland University-Lamoni", type: "oracle-cx", url: "https://ibqcjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=CATEGORIES&selectedCategoriesFacet=300000009203194" },
   { campus: "Grand View University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/DC20BB66F0C9CF9F562615950604C1D5/career-page" },
   {
@@ -4860,6 +4862,7 @@ const OH_CAMPUSES = [
 
 // NM (New Mexico)
 const NM_CAMPUSES = [
+  { campus: "New Mexico Institute of Mining and Technology", type: "generic", url: "https://www.nmt.edu/hr/employment.php", excludeTitleFilter: "^Faculty & Staff Resources$" },
   { campus: "Northern New Mexico College", type: "workday", url: "https://chess.wd1.myworkdayjobs.com/nnmcjobs" },
   { campus: "Western New Mexico University", type: "peopleadmin", url: "https://wnmu.peopleadmin.com/" },
   {
@@ -5701,6 +5704,7 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Odessa College", type: "peopleadmin", url: "https://jobs.odessa.edu/postings/search?1670%5B%5D=1&commit=Search" },
   { campus: "Houston Christian University", type: "generic", url: "https://hc.edu/about-hcu/campus-resources/job-opportunities/?marvel-activate=false" },
   { campus: "Houston Community College", type: "selectminds-faculty-saved-search", url: "https://hccs.referrals.selectminds.com/" },
   { campus: "Howard Payne University", type: "generic", url: "https://www.hputx.edu/campus-offices/human-resources/open-positions/" },
@@ -6131,6 +6135,7 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "Northwest Florida State College", type: "interviewexchange", url: "https://nwfsc.interviewexchange.com/static/clients/531NFM1/index.jsp" },
   { campus: "Tallahassee State College", type: "workday", url: "https://tscfl.wd12.myworkdayjobs.com/en-US/TSC_External_Career_Site/jobs?jobFamilyGroup=88ce6bf2369610a6541c104e02c3315b&workerSubType=cb0c8f1c5fbf10ec7c87484d61a505c5&workerSubType=3270bd056e3210a44c108a51d23b0fab" },
   { campus: "Lake-Sumter State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/lsscedu" },
   { campus: "Lake-Sumter State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/lsscedu/promotionaljobs" },
@@ -6438,6 +6443,7 @@ const FL_CAMPUSES = [
 // "the TCSG System Office, as well as our 22 Colleges", not just whichever
 // currently has an open posting.
 const GA_CAMPUSES = [
+  { campus: "Mercer University", type: "workday", url: "https://merceruniversity.wd1.myworkdayjobs.com/external" },
   {
     campus: "Georgia Institute of Technology-Main Campus",
     type: "usg-site",
@@ -6619,6 +6625,7 @@ const AL_CAMPUSES = [
 
 // MS (Mississippi)
 const MS_CAMPUSES = [
+  { campus: "Mississippi State University", type: "pageup", url: "https://explore.msujobs.msstate.edu/cw/en-us/listing/" },
   { campus: "William Carey University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=E66B3C1689D7CACD88837E5AD889588C" },
   { campus: "Mississippi Community College Board", type: "generic", url: "https://www.mccb.edu/hr/employment" },
   { campus: "Northwest Mississippi Community College", type: "generic", url: "https://www.northwestms.edu/l/faculty-and-staff/hr" },
@@ -6857,6 +6864,7 @@ const AR_CAMPUSES = [
 
 // KS (Kansas)
 const KS_CAMPUSES = [
+  { campus: "Newman University", type: "generic", url: "https://newmanuniversity.applytojob.com/apply" },
   { campus: "Kansas Health Science University", type: "workday", url: "https://tcsedsystem.wd1.myworkdayjobs.com/KHSC" },
   { campus: "Kansas Christian College", type: "kansas-christian", url: "https://kansaschristian.edu/employment-opportunities/" },
   { campus: "Haskell Indian Nations University", type: "generic", url: "https://www.usajobs.gov/Search/Results?k=Haskell%20Indian%20Nations%20University" },
@@ -6961,6 +6969,9 @@ const KS_CAMPUSES = [
 
 // OK (Oklahoma)
 const OK_CAMPUSES = [
+  { campus: "Northeastern State University", type: "csod", url: "https://nsuok.csod.com/ux/ats/careersite/4/home?c=nsuok" },
+  { campus: "Oklahoma Baptist University", type: "generic", url: "https://www.okbu.edu/hr/jobs" },
+  { campus: "Oklahoma Wesleyan University", type: "generic", url: "https://www.okwu.edu/job-listing/" },
   { campus: "Southwestern Oklahoma State University", type: "csod", url: "https://swosu.csod.com/ux/ats/careersite/6/home?c=swosu" },
   { campus: "Seminole State College", type: "generic", url: "https://www.sscok.edu/about-ssc/hr-employment/index.html" },
   // One official PageUp board covers Stillwater/Tulsa, the Center for Health
@@ -7024,6 +7035,8 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "Missouri Southern State University", type: "generic", url: "https://mssu.hrmdirect.com/employment/job-openings.php?search=true" },
+  { campus: "Ozarks Technical Community College", type: "pageup", url: "https://careers.pageuppeople.com/880/cw/en-us/listing/" },
   {
     campus: "Kansas City Art Institute",
     type: "adp",
@@ -19002,7 +19015,7 @@ async function scrapeNmAll(context) {
   const results = await mapWithConcurrency(
     NM_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "NM");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "NM");
@@ -19010,7 +19023,10 @@ async function scrapeNmAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NM");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NM");
         if (type === "sjc-sf") return await scrapeSjcSantaFeJobs(context, url, campus, "NM");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NM");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "NM");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || "")) : jobs;
+        }
         return [];
       } catch (e) {
         console.error(`❌ ${campus} NM scrape failed:`, e?.message || e);
@@ -19344,6 +19360,7 @@ async function scrapeMsAll(context) {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MS");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MS");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "MS");
         // No existing MS dispatch case for "paycom" (function scrapePaycomAs
         // already exists and is dispatched by MA/ME/NY/TX) -- added for
         // Copiah-Lincoln Community College.
@@ -19941,6 +19958,7 @@ async function scrapeMoAll(context) {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MO");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "MO");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MO");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "MO");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MO");
         if (type === "umsystem-hrs") return await scrapeUmsystemHrsJobs(context, url, campus, "MO", businessUnit);
         return [];
