@@ -534,6 +534,7 @@ const CUNY_URL = "https://cuny.jobs/job-category/faculty/jobs/";
 const CT_URL = "https://www.ct.edu/hr/jobs";
 
 const CT_PRIVATE_CAMPUSES = [
+  { campus: "Mitchell College", type: "generic", url: "https://mitchell.edu/careers/" },
   { campus: "University of Saint Joseph", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=35a5d7d3-e147-49ce-99d9-63ae0a4ffb39&ccId=19000101_000001&lang=en_US" },
   {
     campus: "Yale University",
@@ -827,6 +828,14 @@ const UC_CAMPUSES = [
 
 // California major private research universities
 const CA_PRIVATE_CAMPUSES = [
+  { campus: "San Joaquin College of Law", type: "generic", url: "https://www.sjcl.edu/about-sjcl/jobs-sjcl" },
+  { campus: "Saybrook University", type: "workday", url: "https://tcsedsystem.wd1.myworkdayjobs.com/SaybrookUniversityCareers" },
+  { campus: "Simpson University", type: "generic", url: "https://simpsonu.edu/hr/" },
+  { campus: "Starr King School for the Ministry", type: "generic", url: "https://www.sksm.edu/about/join-our-team" },
+  { campus: "The Wright Institute", type: "generic", url: "https://www.wi.edu/join-our-team/" },
+  { campus: "Thomas Aquinas College", type: "generic", url: "https://www.thomasaquinas.edu/about/prospective-tutors" },
+  { campus: "Thomas Jefferson School of Law", type: "generic", url: "https://www.tjsl.edu/about/work-at-tjsl/" },
+  { campus: "University of the West", type: "generic", url: "https://www.uwest.edu/about-careers/" },
   { campus: "American Film Institute Conservatory", type: "generic", url: "https://www.afi.com/careers/" },
   { campus: "Claremont School of Theology", type: "generic", url: "https://cst.edu/about/human-resources/" },
   { campus: "Life Pacific University", type: "generic", url: "https://lifepacific.edu/employment/" },
@@ -6239,6 +6248,15 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "Hobe Sound Bible College", type: "generic", url: "https://hsbc.edu/careers/" },
+  { campus: "Saint Leo University", type: "workday", url: "https://saintleo.wd503.myworkdayjobs.com/SLU" },
+  { campus: "Saint Vincent de Paul Regional Seminary", type: "generic", url: "https://www.svdp.edu/Human-resources-app" },
+  { campus: "Southeastern University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/2116258676BA57818683542956966222/career-page" },
+  { campus: "St. John Vianney College Seminary", type: "generic", url: "https://www.sjvcs.edu/contact-us/job-openings" },
+  { campus: "Trinity College of Florida", type: "generic", url: "https://www.trinitycollege.edu/careers/" },
+  { campus: "University of Fort Lauderdale", type: "generic", url: "https://uftl.edu/employment-opportunities/" },
+  { campus: "Warner University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/16D5A72295BEEA4BBF29A0DA73DAF892/career-page" },
+  { campus: "Webber International University", type: "generic", url: "https://www.webber.edu/jobs-at-webber/" },
   { campus: "Hillsborough Community College", type: "workday", url: "https://hccfl.wd1.myworkdayjobs.com/en-US/hccjobs" },
   { campus: "North Florida College", type: "generic", url: "https://www.nfc.edu/about/employment-opportunities/employment-openings" },
   { campus: "Saint Johns River State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sjrstate" },
@@ -6554,6 +6572,7 @@ const FL_CAMPUSES = [
 // "the TCSG System Office, as well as our 22 Colleges", not just whichever
 // currently has an open posting.
 const GA_CAMPUSES = [
+  { campus: "Interdenominational Theological Center", type: "generic", url: "https://www.itc.edu/about/human-resources/careers/" },
   { campus: "Paine College", type: "generic", url: "https://paine.edu/employment/" },
   { campus: "Mercer University", type: "workday", url: "https://merceruniversity.wd1.myworkdayjobs.com/external" },
   {

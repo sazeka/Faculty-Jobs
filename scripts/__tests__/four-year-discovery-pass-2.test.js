@@ -6,6 +6,9 @@ const source = fs.readFileSync(new URL("../../server.js", import.meta.url), "utf
 const review = JSON.parse(
   fs.readFileSync(new URL("../../generated/promotion-candidates-four-year-next100-pass2.json", import.meta.url), "utf8")
 );
+const laterPrivateReview = JSON.parse(
+  fs.readFileSync(new URL("../../generated/second-private-discovery-batch-validation.json", import.meta.url), "utf8")
+);
 
 test("second four-year pass promotes only reviewed official sources", () => {
   assert.equal(review.count, 5);
@@ -14,7 +17,8 @@ test("second four-year pass promotes only reviewed official sources", () => {
     const escapedName = item.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     assert.match(source, new RegExp(`^\\s*\\{ campus: "${escapedName}"`, "m"), item.name);
   }
-  for (const item of review.rejected) {
+  const laterPromotions = new Set(laterPrivateReview.promoted.map((item) => item.name));
+  for (const item of review.rejected.filter((item) => !laterPromotions.has(item.name))) {
     const escapedName = item.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     assert.doesNotMatch(source, new RegExp(`^\\s*\\{ campus: "${escapedName}"`, "m"), item.name);
   }
