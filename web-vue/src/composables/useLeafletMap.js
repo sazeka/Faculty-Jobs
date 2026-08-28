@@ -1,6 +1,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import L from 'leaflet'
 import 'leaflet.markercluster'
+import { overviewBoundsPoints } from '../lib/mapViewport.js'
 
 const MAP_DEFAULT_CENTER = [39.5, -98.35]
 const MAP_DEFAULT_ZOOM = 4.6
@@ -293,7 +294,7 @@ export function useLeafletMap({ jobsRef, selectedCollegeRef, hoveredCollegeRef, 
       })
 
     if (!hasInitialMapFit && mappable.length > 0) {
-      const bounds = L.latLngBounds(mappable.map((g) => g.point))
+      const bounds = L.latLngBounds(overviewBoundsPoints(mappable.map((g) => g.point)))
       if (bounds.isValid()) {
         // Initial fitting can happen while the responsive rail is settling.
         // Avoid Leaflet's zoom animation here: animated fitting against a
@@ -328,7 +329,7 @@ export function useLeafletMap({ jobsRef, selectedCollegeRef, hoveredCollegeRef, 
         if (latLng) points.push(latLng)
       })
       if (points.length > 0) {
-        const bounds = L.latLngBounds(points)
+        const bounds = L.latLngBounds(overviewBoundsPoints(points))
         if (bounds.isValid()) {
           mapInstance.value.fitBounds(bounds, { padding: [28, 28], maxZoom: 8, animate: true })
           return
