@@ -95,7 +95,9 @@ async function copyShareLink() {
 const hoveredCollege = ref(null)
 const activeTab = ref('jobs')
 const MAP_VISIBILITY_KEY = 'faculty-atlas-map-visible-v1'
+const FILTER_VISIBILITY_KEY = 'faculty-atlas-filters-visible-v1'
 const showMapRail = ref(readMapVisibility())
+const showFiltersCol = ref(readFilterVisibility())
 const showAllJobs = ref(false)
 const showMethodology = ref(false)
 const excludedColleges = ref(null)
@@ -112,11 +114,27 @@ function readMapVisibility() {
   }
 }
 
+function readFilterVisibility() {
+  try {
+    return localStorage.getItem(FILTER_VISIBILITY_KEY) !== 'false'
+  } catch {
+    return true
+  }
+}
+
 function setMapRailVisibility(visible) {
   showMapRail.value = visible
   if (!visible) hoveredCollege.value = null
   try {
     localStorage.setItem(MAP_VISIBILITY_KEY, String(visible))
+  } catch { /* storage unavailable */ }
+}
+
+function setFiltersColVisibility(visible) {
+  showFiltersCol.value = visible
+  if (!visible) filterDrawerOpen.value = false
+  try {
+    localStorage.setItem(FILTER_VISIBILITY_KEY, String(visible))
   } catch { /* storage unavailable */ }
 }
 
@@ -273,13 +291,13 @@ async function reportBadListing(job) {
       v-if="activeTab === 'jobs'"
       ref="catalogSection"
       class="fa-catalog-shell"
-      :class="{ 'is-map-hidden': !showMapRail }"
+      :class="{ 'is-map-hidden': !showMapRail, 'is-filters-hidden': !showFiltersCol }"
     >
       <Teleport to="body">
         <div v-if="filterDrawerOpen" class="fa-drawer-backdrop" @click="filterDrawerOpen = false" />
       </Teleport>
 
-      <aside class="fa-filters-col" :class="{ 'is-open': filterDrawerOpen }">
+      <aside v-if="showFiltersCol || filterDrawerOpen" class="fa-filters-col" :class="{ 'is-open': filterDrawerOpen }">
         <div class="fa-drawer-header">
           <span class="fa-label">Refine results</span>
           <button class="fa-drawer-close" aria-label="Close filters" @click="filterDrawerOpen = false">✕</button>
@@ -330,6 +348,14 @@ async function reportBadListing(job) {
               <option value="state">State</option>
             </select>
           </div>
+          <button
+            class="fa-filter-divider-toggle"
+            :class="{ 'is-collapsed': !showFiltersCol }"
+            type="button"
+            :aria-label="showFiltersCol ? 'Hide filters' : 'Show filters'"
+            :title="showFiltersCol ? 'Hide filters' : 'Show filters'"
+            @click="setFiltersColVisibility(!showFiltersCol)"
+          ><span aria-hidden="true">{{ showFiltersCol ? '‹' : '›' }}</span></button>
           <button
             class="fa-map-divider-toggle"
             :class="{ 'is-collapsed': !showMapRail }"
@@ -656,7 +682,8 @@ async function reportBadListing(job) {
   border-bottom: 1px solid var(--rule);
   margin-bottom: 0;
 }
-.fa-map-divider-toggle {
+.fa-map-divider-toggle,
+.fa-filter-divider-toggle {
   position: absolute;
   z-index: 850;
   top: 50%;
@@ -674,9 +701,13 @@ async function reportBadListing(job) {
   line-height: 1;
   cursor: pointer;
 }
+.fa-filter-divider-toggle { right: auto; left: -40px; }
 .fa-map-divider-toggle.is-collapsed { right: -12px; }
-.fa-map-divider-toggle:hover { border-color: var(--ocean); color: var(--accent); }
-.fa-map-divider-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.fa-filter-divider-toggle.is-collapsed { left: -12px; }
+.fa-map-divider-toggle:hover,
+.fa-filter-divider-toggle:hover { border-color: var(--ocean); color: var(--accent); }
+.fa-map-divider-toggle:focus-visible,
+.fa-filter-divider-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .fa-show-more {
   padding: 32px 0;
   text-align: center;
@@ -1130,6 +1161,9 @@ async function reportBadListing(job) {
   scroll-margin-top: 72px;
 }
 .fa-catalog-shell.is-map-hidden { grid-template-columns: 235px minmax(460px, 1fr); }
+.fa-catalog-shell.is-filters-hidden { grid-template-columns: minmax(460px, 1fr) minmax(260px, 320px); }
+.fa-catalog-shell.is-map-hidden.is-filters-hidden { grid-template-columns: minmax(460px, 1fr); }
+.fa-catalog-shell.is-filters-hidden .fa-results-toolbar > div:first-child { margin-left: 36px; }
 .fa-filters-col {
   position: sticky;
   top: 72px;
@@ -1327,6 +1361,8 @@ a.fa-listing-title:hover { color: var(--accent); }
 
 @media (max-width: 1120px) {
   .fa-catalog-shell { grid-template-columns: 220px minmax(420px, 1fr); }
+  .fa-catalog-shell.is-filters-hidden,
+  .fa-catalog-shell.is-map-hidden.is-filters-hidden { grid-template-columns: minmax(420px, 1fr); }
   .fa-map-rail { display: none; }
   .fa-map-divider-toggle { display: none; }
   .fa-hero h1 { font-size: 56px; }
@@ -1359,6 +1395,7 @@ a.fa-listing-title:hover { color: var(--accent); }
   .fa-search-box .fa-input { min-width: 0; padding: 14px 9px; font-size: 13px; }
   .fa-search-box > button { padding: 0 14px; }
   .fa-catalog-shell { display: block; scroll-margin-top: 64px; }
+  .fa-filter-divider-toggle { display: none; }
   .fa-filters-col {
     display: none;
     position: fixed;
