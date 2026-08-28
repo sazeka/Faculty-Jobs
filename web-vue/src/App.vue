@@ -1271,17 +1271,18 @@ a.fa-listing-title:hover { color: var(--accent); }
   margin: 0;
   padding: 13px var(--pad);
   border: 0;
-  color: rgba(255, 255, 255, .45);
-  background: var(--ink);
+  border-top: 1px solid var(--rule-2);
+  color: var(--ink-3);
+  background: var(--paper-2);
   font-family: var(--font-mono);
   font-size: 9px;
 }
-.fa-footer strong { color: #f4a27c; }
+.fa-footer strong { color: var(--accent-2); }
 .fa-footer button,
-.fa-footer a { border: 0; color: rgba(255, 255, 255, .58); background: transparent; font: inherit; text-decoration: none; cursor: pointer; }
+.fa-footer a { border: 0; color: var(--ink-2); background: transparent; font: inherit; text-decoration: none; cursor: pointer; }
 .fa-footer > div:last-child { display: flex; gap: 18px; }
 .fa-footer button:hover,
-.fa-footer a:hover { color: #fff; }
+.fa-footer a:hover { color: var(--accent); }
 
 @media (max-width: 1120px) {
   .fa-catalog-shell { grid-template-columns: 220px minmax(420px, 1fr); }
