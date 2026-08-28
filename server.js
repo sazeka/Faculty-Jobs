@@ -3907,6 +3907,7 @@ const ME_CAMPUSES = [
 
 // VT (Vermont)
 const VT_CAMPUSES = [
+  { campus: "Vermont State Colleges-Office of the Chancellor", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/VER1019VTSC/JobBoard/ee83245b-769f-4023-bd07-1e4a3d517e64/" },
   {
     campus: "Landmark College",
     type: "generic",
@@ -18541,6 +18542,7 @@ async function scrapeVtAll(context) {
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "VT");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "VT");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "VT");
+        if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "VT");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} VT scrape failed:`, e?.message || e);
