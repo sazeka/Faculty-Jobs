@@ -8,6 +8,7 @@ import { canonicalizeUrl, inferPlatformFromUrl } from "./lib/url-normalization.j
 import { shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from "./lib/scrape-guard.js";
 import { preserveEnrichment } from "./lib/enrichment-merge.js";
 import { synchronizeJobCount } from "./lib/dataset-invariants.js";
+import { filterExpiredDeadlineCache } from "./lib/post-expiration.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -379,6 +380,23 @@ function canonicalizeJobUrls(data) {
         `🧬 Preserved enrichment: filled ${merged.restoredFields} field(s) across ${merged.jobsTouched} job(s) (${merged.matched} matched previous snapshot)`
       );
     }
+  }
+
+  // A source can continue advertising a URL after its explicit application
+  // deadline, and a fresh scrape may no longer carry the description metadata
+  // that supplied that deadline. Keep a persistent URL ledger so safely purged
+  // postings cannot reappear without explicit evidence of a new deadline or a
+  // rolling/open-until-filled status.
+  const presencePath = path.join(__dirname, "..", "generated", "job-presence.json");
+  let expirationLedger = null;
+  try { expirationLedger = JSON.parse(fs.readFileSync(presencePath, "utf8")); } catch {}
+  const deadlineFiltered = filterExpiredDeadlineCache(data.jobs, expirationLedger?.expiredDeadlines, {
+    today: new Date(),
+    graceDays: 7,
+  });
+  if (deadlineFiltered.expired.length > 0) {
+    data = { ...data, jobs: deadlineFiltered.kept };
+    console.log(`🗓️  Filtered ${deadlineFiltered.expired.length} previously expired deadline URL(s)`);
   }
 
   // Final write boundary: downstream passes may replace or filter the job array,

@@ -88,6 +88,7 @@ import { extractCunyJobRows } from "./scripts/lib/cuny-jobs-extraction.js";
 import { canonicalInstitutionName } from "./scripts/lib/institution-aliases.js";
 import { interfolioApplicationUrl } from "./scripts/lib/interfolio-position.js";
 import { alaskaCampusLocation, inferAlaskaCampus } from "./scripts/lib/alaska-campus.js";
+import { canonicalCsuInstitutionFromLocation, repairKnownInstitutionAttribution } from "./scripts/lib/institution-attribution.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -7778,6 +7779,7 @@ export async function scrapeAllJobsStandalone() {
 
     // Normalize known noisy locations (e.g., building names) to campus city/state.
     const normalizedJobs = jobs
+      .map(repairKnownInstitutionAttribution)
       .map((job) => ({ ...job, college: canonicalInstitutionName(job?.college) || job?.college }))
       .map(normalizeLocationByCollege)
       .map(normalizeJobEnrichment);
@@ -9522,36 +9524,8 @@ async function scrapeCsuFaculty(context) {
 // invisible to coverage tracking despite having real, current jobs: the job-count
 // lookup in build-institutions-master.js matches by exact name, and the two forms
 // never matched. Always resolve to the IPEDS/canonical hyphenated form.
-function mapCsuLocationToCampus(location) {
-  if (!location) return null;
-  const key = clean(String(location));
-  const byLocation = {
-    "Bakersfield": "California State University-Bakersfield",
-    "Channel Islands": "California State University-Channel Islands",
-    "Chico": "California State University-Chico",
-    "Dominguez Hills": "California State University-Dominguez Hills",
-    "East Bay": "California State University-East Bay",
-    "Fresno": "California State University-Fresno",
-    "Fullerton": "California State University-Fullerton",
-    "Humboldt": "California State Polytechnic University-Humboldt",
-    "Long Beach": "California State University-Long Beach",
-    "Los Angeles": "California State University-Los Angeles",
-    "Maritime Academy": "California State University Maritime Academy",
-    "Monterey Bay": "California State University-Monterey Bay",
-    "Northridge": "California State University-Northridge",
-    "Pomona": "California State Polytechnic University-Pomona",
-    "Sacramento": "California State University-Sacramento",
-    "San Bernardino": "California State University-San Bernardino",
-    "San Diego": "San Diego State University",
-    "San Francisco": "San Francisco State University",
-    "San Jose": "San Jose State University",
-    "San José": "San Jose State University",
-    "San Luis Obispo": "California Polytechnic State University-San Luis Obispo",
-    "San Marcos": "California State University-San Marcos",
-    "Sonoma": "Sonoma State University",
-    "Stanislaus": "California State University-Stanislaus",
-  };
-  return byLocation[key] || null;
+export function mapCsuLocationToCampus(location) {
+  return canonicalCsuInstitutionFromLocation(location);
 }
 
 // Same canonical-name goal as mapCsuLocationToCampus, but matched out of free text

@@ -24,6 +24,7 @@
  * Options:
  *   --dry-run          Print what would be purged without modifying files.
  *   --expiry-days N    Consecutive-miss threshold before purge (default 7).
+ *   --deadline-grace-days N  Days after a stated deadline before purge (default 7).
  */
 
 import fs from "fs";
@@ -31,6 +32,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 import { attachUniversityCoverage } from "./lib/site-coverage.js";
+import { partitionExpiredJobs } from "./lib/post-expiration.js";
+import { repairKnownInstitutionAttribution } from "./lib/institution-attribution.js";
 import { normalizeTenureTrack } from "../web-vue/src/lib/jobClassification.js";
 import {
   classifySourceLink,
@@ -76,6 +79,7 @@ function parseArgs(argv) {
 const args        = parseArgs(process.argv.slice(2));
 const DRY_RUN     = Boolean(args["dry-run"]);
 const EXPIRY_DAYS = Math.max(1, Number(args["expiry-days"] || 7));
+const DEADLINE_GRACE_DAYS = Math.max(0, Number(args["deadline-grace-days"] ?? 7));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -123,7 +127,19 @@ const today = todayDateString();
 
 let presence = readJson(PRESENCE_PATH);
 if (!presence || typeof presence.jobs !== "object" || presence.jobs === null) {
-  presence = { lastRunDate: today, jobs: {} };
+  presence = { lastRunDate: today, jobs: {}, expiredDeadlines: {} };
+}
+if (!presence.expiredDeadlines || typeof presence.expiredDeadlines !== "object") presence.expiredDeadlines = {};
+
+// One-time migration from the prior run's detailed report, so the first
+// release of the deadline cache remembers the listings it just removed.
+const previousPresenceReport = readJson(REPORT_PATH);
+for (const item of previousPresenceReport?.purgedJobs || []) {
+  if (item?.reason !== "expired_deadline" || !item?.url || !item?.closeDate) continue;
+  presence.expiredDeadlines[item.url] = {
+    closeDate: item.closeDate,
+    purgedAt: previousPresenceReport.generatedAt || today,
+  };
 }
 
 // ── 3. Build a Set of today's canonicalJobIds ─────────────────────────────────
@@ -166,11 +182,25 @@ for (const id of Object.keys(presence.jobs)) {
 
 // ── 6. Identify jobs to purge ─────────────────────────────────────────────────
 
-const purgedIds = new Set(
+const missingIds = new Set(
   Object.entries(presence.jobs)
     .filter(([, entry]) => entry.consecutiveMisses >= EXPIRY_DAYS)
     .map(([id]) => id)
 );
+
+const deadlinePartition = partitionExpiredJobs(todayJobs, {
+  today: new Date(`${today}T12:00:00Z`),
+  graceDays: DEADLINE_GRACE_DAYS,
+});
+const expiredDeadlineJobs = deadlinePartition.expired;
+const expiredDeadlineIds = new Set(
+  expiredDeadlineJobs.map((job) => job?.canonicalJobId).filter(Boolean)
+);
+for (const job of expiredDeadlineJobs) {
+  if (!job?.url || !job?.closeDate) continue;
+  presence.expiredDeadlines[job.url] = { closeDate: job.closeDate, purgedAt: today };
+}
+const purgedIds = new Set([...missingIds, ...expiredDeadlineIds]);
 
 // Compose purged-jobs detail for the report.
 // A purged job may or may not still be in today's scrape (it won't be, by
@@ -179,12 +209,18 @@ const purgedIds = new Set(
 const purgedJobs = [...purgedIds].map((id) => {
   // The job won't be in todayJobMap since it was absent; reconstruct from
   // whatever metadata we have stored in the presence record.
-  const entry = presence.jobs[id];
+  const entry = presence.jobs[id] || {};
+  const job = todayJobMap.get(id);
   return {
     canonicalJobId:    id,
-    consecutiveMisses: entry.consecutiveMisses,
-    firstSeen:         entry.firstSeen,
-    lastSeen:          entry.lastSeen,
+    reason: expiredDeadlineIds.has(id) ? "expired_deadline" : "consecutive_misses",
+    consecutiveMisses: entry.consecutiveMisses || 0,
+    firstSeen:         entry.firstSeen || null,
+    lastSeen:          entry.lastSeen || null,
+    title: job?.title || null,
+    college: job?.college || null,
+    closeDate: job?.closeDate || null,
+    url: job?.url || null,
   };
 });
 
@@ -196,7 +232,9 @@ for (const id of purgedIds) {
 
 // ── 8 & 9. Write outputs ──────────────────────────────────────────────────────
 
-const cleanedJobs   = todayJobs.filter((j) => !purgedIds.has(j.canonicalJobId));
+const cleanedJobs = deadlinePartition.kept
+  .filter((job) => !missingIds.has(job.canonicalJobId))
+  .map(repairKnownInstitutionAttribution);
 // Stamp each surviving job with firstSeen from the presence ledger so the
 // frontend can sort "Most recent" (newest postings first) without a per-job
 // posting date from the source.
@@ -225,18 +263,23 @@ const purgedCount   = purgedIds.size;
 // ── Console summary ───────────────────────────────────────────────────────────
 
 console.log("\nFaculty Atlas - Job Presence Agent");
-console.log(`  Config        : expiry-days=${EXPIRY_DAYS}`);
+console.log(`  Config        : expiry-days=${EXPIRY_DAYS}, deadline-grace-days=${DEADLINE_GRACE_DAYS}`);
 if (DRY_RUN) console.log("  *** DRY RUN — no files will be written ***");
 console.log("");
 console.log(`  Jobs seen today  : ${todayCount.toLocaleString()}`);
 console.log(`  Jobs tracked     : ${trackedCount.toLocaleString()}`);
 console.log(`  Jobs to purge    : ${purgedCount.toLocaleString()}`);
+console.log(`  Expired deadlines: ${expiredDeadlineJobs.length.toLocaleString()}`);
 
 if (purgedCount > 0) {
-  console.log("\n  Purged listings (absent for >= " + EXPIRY_DAYS + " consecutive scrapes):");
-  for (const pj of purgedJobs) {
-    console.log(`    ${pj.canonicalJobId}  (${pj.consecutiveMisses} misses, last seen ${pj.lastSeen})`);
+  console.log("\n  Listings selected for purge:");
+  for (const pj of purgedJobs.slice(0, 100)) {
+    const detail = pj.reason === "expired_deadline"
+      ? `deadline ${pj.closeDate}`
+      : `${pj.consecutiveMisses} misses, last seen ${pj.lastSeen}`;
+    console.log(`    ${pj.canonicalJobId}  (${pj.reason}: ${detail})`);
   }
+  if (purgedJobs.length > 100) console.log(`    … ${purgedJobs.length - 100} more recorded in the JSON report`);
 }
 
 // ── Build report ──────────────────────────────────────────────────────────────
@@ -300,6 +343,9 @@ const report = {
   trackedCount,
   todayCount,
   purgedCount,
+  deadlineGraceDays: DEADLINE_GRACE_DAYS,
+  expiredDeadlinePurgedCount: expiredDeadlineJobs.length,
+  expiredDeadlineCacheCount: Object.keys(presence.expiredDeadlines).length,
   newToday,
   newThisWeek,
   catalogSummary,

@@ -98,7 +98,7 @@ jobs:
         continue-on-error: true
 
       - name: Verify final post quality and publish audit artifacts
-        run: npm run verify:post-quality -- --max-nonjob 0 --max-nonhttps-pct 1 --max-missing-desc-pct 96 --max-placeholder-titles 0 --max-quarantine-pct 8 --min-average-score 94
+        run: npm run verify:post-quality -- --max-nonjob 0 --max-nonhttps-pct 1 --max-missing-desc-pct 96 --max-placeholder-titles 0 --max-quarantine-pct 2 --min-average-score 94
 
       - name: Commit & push if changed
         run: |
