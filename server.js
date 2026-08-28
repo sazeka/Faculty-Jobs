@@ -827,7 +827,15 @@ const UC_CAMPUSES = [
 
 // California major private research universities
 const CA_PRIVATE_CAMPUSES = [
+  { campus: "American Film Institute Conservatory", type: "generic", url: "https://www.afi.com/careers/" },
+  { campus: "Claremont School of Theology", type: "generic", url: "https://cst.edu/about/human-resources/" },
+  { campus: "Life Pacific University", type: "generic", url: "https://lifepacific.edu/employment/" },
+  { campus: "Mount Saint Mary's University", type: "generic", url: "https://www.msmu.edu/about-the-mount/university-offices/administration--finance/human-resources/employment-opportunities/" },
+  { campus: "Northeastern University Oakland", type: "generic", url: "https://oakland.northeastern.edu/campus-directory/human-resources-employee-services/" },
+  { campus: "Pacific Oaks College", type: "workday", url: "https://tcsedsystem.wd1.myworkdayjobs.com/PacificOaksCareers" },
+  { campus: "Pacific States University", type: "generic", url: "https://psuca.edu/jobs-opportunities/" },
   { campus: "Pacific Union College", type: "generic", url: "https://www.puc.edu/campus-services/human-resources/faculty-job-postings" },
+  { campus: "San Francisco Bay University", type: "generic", url: "https://app.trinethire.com/companies/33737-san-francisco-bay-university/jobs" },
   { campus: "Graduate Theological Union", type: "generic", url: "https://www.gtu.edu/about/employment" },
   // Institution-owned employee openings page. The generic adapter correctly
   // keeps the current adjunct animation opening and the global policy filter
@@ -2826,6 +2834,9 @@ const NH_CAMPUSES = [
 
 // AZ (Arizona)
 const AZ_CAMPUSES = [
+  { campus: "Midwestern University-Glendale", type: "generic", url: "https://prod.clinics.midwestern.edu/employment-mwu" },
+  { campus: "Phoenix Seminary", type: "generic", url: "https://ps.edu/careers/" },
+  { campus: "Sonoran University of Health Sciences", type: "generic", url: "https://www.sonorancareerlink.com/jobs/search?co=Sonoran+University+of+Health+Sciences" },
   { campus: "Northland Pioneer College", type: "generic", url: "https://npc.isolvedhire.com/jobs/" },
   { campus: "Tohono O'odham Community College", type: "generic", url: "https://www.tocc.edu/human-resources-employment" },
   { campus: "Pima Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/pimacc" },
@@ -6637,6 +6648,12 @@ const GA_CAMPUSES = [
 
 // AL (Alabama)
 const AL_CAMPUSES = [
+  { campus: "Heritage Christian University", type: "generic", url: "https://www.hcu.edu/about/job-openings/" },
+  { campus: "Huntsville Bible College", type: "generic", url: "https://huntsvillebiblecollege.org/job-postings/" },
+  { campus: "Miles College", type: "generic", url: "https://www.miles.edu/departments-programs/office-human-resources" },
+  { campus: "Oakwood University", type: "generic", url: "https://oakwood.edu/human-resources/" },
+  { campus: "Stillman College", type: "generic", url: "https://stillman.edu/about-us/administration-finance/human-resources/?job_page=1" },
+  { campus: "University of Mobile", type: "generic", url: "https://umobile.edu/employment/" },
   { campus: "University of Alabama in Huntsville", type: "generic", url: "https://www.uah.edu/hr/careers/faculty-careers" },
   { campus: "Troy University", type: "peopleadmin", url: "https://www.troyuniversityjobs.com/postings/search?3481=3&commit=Search" },
   { campus: "Jacksonville State University", type: "pageup", url: "https://careers.jsu.edu/jobs/search/search-page-jsu-careers-faculty" },
@@ -6908,6 +6925,8 @@ const LA_CAMPUSES = [
 
 // AR (Arkansas)
 const AR_CAMPUSES = [
+  { campus: "Lyon College", type: "generic", url: "https://www.lyon.edu/human-resources" },
+  { campus: "Ouachita Baptist University", type: "generic", url: "https://obu.edu/about/hr/faculty-vacancies.php" },
   { campus: "Southern Arkansas University Main Campus", type: "generic", url: "https://www.saumag.edu/human-resources/employment-opportunities/" },
   { campus: "University of Arkansas for Medical Sciences", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UAMS_All_Careers" },
   { campus: "John Brown University", type: "jbu-faculty", url: "https://www.jbu.edu/human-resources/faculty-job-listings/" },
