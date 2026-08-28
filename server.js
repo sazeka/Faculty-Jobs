@@ -635,6 +635,7 @@ const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type
 
 // Massachusetts private universities + liberal arts colleges
 const MA_PRIVATE_CAMPUSES = [
+  { campus: "Hult International Business School", type: "oracle-cx", url: "https://jobs.ef.com/en/sites/hult/jobs?lastSelectedFacet=AttributeChar2&selectedFlexFieldsFacets=%22AttributeChar2%7CFaculty+%26+research%22" },
   { campus: "Massachusetts College of Art and Design", type: "interviewexchange", url: "https://massart.interviewexchange.com/" },
   { campus: "Salem State University", type: "generic", url: "https://salem-state-university.career-pages.com/" },
   { campus: "Westfield State University", type: "interviewexchange", url: "https://westfield.interviewexchange.com/" },
@@ -1692,6 +1693,8 @@ const PA_CAMPUSES = [
 ];
 
 const PA_PRIVATE_CAMPUSES = [
+  { campus: "Harrisburg University of Science and Technology", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=d7d41d6e-e9f2-43e0-af0f-ac2146083d4f&lang=en_US" },
+  { campus: "Haverford College", type: "generic", url: "https://www.haverford.edu/human-resources/jobs" },
   { campus: "Pennsylvania College of Technology", type: "icims", url: "https://careers-pctedu.icims.com/jobs/search?ss=1" },
   { campus: "Valley Forge Military College", type: "generic", url: "https://vfmcollege.edu/about/employment-opportunities/" },
   {
@@ -1958,6 +1961,7 @@ const PA_PRIVATE_CAMPUSES = [
 
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
+  { campus: "Greensboro College", type: "generic", url: "https://www.greensboro.edu/employment/" },
   { campus: "Lenoir-Rhyne University", type: "lr-faculty", url: "https://www.lr.edu/work-at-lr/open-adjunct-faculty-positions" },
   { campus: "Guilford College", type: "workday", url: "https://guilford.wd1.myworkdayjobs.com/Guilford_Careers" },
   { campus: "Johnson C Smith University", type: "schooljobs", url: "https://www.schooljobs.com/careers/jcsu" },
@@ -2763,6 +2767,7 @@ const RI_PRIVATE_CAMPUSES = [
 
 // NH (New Hampshire)
 const NH_CAMPUSES = [
+  { campus: "Colby-Sawyer College", type: "generic", url: "https://secure5.entertimeonline.com/ta/ColbySawyer.careers?CareersSearch=&career_portal_id=1130757&ein_id=85020931" },
   { campus: "University System of New Hampshire System Office", type: "peopleadmin", url: "https://jobs.usnh.edu/postings/search" },
   {
     campus: "Plymouth State University",
@@ -3086,6 +3091,7 @@ function inferSunyCampusFromText(title, url) {
 
 // NY Private Universities
 const NY_PRIVATE_CAMPUSES = [
+  { campus: "IE New York College", type: "generic", url: "https://www.ienyc.edu/about/careers-at-ienyc/" },
   { campus: "United States Merchant Marine Academy", type: "generic", url: "https://www.usmma.edu/about/employment/career-opportunities" },
   // Top 20 largest private universities in New York State
   // Was pointing at "/faculty/jobs?challenge=<uuid>" -- that path 404s outright
@@ -4697,6 +4703,8 @@ const CO_CAMPUSES = [
 
 // OH (Ohio)
 const OH_CAMPUSES = [
+  { campus: "Gods Bible School and College", type: "generic", url: "https://www.gbs.edu/about-us/careers/gbsc-positions/" },
+  { campus: "Hiram College", type: "generic", url: "https://www.hiram.edu/about-hiram-college/human-resources/careers-at-hiram/" },
   { campus: "Sinclair Community College", type: "peopleadmin", url: "https://jobs.sinclair.edu/postings/search?sort=316+asc" },
   { campus: "University of Cincinnati-Blue Ash College", type: "generic", url: "https://jobs.uc.edu/go/Blue-Ash/9268300/" },
   { campus: "University of Cincinnati-Clermont College", type: "generic", url: "https://jobs.uc.edu/go/Clermont/9268400/" },
@@ -5079,6 +5087,7 @@ const UT_CAMPUSES = [
 
 // MI (Michigan)
 const MI_CAMPUSES = [
+  { campus: "Grace Christian University", type: "generic", url: "https://gracechristian.edu/about/contact/employment/" },
   { campus: "Schoolcraft Community College District", type: "peopleadmin", url: "https://jobs.schoolcraft.edu/postings/search" },
   { campus: "Saginaw Valley State University", type: "workday", url: "https://svsu.wd503.myworkdayjobs.com/External" },
   { campus: "Kuyper College", type: "kuyper-employment", url: "https://www.kuyper.edu/employment/" },
@@ -5820,6 +5829,7 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Hallmark University", type: "generic", url: "https://careers.hallmarkuniversity.edu/job-type/faculty/" },
   { campus: "Navarro College", type: "oracle-cx", url: "https://espf.fa.ocs.oraclegovcloud2.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?keyword=Faculty&mode=location" },
   { campus: "San Jacinto Community College", type: "csod", url: "https://sanjac.csod.com/ux/ats/careersite/3/home?c=sanjac" },
   { campus: "Texas Tech University Health Sciences Center-El Paso", type: "generic", url: "https://jobs.brassring.com/1033/ASP/TG/cim_home.asp?partnerid=25898&siteid=5625" },
@@ -7028,6 +7038,7 @@ const AR_CAMPUSES = [
 
 // KS (Kansas)
 const KS_CAMPUSES = [
+  { campus: "Bethany College (KS)", type: "generic", url: "https://www.bethanylb.edu/employment" },
   { campus: "Wichita State University", type: "generic", url: "https://jobs.wichita.edu/" },
   { campus: "Newman University", type: "generic", url: "https://newmanuniversity.applytojob.com/apply" },
   { campus: "Kansas Health Science University", type: "workday", url: "https://tcsedsystem.wd1.myworkdayjobs.com/KHSC" },
@@ -7329,6 +7340,7 @@ const MO_CAMPUSES = [
 
 // KY (Kentucky)
 const KY_CAMPUSES = [
+  { campus: "Georgetown College", type: "generic", url: "https://www.georgetowncollege.edu/careers-georgetown-college" },
   { campus: "University of Kentucky", type: "peopleadmin", url: "https://ukjobs.uky.edu/postings/search?988=2&commit=Search" },
   { campus: "Kentucky Christian University", type: "kcu-job-manager", url: "https://www.kcu.edu/job-postings/" },
   {
@@ -10311,6 +10323,7 @@ async function scrapeMaPrivate(context) {
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "MA");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "MA");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "MA");
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "MA");
         if (type === "gordon-faculty") return await scrapeGordonFacultyAs(context, url, campus, "MA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MA");
         return [];
@@ -12099,6 +12112,7 @@ async function scrapePaAll(context) {
         // already exists and is dispatched by CT/CA Private/NJ/MS/NY) --
         // added for American College of Financial Services.
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "PA");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "PA");
         if (type === "applitrack") return await scrapeApplitrackAs(context, url, campus, "PA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "PA");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "PA");
