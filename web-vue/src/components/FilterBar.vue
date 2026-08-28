@@ -18,6 +18,8 @@ const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'su
 
 const disciplineSearch = ref('')
 const collegeSearch = ref('')
+const departmentSearch = ref('')
+const citySearch = ref('')
 const showAllDisciplines = ref(false)
 const showAllRanks = ref(false)
 const showAllStates = ref(false)
@@ -48,6 +50,23 @@ const filteredCollegeOptions = computed(() => {
   }
   return props.collegeOptions.filter(opt => opt.value.toLowerCase().includes(q)).slice(0, 25)
 })
+
+function searchableOptions(options, query, activeValue) {
+  const q = query.trim().toLowerCase()
+  if (!q) {
+    if (activeValue === 'all') return []
+    const active = options.find((opt) => opt.value === activeValue)
+    return active ? [active] : []
+  }
+  return options.filter((opt) => opt.value.toLowerCase().includes(q)).slice(0, 25)
+}
+
+const filteredDepartmentOptions = computed(() =>
+  searchableOptions(props.departmentOptions, departmentSearch.value, props.filters.department)
+)
+const filteredCityOptions = computed(() =>
+  searchableOptions(props.cityOptions, citySearch.value, props.filters.city)
+)
 
 // Full list of states (university systems are grouped into their state upstream),
 // alphabetized; show any state that currently has matches plus the active one.
@@ -93,6 +112,14 @@ function toggleDiscipline(value) {
 function toggleCollege(value) {
   updateField('college', props.filters.college === value ? 'all' : value)
   collegeSearch.value = ''
+}
+function toggleDepartment(value) {
+  updateField('department', props.filters.department === value ? 'all' : value)
+  departmentSearch.value = ''
+}
+function toggleCity(value) {
+  updateField('city', props.filters.city === value ? 'all' : value)
+  citySearch.value = ''
 }
 </script>
 
@@ -144,6 +171,34 @@ function toggleCollege(value) {
       </div>
     </div>
 
+    <!-- Department -->
+    <div style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 10px;">Department</div>
+      <input
+        class="fa-input"
+        v-model="departmentSearch"
+        type="search"
+        placeholder="Search departments…"
+        aria-label="Search departments"
+        style="font-size: 13px; margin-bottom: 8px;"
+      />
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <button
+          v-for="opt in filteredDepartmentOptions"
+          :key="opt.value"
+          type="button"
+          class="fa-facet-item facet-button"
+          :class="{ active: filters.department === opt.value }"
+          @click="toggleDepartment(opt.value)"
+        >
+          <span class="fa-check" :class="{ checked: filters.department === opt.value }">{{ filters.department === opt.value ? '✓' : '' }}</span>
+          <span style="flex: 1; text-align: left;">{{ opt.value }}</span>
+          <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
+        </button>
+        <div v-if="departmentSearch.trim() && filteredDepartmentOptions.length === 0" class="fa-meta" style="padding: 4px 0; font-style: italic;">No match</div>
+      </div>
+    </div>
+
     <!-- Discipline -->
     <div style="margin-bottom: 28px;">
       <div class="fa-display" style="font-size: 18px; margin-bottom: 10px;">Discipline</div>
@@ -177,6 +232,34 @@ function toggleCollege(value) {
           style="margin-top: 6px; justify-content: center;"
           @click="showAllDisciplines = !showAllDisciplines"
         >{{ showAllDisciplines ? 'Show less' : `View ${filteredDisciplineOptions.length - 8} more` }}</button>
+      </div>
+    </div>
+
+    <!-- City -->
+    <div style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 10px;">City</div>
+      <input
+        class="fa-input"
+        v-model="citySearch"
+        type="search"
+        placeholder="Search cities…"
+        aria-label="Search cities"
+        style="font-size: 13px; margin-bottom: 8px;"
+      />
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <button
+          v-for="opt in filteredCityOptions"
+          :key="opt.value"
+          type="button"
+          class="fa-facet-item facet-button"
+          :class="{ active: filters.city === opt.value }"
+          @click="toggleCity(opt.value)"
+        >
+          <span class="fa-check" :class="{ checked: filters.city === opt.value }">{{ filters.city === opt.value ? '✓' : '' }}</span>
+          <span style="flex: 1; text-align: left;">{{ opt.value }}</span>
+          <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
+        </button>
+        <div v-if="citySearch.trim() && filteredCityOptions.length === 0" class="fa-meta" style="padding: 4px 0; font-style: italic;">No match</div>
       </div>
     </div>
 
@@ -309,3 +392,7 @@ function toggleCollege(value) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.facet-button { appearance: none; width: 100%; border: 0; padding-left: 0; padding-right: 0; background: none; text-align: left; }
+</style>

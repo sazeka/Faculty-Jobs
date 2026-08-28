@@ -4,7 +4,9 @@ import heroAtlasUrl from './assets/hero-atlas-v2.jpg'
 import FilterBar from './components/FilterBar.vue'
 import ActiveChips from './components/ActiveChips.vue'
 import JobCard from './components/JobCard.vue'
+import JobDetailDrawer from './components/JobDetailDrawer.vue'
 import MapPanel from './components/MapPanel.vue'
+import PresetBar from './components/PresetBar.vue'
 import TrendsTab from './components/TrendsTab.vue'
 import { useSavedJobs } from './composables/useSavedJobs'
 import { usePresets } from './composables/usePresets'
@@ -14,7 +16,7 @@ import { useAlerts } from './composables/useAlerts'
 import { useFilterUrlSync, buildShareUrl } from './composables/useFilterUrlSync'
 import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 
-const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || ''
+const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || 'https://github.com/sazeka/Faculty-Jobs/issues/new'
 const baseUrl = import.meta.env.BASE_URL || '/'
 
 const { jobs, scrapedAt, loadError, loadJobs, loadFullDescriptions, descriptionsLoading, qualitySummary, newJobsCount, newThisWeek, siteStats, hadPriorVisit } = useJobsData()
@@ -95,7 +97,20 @@ const showMethodology = ref(false)
 const excludedColleges = ref(null)
 const filterDrawerOpen = ref(false)
 const catalogSection = ref(null)
+const selectedJob = ref(null)
 const savedCount = computed(() => savedJobs.value.size)
+
+async function openJobDetail(job) {
+  selectedJob.value = job
+  try {
+    await loadFullDescriptions()
+    const key = job?.canonicalJobId || job?.url
+    const full = jobs.value.find((item) => (item?.canonicalJobId || item?.url) === key)
+    if (full && selectedJob.value) selectedJob.value = { ...selectedJob.value, ...full }
+  } catch {
+    // The drawer remains useful even when the optional full description fails.
+  }
+}
 
 function focusCatalog() {
   activeTab.value = 'jobs'
@@ -279,6 +294,13 @@ async function reportBadListing(job) {
 
       <main class="fa-results-col">
         <ActiveChips v-if="activeFilterChips.length" :chips="activeFilterChips" @clear-chip="clearFilterChip" />
+        <PresetBar
+          :items="presetItems"
+          :has-active-filters="activeFilterChips.length > 0"
+          @save-current="saveCurrentPreset"
+          @apply-preset="applyPreset"
+          @remove-preset="removePreset"
+        />
         <div class="fa-results-toolbar">
           <div>
             <h2 class="fa-display">{{ filteredJobs.length.toLocaleString() }} academic roles</h2>
@@ -314,6 +336,7 @@ async function reportBadListing(job) {
             :saved="isSavedJob(job.url)"
             :emphasized="Boolean(hoveredCollege) && job.college === hoveredCollege"
             @toggle-save="toggleSavedJob"
+            @open-detail="openJobDetail"
             @hover-college="handleHoverCollege"
             @report-bad-listing="reportBadListing"
           />
@@ -365,6 +388,17 @@ async function reportBadListing(job) {
       <div><strong>Updated {{ scrapedLabel || 'daily' }}</strong><span> · Source links verified nightly</span></div>
       <div><button @click="openMethodology">Open data methodology</button><a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer">GitHub</a></div>
     </footer>
+
+    <Teleport to="body">
+      <JobDetailDrawer
+        v-if="selectedJob"
+        :job="selectedJob"
+        :saved="isSavedJob(selectedJob.url)"
+        @close="selectedJob = null"
+        @toggle-save="toggleSavedJob"
+        @report-bad-listing="reportBadListing"
+      />
+    </Teleport>
 
     <!-- ═══ METHODOLOGY MODAL ═══ -->
     <Teleport to="body">

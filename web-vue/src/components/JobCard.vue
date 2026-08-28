@@ -6,7 +6,7 @@ const props = defineProps({
   emphasized: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['toggle-save', 'hover-college', 'report-bad-listing'])
+const emit = defineEmits(['toggle-save', 'hover-college', 'report-bad-listing', 'open-detail'])
 
 function getDeadlineLabel(job) {
   if (job.openUntilFilled) return 'Rolling'
@@ -67,15 +67,9 @@ function getStartLabel(job) {
     @mouseleave="emit('hover-college', null)"
   >
     <div class="fa-listing-main">
-      <a
-        v-if="props.job.linkQuality !== 'invalid'"
-        :href="props.job.url"
-        target="_blank"
-        rel="noreferrer"
-        class="fa-listing-title"
-        :aria-label="`Open posting: ${props.job.title}`"
-      >{{ props.job.title }}</a>
-      <div v-else class="fa-listing-title">{{ props.job.title }}</div>
+      <button type="button" class="fa-listing-title listing-title-button" @click="emit('open-detail', props.job)">
+        {{ props.job.title }}
+      </button>
 
       <div class="fa-listing-inst">
         {{ props.job.college || 'Institution not specified' }}
@@ -101,10 +95,42 @@ function getStartLabel(job) {
       </div>
       <div v-if="getDeadlineLabel(props.job)" class="fa-listing-deadline">Deadline {{ getDeadlineLabel(props.job) }}</div>
       <div v-else-if="getStartLabel(props.job)" class="fa-listing-deadline">Starts {{ getStartLabel(props.job) }}</div>
+      <div class="listing-actions">
+        <button type="button" @click.stop="emit('open-detail', props.job)">Details</button>
+        <button type="button" @click.stop="emit('report-bad-listing', props.job)">Report</button>
+      </div>
     </div>
   </article>
 </template>
 
 <style scoped>
 .fa-listing-emphasized { background: rgba(46, 113, 151, 0.06); }
+.listing-title-button {
+  appearance: none;
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.listing-title-button:hover,
+.listing-title-button:focus-visible { color: var(--accent); outline: none; }
+.listing-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 7px; }
+.listing-actions button {
+  appearance: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 0;
+  color: var(--ink-3);
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.listing-actions button:hover,
+.listing-actions button:focus-visible { color: var(--accent); border-bottom-color: currentColor; outline: none; }
 </style>

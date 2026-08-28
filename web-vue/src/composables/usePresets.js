@@ -22,6 +22,9 @@ function presetHasFilters(preset) {
       preset.state !== ALL_FILTER_VALUE ||
       preset.positionType !== ALL_FILTER_VALUE ||
       preset.college !== ALL_FILTER_VALUE ||
+      preset.department !== ALL_FILTER_VALUE ||
+      preset.discipline !== ALL_FILTER_VALUE ||
+      preset.city !== ALL_FILTER_VALUE ||
       preset.tenureTrackOnly ||
       preset.savedOnly ||
       preset.newOnly ||
@@ -34,6 +37,9 @@ function presetLabel(preset) {
   if (preset.q) parts.push(`"${truncate(preset.q, 16)}"`)
   if (preset.state && preset.state !== ALL_FILTER_VALUE) parts.push(preset.state)
   if (preset.positionType && preset.positionType !== ALL_FILTER_VALUE) parts.push(preset.positionType)
+  if (preset.discipline && preset.discipline !== ALL_FILTER_VALUE) parts.push(preset.discipline)
+  if (preset.department && preset.department !== ALL_FILTER_VALUE) parts.push(truncate(preset.department, 18))
+  if (preset.city && preset.city !== ALL_FILTER_VALUE) parts.push(preset.city)
   if (preset.savedOnly) parts.push('Saved')
   if (preset.newOnly) parts.push('New')
   if (preset.tenureTrackOnly) parts.push('Tenure')
@@ -53,6 +59,9 @@ export function usePresets({ filtersRef, updateFilters }) {
       state: filtersRef.value.state,
       positionType: filtersRef.value.positionType,
       college: filtersRef.value.college,
+      department: filtersRef.value.department,
+      discipline: filtersRef.value.discipline,
+      city: filtersRef.value.city,
       tenureTrackOnly: filtersRef.value.tenureTrackOnly,
       savedOnly: filtersRef.value.savedOnly,
       newOnly: filtersRef.value.newOnly,
@@ -68,6 +77,9 @@ export function usePresets({ filtersRef, updateFilters }) {
       state: preset?.state || ALL_FILTER_VALUE,
       positionType: preset?.positionType || ALL_FILTER_VALUE,
       college: preset?.college || ALL_FILTER_VALUE,
+      department: preset?.department || ALL_FILTER_VALUE,
+      discipline: preset?.discipline || ALL_FILTER_VALUE,
+      city: preset?.city || ALL_FILTER_VALUE,
       sortBy: preset?.sortBy || DEFAULT_SORT,
       tenureTrackOnly: !!preset?.tenureTrackOnly,
       savedOnly: !!preset?.savedOnly,
