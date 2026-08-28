@@ -47,6 +47,17 @@ const sortedPositionTypes = computed(() => {
 const maxTypeCount = computed(() => sortedPositionTypes.value[0]?.count || 1)
 const tenureStats = computed(() => trends.value?.stats?.tenureTrackBreakdown || null)
 const tenureHistory = computed(() => appointmentTrackHistory(trends.value?.history || []))
+const aiStats = computed(() => trends.value?.stats?.aiHiringBreakdown || null)
+const aiHistory = computed(() => {
+  const items = (trends.value?.history || [])
+    .filter(h => h.aiRelatedJobs != null)
+    .slice(-12)
+  const max = Math.max(1, ...items.map(h => h.aiRelatedJobs))
+  return items.map(h => ({
+    ...h,
+    heightPct: Math.max(6, Math.round((h.aiRelatedJobs / max) * 100)),
+  }))
+})
 
 const aiParagraphs = computed(() =>
   (trends.value?.aiSummary || '').split('\n\n').map(p => p.trim()).filter(Boolean)
@@ -107,6 +118,56 @@ function fmtWeek(s) {
     </div>
 
     <hr class="fa-rule-thin" style="margin: 40px 0;" />
+
+    <!-- AI hiring pulse -->
+    <section v-if="aiStats" class="ai-pulse" aria-labelledby="ai-pulse-title">
+      <div class="fa-label" id="ai-pulse-title">AI hiring pulse</div>
+      <div class="ai-pulse-head" :class="{ 'no-delta': aiStats.delta == null }">
+        <div>
+          <div class="fa-display ai-pulse-value">{{ fmt(aiStats.related) }}</div>
+          <div class="fa-meta">openings explicitly related to AI</div>
+        </div>
+        <div class="ai-pulse-secondary">
+          <div class="fa-num ai-pulse-share">{{ aiStats.sharePct }}%</div>
+          <div class="fa-meta">of all tracked listings</div>
+        </div>
+        <div v-if="aiStats.delta != null" class="ai-pulse-secondary">
+          <div class="fa-num ai-pulse-share" :class="{ positive: aiStats.delta >= 0 }">
+            {{ aiStats.delta >= 0 ? '+' : '' }}{{ fmt(aiStats.delta) }}
+          </div>
+          <div class="fa-meta">versus prior week</div>
+        </div>
+      </div>
+      <div v-if="aiHistory.length" class="ai-history" aria-label="Weekly AI-related faculty job listings">
+        <div
+          v-for="week in aiHistory"
+          :key="week.weekEnd"
+          class="ai-week"
+          tabindex="0"
+          :style="{ height: `${week.heightPct}%` }"
+          :aria-label="`${fmtWeek(week.weekEnd)}: ${fmt(week.aiRelatedJobs)} AI-related listings, ${week.aiRelatedPct}% of all listings`"
+          :data-tooltip="`${fmtWeek(week.weekEnd)} · ${fmt(week.aiRelatedJobs)} openings · ${week.aiRelatedPct}%`"
+        ></div>
+      </div>
+      <div v-if="aiHistory.length" class="trends-spark-labels fa-meta">
+        <span>{{ fmtWeek(aiHistory[0].weekEnd) }}</span>
+        <span>{{ fmtWeek(aiHistory[aiHistory.length - 1].weekEnd) }}</span>
+      </div>
+      <div v-if="aiHistory.length === 1" class="fa-meta ai-start-note">
+        Tracking starts this week; a new comparison point will be added with each weekly digest.
+      </div>
+      <div v-if="aiStats.topInstitutions?.length" class="ai-leaders">
+        <span class="fa-meta">Leading institutions</span>
+        <span v-for="item in aiStats.topInstitutions.slice(0, 3)" :key="item.institution" class="ai-leader">
+          {{ item.institution }} <b>{{ fmt(item.count) }}</b>
+        </span>
+      </div>
+      <div class="fa-meta ai-method-note">
+        Strict classifier v{{ aiStats.classifierVersion }} counts explicit references to artificial intelligence and core methods such as machine learning, generative AI, NLP, computer vision, and neural networks. Broad data-science or robotics listings are excluded unless an AI signal is present.
+      </div>
+    </section>
+
+    <hr v-if="aiStats" class="fa-rule-thin" style="margin: 40px 0;" />
 
     <!-- Appointment-track history -->
     <section v-if="tenureStats" class="tenure-comparison" aria-labelledby="tenure-comparison-title">
@@ -292,6 +353,62 @@ function fmtWeek(s) {
   margin: 0 0 16px;
 }
 .trends-prose p:last-child { margin-bottom: 0; }
+
+.ai-pulse { max-width: 920px; }
+.ai-pulse-head {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) repeat(2, minmax(150px, .8fr));
+  gap: 1px;
+  margin-top: 18px;
+  border: 1px solid var(--rule-2);
+  background: var(--rule-2);
+}
+.ai-pulse-head > div { padding: 20px 22px; background: var(--paper); }
+.ai-pulse-head.no-delta { grid-template-columns: minmax(220px, 1.4fr) minmax(150px, .8fr); }
+.ai-pulse-value { font-size: 44px; line-height: 1; color: var(--accent); }
+.ai-pulse-secondary { display: flex; flex-direction: column; justify-content: center; }
+.ai-pulse-share { font-size: 25px; color: var(--ink); }
+.ai-pulse-share.positive { color: var(--sage); }
+.ai-history {
+  height: 126px;
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  margin-top: 24px;
+  padding: 10px 12px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ai-week {
+  position: relative;
+  flex: 1;
+  max-width: 54px;
+  min-height: 8px;
+  background: var(--accent);
+  opacity: .76;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.ai-week:hover, .ai-week:focus { opacity: 1; transform: translateY(-2px); outline: none; }
+.ai-week:hover::after, .ai-week:focus::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 7px);
+  z-index: 2;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 220px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  color: var(--paper);
+  background: var(--ink);
+  font-size: 10px;
+  white-space: nowrap;
+}
+.ai-start-note { margin-top: 12px; }
+.ai-leaders { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 18px; }
+.ai-leader { padding: 6px 9px; border: 1px solid var(--rule-2); color: var(--ink-2); font-size: 11px; }
+.ai-leader b { margin-left: 5px; color: var(--accent); }
+.ai-method-note { max-width: 820px; margin-top: 16px; color: var(--ink-4); line-height: 1.55; }
 
 .tenure-comparison { max-width: 820px; }
 .tenure-metrics {
@@ -521,6 +638,10 @@ function fmtWeek(s) {
   .trends-tab { padding: 32px var(--pad); }
   .trends-narrative { margin-top: 24px; }
   .trends-prose p { font-size: 15px; line-height: 1.7; }
+  .ai-pulse-head { grid-template-columns: 1fr; }
+  .ai-pulse-head.no-delta { grid-template-columns: 1fr; }
+  .ai-pulse-head > div { padding: 16px 18px; }
+  .ai-history { gap: 4px; }
   .tenure-metrics { grid-template-columns: 1fr; }
 
   /* Stack the two-up grids — the side-by-side columns and the fixed 380px

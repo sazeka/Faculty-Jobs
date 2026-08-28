@@ -24,6 +24,7 @@ import http from "http";
 import { fileURLToPath } from "url";
 import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
 import { computeInstitutionControlBreakdown } from "./lib/weekly-institution-control-stats.js";
+import { computeAiHiringBreakdown } from "./lib/weekly-ai-hiring-stats.js";
 import { latestPriorWeek } from "./lib/weekly-trends-history.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -116,6 +117,7 @@ function computeStats(jobs, institutions) {
     topInstitutions,
     tenureTrackBreakdown: computeTenureTrackBreakdown(jobs),
     institutionControlBreakdown: computeInstitutionControlBreakdown(jobs, institutions),
+    aiHiringBreakdown: computeAiHiringBreakdown(jobs),
   };
 }
 
@@ -136,6 +138,9 @@ function templateSummary(stats, prev) {
       : "",
     stats.tenureTrackBreakdown.classified
       ? `Among positions with a known appointment track, ${stats.tenureTrackBreakdown.tenureTrackPct}% are tenure-track and ${stats.tenureTrackBreakdown.nonTenureTrackPct}% are non-tenure-track.`
+      : "",
+    stats.aiHiringBreakdown.related
+      ? `${stats.aiHiringBreakdown.related.toLocaleString()} listings (${stats.aiHiringBreakdown.sharePct}%) explicitly reference artificial intelligence or a core AI method.`
       : "",
   ].filter(Boolean).join(" ");
 }
@@ -234,6 +239,13 @@ async function main() {
     positionTypeBreakdown: stats.byType,
     tenureTrackBreakdown: stats.tenureTrackBreakdown,
     institutionControlBreakdown: stats.institutionControlBreakdown,
+    aiHiringBreakdown: {
+      ...stats.aiHiringBreakdown,
+      delta: prev?.aiHiringBreakdown?.related == null ? null : stats.aiHiringBreakdown.related - prev.aiHiringBreakdown.related,
+      deltaPct: prev?.aiHiringBreakdown?.related
+        ? Number((((stats.aiHiringBreakdown.related - prev.aiHiringBreakdown.related) / prev.aiHiringBreakdown.related) * 100).toFixed(1))
+        : null,
+    },
     topInstitutions: stats.topInstitutions.slice(0, 5),
   };
 
@@ -261,6 +273,7 @@ async function main() {
     byType: stats.byType,
     tenureTrackBreakdown: stats.tenureTrackBreakdown,
     institutionControlBreakdown: stats.institutionControlBreakdown,
+    aiHiringBreakdown: statsForPrompt.aiHiringBreakdown,
     topSources: stats.topSources,
     topInstitutions: stats.topInstitutions,
     aiSummary: summary,
@@ -294,6 +307,9 @@ async function main() {
       publicPct: h.institutionControlBreakdown?.publicPct ?? null,
       privateNonprofitPct: h.institutionControlBreakdown?.privateNonprofitPct ?? null,
       institutionControlUnknown: h.institutionControlBreakdown?.unknown ?? null,
+      aiRelatedJobs: h.aiHiringBreakdown?.related ?? null,
+      aiRelatedPct: h.aiHiringBreakdown?.sharePct ?? null,
+      aiClassifierVersion: h.aiHiringBreakdown?.classifierVersion ?? null,
     })),
   };
 

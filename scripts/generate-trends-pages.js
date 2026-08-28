@@ -131,7 +131,7 @@ function pageShell({ title, metaDesc, pageUrl, ldBlocks, bodyHtml }) {
   <footer>Faculty Atlas · <a href="/" style="color:var(--ink2);">facultyatlas.org</a> — open faculty positions across North America, charted.</footer>
 </body>
 </html>
-`;
+`.replace(/[ \t]+$/gm, "");
 }
 
 function renderIndexPage(history) {
@@ -144,7 +144,10 @@ function renderIndexPage(history) {
       const prev = ordered[i + 1];
       const delta = prev ? h.totalJobs - prev.totalJobs : null;
       const deltaLabel = delta == null ? "" : ` (${delta >= 0 ? "+" : ""}${delta})`;
-      return `<li><a href="/trends/${esc(h.weekEnd)}/">Week of ${esc(fmtWeek(h.weekEnd))}</a><span class="n">${h.totalJobs.toLocaleString()} listings${deltaLabel}</span></li>`;
+      const aiLabel = h.aiHiringBreakdown?.related == null
+        ? ""
+        : ` · ${h.aiHiringBreakdown.related.toLocaleString()} AI-related`;
+      return `<li><a href="/trends/${esc(h.weekEnd)}/">Week of ${esc(fmtWeek(h.weekEnd))}</a><span class="n">${h.totalJobs.toLocaleString()} listings${deltaLabel}${aiLabel}</span></li>`;
     })
     .join("\n      ");
 
@@ -213,6 +216,17 @@ function renderWeekPage(entry, prevEntry, nextEntry) {
     </table>`
     : "";
 
+  const ai = entry.aiHiringBreakdown;
+  const aiHtml = ai
+    ? `<h2>AI hiring pulse</h2>
+    <table>
+      <tr><td>Explicitly AI-related openings</td><td class="n">${ai.related.toLocaleString()}</td></tr>
+      <tr><td>Share of all listings</td><td class="n">${ai.sharePct}%</td></tr>
+${ai.delta == null ? "" : `      <tr><td>Vs prior week</td><td class="n">${ai.delta >= 0 ? "+" : ""}${ai.delta.toLocaleString()}</td></tr>\n`}
+    </table>
+    <p class="small">Strict classifier v${ai.classifierVersion} counts explicit references to artificial intelligence and core methods including machine learning, generative AI, natural language processing, computer vision, and neural networks. Broad data-science and robotics listings are excluded unless an AI signal is present.</p>`
+    : "";
+
   const pagerHtml = `
     <div class="pager">
       <span>${prevEntry ? `<a href="/trends/${prevEntry.weekEnd}/">← Week of ${esc(fmtWeek(prevEntry.weekEnd))}</a>` : ""}</span>
@@ -225,12 +239,11 @@ function renderWeekPage(entry, prevEntry, nextEntry) {
     <h1>Faculty Hiring Trends — Week of ${esc(weekLabel)}</h1>
     <div class="stat-row">
       <div class="stat"><div class="l">Open listings</div><div class="v">${entry.totalJobs.toLocaleString()}</div></div>
-      ${deltaHtml}
-      ${topType ? `<div class="stat"><div class="l">Top position type</div><div class="v" style="font-size:18px;">${esc(topType[0])}</div></div>` : ""}
+${deltaHtml}${topType ? `      <div class="stat"><div class="l">Top position type</div><div class="v" style="font-size:18px;">${esc(topType[0])}</div></div>\n` : ""}${ai ? `      <div class="stat"><div class="l">AI-related openings</div><div class="v">${ai.related.toLocaleString()}</div></div>\n` : ""}
     </div>
     ${prose}
     ${sourcesHtml}
-    ${institutionsHtml}${tenureHtml ? `\n    ${tenureHtml}` : ""}
+    ${institutionsHtml}${aiHtml ? `\n    ${aiHtml}` : ""}${tenureHtml ? `\n    ${tenureHtml}` : ""}
     ${typesHtml}
     ${pagerHtml}
   `;
