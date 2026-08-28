@@ -94,6 +94,8 @@ async function copyShareLink() {
 
 const hoveredCollege = ref(null)
 const activeTab = ref('jobs')
+const MAP_VISIBILITY_KEY = 'faculty-atlas-map-visible-v1'
+const showMapRail = ref(readMapVisibility())
 const showAllJobs = ref(false)
 const showMethodology = ref(false)
 const excludedColleges = ref(null)
@@ -101,6 +103,22 @@ const filterDrawerOpen = ref(false)
 const catalogSection = ref(null)
 const selectedJob = ref(null)
 const savedCount = computed(() => savedJobs.value.size)
+
+function readMapVisibility() {
+  try {
+    return localStorage.getItem(MAP_VISIBILITY_KEY) !== 'false'
+  } catch {
+    return true
+  }
+}
+
+function setMapRailVisibility(visible) {
+  showMapRail.value = visible
+  if (!visible) hoveredCollege.value = null
+  try {
+    localStorage.setItem(MAP_VISIBILITY_KEY, String(visible))
+  } catch { /* storage unavailable */ }
+}
 
 async function openJobDetail(job) {
   selectedJob.value = job
@@ -251,7 +269,12 @@ async function reportBadListing(job) {
 
     <TrendsTab v-if="activeTab === 'trends'" :base-url="baseUrl" />
 
-    <section v-if="activeTab === 'jobs'" ref="catalogSection" class="fa-catalog-shell">
+    <section
+      v-if="activeTab === 'jobs'"
+      ref="catalogSection"
+      class="fa-catalog-shell"
+      :class="{ 'is-map-hidden': !showMapRail }"
+    >
       <Teleport to="body">
         <div v-if="filterDrawerOpen" class="fa-drawer-backdrop" @click="filterDrawerOpen = false" />
       </Teleport>
@@ -297,6 +320,12 @@ async function reportBadListing(job) {
             <span v-else>Loading the latest catalog…</span>
           </div>
           <div class="fa-toolbar-actions">
+            <button
+              class="fa-tool-button fa-map-toggle"
+              type="button"
+              :aria-label="showMapRail ? 'Hide results map' : 'Show results map'"
+              @click="setMapRailVisibility(!showMapRail)"
+            >{{ showMapRail ? 'Hide map' : 'Show map' }}</button>
             <button class="fa-tool-button" @click="copyShareLink">{{ shareCopied ? '✓ Copied' : '⎘ Share' }}</button>
             <button class="fa-tool-button fa-filters-toggle" @click="filterDrawerOpen = true">⊞ Filters</button>
             <select :value="filters.sortBy" aria-label="Sort jobs" @change="updateFilters({ sortBy: $event.target.value })">
@@ -335,10 +364,12 @@ async function reportBadListing(job) {
         </div>
       </main>
 
-      <aside class="fa-map-rail">
+      <aside v-if="showMapRail" class="fa-map-rail">
         <div class="fa-map-rail-head">
           <span>Results on the map</span>
-          <button @click="activeTab = 'map'">Expand ↗</button>
+          <div class="fa-map-rail-actions">
+            <button type="button" @click="activeTab = 'map'">Expand ↗</button>
+          </div>
         </div>
         <MapPanel
           :jobs="filteredJobs"
@@ -1074,6 +1105,7 @@ async function reportBadListing(job) {
   min-height: 660px;
   scroll-margin-top: 72px;
 }
+.fa-catalog-shell.is-map-hidden { grid-template-columns: 235px minmax(460px, 1fr); }
 .fa-filters-col {
   position: sticky;
   top: 72px;
@@ -1205,8 +1237,9 @@ a.fa-listing-title:hover { color: var(--accent); }
   left: 0;
   right: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   padding: 16px 17px 12px;
   color: var(--ink);
   background: linear-gradient(var(--paper-3), rgba(223, 231, 231, .84), transparent);
@@ -1216,7 +1249,9 @@ a.fa-listing-title:hover { color: var(--accent); }
   letter-spacing: .07em;
   text-transform: uppercase;
 }
-.fa-map-rail-head button { border: 0; color: var(--ocean); background: transparent; font-size: 9px; cursor: pointer; }
+.fa-map-rail-actions { display: flex; align-items: center; gap: 12px; }
+.fa-map-rail-head button { border: 0; padding: 0; color: var(--ocean); background: transparent; font-family: inherit; font-size: 9px; text-transform: uppercase; cursor: pointer; }
+.fa-map-rail-head button:hover { color: var(--accent); }
 .fa-map-rail .map-panel { height: 100% !important; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent; }
 .fa-map-rail .map-top-row,
 .fa-map-rail .map-note { display: none; }
@@ -1269,6 +1304,7 @@ a.fa-listing-title:hover { color: var(--accent); }
 @media (max-width: 1120px) {
   .fa-catalog-shell { grid-template-columns: 220px minmax(420px, 1fr); }
   .fa-map-rail { display: none; }
+  .fa-map-toggle { display: none; }
   .fa-hero h1 { font-size: 56px; }
   .fa-hero { grid-template-columns: minmax(0, 1fr) minmax(350px, .82fr); gap: 30px; }
 }
