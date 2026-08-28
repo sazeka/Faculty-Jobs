@@ -674,7 +674,7 @@ async function reportBadListing(job) {
   line-height: 1;
   cursor: pointer;
 }
-.fa-map-divider-toggle.is-collapsed { right: -26px; border-radius: 14px 0 0 14px; }
+.fa-map-divider-toggle.is-collapsed { right: -12px; }
 .fa-map-divider-toggle:hover { border-color: var(--ocean); color: var(--accent); }
 .fa-map-divider-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .fa-show-more {
