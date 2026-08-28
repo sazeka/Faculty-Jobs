@@ -636,6 +636,7 @@ const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type
 
 // Massachusetts private universities + liberal arts colleges
 const MA_PRIVATE_CAMPUSES = [
+  { campus: "New England Law-Boston", type: "faculty-headings", url: "https://www.nesl.edu/careers" },
   { campus: "Merrimack College", type: "generic", url: "https://www.merrimack.edu/about/offices_services/human_resources/employment_opportunities/" },
   { campus: "Hult International Business School", type: "oracle-cx", url: "https://jobs.ef.com/en/sites/hult/jobs?lastSelectedFacet=AttributeChar2&selectedFlexFieldsFacets=%22AttributeChar2%7CFaculty+%26+research%22" },
   { campus: "Lesley University", type: "workday", url: "https://lesley.wd503.myworkdayjobs.com/Lesley_University_Careers" },
@@ -1529,6 +1530,7 @@ const NJ_CAMPUSES = [
 ];
 
 const NJ_PRIVATE_CAMPUSES = [
+  { campus: "Princeton Theological Seminary", type: "faculty-headings", url: "https://ptsem.edu/employment/" },
   { campus: "Princeton University", type: "princeton", url: "https://puwebp.princeton.edu/AcadHire/apply/" },
   { campus: "Seton Hall University", type: "pageup", url: "https://jobs.shu.edu/cw/en-us/listing" },
   { campus: "Stevens Institute of Technology", type: "workday", url: "https://stevens.wd5.myworkdayjobs.com/External" },
@@ -1696,6 +1698,7 @@ const PA_CAMPUSES = [
 ];
 
 const PA_PRIVATE_CAMPUSES = [
+  { campus: "Peirce College", type: "generic", url: "https://www.peirce.edu/about-peirce/additional-resources/careers-at-peirce/", excludeTitleFilter: "\\bsupplemental instructor\\b" },
   { campus: "Messiah University", type: "peopleadmin", url: "https://careers.messiah.edu/postings/search?668%5B%5D=2&commit=Search&query=&query_v0_posted_at_date=&utf8=%E2%9C%93" },
   { campus: "Harrisburg University of Science and Technology", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=d7d41d6e-e9f2-43e0-af0f-ac2146083d4f&lang=en_US" },
   { campus: "Haverford College", type: "generic", url: "https://www.haverford.edu/human-resources/jobs" },
@@ -1965,6 +1968,7 @@ const PA_PRIVATE_CAMPUSES = [
 
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
+  { campus: "North Carolina Wesleyan University", type: "faculty-headings", url: "https://ncwu.edu/community/careers/current-openings/faculty-teaching-positions/" },
   { campus: "Methodist University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/24375BA29C8AE0EA98AC3A9FD8D2FDCE/career-page" },
   { campus: "Greensboro College", type: "generic", url: "https://www.greensboro.edu/employment/" },
   { campus: "Lenoir-Rhyne University", type: "lr-faculty", url: "https://www.lr.edu/work-at-lr/open-adjunct-faculty-positions" },
@@ -2200,6 +2204,7 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Patrick Henry College", type: "generic", url: "https://www.phc.edu/faculty-and-academic-affairs" },
   { campus: "Mary Baldwin University", type: "generic", url: "https://marybaldwin.edu/employment-and-jobs-at-mary-baldwin/", excludeTitleFilter: "\\bfaculty support\\b" },
   { campus: "Marymount University", type: "workday", url: "https://marymount.wd5.myworkdayjobs.com/Careers" },
   { campus: "University of Mary Washington", type: "pageup", url: "https://jobs.umw.edu/jobs/search" },
@@ -3099,6 +3104,8 @@ function inferSunyCampusFromText(title, url) {
 
 // NY Private Universities
 const NY_PRIVATE_CAMPUSES = [
+  { campus: "New York Law School", type: "generic", url: "https://www.nyls.edu/about/working-at-nyls/", excludeTitleFilter: "\\bfaculty news\\b" },
+  { campus: "Niagara University", type: "generic", url: "https://niagara.applicantpro.com/jobs/" },
   { campus: "IE New York College", type: "generic", url: "https://www.ienyc.edu/about/careers-at-ienyc/" },
   { campus: "United States Merchant Marine Academy", type: "generic", url: "https://www.usmma.edu/about/employment/career-opportunities" },
   // Top 20 largest private universities in New York State
@@ -4711,6 +4718,7 @@ const CO_CAMPUSES = [
 
 // OH (Ohio)
 const OH_CAMPUSES = [
+  { campus: "Ohio Dominican University", type: "generic", url: "https://ohiodominican.applicantpro.com/jobs/" },
   { campus: "Gods Bible School and College", type: "generic", url: "https://www.gbs.edu/about-us/careers/gbsc-positions/" },
   { campus: "Hiram College", type: "generic", url: "https://www.hiram.edu/about-hiram-college/human-resources/careers-at-hiram/" },
   { campus: "Sinclair Community College", type: "peopleadmin", url: "https://jobs.sinclair.edu/postings/search?sort=316+asc" },
@@ -5840,6 +5848,7 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Paul Quinn College", type: "faculty-headings", url: "https://paulquinn.edu/opportunities/" },
   { campus: "Hallmark University", type: "generic", url: "https://careers.hallmarkuniversity.edu/job-type/faculty/" },
   { campus: "Navarro College", type: "oracle-cx", url: "https://espf.fa.ocs.oraclegovcloud2.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?keyword=Faculty&mode=location" },
   { campus: "San Jacinto Community College", type: "csod", url: "https://sanjac.csod.com/ux/ats/careersite/3/home?c=sanjac" },
@@ -7156,6 +7165,9 @@ const KS_CAMPUSES = [
 
 // OK (Oklahoma)
 const OK_CAMPUSES = [
+  { campus: "Oklahoma Christian University", type: "generic", url: "https://recruitingbypaycor.com/career/CareerHome.action?clientId=8a7883d08145828d0181885d0c192c58" },
+  { campus: "Oral Roberts University", type: "generic", url: "https://oru.hrmdirect.com/employment/job-openings.php?search=true&nohd=&dept=-1&cust_sort1=154253&cust_sort2=-1&cust_sort3=-1" },
+  { campus: "Phillips Theological Seminary", type: "faculty-headings", url: "https://ptstulsa.edu/employment/" },
   { campus: "Langston University", type: "nau-search", url: "https://jobs.okstate.edu/jobs/search/search-page-langston" },
   { campus: "Northwestern Oklahoma State University", type: "generic", url: "https://www.nwosu.edu/employment/" },
   { campus: "Southeastern Oklahoma State University", type: "csod", url: "https://seok.csod.com/ux/ats/careersite/1/home?c=seok" },
@@ -10312,6 +10324,7 @@ async function scrapeMaPrivate(context) {
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "MA");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "MA");
         if (type === "gordon-faculty") return await scrapeGordonFacultyAs(context, url, campus, "MA");
+        if (type === "faculty-headings") return await scrapeFacultyHeadingPageAs(context, url, campus, "MA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MA");
         return [];
       } catch (e) {
@@ -11040,6 +11053,7 @@ async function scrapeNjPrivate(context) {
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "NJ");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NJ");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "NJ");
+        if (type === "faculty-headings") return await scrapeFacultyHeadingPageAs(context, url, campus, "NJ");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NJ");
         return [];
       } catch (e) {
@@ -11824,6 +11838,7 @@ if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus,
 if (type === "paycom") return await scrapePaycomAs(context, url, campus, "NC");
 if (type === "pageup-campus") return await scrapePageUpCampusAs(context, url, campus, "NC", locationFilter);
 if (type === "lr-faculty") return await scrapeLenoirRhyneFacultyAs(url, campus, "NC");
+if (type === "faculty-headings") return await scrapeFacultyHeadingPageAs(context, url, campus, "NC");
 if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NC");
 
         return [];
@@ -12107,7 +12122,10 @@ async function scrapePaAll(context) {
         if (type === "applitrack") return await scrapeApplitrackAs(context, url, campus, "PA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "PA");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "PA");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "PA");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "PA");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || "")) : jobs;
+        }
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -16156,6 +16174,44 @@ export async function scrapeQuincyFacultyAs(context, startUrl, campusName = "Qui
     return jobs;
   } catch (error) {
     console.error(`❌ ${campusName} ${sourceName} Quincy scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+export async function scrapeFacultyHeadingPageAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+    const rows = await safeEvaluate(page, () => {
+      const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+      return [...document.querySelectorAll("h2, h3, h4, h5, button")].map((node) => {
+        const direct = node.closest("a[href]") || node.querySelector("a[href]");
+        const nearby = node.parentElement?.querySelector("a[href]");
+        return { title: cleanText(node.textContent), url: direct?.href || nearby?.href || location.href };
+      });
+    });
+    const generic = /^(?:academics and )?faculty$|^(?:full-time|part-time|adjunct)?\s*faculty\s+(?:positions?|openings?|opportunities)$|^(?:view|learn more|apply)(?:\s+(?:faculty|adjunct).*)?$/i;
+    const seen = new Set();
+    const jobs = (rows || [])
+      .filter((row) => /\b(?:professor|faculty|instructor|lecturer|scholar|academic dean)\b/i.test(row.title || ""))
+      .filter((row) => !generic.test(row.title || ""))
+      .filter((row) => !/\b(?:does not|doesn't|no)\s+(?:currently\s+)?have\s+any\s+openings\b/i.test(row.title || ""))
+      .filter((row) => !/\b(?:faculty news|faculty support|faculty development|faculty application)\b/i.test(row.title || ""))
+      .map((row) => ({ ...row, title: normalizeJobTitle(row.title) }))
+      .filter((row) => {
+        const key = row.title.toLowerCase();
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map((row) => toNjJob(row.title, row.url || startUrl, campusName, sourceName));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty headings)`);
+    return jobs;
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} faculty-heading scrape failed:`, error?.message || error);
     return [];
   } finally {
     await page.close().catch(() => {});
@@ -20307,6 +20363,7 @@ async function scrapeOkAll(context) {
         }
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "OK");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OK");
+        if (type === "faculty-headings") return await scrapeFacultyHeadingPageAs(context, url, campus, "OK");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OK");
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "OK");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "OK");
@@ -20808,6 +20865,7 @@ async function scrapeTxAll(context) {
         // Brazosport College.
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "TX");
         if (type === "swtx-employment") return await scrapeSwtxEmploymentAs(url, campus, "TX");
+        if (type === "faculty-headings") return await scrapeFacultyHeadingPageAs(context, url, campus, "TX");
         if (type === "nau-search") {
           const base = await scrapeNauSearch(context, url, campus, "TX");
           return await enrichEnUsJobCardsFromDetails(context, base, {
