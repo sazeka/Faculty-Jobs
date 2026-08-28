@@ -743,8 +743,6 @@ async function reportBadListing(job) {
 .fa-map-container .map-panel,
 .fa-map-container section { height: 100% !important; }
 .fa-map-container .leaflet-map { height: 100% !important; min-height: 320px; }
-.fa-map-container .map-top-row,
-.fa-map-container .map-note { display: none; }
 
 /* ─── Mobile filter drawer ─── */
 .fa-filters-toggle {
@@ -1390,6 +1388,47 @@ a.fa-listing-title:hover { color: var(--accent); }
 }
 .leaflet-map-wrap > .leaflet-map { height: 100%; }
 .map-stage .leaflet-map-wrap { flex: 1; }
+
+.map-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.map-overlay-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 700;
+  display: flex;
+  gap: 4px;
+  width: auto;
+  padding: 4px;
+  border: 1px solid rgba(18, 38, 58, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 254, 250, 0.94);
+  box-shadow: 0 5px 16px rgba(25, 43, 53, 0.14);
+  backdrop-filter: blur(6px);
+}
+.map-overlay-actions button {
+  flex: 0 0 auto;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 3px 8px;
+  border: 1px solid var(--rule-2);
+  border-radius: 5px;
+  color: var(--ink);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+.map-overlay-actions button:hover { background: rgba(18, 38, 58, 0.06); }
+.map-overlay-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .map-legend {
   position: absolute;
