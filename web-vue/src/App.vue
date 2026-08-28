@@ -863,9 +863,12 @@ async function reportBadListing(job) {
   gap: 28px;
   min-height: 72px;
   padding: 0 var(--pad);
-  color: #fff;
-  background: var(--ink);
-  border: 0;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  border-bottom: 1px solid var(--rule-2);
+  box-shadow: 0 8px 28px rgba(24, 38, 46, .045);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 .fa-header .fa-wordmark {
   appearance: none;
@@ -874,13 +877,13 @@ async function reportBadListing(job) {
   gap: 11px;
   padding: 0;
   border: 0;
-  color: #fff;
+  color: var(--ink);
   background: transparent;
   cursor: pointer;
 }
 .fa-header .fa-wordmark .fa-display { font-size: 25px; line-height: 1; }
-.fa-header .fa-wordmark i { color: #f4a27c; }
-.fa-compass-svg { color: #f4a27c; }
+.fa-header .fa-wordmark i { color: var(--accent); }
+.fa-header .fa-compass-svg { color: var(--accent); }
 .fa-nav {
   justify-self: center;
   display: flex;
@@ -892,7 +895,7 @@ async function reportBadListing(job) {
   padding: 3px 13px 0;
   border: 0;
   border-bottom: 3px solid transparent;
-  color: rgba(255, 255, 255, .64);
+  color: var(--ink-3);
   background: transparent;
   font-family: var(--font-mono);
   font-size: 10px;
@@ -902,21 +905,21 @@ async function reportBadListing(job) {
   cursor: pointer;
 }
 .fa-nav-link:hover,
-.fa-nav-link.active { color: #fff; border-bottom-color: #f4a27c; }
+.fa-nav-link.active { color: var(--ink); border-bottom-color: var(--accent); }
 .fa-saved-button {
   appearance: none;
-  border: 1px solid rgba(255, 255, 255, .3);
+  border: 1px solid var(--rule);
   border-radius: 999px;
   padding: 9px 14px;
-  color: #fff;
-  background: rgba(255, 255, 255, .05);
+  color: var(--ink-2);
+  background: color-mix(in srgb, var(--paper-2) 76%, transparent);
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 600;
   cursor: pointer;
 }
 .fa-saved-button:hover,
-.fa-saved-button.active { border-color: #f4a27c; color: #f4a27c; }
+.fa-saved-button.active { border-color: var(--accent); color: var(--accent); background: #fff; }
 
 .fa-hero {
   display: grid;
