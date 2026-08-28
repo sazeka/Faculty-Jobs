@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import heroAtlasUrl from './assets/hero-atlas-v2.jpg'
 import FilterBar from './components/FilterBar.vue'
 import ActiveChips from './components/ActiveChips.vue'
@@ -19,7 +19,7 @@ import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || 'https://github.com/sazeka/Faculty-Jobs/issues/new'
 const baseUrl = import.meta.env.BASE_URL || '/'
 
-const { jobs, scrapedAt, loadError, loadJobs, loadFullDescriptions, descriptionsLoading, qualitySummary, newJobsCount, newThisWeek, siteStats, hadPriorVisit } = useJobsData()
+const { jobs, scrapedAt, loadError, loadJobs, searchFullText, loadJobDescription, searchTermMatches, searchIndexLoading, qualitySummary, newJobsCount, newThisWeek, siteStats, hadPriorVisit } = useJobsData()
 
 // Prefer the global, daily-computed "new this week" figure; fall back to the
 // per-visitor count only if site-stats.json hasn't loaded.
@@ -59,19 +59,21 @@ const coverageDetail = computed(() => {
 })
 
 const filters = ref(createDefaultFilters())
-
-// The initial listing index intentionally excludes multi-KB posting bodies.
-// Fetch them only when a visitor enters a query that may need full-text search.
-let descriptionSearchTimer
+const queryDraft = ref(filters.value.q)
+let queryTimer
+function updateQueryDraft(value) {
+  queryDraft.value = value
+  clearTimeout(queryTimer)
+  queryTimer = setTimeout(() => updateFilters({ q: value }), 175)
+}
 watch(() => filters.value.q, (query) => {
-  clearTimeout(descriptionSearchTimer)
-  if (String(query || '').trim().split(/\s+/).some((term) => term.length >= 2)) {
-    descriptionSearchTimer = setTimeout(() => loadFullDescriptions().catch(() => {}), 350)
-  }
+  if (query !== queryDraft.value) queryDraft.value = query
+  searchFullText(query).catch(() => {})
 })
+onBeforeUnmount(() => clearTimeout(queryTimer))
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
 const { catalogSummary, stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
-  useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob })
+  useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob, searchTermMatchesRef: searchTermMatches })
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({ filtersRef: filters, updateFilters })
 const { alertsWithCounts, addAlert, removeAlert, subscribeAlert, subscribeStatus, subscribeError } = useAlerts({ filtersRef: filters, countMatches })
 
@@ -103,9 +105,7 @@ const savedCount = computed(() => savedJobs.value.size)
 async function openJobDetail(job) {
   selectedJob.value = job
   try {
-    await loadFullDescriptions()
-    const key = job?.canonicalJobId || job?.url
-    const full = jobs.value.find((item) => (item?.canonicalJobId || item?.url) === key)
+    const full = await loadJobDescription(job)
     if (full && selectedJob.value) selectedJob.value = { ...selectedJob.value, ...full }
   } catch {
     // The drawer remains useful even when the optional full description fails.
@@ -245,17 +245,17 @@ async function reportBadListing(job) {
           <span aria-hidden="true">⌕</span>
           <input
             class="fa-input"
-            :value="filters.q"
+            :value="queryDraft"
             type="search"
             placeholder="Search by field, institution, title, or place…"
             aria-label="Search jobs"
-            @input="updateFilters({ q: $event.target.value })"
+            @input="updateQueryDraft($event.target.value)"
             @keydown.enter="focusCatalog"
           />
           <button type="button" @click="focusCatalog">Search</button>
         </div>
         <div class="fa-search-meta">
-          <span v-if="descriptionsLoading">Expanding full-text search…</span>
+          <span v-if="searchIndexLoading">Loading full-text index…</span>
           <a :href="`${baseUrl}policy-exclusions.html`" :title="coverageDetail">{{ heroCoveragePercent }} U.S. university coverage</a>
         </div>
         <div v-if="loadError" class="fa-load-error">⚠ {{ loadError }}</div>
@@ -276,6 +276,7 @@ async function reportBadListing(job) {
         </div>
         <FilterBar
           :filters="filters"
+          :query-input="queryDraft"
           :state-options="stateOptions"
           :position-type-options="positionTypeOptions"
           :tenure-track-count="tenureTrackCount"
@@ -286,6 +287,7 @@ async function reportBadListing(job) {
           :subscribe-status="subscribeStatus"
           :subscribe-error="subscribeError"
           @update:filters="updateFilters"
+          @update:query="updateQueryDraft"
           @reset-filters="resetFilters"
           @subscribe-alert="subscribeAlert"
           @refresh-data="loadJobs"

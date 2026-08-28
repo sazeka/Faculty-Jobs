@@ -8,6 +8,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import { buildListingIndex } from "./lib/jobs-listing-index.js";
+import { buildFullTextSearchIndex } from "./lib/jobs-search-index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -62,6 +63,7 @@ function buildJobsChunks(payload, outDir) {
   };
   writeJson(path.join(outDir, "jobs-manifest.json"), manifest);
   writeCompactJson(path.join(outDir, "jobs-index.json"), buildListingIndex(payload, jobs));
+  writeCompactJson(path.join(outDir, "jobs-search-index.json"), buildFullTextSearchIndex(payload, jobs));
   return { sources: chunkEntries.length, totalJobs: jobs.length };
 }
 

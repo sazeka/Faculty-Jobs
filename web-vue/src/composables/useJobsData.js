@@ -1,4 +1,5 @@
 import { computed, onMounted, ref } from 'vue'
+import { normalizeSearchText, queryFullTextSearchIndex } from '../../../scripts/lib/jobs-search-index.js'
 
 const CACHE_KEY = 'facultyJobs.jobsCache.v2'
 const SEEN_URLS_KEY = 'facultyJobs.seenUrls.v1'
@@ -147,6 +148,16 @@ async function loadListingIndex(baseUrl) {
   }
 }
 
+async function loadFullTextIndex(baseUrl) {
+  const response = await fetchWithTimeout(`${baseUrl}data/jobs-search-index.json`)
+  if (!response.ok) throw new Error(`jobs-search-index.json returned ${response.status}`)
+  const payload = await readJsonSafe(response, 'jobs-search-index.json')
+  if (!Array.isArray(payload?.terms) || !Array.isArray(payload?.documentIds)) {
+    throw new Error('jobs-search-index.json is malformed')
+  }
+  return payload
+}
+
 function loadCachedPayload() {
   const parsed = safeParse(localStorage.getItem(CACHE_KEY) || '{}', {})
   if (!Array.isArray(parsed?.jobs)) return null
@@ -206,8 +217,8 @@ export function useJobsData() {
   const scrapedAt = ref(null)
   const loadError = ref('')
   const transport = ref('jobs.json')
-  const fullDescriptionsLoaded = ref(false)
-  const descriptionsLoading = ref(false)
+  const searchTermMatches = ref({ query: '', byTerm: new Map() })
+  const searchIndexLoading = ref(false)
   const baseUrl = import.meta.env.BASE_URL || '/'
   let _initialLastVisit = null
   try {
@@ -330,38 +341,66 @@ export function useJobsData() {
     }
   }
 
-  let descriptionsPromise = null
-  async function loadFullDescriptions() {
-    if (fullDescriptionsLoaded.value) return
-    if (descriptionsPromise) return descriptionsPromise
+  let searchIndexPromise = null
+  let latestSearchRequest = 0
+  async function searchFullText(query) {
+    const terms = normalizeSearchText(query).split(/\s+/).filter((term) => term.length >= 2)
+    const request = ++latestSearchRequest
+    if (terms.length === 0) {
+      searchTermMatches.value = { query: '', byTerm: new Map() }
+      searchIndexLoading.value = false
+      return
+    }
 
-    descriptionsLoading.value = true
-    descriptionsPromise = (async () => {
-      try {
-        const payload = await loadFromChunks(baseUrl)
-        const details = new Map()
-        for (const job of payload.jobs) {
-          const key = clean(job?.canonicalJobId) || clean(job?.url)
-          if (key) details.set(key, job)
-        }
-        jobs.value = jobs.value.map((job) => {
-          const key = clean(job?.canonicalJobId) || clean(job?.url)
-          const full = details.get(key)
-          if (!full) return job
-          return {
-            ...job,
-            description: full.description || null,
-            summary: full.summary || null,
-            hasDescription: Boolean(clean(full.description) || clean(full.summary)),
-          }
+    searchIndexLoading.value = true
+    try {
+      if (!searchIndexPromise) {
+        searchIndexPromise = loadFullTextIndex(baseUrl).catch((error) => {
+          searchIndexPromise = null
+          throw error
         })
-        fullDescriptionsLoaded.value = true
-      } finally {
-        descriptionsLoading.value = false
-        descriptionsPromise = null
       }
-    })()
-    return descriptionsPromise
+      const index = await searchIndexPromise
+      if (request === latestSearchRequest) {
+        searchTermMatches.value = { query: normalizeSearchText(query), byTerm: queryFullTextSearchIndex(index, terms) }
+      }
+    } finally {
+      if (request === latestSearchRequest) searchIndexLoading.value = false
+    }
+  }
+
+  let manifestPromise = null
+  const chunkPromises = new Map()
+  async function loadJobDescription(job) {
+    if (clean(job?.description) || clean(job?.summary) || !job?.hasDescription) return job
+    if (!manifestPromise) {
+      manifestPromise = fetchWithTimeout(`${baseUrl}data/jobs-manifest.json`)
+        .then(async (response) => {
+          if (!response.ok) throw new Error(`jobs-manifest.json returned ${response.status}`)
+          return readJsonSafe(response, 'jobs-manifest.json')
+        })
+        .catch((error) => {
+          manifestPromise = null
+          throw error
+        })
+    }
+    const manifest = await manifestPromise
+    const chunk = (manifest?.chunks || []).find((entry) => clean(entry?.source) === clean(job?.source))
+    if (!chunk?.path) return job
+    if (!chunkPromises.has(chunk.path)) {
+      chunkPromises.set(chunk.path, fetchWithTimeout(`${baseUrl}data/${chunk.path}`)
+        .then(async (response) => {
+          if (!response.ok) throw new Error(`${chunk.path} returned ${response.status}`)
+          return readJsonSafe(response, chunk.path)
+        })
+        .catch((error) => {
+          chunkPromises.delete(chunk.path)
+          throw error
+        }))
+    }
+    const payload = await chunkPromises.get(chunk.path)
+    const key = clean(job?.canonicalJobId) || clean(job?.url)
+    return (payload?.jobs || []).find((candidate) => (clean(candidate?.canonicalJobId) || clean(candidate?.url)) === key) || job
   }
 
   onMounted(() => {
@@ -375,15 +414,16 @@ export function useJobsData() {
     scrapedAt,
     loadError,
     loadJobs,
-    loadFullDescriptions,
+    searchFullText,
+    loadJobDescription,
     qualitySummary,
     newJobsCount,
     newThisWeek,
     siteStats,
     transport,
     lastVisitAt,
-    fullDescriptionsLoaded,
-    descriptionsLoading,
+    searchTermMatches,
+    searchIndexLoading,
     hadPriorVisit,
   }
 }

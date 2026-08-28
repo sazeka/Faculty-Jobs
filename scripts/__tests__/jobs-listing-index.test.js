@@ -21,6 +21,7 @@ test("listing index keeps card/filter evidence but omits full descriptions", () 
   assert.equal(compact.tenureTrack, "tenure-track");
   assert.equal("tenureEvidence" in compact, false);
   assert.equal(compact.hasDescription, true);
+  assert.equal(compact.searchText, "assistant professor of biology example university biology");
   assert.equal("description" in compact, false);
   assert.equal("summary" in compact, false);
 });

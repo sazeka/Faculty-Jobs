@@ -4,6 +4,7 @@ import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxon
 import { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
 import { classifySourceLink, institutionTitleConflict, sanitizePostingDate } from '../lib/listingTrust.js'
 import { inferAlaskaCampus } from '../../../scripts/lib/alaska-campus.js'
+import { normalizeSearchText } from '../../../scripts/lib/jobs-search-index.js'
 
 export { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
 
@@ -219,6 +220,18 @@ function normalizeJob(job) {
     duplicateGroupKey: canonicalGroupId || normalizeForKey(job?.url || title),
     duplicateCount: 1,
     duplicateUrls: [job?.url || '#'],
+    searchText: job?.searchText || normalizeSearchText([
+      title,
+      job?.source,
+      college,
+      job?.location,
+      department,
+      job?.specialization,
+      state,
+    ].filter(Boolean).join(' ')),
+    searchTitle: normalizeSearchText(title),
+    searchDepartment: normalizeSearchText(department),
+    searchCollege: normalizeSearchText(college),
   }
   normalized.discipline = getDiscipline(normalized)
   return normalized
@@ -229,45 +242,21 @@ function truncate(value, length) {
   return str.length > length ? `${str.slice(0, length - 1)}...` : str
 }
 
-function matchSearchTerms(job, terms) {
+function matchSearchTerms(job, terms, fullTextMatches = null) {
   if (terms.length === 0) return { matched: true, score: 0 }
-  const hay = [
-    job.title,
-    job.description,
-    job.summary,
-    job.source,
-    job.college,
-    job.location,
-    job.department,
-    job.specialization,
-    job.state,
-  ]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase()
-
-  if (!terms.every((term) => hay.includes(term))) return { matched: false, score: 0 }
+  const groupId = job.canonicalGroupId || job.canonicalJobId
+  if (!terms.every((term) => job.searchText.includes(term) || fullTextMatches?.get(term)?.has(groupId))) {
+    return { matched: false, score: 0 }
+  }
 
   let score = 0
-  const title = (job.title || '').toLowerCase()
-  const dept = (job.department || '').toLowerCase()
-  const college = (job.college || '').toLowerCase()
   for (const term of terms) {
-    if (title.includes(term)) score += 12
-    if (dept.includes(term)) score += 5
-    if (college.includes(term)) score += 4
+    if (job.searchTitle.includes(term)) score += 12
+    if (job.searchDepartment.includes(term)) score += 5
+    if (job.searchCollege.includes(term)) score += 4
+    if (fullTextMatches?.get(term)?.has(groupId)) score += 1
   }
   return { matched: true, score }
-}
-
-function countBy(items, selector) {
-  const counts = new Map()
-  for (const item of items) {
-    const key = selector(item)
-    if (!key) continue
-    counts.set(key, (counts.get(key) || 0) + 1)
-  }
-  return counts
 }
 
 function sortedDistinct(items, selector) {
@@ -308,7 +297,7 @@ function dedupeGroupedJobs(jobs) {
   return [...grouped.values()]
 }
 
-export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
+export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatchesRef = null }) {
   const normalizedJobs = computed(() => dedupeGroupedJobs(jobsRef.value.map(normalizeJob)))
   const catalogSummary = computed(() => {
     const groupedPostings = normalizedJobs.value.length
@@ -329,59 +318,64 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   const allDepartmentValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.department))
   const allCityValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.city))
 
-  function applyFiltersWithValues(filterValues, { ignoreKey = null } = {}) {
-    const q = clean(filterValues.q).toLowerCase()
-    const terms = q.split(/\s+/).filter((term) => term.length >= 2)
-    let out = normalizedJobs.value.slice()
-
-    if (ignoreKey !== 'state' && filterValues.state !== ALL_FILTER_VALUE) {
-      out = out.filter((job) => job.state === filterValues.state)
-    }
-    if (ignoreKey !== 'positionType' && filterValues.positionType !== ALL_FILTER_VALUE) {
-      out = out.filter((job) => (job.positionTypes || []).includes(filterValues.positionType))
-    }
-    if (ignoreKey !== 'college' && filterValues.college !== ALL_FILTER_VALUE) {
-      out = out.filter((job) => job.college === filterValues.college)
-    }
-    if (ignoreKey !== 'department' && filterValues.department !== ALL_FILTER_VALUE) {
-      out = out.filter((job) => job.department === filterValues.department)
-    }
-    if (ignoreKey !== 'discipline' && filterValues.discipline !== ALL_FILTER_VALUE) {
-      out = out.filter((job) => job.discipline === filterValues.discipline)
-    }
-    if (ignoreKey !== 'city' && filterValues.city !== ALL_FILTER_VALUE) {
-      out = out.filter((job) => job.city === filterValues.city)
-    }
-    if (ignoreKey !== 'tenureTrackOnly' && filterValues.tenureTrackOnly) {
-      out = out.filter((job) => job.tenureTrack === true)
-    }
-    if (ignoreKey !== 'savedOnly' && filterValues.savedOnly) {
-      out = out.filter((job) => job.duplicateUrls.some((url) => isSavedJob(url)))
-    }
-    if (ignoreKey !== 'newOnly' && filterValues.newOnly) {
-      out = out.filter((job) => job.isNew === true)
-    }
-    // Expired postings are hidden unless the user opts to show them.
-    if (ignoreKey !== 'showClosed' && !filterValues.showClosed) {
-      out = out.filter((job) => !job.isClosed)
-    }
-
-    if (terms.length === 0) return out
-
-    return out
-      .map((job) => {
-        const search = matchSearchTerms(job, terms)
-        return search.matched ? { ...job, _score: search.score } : null
-      })
-      .filter(Boolean)
+  function increment(counts, key) {
+    if (key) counts.set(key, (counts.get(key) || 0) + 1)
   }
 
-  function applyFilters(opts = {}) {
-    return applyFiltersWithValues(filtersRef.value, opts)
+  function evaluateFilters(filterValues, collectFacets = true) {
+    const query = normalizeSearchText(filterValues.q)
+    const terms = query.split(/\s+/).filter((term) => term.length >= 2)
+    const loadedSearch = searchTermMatchesRef?.value
+    const fullTextMatches = loadedSearch?.query === query ? loadedSearch.byTerm : null
+    const results = []
+    const facets = {
+      state: new Map(),
+      positionType: new Map(),
+      college: new Map(),
+      department: new Map(),
+      discipline: new Map(),
+      city: new Map(),
+      tenureTrack: 0,
+    }
+
+    for (const job of normalizedJobs.value) {
+      const search = matchSearchTerms(job, terms, fullTextMatches)
+      if (!search.matched) continue
+
+      const stateOk = filterValues.state === ALL_FILTER_VALUE || job.state === filterValues.state
+      const positionTypeOk = filterValues.positionType === ALL_FILTER_VALUE || (job.positionTypes || []).includes(filterValues.positionType)
+      const collegeOk = filterValues.college === ALL_FILTER_VALUE || job.college === filterValues.college
+      const departmentOk = filterValues.department === ALL_FILTER_VALUE || job.department === filterValues.department
+      const disciplineOk = filterValues.discipline === ALL_FILTER_VALUE || job.discipline === filterValues.discipline
+      const cityOk = filterValues.city === ALL_FILTER_VALUE || job.city === filterValues.city
+      const tenureTrackOk = !filterValues.tenureTrackOnly || job.tenureTrack === true
+      const savedOk = !filterValues.savedOnly || job.duplicateUrls.some((url) => isSavedJob(url))
+      const newOk = !filterValues.newOnly || job.isNew === true
+      const closedOk = filterValues.showClosed || !job.isClosed
+      const commonOk = savedOk && newOk && closedOk
+      const allFacetsOk = stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && tenureTrackOk
+
+      if (commonOk && allFacetsOk) results.push(search.score ? { ...job, _score: search.score } : job)
+      if (!collectFacets || !commonOk) continue
+
+      if (positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && tenureTrackOk) increment(facets.state, job.state)
+      if (stateOk && collegeOk && departmentOk && disciplineOk && cityOk && tenureTrackOk) {
+        for (const positionType of job.positionTypes || []) increment(facets.positionType, positionType)
+      }
+      if (stateOk && positionTypeOk && departmentOk && disciplineOk && cityOk && tenureTrackOk) increment(facets.college, job.college)
+      if (stateOk && positionTypeOk && collegeOk && disciplineOk && cityOk && tenureTrackOk) increment(facets.department, job.department)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && cityOk && tenureTrackOk) increment(facets.discipline, job.discipline)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && tenureTrackOk) increment(facets.city, job.city)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && job.tenureTrack === true) facets.tenureTrack += 1
+    }
+
+    return { results, facets }
   }
+
+  const filterEvaluation = computed(() => evaluateFilters(filtersRef.value))
 
   const stateOptions = computed(() => {
-    const counts = countBy(applyFilters({ ignoreKey: 'state' }), (job) => job.state)
+    const counts = filterEvaluation.value.facets.state
     return allStateValues.value.map((value) => {
       const count = counts.get(value) || 0
       return {
@@ -395,10 +389,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   })
 
   const positionTypeOptions = computed(() => {
-    const counts = new Map()
-    for (const job of applyFilters({ ignoreKey: 'positionType' })) {
-      for (const pt of job.positionTypes || []) counts.set(pt, (counts.get(pt) || 0) + 1)
-    }
+    const counts = filterEvaluation.value.facets.positionType
     return allPositionTypeValues.value.map((value) => {
       const count = counts.get(value) || 0
       return {
@@ -411,12 +402,10 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
     })
   })
 
-  const tenureTrackCount = computed(() =>
-    applyFilters({ ignoreKey: 'tenureTrackOnly' }).filter((job) => job.tenureTrack === true).length
-  )
+  const tenureTrackCount = computed(() => filterEvaluation.value.facets.tenureTrack)
 
   const collegeOptions = computed(() => {
-    const counts = countBy(applyFilters({ ignoreKey: 'college' }), (job) => job.college)
+    const counts = filterEvaluation.value.facets.college
     return allCollegeValues.value.map((value) => {
       const count = counts.get(value) || 0
       return {
@@ -430,7 +419,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   })
 
   const departmentOptions = computed(() => {
-    const counts = countBy(applyFilters({ ignoreKey: 'department' }), (job) => job.department)
+    const counts = filterEvaluation.value.facets.department
     return allDepartmentValues.value.map((value) => {
       const count = counts.get(value) || 0
       return {
@@ -444,7 +433,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   })
 
   const disciplineOptions = computed(() => {
-    const counts = countBy(applyFilters({ ignoreKey: 'discipline' }), (job) => job.discipline)
+    const counts = filterEvaluation.value.facets.discipline
     const allLabels = [...new Set(DISCIPLINE_RULES.map(r => r.label).concat(['Other']))]
     return allLabels
       .map(label => ({ value: label, count: counts.get(label) || 0 }))
@@ -453,7 +442,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   })
 
   const cityOptions = computed(() => {
-    const counts = countBy(applyFilters({ ignoreKey: 'city' }), (job) => job.city)
+    const counts = filterEvaluation.value.facets.city
     return allCityValues.value.map((value) => {
       const count = counts.get(value) || 0
       return {
@@ -467,7 +456,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   })
 
   const filteredJobs = computed(() => {
-    let out = applyFilters()
+    const out = filterEvaluation.value.results.slice()
 
     if (filtersRef.value.sortBy === 'title-asc') {
       out.sort((a, b) => (a.title || '').localeCompare(b.title || ''))
@@ -560,7 +549,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob }) {
   function countMatches(filterSnapshot) {
     const defaults = createDefaultFilters()
     const merged = { ...defaults, ...(filterSnapshot || {}) }
-    return applyFiltersWithValues(merged).length
+    return evaluateFilters(merged, false).results.length
   }
 
   return {

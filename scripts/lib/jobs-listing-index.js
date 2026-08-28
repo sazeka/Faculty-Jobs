@@ -1,3 +1,5 @@
+import { normalizeSearchText } from "./jobs-search-index.js";
+
 // Fields required to render, filter, sort, group, and save listing cards.
 // Full descriptions stay in jobs.json/source chunks and are fetched lazily only
 // when a visitor performs a full-text search.
@@ -30,6 +32,15 @@ export function compactListingJob(job = {}) {
     }
   }
   compact.hasDescription = Boolean(String(job.description || job.summary || "").trim());
+  compact.searchText = normalizeSearchText([
+    job.titleClean || job.title,
+    job.source,
+    job.college,
+    job.location,
+    job.department,
+    job.specialization,
+    job.state,
+  ].filter(Boolean).join(" "));
   return compact;
 }
 

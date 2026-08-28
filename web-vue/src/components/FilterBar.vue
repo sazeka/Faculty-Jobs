@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 
 const props = defineProps({
   filters: { type: Object, required: true },
+  queryInput: { type: String, default: '' },
   stateOptions: { type: Array, required: true },
   positionTypeOptions: { type: Array, required: true },
   tenureTrackCount: { type: Number, default: 0 },
@@ -14,7 +15,7 @@ const props = defineProps({
   subscribeError: { type: String, default: '' },
 })
 
-const emit = defineEmits(['update:filters', 'reset-filters', 'refresh-data', 'subscribe-alert'])
+const emit = defineEmits(['update:filters', 'update:query', 'reset-filters', 'refresh-data', 'subscribe-alert'])
 
 const disciplineSearch = ref('')
 const collegeSearch = ref('')
@@ -134,11 +135,11 @@ function toggleCity(value) {
       <div class="fa-display" style="font-size: 18px; margin-bottom: 10px;">Search</div>
       <input
         class="fa-input"
-        :value="props.filters.q"
+        :value="props.queryInput"
         type="search"
         placeholder="Title, university, department…"
         aria-label="Search jobs"
-        @input="updateField('q', $event.target.value)"
+        @input="emit('update:query', $event.target.value)"
       />
     </div>
 
