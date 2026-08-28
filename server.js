@@ -634,6 +634,7 @@ const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type
 
 // Massachusetts private universities + liberal arts colleges
 const MA_PRIVATE_CAMPUSES = [
+  { campus: "Wheaton College (Massachusetts)", type: "peopleadmin", url: "https://jobs.wheatoncollege.edu/postings/search?365%5B%5D=3&commit=Search" },
   { campus: "Gordon College", type: "gordon-faculty", url: "https://www.gordon.edu/offices-services/human-resources/jobs/open-faculty-positions" },
   { campus: "Gordon-Conwell Theological Seminary", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=6e5262c5-1aaf-4346-9e79-a476a84dc88c&lang=en_US" },
   { campus: "Simmons University", type: "workday", url: "https://simmons.wd504.myworkdayjobs.com/Simmons-Careers" },
@@ -1585,6 +1586,7 @@ const CLAREMONT_CAMPUSES = [
 
 // PA (multi-platform)
 const PA_CAMPUSES = [
+  { campus: "Wilkes University", type: "generic", url: "https://wilkesuniversitycareers.applicantpro.com/jobs" },
   { campus: "Lebanon Valley College", type: "lvc-faculty", url: "https://www.lvc.edu/human-resources/employment/faculty-openings/" },
   { campus: "Gratz College", type: "generic", url: "https://www.gratz.edu/employment" },
   { campus: "Luzerne County Community College", type: "generic", url: "https://www.luzerne.edu/about/jobs/jobs.jsp" },
@@ -2158,6 +2160,8 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Virginia Union University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=be274061-0ec3-4842-99e1-78c183f80855&ccId=19000101_000001&lang=en_US" },
+  { campus: "Virginia Wesleyan University", type: "oracle-cx", url: "https://fa-ewic-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs" },
   { campus: "Liberty University", type: "workday", url: "https://liberty.wd5.myworkdayjobs.com/lu_job_board_faculty" },
   { campus: "Hampden-Sydney College", type: "generic", url: "https://www.hsc.edu/human-resources/job-openings" },
   { campus: "Hampton University", type: "hampton-faculty", url: "https://home.hamptonu.edu/hr/jobs/" },
@@ -3488,6 +3492,7 @@ const NY_PRIVATE_CAMPUSES = [
 
 // OR (Oregon)
 const OR_CAMPUSES = [
+  { campus: "Warner Pacific University", type: "warner-pacific-faculty", url: "https://warnerpacific.catsone.com/careers/1611" },
   {
     campus: "Lane Community College",
     type: "peopleadmin",
@@ -3614,6 +3619,7 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  { campus: "Walla Walla University", type: "walla-walla-faculty", url: "https://www.wallawalla.edu/human-resources/faculty-employment" },
   { campus: "Great Northern University", type: "generic", url: "https://gnu.edu/about/employment/faculty-positions/" },
   // Seattle Colleges publishes one official districtwide ctcLink board
   // (SiteId=060) for North, Central, and South. Scrape it once, then split
@@ -4022,6 +4028,7 @@ const MN_CAMPUSES = [
 
 // ND (North Dakota)
 const ND_CAMPUSES = [
+  { campus: "Valley City State University", type: "vcsu-academic", url: "https://www.vcsu.edu/jobs/" },
   { campus: "North Dakota State College of Science", type: "generic", url: "https://ndscs.edu/about/join-our-team/" },
   {
     campus: "University of North Dakota",
@@ -4372,6 +4379,7 @@ const MT_CAMPUSES = [
 
 // WI (Wisconsin)
 const WI_CAMPUSES = [
+  { campus: "Wisconsin Lutheran College", type: "wlc-faculty", url: "https://www.wlc.edu/about-wlc/offices-resources/human-resources/index.html" },
   {
     campus: "Lac Courte Oreilles Ojibwe University",
     type: "lco-employment",
@@ -4617,6 +4625,7 @@ const CO_CAMPUSES = [
 
 // OH (Ohio)
 const OH_CAMPUSES = [
+  { campus: "Xavier University", type: "workday", url: "https://xavier.wd108.myworkdayjobs.com/XavierCareers" },
   { campus: "James A. Rhodes State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/rhodesstate" },
   { campus: "Rosedale Bible College", type: "generic", url: "https://rosedale.edu/hiring/" },
   { campus: "Hocking College", type: "generic", url: "https://www.hocking.edu/careers" },
@@ -5154,6 +5163,7 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  { campus: "Wheaton College", type: "oracle-cx", url: "https://fa-eukq-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1" },
   { campus: "Quincy University", type: "quincy-faculty", url: "https://www.quincy.edu/about/work-at-qu/job-openings/" },
   { campus: "Roosevelt University", type: "peopleadmin", url: "https://jobs.roosevelt.edu/postings/search?query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search" },
   {
@@ -5714,6 +5724,7 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Weatherford College", type: "peopleadmin", url: "https://jobs.wc.edu/postings/search?865%5B%5D=5&865%5B%5D=3&commit=Search", excludeTitleFilter: "^Executive Vice President of Academic Services$" },
   { campus: "Sam Houston State University", type: "peopleadmin", url: "https://shsu.peopleadmin.com/postings/search?query_position_type_id=2&commit=Search" },
   { campus: "Texas Southern University", type: "peopleadmin", url: "https://jobs.tsu.edu/postings/search?810%5B%5D=7&commit=Search" },
   { campus: "University of Dallas", type: "generic", url: "https://udallas.edu/offices-services/human-resources/open-positions.php" },
@@ -11688,6 +11699,8 @@ async function scrapeVaAll(context) {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "VA");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "VA");
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "VA");
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "VA");
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "VA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "VA");
         // No existing VA dispatch case for "ultipro-ukg" (function
@@ -13239,6 +13252,7 @@ async function scrapeIlAll(context) {
     async ({ campus, type, url, locationFilter, excludeTitleFilter }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IL");
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "IL");
         if (type === "quincy-faculty") return await scrapeQuincyFacultyAs(context, url, campus, "IL");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "IL");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "IL");
@@ -15811,6 +15825,139 @@ export async function scrapeJbuFacultyAs(context, startUrl, campusName, sourceNa
   }
 }
 
+function mapScopedFacultyRows(rows, campusName, sourceName, location = null) {
+  const seen = new Set();
+  return (rows || [])
+    .map((row) => ({ title: normalizeJobTitle(row?.title), url: clean(row?.url) }))
+    .filter((row) => row.title && row.url && !omitAdjunct(row.title))
+    .filter((row) => {
+      const key = row.url.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .map((row) => {
+      const inferred = inferAcademicFieldsFromTitle(row.title);
+      return {
+        title: row.title,
+        url: row.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location,
+        description: null,
+        department: inferred.department,
+        specialization: inferred.specialization,
+      };
+    });
+}
+
+// VCSU separates employee openings into adjacent category tables. Reading
+// only the table immediately after its Academic heading prevents temporary,
+// graduate-assistant, staff, and student jobs from entering the faculty feed.
+export async function scrapeVcsuAcademicAs(context, startUrl, campusName = "Valley City State University", sourceName = "ND") {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    const rows = await page.locator("h2", { hasText: /^Academic$/ }).first().evaluate((heading) =>
+      Array.from(heading.nextElementSibling?.querySelectorAll("tbody tr") || [], (row) => {
+        const anchor = row.querySelector("td a[href]");
+        return anchor ? { title: anchor.textContent, url: anchor.href } : null;
+      }).filter(Boolean)
+    );
+    const jobs = mapScopedFacultyRows(rows, campusName, sourceName, "Valley City, ND");
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (Academic table)`);
+    return jobs;
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} VCSU scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Walla Walla publishes two explicit faculty sections on one HR page. Use
+// their paragraph rows, including campus suffixes, and ignore application
+// links and all surrounding navigation.
+export async function scrapeWallaWallaFacultyAs(context, startUrl, campusName = "Walla Walla University", sourceName = "WA") {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    const rows = await page.locator("h2", { hasText: "Faculty Positions Available" }).first().evaluate((heading) => {
+      const out = [];
+      let node = heading;
+      while ((node = node.nextElementSibling)) {
+        if (node.tagName === "H2" && !/Nursing Clinical Instructor Positions Available/i.test(node.textContent || "")) break;
+        const anchor = node.matches?.("p") ? node.querySelector("a[href]") : null;
+        if (!anchor) continue;
+        const text = (node.textContent || "").replace(/\s+/g, " ").trim().replace(/^[^:]+:\s*/, "");
+        if (text) out.push({ title: text, url: anchor.href });
+      }
+      return out;
+    });
+    const jobs = mapScopedFacultyRows(rows, campusName, sourceName, "College Place, WA");
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty sections)`);
+    return jobs;
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} Walla Walla scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Warner Pacific's CATS board renders each posting as a three-cell anchor.
+// Pull the title cell only; using the anchor's full text would append the
+// category and location directly to every title.
+export async function scrapeWarnerPacificFacultyAs(context, startUrl, campusName = "Warner Pacific University", sourceName = "OR") {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(800);
+    const rows = await page.locator("a.table-row[href]").evaluateAll((anchors) =>
+      anchors.map((anchor) => ({
+        title: anchor.querySelector(".title-cell")?.textContent,
+        url: anchor.href,
+      }))
+    );
+    const jobs = mapScopedFacultyRows(rows, campusName, sourceName, "Portland, OR")
+      .filter((job) => looksFacultyish(job.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (CATS title cells)`);
+    return jobs;
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} Warner Pacific scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// WLC's HR page mixes staff jobs with faculty calls. The faculty calls have
+// explicit headings, so capture only current headings that contain Faculty.
+export async function scrapeWlcFacultyAs(context, startUrl, campusName = "Wisconsin Lutheran College", sourceName = "WI") {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    const rows = await page.locator("h3").evaluateAll((headings, baseUrl) =>
+      headings
+        .map((heading, index) => ({
+          title: (heading.textContent || "").replace(/\s+/g, " ").trim(),
+          url: heading.closest("a[href]")?.href || heading.parentElement?.querySelector("a[href]")?.href || `${baseUrl}#faculty-call-${index + 1}`,
+        }))
+        .filter((row) => /\bFACULTY\b/i.test(row.title)),
+      startUrl
+    );
+    const jobs = mapScopedFacultyRows(rows, campusName, sourceName, "Milwaukee, WI");
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty call headings)`);
+    return jobs;
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} WLC scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 // Quincy's official employment page keeps faculty vacancies in the first
 // accordion immediately following the Faculty Openings heading. Restricting
 // extraction to that one widget prevents the adjacent staff and graduate-
@@ -18153,6 +18300,7 @@ async function scrapeOrAll(context) {
   const tasks = OR_CAMPUSES.map(({ campus, type, url }) =>
     (async () => {
       try {
+        if (type === "warner-pacific-faculty") return await scrapeWarnerPacificFacultyAs(context, url, campus, "OR");
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -18201,6 +18349,7 @@ async function scrapeWaAll(context) {
   const tasks = WA_CAMPUSES.map(({ campus, type, url }) =>
     (async () => {
       try {
+        if (type === "walla-walla-faculty") return await scrapeWallaWallaFacultyAs(context, url, campus, "WA");
         if (type === "seattle-colleges") {
           const jobs = await scrapePeopleSoftFluidAs(context, url, campus, "WA");
           return jobs.map(splitSeattleCollegesCampus).filter(Boolean);
@@ -18370,6 +18519,7 @@ async function scrapeNdAll(context) {
     MAX_PARALLEL_CAMPUSES,
     async ({ campus, type, url }) => {
       try {
+        if (type === "vcsu-academic") return await scrapeVcsuAcademicAs(context, url, campus, "ND");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "ND");
         if (type === "ndsu-joblist") return await scrapeNdsuJoblistAs(url, campus, "ND");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "ND");
@@ -18968,6 +19118,7 @@ async function scrapeWiAll(context) {
     MAX_PARALLEL_CAMPUSES,
     async ({ campus, type, url, locationFilter }) => {
       try {
+        if (type === "wlc-faculty") return await scrapeWlcFacultyAs(context, url, campus, "WI");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "WI");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "WI");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "WI");
@@ -20421,7 +20572,7 @@ async function scrapeTxAll(context) {
   const results = await mapWithConcurrency(
     TX_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter, titleFilter }) => {
+    async ({ campus, type, url, locationFilter, titleFilter, excludeTitleFilter }) => {
       try {
         if (type === "workday") {
           const jobs = await scrapeWorkdayAs(context, url, campus, "TX");
@@ -20438,7 +20589,10 @@ async function scrapeTxAll(context) {
         // Institute of Funeral Service (shared Pierce Mortuary Colleges Inc
         // Paylocity board).
         if (type === "paylocity-shared") return await scrapePaylocitySharedAs(context, url, campus, "TX", locationFilter || null);
-        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "TX");
+        if (type === "peopleadmin") {
+          const jobs = await scrapePeopleAdminAs(context, url, campus, "TX");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || "")) : jobs;
+        }
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "TX");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "TX");
         if (type === "tamu-faculty") return await scrapeTamuFacultyPositions(context, url, campus, "TX");

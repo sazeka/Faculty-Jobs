@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-28T01:06:59.000Z",
+  "updatedAt": "2026-08-28T01:26:35.000Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -7906,6 +7906,83 @@
       "platform_type": "generic-faculty-section",
       "coverage_source": "University of Dallas",
       "notes": "Verified live 2026-08-27 through the university's official Open Positions page and its explicit faculty section. The production adapter returned two current adjunct-instructor pools."
+    },
+    {
+      "name": "Valley City State University",
+      "career_url": "https://www.vcsu.edu/jobs/",
+      "platform_type": "vcsu-academic",
+      "coverage_source": "Valley City State University",
+      "notes": "Verified live 2026-08-27 through VCSU's official Jobs page. A scoped parser reads only the Academic table and returned two current instructor openings without staff, temporary, graduate-assistant, or student jobs."
+    },
+    {
+      "name": "Virginia Union University",
+      "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=be274061-0ec3-4842-99e1-78c183f80855&ccId=19000101_000001&lang=en_US",
+      "platform_type": "adp",
+      "coverage_source": "Virginia Union University",
+      "notes": "Verified live 2026-08-27 through the ADP career center linked by Virginia Union University. Production validation returned six current professor and adjunct-faculty openings."
+    },
+    {
+      "name": "Virginia Wesleyan University",
+      "career_url": "https://fa-ewic-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs",
+      "platform_type": "oracle-cx",
+      "coverage_source": "Virginia Wesleyan University",
+      "notes": "Verified live 2026-08-27 through the official employment page, which now redirects under the institution's Batten University name to this Oracle Candidate Experience tenant. The production REST adapter returned seven current faculty openings."
+    },
+    {
+      "name": "Walla Walla University",
+      "career_url": "https://www.wallawalla.edu/human-resources/faculty-employment",
+      "platform_type": "walla-walla-faculty",
+      "coverage_source": "Walla Walla University",
+      "notes": "Verified live 2026-08-27 through Walla Walla's official Faculty Employment page. A dedicated parser reads only its faculty and nursing clinical-instructor sections and returned five current openings."
+    },
+    {
+      "name": "Warner Pacific University",
+      "career_url": "https://warnerpacific.catsone.com/careers/1611",
+      "platform_type": "warner-pacific-faculty",
+      "coverage_source": "Warner Pacific University",
+      "notes": "Verified live 2026-08-27 through Warner Pacific's official CATS career board. A title-cell parser returned ten current adjunct-instructor openings without appending category and location text to titles."
+    },
+    {
+      "name": "Weatherford College",
+      "career_url": "https://jobs.wc.edu/postings/search?865%5B%5D=5&865%5B%5D=3&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Weatherford College",
+      "notes": "Verified live 2026-08-27 through Weatherford's official PeopleAdmin board using its Full Time Faculty and Part-time Faculty job-type facets. After one exact executive-title exclusion, production validation returned 113 current faculty openings."
+    },
+    {
+      "name": "Wheaton College",
+      "career_url": "https://fa-eukq-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+      "platform_type": "oracle-cx",
+      "coverage_source": "Wheaton College",
+      "notes": "Verified live 2026-08-27 through Wheaton College Illinois's official Oracle Candidate Experience tenant. The production REST adapter returned 15 current faculty openings."
+    },
+    {
+      "name": "Wheaton College (Massachusetts)",
+      "career_url": "https://jobs.wheatoncollege.edu/postings/search?365%5B%5D=3&commit=Search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Wheaton College (Massachusetts)",
+      "notes": "Verified live 2026-08-27 through Wheaton Massachusetts's official PeopleAdmin board using its exact Faculty position-type facet. Production validation returned six current faculty openings without staff positions."
+    },
+    {
+      "name": "Wilkes University",
+      "career_url": "https://wilkesuniversitycareers.applicantpro.com/jobs",
+      "platform_type": "generic",
+      "coverage_source": "Wilkes University",
+      "notes": "Verified live 2026-08-27 through the ApplicantPro board identified by Wilkes University's official faculty search guidance. The production adapter returned one current assistant-professor opening."
+    },
+    {
+      "name": "Wisconsin Lutheran College",
+      "career_url": "https://www.wlc.edu/about-wlc/offices-resources/human-resources/index.html",
+      "platform_type": "wlc-faculty",
+      "coverage_source": "Wisconsin Lutheran College",
+      "notes": "Verified live 2026-08-27 through WLC's official Human Resources page. A dedicated parser selects only current headings explicitly marked Faculty and returned one full-time faculty opening."
+    },
+    {
+      "name": "Xavier University",
+      "career_url": "https://xavier.wd108.myworkdayjobs.com/XavierCareers",
+      "platform_type": "workday",
+      "coverage_source": "Xavier University",
+      "notes": "Verified live 2026-08-27 through Xavier's official institution-specific Workday tenant. The production API adapter returned 13 current faculty openings."
     }
   ]
 }
