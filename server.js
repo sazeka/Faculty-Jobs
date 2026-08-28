@@ -1443,6 +1443,7 @@ const CA_PRIVATE_CAMPUSES = [
 
 // NJ (multi-platform)
 const NJ_CAMPUSES = [
+  { campus: "Thomas Edison State University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=089b582f-0a35-44db-98f2-170a98083ab9&lang=en_US" },
   { campus: "Saint Elizabeth University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=08c27dfd-4a66-473e-ac0f-70b2d10bc070&ccId=19000101_000001&source=CC2&lang=en_US&selectedMenuKey=CurrentOpenings" },
   { campus: "Georgian Court University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=0674ba22-8f97-458a-80c0-91217826b19b&ccId=9151465763873_19553&lang=en_US" },
   { campus: "Passaic County Community College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=40423bb9-2cb3-4ea1-a606-660bd59b0d8d&ccId=19000101_000001&lang=en_US" },
@@ -2173,6 +2174,8 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "University of Mary Washington", type: "pageup", url: "https://jobs.umw.edu/jobs/search" },
+  { campus: "Virginia State University", type: "generic", url: "https://www.jobs.virginia.gov/jobs/search?query=Virginia+State+University" },
   { campus: "Virginia Union University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=be274061-0ec3-4842-99e1-78c183f80855&ccId=19000101_000001&lang=en_US" },
   { campus: "Virginia Wesleyan University", type: "oracle-cx", url: "https://fa-ewic-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs" },
   { campus: "Liberty University", type: "workday", url: "https://liberty.wd5.myworkdayjobs.com/lu_job_board_faculty" },
@@ -2395,6 +2398,7 @@ const VA_CAMPUSES = [
 
 // SC (South Carolina) - major public research + private liberal arts
 const SC_CAMPUSES = [
+  { campus: "South Carolina State University", type: "pageup", url: "https://careers.scsu.edu/en-us/listing/" },
   { campus: "Medical University of South Carolina", type: "workday", url: "https://musc.wd1.myworkdayjobs.com/MUSC" },
   { campus: "Greenville Technical College", type: "csod", url: "https://gvltec.csod.com/ux/ats/careersite/1/home?c=gvltec" },
   { campus: "Orangeburg Calhoun Technical College", type: "generic", url: "https://www.octech.edu/about/human-resources/" },
@@ -2742,6 +2746,7 @@ const RI_PRIVATE_CAMPUSES = [
 
 // NH (New Hampshire)
 const NH_CAMPUSES = [
+  { campus: "University System of New Hampshire System Office", type: "peopleadmin", url: "https://jobs.usnh.edu/postings/search" },
   {
     campus: "Plymouth State University",
     type: "workday",
@@ -2821,6 +2826,7 @@ const NH_CAMPUSES = [
 
 // AZ (Arizona)
 const AZ_CAMPUSES = [
+  { campus: "Northland Pioneer College", type: "generic", url: "https://npc.isolvedhire.com/jobs/" },
   { campus: "Tohono O'odham Community College", type: "generic", url: "https://www.tocc.edu/human-resources-employment" },
   { campus: "Pima Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/pimacc" },
   {
@@ -3508,6 +3514,7 @@ const NY_PRIVATE_CAMPUSES = [
 
 // OR (Oregon)
 const OR_CAMPUSES = [
+  { campus: "Mt Hood Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/mhcc" },
   { campus: "Warner Pacific University", type: "warner-pacific-faculty", url: "https://warnerpacific.catsone.com/careers/1611" },
   {
     campus: "Lane Community College",
@@ -3951,6 +3958,7 @@ const VT_CAMPUSES = [
 
 // MN (Minnesota)
 const MN_CAMPUSES = [
+  { campus: "Minnesota State Colleges and Universities System Office", type: "peopleadmin", url: "https://mnsystem.peopleadmin.com/postings/search" },
   { campus: "Lake Superior College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545d78218ff0000" },
   { campus: "Hamline University", type: "workday", url: "https://hamline.wd5.myworkdayjobs.com/Faculty_Career_Site" },
   { campus: "Martin Luther College", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=8C7EC27E66B8E44D82FD7F25E9526B76" },
@@ -4117,6 +4125,8 @@ const ND_CAMPUSES = [
 
 // SD (South Dakota)
 const SD_CAMPUSES = [
+  { campus: "Oglala Lakota College", type: "generic", url: "https://www.olc.edu/resources/human-resources/open-positions/" },
+  { campus: "Sinte Gleska University", type: "generic", url: "https://www.sintegleska.edu/job-opportunities.html" },
   { campus: "Mitchell Technical College", type: "generic", url: "https://www.mitchelltech.edu/careers/" },
   {
     campus: "South Dakota Board of Regents",
@@ -4353,6 +4363,8 @@ const WY_CAMPUSES = [
 
 // MT (Montana)
 const MT_CAMPUSES = [
+  { campus: "Montana State University-Northern", type: "peopleadmin", url: "https://jobs.msun.edu/postings/search" },
+  { campus: "The University of Montana-Western", type: "generic", url: "https://www.umwestern.edu/section/working-at-UMW/" },
   {
     campus: "Montana State University",
     type: "peopleadmin",
@@ -4532,6 +4544,8 @@ const WI_CAMPUSES = [
 
 // CO (Colorado)
 const CO_CAMPUSES = [
+  { campus: "United States Air Force Academy", type: "generic", url: "https://www.usafa.edu/employment/" },
+  { campus: "University of Colorado Denver/Anschutz Medical Campus", type: "taleo", url: "https://cu.taleo.net/careersection/2/joblist.ftl?lang=en" },
   { campus: "Morgan Community College", type: "nau-search", url: "https://hr.cccs.edu/jobs/search/morgan-cc-search-page" },
   { campus: "Pueblo Community College", type: "nau-search", url: "https://hr.cccs.edu/jobs/search/pueblo-cc-search-page" },
   { campus: "Red Rocks Community College", type: "nau-search", url: "https://hr.cccs.edu/jobs/search/red-rocks-cc-search-page" },
@@ -5040,6 +5054,7 @@ const UT_CAMPUSES = [
 
 // MI (Michigan)
 const MI_CAMPUSES = [
+  { campus: "Schoolcraft Community College District", type: "peopleadmin", url: "https://jobs.schoolcraft.edu/postings/search" },
   { campus: "Saginaw Valley State University", type: "workday", url: "https://svsu.wd503.myworkdayjobs.com/External" },
   { campus: "Kuyper College", type: "kuyper-employment", url: "https://www.kuyper.edu/employment/" },
   // Jackson College's HR page separates regular and adjunct vacancies. The
@@ -5204,6 +5219,7 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  { campus: "University of Illinois System Offices", type: "generic", url: "https://www.hr.uillinois.edu/employment" },
   { campus: "Wheaton College", type: "oracle-cx", url: "https://fa-eukq-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1" },
   { campus: "Quincy University", type: "quincy-faculty", url: "https://www.quincy.edu/about/work-at-qu/job-openings/" },
   { campus: "Roosevelt University", type: "peopleadmin", url: "https://jobs.roosevelt.edu/postings/search?query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search" },
@@ -5582,6 +5598,7 @@ const ID_CAMPUSES = [
 
 // IN (Indiana)
 const IN_CAMPUSES = [
+  { campus: "Purdue University Global", type: "generic", url: "https://careers.purdue.edu/viewalljobs/" },
   {
     campus: "Indiana Institute of Technology",
     type: "paycom",
@@ -6619,6 +6636,7 @@ const GA_CAMPUSES = [
 
 // AL (Alabama)
 const AL_CAMPUSES = [
+  { campus: "University of Alabama in Huntsville", type: "generic", url: "https://www.uah.edu/hr/careers/faculty-careers" },
   { campus: "Troy University", type: "peopleadmin", url: "https://www.troyuniversityjobs.com/postings/search?3481=3&commit=Search" },
   { campus: "Jacksonville State University", type: "pageup", url: "https://careers.jsu.edu/jobs/search/search-page-jsu-careers-faculty" },
   { campus: "Tuskegee University", type: "peopleadmin", url: "https://tuskegee.peopleadmin.com/" },
@@ -6709,6 +6727,7 @@ const AL_CAMPUSES = [
 
 // MS (Mississippi)
 const MS_CAMPUSES = [
+  { campus: "University of Southern Mississippi", type: "csod", url: "https://usm.csod.com/ux/ats/careersite/1/home?c=usm" },
   { campus: "Mississippi State University", type: "pageup", url: "https://explore.msujobs.msstate.edu/cw/en-us/listing/" },
   { campus: "William Carey University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=E66B3C1689D7CACD88837E5AD889588C" },
   { campus: "Mississippi Community College Board", type: "generic", url: "https://www.mccb.edu/hr/employment" },
@@ -6950,6 +6969,7 @@ const AR_CAMPUSES = [
 
 // KS (Kansas)
 const KS_CAMPUSES = [
+  { campus: "Wichita State University", type: "generic", url: "https://jobs.wichita.edu/" },
   { campus: "Newman University", type: "generic", url: "https://newmanuniversity.applytojob.com/apply" },
   { campus: "Kansas Health Science University", type: "workday", url: "https://tcsedsystem.wd1.myworkdayjobs.com/KHSC" },
   { campus: "Kansas Christian College", type: "kansas-christian", url: "https://kansaschristian.edu/employment-opportunities/" },
@@ -11815,6 +11835,7 @@ async function scrapeScAll(context) {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "SC");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "SC");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "SC");
+        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "SC");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "SC");
         return [];
       } catch (e) {
@@ -19658,6 +19679,7 @@ async function scrapeMsAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MS");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MS");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "MS");
+        if (type === "csod") return await scrapeCsodAs(context, url, campus, "MS");
         // No existing MS dispatch case for "paycom" (function scrapePaycomAs
         // already exists and is dispatched by MA/ME/NY/TX) -- added for
         // Copiah-Lincoln Community College.

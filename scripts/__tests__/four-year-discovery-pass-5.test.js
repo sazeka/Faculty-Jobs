@@ -28,6 +28,23 @@ test("fifth four-year pass promotes only reviewed institution-scoped sources", (
       assert.match(row, /timeType=/);
       continue;
     }
+    // Pass 5 correctly rejected the broad Minnesota State Workday feed for
+    // the administrative office. A later review found the System Office's
+    // institution-exclusive PeopleAdmin applicant portal.
+    if (item.name === "Minnesota State Colleges and Universities System Office") {
+      const row = source.match(/^\s*\{ campus: "Minnesota State Colleges and Universities System Office"[^\n]+/m)?.[0] || "";
+      assert.match(row, /type: "peopleadmin"/);
+      assert.match(row, /mnsystem\.peopleadmin\.com/);
+      continue;
+    }
+    // The earlier pass found only a stale document. The college now publishes
+    // an official Human Resources open-positions page with current faculty
+    // and adjunct sections.
+    if (item.name === "Oglala Lakota College") {
+      const row = source.match(/^\s*\{ campus: "Oglala Lakota College"[^\n]+/m)?.[0] || "";
+      assert.match(row, /olc\.edu\/resources\/human-resources\/open-positions/);
+      continue;
+    }
     assert.doesNotMatch(source, new RegExp(`^\\s*\\{ campus: "${escaped}"`, "m"), item.name);
   }
 });
