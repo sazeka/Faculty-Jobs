@@ -3629,6 +3629,14 @@ const OR_CAMPUSES = [
 
 // WA (Washington)
 const WA_CAMPUSES = [
+  { campus: "Northwest Indian College", type: "generic", url: "https://www.nwic.edu/about-nwic/employment/" },
+  { campus: "Peninsula College", type: "generic", url: "https://pencol.edu/human-resources" },
+  // Community Colleges of Spokane publishes one PageUp board. Split only
+  // rows whose department/listing evidence explicitly identifies SCC or SFCC.
+  { campus: "Spokane Colleges", type: "spokane-colleges", url: "https://careers.ccs.spokane.edu/jobs/search" },
+  { campus: "University of Washington-Bothell Campus", type: "uw-campus", url: "https://ap.washington.edu/ahr/academic-jobs/", campusFilter: "Bothell" },
+  { campus: "University of Washington-Tacoma Campus", type: "uw-campus", url: "https://ap.washington.edu/ahr/academic-jobs/", campusFilter: "Tacoma" },
+  { campus: "Walla Walla Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/wwcc/transferjobs" },
   { campus: "Walla Walla University", type: "walla-walla-faculty", url: "https://www.wallawalla.edu/human-resources/faculty-employment" },
   { campus: "Great Northern University", type: "generic", url: "https://gnu.edu/about/employment/faculty-positions/" },
   // Seattle Colleges publishes one official districtwide ctcLink board
@@ -4512,6 +4520,9 @@ const WI_CAMPUSES = [
 
 // CO (Colorado)
 const CO_CAMPUSES = [
+  { campus: "Morgan Community College", type: "nau-search", url: "https://hr.cccs.edu/jobs/search/morgan-cc-search-page" },
+  { campus: "Pueblo Community College", type: "nau-search", url: "https://hr.cccs.edu/jobs/search/pueblo-cc-search-page" },
+  { campus: "Red Rocks Community College", type: "nau-search", url: "https://hr.cccs.edu/jobs/search/red-rocks-cc-search-page" },
   {
     campus: "Iliff School of Theology",
     type: "generic",
@@ -4635,6 +4646,11 @@ const CO_CAMPUSES = [
 
 // OH (Ohio)
 const OH_CAMPUSES = [
+  { campus: "Sinclair Community College", type: "peopleadmin", url: "https://jobs.sinclair.edu/postings/search?sort=316+asc" },
+  { campus: "University of Cincinnati-Blue Ash College", type: "generic", url: "https://jobs.uc.edu/go/Blue-Ash/9268300/" },
+  { campus: "University of Cincinnati-Clermont College", type: "generic", url: "https://jobs.uc.edu/go/Clermont/9268400/" },
+  { campus: "Washington State College of Ohio", type: "generic", url: "https://www.wsco.edu/about/offices/human-resources/current-openings/" },
+  { campus: "Wright State University-Lake Campus", type: "generic", url: "https://lake.wright.edu/about/employment" },
   { campus: "Xavier University", type: "workday", url: "https://xavier.wd108.myworkdayjobs.com/XavierCareers" },
   { campus: "James A. Rhodes State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/rhodesstate" },
   { campus: "Rosedale Bible College", type: "generic", url: "https://rosedale.edu/hiring/" },
@@ -5734,6 +5750,12 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Navarro College", type: "oracle-cx", url: "https://espf.fa.ocs.oraclegovcloud2.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?keyword=Faculty&mode=location" },
+  { campus: "San Jacinto Community College", type: "csod", url: "https://sanjac.csod.com/ux/ats/careersite/3/home?c=sanjac" },
+  { campus: "Texas Tech University Health Sciences Center-El Paso", type: "generic", url: "https://jobs.brassring.com/1033/ASP/TG/cim_home.asp?partnerid=25898&siteid=5625" },
+  { campus: "Texas Woman's University", type: "generic", url: "https://twu.edu/humanresources/careers-at-twu/jobs/" },
+  { campus: "University of North Texas at Dallas", type: "nau-search", url: "https://careers.untsystem.edu/jobs/search/search-page-unt-dallas-faculty" },
+  { campus: "University of North Texas Health Science Center", type: "nau-search", url: "https://careers.untsystem.edu/jobs/search/search-page-hsc-faculty" },
   { campus: "Weatherford College", type: "peopleadmin", url: "https://jobs.wc.edu/postings/search?865%5B%5D=5&865%5B%5D=3&commit=Search", excludeTitleFilter: "^Executive Vice President of Academic Services$" },
   { campus: "Sam Houston State University", type: "peopleadmin", url: "https://shsu.peopleadmin.com/postings/search?query_position_type_id=2&commit=Search" },
   { campus: "Texas Southern University", type: "peopleadmin", url: "https://jobs.tsu.edu/postings/search?810%5B%5D=7&commit=Search" },
@@ -6169,6 +6191,11 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "Hillsborough Community College", type: "workday", url: "https://hccfl.wd1.myworkdayjobs.com/en-US/hccjobs" },
+  { campus: "North Florida College", type: "generic", url: "https://www.nfc.edu/about/employment-opportunities/employment-openings" },
+  { campus: "Saint Johns River State College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sjrstate" },
+  { campus: "Santa Fe College", type: "workday", url: "https://sfcollege.wd5.myworkdayjobs.com/SFcareers" },
+  { campus: "St Petersburg College", type: "peoplesoft-hrs", url: "https://spchrs.spcollege.edu/psc/GUEST/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant" },
   { campus: "Ringling College of Art and Design", type: "workday", url: "https://ringling.wd1.myworkdayjobs.com/RinglingExternalCareersFaculty" },
   { campus: "University of West Florida", type: "pageup", url: "https://careers.uwf.edu/jobs/search" },
   { campus: "Northwest Florida State College", type: "interviewexchange", url: "https://nwfsc.interviewexchange.com/static/clients/531NFM1/index.jsp" },
@@ -7007,6 +7034,11 @@ const KS_CAMPUSES = [
 
 // OK (Oklahoma)
 const OK_CAMPUSES = [
+  { campus: "Langston University", type: "nau-search", url: "https://jobs.okstate.edu/jobs/search/search-page-langston" },
+  { campus: "Northwestern Oklahoma State University", type: "generic", url: "https://www.nwosu.edu/employment/" },
+  { campus: "Southeastern Oklahoma State University", type: "csod", url: "https://seok.csod.com/ux/ats/careersite/1/home?c=seok" },
+  { campus: "University of Central Oklahoma", type: "generic", url: "https://www.uco.edu/people/human-resources/careers" },
+  { campus: "University of Science and Arts of Oklahoma", type: "generic", url: "https://usao.edu/about/human-resources/careers-at-usao.html" },
   { campus: "Clary Sage College", type: "generic", url: "https://clarysagecollege.com/employment/" },
   { campus: "Northeastern State University", type: "csod", url: "https://nsuok.csod.com/ux/ats/careersite/4/home?c=nsuok" },
   { campus: "Oklahoma Baptist University", type: "generic", url: "https://www.okbu.edu/hr/jobs" },
@@ -18358,7 +18390,7 @@ async function scrapeOrAll(context) {
 
 
 async function scrapeWaAll(context) {
-  const tasks = WA_CAMPUSES.map(({ campus, type, url }) =>
+  const tasks = WA_CAMPUSES.map(({ campus, type, url, campusFilter }) =>
     (async () => {
       try {
         if (type === "walla-walla-faculty") return await scrapeWallaWallaFacultyAs(context, url, campus, "WA");
@@ -18366,9 +18398,14 @@ async function scrapeWaAll(context) {
           const jobs = await scrapePeopleSoftFluidAs(context, url, campus, "WA");
           return jobs.map(splitSeattleCollegesCampus).filter(Boolean);
         }
+        if (type === "spokane-colleges") {
+          const jobs = await scrapePageUpAs(context, url, campus, "WA");
+          return jobs.map(splitSpokaneCollegesCampus).filter(Boolean);
+        }
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "WA");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "WA");
         if (type === "uw") return await scrapeUwAcademicJobs(context, url, campus, "WA");
+        if (type === "uw-campus") return await scrapeUwAcademicJobs(context, url, campus, "WA", campusFilter);
         if (type === "wwu") return await scrapeWwuFacultyPage(context, url, campus, "WA");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "WA");
         if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "WA");
@@ -19196,6 +19233,7 @@ async function scrapeCoAll(context) {
         if (type === "cu-boulder") return await scrapeCuBoulder(context, url, campus, "CO");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "CO");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "CO");
+        if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "CO");
         if (type === "generic") {
           const jobs = await scrapeGenericJobPage(context, url, campus, "CO");
           return excludeTitleFilter
@@ -20157,6 +20195,7 @@ async function scrapeOkAll(context) {
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "OK");
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "OK");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "OK");
+        if (type === "nau-search") return await scrapeNauSearch(context, url, campus, "OK");
         return [];
       } catch (e) {
         console.error(`❌ ${campus} OK scrape failed:`, e?.message || e);
@@ -20176,6 +20215,23 @@ export function splitOklahomaStateCampus(job) {
     /\(OKM\)$|INSTITUTE OF TECHNOLOGY/.test(department) ? "Oklahoma State University Institute of Technology" :
     /\(OKC\)$|^OKLAHOMA CITY/.test(department) ? "Oklahoma State University-Oklahoma City" :
     /\((?:STW|TUL)\)$/.test(department) ? "Oklahoma State University" :
+    null;
+
+  return campus ? { ...job, college: campus } : null;
+}
+
+export function splitSpokaneCollegesCampus(job) {
+  if (clean(job?.college) !== "Spokane Colleges") return job;
+
+  const evidence = clean([
+    job?.department,
+    job?.location,
+    job?.title,
+    job?.description,
+  ].filter(Boolean).join(" ")).toUpperCase();
+  const campus =
+    /\bSFCC\b|SPOKANE FALLS COMMUNITY COLLEGE/.test(evidence) ? "Spokane Falls Community College" :
+    /\bSCC\b|SPOKANE COMMUNITY COLLEGE/.test(evidence) ? "Spokane Community College" :
     null;
 
   return campus ? { ...job, college: campus } : null;
@@ -20673,6 +20729,7 @@ async function scrapeFlAll(context) {
         }
         if (type === "fsu-peoplesoft") return await scrapeFsuPeopleSoftJobs(context, url, campus, "FL");
         if (type === "peoplesoft") return await scrapePeopleSoftAs(context, url, campus, "FL");
+        if (type === "peoplesoft-hrs") return await scrapePeopleSoftHrsBasic(context, url, campus, "FL");
         if (type === "ucf-search") return await scrapeUcfSearchAs(context, url, campus, "FL");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "FL");
         if (type === "exacthire") return await scrapeExactHireAs(context, url, campus, "FL");
@@ -21774,7 +21831,7 @@ function normalizeUwTitle(raw) {
 
 
 
-async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
+async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName, campusFilter = null) {
   const page = await context.newPage();
   try {
     await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
@@ -21831,7 +21888,7 @@ async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
 
         if (title && title.length > 5) {
           seen.add(href);
-          out.push({ title, url: href, openDate: odm ? odm[1] : null, openThrough: otm ? clean(otm[1]) : null });
+          out.push({ title, url: href, evidence: raw, openDate: odm ? odm[1] : null, openThrough: otm ? clean(otm[1]) : null });
         }
       }
 
@@ -21853,7 +21910,7 @@ async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
           const title = match ? clean(match[1]) : text;
 
           seen.add(href);
-          out.push({ title, url: href });
+          out.push({ title, url: href, evidence: text });
         }
       }
 
@@ -21872,7 +21929,10 @@ async function scrapeUwAcademicJobs(context, startUrl, campusName, sourceName) {
       return null;
     };
 
-    const jobs = (items || []).map((x) => {
+    const scopedItems = campusFilter
+      ? (items || []).filter((x) => new RegExp(`\\b${campusFilter}\\b`, "i").test(x.evidence || ""))
+      : (items || []);
+    const jobs = scopedItems.map((x) => {
       const job = {
         title: normalizeUwTitle(x.title),
         url: x.url,
