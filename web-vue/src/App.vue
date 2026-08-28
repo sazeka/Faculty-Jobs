@@ -1245,7 +1245,7 @@ a.fa-listing-title:hover { color: var(--accent); }
 .fa-map-page-head h2 { margin: 5px 0 0; font-size: 45px; }
 .fa-map-page-grid { display: block; }
 .fa-map-page-grid > .map-panel { min-height: 620px; padding: 0; overflow: hidden; border: 1px solid var(--rule-2); border-radius: 0; box-shadow: none; }
-.fa-map-page-grid .leaflet-map-wrap { min-height: 560px; }
+.fa-map-page-grid .leaflet-map-wrap { height: clamp(560px, 68vh, 680px); min-height: 560px; }
 
 .fa-footer {
   display: flex;
@@ -1339,7 +1339,7 @@ a.fa-listing-title:hover { color: var(--accent); }
   .fa-map-page-head { align-items: flex-start; gap: 18px; }
   .fa-map-page-head h2 { font-size: 32px; }
   .fa-map-page-grid > .map-panel { min-height: 480px; }
-  .fa-map-page-grid .leaflet-map-wrap { min-height: 420px; }
+  .fa-map-page-grid .leaflet-map-wrap { height: clamp(420px, 60vh, 520px); min-height: 420px; }
   .fa-footer { align-items: flex-start; padding: 13px var(--pad); }
   .fa-footer > div:last-child { display: none; }
 }
