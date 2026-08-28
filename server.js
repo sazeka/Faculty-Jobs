@@ -822,6 +822,7 @@ const UC_CAMPUSES = [
 
 // California major private research universities
 const CA_PRIVATE_CAMPUSES = [
+  { campus: "Pacific Union College", type: "generic", url: "https://www.puc.edu/campus-services/human-resources/faculty-job-postings" },
   { campus: "Graduate Theological Union", type: "generic", url: "https://www.gtu.edu/about/employment" },
   // Institution-owned employee openings page. The generic adapter correctly
   // keeps the current adjunct animation opening and the global policy filter
@@ -2722,6 +2723,12 @@ const RI_PRIVATE_CAMPUSES = [
 
 // NH (New Hampshire)
 const NH_CAMPUSES = [
+  {
+    campus: "Plymouth State University",
+    type: "workday",
+    url: "https://usnh.wd5.myworkdayjobs.com/Careers?locations=1ec6efc4979310011704b2725e0c0000",
+    excludeTitleFilter: "Receiving Mail Clerk",
+  },
   {
     campus: "Keene State College",
     type: "workday",
@@ -4983,6 +4990,7 @@ const UT_CAMPUSES = [
 
 // MI (Michigan)
 const MI_CAMPUSES = [
+  { campus: "Saginaw Valley State University", type: "workday", url: "https://svsu.wd503.myworkdayjobs.com/External" },
   { campus: "Kuyper College", type: "kuyper-employment", url: "https://www.kuyper.edu/employment/" },
   // Jackson College's HR page separates regular and adjunct vacancies. The
   // institution-labeled "Adjunct positions" control resolves to this exact
@@ -5146,6 +5154,8 @@ const MI_CAMPUSES = [
 
 // IL (Illinois)
 const IL_CAMPUSES = [
+  { campus: "Quincy University", type: "quincy-faculty", url: "https://www.quincy.edu/about/work-at-qu/job-openings/" },
+  { campus: "Roosevelt University", type: "peopleadmin", url: "https://jobs.roosevelt.edu/postings/search?query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search" },
   {
     campus: "Illinois College of Optometry",
     type: "adp",
@@ -5704,6 +5714,9 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Sam Houston State University", type: "peopleadmin", url: "https://shsu.peopleadmin.com/postings/search?query_position_type_id=2&commit=Search" },
+  { campus: "Texas Southern University", type: "peopleadmin", url: "https://jobs.tsu.edu/postings/search?810%5B%5D=7&commit=Search" },
+  { campus: "University of Dallas", type: "generic", url: "https://udallas.edu/offices-services/human-resources/open-positions.php" },
   { campus: "Odessa College", type: "peopleadmin", url: "https://jobs.odessa.edu/postings/search?1670%5B%5D=1&commit=Search" },
   { campus: "Houston Christian University", type: "generic", url: "https://hc.edu/about-hcu/campus-resources/job-opportunities/?marvel-activate=false" },
   { campus: "Houston Community College", type: "selectminds-faculty-saved-search", url: "https://hccs.referrals.selectminds.com/" },
@@ -6135,6 +6148,8 @@ const TX_CAMPUSES = [
 
 // FL (Florida)
 const FL_CAMPUSES = [
+  { campus: "Ringling College of Art and Design", type: "workday", url: "https://ringling.wd1.myworkdayjobs.com/RinglingExternalCareersFaculty" },
+  { campus: "University of West Florida", type: "pageup", url: "https://careers.uwf.edu/jobs/search" },
   { campus: "Northwest Florida State College", type: "interviewexchange", url: "https://nwfsc.interviewexchange.com/static/clients/531NFM1/index.jsp" },
   { campus: "Tallahassee State College", type: "workday", url: "https://tscfl.wd12.myworkdayjobs.com/en-US/TSC_External_Career_Site/jobs?jobFamilyGroup=88ce6bf2369610a6541c104e02c3315b&workerSubType=cb0c8f1c5fbf10ec7c87484d61a505c5&workerSubType=3270bd056e3210a44c108a51d23b0fab" },
   { campus: "Lake-Sumter State College", type: "schooljobs", url: "https://www.governmentjobs.com/careers/lsscedu" },
@@ -6443,6 +6458,7 @@ const FL_CAMPUSES = [
 // "the TCSG System Office, as well as our 22 Colleges", not just whichever
 // currently has an open posting.
 const GA_CAMPUSES = [
+  { campus: "Paine College", type: "generic", url: "https://paine.edu/employment/" },
   { campus: "Mercer University", type: "workday", url: "https://merceruniversity.wd1.myworkdayjobs.com/external" },
   {
     campus: "Georgia Institute of Technology-Main Campus",
@@ -6536,6 +6552,7 @@ const GA_CAMPUSES = [
 
 // AL (Alabama)
 const AL_CAMPUSES = [
+  { campus: "Troy University", type: "peopleadmin", url: "https://www.troyuniversityjobs.com/postings/search?3481=3&commit=Search" },
   { campus: "Jacksonville State University", type: "pageup", url: "https://careers.jsu.edu/jobs/search/search-page-jsu-careers-faculty" },
   { campus: "Tuskegee University", type: "peopleadmin", url: "https://tuskegee.peopleadmin.com/" },
   { campus: "University of North Alabama", type: "schooljobs", url: "https://www.schooljobs.com/careers/una" },
@@ -7157,6 +7174,7 @@ const MO_CAMPUSES = [
 
 // KY (Kentucky)
 const KY_CAMPUSES = [
+  { campus: "University of Kentucky", type: "peopleadmin", url: "https://ukjobs.uky.edu/postings/search?988=2&commit=Search" },
   { campus: "Kentucky Christian University", type: "kcu-job-manager", url: "https://www.kcu.edu/job-postings/" },
   {
     campus: "Kentucky State University",
@@ -7249,6 +7267,7 @@ const KY_CAMPUSES = [
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
+  { campus: "Tennessee Technological University", type: "oracle-cx", url: "https://fa-eygi-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1" },
   {
     campus: "Lee University",
     type: "lee-job-manager",
@@ -11854,12 +11873,17 @@ async function scrapeNhAll(context) {
   const results = await mapWithConcurrency(
     NH_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, departmentFilter }) => {
+    async ({ campus, type, url, departmentFilter, excludeTitleFilter }) => {
       try {
         // Handle any explicit platform types if added later
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "NH");
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "NH");
-        if (type === "workday") return await scrapeWorkdayApi(context, url, campus, "NH");
+        if (type === "workday") {
+          const jobs = await scrapeWorkdayApi(context, url, campus, "NH");
+          return excludeTitleFilter
+            ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || ""))
+            : jobs;
+        }
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NH");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NH");
         if (type === "covenant-health-search") return await scrapeCovenantHealthSearchAs(context, url, campus, "NH", departmentFilter || null);
@@ -13215,6 +13239,7 @@ async function scrapeIlAll(context) {
     async ({ campus, type, url, locationFilter, excludeTitleFilter }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "IL");
+        if (type === "quincy-faculty") return await scrapeQuincyFacultyAs(context, url, campus, "IL");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "IL");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "IL");
         // No existing IL dispatch case for "adp" (function scrapeAdpAs already
@@ -15781,6 +15806,54 @@ export async function scrapeJbuFacultyAs(context, startUrl, campusName, sourceNa
       location: "Siloam Springs, AR",
       description: null,
     }));
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+// Quincy's official employment page keeps faculty vacancies in the first
+// accordion immediately following the Faculty Openings heading. Restricting
+// extraction to that one widget prevents the adjacent staff and graduate-
+// assistant accordions from being misclassified as faculty jobs.
+export async function scrapeQuincyFacultyAs(context, startUrl, campusName = "Quincy University", sourceName = "IL") {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(800);
+    const titles = await page.locator("#faculty").evaluate((heading) => {
+      const cleanText = (value) => (value || "").replace(/\s+/g, " ").trim();
+      const widget = heading.closest(".paragraph-widget")?.nextElementSibling;
+      return Array.from(widget?.querySelectorAll("summary") || [], (summary) => cleanText(summary.textContent)).filter(Boolean);
+    });
+    const seen = new Set();
+    const jobs = (titles || [])
+      .map((title) => normalizeJobTitle(title))
+      .filter((title) => title && !isGenericFacultyPageChromeTitle(title) && !omitAdjunct(title))
+      .filter((title) => {
+        const key = title.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map((title, index) => {
+        const inferred = inferAcademicFieldsFromTitle(title);
+        return {
+          title,
+          url: `${startUrl.replace(/#.*$/, "")}#faculty-position-${index + 1}`,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: "Quincy, IL",
+          description: null,
+          department: inferred.department,
+          specialization: inferred.specialization,
+        };
+      });
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty accordion)`);
+    return jobs;
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} Quincy scrape failed:`, error?.message || error);
+    return [];
   } finally {
     await page.close().catch(() => {});
   }
@@ -20053,6 +20126,7 @@ async function scrapeTnAll(context) {
     async ({ campus, type, url }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "TN");
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "TN");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "TN");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "TN");
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "TN");
