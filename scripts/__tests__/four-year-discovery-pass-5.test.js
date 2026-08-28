@@ -45,6 +45,15 @@ test("fifth four-year pass promotes only reviewed institution-scoped sources", (
       assert.match(row, /olc\.edu\/resources\/human-resources\/open-positions/);
       continue;
     }
+    // Pass 5 found no scoped route. The eighth private-institution batch
+    // subsequently verified the college's institution-specific ADP tenant.
+    if (item.name === "Randolph-Macon College") {
+      const row = source.match(/^\s*\{ campus: "Randolph-Macon College"[^\n]+/m)?.[0] || "";
+      assert.match(row, /type: "adp"/);
+      assert.match(row, /workforcenow\.adp\.com/);
+      assert.match(row, /cid=0885b537-c9f5-47f8-aa4f-0ad7bbebf412/);
+      continue;
+    }
     assert.doesNotMatch(source, new RegExp(`^\\s*\\{ campus: "${escaped}"`, "m"), item.name);
   }
 });

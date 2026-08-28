@@ -1698,6 +1698,7 @@ const PA_CAMPUSES = [
 ];
 
 const PA_PRIVATE_CAMPUSES = [
+  { campus: "Saint Joseph's University - Philadelphia", type: "generic", url: "https://www.sju.edu/offices/human-resources/working-at-sju" },
   { campus: "Peirce College", type: "generic", url: "https://www.peirce.edu/about-peirce/additional-resources/careers-at-peirce/", excludeTitleFilter: "\\bsupplemental instructor\\b" },
   { campus: "Messiah University", type: "peopleadmin", url: "https://careers.messiah.edu/postings/search?668%5B%5D=2&commit=Search&query=&query_v0_posted_at_date=&utf8=%E2%9C%93" },
   { campus: "Harrisburg University of Science and Technology", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=d7d41d6e-e9f2-43e0-af0f-ac2146083d4f&lang=en_US" },
@@ -2204,6 +2205,9 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Randolph-Macon College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=9200900703747_2&cid=0885b537-c9f5-47f8-aa4f-0ad7bbebf412&lang=en_US&type=JS" },
+  { campus: "Shenandoah University", type: "generic", url: "https://jobs.silkroad.com/ShenandoahUniversity/EmploymentPortal", excludeTitleFilter: "^Faculty Handbook$" },
+  { campus: "Southern Virginia University", type: "faculty-headings", url: "https://svu.edu/about/careers/" },
   { campus: "Patrick Henry College", type: "generic", url: "https://www.phc.edu/faculty-and-academic-affairs" },
   { campus: "Mary Baldwin University", type: "generic", url: "https://marybaldwin.edu/employment-and-jobs-at-mary-baldwin/", excludeTitleFilter: "\\bfaculty support\\b" },
   { campus: "Marymount University", type: "workday", url: "https://marymount.wd5.myworkdayjobs.com/Careers" },
@@ -2599,6 +2603,7 @@ const DE_CAMPUSES = [
 
 // MD (Maryland) - major research universities + liberal arts colleges
 const MD_CAMPUSES = [
+  { campus: "Stevenson University", type: "generic", url: "https://www.stevenson.edu/human-resources/", excludeTitleFilter: "^Faculty Policies$" },
   { campus: "McDaniel College", type: "interviewexchange", url: "https://mcdaniel.interviewexchange.com/static/clients/561MCM1/index.jsp" },
   { campus: "University of Baltimore", type: "generic", url: "https://www.ubalt.edu/about/offices-and-services/human-resources/" },
   { campus: "University of Maryland Eastern Shore", type: "peopleadmin", url: "https://umes.peopleadmin.com/postings/search" },
@@ -3104,6 +3109,8 @@ function inferSunyCampusFromText(title, url) {
 
 // NY Private Universities
 const NY_PRIVATE_CAMPUSES = [
+  { campus: "Russell Sage College", type: "generic", url: "https://www.sage.edu/about/work-at-russell-sage/" },
+  { campus: "St. Joseph's University-New York", type: "faculty-headings", url: "https://www.sjny.edu/employment" },
   { campus: "New York Law School", type: "generic", url: "https://www.nyls.edu/about/working-at-nyls/", excludeTitleFilter: "\\bfaculty news\\b" },
   { campus: "Niagara University", type: "generic", url: "https://niagara.applicantpro.com/jobs/" },
   { campus: "IE New York College", type: "generic", url: "https://www.ienyc.edu/about/careers-at-ienyc/" },
@@ -4000,6 +4007,7 @@ const VT_CAMPUSES = [
 
 // MN (Minnesota)
 const MN_CAMPUSES = [
+  { campus: "St Olaf College", type: "oracle-cx", url: "https://fa-ewur-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3" },
   { campus: "Minnesota State Colleges and Universities System Office", type: "peopleadmin", url: "https://mnsystem.peopleadmin.com/postings/search" },
   { campus: "Lake Superior College", type: "workday", url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545d78218ff0000" },
   { campus: "Hamline University", type: "workday", url: "https://hamline.wd5.myworkdayjobs.com/Faculty_Career_Site" },
@@ -4467,6 +4475,7 @@ const MT_CAMPUSES = [
 
 // WI (Wisconsin)
 const WI_CAMPUSES = [
+  { campus: "Saint Norbert College", type: "generic", url: "https://my.snc.edu/humanresources/open-positions/" },
   { campus: "Wisconsin Lutheran College", type: "wlc-faculty", url: "https://www.wlc.edu/about-wlc/offices-resources/human-resources/index.html" },
   {
     campus: "Lac Courte Oreilles Ojibwe University",
@@ -5030,6 +5039,7 @@ const NM_CAMPUSES = [
 
 // NV (Nevada)
 const NV_CAMPUSES = [
+  { campus: "Roseman University of Health Sciences", type: "generic", url: "https://www.roseman.edu/about/university-service-units/human-resources/" },
   { campus: "Great Basin College", type: "workday", url: "https://nshe.wd1.myworkdayjobs.com/GBC-external" },
   { campus: "Truckee Meadows Community College", type: "workday", url: "https://nshe.wd1.myworkdayjobs.com/TMCC-External" },
   {
@@ -5659,6 +5669,7 @@ const ID_CAMPUSES = [
 
 // IN (Indiana)
 const IN_CAMPUSES = [
+  { campus: "Saint Mary-of-the-Woods College", type: "generic", url: "https://www.smwc.edu/offices-resources/offices/office-of-people-success-and-opportunity/employment-opportunities/" },
   { campus: "Manchester University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=c01330c8-9bdc-4d7b-b355-90630c559bae&lang=en_US&selectedMenuKey=CurrentOpenings&source=CC2" },
   { campus: "Purdue University Global", type: "generic", url: "https://careers.purdue.edu/viewalljobs/" },
   {
@@ -5848,6 +5859,7 @@ const WV_CAMPUSES = [
 
 // TX (Texas)
 const TX_CAMPUSES = [
+  { campus: "Schreiner University", type: "generic", url: "https://schreiner.edu/jobs/", excludeTitleFilter: "^(?:Students? \\| Faculty \\| Staff|Administrative Coordinator to the Dean of Faculty)$" },
   { campus: "Paul Quinn College", type: "faculty-headings", url: "https://paulquinn.edu/opportunities/" },
   { campus: "Hallmark University", type: "generic", url: "https://careers.hallmarkuniversity.edu/job-type/faculty/" },
   { campus: "Navarro College", type: "oracle-cx", url: "https://espf.fa.ocs.oraclegovcloud2.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?keyword=Faculty&mode=location" },
@@ -6814,6 +6826,7 @@ const AL_CAMPUSES = [
 
 // MS (Mississippi)
 const MS_CAMPUSES = [
+  { campus: "Rust College", type: "faculty-table", url: "https://rustcollege.edu/job-listings/" },
   { campus: "University of Southern Mississippi", type: "csod", url: "https://usm.csod.com/ux/ats/careersite/1/home?c=usm" },
   { campus: "Mississippi State University", type: "pageup", url: "https://explore.msujobs.msstate.edu/cw/en-us/listing/" },
   { campus: "William Carey University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=E66B3C1689D7CACD88837E5AD889588C" },
@@ -7240,6 +7253,9 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "Ranken Technical College", type: "generic", url: "https://ranken.edu/about-us/careers-at-ranken/" },
+  { campus: "Saint Louis University", type: "workday", url: "https://slu.wd5.myworkdayjobs.com/Careers?jobFamilyGroup=540e12fab86101bf4168b74e74018188" },
+  { campus: "Southwest Baptist University", type: "generic", url: "https://secure5.entertimeonline.com/ta/CBIZ20575.careers?CareersSearch=" },
   { campus: "Lindenwood University", type: "workday", url: "https://lindenwood.wd1.myworkdayjobs.com/CareerOpportunities" },
   { campus: "Truman State University", type: "peopleadmin", url: "https://trumansu.peopleadmin.com/postings/search?sort=435+asc" },
   { campus: "Missouri Southern State University", type: "generic", url: "https://mssu.hrmdirect.com/employment/job-openings.php?search=true" },
@@ -7364,6 +7380,7 @@ const MO_CAMPUSES = [
 
 // KY (Kentucky)
 const KY_CAMPUSES = [
+  { campus: "Spalding University", type: "generic", url: "https://spalding.edu/careers/" },
   { campus: "Georgetown College", type: "generic", url: "https://www.georgetowncollege.edu/careers-georgetown-college" },
   { campus: "University of Kentucky", type: "peopleadmin", url: "https://ukjobs.uky.edu/postings/search?988=2&commit=Search" },
   { campus: "Kentucky Christian University", type: "kcu-job-manager", url: "https://www.kcu.edu/job-postings/" },
@@ -11878,6 +11895,7 @@ async function scrapeVaAll(context) {
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "VA");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "VA");
         if (type === "hampton-faculty") return await scrapeHamptonFacultyAs(context, url, campus, "VA");
+        if (type === "faculty-headings") return await scrapeFacultyHeadingPageAs(context, url, campus, "VA");
         if (type === "generic") {
           const jobs = await scrapeGenericJobPage(context, url, campus, "VA");
           return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title)) : jobs;
@@ -11968,21 +11986,24 @@ async function scrapeMdAll(context) {
   const results = await mapWithConcurrency(
     MD_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
-        if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MD");
-        if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "MD");
-        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "MD");
-        if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MD");
-        if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "MD");
-        if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MD");
-        if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "MD");
+        let jobs = [];
+        if (type === "peopleadmin") jobs = await scrapePeopleAdminAs(context, url, campus, "MD");
+        else if (type === "taleo") jobs = await scrapeTaleoAs(context, url, campus, "MD");
+        else if (type === "pageup") jobs = await scrapePageUpAs(context, url, campus, "MD");
+        else if (type === "workday") jobs = await scrapeWorkdayAs(context, url, campus, "MD");
+        else if (type === "interviewexchange") jobs = await scrapeInterviewExchangeAs(context, url, campus, "MD");
+        else if (type === "schooljobs") jobs = await scrapeSchoolJobsAs(context, url, campus, "MD");
+        else if (type === "ultipro-ukg") jobs = await scrapeUltiproUkgAs(context, url, campus, "MD");
         // No existing MD dispatch case for "adp" (function scrapeAdpAs
         // already exists and is dispatched by several other states) --
         // added for Capitol Technology University.
-        if (type === "adp") return await scrapeAdpAs(context, url, campus, "MD");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MD");
-        return [];
+        else if (type === "adp") jobs = await scrapeAdpAs(context, url, campus, "MD");
+        else if (type === "generic") jobs = await scrapeGenericJobPage(context, url, campus, "MD");
+        if (!excludeTitleFilter) return jobs;
+        const reject = new RegExp(excludeTitleFilter, "i");
+        return jobs.filter((job) => !reject.test(job.title || ""));
       } catch (e) {
         console.error(`❌ ${campus} MD scrape failed:`, e?.message || e);
         return [];
@@ -14750,6 +14771,7 @@ async function scrapeNyPrivate(context) {
         if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "NY");
         if (type === "nyu") return await scrapeNyuFaculty(context, url);
         if (type === "stjohns") return await scrapeStJohnsDirectoryAs(context, url, campus, "NY");
+        if (type === "faculty-headings") return await scrapeFacultyHeadingPageAs(context, url, campus, "NY");
         if (type === "jobvite") return await scrapeJobviteAs(url, campus, "NY");
         if (type === "generic") {
           const jobs = await scrapeGenericJobPage(context, url, campus, "NY");
@@ -16212,6 +16234,45 @@ export async function scrapeFacultyHeadingPageAs(context, startUrl, campusName, 
     return jobs;
   } catch (error) {
     console.error(`❌ ${campusName} ${sourceName} faculty-heading scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+export async function scrapeFacultyTablePageAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+    const rows = await safeEvaluate(page, () => {
+      const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+      return [...document.querySelectorAll("table tbody tr")].map((row) => {
+        const cells = [...row.querySelectorAll("th, td")];
+        const link = row.querySelector("a[href]");
+        return {
+          title: cleanText(cells[0]?.textContent),
+          url: link?.href || location.href,
+          status: cleanText(cells[2]?.textContent),
+        };
+      });
+    });
+    const seen = new Set();
+    const jobs = (rows || [])
+      .filter((row) => looksFacultyish(row.title))
+      .filter((row) => !row.status || /open|current|active/i.test(row.status))
+      .filter((row) => !omitAdjunct(row.title))
+      .filter((row) => {
+        const key = `${row.title}|${row.url}`.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map((row) => toNjJob(normalizeJobTitle(row.title), row.url, campusName, sourceName));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty table)`);
+    return jobs;
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} faculty-table scrape failed:`, error?.message || error);
     return [];
   } finally {
     await page.close().catch(() => {});
@@ -18692,6 +18753,7 @@ async function scrapeMnAll(context) {
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "MN");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MN");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "MN");
+        if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "MN");
         // "schooljobs" was missing from this dispatch chain entirely even though
         // scrapeSchoolJobsAs already exists and MN_CAMPUSES has a correctly
         // configured type: "schooljobs" entry (College of Saint Benedict) --
@@ -19814,6 +19876,7 @@ async function scrapeMsAll(context) {
         // scrapeSchoolJobsAs already exists) -- added for East Mississippi
         // Community College (governmentjobs.com is the same NEOGOV platform).
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MS");
+        if (type === "faculty-table") return await scrapeFacultyTablePageAs(context, url, campus, "MS");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MS");
         return [];
       } catch (e) {
@@ -20873,7 +20936,10 @@ async function scrapeTxAll(context) {
             preferDeptKeys: ["college", "department", "organization", "unit", "school"],
           });
         }
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "TX");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "TX");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || "")) : jobs;
+        }
         return [];
       } catch (e) {
         console.error(`❌ ${campus} TX scrape failed:`, e?.message || e);
