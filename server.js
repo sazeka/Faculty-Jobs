@@ -637,6 +637,7 @@ const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type
 // Massachusetts private universities + liberal arts colleges
 const MA_PRIVATE_CAMPUSES = [
   { campus: "Hult International Business School", type: "oracle-cx", url: "https://jobs.ef.com/en/sites/hult/jobs?lastSelectedFacet=AttributeChar2&selectedFlexFieldsFacets=%22AttributeChar2%7CFaculty+%26+research%22" },
+  { campus: "Lesley University", type: "workday", url: "https://lesley.wd503.myworkdayjobs.com/Lesley_University_Careers" },
   { campus: "Massachusetts College of Art and Design", type: "interviewexchange", url: "https://massart.interviewexchange.com/" },
   { campus: "Salem State University", type: "generic", url: "https://salem-state-university.career-pages.com/" },
   { campus: "Westfield State University", type: "interviewexchange", url: "https://westfield.interviewexchange.com/" },
@@ -5089,6 +5090,8 @@ const UT_CAMPUSES = [
 // MI (Michigan)
 const MI_CAMPUSES = [
   { campus: "Grace Christian University", type: "generic", url: "https://gracechristian.edu/about/contact/employment/" },
+  { campus: "Lawrence Technological University", type: "generic", url: "https://ltu.edu/about/human-resources/job-openings/", excludeTitleFilter: "\\b(?:faculty policies|faculty senate|faculty handbook)\\b" },
+  { campus: "Madonna University", type: "generic", url: "https://www.madonna.edu/resources/human-resources/", excludeTitleFilter: "\\bfaculty benefits?\\b" },
   { campus: "Schoolcraft Community College District", type: "peopleadmin", url: "https://jobs.schoolcraft.edu/postings/search" },
   { campus: "Saginaw Valley State University", type: "workday", url: "https://svsu.wd503.myworkdayjobs.com/External" },
   { campus: "Kuyper College", type: "kuyper-employment", url: "https://www.kuyper.edu/employment/" },
@@ -7218,6 +7221,7 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "Lindenwood University", type: "workday", url: "https://lindenwood.wd1.myworkdayjobs.com/CareerOpportunities" },
   { campus: "Truman State University", type: "peopleadmin", url: "https://trumansu.peopleadmin.com/postings/search?sort=435+asc" },
   { campus: "Missouri Southern State University", type: "generic", url: "https://mssu.hrmdirect.com/employment/job-openings.php?search=true" },
   { campus: "Ozarks Technical Community College", type: "pageup", url: "https://careers.pageuppeople.com/880/cw/en-us/listing/" },
@@ -7435,6 +7439,8 @@ const KY_CAMPUSES = [
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
+  { campus: "Lincoln Memorial University", type: "peopleadmin", url: "https://careers.lmunet.edu/postings/search?797%5B%5D=4&commit=Search&query=&query_position_type_id%5B%5D=any&query_v0_posted_at_date=" },
+  { campus: "Lipscomb University", type: "ultipro-ukg", url: "https://recruiting2.ultipro.com/LIP1001LCMB/JobBoard/6e7649f2-aa46-44d5-969d-70429a5423e6/?o=postedDateDesc&q=", excludeTitleFilter: "\\bgroup fitness instructor\\b" },
   { campus: "University of Memphis", type: "peopleadmin", url: "https://workforum.memphis.edu/postings/search?680=Any&681=2&682=Any&commit=Search&page=1&sort=683+asc" },
   { campus: "Tennessee Technological University", type: "oracle-cx", url: "https://fa-eygi-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1" },
   {
@@ -12120,12 +12126,15 @@ async function scrapeMiAll(context) {
   const results = await mapWithConcurrency(
     MI_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MI");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "MI");
         if (type === "static") return await scrapeStaticLinksAs(context, url, campus, "MI");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "MI");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "MI");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title)) : jobs;
+        }
         if (type === "kzoo-faculty") return await scrapeKzooFacultyJobs(context, url, campus, "MI");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MI");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "MI");
@@ -20436,7 +20445,7 @@ async function scrapeTnAll(context) {
   const results = await mapWithConcurrency(
     TN_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url }) => {
+    async ({ campus, type, url, excludeTitleFilter }) => {
       try {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "TN");
         if (type === "oracle-cx") return await scrapeOracleCxAs(context, url, campus, "TN");
@@ -20445,6 +20454,10 @@ async function scrapeTnAll(context) {
         if (type === "taleo") return await scrapeTaleoAs(context, url, campus, "TN");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "TN");
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "TN");
+        if (type === "ultipro-ukg") {
+          const jobs = await scrapeUltiproUkgAs(context, url, campus, "TN");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title)) : jobs;
+        }
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "TN");
         if (type === "interfolio") return await scrapeInterfolioPositionsAs(context, url, campus, "TN");
         if (type === "mooretech-news") return await scrapeMooreTechFacultyNews(url, campus, "TN");

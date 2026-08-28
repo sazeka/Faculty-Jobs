@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-08-28T07:30:00.000Z",
+  "scope": "Next twelve unresolved private-nonprofit institutions in the alphabetical L segment",
+  "reviewedCount": 12,
+  "promotedCount": 6,
+  "heldCount": 6,
+  "safeguards": [
+    "Only official institution-owned employee pages or institution-specific ATS tenants were promoted.",
+    "Student, alumni, and third-party vacancy services were not treated as employee sources.",
+    "Institutions ending normal academic operations were held instead of being promoted as active employers.",
+    "A durable vacancy index was required; stale documents and maintenance notices were not sufficient."
+  ],
+  "liveChecks": [
+    { "name": "Lawrence Technological University", "publishedFacultyMatches": 0, "note": "The official page is healthy but currently has no faculty opening; one Faculty Policies navigation false positive was filtered." },
+    { "name": "Lesley University", "publishedFacultyMatches": 27 },
+    { "name": "Lincoln Memorial University", "publishedFacultyMatches": 9 },
+    { "name": "Lindenwood University", "publishedFacultyMatches": 49 },
+    { "name": "Lipscomb University", "publishedFacultyMatches": 6, "note": "A Group Fitness Instructor false positive was filtered." },
+    { "name": "Madonna University", "publishedFacultyMatches": 4, "note": "Two Faculty Benefits links were filtered." }
+  ],
+  "promoted": [
+    { "name": "Lawrence Technological University", "url": "https://ltu.edu/about/human-resources/job-openings/", "platformType": "generic", "evidence": "Official Human Resources job-openings page publishes current vacancies with title, employment type, college or office, and posting date." },
+    { "name": "Lesley University", "url": "https://lesley.wd503.myworkdayjobs.com/Lesley_University_Careers", "platformType": "workday", "evidence": "Official Work at Lesley page links this dedicated Lesley University external Workday tenant." },
+    { "name": "Lincoln Memorial University", "url": "https://careers.lmunet.edu/postings/search?797%5B%5D=4&commit=Search&query=&query_position_type_id%5B%5D=any&query_v0_posted_at_date=", "platformType": "peopleadmin", "evidence": "Institution-specific applicant portal exposes a faculty-filtered search with current faculty and adjunct openings." },
+    { "name": "Lindenwood University", "url": "https://lindenwood.wd1.myworkdayjobs.com/CareerOpportunities", "platformType": "workday", "evidence": "Official adjunct faculty page links this dedicated Lindenwood Career Opportunities Workday tenant." },
+    { "name": "Lipscomb University", "url": "https://recruiting2.ultipro.com/LIP1001LCMB/JobBoard/6e7649f2-aa46-44d5-969d-70429a5423e6/?o=postedDateDesc&q=", "platformType": "ultipro-ukg", "evidence": "Official Human Resources page links this institution-specific UKG recruiting board." },
+    { "name": "Madonna University", "url": "https://www.madonna.edu/resources/human-resources/", "platformType": "generic", "evidence": "Official Human Resources page publishes a dedicated current faculty positions table with application links." }
+  ],
+  "held": [
+    { "reason": "The institution has announced the end of academic operations and should not be promoted as an active long-term employer.", "names": ["Laboure College of Healthcare", "Limestone University"] },
+    { "reason": "No durable current institution-owned employee vacancy index was verified.", "names": ["Lancaster Bible College", "Lourdes University"] },
+    { "reason": "The official page links a legacy ADP route whose public feed now returns 404, so it cannot be safely scraped or monitored.", "names": ["Livingstone College"] },
+    { "reason": "The institution-owned employee application page is under maintenance and redirects applicants to third-party social/job platforms.", "names": ["Le Moyne-Owen College"] }
+  ]
+}
