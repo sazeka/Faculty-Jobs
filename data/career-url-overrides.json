@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-28T04:05:00.000Z",
+  "updatedAt": "2026-08-28T04:20:00.000Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -7731,7 +7731,7 @@
       "career_url": "https://merceruniversity.wd1.myworkdayjobs.com/external",
       "platform_type": "workday",
       "coverage_source": "Mercer University",
-      "notes": "Verified live 2026-08-27 through Mercer's institution-specific external Workday tenant. The production adapter returned 19 current faculty-qualified openings."
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Dedicated Mercer University external Workday tenant was already routed; production validation returned 19 current faculty-qualified openings and the master metadata was stale."
     },
     {
       "name": "Mississippi State University",
@@ -7752,7 +7752,7 @@
       "career_url": "https://www.morningside.edu/?job_category=full-time",
       "platform_type": "generic-faculty-category",
       "coverage_source": "Morningside University",
-      "notes": "Verified live 2026-08-27 through Morningside's official full-time job category. The production adapter returned three current tenure-track professor openings."
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official full-time jobs page was already routed; production validation returned three current tenure-track professor openings and the master metadata was stale."
     },
     {
       "name": "New Mexico Institute of Mining and Technology",
@@ -7822,7 +7822,7 @@
       "career_url": "https://paine.edu/employment/",
       "platform_type": "generic",
       "coverage_source": "Paine College",
-      "notes": "Verified live 2026-08-27 through Paine College's official Employment Opportunities page. The production adapter returned three current assistant-professor openings."
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official employment page was already routed; production validation returned three current assistant-professor openings and the master metadata was stale."
     },
     {
       "name": "Plymouth State University",
@@ -7836,14 +7836,14 @@
       "career_url": "https://www.quincy.edu/about/work-at-qu/job-openings/",
       "platform_type": "quincy-faculty",
       "coverage_source": "Quincy University",
-      "notes": "Verified live 2026-08-27 through Quincy's official Job Openings page. A dedicated parser reads only the Faculty Openings accordion and excludes the adjacent nonfaculty and graduate-assistant sections; two current faculty searches remain."
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official job openings page and dedicated faculty parser were already routed; two current faculty searches remained and the master metadata was stale."
     },
     {
       "name": "Roosevelt University",
       "career_url": "https://jobs.roosevelt.edu/postings/search?query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search",
       "platform_type": "peopleadmin",
       "coverage_source": "Roosevelt University",
-      "notes": "Verified live 2026-08-27 through Roosevelt's official PeopleAdmin board using its Faculty and Temp/Adjunct position-type facets. Production validation returned 20 current faculty openings without staff positions."
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Dedicated Roosevelt PeopleAdmin search was already routed to faculty position types; production validation returned 20 current faculty openings without staff positions and the master metadata was stale."
     },
     {
       "name": "Ringling College of Art and Design",
@@ -8873,6 +8873,153 @@
       "platform_type": "generic",
       "coverage_source": "Interdenominational Theological Center",
       "notes": "Verified in the second private-nonprofit discovery batch on 2026-08-27. Official Human Resources careers page is ITC's current employee openings source."
+    },
+    {
+      "name": "Luther Rice College & Seminary",
+      "career_url": "https://www.lutherrice.edu/about-us/job-opportunities",
+      "platform_type": "generic",
+      "coverage_source": "Luther Rice College & Seminary",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official institution-owned job opportunities page is the current faculty and staff vacancy source."
+    },
+    {
+      "name": "Morehouse College",
+      "career_url": "https://morehouse.peopleadmin.com/postings/search?1819%5B%5D=2&435=&commit=Search&query=&query_organizational_tier_3_id%5B%5D=any&query_v0_posted_at_date=&utf8=",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Morehouse College",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Dedicated Morehouse PeopleAdmin search is scoped to the faculty position category and publishes current faculty jobs."
+    },
+    {
+      "name": "Morehouse School of Medicine",
+      "career_url": "https://careers.msm.edu/postings/search",
+      "platform_type": "peopleadmin",
+      "coverage_source": "Morehouse School of Medicine",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Institution-specific PeopleAdmin board publishes current faculty and academic openings."
+    },
+    {
+      "name": "Morris Brown College",
+      "career_url": "https://morrisbrown.isolvedhire.com/jobs/",
+      "platform_type": "generic",
+      "coverage_source": "Morris Brown College",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official employment page links this institution-specific iSolved vacancy board."
+    },
+    {
+      "name": "Reinhardt University",
+      "career_url": "https://www.reinhardt.edu/careers/",
+      "platform_type": "generic",
+      "coverage_source": "Reinhardt University",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official careers page is the university's current employee vacancy source."
+    },
+    {
+      "name": "Savannah College of Art and Design",
+      "career_url": "https://scadcareers.scad.edu/jobs/search?page=1&string_field_1%5B%5D=Faculty",
+      "platform_type": "generic",
+      "coverage_source": "Savannah College of Art and Design",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official SCAD careers search is prefiltered to current faculty openings."
+    },
+    {
+      "name": "Wesleyan College",
+      "career_url": "https://www.wesleyancollege.edu/about/employment.cfm",
+      "platform_type": "generic",
+      "coverage_source": "Wesleyan College",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official employment page publishes and links current employee opportunities."
+    },
+    {
+      "name": "Pacific Rim Christian University",
+      "career_url": "https://www.pacrim.edu/careers",
+      "platform_type": "generic",
+      "coverage_source": "Pacific Rim Christian University",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official careers page publishes faculty employment opportunities and application instructions."
+    },
+    {
+      "name": "Maharishi International University",
+      "career_url": "https://services.miu.edu/human-resources/faculty/apply/part-time-and-visiting-application/",
+      "platform_type": "generic",
+      "coverage_source": "Maharishi International University",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official Human Resources faculty page provides the current part-time and visiting faculty application process."
+    },
+    {
+      "name": "Northwestern College",
+      "career_url": "https://www.nwciowa.edu/employment",
+      "platform_type": "generic",
+      "coverage_source": "Northwestern College",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official employment page publishes current faculty openings."
+    },
+    {
+      "name": "University of Dubuque",
+      "career_url": "https://www.dbq.edu/aboutud/employment/jobs/",
+      "platform_type": "generic",
+      "coverage_source": "University of Dubuque",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official jobs page publishes current faculty and academic vacancies."
+    },
+    {
+      "name": "Upper Iowa University",
+      "career_url": "https://uiu.edu/employment/",
+      "platform_type": "generic",
+      "coverage_source": "Upper Iowa University",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official employment page is the university's durable employee vacancy source."
+    },
+    {
+      "name": "New Saint Andrews College",
+      "career_url": "https://nsa.edu/about/jobs",
+      "platform_type": "generic",
+      "coverage_source": "New Saint Andrews College",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official jobs page is explicitly scoped to faculty and staff positions, including healthy zero-opening periods."
+    },
+    {
+      "name": "Institute for Clinical Social Work",
+      "career_url": "https://www.icsw.edu/icsw-careers",
+      "platform_type": "generic",
+      "coverage_source": "Institute for Clinical Social Work",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official careers page publishes current academic leadership and faculty opportunities."
+    },
+    {
+      "name": "Lakeview College of Nursing",
+      "career_url": "https://lcn.edu/about/job-opportunities",
+      "platform_type": "generic",
+      "coverage_source": "Lakeview College of Nursing",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official job opportunities page publishes current full-time and adjunct faculty roles."
+    },
+    {
+      "name": "Lutheran School of Theology at Chicago",
+      "career_url": "https://lstc.edu/about/employment/",
+      "platform_type": "generic",
+      "coverage_source": "Lutheran School of Theology at Chicago",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official employment page publishes current LSTC openings and links applications."
+    },
+    {
+      "name": "Methodist College",
+      "career_url": "https://www.methodistcol.edu/careers-and-volunteers/jobs",
+      "platform_type": "generic",
+      "coverage_source": "Methodist College",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official Methodist College jobs page provides the institution-scoped handoff to current employee openings."
+    },
+    {
+      "name": "Moody Bible Institute",
+      "career_url": "https://www.moodybible.org/careers/",
+      "platform_type": "generic",
+      "coverage_source": "Moody Bible Institute",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official Human Resources careers page links current Moody employee listings and clearly distinguishes the student and alumni board."
+    },
+    {
+      "name": "National Louis University",
+      "career_url": "https://nl.edu/employment/jobs/",
+      "platform_type": "generic",
+      "coverage_source": "National Louis University",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official jobs page publishes current faculty and adjunct employment categories."
+    },
+    {
+      "name": "North Central College",
+      "career_url": "https://northcentralcollege.peopleadmin.com/postings/search?435=&commit=Search&query=&query_organizational_tier_3_id=any&query_position_type_id=2&query_v0_posted_at_date=&utf8=%E2%9C%93",
+      "platform_type": "peopleadmin",
+      "coverage_source": "North Central College",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Dedicated PeopleAdmin search is scoped to North Central College faculty positions."
+    },
+    {
+      "name": "North Park University",
+      "career_url": "https://apply.workable.com/north-park-university/",
+      "platform_type": "generic",
+      "coverage_source": "North Park University",
+      "notes": "Verified in the third private-nonprofit discovery batch on 2026-08-27. Official Human Resources page links this institution-specific Workable vacancy board."
     }
   ]
 }

@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-08-28T04:20:00.000Z",
+  "scope": "Third 40-institution private-nonprofit discovery batch across Georgia, Hawaii, Iowa, Idaho, and Illinois",
+  "reviewedCount": 40,
+  "promotedCount": 26,
+  "heldCount": 14,
+  "safeguards": [
+    "Only official institution-owned employee pages or institution-specific ATS tenants were promoted.",
+    "Student and alumni career services were not treated as employee vacancy sources.",
+    "Shared healthcare and multi-campus boards were held when the institution could not be durably scoped.",
+    "Merged institutions and stale document-only references were held rather than treated as current employers."
+  ],
+  "promoted": [
+    { "name": "Luther Rice College & Seminary", "url": "https://www.lutherrice.edu/about-us/job-opportunities", "platformType": "generic", "evidence": "Official institution-owned job opportunities page is the current faculty and staff vacancy source." },
+    { "name": "Mercer University", "url": "https://merceruniversity.wd1.myworkdayjobs.com/external", "platformType": "workday", "evidence": "Dedicated Mercer University external Workday tenant was already routed; production validation returned 19 current faculty-qualified openings and the master metadata was stale." },
+    { "name": "Morehouse College", "url": "https://morehouse.peopleadmin.com/postings/search?1819%5B%5D=2&435=&commit=Search&query=&query_organizational_tier_3_id%5B%5D=any&query_v0_posted_at_date=&utf8=", "platformType": "peopleadmin", "evidence": "Dedicated Morehouse PeopleAdmin search is scoped to the faculty position category and publishes current faculty jobs." },
+    { "name": "Morehouse School of Medicine", "url": "https://careers.msm.edu/postings/search", "platformType": "peopleadmin", "evidence": "Institution-specific PeopleAdmin board publishes current faculty and academic openings." },
+    { "name": "Morris Brown College", "url": "https://morrisbrown.isolvedhire.com/jobs/", "platformType": "generic", "evidence": "Official employment page links this institution-specific iSolved vacancy board." },
+    { "name": "Paine College", "url": "https://paine.edu/employment/", "platformType": "generic", "evidence": "Official employment page was already routed; production validation returned three current assistant-professor openings and the master metadata was stale." },
+    { "name": "Reinhardt University", "url": "https://www.reinhardt.edu/careers/", "platformType": "generic", "evidence": "Official careers page is the university's current employee vacancy source." },
+    { "name": "Savannah College of Art and Design", "url": "https://scadcareers.scad.edu/jobs/search?page=1&string_field_1%5B%5D=Faculty", "platformType": "generic", "evidence": "Official SCAD careers search is prefiltered to current faculty openings." },
+    { "name": "Wesleyan College", "url": "https://www.wesleyancollege.edu/about/employment.cfm", "platformType": "generic", "evidence": "Official employment page publishes and links current employee opportunities." },
+    { "name": "Pacific Rim Christian University", "url": "https://www.pacrim.edu/careers", "platformType": "generic", "evidence": "Official careers page publishes faculty employment opportunities and application instructions." },
+    { "name": "Maharishi International University", "url": "https://services.miu.edu/human-resources/faculty/apply/part-time-and-visiting-application/", "platformType": "generic", "evidence": "Official Human Resources faculty page provides the current part-time and visiting faculty application process." },
+    { "name": "Morningside University", "url": "https://www.morningside.edu/?job_category=full-time", "platformType": "generic-faculty-category", "evidence": "Official full-time jobs page was already routed; production validation returned three current tenure-track professor openings and the master metadata was stale." },
+    { "name": "Northwestern College", "url": "https://www.nwciowa.edu/employment", "platformType": "generic", "evidence": "Official employment page publishes current faculty openings." },
+    { "name": "University of Dubuque", "url": "https://www.dbq.edu/aboutud/employment/jobs/", "platformType": "generic", "evidence": "Official jobs page publishes current faculty and academic vacancies." },
+    { "name": "Upper Iowa University", "url": "https://uiu.edu/employment/", "platformType": "generic", "evidence": "Official employment page is the university's durable employee vacancy source." },
+    { "name": "New Saint Andrews College", "url": "https://nsa.edu/about/jobs", "platformType": "generic", "evidence": "Official jobs page is explicitly scoped to faculty and staff positions, including healthy zero-opening periods." },
+    { "name": "Institute for Clinical Social Work", "url": "https://www.icsw.edu/icsw-careers", "platformType": "generic", "evidence": "Official careers page publishes current academic leadership and faculty opportunities." },
+    { "name": "Lakeview College of Nursing", "url": "https://lcn.edu/about/job-opportunities", "platformType": "generic", "evidence": "Official job opportunities page publishes current full-time and adjunct faculty roles." },
+    { "name": "Lutheran School of Theology at Chicago", "url": "https://lstc.edu/about/employment/", "platformType": "generic", "evidence": "Official employment page publishes current LSTC openings and links applications." },
+    { "name": "Methodist College", "url": "https://www.methodistcol.edu/careers-and-volunteers/jobs", "platformType": "generic", "evidence": "Official Methodist College jobs page provides the institution-scoped handoff to current employee openings." },
+    { "name": "Moody Bible Institute", "url": "https://www.moodybible.org/careers/", "platformType": "generic", "evidence": "Official Human Resources careers page links current Moody employee listings and clearly distinguishes the student and alumni board." },
+    { "name": "National Louis University", "url": "https://nl.edu/employment/jobs/", "platformType": "generic", "evidence": "Official jobs page publishes current faculty and adjunct employment categories." },
+    { "name": "North Central College", "url": "https://northcentralcollege.peopleadmin.com/postings/search?435=&commit=Search&query=&query_organizational_tier_3_id=any&query_position_type_id=2&query_v0_posted_at_date=&utf8=%E2%9C%93", "platformType": "peopleadmin", "evidence": "Dedicated PeopleAdmin search is scoped to North Central College faculty positions." },
+    { "name": "North Park University", "url": "https://apply.workable.com/north-park-university/", "platformType": "generic", "evidence": "Official Human Resources page links this institution-specific Workable vacancy board." },
+    { "name": "Quincy University", "url": "https://www.quincy.edu/about/work-at-qu/job-openings/", "platformType": "quincy-faculty", "evidence": "Official job openings page and dedicated faculty parser were already routed; two current faculty searches remained and the master metadata was stale." },
+    { "name": "Roosevelt University", "url": "https://jobs.roosevelt.edu/postings/search?query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search", "platformType": "peopleadmin", "evidence": "Dedicated Roosevelt PeopleAdmin search was already routed to faculty position types; production validation returned 20 current faculty openings without staff positions and the master metadata was stale." }
+  ],
+  "held": [
+    { "reason": "No current institution-owned employee vacancy source was found.", "names": ["Pontifex University", "Reformed University", "Palmer College of Chiropractic", "Hebrew Theological College", "Principia College", "Telshe Yeshiva-Chicago"] },
+    { "reason": "The institution is merged into or currently represented by another institution and cannot be safely attributed as a separate employer.", "names": ["St Luke's College", "St. Augustine College"] },
+    { "reason": "The available source is a student, alumni, or third-party job service rather than an employee vacancy source.", "names": ["Generations College", "McCormick Theological Seminary"] },
+    { "reason": "No durable current vacancy index could be verified beyond stale documents or references.", "names": ["Meadville Theological School of Lombard College"] },
+    { "reason": "The available shared employer board cannot safely distinguish this institution or campus.", "names": ["Midwestern University-Downers Grove", "Saint Anthony College of Nursing", "Saint Francis Medical Center College of Nursing"] }
+  ]
+}

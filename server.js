@@ -4257,6 +4257,10 @@ const NE_CAMPUSES = [
 // IA (Iowa)
 const IA_CAMPUSES = [
   { campus: "Morningside University", type: "generic", url: "https://www.morningside.edu/?job_category=full-time" },
+  { campus: "Maharishi International University", type: "generic", url: "https://services.miu.edu/human-resources/faculty/apply/part-time-and-visiting-application/" },
+  { campus: "Northwestern College", type: "generic", url: "https://www.nwciowa.edu/employment" },
+  { campus: "University of Dubuque", type: "generic", url: "https://www.dbq.edu/aboutud/employment/jobs/" },
+  { campus: "Upper Iowa University", type: "generic", url: "https://uiu.edu/employment/" },
   { campus: "Graceland University-Lamoni", type: "oracle-cx", url: "https://ibqcjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=CATEGORIES&selectedCategoriesFacet=300000009203194" },
   { campus: "Grand View University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/DC20BB66F0C9CF9F562615950604C1D5/career-page" },
   {
@@ -5244,6 +5248,14 @@ const IL_CAMPUSES = [
   { campus: "Wheaton College", type: "oracle-cx", url: "https://fa-eukq-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1" },
   { campus: "Quincy University", type: "quincy-faculty", url: "https://www.quincy.edu/about/work-at-qu/job-openings/" },
   { campus: "Roosevelt University", type: "peopleadmin", url: "https://jobs.roosevelt.edu/postings/search?query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search" },
+  { campus: "Institute for Clinical Social Work", type: "generic", url: "https://www.icsw.edu/icsw-careers" },
+  { campus: "Lakeview College of Nursing", type: "generic", url: "https://lcn.edu/about/job-opportunities" },
+  { campus: "Lutheran School of Theology at Chicago", type: "generic", url: "https://lstc.edu/about/employment/" },
+  { campus: "Methodist College", type: "generic", url: "https://www.methodistcol.edu/careers-and-volunteers/jobs" },
+  { campus: "Moody Bible Institute", type: "generic", url: "https://www.moodybible.org/careers/" },
+  { campus: "National Louis University", type: "generic", url: "https://nl.edu/employment/jobs/" },
+  { campus: "North Central College", type: "peopleadmin", url: "https://northcentralcollege.peopleadmin.com/postings/search?435=&commit=Search&query=&query_organizational_tier_3_id=any&query_position_type_id=2&query_v0_posted_at_date=&utf8=%E2%9C%93" },
+  { campus: "North Park University", type: "generic", url: "https://apply.workable.com/north-park-university/" },
   {
     campus: "Illinois College of Optometry",
     type: "adp",
@@ -5573,6 +5585,7 @@ const IL_CAMPUSES = [
 
 // ID (Idaho)
 const ID_CAMPUSES = [
+  { campus: "New Saint Andrews College", type: "generic", url: "https://nsa.edu/about/jobs" },
   {
     campus: "University of Idaho",
     type: "peopleadmin",
@@ -6575,6 +6588,13 @@ const GA_CAMPUSES = [
   { campus: "Interdenominational Theological Center", type: "generic", url: "https://www.itc.edu/about/human-resources/careers/" },
   { campus: "Paine College", type: "generic", url: "https://paine.edu/employment/" },
   { campus: "Mercer University", type: "workday", url: "https://merceruniversity.wd1.myworkdayjobs.com/external" },
+  { campus: "Luther Rice College & Seminary", type: "generic", url: "https://www.lutherrice.edu/about-us/job-opportunities" },
+  { campus: "Morehouse College", type: "peopleadmin", url: "https://morehouse.peopleadmin.com/postings/search?1819%5B%5D=2&435=&commit=Search&query=&query_organizational_tier_3_id%5B%5D=any&query_v0_posted_at_date=&utf8=" },
+  { campus: "Morehouse School of Medicine", type: "peopleadmin", url: "https://careers.msm.edu/postings/search" },
+  { campus: "Morris Brown College", type: "generic", url: "https://morrisbrown.isolvedhire.com/jobs/" },
+  { campus: "Reinhardt University", type: "generic", url: "https://www.reinhardt.edu/careers/" },
+  { campus: "Savannah College of Art and Design", type: "generic", url: "https://scadcareers.scad.edu/jobs/search?page=1&string_field_1%5B%5D=Faculty" },
+  { campus: "Wesleyan College", type: "generic", url: "https://www.wesleyancollege.edu/about/employment.cfm" },
   {
     campus: "Georgia Institute of Technology-Main Campus",
     type: "usg-site",
@@ -7480,6 +7500,7 @@ const AK_CAMPUSES = [
 
 // HI (Hawaii)
 const HI_CAMPUSES = [
+  { campus: "Pacific Rim Christian University", type: "generic", url: "https://www.pacrim.edu/careers" },
   { campus: "Hawaii Tokai International College", type: "dayforce", url: "https://www.dayforcehcm.com/api/HTIC/V1/JobFeeds" },
   { campus: "University of Hawaii System", type: "schooljobs-hawaii", url: "https://www.schooljobs.com/careers/hawaiiedu?keywords=faculty" },
   { campus: "Chaminade University of Honolulu", type: "generic", url: "https://chaminade.edu/employment-opportunities/" },
