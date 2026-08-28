@@ -320,12 +320,6 @@ async function reportBadListing(job) {
             <span v-else>Loading the latest catalog…</span>
           </div>
           <div class="fa-toolbar-actions">
-            <button
-              class="fa-tool-button fa-map-toggle"
-              type="button"
-              :aria-label="showMapRail ? 'Hide results map' : 'Show results map'"
-              @click="setMapRailVisibility(!showMapRail)"
-            >{{ showMapRail ? 'Hide map' : 'Show map' }}</button>
             <button class="fa-tool-button" @click="copyShareLink">{{ shareCopied ? '✓ Copied' : '⎘ Share' }}</button>
             <button class="fa-tool-button fa-filters-toggle" @click="filterDrawerOpen = true">⊞ Filters</button>
             <select :value="filters.sortBy" aria-label="Sort jobs" @change="updateFilters({ sortBy: $event.target.value })">
@@ -336,6 +330,14 @@ async function reportBadListing(job) {
               <option value="state">State</option>
             </select>
           </div>
+          <button
+            class="fa-map-divider-toggle"
+            :class="{ 'is-collapsed': !showMapRail }"
+            type="button"
+            :aria-label="showMapRail ? 'Hide results map' : 'Show results map'"
+            :title="showMapRail ? 'Hide map' : 'Show map'"
+            @click="setMapRailVisibility(!showMapRail)"
+          ><span aria-hidden="true">{{ showMapRail ? '›' : '‹' }}</span></button>
         </div>
 
         <div v-if="isInitialLoading && filteredJobs.length === 0" class="fa-empty-state">
@@ -646,6 +648,7 @@ async function reportBadListing(job) {
 }
 .fa-sidebar-inner { padding-bottom: 32px; }
 .fa-results-toolbar {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -653,6 +656,27 @@ async function reportBadListing(job) {
   border-bottom: 1px solid var(--rule);
   margin-bottom: 0;
 }
+.fa-map-divider-toggle {
+  position: absolute;
+  z-index: 850;
+  top: 50%;
+  right: -40px;
+  width: 27px;
+  height: 40px;
+  transform: translateY(-50%);
+  border: 1px solid var(--rule-2);
+  border-radius: 14px;
+  color: var(--ocean);
+  background: rgba(255, 254, 250, .96);
+  box-shadow: 0 4px 14px rgba(25, 43, 53, .13);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.fa-map-divider-toggle.is-collapsed { right: -26px; border-radius: 14px 0 0 14px; }
+.fa-map-divider-toggle:hover { border-color: var(--ocean); color: var(--accent); }
+.fa-map-divider-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .fa-show-more {
   padding: 32px 0;
   text-align: center;
@@ -1304,7 +1328,7 @@ a.fa-listing-title:hover { color: var(--accent); }
 @media (max-width: 1120px) {
   .fa-catalog-shell { grid-template-columns: 220px minmax(420px, 1fr); }
   .fa-map-rail { display: none; }
-  .fa-map-toggle { display: none; }
+  .fa-map-divider-toggle { display: none; }
   .fa-hero h1 { font-size: 56px; }
   .fa-hero { grid-template-columns: minmax(0, 1fr) minmax(350px, .82fr); gap: 30px; }
 }
