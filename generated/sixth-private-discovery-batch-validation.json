@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-08-28T08:30:00.000Z",
+  "scope": "Next twelve unresolved private-nonprofit institutions in the alphabetical M segment",
+  "reviewedCount": 12,
+  "promotedCount": 7,
+  "heldCount": 5,
+  "safeguards": [
+    "Only official institution-owned employee pages or institution-specific ATS tenants were promoted.",
+    "Student, alumni, affiliate-health-system, and third-party vacancy services were not treated as institution employee sources.",
+    "A healthy official faculty page with zero current openings was retained as coverage instead of manufacturing a vacancy.",
+    "Shared or unsupported applicant systems were held until an institution-scoped route can be monitored reliably."
+  ],
+  "liveChecks": [
+    { "name": "Manchester University", "publishedFacultyMatches": 9 },
+    { "name": "Mary Baldwin University", "publishedFacultyMatches": 0, "note": "The official faculty section is healthy and explicitly reports no current openings; its Faculty Support navigation label is filtered." },
+    { "name": "Marymount University", "publishedFacultyMatches": 24 },
+    { "name": "McDaniel College", "publishedFacultyMatches": 0, "note": "The official institution-scoped InterviewExchange index currently exposes no faculty matches to the production adapter." },
+    { "name": "Merrimack College", "publishedFacultyMatches": 17 },
+    { "name": "Messiah University", "publishedFacultyMatches": 1 },
+    { "name": "Methodist University", "publishedFacultyMatches": 7 }
+  ],
+  "promoted": [
+    { "name": "Manchester University", "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=c01330c8-9bdc-4d7b-b355-90630c559bae&lang=en_US&selectedMenuKey=CurrentOpenings&source=CC2", "platformType": "adp", "evidence": "Official employment page links this dedicated Manchester University ADP current-openings tenant." },
+    { "name": "Mary Baldwin University", "url": "https://marybaldwin.edu/employment-and-jobs-at-mary-baldwin/", "platformType": "generic", "evidence": "Official employment page contains a dedicated Faculty section and currently reports no faculty openings." },
+    { "name": "Marymount University", "url": "https://marymount.wd5.myworkdayjobs.com/Careers", "platformType": "workday", "evidence": "Official Human Resource Services page links this dedicated Marymount Careers Workday tenant." },
+    { "name": "McDaniel College", "url": "https://mcdaniel.interviewexchange.com/static/clients/561MCM1/index.jsp", "platformType": "interviewexchange", "evidence": "Official McDaniel Human Resources page links the institution-specific InterviewExchange applicant portal." },
+    { "name": "Merrimack College", "url": "https://www.merrimack.edu/about/offices_services/human_resources/employment_opportunities/", "platformType": "generic", "evidence": "Official Human Resources employment page publishes current faculty positions and their application links." },
+    { "name": "Messiah University", "url": "https://careers.messiah.edu/postings/search?668%5B%5D=2&commit=Search&query=&query_v0_posted_at_date=&utf8=%E2%9C%93", "platformType": "peopleadmin", "evidence": "Institution-specific applicant portal exposes a faculty-filtered search with current openings." },
+    { "name": "Methodist University", "url": "https://www.paycomonline.net/v4/ats/web.php/portal/24375BA29C8AE0EA98AC3A9FD8D2FDCE/career-page", "platformType": "paycom", "evidence": "Official positions page links this institution-specific Methodist University Paycom career page separately from affiliate health-system jobs." }
+  ],
+  "held": [
+    { "reason": "No durable institution-owned public employee vacancy index was verified.", "names": ["Manhattan Christian College", "Manna University", "Mars Hill University"] },
+    { "reason": "Available official pages were limited to student employment or a broader affiliated healthcare hiring system without a reliable institution scope.", "names": ["Maine College of Health Professions", "Maryville College"] }
+  ]
+}

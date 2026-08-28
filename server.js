@@ -636,6 +636,7 @@ const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type
 
 // Massachusetts private universities + liberal arts colleges
 const MA_PRIVATE_CAMPUSES = [
+  { campus: "Merrimack College", type: "generic", url: "https://www.merrimack.edu/about/offices_services/human_resources/employment_opportunities/" },
   { campus: "Hult International Business School", type: "oracle-cx", url: "https://jobs.ef.com/en/sites/hult/jobs?lastSelectedFacet=AttributeChar2&selectedFlexFieldsFacets=%22AttributeChar2%7CFaculty+%26+research%22" },
   { campus: "Lesley University", type: "workday", url: "https://lesley.wd503.myworkdayjobs.com/Lesley_University_Careers" },
   { campus: "Massachusetts College of Art and Design", type: "interviewexchange", url: "https://massart.interviewexchange.com/" },
@@ -1695,6 +1696,7 @@ const PA_CAMPUSES = [
 ];
 
 const PA_PRIVATE_CAMPUSES = [
+  { campus: "Messiah University", type: "peopleadmin", url: "https://careers.messiah.edu/postings/search?668%5B%5D=2&commit=Search&query=&query_v0_posted_at_date=&utf8=%E2%9C%93" },
   { campus: "Harrisburg University of Science and Technology", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=d7d41d6e-e9f2-43e0-af0f-ac2146083d4f&lang=en_US" },
   { campus: "Haverford College", type: "generic", url: "https://www.haverford.edu/human-resources/jobs" },
   { campus: "Pennsylvania College of Technology", type: "icims", url: "https://careers-pctedu.icims.com/jobs/search?ss=1" },
@@ -1963,6 +1965,7 @@ const PA_PRIVATE_CAMPUSES = [
 
 // NC (multi-platform; primarily PeopleAdmin)
 const NC_CAMPUSES = [
+  { campus: "Methodist University", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/24375BA29C8AE0EA98AC3A9FD8D2FDCE/career-page" },
   { campus: "Greensboro College", type: "generic", url: "https://www.greensboro.edu/employment/" },
   { campus: "Lenoir-Rhyne University", type: "lr-faculty", url: "https://www.lr.edu/work-at-lr/open-adjunct-faculty-positions" },
   { campus: "Guilford College", type: "workday", url: "https://guilford.wd1.myworkdayjobs.com/Guilford_Careers" },
@@ -2197,6 +2200,8 @@ const NC_CAMPUSES = [
 
 // VA (Virginia) - major public research + private research/liberal arts
 const VA_CAMPUSES = [
+  { campus: "Mary Baldwin University", type: "generic", url: "https://marybaldwin.edu/employment-and-jobs-at-mary-baldwin/", excludeTitleFilter: "\\bfaculty support\\b" },
+  { campus: "Marymount University", type: "workday", url: "https://marymount.wd5.myworkdayjobs.com/Careers" },
   { campus: "University of Mary Washington", type: "pageup", url: "https://jobs.umw.edu/jobs/search" },
   { campus: "Virginia State University", type: "generic", url: "https://www.jobs.virginia.gov/jobs/search?query=Virginia+State+University" },
   { campus: "Virginia Union University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=be274061-0ec3-4842-99e1-78c183f80855&ccId=19000101_000001&lang=en_US" },
@@ -2589,6 +2594,7 @@ const DE_CAMPUSES = [
 
 // MD (Maryland) - major research universities + liberal arts colleges
 const MD_CAMPUSES = [
+  { campus: "McDaniel College", type: "interviewexchange", url: "https://mcdaniel.interviewexchange.com/static/clients/561MCM1/index.jsp" },
   { campus: "University of Baltimore", type: "generic", url: "https://www.ubalt.edu/about/offices-and-services/human-resources/" },
   { campus: "University of Maryland Eastern Shore", type: "peopleadmin", url: "https://umes.peopleadmin.com/postings/search" },
   { campus: "Hood College", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/HOO1003HOODC/JobBoard/58a51caa-edd5-4489-a43e-478413a6c821/?q=&o=postedDateDesc" },
@@ -5645,6 +5651,7 @@ const ID_CAMPUSES = [
 
 // IN (Indiana)
 const IN_CAMPUSES = [
+  { campus: "Manchester University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=c01330c8-9bdc-4d7b-b355-90630c559bae&lang=en_US&selectedMenuKey=CurrentOpenings&source=CC2" },
   { campus: "Purdue University Global", type: "generic", url: "https://careers.purdue.edu/viewalljobs/" },
   {
     campus: "Indiana Institute of Technology",
@@ -11814,6 +11821,7 @@ if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "NC")
 if (type === "workday-search") return await scrapeWorkdaySearchApiAs(url, campus, "NC");
 if (type === "duke-search") return await scrapeKeywordSearchJobsAs(context, url, campus, "NC", { queryParam: "q", pathPattern: "/job/" });
 if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NC");
+if (type === "paycom") return await scrapePaycomAs(context, url, campus, "NC");
 if (type === "pageup-campus") return await scrapePageUpCampusAs(context, url, campus, "NC", locationFilter);
 if (type === "lr-faculty") return await scrapeLenoirRhyneFacultyAs(url, campus, "NC");
 if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NC");
@@ -11834,7 +11842,7 @@ async function scrapeVaAll(context) {
   const results = await mapWithConcurrency(
     VA_CAMPUSES,
     MAX_PARALLEL_CAMPUSES,
-    async ({ campus, type, url, locationFilter }) => {
+    async ({ campus, type, url, locationFilter, excludeTitleFilter }) => {
       try {
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "VA");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "VA");
@@ -11855,7 +11863,10 @@ async function scrapeVaAll(context) {
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "VA");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "VA");
         if (type === "hampton-faculty") return await scrapeHamptonFacultyAs(context, url, campus, "VA");
-        if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "VA");
+        if (type === "generic") {
+          const jobs = await scrapeGenericJobPage(context, url, campus, "VA");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title)) : jobs;
+        }
         if (type === "enusfilter") {
           const page = await context.newPage();
           try {
@@ -19527,6 +19538,7 @@ async function scrapeInAll(context) {
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "IN");
         if (type === "paylocity-shared") return await scrapePaylocitySharedAs(context, url, campus, "IN", locationFilter || null);
         if (type === "ultipro-ukg") return await scrapeUltiproUkgAs(context, url, campus, "IN", locationFilter || null);
+        if (type === "adp") return await scrapeAdpAs(context, url, campus, "IN");
         if (type === "adp-career-center") return await scrapeAdpCareerCenterAs(context, url, campus, "IN");
         return [];
       } catch (e) {
