@@ -634,6 +634,10 @@ const UMASS_AMHERST_URL = "https://careers.umass.edu/jobs/search?employment_type
 
 // Massachusetts private universities + liberal arts colleges
 const MA_PRIVATE_CAMPUSES = [
+  { campus: "Massachusetts College of Art and Design", type: "interviewexchange", url: "https://massart.interviewexchange.com/" },
+  { campus: "Salem State University", type: "generic", url: "https://salem-state-university.career-pages.com/" },
+  { campus: "Westfield State University", type: "interviewexchange", url: "https://westfield.interviewexchange.com/" },
+  { campus: "Worcester State University", type: "interviewexchange", url: "https://worcester.interviewexchange.com/" },
   { campus: "Wheaton College (Massachusetts)", type: "peopleadmin", url: "https://jobs.wheatoncollege.edu/postings/search?365%5B%5D=3&commit=Search" },
   { campus: "Gordon College", type: "gordon-faculty", url: "https://www.gordon.edu/offices-services/human-resources/jobs/open-faculty-positions" },
   { campus: "Gordon-Conwell Theological Seminary", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=6e5262c5-1aaf-4346-9e79-a476a84dc88c&lang=en_US" },
@@ -2558,6 +2562,8 @@ const DE_CAMPUSES = [
 
 // MD (Maryland) - major research universities + liberal arts colleges
 const MD_CAMPUSES = [
+  { campus: "University of Baltimore", type: "generic", url: "https://www.ubalt.edu/about/offices-and-services/human-resources/" },
+  { campus: "University of Maryland Eastern Shore", type: "peopleadmin", url: "https://umes.peopleadmin.com/postings/search" },
   { campus: "Hood College", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/HOO1003HOODC/JobBoard/58a51caa-edd5-4489-a43e-478413a6c821/?q=&o=postedDateDesc" },
   { campus: "Notre Dame of Maryland University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=ac3ea3a3-1795-4ceb-80c1-668296dbec35&" },
   { campus: "Maryland Institute College of Art", type: "workday", url: "https://mica.wd5.myworkdayjobs.com/Faculty" },
@@ -4046,6 +4052,8 @@ const MN_CAMPUSES = [
 
 // ND (North Dakota)
 const ND_CAMPUSES = [
+  { campus: "Nueta Hidatsa Sahnish College", type: "generic", url: "https://nhsc.edu/jobs-at-nhsc/" },
+  { campus: "Sitting Bull College", type: "generic", url: "https://online.sittingbull.edu/ICS/Jobs/" },
   { campus: "Valley City State University", type: "vcsu-academic", url: "https://www.vcsu.edu/jobs/" },
   { campus: "North Dakota State College of Science", type: "generic", url: "https://ndscs.edu/about/join-our-team/" },
   {
@@ -4148,6 +4156,10 @@ const SD_CAMPUSES = [
 
 // NE (Nebraska)
 const NE_CAMPUSES = [
+  { campus: "Nebraska Indian Community College", type: "generic", url: "https://www.thenicc.edu/Alumni-Visitors/employment-opportunities.php" },
+  { campus: "University of Nebraska at Kearney", type: "generic", url: "https://jobs.nebraska.edu/UniversityNebraskaSystem/go/University-of-Nebraska-at-Kearney/9754600/" },
+  { campus: "University of Nebraska-Central Administration System Office", type: "generic", url: "https://jobs.nebraska.edu/UniversityNebraskaSystem/go/University-of-Nebraska-System/9756900/" },
+  { campus: "Wayne State College", type: "generic", url: "https://jobs.nebraska.edu/WayneStateCollege/go/Faculty-Wayne-State-College/9756300/" },
   { campus: "Hastings College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=47560b19-b691-4f4c-9de8-ff510ff2a256&ccId=19000101_000001&type=MP&lang=en_US&selectedMenuKey=CareerCenter" },
   { campus: "Nebraska Methodist College of Nursing & Allied Health", type: "workday", url: "https://bestcare.wd1.myworkdayjobs.com/bestcare?locations=a1637a810ec9100a06b06175f28a0000" },
   { campus: "Southeast Community College Area", type: "generic", url: "https://www.southeast.edu/about/other-scc-departments/hr/index.php" },
@@ -4904,6 +4916,9 @@ const OH_CAMPUSES = [
 
 // NM (New Mexico)
 const NM_CAMPUSES = [
+  { campus: "Institute of American Indian and Alaska Native Culture and Arts Development", type: "generic", url: "https://recruiting.paylocity.com/Recruiting/Jobs/All/0b008ec9-45d0-49e4-9e13-872c855bfed4/Institute-of-American-IndianAlaska" },
+  { campus: "Navajo Technical University", type: "generic", url: "https://navajotech.isolvedhire.com/jobs/" },
+  { campus: "New Mexico Highlands University", type: "peopleadmin", url: "https://nmhu.peopleadmin.com/postings/search" },
   { campus: "New Mexico Institute of Mining and Technology", type: "generic", url: "https://www.nmt.edu/hr/employment.php", excludeTitleFilter: "^Faculty & Staff Resources$" },
   { campus: "Northern New Mexico College", type: "workday", url: "https://chess.wd1.myworkdayjobs.com/nnmcjobs" },
   { campus: "Western New Mexico University", type: "peopleadmin", url: "https://wnmu.peopleadmin.com/" },
@@ -5691,6 +5706,10 @@ const IN_CAMPUSES = [
 
 // WV (West Virginia)
 const WV_CAMPUSES = [
+  { campus: "Potomac State College of West Virginia University", type: "generic", url: "https://www.potomacstatecollege.edu/about/job-opportunities" },
+  { campus: "West Liberty University", type: "generic", url: "https://westliberty.edu/human-resources/faculty-adjunct-employment/" },
+  { campus: "West Virginia School of Osteopathic Medicine", type: "peopleadmin", url: "https://careers.wvsom.edu/postings/search" },
+  { campus: "West Virginia University Institute of Technology", type: "generic", url: "https://hr.wvutech.edu/employment-opportunities" },
   { campus: "Glenville State University", type: "schooljobs", url: "https://www.schooljobs.com/careers/glenvilleedu" },
   { campus: "Mountwest Community and Technical College", type: "generic", url: "https://www.mctc.edu/hr/" },
   { campus: "Southern West Virginia Community and Technical College", type: "generic", url: "https://www.southernwv.edu/facultystaff/human-resources/" },
@@ -6869,6 +6888,8 @@ const LA_CAMPUSES = [
 
 // AR (Arkansas)
 const AR_CAMPUSES = [
+  { campus: "Southern Arkansas University Main Campus", type: "generic", url: "https://www.saumag.edu/human-resources/employment-opportunities/" },
+  { campus: "University of Arkansas for Medical Sciences", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UAMS_All_Careers" },
   { campus: "John Brown University", type: "jbu-faculty", url: "https://www.jbu.edu/human-resources/faculty-job-listings/" },
   { campus: "Harding University", type: "harding-faculty", url: "https://www.harding.edu/about/offices-departments/hr/faculty-jobs/" },
   { campus: "Hendrix College", type: "generic", url: "https://www.hendrix.edu/resources/resources.aspx?id=2148" },
@@ -7106,6 +7127,7 @@ const OK_CAMPUSES = [
 
 // MO (Missouri)
 const MO_CAMPUSES = [
+  { campus: "Truman State University", type: "peopleadmin", url: "https://trumansu.peopleadmin.com/postings/search?sort=435+asc" },
   { campus: "Missouri Southern State University", type: "generic", url: "https://mssu.hrmdirect.com/employment/job-openings.php?search=true" },
   { campus: "Ozarks Technical Community College", type: "pageup", url: "https://careers.pageuppeople.com/880/cw/en-us/listing/" },
   {
@@ -7321,6 +7343,7 @@ const KY_CAMPUSES = [
 
 // TN (Tennessee)
 const TN_CAMPUSES = [
+  { campus: "University of Memphis", type: "peopleadmin", url: "https://workforum.memphis.edu/postings/search?680=Any&681=2&682=Any&commit=Search&page=1&sort=683+asc" },
   { campus: "Tennessee Technological University", type: "oracle-cx", url: "https://fa-eygi-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1" },
   {
     campus: "Lee University",
