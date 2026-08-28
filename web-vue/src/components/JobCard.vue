@@ -89,7 +89,6 @@ function getStartLabel(job) {
         <span v-for="pt in (props.job.positionTypes || []).filter((p) => p && p !== 'Faculty').slice(0, 2)" :key="pt" class="fa-tag">{{ pt }}</span>
         <span v-if="props.job.discipline" class="fa-tag">{{ props.job.discipline }}</span>
         <span v-if="props.job.duplicateCount > 1" class="fa-tag">{{ props.job.duplicateCount }} grouped</span>
-        <span v-for="badge in props.job.confidenceBadges || []" :key="badge.label" class="fa-tag fa-tag-warning" :title="badge.detail || badge.label">⚠ {{ badge.label }}</span>
       </div>
     </div>
 
@@ -108,8 +107,4 @@ function getStartLabel(job) {
 
 <style scoped>
 .fa-listing-emphasized { background: rgba(46, 113, 151, 0.06); }
-.fa-tag-warning {
-  color: #8a4b12 !important;
-  background: rgba(180, 104, 30, 0.1) !important;
-}
 </style>
