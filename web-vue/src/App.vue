@@ -386,7 +386,7 @@ async function reportBadListing(job) {
 
     <footer class="fa-footer">
       <div><strong>Updated {{ scrapedLabel || 'daily' }}</strong><span> · Source links verified nightly</span></div>
-      <div><button @click="openMethodology">Open data methodology</button><a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer">GitHub</a></div>
+      <div><button @click="openMethodology">Open data methodology</button><a :href="`${baseUrl}post-quality-dashboard.html`">Quality dashboard</a><a href="https://github.com/sazeka/Faculty-Jobs" target="_blank" rel="noreferrer">GitHub</a></div>
     </footer>
 
     <Teleport to="body">

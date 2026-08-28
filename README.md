@@ -86,6 +86,8 @@ npm run audit:institutions
 npm run verify:post-quality -- --max-missing-desc-pct 96
 ```
 
+The post-quality audit assigns every listing a transparent score and reason codes across relevance, attribution, link quality, freshness, completeness, and duplicate grouping. It writes a report-only quarantine list, a deterministic 200-post human-review sample, and `post-quality-dashboard.html` to `generated/`, `public/`, and `docs/`. Confirmed sample labels can be stored in `data/post-quality-human-labels.json`; the dashboard then reports the reviewed valid-post rate. The audit does not remove quarantine candidates automatically.
+
 National institution reconciliation:
 
 ```bash
