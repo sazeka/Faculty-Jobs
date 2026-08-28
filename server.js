@@ -879,6 +879,13 @@ const CA_PRIVATE_CAMPUSES = [
     locationFilter: "Los Angeles Trade -Technical College",
     employmentFilter: "Faculty - Full-Time",
   },
+  { campus: "Los Angeles Mission College", type: "csod", url: "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd", locationFilter: "Los Angeles Mission College", employmentFilter: "Faculty - Full-Time" },
+  { campus: "West Los Angeles College", type: "csod", url: "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd", locationFilter: "West Los Angeles College", employmentFilter: "Faculty - Full-Time" },
+  { campus: "Los Angeles Community College District Office", type: "csod", url: "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd", locationFilter: "LACCD Educational Services Center", employmentFilter: "Faculty - Full-Time" },
+  { campus: "San Diego Community College District-District Office", type: "peopleadmin", url: "https://www.sdccdjobs.com/postings/search?query_organizational_tier_2_id%5B%5D=264&717%5B%5D=4&717%5B%5D=6&commit=Search" },
+  { campus: "State Center Community College District", type: "peopleadmin", url: "https://scccd.peopleadmin.com/postings/search?615%5B%5D=1&query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search" },
+  { campus: "Naval Postgraduate School", type: "generic", url: "https://nps.edu/web/hro/employment" },
+  { campus: "University of California-System Administration Central Office", type: "generic", url: "https://jobs.ucop.edu/job-search.html" },
   // This IPEDS institution is the district itself, so the district-scoped
   // NEOGOV tenant is correctly attributed here. It is not used as a campus
   // proxy; campus records retain their own independently scoped coverage.
@@ -1663,6 +1670,8 @@ const PA_CAMPUSES = [
 ];
 
 const PA_PRIVATE_CAMPUSES = [
+  { campus: "Pennsylvania College of Technology", type: "icims", url: "https://careers-pctedu.icims.com/jobs/search?ss=1" },
+  { campus: "Valley Forge Military College", type: "generic", url: "https://vfmcollege.edu/about/employment-opportunities/" },
   {
     campus: "University of Pennsylvania",
     type: "workday-search",
@@ -3045,6 +3054,7 @@ function inferSunyCampusFromText(title, url) {
 
 // NY Private Universities
 const NY_PRIVATE_CAMPUSES = [
+  { campus: "United States Merchant Marine Academy", type: "generic", url: "https://www.usmma.edu/about/employment/career-opportunities" },
   // Top 20 largest private universities in New York State
   // Was pointing at "/faculty/jobs?challenge=<uuid>" -- that path 404s outright
   // (confirmed on a fresh, cookie-less browser context: "The requested page
@@ -6997,6 +7007,7 @@ const KS_CAMPUSES = [
 
 // OK (Oklahoma)
 const OK_CAMPUSES = [
+  { campus: "Clary Sage College", type: "generic", url: "https://clarysagecollege.com/employment/" },
   { campus: "Northeastern State University", type: "csod", url: "https://nsuok.csod.com/ux/ats/careersite/4/home?c=nsuok" },
   { campus: "Oklahoma Baptist University", type: "generic", url: "https://www.okbu.edu/hr/jobs" },
   { campus: "Oklahoma Wesleyan University", type: "generic", url: "https://www.okwu.edu/job-listing/" },
@@ -11954,6 +11965,7 @@ async function scrapePaAll(context) {
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "PA");
         if (type === "applitrack") return await scrapeApplitrackAs(context, url, campus, "PA");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "PA");
+        if (type === "icims") return await scrapeIcimsAs(context, url, campus, "PA");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "PA");
         if (type === "enusfilter") {
           const page = await context.newPage();

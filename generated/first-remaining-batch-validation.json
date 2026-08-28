@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-08-28T02:30:00.000Z",
+  "scope": "First remaining-coverage batch: all 21 two-year institutions and 19 public institutions from the highest-gap states",
+  "reviewedCount": 40,
+  "promotedCount": 12,
+  "heldCount": 28,
+  "promoted": [
+    { "name": "Clary Sage College", "url": "https://clarysagecollege.com/employment/", "platformType": "generic", "evidence": "Official employment page with a current instructor posting." },
+    { "name": "Valley Forge Military College", "url": "https://vfmcollege.edu/about/employment-opportunities/", "platformType": "generic", "evidence": "Official institution employment page." },
+    { "name": "SUNY Brockport", "url": "https://www.suny.edu/careers/employment/index.cfm?s=y", "platformType": "suny-system", "evidence": "Official SUNY feed carries explicit Brockport attribution; the production SUNY splitter already recognizes Brockport." },
+    { "name": "United States Merchant Marine Academy", "url": "https://www.usmma.edu/about/employment/career-opportunities", "platformType": "generic", "evidence": "Official Academy page lists current assistant/associate professor vacancies." },
+    { "name": "Los Angeles Community College District Office", "url": "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd", "platformType": "csod", "evidence": "Official CSOD location control: LACCD Educational Services Center; full-time faculty control retained." },
+    { "name": "Los Angeles Mission College", "url": "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd", "platformType": "csod", "evidence": "Official CSOD location control plus full-time faculty control." },
+    { "name": "Naval Postgraduate School", "url": "https://nps.edu/web/hro/employment", "platformType": "generic", "evidence": "Official NPS Human Resources faculty employment page links current NPS faculty opportunities." },
+    { "name": "San Diego Community College District-District Office", "url": "https://www.sdccdjobs.com/postings/search?query_organizational_tier_2_id%5B%5D=264&717%5B%5D=4&717%5B%5D=6&commit=Search", "platformType": "peopleadmin", "evidence": "Official PeopleAdmin District Office location value 264 with academic faculty types 4 and 6." },
+    { "name": "State Center Community College District", "url": "https://scccd.peopleadmin.com/postings/search?615%5B%5D=1&query_position_type_id%5B%5D=2&query_position_type_id%5B%5D=3&commit=Search", "platformType": "peopleadmin", "evidence": "Official PeopleAdmin District Office value 1 with faculty position types 2 and 3." },
+    { "name": "University of California-System Administration Central Office", "url": "https://jobs.ucop.edu/job-search.html", "platformType": "generic", "evidence": "Official UC Office of the President job search; institution-exclusive scope." },
+    { "name": "West Los Angeles College", "url": "https://laccd.csod.com/ats/careersite/search.aspx?site=6&c=laccd", "platformType": "csod", "evidence": "Official CSOD location control plus full-time faculty control." },
+    { "name": "Pennsylvania College of Technology", "url": "https://careers-pctedu.icims.com/jobs/search?ss=1", "platformType": "icims", "evidence": "Official institution-exclusive iCIMS board with current faculty postings." }
+  ],
+  "held": [
+    { "names": ["Jefferson Regional School of Nursing", "Cochran School of Nursing"], "reason": "Only a parent-health-system board was found; no durable school-specific faculty scope was verified." },
+    { "names": ["Hypnosis Motivation Institute", "ICOHS College", "SABER College", "Generations College", "Assumption College for Sisters", "Seminary Bnos Chaim", "American Academy McAllister Institute of Funeral Service", "Bnos Zion Of Bobov Seminary", "New York Seminary", "Ohel Margulia Seminary", "Seminar L'moros Bais Yaakov", "Ohio Institute of Allied Health", "Oklahoma Technical College", "John A Gupton College", "Huntington Junior College"], "reason": "No public employee-vacancy page or institution-scoped ATS was verified." },
+    { "names": ["Little Big Horn College"], "reason": "A current one-off adjunct PDF exists, but no durable listings index was verified." },
+    { "names": ["Pittsburgh Institute of Mortuary Science Inc"], "reason": "The public jobs page serves students/alumni seeking outside employment, not institutional hiring." },
+    { "names": ["SUNY-System Office", "United States Military Academy", "San Mateo County Community College District Office", "Skyline College", "Pennsylvania State System of Higher Education-Central Office"], "reason": "An official source was found, but no safe faculty-and-institution scope was verified." },
+    { "names": ["Pennsylvania State University-Penn State New Kensington", "University of Pittsburgh-Bradford", "University of Pittsburgh-Greensburg", "University of Pittsburgh-Johnstown"], "reason": "The shared university board does not expose a durable exact-campus control; unscoped fallback remains prohibited." }
+  ],
+  "safeguards": [
+    "Shared boards are promoted only with an exact institution/location control.",
+    "A healthy zero-result scoped source remains valid coverage.",
+    "Parent-system and university-wide feeds are not assigned to a campus without explicit attribution.",
+    "Student/alumni job boards and one-off vacancy documents are not treated as durable employee sources."
+  ]
+}
