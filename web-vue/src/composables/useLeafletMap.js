@@ -1,6 +1,5 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import L from 'leaflet'
-import 'leaflet.markercluster'
 import { overviewBoundsPoints } from '../lib/mapViewport.js'
 
 const MAP_DEFAULT_CENTER = [39.5, -98.35]
@@ -352,8 +351,14 @@ export function useLeafletMap({ jobsRef, selectedCollegeRef, hoveredCollegeRef, 
     if (mapInstance.value) mapInstance.value.invalidateSize()
   }
 
-  function initMapIfReady() {
+  async function initMapIfReady() {
     if (!mapEl.value || mapInstance.value) return false
+
+    // leaflet.markercluster is a legacy UMD plugin that expects Leaflet on the
+    // browser global. Loading it statically can execute it before the bundled
+    // Leaflet module, leaving the whole app blank with `L is not defined`.
+    window.L = L
+    await import('leaflet.markercluster')
 
     mapInstance.value = L.map(mapEl.value, {
       zoomControl: false,
