@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-28T00:56:13.546Z",
+  "generatedAt": "2026-08-29T12:08:08.491Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json"
   },
-  "count": 117,
+  "count": 118,
   "colleges": [
     "Academy for Jewish Religion California",
     "Academy of Chinese Culture and Health Sciences",
@@ -115,6 +115,7 @@
     "The Landing School",
     "Towson University",
     "UCCS",
+    "University of Colorado Denver/Anschutz Medical Campus",
     "University of Colorado System Office",
     "University of Maryland, Baltimore",
     "University of Pittsburgh-Titusville",
@@ -722,7 +723,7 @@
     {
       "college": "Claremont School of Theology",
       "platform_type": "generic",
-      "career_url": "https://www.cst.edu/",
+      "career_url": "https://cst.edu/about/human-resources",
       "reason": "Excluded (2026-08-19): the active institution's official site exposes employee resources and an HR contact but no careers, employment, jobs, or faculty-openings page. The configured homepage is not a hiring destination.",
       "sources": [
         "https://cst.edu/",
@@ -841,7 +842,7 @@
     },
     {
       "college": "East Georgia State College",
-      "platform_type": "peoplesoft",
+      "platform_type": "oneusg-site",
       "career_url": "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=72000",
       "reason": "Excluded (2026-08-19): the Board of Regents gave final approval to consolidate East Georgia State College into Georgia Southern University effective January 1, 2026. The former institution and its campuses now operate under the Georgia Southern University name and no longer hire independently.",
       "sources": [
@@ -1120,6 +1121,16 @@
       "college": "UCCS",
       "platform_type": "taleo",
       "career_url": "https://cu.taleo.net/careersection/cu_ext_uccs/moresearch.ftl?lang=en&radiusType=K&location=6300103016&searchExpanded=true&radius=1&portal=101430233",
+      "reason": "Oracle terms prohibit robots/spiders/scrapers for site access.",
+      "sources": [
+        "https://www.oracle.com/legal/terms.html",
+        "https://www.oracle.com/human-capital-management/taleo/"
+      ]
+    },
+    {
+      "college": "University of Colorado Denver/Anschutz Medical Campus",
+      "platform_type": "taleo",
+      "career_url": "https://cu.taleo.net/careersection/2/joblist.ftl?lang=en",
       "reason": "Oracle terms prohibit robots/spiders/scrapers for site access.",
       "sources": [
         "https://www.oracle.com/legal/terms.html",
