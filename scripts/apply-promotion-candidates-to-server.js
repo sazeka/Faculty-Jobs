@@ -156,8 +156,10 @@ function main() {
       const closeComma = outText.indexOf("},", needleIdx);
       if (openBrace >= 0 && closeComma > needleIdx) {
         const original = outText.slice(openBrace, closeComma + 2);
+        const lineStart = outText.lastIndexOf("\n", openBrace) + 1;
+        const commentedOut = outText.slice(lineStart, openBrace).trimStart().startsWith("//");
         // Only update if the object contains exactly this campus name (sanity check)
-        if (original.includes(needle)) {
+        if (!commentedOut && original.includes(needle) && /type:\s*"[^"]*"/.test(original) && /url:\s*"[^"]*"/.test(original)) {
           // Never let the probe's platform-type guess downgrade an existing
           // specialized type back to "generic". The probe's classifier defaults
           // to "generic" whenever it doesn't recognize a URL's ATS signature —

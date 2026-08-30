@@ -32,6 +32,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 import { attachUniversityCoverage } from "./lib/site-coverage.js";
+import { computeInstitutionOpeningStats } from "./lib/institution-opening-stats.js";
 import { partitionExpiredJobs } from "./lib/post-expiration.js";
 import { repairKnownInstitutionAttribution } from "./lib/institution-attribution.js";
 import { normalizeTenureTrack } from "../web-vue/src/lib/jobClassification.js";
@@ -50,6 +51,9 @@ const DOCS_JOBS      = path.join(ROOT, "docs",      "jobs.json");
 const PRESENCE_PATH  = path.join(ROOT, "generated", "job-presence.json");
 const REPORT_PATH    = path.join(ROOT, "generated", "job-presence-report.json");
 const COVERAGE_PATH  = path.join(ROOT, "generated", "coverage-report.json");
+const INSTITUTIONS_PATH = path.join(ROOT, "data", "institutions-master.json");
+const POLICY_RULES_PATH = path.join(ROOT, "data", "policy-rules.json");
+const POLICY_EXCLUSIONS_PATH = path.join(ROOT, "generated", "policy-excluded-colleges.json");
 // site-stats.json carries the global "new" counts the homepage shows, so the
 // figure is computed once per scrape for everyone (not per-browser localStorage).
 // Written into every served data dir; the daily commit step git-adds docs/data
@@ -308,6 +312,14 @@ for (const firstSeen of firstSeenByGroup.values()) {
 }
 
 const catalogSummary = summarizeCatalog(cleanedJobs, new Date(`${today}T12:00:00Z`));
+const institutionsPayload = readJson(INSTITUTIONS_PATH);
+const policyRules = readJson(POLICY_RULES_PATH);
+const policyExclusions = readJson(POLICY_EXCLUSIONS_PATH);
+const institutionOpeningStats = computeInstitutionOpeningStats({
+  institutions: Array.isArray(institutionsPayload?.institutions) ? institutionsPayload.institutions : [],
+  scope: policyRules?.scope || {},
+  excludedColleges: Array.isArray(policyExclusions?.colleges) ? policyExclusions.colleges : [],
+});
 
 // Institution and state-system counts, so the homepage hero can show them
 // instantly from this tiny file instead of waiting for every job chunk to load.
@@ -328,6 +340,7 @@ const siteStats = attachUniversityCoverage({
   ...catalogSummary,
   uniqueColleges: collegeSet.size,
   stateSystems: stateSet.size,
+  ...institutionOpeningStats,
   newToday,
   newThisWeek,
   newPostingsToday: newToday,

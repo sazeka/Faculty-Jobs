@@ -43,6 +43,10 @@ const heroTotalLabel = computed(() =>
   jobsLoaded.value || siteStats.value?.searchablePostings != null ? 'searchable postings' : 'source records loading')
 const heroInstitutions = computed(() =>
   jobsLoaded.value ? qualitySummary.value.uniqueColleges : (Number(siteStats.value?.uniqueColleges) || 0))
+const heroNoOpenings = computed(() => {
+  const count = Number(siteStats.value?.institutionsWithNoCurrentOpenings)
+  return Number.isFinite(count) ? count : null
+})
 const universityCoverage = computed(() => siteStats.value?.universityCoverage || null)
 const heroCoveragePercent = computed(() => {
   const value = Number(universityCoverage.value?.percent)
@@ -254,6 +258,7 @@ async function reportBadListing(job) {
             <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
             <div class="fa-stat"><div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div><div class="fa-stat-label">Institutions</div></div>
             <div class="fa-stat"><div class="fa-stat-val">+{{ heroNew.toLocaleString() }}</div><div class="fa-stat-label">This week</div></div>
+            <div class="fa-stat"><div class="fa-stat-val">{{ heroNoOpenings == null ? '—' : heroNoOpenings.toLocaleString() }}</div><div class="fa-stat-label">No current openings</div></div>
           </div>
         </div>
         <div class="fa-hero-visual">
@@ -468,7 +473,7 @@ async function reportBadListing(job) {
 
             <div class="fa-modal-section">
               <div class="fa-label" style="margin-bottom: 10px;">Sources</div>
-              <p>Data is collected from state university systems and individual institutions. Current coverage includes the University of California system, California State University, SUNY New York, University of Washington, University of North Carolina system, University of Texas system, and dozens of individual public and private universities across all 50 states. Over {{ heroInstitutions.toLocaleString() }} institutions are currently tracked.</p>
+              <p>Data is collected from state university systems and individual institutions. Current coverage includes the University of California system, California State University, SUNY New York, University of Washington, University of North Carolina system, University of Texas system, and dozens of individual public and private universities across all 50 states. The “no current openings” statistic counts covered, in-scope institutions whose latest scrape returned zero faculty listings; policy-excluded or missing sources are not counted as zero-opening schools.</p>
             </div>
 
             <div class="fa-modal-section">
@@ -1089,9 +1094,9 @@ async function reportBadListing(job) {
 }
 .fa-stat-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(20px, 3vw, 34px);
-  width: min(440px, 100%);
+  width: min(580px, 100%);
   margin: 25px 0 0;
   border: 0;
   color: var(--ink);
@@ -1387,7 +1392,7 @@ a.fa-listing-title:hover { color: var(--accent); }
   }
   .fa-hero-art::after { background: linear-gradient(to right, rgba(245, 239, 226, .42), transparent 55%); }
   .fa-hero-art img { object-position: 55% 56%; opacity: .62; }
-  .fa-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 21px; }
+  .fa-stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 21px; }
   .fa-stat { min-width: 0; }
   .fa-stat-val { font-size: clamp(22px, 6vw, 26px); }
   .fa-search-band { padding: 14px var(--pad); }
