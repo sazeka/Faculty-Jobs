@@ -1107,7 +1107,6 @@ async function reportBadListing(job) {
   padding: 0;
 }
 .fa-stat-val { font-size: 29px; color: var(--ink); }
-.fa-stat:last-child .fa-stat-val { color: var(--accent); }
 .fa-stat-label { margin-top: 4px; color: var(--ink-3); font-size: 8px; font-weight: 600; letter-spacing: .08em; }
 .fa-stat--this-week .fa-stat-val { color: var(--accent); }
 .fa-stat--no-openings .fa-stat-val,
