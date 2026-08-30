@@ -256,9 +256,9 @@ async function reportBadListing(job) {
           <p>A transparent, independent catalog of faculty openings across North America—updated every day and free to search.</p>
           <div class="fa-stat-grid" aria-label="Catalog summary">
             <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
+            <div class="fa-stat fa-stat--this-week"><div class="fa-stat-val">+{{ heroNew.toLocaleString() }}</div><div class="fa-stat-label">This week</div></div>
             <div class="fa-stat"><div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div><div class="fa-stat-label">Institutions</div></div>
-            <div class="fa-stat fa-stat--no-openings"><div class="fa-stat-val">{{ heroNoOpenings == null ? '—' : heroNoOpenings.toLocaleString() }}</div><div class="fa-stat-label">No current openings</div></div>
-            <div class="fa-stat"><div class="fa-stat-val">+{{ heroNew.toLocaleString() }}</div><div class="fa-stat-label">This week</div></div>
+            <div class="fa-stat fa-stat--no-openings"><div class="fa-stat-val">{{ heroNoOpenings == null ? '—' : heroNoOpenings.toLocaleString() }}</div><div class="fa-stat-label">Institutions with no current openings</div></div>
           </div>
         </div>
         <div class="fa-hero-visual">
@@ -1109,6 +1109,7 @@ async function reportBadListing(job) {
 .fa-stat-val { font-size: 29px; color: var(--ink); }
 .fa-stat:last-child .fa-stat-val { color: var(--accent); }
 .fa-stat-label { margin-top: 4px; color: var(--ink-3); font-size: 8px; font-weight: 600; letter-spacing: .08em; }
+.fa-stat--this-week .fa-stat-val { color: var(--accent); }
 .fa-stat--no-openings .fa-stat-val,
 .fa-stat--no-openings .fa-stat-label { color: var(--ink); }
 
