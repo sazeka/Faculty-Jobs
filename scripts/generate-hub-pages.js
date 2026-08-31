@@ -114,7 +114,7 @@ function renderIndexPage(section, entries) {
   const { typeLabel } = SECTIONS[section];
   const pageUrl = `${BASE_URL}/${SECTIONS[section].dir}/`;
   const title = `Faculty Jobs by ${typeLabel} | Faculty Atlas`;
-  const metaDesc = `Browse open faculty positions by ${typeLabel.toLowerCase()} across North American higher education.`;
+  const metaDesc = `Browse open faculty positions by ${typeLabel.toLowerCase()} across United States higher education.`;
   const items = entries
     .slice()
     .sort((a, b) => b.jobs.length - a.jobs.length)
@@ -161,7 +161,7 @@ function renderIndexPage(section, entries) {
       ${items}
     </ul>
   </div>
-  <footer>Faculty Atlas · <a href="/" style="color:var(--ink2);">facultyatlas.org</a> — open faculty positions across North America, charted.</footer>
+  <footer>Faculty Atlas · <a href="/" style="color:var(--ink2);">facultyatlas.org</a> — open faculty positions across the United States, charted.</footer>
 </body>
 </html>
 `;
@@ -175,7 +175,7 @@ function renderHubPage(section, entry, institutionIndex) {
   const countLabel = `${count} open faculty position${count === 1 ? "" : "s"}`;
   const metaDesc =
     section === "institution" ? `${countLabel} at ${entry.name}. Updated regularly.`
-    : section === "discipline" ? `${countLabel} in ${entry.name} across North American institutions. Updated regularly.`
+    : section === "discipline" ? `${countLabel} in ${entry.name} across United States institutions. Updated regularly.`
     : `${countLabel} in ${entry.name}. Updated regularly.`;
 
   const sortedJobs = entry.jobs
@@ -271,7 +271,7 @@ function renderHubPage(section, entry, institutionIndex) {
       ${listItems}
     </ul>
   </div>
-  <footer>Faculty Atlas · <a href="/" style="color:var(--ink2);">facultyatlas.org</a> — open faculty positions across North America, charted.</footer>
+  <footer>Faculty Atlas · <a href="/" style="color:var(--ink2);">facultyatlas.org</a> — open faculty positions across the United States, charted.</footer>
 </body>
 </html>
 `;

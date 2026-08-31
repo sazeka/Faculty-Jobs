@@ -41,7 +41,7 @@ const TITLE_TEXT =
 // state systems") \u2014 which read like an auto-generated stat line and appeared
 // to get passed over by Google in favor of its own on-page snippet.
 const DESCRIPTION_TEXT =
-  `A scholarly directory of open faculty positions across North American higher education. ${jobCount} listings, updated daily \u2014 free to browse, no account required.`;
+  `A scholarly directory of open faculty positions across United States higher education. ${jobCount} listings, updated daily \u2014 free to browse, no account required.`;
 
 // Each entry describes one tag to inject/replace.
 // `attr`    – the attribute used to identify the tag (name or property)

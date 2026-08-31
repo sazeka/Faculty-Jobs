@@ -253,7 +253,7 @@ async function reportBadListing(job) {
         <div class="fa-hero-copy">
           <div class="fa-label">The academic job market, mapped</div>
           <h1 class="fa-display">Navigate the <i>academic job market.</i></h1>
-          <p>A transparent, independent catalog of faculty openings across North America—updated every day and free to search.</p>
+          <p>A transparent, independent catalog of faculty openings across the United States—updated every day and free to search.</p>
           <div class="fa-stat-grid" aria-label="Catalog summary">
             <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
             <div class="fa-stat fa-stat--this-week"><div class="fa-stat-val">+{{ heroNew.toLocaleString() }}</div><div class="fa-stat-label">This week</div></div>
@@ -488,7 +488,7 @@ async function reportBadListing(job) {
 
             <div class="fa-modal-section">
               <div class="fa-label" style="margin-bottom: 10px;">Limitations</div>
-              <p>Coverage is limited to institutions and platforms that expose publicly accessible listings, so this is not a claim of complete North American coverage. Dates, tenure status, institution attribution, and links are checked for obvious contradictions; suspect values are suppressed or visibly flagged, but source data can still be incomplete. Positions posted only through disciplinary societies are not currently included.</p>
+              <p>Coverage is limited to United States institutions and platforms that expose publicly accessible listings, so this is not a claim of complete nationwide coverage. Dates, tenure status, institution attribution, and links are checked for obvious contradictions; suspect values are suppressed or visibly flagged, but source data can still be incomplete. Positions posted only through disciplinary societies are not currently included.</p>
             </div>
 
             <div class="fa-modal-section">

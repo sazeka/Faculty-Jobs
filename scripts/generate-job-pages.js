@@ -240,7 +240,7 @@ function renderPage(job, groupCounts, institutionIndex) {
     </div>
     ${browseHtml}
   </div>
-  <footer>Faculty Atlas · <a href="/" style="color:var(--ink2);">facultyatlas.org</a> — open faculty positions across North America, charted.</footer>
+  <footer>Faculty Atlas · <a href="/" style="color:var(--ink2);">facultyatlas.org</a> — open faculty positions across the United States, charted.</footer>
 </body>
 </html>
 `;
