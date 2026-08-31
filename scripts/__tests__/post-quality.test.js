@@ -85,13 +85,6 @@ test("the publishing gate removes only confirmed non-postings", () => {
   }), { today: TODAY }), "resource_page_title");
   assert.equal(confirmedNonFacultyReason(job({ title: "Staff, Faculty & Student Employment Opportunities" }), { today: TODAY }), "resource_page_title");
   assert.equal(confirmedNonFacultyReason(job({
-    title: "Chemistry Faculty & Staff",
-    url: "https://example.edu/academics/chemistry/faculty-staff",
-  }), { today: TODAY }), "faculty_staff_page");
-  assert.equal(confirmedNonFacultyReason(job({ title: "Athletic Training Fellow" }), { today: TODAY }), "nonfaculty_fellowship");
-  assert.equal(confirmedNonFacultyReason(job({ title: "Specialist - Post Doc Psychology Fellow" }), { today: TODAY }), null);
-  assert.equal(confirmedNonFacultyReason(job({ title: "Full Time Faculty for Nursing and Health Professions" }), { today: TODAY }), "reviewed_stale_or_nonfaculty");
-  assert.equal(confirmedNonFacultyReason(job({
     title: "Electrician Faculty - Greenville Center",
     description: "Teach electrician courses and provide quality education to students.",
   }), { today: TODAY }), null);

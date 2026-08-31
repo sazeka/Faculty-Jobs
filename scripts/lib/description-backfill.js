@@ -4,6 +4,7 @@ import { inferPlatformFromUrl } from "./url-normalization.js";
 export const DESCRIPTION_RETRY_DAYS = 14;
 export const DESCRIPTION_MAX_ATTEMPTS = 2;
 export const DESCRIPTION_FETCH_VERSION = 6;
+export const DESCRIPTION_MAX_LENGTH = 4000;
 const PAYCOM_DIRECT_FETCH_VERSION = 5;
 const ADP_DIRECT_FETCH_VERSION = 6;
 
@@ -102,4 +103,18 @@ export function prioritizeDescriptionCandidates(jobs = [], nowMs = Date.now(), {
 
 export function descriptionAttemptCount(job) {
   return inferredAttempts(job);
+}
+
+export function compactJobDescriptions(data, maxLength = DESCRIPTION_MAX_LENGTH) {
+  if (!data || !Array.isArray(data.jobs)) return { data, truncated: 0, charactersRemoved: 0 };
+  let truncated = 0;
+  let charactersRemoved = 0;
+  const jobs = data.jobs.map((job) => {
+    const description = String(job?.description || '');
+    if (description.length <= maxLength) return job;
+    truncated += 1;
+    charactersRemoved += description.length - maxLength;
+    return { ...job, description: description.slice(0, maxLength).trimEnd() };
+  });
+  return { data: { ...data, jobs }, truncated, charactersRemoved };
 }

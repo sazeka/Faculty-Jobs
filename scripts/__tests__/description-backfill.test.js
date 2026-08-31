@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  compactJobDescriptions,
   DESCRIPTION_FETCH_VERSION,
   descriptionAttemptCount,
   isUnsupportedDescriptionUrl,
@@ -10,6 +11,16 @@ import {
   needsDescriptionFetch,
   prioritizeDescriptionCandidates,
 } from "../lib/description-backfill.js";
+
+test("compacts long descriptions without changing shorter records", () => {
+  const short = { description: "short" };
+  const long = { description: "x".repeat(10) };
+  const result = compactJobDescriptions({ jobs: [short, long] }, 6);
+  assert.equal(result.truncated, 1);
+  assert.equal(result.charactersRemoved, 4);
+  assert.equal(result.data.jobs[0], short);
+  assert.equal(result.data.jobs[1].description, "xxxxxx");
+});
 
 const NOW = Date.parse("2026-08-20T00:00:00.000Z");
 

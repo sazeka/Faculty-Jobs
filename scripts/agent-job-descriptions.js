@@ -14,7 +14,7 @@
  * Saves after each batch so partial runs are never lost.
  *
  * Usage:
- *   node scripts/agent-job-descriptions.js [--dry-run] [--platform <name>] [--max <n>] [--concurrency <n>] [--timeout-ms <n>] [--min-len <n>]
+ *   node scripts/agent-job-descriptions.js [--dry-run] [--retry-now] [--platform <name>] [--max <n>] [--concurrency <n>] [--timeout-ms <n>] [--min-len <n>]
  */
 import fs from "fs";
 import path from "path";
@@ -23,6 +23,8 @@ import { chromium } from "playwright";
 import { extractStartDate } from "./lib/start-date.js";
 import {
   DESCRIPTION_FETCH_VERSION,
+  DESCRIPTION_MAX_LENGTH,
+  DESCRIPTION_MAX_ATTEMPTS,
   descriptionAttemptCount,
   isUnsupportedDescriptionUrl,
   matchesDescriptionHost,
@@ -74,13 +76,17 @@ const REDATE = Boolean(args["redate"]);
 // (no closeDate and not openUntilFilled) to pick up labeled "Close Date" /
 // "Applications Close" fields.
 const RECLOSE = Boolean(args["reclose"]);
+// Manual full-sweep mode: immediately use the remaining retry for records that
+// would otherwise wait 14 days. Attempt limits and unsupported-host exclusions
+// still apply, so this cannot create an unbounded retry loop.
+const RETRY_NOW = Boolean(args["retry-now"]);
 const MAX = Number(args["max"] || process.env.DESC_MAX || 300);
 const CONCURRENCY = Math.min(Number(args["concurrency"] || process.env.DESC_CONCURRENCY || 6), 12);
 const TIMEOUT_MS = Math.max(8000, Number(args["timeout-ms"] || 30000));
 const PAGE_CREATE_TIMEOUT_MS = 10000;
 const PAGE_CLOSE_TIMEOUT_MS = 5000;
 const MIN_LEN = Math.max(80, Number(args["min-len"] || 200));
-const MAX_LEN = 6000;
+const MAX_LEN = DESCRIPTION_MAX_LENGTH;
 
 // page.goto/waitForLoadState below all carry their own timeout, but
 // page.evaluate() doesn't — Playwright never bounds it, so a page whose
@@ -132,6 +138,19 @@ async function main() {
     process.exit(1);
   }
 
+  let availabilityMarked = 0;
+  for (const job of payload.jobs) {
+    if (!String(job?.description || '').trim() && isUnsupportedDescriptionUrl(job?.url) && job.descriptionFetchStatus !== 'unsupported') {
+      job.descriptionFetchStatus = 'unsupported';
+      job.descriptionFetchVersion = DESCRIPTION_FETCH_VERSION;
+      availabilityMarked++;
+    } else if (!String(job?.description || '').trim() && descriptionAttemptCount(job) >= DESCRIPTION_MAX_ATTEMPTS && job.descriptionFetchStatus !== 'exhausted') {
+      job.descriptionFetchStatus = 'exhausted';
+      job.descriptionFetchVersion = DESCRIPTION_FETCH_VERSION;
+      availabilityMarked++;
+    }
+  }
+
   const needs = RECLOSE
     ? payload.jobs.filter(
         (j) => !j.closeDate && !j.openUntilFilled && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "") && matchesDescriptionPlatform(j, PLATFORM) && matchesDescriptionHost(j, HOST)
@@ -140,12 +159,22 @@ async function main() {
     ? payload.jobs.filter(
         (j) => !j.datePosted && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "") && matchesDescriptionPlatform(j, PLATFORM) && matchesDescriptionHost(j, HOST)
       )
+    : RETRY_NOW
+    ? payload.jobs.filter(
+        (j) => !String(j?.description || '').trim()
+          && /^https?:\/\//i.test(j?.url || '')
+          && !isUnsupportedDescriptionUrl(j?.url)
+          && descriptionAttemptCount(j) < DESCRIPTION_MAX_ATTEMPTS
+          && matchesDescriptionPlatform(j, PLATFORM)
+          && matchesDescriptionHost(j, HOST)
+      )
     : prioritizeDescriptionCandidates(payload.jobs, Date.now(), { platform: PLATFORM, host: HOST });
   const toProcess = needs.slice(0, MAX);
 
   const haveDesc = payload.jobs.filter((j) => j.description && String(j.description).trim()).length;
   if (REDATE) console.log("\n  *** REDATE MODE — re-scanning fetched pages missing datePosted ***");
   if (RECLOSE) console.log("\n  *** RECLOSE MODE — re-scanning fetched pages missing a deadline ***");
+  if (RETRY_NOW) console.log("\n  *** RETRY-NOW MODE — using remaining bounded retries immediately ***");
   console.log(`\n  Total jobs        : ${payload.jobs.length.toLocaleString()}`);
   console.log(`  With description  : ${haveDesc.toLocaleString()}`);
   console.log(`  Missing (unfetched): ${needs.length.toLocaleString()}`);
@@ -156,6 +185,11 @@ async function main() {
 
   if (toProcess.length === 0) {
     console.log("\n  Nothing to do.");
+    if (!DRY_RUN && availabilityMarked > 0) {
+      writeJson(PUBLIC_JOBS, payload);
+      if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+      console.log(`  Marked availability: ${availabilityMarked}`);
+    }
     writeJson(REPORT_PATH, {
       generatedAt: new Date().toISOString(),
       totalJobs: payload.jobs.length,
@@ -445,7 +479,8 @@ async function main() {
       }
       if (wasMissingDescription) {
         target.descriptionFetchAttempts = priorDescriptionAttempts + 1;
-        target.descriptionFetchStatus = desc ? "filled" : "empty";
+        const nextAttempt = priorDescriptionAttempts + 1;
+        target.descriptionFetchStatus = desc ? "filled" : (nextAttempt >= DESCRIPTION_MAX_ATTEMPTS ? "exhausted" : "empty");
         target.descriptionFetchVersion = DESCRIPTION_FETCH_VERSION;
       }
       // Soft "anticipated start date" parsed from the posting body (free text).
@@ -455,7 +490,8 @@ async function main() {
       }
       if (datePosted && !target.datePosted) {
         const nd = normalizeDate(datePosted);
-        if (nd) {
+        const todayIso = new Date().toISOString().slice(0, 10);
+        if (nd && nd <= todayIso) {
           target.datePosted = nd;
           datedFilled++;
           if (datePostedFromOpenDate) openDateFilled++;

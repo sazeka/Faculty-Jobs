@@ -37,6 +37,8 @@ export const CARRIED_FIELDS = [
   "qualityReviewedAt",
   "qualityLinkEvidence",
   "qualityLinkReviewedAt",
+  "departmentEvidence",
+  "locationEvidence",
 ];
 
 function isEmpty(v) {

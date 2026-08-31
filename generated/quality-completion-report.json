@@ -1,0 +1,61 @@
+{
+  "generatedAt": "2026-08-31T22:24:17.505Z",
+  "catalog": {
+    "records": 22141,
+    "qualityStatuses": {
+      "pass": 22141,
+      "review": 0,
+      "quarantine": 0
+    }
+  },
+  "descriptions": {
+    "present": 20820,
+    "missing": 1321,
+    "coveragePct": 94.03,
+    "unavailableByStatus": {
+      "exhausted": 713,
+      "unsupported": 608
+    }
+  },
+  "structuredFields": {
+    "departmentPresent": 13968,
+    "departmentMissing": 8173,
+    "locationPresent": 22068,
+    "locationMissing": 73,
+    "postingDatePresent": 16200,
+    "explicitDeadlinePresent": 4302,
+    "rollingDeadlinePresent": 3569,
+    "deadlineNotPublished": 14270,
+    "startDatePresent": 1782
+  },
+  "reviewedExclusions": {
+    "count": 247,
+    "byReason": {
+      "faculty_resource_page": 29,
+      "faculty_staff_page": 52,
+      "nonfaculty_fellowship": 33,
+      "generic_or_profile_page": 49,
+      "faculty_handbook_or_agreement": 25,
+      "confirmed_dead_url": 3,
+      "nonfaculty_role": 4,
+      "generic_faculty_application_without_vacancy": 12,
+      "homepage_redirect_or_nonposting": 2,
+      "not_a_faculty_appointment": 3,
+      "profile_or_department_page": 12,
+      "expired_posting": 20,
+      "non_posting_page": 2,
+      "no_current_posting_evidence": 1
+    }
+  },
+  "qualityReasonCounts": {
+    "missing_department": 8173,
+    "missing_deadline": 14270,
+    "missing_description": 1321,
+    "missing_location": 73,
+    "thin_description": 2
+  },
+  "interpretation": {
+    "descriptionGaps": "All remaining gaps are explicitly classified as unsupported or exhausted after bounded retries.",
+    "departmentAndDeadlineGaps": "Values remain empty when no reliable source-labeled value was available; they are not inferred or fabricated."
+  }
+}

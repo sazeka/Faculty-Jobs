@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { confirmedNonFacultyReason } from "./lib/post-quality.js";
+import { loadReviewedExclusions, reviewedExclusionReason } from "./lib/post-quality-exclusions.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const ROOT = path.resolve(path.dirname(__filename), "..");
@@ -12,6 +13,7 @@ const TARGETS = [
   "web-vue/public/jobs.json",
 ];
 const REPORT_PATH = path.join(ROOT, "generated", "post-quality-cleanup-report.json");
+const REVIEWED_EXCLUSIONS = loadReviewedExclusions(path.join(ROOT, "data", "post-quality-exclusions.json"));
 
 function clean(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
@@ -29,7 +31,7 @@ const removed = [];
 const reasonCounts = {};
 
 for (const job of jobs) {
-  const reason = confirmedNonFacultyReason(job);
+  const reason = reviewedExclusionReason(job, REVIEWED_EXCLUSIONS) || confirmedNonFacultyReason(job);
   if (!reason) {
     kept.push(job);
     continue;

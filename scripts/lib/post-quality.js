@@ -237,8 +237,6 @@ export function confirmedNonFacultyReason(job, options = {}) {
   if (codes.has('administrative_staff_title')) return 'administrative_staff_title'
   if (codes.has('student_service_title')) return 'student_service_title'
   if (codes.has('resource_page_url') && !quality.academicAppointment) return 'resource_page_url'
-  const reviewedReason = reviewedWeakEvidenceFalsePositiveReason(job)
-  if (reviewedReason) return reviewedReason
   return null
 }
 

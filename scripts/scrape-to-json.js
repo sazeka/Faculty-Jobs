@@ -7,12 +7,15 @@ import { scrapeAllJobsStandalone, callLocalSummarizer, getSystemGroup, normalize
 import { canonicalizeUrl, inferPlatformFromUrl } from "./lib/url-normalization.js";
 import { shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from "./lib/scrape-guard.js";
 import { preserveEnrichment } from "./lib/enrichment-merge.js";
+import { compactJobDescriptions } from "./lib/description-backfill.js";
 import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 import { filterExpiredDeadlineCache } from "./lib/post-expiration.js";
 import { confirmedNonFacultyReason } from "./lib/post-quality.js";
+import { loadReviewedExclusions, reviewedExclusionReason } from "./lib/post-quality-exclusions.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const REVIEWED_EXCLUSIONS = loadReviewedExclusions(path.join(__dirname, "..", "data", "post-quality-exclusions.json"));
 
 // Drop jobs whose URL was confirmed dead (404/410 for >= DEAD_CONFIRM consecutive
 // checks, or redirected to a homepage) per the URL verifier's cache, so a listing
@@ -154,10 +157,10 @@ function applyPostQualityGates(data) {
     else if (!isLikelyJobUrl(url)) reason = "non_job_url";
     else if (isPlaceholderTitle(title)) reason = "placeholder_title";
     else if (title.length < 8) reason = "very_short_title";
-    else reason = confirmedNonFacultyReason(job);
+    else reason = reviewedExclusionReason(job, REVIEWED_EXCLUSIONS) || confirmedNonFacultyReason(job);
 
     if (reason) {
-      reasons[reason] += 1;
+      reasons[reason] = (reasons[reason] || 0) + 1;
       if (drops.length < 200) {
         drops.push({
           reason,
@@ -403,6 +406,12 @@ function canonicalizeJobUrls(data) {
   if (deadlineFiltered.expired.length > 0) {
     data = { ...data, jobs: deadlineFiltered.kept };
     console.log(`🗓️  Filtered ${deadlineFiltered.expired.length} previously expired deadline URL(s)`);
+  }
+
+  const compactedDescriptions = compactJobDescriptions(data);
+  data = compactedDescriptions.data;
+  if (compactedDescriptions.truncated > 0) {
+    console.log(`📦 Compacted ${compactedDescriptions.truncated} long descriptions at the publish boundary`);
   }
 
   // Final write boundary: downstream passes may replace or filter the job array,
