@@ -8,6 +8,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
 const server = fs.readFileSync(path.join(ROOT, "server.js"), "utf8");
 const overrides = JSON.parse(fs.readFileSync(path.join(ROOT, "data/career-url-overrides.json"), "utf8"));
 const master = JSON.parse(fs.readFileSync(path.join(ROOT, "data/institutions-master.json"), "utf8"));
+const rules = JSON.parse(fs.readFileSync(path.join(ROOT, "data/policy-rules.json"), "utf8"));
 const milestone = JSON.parse(fs.readFileSync(path.join(ROOT, "generated/uw-system-campus-facets-milestone.json"), "utf8"));
 const validation = JSON.parse(fs.readFileSync(path.join(ROOT, "generated/uw-system-campus-facets-validation.json"), "utf8"));
 
@@ -40,10 +41,11 @@ test("the unsafe broad UW route and weaker duplicate routes are absent", () => {
   }
 });
 
-test("Flex-only records remain unresolved without an exact official facet", () => {
+test("Flex-only modality records remain unpromoted without an exact official facet", () => {
   for (const held of milestone.heldForReview) {
     assert.equal(overrides.overrides.some((row) => row.name === held.name), false);
-    assert.equal(master.institutions.find((row) => row.name === held.name)?.coverage_status, "missing");
+    assert.ok(["missing", "excluded_policy"].includes(master.institutions.find((row) => row.name === held.name)?.coverage_status));
+    assert.equal(rules.institutionOverrides[held.name]?.action, "exclude");
   }
 });
 

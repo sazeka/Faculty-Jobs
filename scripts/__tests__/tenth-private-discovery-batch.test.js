@@ -33,12 +33,13 @@ test("new institution routes and ATS adapters are wired", () => {
   assert.match(server, /type === "paycom"[^\n]+campus, "NE"/);
 });
 
-test("ambiguous shared employers and known false positives remain held", () => {
+test("the earlier batch held ambiguous employers until final manual verification", () => {
   const held = new Set(validation.held.flatMap((group) => group.names));
   for (const name of ["Mayo Clinic College of Medicine and Science", "MGH Institute of Health Professions", "Mount Sinai Phillips School of Nursing", "Missouri Valley College"]) {
     assert.ok(held.has(name), name);
   }
-  assert.doesNotMatch(server, /campus: "Missouri Valley College"/);
+  assert.match(server, /campus: "Missouri Valley College"[^\n]+careers-at-mvc/);
+  assert.match(server, /campus: "MGH Institute of Health Professions"[^\n]+massgeneral\.org\/careers/);
 });
 
 test("all promoted institutions are covered and retain live evidence", () => {
