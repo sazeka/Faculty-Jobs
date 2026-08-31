@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T17:10:49.075Z",
+  "generatedAt": "2026-08-31T20:42:09.568Z",
   "qualityVersion": 1,
   "sampleSize": 200,
   "instructions": "Set humanLabel to valid or invalid, add optional notes, then copy confirmed labels into data/post-quality-human-labels.json.",
@@ -548,20 +548,20 @@
       "notes": ""
     },
     {
-      "id": "02293a5b7d620dc6e4b4",
-      "score": 87,
+      "id": "2930ebc9de1b53d42aa8",
+      "score": 85,
       "status": "review",
-      "title": "Non-Credit Adjunct - Registered Nurse Instructor",
-      "college": "St Petersburg College",
+      "title": "Distance Education Faculty Handbook",
+      "college": "St. John Vianney College Seminary",
       "source": "FL",
-      "url": "https://spchrs.spcollege.edu/psc/GUEST/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant#1000323",
+      "url": "https://cdn.givecloud.co/s/files/1/0000/0603/files/distance-education-faculty-handbook.pdf",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
         },
         {
           "code": "missing_description",
@@ -569,6 +569,13 @@
           "dimension": "completeness",
           "deduction": 35,
           "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing."
         },
         {
           "code": "missing_deadline",
@@ -1244,20 +1251,20 @@
       "notes": ""
     },
     {
-      "id": "0c0b6bfbf7a4f56b1278",
+      "id": "25961e75977a1cfa1859",
       "score": 86,
       "status": "review",
-      "title": "Full-Time Faculty",
-      "college": "Anne Arundel Community College",
+      "title": "Workforce Development Instructors",
+      "college": "College of Southern Maryland",
       "source": "MD",
-      "url": "https://careers.aacc.edu/jobs/search",
+      "url": "https://www.schooljobs.com/careers/csmd/facultyjobs/jobs/5447882/workforce-development-instructors",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
         },
         {
           "code": "missing_description",
@@ -1265,13 +1272,6 @@
           "dimension": "completeness",
           "deduction": 35,
           "detail": "Description is missing."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing."
         },
         {
           "code": "missing_deadline",
@@ -1385,40 +1385,47 @@
       "notes": ""
     },
     {
-      "id": "01912189e978437db068",
-      "score": 99,
+      "id": "0118bd965f3ef938c9de",
+      "score": 100,
       "status": "pass",
-      "title": "Adjunct Instructor -Trade and Technoloy (Pool)",
-      "college": "Minnesota State (2 Locations)",
+      "title": "Adjunct Lecturer / Teaching Specialist - FY27 Continuous Recruitment",
+      "college": "University of Minnesota",
       "source": "MN",
-      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/MSSE---Winona-Campus/Adjunct-Instructor--Trade-and-Technoloy--Pool-_JR0000001176",
+      "url": "https://hr.myu.umn.edu/psc/hrprd/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=375461&PostingSeq=1",
       "reasons": [
         {
-          "code": "missing_department",
+          "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing."
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
       "notes": ""
     },
     {
-      "id": "0b83277bf1a72d7fc6aa",
-      "score": 90,
+      "id": "649a1a3bfc8f6437e0f6",
+      "score": 85,
       "status": "review",
-      "title": "Clinical Assistant or Associate Professor",
-      "college": "University of Minnesota",
+      "title": "Services for Faculty",
+      "college": "Fond du Lac Tribal and Community College",
       "source": "MN",
-      "url": "https://hr.myu.umn.edu/psc/hrprd/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=1#375512",
+      "url": "https://fdltcc.edu/academics/library-services/faculty-services",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_department",
@@ -2301,40 +2308,6 @@
       "notes": ""
     },
     {
-      "id": "0165e1608fc692137058",
-      "score": 90,
-      "status": "review",
-      "title": "Faculty and Staff FAQClick to Open",
-      "college": "Roger Williams University",
-      "source": "RI",
-      "url": "https://www.rwu.edu/who-we-are/administrative-offices/human-resources/employment",
-      "reasons": [
-        {
-          "code": "search_page_url",
-          "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
       "id": "00d67c56501b56b99ad5",
       "score": 100,
       "status": "pass",
@@ -2884,20 +2857,34 @@
       "notes": ""
     },
     {
-      "id": "0d759fbdd1bdae16b9f7",
-      "score": 91,
+      "id": "1550ae806835d491a945",
+      "score": 85,
       "status": "review",
-      "title": "Lecturer Pool - Physics",
-      "college": "Central Washington University",
+      "title": "Nursing Faculty-Psychiatric and Mental Health",
+      "college": "Heritage University",
       "source": "WA",
-      "url": "https://cwuhrprdcg.peoplesoft.cwu.edu/psc/careers/EMPLOYEE/CAREERS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&&siteid=1#7251",
+      "url": "https://heritage.edu/wp-content/uploads/2026/04/HR_Nursing_Faculty.10.5mo_Psychiatric-Mental-Health_Rev.4.2026.pdf",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing."
         },
         {
           "code": "missing_deadline",
@@ -3443,40 +3430,6 @@
       "notes": ""
     },
     {
-      "id": "e3f6c785d77375083c4f",
-      "score": 90,
-      "status": "review",
-      "title": "Staff and Faculty",
-      "college": "Hartford International University for Religion and Peace",
-      "source": "CT",
-      "url": "https://www.hartfordinternational.edu/about/employment",
-      "reasons": [
-        {
-          "code": "search_page_url",
-          "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
       "id": "032ad69b12434d4ba24b",
       "score": 98,
       "status": "pass",
@@ -3550,14 +3503,21 @@
       "notes": ""
     },
     {
-      "id": "00ebb46073558ecec76d",
-      "score": 100,
+      "id": "00c9604237200d140728",
+      "score": 96,
       "status": "pass",
-      "title": "Adjunct Instructor - Math",
-      "college": "Florida Southern College",
+      "title": "Adjunct Faculty - Clinical Faculty - Respiratory Care",
+      "college": "St Petersburg College",
       "source": "FL",
-      "url": "https://portal.flsouthern.edu/ICS/Employment_App#pg0%24V%24psSearch%24gvPositions%24ctl15%24ctl00",
+      "url": "https://spchrs.spcollege.edu/psc/GUEST/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=1000351&PostingSeq=1",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -3570,20 +3530,20 @@
       "notes": ""
     },
     {
-      "id": "03ac48ba8161b000efa9",
-      "score": 87,
+      "id": "335c9ec06ceb28faea93",
+      "score": 86,
       "status": "review",
-      "title": "Adjunct Faculty - Sociology",
-      "college": "St Petersburg College",
+      "title": "Posting Exemption Faculty Pool",
+      "college": "Florida International University",
       "source": "FL",
-      "url": "https://spchrs.spcollege.edu/psc/GUEST/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant#1000346",
+      "url": "https://pslinks.fiu.edu/psc/jobs/CUSTOMER/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST&Action=U&JobOpeningId=538101&postingseq=1&SiteId=1000&REL_ACTION=Yes",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
         },
         {
           "code": "missing_description",
@@ -3954,20 +3914,34 @@
       "notes": ""
     },
     {
-      "id": "908dd907fb2ada21a715",
-      "score": 91,
+      "id": "a6cc00019e8e38b6ef82",
+      "score": 85,
       "status": "review",
-      "title": "Faculty, Lecturer, and Academic Staff Jobs",
-      "college": "University of Kansas",
+      "title": "Students & Faculty",
+      "college": "Cleveland University-Kansas City",
       "source": "KS",
-      "url": "https://employment.ku.edu/jobs",
+      "url": "https://www.cleveland.edu/students-faculty-information",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing."
         },
         {
           "code": "missing_deadline",
@@ -4147,13 +4121,13 @@
       "notes": ""
     },
     {
-      "id": "25961e75977a1cfa1859",
-      "score": 86,
+      "id": "d0aeaea543113efdf822",
+      "score": 88,
       "status": "review",
-      "title": "Workforce Development Instructors",
-      "college": "College of Southern Maryland",
+      "title": "Non-faculty openings in Santa Fe",
+      "college": "St. John's College",
       "source": "MD",
-      "url": "https://www.schooljobs.com/careers/csmd/facultyjobs/jobs/5447882/workforce-development-instructors",
+      "url": "https://www.sjc.edu/santa-fe-job-openings",
       "reasons": [
         {
           "code": "weak_academic_evidence",
@@ -4163,11 +4137,11 @@
           "detail": "No strong academic appointment signal appears in the title or normalized metadata."
         },
         {
-          "code": "missing_description",
+          "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
+          "deduction": 10,
+          "detail": "Department is missing."
         },
         {
           "code": "missing_deadline",
@@ -4296,13 +4270,13 @@
       "notes": ""
     },
     {
-      "id": "04e1500f30bcd6308b7d",
+      "id": "01912189e978437db068",
       "score": 99,
       "status": "pass",
-      "title": "Nursing AD Instructor",
-      "college": "Riverland Community College",
+      "title": "Adjunct Instructor -Trade and Technoloy (Pool)",
+      "college": "Minnesota State (2 Locations)",
       "source": "MN",
-      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/Austin/Nursing-AD-Instructor_JR0000005269",
+      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/MSSE---Winona-Campus/Adjunct-Instructor--Trade-and-Technoloy--Pool-_JR0000001176",
       "reasons": [
         {
           "code": "missing_department",
@@ -4316,20 +4290,27 @@
       "notes": ""
     },
     {
-      "id": "0d1ac9cccbf5a9acb270",
-      "score": 90,
+      "id": "800375e05f8ad4850bb3",
+      "score": 85,
       "status": "review",
-      "title": "Faculty Position in Gynecologic and Breast Pathology (Academic/Clinician Track)",
-      "college": "University of Minnesota",
+      "title": "Visiting Faculty – Art and Art History",
+      "college": "Macalester College",
       "source": "MN",
-      "url": "https://hr.myu.umn.edu/psc/hrprd/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=1#375760",
+      "url": "https://www.macalester.edu/provost/wp-content/uploads/sites/268/2026/08/Art_Art-History-Visiting-Faculty-Position-Posting-for-AY26-27.pdf",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_department",
@@ -4820,20 +4801,34 @@
       "notes": ""
     },
     {
-      "id": "0e41a25eadf8279bb688",
-      "score": 91,
+      "id": "11709e2676ad5c91a165",
+      "score": 85,
       "status": "review",
-      "title": "Assistant Professor - Sociology of Gender and Sexuality",
-      "college": "CUNY Bernard M Baruch College",
+      "title": "Continuing Education Instructors",
+      "college": "Pratt Institute",
       "source": "NY",
-      "url": "https://cuny.jobs/new-york-ny/assistant-professor-sociology-of-gender-and-sexuality/19E98B72655C40D3B5C854FA0C8CE4B0/job",
+      "url": "https://www.schooljobs.com/careers/pratt/jobs/4685372",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing."
         },
         {
           "code": "missing_deadline",
@@ -5439,6 +5434,60 @@
           "dimension": "relevance",
           "deduction": 30,
           "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "009f0da5efc6b4eeba88",
+      "score": 99,
+      "status": "pass",
+      "title": "Adjunct Faculty, Management & Entrepreneurship, School of Business",
+      "college": "Virginia Commonwealth University",
+      "source": "VA",
+      "url": "https://vcujobs.com/jobs/adjunct-faculty-management-entrepreneurship-school-of-business-vcu-main-campus-virginia-united-states",
+      "reasons": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "1216d1a94d4c9ea0f073",
+      "score": 88,
+      "status": "review",
+      "title": "Full Circle Food Fellow",
+      "college": "Washington and Lee University",
+      "source": "VA",
+      "url": "https://wlu.wd5.myworkdayjobs.com/WLUCareers/job/Lexington-VA/Full-Circle-Food-Fellow_R1473",
+      "reasons": [
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,

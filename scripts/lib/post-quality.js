@@ -5,6 +5,7 @@ export const POST_QUALITY_VERSION = 1
 
 const PLACEHOLDER_TITLE_RE = /^(?:faculty|staff|faculty jobs|employment|careers?|view details|learn more|read more|click here)$/i
 const RESOURCE_TITLE_RE = /^(?:faculty affairs|faculty support|faculty support services\b.*|faculty resources?|faculty development|academic affairs|human resources|office of faculty affairs(?:\s*&\s*strategic planning)?|contract faculty payroll calendar|staff,? faculty (?:&|and) student employment opportunities|view lecturer opportunities|access center resources for faculty|affiliate faculty resources|center for faculty excellence|faculty accompanying students(?: \(fas\))? grant|faculty awards|faculty employment handbook|faculty forms|faculty offer letter templates\b.*|faculty performance|faculty review|(?:msu denver )?faculty fellowships|recruiting excellent faculty workshops)$/i
+const SEARCH_PAGE_CHROME_TITLE_RE = /^(?:faculty (?:&|and|\+) staff(?: jobs| resources| employment)?|faculty and staff faqclick to open|faculty and staff human resources guide: employment|faculty employment|faculty stories|faculty, lecturer, and academic staff jobs|faculty\/staff resources|full-time faculty|prospective faculty & staff|regular faculty and staff|staff and faculty)$/i
 const STRONG_ACADEMIC_TITLE_RE = /\b(?:assistant|associate|full|distinguished|endowed|visiting|adjunct|clinical|research|teaching)?\s*professor\b|\bprofessor of\b|\blecturer\b|\binstructor\b|\bpost[- ]?doctoral\b|\bpost[- ]?doc\b|\bfaculty fellow\b|\bresearch (?:scientist|associate|fellow)\b|\b(?:assistant|associate)?\s*dean\b|\bdepartment chair\b|\b(?:academic|assistant|associate|faculty) librarian\b/i
 const STAFF_ROLE_RE = /\b(?:faculty affairs|faculty development|faculty support|human resources|hr associate|hr business|coordinator|specialist|recruiter|talent acquisition|administrative assistant|executive assistant|office manager|program assistant|assistant director|associate director|operations manager|business manager)\b/i
 const CLEAR_NONACADEMIC_RE = /\b(?:custodian|groundskeeper|maintenance technician|police officer|security officer|bus driver|food service|payroll|accounts payable|facilities technician|electrician|plumber|carpenter|head coach|assistant coach|athletic trainer)\b/i
@@ -70,6 +71,9 @@ function classifyLink(url) {
   const path = parsed.pathname.replace(/\/+$/, '').toLowerCase()
   const combined = `${path}${parsed.search}${parsed.hash}`
   const directJobPlatform = /(?:myworkdayjobs|myworkdaysite|schooljobs|peopleadmin|interfolio|csod|oraclecloud)\./i.test(parsed.hostname)
+  // CUNY's DirectEmployers pages intentionally end in `/job`; the UUID-like
+  // segment immediately before it identifies one posting, not a search root.
+  if (parsed.hostname === 'cuny.jobs' && /\/[a-f0-9]{16,}\/job$/i.test(path)) return 'direct'
   if (!directJobPlatform && /\/(?:directory|people|our-faculty|faculty-profiles?|faculty-staff|faculty-affairs|faculty-support|professional-development)\b/.test(path)) return 'resource-page'
   if (/hrs_(?:app_)?schjob|hrs_cg_search/.test(combined) && !/(?:jobopeningid|jobid|postingid)[=#]\d+/i.test(combined)) return 'search-page'
   if (/\/(?:jobs?|careers?|employment|postings?|search|openings?)$/.test(path) && !parsed.search && !parsed.hash) return 'search-page'
@@ -102,7 +106,7 @@ export function scorePost(job, { today = new Date() } = {}) {
     addReason(reasons, dimensions, 'placeholder_title', 'error', 'relevance', 100, 'The title is empty or generic page chrome.')
     hardQuarantine = true
   }
-  if (RESOURCE_TITLE_RE.test(title)) {
+  if (RESOURCE_TITLE_RE.test(title) || (SEARCH_PAGE_CHROME_TITLE_RE.test(title) && classifyLink(url) === 'search-page')) {
     addReason(reasons, dimensions, 'resource_page_title', 'error', 'relevance', 100, 'The title names a faculty resource office rather than an appointment.')
     hardQuarantine = true
   }

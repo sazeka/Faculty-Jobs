@@ -146,6 +146,28 @@ test("a strong academic title on a search page is routed to review", () => {
   assert.ok(quality.reasons.some((reason) => reason.code === "search_page_url"));
 });
 
+test("CUNY DirectEmployers job routes are recognized as direct postings", () => {
+  const quality = scorePost(job({
+    url: "https://cuny.jobs/new-york-ny/assistant-professor/6052470F8928436B9A3681F255F3B7AF/job",
+  }), { today: TODAY });
+  assert.equal(quality.linkType, "direct");
+  assert.ok(!quality.reasons.some((reason) => reason.code === "search_page_url"));
+});
+
+test("generic faculty page chrome is quarantined only on search pages", () => {
+  const chrome = scorePost(job({
+    title: "Faculty & Staff Jobs",
+    url: "https://www.example.edu/about/employment",
+  }), { today: TODAY });
+  const posting = scorePost(job({
+    title: "Full-Time Faculty",
+    url: "https://www.example.edu/jobs/full-time-faculty-123",
+  }), { today: TODAY });
+  assert.equal(chrome.status, "quarantine");
+  assert.ok(chrome.reasons.some((reason) => reason.code === "resource_page_title"));
+  assert.ok(!posting.reasons.some((reason) => reason.code === "resource_page_title"));
+});
+
 test("missing optional metadata lowers completeness without quarantining", () => {
   const quality = scorePost(job({ description: "", department: "", location: "", closeDate: "" }), { today: TODAY });
   assert.equal(quality.status, "pass");

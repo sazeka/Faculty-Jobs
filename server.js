@@ -89,6 +89,7 @@ import { canonicalInstitutionName } from "./scripts/lib/institution-aliases.js";
 import { interfolioApplicationUrl } from "./scripts/lib/interfolio-position.js";
 import { alaskaCampusLocation, inferAlaskaCampus } from "./scripts/lib/alaska-campus.js";
 import { canonicalCsuInstitutionFromLocation, repairKnownInstitutionAttribution } from "./scripts/lib/institution-attribution.js";
+import { peopleSoftJobDetailUrl } from "./scripts/lib/peoplesoft-job-url.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -19229,7 +19230,7 @@ export async function scrapePeopleSoftHrsBasic(context, startUrl, campusName, so
       .filter((j) => !omitAdjunct(j.title))
       .map((j) => ({
         title: clean(j.title),
-        url: `${startUrl}#${encodeURIComponent(j.jobId || j.title)}`,
+        url: peopleSoftJobDetailUrl(startUrl, j.jobId) || `${startUrl}#${encodeURIComponent(j.title)}`,
         source: sourceName,
         category: "Faculty",
         college: campusName,
@@ -20909,7 +20910,10 @@ async function scrapeFsuPeopleSoftJobs(context, startUrl, campusName, sourceName
         if (!title || title.length < 4) continue;
         const m = (titleEl.id || "").match(/\$(\d+)$/);
         const idx = m ? m[1] : null;
-        const jobIdEl = idx !== null ? document.getElementById(`HRS_SCH_WRK_HRS_JOB_OPENING_ID$${idx}`) : null;
+        const jobIdEl = idx !== null
+          ? document.getElementById(`HRS_APP_JBSCH_I_HRS_JOB_OPENING_ID$${idx}`)
+            || document.getElementById(`HRS_SCH_WRK_HRS_JOB_OPENING_ID$${idx}`)
+          : null;
         const locationEl = idx !== null ? document.getElementById(`HRS_RECR_LOC_TBL_DESCR$${idx}`) : null;
         const jobId = clean(jobIdEl?.textContent || "");
         const location = clean(locationEl?.textContent || "");
@@ -20928,7 +20932,7 @@ async function scrapeFsuPeopleSoftJobs(context, startUrl, campusName, sourceName
       .filter((j) => !omitAdjunct(j.title))
       .map((j) => ({
         title: clean(j.title),
-        url: `${startUrl}#${encodeURIComponent(j.jobId || j.key || j.title)}`,
+        url: peopleSoftJobDetailUrl(startUrl, j.jobId) || `${startUrl}#${encodeURIComponent(j.key || j.title)}`,
         source: sourceName,
         category: "Faculty",
         college: campusName,
