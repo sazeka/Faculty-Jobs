@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import { buildListingIndex } from "./lib/jobs-listing-index.js";
 import { buildFullTextSearchIndex } from "./lib/jobs-search-index.js";
+import { summarizeCatalog } from "../web-vue/src/lib/listingTrust.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -67,8 +68,49 @@ function buildJobsChunks(payload, outDir) {
   return { sources: chunkEntries.length, totalJobs: jobs.length };
 }
 
+function buildSiteStats(payload, previous = {}) {
+  const jobs = Array.isArray(payload?.jobs) ? payload.jobs : [];
+  const scrapeDate = clean(payload?.scrapedAt).slice(0, 10) || new Date().toISOString().slice(0, 10);
+  const weekCutoffDate = new Date(`${scrapeDate}T12:00:00Z`);
+  weekCutoffDate.setUTCDate(weekCutoffDate.getUTCDate() - 6);
+  const weekCutoff = weekCutoffDate.toISOString().slice(0, 10);
+  const firstSeenByGroup = new Map();
+  const collegeSet = new Set();
+  const stateSet = new Set();
+  for (const job of jobs) {
+    const groupId = clean(job?.canonicalGroupId || job?.canonicalJobId || job?.url);
+    const firstSeen = clean(job?.firstSeen).slice(0, 10);
+    const existing = firstSeenByGroup.get(groupId);
+    if (groupId && firstSeen && (!existing || firstSeen < existing)) firstSeenByGroup.set(groupId, firstSeen);
+    if (clean(job?.college)) collegeSet.add(clean(job.college));
+    if (clean(job?.state || job?.source)) stateSet.add(clean(job.state || job.source));
+  }
+  const firstSeenDates = [...firstSeenByGroup.values()];
+  const newToday = firstSeenDates.filter((date) => date === scrapeDate).length;
+  const newThisWeek = firstSeenDates.filter((date) => date >= weekCutoff).length;
+  return {
+    ...previous,
+    generatedAt: payload?.scrapedAt || previous.generatedAt || null,
+    scrapeDate,
+    total: jobs.length,
+    ...summarizeCatalog(jobs, new Date(`${scrapeDate}T12:00:00Z`)),
+    uniqueColleges: collegeSet.size,
+    stateSystems: stateSet.size,
+    newToday,
+    newThisWeek,
+    newPostingsToday: newToday,
+    newPostingsThisWeek: newThisWeek,
+  };
+}
+
 const payload = JSON.parse(fs.readFileSync(path.join(ROOT, "public", "jobs.json"), "utf8"));
+const previousSiteStatsPath = path.join(ROOT, "public", "data", "site-stats.json");
+const previousSiteStats = fs.existsSync(previousSiteStatsPath)
+  ? JSON.parse(fs.readFileSync(previousSiteStatsPath, "utf8"))
+  : {};
+const siteStats = buildSiteStats(payload, previousSiteStats);
 for (const dir of ["docs/data", "public/data", "web-vue/public/data"]) {
   const r = buildJobsChunks(payload, path.join(ROOT, dir));
+  writeJson(path.join(ROOT, dir, "site-stats.json"), siteStats);
   console.log(`Rebuilt ${dir}: ${r.sources} source chunks, ${r.totalJobs} jobs`);
 }
