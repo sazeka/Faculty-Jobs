@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  confirmedNonFacultyReason,
   deterministicStratifiedSample,
   scoreCatalog,
   scorePost,
@@ -50,6 +51,64 @@ test("academic program names containing staff-role words remain eligible", () =>
   assert.ok(!quality.reasons.some((reason) => reason.code === "administrative_staff_title"));
 });
 
+test("open-rank and coordinated faculty appointments are not mistaken for staff roles", () => {
+  for (const title of [
+    "Glaucoma Ophthalmology Specialist - Faculty (Open Rank)",
+    "Full Time Faculty (Program Coordinator) – Business Administration",
+    "Program Coordinator / Clinical Assistant Faculty at 50% FTE",
+    "Medical Assisting Program Coordinator/Faculty",
+    "Retina/Uveitis Specialist - Faculty Rank DOQ",
+    "Senior Faculty Specialist",
+    "Specialist - Post Doc Psychology Fellow",
+    "Distinguished and Faculty Development Chairs in Materials Science",
+    "Assistant Librarian - Faculty Support Librarian",
+  ]) {
+    const quality = scorePost(job({ title }), { today: TODAY });
+    assert.notEqual(quality.status, "quarantine", title);
+    assert.ok(!quality.reasons.some((reason) => reason.code === "administrative_staff_title"), title);
+  }
+});
+
+test("truncated institution text does not create a false attribution conflict", () => {
+  const quality = scorePost(job({
+    college: "University of Washington",
+    title: "Restorative Neurosurgeon — Assistant Professor, WOT Neurological Surgery University of",
+  }), { today: TODAY });
+  assert.ok(!quality.reasons.some((reason) => reason.code === "institution_title_conflict"));
+});
+
+test("the publishing gate removes only confirmed non-postings", () => {
+  assert.equal(confirmedNonFacultyReason(job({ title: "Faculty Affairs Coordinator" }), { today: TODAY }), "administrative_staff_title");
+  assert.equal(confirmedNonFacultyReason(job({
+    title: "Faculty Awards",
+    url: "https://www.example.edu/faculty-affairs/faculty-awards",
+  }), { today: TODAY }), "resource_page_title");
+  assert.equal(confirmedNonFacultyReason(job({ title: "Staff, Faculty & Student Employment Opportunities" }), { today: TODAY }), "resource_page_title");
+  assert.equal(confirmedNonFacultyReason(job({
+    title: "Electrician Faculty - Greenville Center",
+    description: "Teach electrician courses and provide quality education to students.",
+  }), { today: TODAY }), null);
+  assert.equal(confirmedNonFacultyReason(job({ title: "Assistant Professor of Biology" }), { today: TODAY }), null);
+});
+
+test("adjunct appointments remain eligible when their subject resembles student services", () => {
+  const quality = scorePost(job({ title: "Career Services Adjunct - Pet Grooming" }), { today: TODAY });
+  assert.notEqual(quality.status, "quarantine");
+  assert.ok(!quality.reasons.some((reason) => reason.code === "student_service_title"));
+});
+
+test("adjunct faculty recruitment remains an administrative role", () => {
+  const quality = scorePost(job({ title: "Coordinator, Adjunct Faculty Recruitment" }), { today: TODAY });
+  assert.equal(quality.status, "quarantine");
+  assert.ok(quality.reasons.some((reason) => reason.code === "administrative_staff_title"));
+});
+
+test("associate faculty teaching human resources is not mistaken for HR staff", () => {
+  const quality = scorePost(job({ title: "Associate Faculty - Labor Relations (Human Resources)" }), { today: TODAY });
+  assert.equal(quality.status, "pass");
+  assert.ok(!quality.reasons.some((reason) => reason.code === "administrative_staff_title"));
+});
+
 test("job-platform URLs containing faculty-affairs are not treated as resource pages", () => {
   const quality = scorePost(job({
     title: "Faculty Affairs Coordinator",
@@ -71,11 +130,13 @@ test("a conflicting institution explicitly named in the title is quarantined", (
   assert.ok(quality.reasons.some((reason) => reason.code === "institution_title_conflict"));
 });
 
-test("an expired posting is quarantined unless marked open until filled", () => {
+test("an expired posting is quarantined after the grace period unless marked open until filled", () => {
   const expired = scorePost(job({ closeDate: "2026-01-01" }), { today: TODAY });
+  const grace = scorePost(job({ closeDate: "2026-08-22" }), { today: TODAY });
   const open = scorePost(job({ closeDate: "2026-01-01", openUntilFilled: true }), { today: TODAY });
   assert.equal(expired.status, "quarantine");
   assert.ok(expired.reasons.some((reason) => reason.code === "expired_posting"));
+  assert.ok(!grace.reasons.some((reason) => reason.code === "expired_posting"));
   assert.notEqual(open.status, "quarantine");
 });
 

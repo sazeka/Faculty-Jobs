@@ -1,13 +1,16 @@
 import crypto from 'node:crypto'
+import { isExpiredPastGrace } from './post-expiration.js'
 
 export const POST_QUALITY_VERSION = 1
 
 const PLACEHOLDER_TITLE_RE = /^(?:faculty|staff|faculty jobs|employment|careers?|view details|learn more|read more|click here)$/i
-const RESOURCE_TITLE_RE = /^(?:faculty affairs|faculty support|faculty resources?|faculty development|academic affairs|human resources|office of faculty affairs)$/i
-const STRONG_ACADEMIC_TITLE_RE = /\b(?:assistant|associate|full|distinguished|endowed|visiting|adjunct|clinical|research|teaching)?\s*professor\b|\bprofessor of\b|\blecturer\b|\binstructor\b|\bpost[- ]?doctoral\b|\bpostdoc\b|\bfaculty fellow\b|\bresearch (?:scientist|associate|fellow)\b|\b(?:assistant|associate)?\s*dean\b|\bdepartment chair\b|\bacademic librarian\b/i
+const RESOURCE_TITLE_RE = /^(?:faculty affairs|faculty support|faculty support services\b.*|faculty resources?|faculty development|academic affairs|human resources|office of faculty affairs(?:\s*&\s*strategic planning)?|contract faculty payroll calendar|staff,? faculty (?:&|and) student employment opportunities|view lecturer opportunities|access center resources for faculty|affiliate faculty resources|center for faculty excellence|faculty accompanying students(?: \(fas\))? grant|faculty awards|faculty employment handbook|faculty forms|faculty offer letter templates\b.*|faculty performance|faculty review|(?:msu denver )?faculty fellowships|recruiting excellent faculty workshops)$/i
+const STRONG_ACADEMIC_TITLE_RE = /\b(?:assistant|associate|full|distinguished|endowed|visiting|adjunct|clinical|research|teaching)?\s*professor\b|\bprofessor of\b|\blecturer\b|\binstructor\b|\bpost[- ]?doctoral\b|\bpost[- ]?doc\b|\bfaculty fellow\b|\bresearch (?:scientist|associate|fellow)\b|\b(?:assistant|associate)?\s*dean\b|\bdepartment chair\b|\b(?:academic|assistant|associate|faculty) librarian\b/i
 const STAFF_ROLE_RE = /\b(?:faculty affairs|faculty development|faculty support|human resources|hr associate|hr business|coordinator|specialist|recruiter|talent acquisition|administrative assistant|executive assistant|office manager|program assistant|assistant director|associate director|operations manager|business manager)\b/i
 const CLEAR_NONACADEMIC_RE = /\b(?:custodian|groundskeeper|maintenance technician|police officer|security officer|bus driver|food service|payroll|accounts payable|facilities technician|electrician|plumber|carpenter|head coach|assistant coach|athletic trainer)\b/i
 const STUDENT_RESOURCE_RE = /\b(?:student services|career services|career center|disability services|office for students|student employment)\b/i
+const APPOINTMENT_CONTEXT_RE = /\b(?:12[- ]month|adjunct|clinical|core|ft|full[- ]time|instructional|non[- ]tenure|ntt|open[- ]rank|part[- ]time|professional|rank (?:doq|open|tbd)|research|teaching|tenure(?:d|[- ]track)?)\b/i
+const NON_APPOINTMENT_FACULTY_CONTEXT_RE = /\b(?:faculty affairs|faculty development|faculty recruitment|faculty shared services|faculty support|recruit(?:er|ing|ment))\b/i
 const GENERIC_INSTITUTION_WORDS = new Set(['and', 'at', 'college', 'institute', 'of', 'school', 'system', 'the', 'university'])
 
 function clean(value) {
@@ -45,6 +48,9 @@ function explicitInstitutionInTitle(title) {
 }
 
 function institutionConflict(title, college) {
+  // A few scrapers truncate a trailing institution phrase at "University of".
+  // Treat that as incomplete page text, not as evidence naming another school.
+  if (/\bUniversity\s+of\s*$/i.test(clean(title))) return null
   const explicit = explicitInstitutionInTitle(title)
   if (!explicit || !clean(college)) return null
   const expected = new Set(institutionTokens(explicit))
@@ -102,8 +108,23 @@ export function scorePost(job, { today = new Date() } = {}) {
   }
 
   const hasStrongAcademicTitle = STRONG_ACADEMIC_TITLE_RE.test(title)
-  const startsWithAppointment = /^(?:adjunct|faculty)\b/i.test(title) && !/^(?:faculty affairs|faculty support|faculty development|faculty resources?)\b/i.test(title)
-  const hasAcademicAppointmentTitle = hasStrongAcademicTitle || startsWithAppointment
+  const startsWithAppointment = /^(?:adjunct\b|associate\s+faculty\b|faculty\b)/i.test(title) && !/^(?:faculty affairs|faculty support|faculty development|faculty resources?)\b/i.test(title)
+  const contextualFacultyAppointment =
+    /\bfaculty\b/i.test(title)
+    && APPOINTMENT_CONTEXT_RE.test(title)
+    && !NON_APPOINTMENT_FACULTY_CONTEXT_RE.test(title)
+  const coordinatedFacultyAppointment =
+    /\bfaculty\b/i.test(title)
+    && /\bprogram coordinator\b|\bcoordinator\s*\/\s*faculty\b|\bfaculty\s*(?:\/|&)\s*(?:program\s+)?coordinator\b/i.test(title)
+    && !NON_APPOINTMENT_FACULTY_CONTEXT_RE.test(title)
+  const namedChairAppointment = /\b(?:distinguished|endowed|named)\b.*\bchairs?\b/i.test(title)
+  const facultySpecialistAppointment = /\b(?:senior\s+)?faculty specialist\b/i.test(title) && !NON_APPOINTMENT_FACULTY_CONTEXT_RE.test(title)
+  const adjunctAppointment = /\badjunct\b/i.test(title) && !/\badjunct\s+faculty\s+recruit(?:er|ing|ment)\b/i.test(title)
+  const descriptionBackedFacultyAppointment =
+    /\bfaculty\b/i.test(title)
+    && /\b(?:classroom|courses?|curriculum|educat(?:e|ion)|instruct(?:ion|or)|students?|teach(?:er|es|ing)?)\b/i.test(description)
+    && !NON_APPOINTMENT_FACULTY_CONTEXT_RE.test(title)
+  const hasAcademicAppointmentTitle = hasStrongAcademicTitle || startsWithAppointment || contextualFacultyAppointment || coordinatedFacultyAppointment || namedChairAppointment || facultySpecialistAppointment || adjunctAppointment || descriptionBackedFacultyAppointment
   if (STAFF_ROLE_RE.test(title) && !hasAcademicAppointmentTitle) {
     addReason(reasons, dimensions, 'administrative_staff_title', 'error', 'relevance', 90, 'Administrative or support role lacks an academic appointment title.')
     hardQuarantine = true
@@ -141,7 +162,7 @@ export function scorePost(job, { today = new Date() } = {}) {
 
   const closeDate = dateOnly(job?.closeDate)
   const postedDate = dateOnly(job?.datePosted)
-  if (closeDate && !job?.openUntilFilled && closeDate < todayIso) {
+  if (closeDate && isExpiredPastGrace(job, { today, graceDays: 7 })) {
     addReason(reasons, dimensions, 'expired_posting', 'error', 'freshness', 100, `Deadline ${closeDate} has passed.`)
     hardQuarantine = true
   }
@@ -170,7 +191,20 @@ export function scorePost(job, { today = new Date() } = {}) {
     dimensions,
     reasons,
     linkType,
+    academicAppointment: hasAcademicAppointmentTitle,
   }
+}
+
+// Conservative publishing gate: only these combinations are precise enough to
+// remove without manual review. Other errors remain visible in the review report.
+export function confirmedNonFacultyReason(job, options = {}) {
+  const quality = scorePost(job, options)
+  const codes = new Set(quality.reasons.map((reason) => reason.code))
+  if (codes.has('resource_page_title')) return 'resource_page_title'
+  if (codes.has('administrative_staff_title')) return 'administrative_staff_title'
+  if (codes.has('student_service_title')) return 'student_service_title'
+  if (codes.has('resource_page_url') && !quality.academicAppointment) return 'resource_page_url'
+  return null
 }
 
 export function scoreCatalog(jobs, options = {}) {

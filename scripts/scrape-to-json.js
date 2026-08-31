@@ -9,6 +9,7 @@ import { shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from ".
 import { preserveEnrichment } from "./lib/enrichment-merge.js";
 import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 import { filterExpiredDeadlineCache } from "./lib/post-expiration.js";
+import { confirmedNonFacultyReason } from "./lib/post-quality.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -139,6 +140,10 @@ function applyPostQualityGates(data) {
     non_job_url: 0,
     placeholder_title: 0,
     very_short_title: 0,
+    resource_page_title: 0,
+    resource_page_url: 0,
+    administrative_staff_title: 0,
+    student_service_title: 0,
   };
 
   for (const job of data.jobs) {
@@ -149,6 +154,7 @@ function applyPostQualityGates(data) {
     else if (!isLikelyJobUrl(url)) reason = "non_job_url";
     else if (isPlaceholderTitle(title)) reason = "placeholder_title";
     else if (title.length < 8) reason = "very_short_title";
+    else reason = confirmedNonFacultyReason(job);
 
     if (reason) {
       reasons[reason] += 1;
