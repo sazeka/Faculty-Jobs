@@ -297,7 +297,7 @@ function toggleCity(value) {
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <label class="fa-facet-item" :class="{ active: filters.tenureTrackOnly }" @click="updateField('tenureTrackOnly', !filters.tenureTrackOnly)">
           <span class="fa-check" :class="{ checked: filters.tenureTrackOnly }">{{ filters.tenureTrackOnly ? '✓' : '' }}</span>
-          <span style="flex: 1;">Tenure-Track only</span>
+          <span style="flex: 1;">Tenure-Track</span>
           <span class="fa-meta" style="font-size: 10px;">{{ tenureTrackCount }}</span>
         </label>
       </div>

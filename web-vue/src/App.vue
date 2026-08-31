@@ -1111,6 +1111,7 @@ async function reportBadListing(job) {
 .fa-stat--this-week .fa-stat-val { color: var(--accent); }
 .fa-stat--no-openings .fa-stat-val,
 .fa-stat--no-openings .fa-stat-label { color: var(--ink); }
+.fa-stat--no-openings .fa-stat-label { font-weight: 400; }
 
 .fa-search-band {
   position: relative;
