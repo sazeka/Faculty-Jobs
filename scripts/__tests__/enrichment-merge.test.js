@@ -75,6 +75,21 @@ test("no previous snapshot is a safe no-op", () => {
   assert.equal(preserveEnrichment(fresh, { jobs: [] }).restoredFields, 0);
 });
 
+test("preserves reviewed post-quality evidence across daily scrapes", () => {
+  const fresh = { jobs: [{ canonicalJobId: "job-1", url: "https://example.edu/job/1" }] };
+  const previous = { jobs: [{
+    canonicalJobId: "job-1",
+    url: "https://example.edu/job/1",
+    qualityEvidence: "reviewed-academic-appointment",
+    qualityReviewedAt: "2026-08-31",
+    qualityLinkEvidence: "verified-inline-posting",
+    qualityLinkReviewedAt: "2026-08-31",
+  }] };
+  const result = preserveEnrichment(fresh, previous);
+  assert.equal(result.data.jobs[0].qualityEvidence, "reviewed-academic-appointment");
+  assert.equal(result.data.jobs[0].qualityLinkEvidence, "verified-inline-posting");
+});
+
 test("carries description backfill progress across daily scrapes", () => {
   const previous = {
     jobs: [{

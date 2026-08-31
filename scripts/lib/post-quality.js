@@ -80,6 +80,26 @@ function classifyLink(url) {
   return 'direct'
 }
 
+export function reviewedWeakEvidenceFalsePositiveReason(job) {
+  const title = clean(job?.title)
+  const url = clean(job?.url)
+
+  if (/^(?:DEAN OF ENROLLMENT AND STUDENT SERVICES \(pending Board approval\)|Full Time Faculty for Nursing and Health Professions)$/i.test(title)) return 'reviewed_stale_or_nonfaculty'
+  if (/faculty\s*(?:&|and|\/)\s*staff|staff\s*(?:&|and|\/)\s*faculty|faculty\/staff|staff\/faculty/i.test(title)) return 'faculty_staff_page'
+  if (/\bfaculty\b/i.test(title) && /\b(?:handbooks?|benefits?|bios?|directory|email|intranet|logins?|portal|resources?|syllabi|vitae|governance|checklist|bookshelf|seminar|moving expenses|rubric|style guide|meetings|awards?|scholarship|plan only|support|success collective)\b/i.test(title)) return 'faculty_resource_page'
+  if (/^(?:Administration & Faculty|Advising Assistance Center-Faculty|All Faculty|College Faculty|Application form for Faculty and Administration Positions|Apply for Faculty Positions|Click Here to Apply for All Faculty Positions|Concordia Faculty Application|LCU Faculty Application|NWOSU Application for Faculty|Printable Faculty Application|Requirements for Faculty.*|Banner for Faculty and Advisors|Celebration of Faculty Scholarship|External Applicants Join our team of Faculty and Staff.*|Faculty Resource Guide|Faculty Resource Hub|For Faculty and Staff|For Current Faculty & Staff|Helpful Resources for Faculty and Staff|Navigate for Faculty\/Staff|Navigate our list of resources.*|Our International Faculty|Roadrunner Faculty Success Collective|Services for Faculty|Staff \| College of Osteopathic Medicine\| Faculty \| Graduate Assistants|Stanford Faculty Positions|Purdue Global Faculty|West Lafayette Faculty|Schenectady County Faculty Employment|Traditional Faculty Employment Opportunities|Averett Online Faculty Employment Opportunities|Employment Opportunities :: Category - Faculty|Employment \(Faculty and Staff\).*|See Academic and Faculty Openings|Welcome to .* Faculty Careers site|NMU Faculty Experience|FW Faculty|New Faculty|New Faculty Seminar|New Affiliate Faculty Checklist|High School Staff & Faculty|Leaders, Faculty, Staff & Board|Leadership & Faculty|Meet Our Star Faculty|Find Faculty & Staff|MyState – Faculty|United Faculty of Florida|Graduate Professors|Teaching Fellows|Coe Professors Helping You Discover Your Passion|Two CUNY Law Professors Appointed.*|View this faculty member|Professors at Play.*|Instructors|Students & Faculty)$/i.test(title)) return 'generic_or_profile_page'
+  if (/^(?:Non-faculty openings|Current Students, Faculty|Students, Faculty|Student\/Faculty|LOGIN – Students|Logins \(current students|Email - Faculty|Staff & Faculty Email)/i.test(title)) return 'non_posting_page'
+
+  const genericProfilePath = /\/(?:academics|academic-institutes|colleges-departments|departments|libraries|community-programs|faculty-staff|fine-arts-faculty|humanities-faculty|math-science-faculty|faculty|sponsor|equity-and-inclusion)(?:\/|$)/i.test(url)
+  const hiringPath = /(?:job|career|employment|opportunit|opening|posting|position|apply|recruit|hiring|human-resources|\/hr\/|faculty-search|\.pdf(?:$|\?))/i.test(url)
+  if (genericProfilePath && !hiringPath && /\b(?:faculty|instructors?|professors?)\b/i.test(title)) return 'profile_or_department_page'
+
+  const allowedFellow = /\b(?:CORL Fellow Translational Research|Fellow of Law - Fixed Term|Pro Bono Clinic Fellow|SUNY PRODiG Plus Fellow|Visiting Fellow in the Creative Arts)\b/i.test(title)
+  if (/\bfellow\b/i.test(title) && !allowedFellow && !/\bpost[- ]?doc(?:toral)?\b|(?:research and teaching|teaching|research) fellow/i.test(title)) return 'nonfaculty_fellowship'
+  if (/^(?:Advising Assistant|Executive Director, Executive Education|Extra Help\/Bowen Fellow - Student Worker|Federal Work-Study|Program Manager 2)/i.test(title)) return 'nonfaculty_role'
+  return null
+}
+
 function addReason(reasons, dimensions, code, severity, dimension, deduction, detail) {
   dimensions[dimension] = clamp(dimensions[dimension] - deduction)
   reasons.push({ code, severity, dimension, deduction, detail })
@@ -101,6 +121,9 @@ export function scorePost(job, { today = new Date() } = {}) {
   const dimensions = { relevance: 100, attribution: 100, link: 100, freshness: 100, completeness: 100, duplication: 100 }
   const reasons = []
   let hardQuarantine = false
+  const reviewedFalsePositive = clean(job?.qualityEvidence) === 'reviewed-non-posting'
+    ? reviewedWeakEvidenceFalsePositiveReason(job)
+    : null
 
   if (!title || PLACEHOLDER_TITLE_RE.test(title)) {
     addReason(reasons, dimensions, 'placeholder_title', 'error', 'relevance', 100, 'The title is empty or generic page chrome.')
@@ -108,6 +131,10 @@ export function scorePost(job, { today = new Date() } = {}) {
   }
   if (RESOURCE_TITLE_RE.test(title) || (SEARCH_PAGE_CHROME_TITLE_RE.test(title) && classifyLink(url) === 'search-page')) {
     addReason(reasons, dimensions, 'resource_page_title', 'error', 'relevance', 100, 'The title names a faculty resource office rather than an appointment.')
+    hardQuarantine = true
+  }
+  if (reviewedFalsePositive) {
+    addReason(reasons, dimensions, 'reviewed_non_posting', 'error', 'relevance', 100, `Reviewed as ${reviewedFalsePositive.replaceAll('_', ' ')}.`)
     hardQuarantine = true
   }
 
@@ -128,7 +155,8 @@ export function scorePost(job, { today = new Date() } = {}) {
     /\bfaculty\b/i.test(title)
     && /\b(?:classroom|courses?|curriculum|educat(?:e|ion)|instruct(?:ion|or)|students?|teach(?:er|es|ing)?)\b/i.test(description)
     && !NON_APPOINTMENT_FACULTY_CONTEXT_RE.test(title)
-  const hasAcademicAppointmentTitle = hasStrongAcademicTitle || startsWithAppointment || contextualFacultyAppointment || coordinatedFacultyAppointment || namedChairAppointment || facultySpecialistAppointment || adjunctAppointment || descriptionBackedFacultyAppointment
+  const reviewedAcademicAppointment = clean(job?.qualityEvidence) === 'reviewed-academic-appointment'
+  const hasAcademicAppointmentTitle = hasStrongAcademicTitle || startsWithAppointment || contextualFacultyAppointment || coordinatedFacultyAppointment || namedChairAppointment || facultySpecialistAppointment || adjunctAppointment || descriptionBackedFacultyAppointment || reviewedAcademicAppointment
   if (STAFF_ROLE_RE.test(title) && !hasAcademicAppointmentTitle) {
     addReason(reasons, dimensions, 'administrative_staff_title', 'error', 'relevance', 90, 'Administrative or support role lacks an academic appointment title.')
     hardQuarantine = true
@@ -142,7 +170,8 @@ export function scorePost(job, { today = new Date() } = {}) {
     addReason(reasons, dimensions, 'weak_academic_evidence', 'warning', 'relevance', 30, 'No strong academic appointment signal appears in the title or normalized metadata.')
   }
 
-  const linkType = classifyLink(url)
+  const reviewedLinkEvidence = ['verified-inline-posting', 'verified-filtered-board', 'verified-application-form'].includes(clean(job?.qualityLinkEvidence))
+  const linkType = reviewedLinkEvidence ? 'reviewed-direct' : classifyLink(url)
   if (linkType === 'invalid') {
     addReason(reasons, dimensions, 'invalid_url', 'error', 'link', 100, 'URL is missing or invalid.')
     hardQuarantine = true
@@ -208,6 +237,8 @@ export function confirmedNonFacultyReason(job, options = {}) {
   if (codes.has('administrative_staff_title')) return 'administrative_staff_title'
   if (codes.has('student_service_title')) return 'student_service_title'
   if (codes.has('resource_page_url') && !quality.academicAppointment) return 'resource_page_url'
+  const reviewedReason = reviewedWeakEvidenceFalsePositiveReason(job)
+  if (reviewedReason) return reviewedReason
   return null
 }
 

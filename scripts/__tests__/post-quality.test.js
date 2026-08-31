@@ -85,6 +85,13 @@ test("the publishing gate removes only confirmed non-postings", () => {
   }), { today: TODAY }), "resource_page_title");
   assert.equal(confirmedNonFacultyReason(job({ title: "Staff, Faculty & Student Employment Opportunities" }), { today: TODAY }), "resource_page_title");
   assert.equal(confirmedNonFacultyReason(job({
+    title: "Chemistry Faculty & Staff",
+    url: "https://example.edu/academics/chemistry/faculty-staff",
+  }), { today: TODAY }), "faculty_staff_page");
+  assert.equal(confirmedNonFacultyReason(job({ title: "Athletic Training Fellow" }), { today: TODAY }), "nonfaculty_fellowship");
+  assert.equal(confirmedNonFacultyReason(job({ title: "Specialist - Post Doc Psychology Fellow" }), { today: TODAY }), null);
+  assert.equal(confirmedNonFacultyReason(job({ title: "Full Time Faculty for Nursing and Health Professions" }), { today: TODAY }), "reviewed_stale_or_nonfaculty");
+  assert.equal(confirmedNonFacultyReason(job({
     title: "Electrician Faculty - Greenville Center",
     description: "Teach electrician courses and provide quality education to students.",
   }), { today: TODAY }), null);
@@ -166,6 +173,31 @@ test("generic faculty page chrome is quarantined only on search pages", () => {
   assert.equal(chrome.status, "quarantine");
   assert.ok(chrome.reasons.some((reason) => reason.code === "resource_page_title"));
   assert.ok(!posting.reasons.some((reason) => reason.code === "resource_page_title"));
+});
+
+test("reviewed academic and inline-listing evidence clears known false warnings", () => {
+  const quality = scorePost(job({
+    title: "Accounting Faculty",
+    url: "https://www.example.edu/employment",
+    qualityEvidence: "reviewed-academic-appointment",
+    qualityLinkEvidence: "verified-inline-posting",
+  }), { today: TODAY });
+  assert.equal(quality.academicAppointment, true);
+  assert.equal(quality.linkType, "reviewed-direct");
+  assert.ok(!quality.reasons.some((reason) => reason.code === "weak_academic_evidence"));
+  assert.ok(!quality.reasons.some((reason) => reason.code === "search_page_url"));
+});
+
+test("reviewed faculty resources and non-faculty fellowships are quarantined", () => {
+  for (const candidate of [
+    job({ title: "Chemistry Faculty & Staff", url: "https://example.edu/academics/chemistry/faculty-staff", qualityEvidence: "reviewed-non-posting" }),
+    job({ title: "Faculty Resource Guide", url: "https://example.edu/faculty-handbook", qualityEvidence: "reviewed-non-posting" }),
+    job({ title: "Athletic Training Fellow", url: "https://example.edu/jobs/123", qualityEvidence: "reviewed-non-posting" }),
+  ]) {
+    const quality = scorePost(candidate, { today: TODAY });
+    assert.equal(quality.status, "quarantine");
+    assert.ok(quality.reasons.some((reason) => reason.code === "reviewed_non_posting"));
+  }
 });
 
 test("missing optional metadata lowers completeness without quarantining", () => {

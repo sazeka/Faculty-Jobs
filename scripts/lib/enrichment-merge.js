@@ -33,6 +33,10 @@ export const CARRIED_FIELDS = [
   "closeDate",
   "openUntilFilled",
   "startDate",
+  "qualityEvidence",
+  "qualityReviewedAt",
+  "qualityLinkEvidence",
+  "qualityLinkReviewedAt",
 ];
 
 function isEmpty(v) {
