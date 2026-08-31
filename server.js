@@ -1971,6 +1971,8 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Immaculata University", type: "interviewexchange", url: "https://immaculata.interviewexchange.com/static/clients/534IMM1/index.jsp" },
   { campus: "Juniata College", type: "peopleadmin", url: "https://juniata.peopleadmin.com/" },
   { campus: "Robert Morris University", type: "pageup", url: "https://careers.pageuppeople.com/856/cw/en-us/listing/", excludeTitleFilter: "\\b(?:group fitness|hockey program)\\b" },
+  { campus: "International Institute for Restorative Practices", type: "generic", url: "https://iirp.applicantpro.com/jobs/" },
+  { campus: "United Lutheran Seminary", type: "generic", url: "https://www.unitedlutheranseminary.edu/career-opportunities" },
 ];
 
 // NC (multi-platform; primarily PeopleAdmin)
@@ -2208,6 +2210,7 @@ const NC_CAMPUSES = [
   { campus: "Southeastern Community College (NC)", type: "generic", url: "https://sccnc.edu/about-scc/human-resources/jobs/" },
   { campus: "Southwestern Community College (NC)", type: "generic", url: "https://www.southwesterncc.edu/jobs-scc" },
   { campus: "Vance-Granville Community College", type: "generic", url: "https://www.vgcc.edu/hr/" },
+  { campus: "Hood Theological Seminary", type: "generic", url: "https://www.hoodseminary.edu/about/about-hood/career-opportunities" },
 ];
 
 // VA (Virginia) - major public research + private research/liberal arts
@@ -3567,6 +3570,7 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "Molloy University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=f1758074-bb0b-4d6b-8d46-3a90ce325365&ccId=19000101_000001&lang=en_US" },
   { campus: "The Rockefeller University", type: "icims", url: "https://careers-rockefelleruniversity.icims.com/" },
   { campus: "Metropolitan College of New York", type: "paycom", url: "https://www.paycomonline.net/v4/ats/web.php/portal/0AFB6B93B59D609A2037FAB5547D9B02/career-page" },
+  { campus: "New York College of Podiatric Medicine", type: "generic", url: "https://www.touro.edu/careers/" },
 ];
 
 // OR (Oregon)
@@ -3961,6 +3965,7 @@ const ME_CAMPUSES = [
   { campus: "Washington County Community College", type: "generic", url: "https://wccc.me.edu/about-wccc/news-info/employment/" },
   { campus: "Maine College of Art & Design", type: "generic", url: "https://meca.edu/about/employment/" },
   { campus: "Southern Maine Community College", type: "generic", url: "https://www.smccme.edu/about/employment/" },
+  { campus: "Maine College of Health Professions", type: "icims", url: "https://careers-primehealthcare.icims.com/jobs/search?ss=1&searchKeyword=Maine%20College%20of%20Health%20Professions" },
 ];
 
 // VT (Vermont)
@@ -5002,6 +5007,8 @@ const OH_CAMPUSES = [
   { campus: "John Carroll University", type: "peopleadmin", url: "https://jcu.peopleadmin.com/" },
   { campus: "Heidelberg University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=e95d68be-1e4e-4259-96d9-6c28cf64c801&ccId=19000101_000001&lang=en_US" },
   { campus: "Marion Technical College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=6305797d-3336-45ce-9507-c61ca821c1bd&ccId=19000101_000001&lang=en_US" },
+  { campus: "Good Samaritan College of Nursing and Health Science", type: "generic", url: "https://fa-evly-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?keyword=%22good+samaritan+college%22&mode=location" },
+  { campus: "Lakewood University", type: "generic", url: "https://lakewood.isolvedhire.com/" },
 ];
 
 // NM (New Mexico)
@@ -5298,6 +5305,7 @@ const MI_CAMPUSES = [
   { campus: "Lake Michigan College", type: "generic", url: "https://www.lakemichigancollege.edu/about/jobs" },
   { campus: "Muskegon Community College", type: "generic", url: "https://www.muskegoncc.edu/employment-opportunities/" },
   { campus: "West Shore Community College", type: "generic", url: "https://www.westshore.edu/employment/" },
+  { campus: "Rochester University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=4ec54663-0058-4347-9828-d4720a7524f4&ccId=19000101_000001&lang=en_US&selectedMenuKey=CareerCenter" },
 ];
 
 // IL (Illinois)
@@ -5640,6 +5648,9 @@ const IL_CAMPUSES = [
   { campus: "Sauk Valley Community College", type: "generic", url: "https://www.svcc.edu/employees/opportunities/index.html" },
   { campus: "Southeastern Illinois College", type: "generic", url: "https://sic.edu/employment/sic-positions/" },
   { campus: "Spoon River College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=a1f9fed4-6d14-468e-b3ee-266b22902534&ccId=19000101_000001&type=MP&lang=en_US" },
+  { campus: "Hebrew Theological College", type: "icims", url: "https://htccareers-touro.icims.com/" },
+  { campus: "Trinity International University-Illinois", type: "generic", url: "https://www.tiu.edu/human-resources/" },
+  { campus: "University of Saint Mary of the Lake", type: "generic", url: "https://usml.edu/career-center/" },
 ];
 
 // ID (Idaho)
@@ -6328,6 +6339,7 @@ const TX_CAMPUSES = [
   { campus: "South Texas College", type: "workday", url: "https://southtexascollege.wd12.myworkdayjobs.com/STC" },
   { campus: "Texas A&M University-San Antonio", type: "workday", url: "https://tamus.wd1.myworkdayjobs.com/TAMUSA_External" },
   { campus: "Galveston College", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=eb7db213-0a7d-4f21-8e8e-1ac6faf5d455&ccId=19000101_000001&lang=en_US" },
+  { campus: "University of St Thomas (TX)", type: "generic", url: "https://stthom.applicantpro.com/pages/categories/" },
 ];
 
 // FL (Florida)
@@ -6754,6 +6766,7 @@ const GA_CAMPUSES = [
   { campus: "Point University", type: "generic", url: "https://point.edu/about/offices/human-resources/careers/" },
   { campus: "Toccoa Falls College", type: "generic", url: "https://utf.edu/employment/" },
   { campus: "Young Harris College", type: "generic", url: "https://www.yhc.edu/careers/" },
+  { campus: "Reformed University", type: "generic", url: "https://www.runiv.edu/aboutru/main/employment" },
 ];
 
 // AL (Alabama)
@@ -7508,6 +7521,7 @@ const KY_CAMPUSES = [
   { campus: "Southcentral Kentucky Community and Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/southcentral-jobs" },
   { campus: "Southeast Kentucky Community & Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/southeast-jobs" },
   { campus: "West Kentucky Community and Technical College", type: "pageup", url: "https://careers.kctcs.edu/jobs/search/westky-jobs" },
+  { campus: "Simmons College of Kentucky", type: "generic", url: "https://simmonscollegeky.edu/careers/" },
 ];
 
 // TN (Tennessee)
