@@ -10,6 +10,7 @@ const overrides = JSON.parse(fs.readFileSync(path.join(ROOT, "data/career-url-ov
 const master = JSON.parse(fs.readFileSync(path.join(ROOT, "data/institutions-master.json"), "utf8"));
 const milestone = JSON.parse(fs.readFileSync(path.join(ROOT, "generated/shared-system-campus-control-milestone.json"), "utf8"));
 const validation = JSON.parse(fs.readFileSync(path.join(ROOT, "generated/shared-system-campus-control-validation.json"), "utf8"));
+const normalizedUrl = (value) => String(value || "").replace(/\/(?=\?)/, "");
 
 test("shared systems use 15 exact official campus controls", () => {
   assert.equal(milestone.appliedCount, 15);
@@ -25,9 +26,9 @@ test("shared systems use 15 exact official campus controls", () => {
   for (const item of milestone.applied) {
     const override = overrides.overrides.find((row) => row.name === item.name);
     const institution = master.institutions.find((row) => row.name === item.name);
-    assert.equal(override?.career_url, item.url);
+    assert.equal(normalizedUrl(override?.career_url), normalizedUrl(item.url));
     assert.equal(override?.coverage_source, item.source);
-    assert.equal(institution?.career_url, item.url);
+    assert.equal(normalizedUrl(institution?.career_url), normalizedUrl(item.url));
     assert.equal(institution?.coverage_status, "covered");
     assert.equal(institution?.last_discovery_status, "shared_system_exact_campus_control_validated");
   }
@@ -71,9 +72,10 @@ test("all official controls validate and retain faculty safeguards", () => {
   }
 });
 
-test("UNH Manchester remains unresolved without an official campus control", () => {
+test("UNH Manchester now has a manually verified official hiring source", () => {
   const name = "University of New Hampshire at Manchester";
-  assert.equal(overrides.overrides.some((row) => row.name === name), false);
-  assert.equal(master.institutions.find((row) => row.name === name)?.coverage_status, "missing");
+  assert.equal(overrides.overrides.some((row) => row.name === name), true);
+  assert.equal(master.institutions.find((row) => row.name === name)?.coverage_status, "covered");
+  assert.match(server, /University of New Hampshire at Manchester[^\n]+manchester\.unh\.edu\/about\/faculty-staff-resources\/human-resources/);
   assert.equal(milestone.heldForReview[0].name, name);
 });

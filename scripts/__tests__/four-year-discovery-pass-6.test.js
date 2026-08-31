@@ -5,6 +5,7 @@ import test from "node:test";
 const source = fs.readFileSync(new URL("../../server.js", import.meta.url), "utf8");
 const review = JSON.parse(fs.readFileSync(new URL("../../generated/promotion-candidates-four-year-next100-pass6.json", import.meta.url), "utf8"));
 const sharedCampusMilestone = JSON.parse(fs.readFileSync(new URL("../../generated/shared-system-campus-control-milestone.json", import.meta.url), "utf8"));
+const reviewed99 = JSON.parse(fs.readFileSync(new URL("../../generated/reviewed-99-closeout-report.json", import.meta.url), "utf8"));
 
 test("sixth four-year pass promotes only institution-scoped official sources", () => {
   assert.equal(review.count, 10);
@@ -13,7 +14,10 @@ test("sixth four-year pass promotes only institution-scoped official sources", (
     const escaped = item.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     assert.match(source, new RegExp(`^\\s*\\{ campus: "${escaped}"`, "m"), item.name);
   }
-  const supersededByExactCampusControl = new Set(sharedCampusMilestone.applied.map((item) => item.name));
+  const supersededByExactCampusControl = new Set([
+    ...sharedCampusMilestone.applied.map((item) => item.name),
+    ...reviewed99.verified.map((item) => item.name),
+  ]);
   for (const item of review.rejected) {
     const escaped = item.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     if (supersededByExactCampusControl.has(item.name)) {

@@ -4,7 +4,11 @@ import test from "node:test";
 const source = fs.readFileSync(new URL("../../server.js", import.meta.url), "utf8");
 const review = JSON.parse(fs.readFileSync(new URL("../../generated/promotion-candidates-four-year-next100-pass8.json", import.meta.url), "utf8"));
 const laterReview = JSON.parse(fs.readFileSync(new URL("../../generated/second-public-discovery-batch-validation.json", import.meta.url), "utf8"));
-const laterPromotions = new Set(laterReview.promoted.map((item) => item.name));
+const reviewed99 = JSON.parse(fs.readFileSync(new URL("../../generated/reviewed-99-closeout-report.json", import.meta.url), "utf8"));
+const laterPromotions = new Set([
+  ...laterReview.promoted.map((item) => item.name),
+  ...reviewed99.verified.map((item) => item.name),
+]);
 
 test("eighth four-year pass promotes only safely scoped sources", () => {
   assert.equal(review.count, 15);
