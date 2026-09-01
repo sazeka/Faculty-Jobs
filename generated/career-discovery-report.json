@@ -1,25 +1,1889 @@
 {
-  "generatedAt": "2026-08-25T14:54:06.960Z",
+  "generatedAt": "2026-09-01T17:06:15.034Z",
   "options": {
     "apply": false,
-    "limit": 1,
-    "delayMs": 0,
-    "minConfidence": 0.7,
-    "scopeEligibleOnly": false,
+    "limit": 50,
+    "delayMs": 700,
+    "minConfidence": 0.65,
+    "scopeEligibleOnly": true,
     "weakOnly": false,
     "mediumOnly": false,
     "unresolvedOnly": false,
-    "allTargets": true,
+    "allTargets": false,
     "level": null,
     "states": [],
-    "skipReports": [
-      "goal-reviewed-skip.json"
-    ],
+    "skipReports": [],
     "timeoutMs": 8000,
     "concurrency": 1
   },
-  "scanned": 0,
+  "scanned": 50,
   "updated": 0,
-  "note": "No missing institutions require discovery (career_url/platform_type already present).",
-  "results": []
+  "unresolved": 49,
+  "discovered": 1,
+  "inferredPlatform": 0,
+  "results": [
+    {
+      "name": "Saint Anthony College of Nursing",
+      "state": "IL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Saint Anthony College of Nursing faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Saint Anthony College of Nursing academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 8
+        },
+        {
+          "query": "Saint Anthony College of Nursing faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        },
+        {
+          "query": "Saint Anthony College of Nursing human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 9
+        }
+      ]
+    },
+    {
+      "name": "Saint Francis Medical Center College of Nursing",
+      "state": "IL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Saint Francis Medical Center College of Nursing faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Saint Francis Medical Center College of Nursing academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Saint Francis Medical Center College of Nursing faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 10
+        },
+        {
+          "query": "Saint Francis Medical Center College of Nursing human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Seattle Institute of East Asian Medicine",
+      "state": "WA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Seattle Institute of East Asian Medicine faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Seattle Institute of East Asian Medicine academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Seattle Institute of East Asian Medicine faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Seattle Institute of East Asian Medicine human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "St. Andrews University",
+      "state": "NC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_fetch_error",
+          "count": 0
+        },
+        {
+          "query": "St. Andrews University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "St. Andrews University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "St. Andrews University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "St. Andrews University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Talmudic College of Florida",
+      "state": "FL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Talmudic College of Florida faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Talmudic College of Florida academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Talmudic College of Florida faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Talmudic College of Florida human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Talmudical Academy-New Jersey",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Talmudical Academy-New Jersey faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Talmudical Academy-New Jersey academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Talmudical Academy-New Jersey faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Talmudical Academy-New Jersey human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Telshe Yeshiva-Chicago",
+      "state": "IL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Telshe Yeshiva-Chicago faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Telshe Yeshiva-Chicago academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Telshe Yeshiva-Chicago faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Telshe Yeshiva-Chicago human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Trinity Christian College",
+      "state": "IL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Trinity Christian College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Trinity Christian College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Trinity Christian College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Trinity Christian College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "University of Wisconsin-Milwaukee Flex",
+      "state": "WI",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "University of Wisconsin-Milwaukee Flex faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "University of Wisconsin-Milwaukee Flex academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "University of Wisconsin-Milwaukee Flex faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "University of Wisconsin-Milwaukee Flex human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "University of Wisconsin-Parkside Flex",
+      "state": "WI",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "University of Wisconsin-Parkside Flex faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "University of Wisconsin-Parkside Flex academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "University of Wisconsin-Parkside Flex faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "University of Wisconsin-Parkside Flex human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Visible Music College",
+      "state": "TN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Visible Music College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Visible Music College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Visible Music College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Visible Music College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Watts College of Nursing",
+      "state": "NC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Watts College of Nursing faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Watts College of Nursing academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Watts College of Nursing faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Watts College of Nursing human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva College of the Nations Capital",
+      "state": "MD",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_fetch_error",
+          "count": 0
+        },
+        {
+          "query": "Yeshiva College of the Nations Capital faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva College of the Nations Capital academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva College of the Nations Capital faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva College of the Nations Capital human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Chemdas Hatorah",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Chemdas Hatorah faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Chemdas Hatorah academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Chemdas Hatorah faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Chemdas Hatorah human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Gedola Tiferes Yerachmiel",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedola Tiferes Yerachmiel faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedola Tiferes Yerachmiel academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedola Tiferes Yerachmiel faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedola Tiferes Yerachmiel human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Bais Aharon",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Bais Aharon faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Bais Aharon academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Bais Aharon faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Bais Aharon human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Gedola Tiferes Yaakov Yitzchok",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": false,
+          "reason": "homepage_fetch_error",
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedola Tiferes Yaakov Yitzchok faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedola Tiferes Yaakov Yitzchok academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedola Tiferes Yaakov Yitzchok faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedola Tiferes Yaakov Yitzchok human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Gedolah of Cliffwood",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Cliffwood faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Cliffwood academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Cliffwood faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Cliffwood human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Gedolah of Woodlake Village",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Woodlake Village faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Woodlake Village academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Woodlake Village faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Woodlake Village human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Gedolah Keren Hatorah",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Keren Hatorah faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Keren Hatorah academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Keren Hatorah faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Keren Hatorah human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Gedolah of Greater Detroit",
+      "state": "MI",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Greater Detroit faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Greater Detroit academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Greater Detroit faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah of Greater Detroit human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Gedolah Shaarei Shmuel",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Shaarei Shmuel faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Shaarei Shmuel academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Shaarei Shmuel faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Shaarei Shmuel human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Gedolah Zichron Leyma",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Zichron Leyma faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Zichron Leyma academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Zichron Leyma faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Zichron Leyma human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Gedolah Tiferes Boruch",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Tiferes Boruch faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Tiferes Boruch academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Tiferes Boruch faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Gedolah Tiferes Boruch human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Toras Chaim",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Toras Chaim faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Toras Chaim academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Toras Chaim faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Toras Chaim human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshiva Yesodei Hatorah",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Yesodei Hatorah faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Yesodei Hatorah academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Yesodei Hatorah faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshiva Yesodei Hatorah human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshivas Emek Hatorah",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshivas Emek Hatorah faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshivas Emek Hatorah academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshivas Emek Hatorah faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshivas Emek Hatorah human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Yeshivas Be'er Yitzchok",
+      "state": "NJ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshivas Be'er Yitzchok faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshivas Be'er Yitzchok academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshivas Be'er Yitzchok faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Yeshivas Be'er Yitzchok human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Massachusetts School of Law",
+      "state": "MA",
+      "level": "4-year",
+      "status": "discovered",
+      "career_url": "https://careers-publiccounsel.icims.com/jobs",
+      "platform_type": "icims",
+      "confidence": 0.95,
+      "method": "duckduckgo_html",
+      "query": "official homepage links",
+      "applied": false,
+      "topCandidates": [
+        {
+          "url": "https://careers-publiccounsel.icims.com/jobs",
+          "confidence": 0.95,
+          "platform_type": "icims",
+          "query": "official homepage links",
+          "validation": "official_employee_page_ats_link",
+          "viaOfficialPage": "https://www.mslaw.edu/career-resources/",
+          "linkLabel": "https://careers-publiccounsel.icims.com/jobs/"
+        },
+        {
+          "url": "https://www.mslaw.edu/career-resources/",
+          "confidence": 0.25,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Massachusetts School of Law faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Massachusetts School of Law academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Massachusetts School of Law faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Massachusetts School of Law human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Northland College",
+      "state": "WI",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Northland College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Northland College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Northland College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Northland College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Heritage Bible College",
+      "state": "NC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Heritage Bible College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Heritage Bible College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Heritage Bible College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Heritage Bible College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Horizon University",
+      "state": "IN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Horizon University faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Horizon University academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Horizon University faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Horizon University human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Indian Bible College",
+      "state": "AZ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Indian Bible College faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Indian Bible College academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Indian Bible College faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Indian Bible College human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Institute of World Politics",
+      "state": "DC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Institute of World Politics faculty jobs careers",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Institute of World Politics academic jobs",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Institute of World Politics faculty employment",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Institute of World Politics human resources faculty positions",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Jung Tao School of Classical Chinese Medicine",
+      "state": "NC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Jung Tao School of Classical Chinese Medicine faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "New Hope Christian College-Eugene",
+      "state": "OR",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "New Hope Christian College-Eugene faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Southeastern Free Will Baptist Bible College",
+      "state": "NC",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Southeastern Free Will Baptist Bible College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "NationsUniversity",
+      "state": "LA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "NationsUniversity faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Oak Hills Christian College",
+      "state": "MN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.4,
+      "topCandidates": [
+        {
+          "url": "https://www.oakhills.edu/church-ministries/career-center",
+          "confidence": 0.4,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Oak Hills Christian College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Kentucky Mountain Bible College",
+      "state": "KY",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Kentucky Mountain Bible College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Midwives College of Utah",
+      "state": "UT",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Midwives College of Utah faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Northpoint Bible College",
+      "state": "MA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Northpoint Bible College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "The School of Architecture",
+      "state": "AZ",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "The School of Architecture faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Hampshire College",
+      "state": "MA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Hampshire College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Institute for Doctoral Studies in the Visual Arts",
+      "state": "ME",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Institute for Doctoral Studies in the Visual Arts faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Faith Theological Seminary and Christian College",
+      "state": "FL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Faith Theological Seminary and Christian College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Longy School of Music of Bard College",
+      "state": "MA",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 1
+        },
+        {
+          "query": "Longy School of Music of Bard College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Memphis Theological Seminary",
+      "state": "TN",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://memphisseminary.edu/student-resources/student-services/employment-2/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "Memphis Theological Seminary faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "St. Augustine College",
+      "state": "IL",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "candidate_found",
+      "error": null,
+      "confidence": 0.6,
+      "topCandidates": [
+        {
+          "url": "https://www.staugustine.edu/employment-at-sac/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        },
+        {
+          "url": "https://www.staugustine.edu/2026/02/24/guide-to-certification-licensing-for-allied-health-careers-in-illinois/",
+          "confidence": 0.6,
+          "platform_type": "generic",
+          "query": "official homepage links",
+          "validation": "employee_hiring_evidence"
+        }
+      ],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 2
+        },
+        {
+          "query": "St. Augustine College faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    },
+    {
+      "name": "Institute of Taoist Education and Acupuncture",
+      "state": "CO",
+      "level": "4-year",
+      "status": "unresolved",
+      "reason": "no_candidates",
+      "error": null,
+      "confidence": 0,
+      "topCandidates": [],
+      "queryResults": [
+        {
+          "query": "official homepage links",
+          "ok": true,
+          "reason": null,
+          "count": 0
+        },
+        {
+          "query": "Institute of Taoist Education and Acupuncture faculty jobs careers",
+          "ok": false,
+          "reason": "search_http_403",
+          "count": 0
+        }
+      ]
+    }
+  ]
 }
