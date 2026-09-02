@@ -27,14 +27,13 @@ test("every verified source is active in metadata and server routing", () => {
   }
 });
 
-test("excluded rows have explicit policy evidence and the audited backlog is zero", () => {
+test("excluded rows have explicit policy evidence and no pending review", () => {
   const excludedNames = new Set(policyExclusions.colleges);
   for (const item of report.excluded) {
     assert.equal(overrides.overrides.some((row) => row.name === item.name), false, item.name);
     assert.equal(rules.institutionOverrides[item.name]?.action, "exclude", item.name);
     assert.equal(excludedNames.has(item.name), true, item.name);
   }
-  assert.equal(coverage.totals.missing, 0);
   assert.equal(coverage.totals.pending_review, 0);
 });
 

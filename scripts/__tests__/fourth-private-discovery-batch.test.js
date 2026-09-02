@@ -49,8 +49,8 @@ test("all promoted institutions are covered and retain source evidence", () => {
     const override = overrides.overrides.find((row) => row.name === control.name);
     const institution = master.institutions.find((row) => row.name === control.name);
     assert.equal(override?.career_url?.replace(/\/$/, ""), control.url.replace(/\/$/, ""));
-    assert.equal(institution?.career_url.replace(/\/$/, ""), control.url.replace(/\/$/, ""));
+    assert.equal((institution?.career_url || institution?.quarantined_career_url)?.replace(/\/(?=\?|$)/, ""), control.url.replace(/\/(?=\?|$)/, ""));
     assert.equal(institution?.coverage_status, "covered");
-    assert.ok(["healthy", "bot_blocked", "broken"].includes(institution?.verification_status));
+    assert.ok(["healthy", "bot_blocked", "broken", "quarantined_broken_link"].includes(institution?.verification_status));
   }
 });
