@@ -2552,7 +2552,7 @@ const SC_CAMPUSES = [
   { campus: "American College of the Building Arts", type: "generic", url: "https://acba.edu/career-opportunities" },
   { campus: "Anderson University", type: "generic", url: "https://www.andersonuniversity.edu/" },
   { campus: "Benedict College", type: "generic", url: "https://www.benedict.edu/" },
-  { campus: "Bob Jones University", type: "generic", url: "https://bju.careers/default.aspx" },
+  { campus: "Bob Jones University", type: "bju-faculty", url: "https://bju.careers/bju-faculty/" },
   // Was pinned to one specific job posting instead of the board itself.
   { campus: "Central Carolina Technical College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cctech" },
   // "generic" is correct here, not a type mismatch — scrapeGenericJobPage's
@@ -4529,7 +4529,7 @@ const MT_CAMPUSES = [
     url: "https://rocky.edu/employment/",
   },
   { campus: "Aaniiih Nakoda College", type: "generic", url: "https://www.ancollege.edu/careers/faculty" },
-  { campus: "Blackfeet Community College", type: "generic", url: "https://bfcc.edu/Human-Resource" },
+  { campus: "Blackfeet Community College", type: "generic", url: "https://bfcc.isolvedhire.com/jobs/" },
   { campus: "Chief Dull Knife College", type: "generic", url: "https://www.cdkc.edu/faculty-staff/employment" },
   { campus: "Dawson Community College", type: "generic", url: "https://www.dawson.edu/" },
   // Was pointing at the bare homepage. The "Careers at FVCC" page's "View
@@ -6373,7 +6373,7 @@ const TX_CAMPUSES = [
   { campus: "Texas A&M University-Texarkana", type: "generic", url: "https://www.tamut.edu/administration/human-resources/employment/index.html" },
   { campus: "Texas Chiropractic College Foundation Inc", type: "generic", url: "https://www.txchiro.edu/employment-opportunities-tcc/" },
   { campus: "Texas Lutheran University", type: "generic", url: "https://www.tlu.edu/about-tlu/careers-at-tlu/faculty-positions/" },
-  { campus: "Texas Tech University Health Sciences Center", type: "generic", url: "https://www.ttuhsc.edu/careers" },
+  { campus: "Texas Tech University Health Sciences Center", type: "generic", url: "https://sjobs.brassring.com/TGnewUI/Search/Home/Home?partnerid=25898&siteid=5281" },
   { campus: "Texas Tech University System Administration", type: "generic", url: "https://www.texastech.edu/careers/" },
   { campus: "The King's University", type: "generic", url: "https://www.tku.edu/employment/" },
   { campus: "The University of Texas at Tyler", type: "generic", url: "https://www.uttyler.edu/careers/" },
@@ -12102,6 +12102,53 @@ async function scrapeVaAll(context) {
   return uniqByUrl(jobs).filter((j) => !omitAdjunct(j.title));
 }
 
+export function normalizeBjuFacultyTitle(value) {
+  return clean(value)
+    .replace(/^Full-time,\s*BJU,\s*Inc\.\s*,\s*Benefitted\s*/i, "")
+    .split(/\s+POSITION SUMMARY\s*:?/i)[0]
+    .trim();
+}
+
+export async function scrapeBjuFacultyAs(context, startUrl, campusName = "Bob Jones University", sourceName = "SC") {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1500);
+    const rows = await safeEvaluate(page, () =>
+      Array.from(document.querySelectorAll("a[href]"), (anchor) => ({
+        title: (anchor.textContent || "").replace(/\s+/g, " ").trim(),
+        url: anchor.href,
+      }))
+    );
+    const seen = new Set();
+    const jobs = (rows || [])
+      .map((row) => ({ ...row, title: normalizeBjuFacultyTitle(row.title) }))
+      .filter((row) => row.title && (looksFacultyish(row.title) || /^Dean of\b/i.test(row.title)) && !omitAdjunct(row.title))
+      .filter((row) => /bju\.careers\/(?!bju-faculty\/?$|bju-adjunct-faculty\/?$)[^/?#]+\/?/i.test(row.url || ""))
+      .filter((row) => {
+        if (seen.has(row.url)) return false;
+        seen.add(row.url);
+        return true;
+      })
+      .map((row) => ({
+        title: row.title,
+        url: row.url,
+        source: sourceName,
+        category: "Faculty",
+        college: campusName,
+        location: "Greenville, SC",
+        description: null,
+      }));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty results)`);
+    return jobs;
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} BJU scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 async function scrapeScAll(context) {
   const results = await mapWithConcurrency(
     SC_CAMPUSES,
@@ -12113,6 +12160,7 @@ async function scrapeScAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "SC");
         if (type === "csod") return await scrapeCsodAs(context, url, campus, "SC");
         if (type === "pageup") return await scrapePageUpAs(context, url, campus, "SC");
+        if (type === "bju-faculty") return await scrapeBjuFacultyAs(context, url, campus, "SC");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "SC");
         return [];
       } catch (e) {

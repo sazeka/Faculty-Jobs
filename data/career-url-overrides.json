@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-01T18:00:00.000Z",
+  "updatedAt": "2026-09-02T01:45:00.000Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -737,10 +737,10 @@
     {
       "name": "Bob Jones University",
       "homepage_url": "https://www.bju.edu/",
-      "career_url": "https://bju.careers/default.aspx",
-      "platform_type": "generic",
-      "manually_verified_at": "2026-09-01T18:00:00.000Z",
-      "notes": "Manually reverified 2026-09-01. Replaced the retired faculty-only route with BJU's current official career portal, which exposes faculty and adjunct categories."
+      "career_url": "https://bju.careers/bju-faculty/",
+      "platform_type": "bju-faculty",
+      "manually_verified_at": "2026-09-02T01:45:00.000Z",
+      "notes": "Live production validation 2026-09-02. The faculty-specific official results page currently exposes five full-time faculty postings. A dedicated parser extracts the actual title from each result card without publishing the category tiles or appended position-summary text."
     },
     {
       "name": "Boise State University",
@@ -10807,10 +10807,10 @@
     {
       "name": "Blackfeet Community College",
       "homepage_url": "https://bfcc.edu/",
-      "career_url": "https://bfcc.edu/Human-Resource",
+      "career_url": "https://bfcc.isolvedhire.com/jobs/",
       "platform_type": "generic",
-      "manually_verified_at": "2026-09-01T18:00:00.000Z",
-      "notes": "Manually verified 2026-09-01. BFCC's current official Human Resources page provides its recruitment and application instructions."
+      "manually_verified_at": "2026-09-02T01:45:00.000Z",
+      "notes": "Live production validation 2026-09-02. BFCC's official Human Resources page links this institution-scoped iSolved board. It currently reports zero openings; routing directly prevents the faculty directory and faculty manual from being misclassified as jobs."
     },
     {
       "name": "Mesalands Community College",
@@ -10863,10 +10863,10 @@
     {
       "name": "Texas Tech University Health Sciences Center",
       "homepage_url": "https://www.ttuhsc.edu/",
-      "career_url": "https://www.ttuhsc.edu/careers",
+      "career_url": "https://sjobs.brassring.com/TGnewUI/Search/Home/Home?partnerid=25898&siteid=5281",
       "platform_type": "generic",
-      "manually_verified_at": "2026-09-01T18:00:00.000Z",
-      "notes": "Manually verified 2026-09-01. TTUHSC's current official careers page provides faculty and staff hiring entry points."
+      "manually_verified_at": "2026-09-02T01:45:00.000Z",
+      "notes": "Live production validation 2026-09-02. Routed directly to the faculty-scoped BrassRing board linked by TTUHSC's official careers page; the production generic scraper captured eight current faculty postings."
     },
     {
       "name": "The University of Findlay",
