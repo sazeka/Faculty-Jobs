@@ -3,6 +3,10 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { attachUniversityCoverage } from "./lib/site-coverage.js";
+import {
+  COVERAGE_QUALITY_LEVELS,
+  classifyInstitutionCoverage,
+} from "./lib/institution-coverage-quality.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -67,6 +71,7 @@ function main() {
 
   const institutions = Array.isArray(institutionsPayload?.institutions) ? institutionsPayload.institutions : [];
   const excludedSet = new Set((exclusionsPayload?.colleges || []).map(key));
+  const exclusionByName = new Map((exclusionsPayload?.items || []).map((item) => [key(item.college), item]));
 
   const eligible = institutions.filter((inst) => isEligible(inst, rules.scope));
 
@@ -89,6 +94,12 @@ function main() {
     byState: {},
     byControl: {},
     byLevel: {},
+    qualityLevels: {
+      definitions: COVERAGE_QUALITY_LEVELS,
+      totals: Object.fromEntries(Object.keys(COVERAGE_QUALITY_LEVELS).map((level) => [level, 0])),
+      percentages: {},
+    },
+    qualityExceptions: [],
   };
 
   for (const inst of eligible) {
@@ -99,12 +110,33 @@ function main() {
 
     report.totals[status] += 1;
     addBreakdown(report, inst, status);
+
+    const exclusion = exclusionByName.get(normalizedName) || null;
+    const quality = classifyInstitutionCoverage(inst, exclusion);
+    report.qualityLevels.totals[quality] += 1;
+    if (["homepage_fallback", "no_public_hiring_source", "unresolved", "closed_or_out_of_scope"].includes(quality)) {
+      report.qualityExceptions.push({
+        name: inst.name,
+        state: inst.state || null,
+        control: inst.control || null,
+        level: inst.level || null,
+        coverage_status: status,
+        coverage_quality: quality,
+        homepage_url: inst.homepage_url || null,
+        career_url: inst.career_url || null,
+        reason: exclusion?.reason || inst.coverage_resolution_reason || null,
+      });
+    }
   }
 
   const denom = report.totals.eligible_universe || 1;
   for (const k of ["covered", "missing", "excluded_policy", "pending_review"]) {
     report.percentages[k] = Number(((report.totals[k] / denom) * 100).toFixed(2));
   }
+  for (const level of Object.keys(COVERAGE_QUALITY_LEVELS)) {
+    report.qualityLevels.percentages[level] = Number(((report.qualityLevels.totals[level] / denom) * 100).toFixed(2));
+  }
+  report.qualityExceptions.sort((a, b) => a.coverage_quality.localeCompare(b.coverage_quality) || a.name.localeCompare(b.name));
 
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
   fs.writeFileSync(OUT_PATH, JSON.stringify(report, null, 2) + "\n", "utf8");

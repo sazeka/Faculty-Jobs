@@ -39,6 +39,18 @@ test("faculty resource page titles are quarantined with a reason code", () => {
   assert.ok(quality.reasons.some((reason) => reason.code === "resource_page_title"));
 });
 
+test("generic faculty handbooks, careers indexes, and staff portals are quarantined", () => {
+  for (const title of [
+    "Faculty Handbook",
+    "Faculty Careers",
+    "Faculty/Staff",
+    "Faculty & Staff Resources",
+    "/ Faculty/Staff Panel",
+  ]) {
+    assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
+  }
+});
+
 test("faculty affairs staff roles are quarantined", () => {
   const quality = scorePost(job({ title: "Faculty Affairs Coordinator" }), { today: TODAY });
   assert.equal(quality.status, "quarantine");

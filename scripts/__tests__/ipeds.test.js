@@ -4,6 +4,7 @@ import {
   toInt,
   parseCsv,
   firstField,
+  normalizeHomepageUrl,
   mapControl,
   mapLevel,
   isDegreeGrantingBySector,
@@ -72,15 +73,23 @@ test("firstField returns the first non-empty candidate", () => {
   assert.equal(firstField(row, ["A", "missing"]), "");
 });
 
+test("normalizeHomepageUrl adds a scheme and rejects malformed values", () => {
+  assert.equal(normalizeHomepageUrl("www.example.edu/"), "https://www.example.edu/");
+  assert.equal(normalizeHomepageUrl("https://example.edu/about"), "https://example.edu/about");
+  assert.equal(normalizeHomepageUrl(""), null);
+  assert.equal(normalizeHomepageUrl("not a url"), null);
+});
+
 test("mapIpedsRows drops for-profits and dedups", () => {
   const rows = [
-    { UNITID: "1", INSTNM: "Public U", STABBR: "TX", CONTROL: "1", ICLEVEL: "1", SECTOR: "1" },
+    { UNITID: "1", INSTNM: "Public U", STABBR: "TX", CONTROL: "1", ICLEVEL: "1", SECTOR: "1", WEBADDR: "public.example.edu" },
     { UNITID: "2", INSTNM: "For Profit Inc", STABBR: "FL", CONTROL: "3", ICLEVEL: "1", SECTOR: "3" },
     { UNITID: "1", INSTNM: "Public U (dupe)", STABBR: "TX", CONTROL: "1", ICLEVEL: "1", SECTOR: "1" },
   ];
   const mapped = mapIpedsRows(rows);
   assert.equal(mapped.length, 1, "for-profit dropped, unitid dupe collapsed");
   assert.equal(mapped[0].name, "Public U");
+  assert.equal(mapped[0].homepage_url, "https://public.example.edu/");
   assert.equal(mapped[0].state, "TX");
   assert.equal(mapped[0].control, "public");
   assert.equal(mapped[0].level, "4-year");

@@ -84,6 +84,17 @@ export function firstField(row, candidates) {
   return "";
 }
 
+export function normalizeHomepageUrl(value) {
+  let url = clean(value);
+  if (!url) return null;
+  if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
+  try {
+    return new URL(url).toString();
+  } catch {
+    return null;
+  }
+}
+
 export function mapControl(controlCode, sectorCode) {
   const c = toInt(controlCode);
   if (c === 1) return "public";
@@ -157,6 +168,9 @@ export function mapIpedsRows(rows) {
       // runs of whitespace to one space, which destroys the 2+-space delimiter
       // parseIalias relies on to split multi-alias values.
       aliases: parseIalias(row.IALIAS ?? row.ialias ?? ""),
+      homepage_url: normalizeHomepageUrl(
+        firstField(row, ["WEBADDR", "webaddr"])
+      ),
       state: firstField(row, ["STABBR", "stabbr", "STATE", "state"]) || null,
       sector: sectorRaw ? toInt(sectorRaw) : null,
       level: mapLevel(levelRaw),

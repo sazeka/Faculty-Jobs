@@ -10,6 +10,17 @@ test("coverage summary uses the complete eligible U.S. institution universe", ()
       missing: 813,
       excluded_policy: 107,
     },
+    qualityLevels: {
+      totals: {
+        direct_job_board: 900,
+        verified_shared_system_board: 600,
+        official_employment_page: 700,
+        homepage_fallback: 192,
+        no_public_hiring_source: 100,
+        unresolved: 813,
+        closed_or_out_of_scope: 7,
+      },
+    },
   };
 
   assert.deepEqual(coverageSummaryFromReport(report), {
@@ -17,6 +28,15 @@ test("coverage summary uses the complete eligible U.S. institution universe", ()
     total: 3312,
     excluded: 107,
     percent: 72.22,
+    quality: {
+      directJobBoard: 900,
+      sharedSystemBoard: 600,
+      officialEmploymentPage: 700,
+      homepageFallback: 192,
+      noPublicHiringSource: 100,
+      unresolved: 813,
+      closedOrOutOfScope: 7,
+    },
   });
   assert.deepEqual(attachUniversityCoverage({ total: 19116 }, report), {
     total: 19116,
@@ -25,6 +45,15 @@ test("coverage summary uses the complete eligible U.S. institution universe", ()
       total: 3312,
       excluded: 107,
       percent: 72.22,
+      quality: {
+        directJobBoard: 900,
+        sharedSystemBoard: 600,
+        officialEmploymentPage: 700,
+        homepageFallback: 192,
+        noPublicHiringSource: 100,
+        unresolved: 813,
+        closedOrOutOfScope: 7,
+      },
     },
   });
 });

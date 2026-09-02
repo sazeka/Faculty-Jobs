@@ -47,6 +47,42 @@ test("uses unambiguous descriptions and records classification evidence", () => 
   );
 });
 
+test("recognizes additional explicit tenure appointment phrases", () => {
+  for (const description of [
+    "This is a tenure-earning faculty appointment.",
+    "The successful candidate will hold a tenure-accruing appointment.",
+    "This position is eligible for tenure.",
+    "The role is appointed on the tenure-line.",
+    "The selected candidate may be appointed with tenure.",
+  ]) {
+    assert.equal(classifyTenureTrack({ description }), true, description);
+  }
+});
+
+test("recognizes additional explicit non-tenure appointment phrases", () => {
+  for (const description of [
+    "This appointment is without tenure.",
+    "The position is non-tenurable.",
+    "This is a non-tenure-accruing appointment.",
+    "This is not a tenure-track appointment.",
+    "This position is not eligible for tenure.",
+  ]) {
+    assert.equal(classifyTenureTrack({ description }), false, description);
+  }
+});
+
+test("leaves conflicting appointment language unclassified", () => {
+  assert.equal(classifyTenureTrack({
+    description: "Depending on qualifications, appointment may be eligible for tenure or without tenure.",
+  }), null);
+});
+
+test("does not treat generic with-tenure policy boilerplate as appointment evidence", () => {
+  assert.equal(classifyTenureTrack({
+    description: "Before a conditional offer of employment with tenure is finalized, disclosures are required.",
+  }), null);
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
