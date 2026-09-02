@@ -15,6 +15,7 @@ import { deriveCoverageStatus, deriveJobPresenceStatus } from "./lib/institution
 import { canonicalInstitutionName } from "./lib/institution-aliases.js";
 import { institutionMetadataOverride } from "./lib/institution-metadata-overrides.js";
 import { isSuspiciousSyntheticCareerUrl } from "./lib/institution-audit.js";
+import { appendUniqueInstitutionNote } from "./lib/institution-notes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -187,7 +188,10 @@ function main() {
     // all showed real non-zero job counts while still reporting "missing").
     if (isQuarantined && !(row.last_seen_job_count > 0)) {
       merged.career_url = null;
-      merged.notes = clean(`${merged.notes || ""} Quarantined due to repeated broken career link checks.`) || null;
+      merged.notes = appendUniqueInstitutionNote(
+        merged.notes,
+        "Quarantined due to repeated broken career link checks."
+      );
     }
 
     merged.coverage_status = deriveCoverageStatus({
@@ -234,7 +238,7 @@ function main() {
         coverage_source: urls.coverage_source,
         last_seen_job_count: currentJobCount,
         last_checked_at: new Date().toISOString(),
-        notes: clean(`${prev.notes || ""} ${urls.override_notes || ""}`) || null,
+        notes: appendUniqueInstitutionNote(prev.notes, urls.override_notes),
       }, { isConfigured: true, hasSharedSource: Boolean(urls.coverage_source) })
     );
   }
