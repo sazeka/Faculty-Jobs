@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-31T15:40:57.234Z",
+  "updatedAt": "2026-09-01T18:00:00.000Z",
   "overrides": [
     {
       "name": "A T Still University of Health Sciences",
@@ -195,7 +195,8 @@
       "homepage_url": "https://www.alverno.edu/",
       "career_url": "https://www.alverno.edu/careers-at-alverno",
       "platform_type": "generic",
-      "notes": "Replaced the legacy /employment route with Alverno's current Careers at Alverno page, which directly lists faculty and staff openings and loaded successfully in the same headless browser used by CI."
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually reverified 2026-09-01. Alverno's current Careers at Alverno page directly lists faculty and staff openings; the shallow checker timed out even though the official page remains live."
     },
     {
       "name": "Amarillo College",
@@ -736,9 +737,10 @@
     {
       "name": "Bob Jones University",
       "homepage_url": "https://www.bju.edu/",
-      "career_url": "https://bju.careers/bju-faculty/",
+      "career_url": "https://bju.careers/default.aspx",
       "platform_type": "generic",
-      "notes": "Discovered via agent-career-discovery; verified live (8 faculty postings)."
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually reverified 2026-09-01. Replaced the retired faculty-only route with BJU's current official career portal, which exposes faculty and adjunct categories."
     },
     {
       "name": "Boise State University",
@@ -4604,7 +4606,8 @@
       "homepage_url": "https://www.luzerne.edu/",
       "career_url": "https://www.luzerne.edu/about/jobs/jobs.jsp",
       "platform_type": "generic",
-      "notes": "Official institution-scoped employee hiring source verified in the 2026-08-24 final public two-year-colleges pass."
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually reverified 2026-09-01. The official Jobs at LCCC page remains the institution's current employee hiring source and publishes current position details and applications."
     },
     {
       "name": "Lyon College",
@@ -5211,9 +5214,10 @@
     {
       "name": "Montgomery Community College",
       "homepage_url": "https://www.montgomery.edu/",
-      "career_url": "https://www.montgomery.edu/about-mcc/employment/",
-      "platform_type": "generic",
-      "notes": "Official institution-scoped employee hiring source verified in the 2026-08-24 remaining-public-colleges pass."
+      "career_url": "https://www.schooljobs.com/careers/montgomerycollege/",
+      "platform_type": "schooljobs",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually reverified 2026-09-01 from Montgomery's official Human Resources page. Routed directly to the college's institution-scoped NEOGOV board."
     },
     {
       "name": "Montgomery County Community College",
@@ -6229,9 +6233,10 @@
     {
       "name": "Orangeburg Calhoun Technical College",
       "homepage_url": "https://www.octech.edu/",
-      "career_url": "https://www.octech.edu/about/human-resources/",
-      "platform_type": "generic",
-      "notes": "Official institution-scoped employee hiring source verified in the 2026-08-24 remaining-public-colleges pass."
+      "career_url": "https://www.governmentjobs.com/careers/sc/octech",
+      "platform_type": "schooljobs",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually reverified 2026-09-01. Current OCtech vacancy notices direct applicants to the institution-scoped South Carolina GovernmentJobs tenant."
     },
     {
       "name": "Oregon Coast Community College",
@@ -10798,6 +10803,94 @@
       "career_url": "https://www.governmentjobs.com/careers/sc/yorktech",
       "platform_type": "schooljobs",
       "notes": "Reviewed in the 2026-08-24 ten-state two-year pass; validated employee-hiring portal linked from an official institution page."
+    },
+    {
+      "name": "Blackfeet Community College",
+      "homepage_url": "https://bfcc.edu/",
+      "career_url": "https://bfcc.edu/Human-Resource",
+      "platform_type": "generic",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01. BFCC's current official Human Resources page provides its recruitment and application instructions."
+    },
+    {
+      "name": "Mesalands Community College",
+      "homepage_url": "https://www.mesalands.edu/",
+      "career_url": "https://www.mesalands.edu/o/mcc/page/professional-employment-opportunities",
+      "platform_type": "generic",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01. The current official professional employment page lists active faculty opportunities."
+    },
+    {
+      "name": "Mitchell Community College",
+      "homepage_url": "https://www.mitchellcc.edu/",
+      "career_url": "https://www.governmentjobs.com/careers/mitchellcc",
+      "platform_type": "schooljobs",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01 from Mitchell's official Employment Opportunities page. Routed to the college's NEOGOV board, which publishes current faculty positions."
+    },
+    {
+      "name": "Regis College",
+      "homepage_url": "https://www.regiscollege.edu/",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/portal/6E871BCB0EFD76A7A4C5061C331B232C/career-page",
+      "platform_type": "generic",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01 from Regis College Human Resources. Routed directly to the official Paycom current-job-listings portal."
+    },
+    {
+      "name": "Rockhurst University",
+      "homepage_url": "https://www.rockhurst.edu/",
+      "career_url": "https://www.rockhurst.edu/about/human-resources/faculty-staff-positions/",
+      "platform_type": "generic",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01. Replaced the retired synthetic path with Rockhurst's official faculty and staff positions page."
+    },
+    {
+      "name": "South Arkansas College",
+      "homepage_url": "https://www.southark.edu/",
+      "career_url": "https://www.southark.edu/page/employment-at-southark",
+      "platform_type": "generic",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01. SouthArk's official employment page publishes full-time and part-time faculty opportunities."
+    },
+    {
+      "name": "Stone Child College",
+      "homepage_url": "https://www.stonechild.edu/",
+      "career_url": "https://www.stonechild.edu/page/employment-rfps/",
+      "platform_type": "generic",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01. Stone Child College's official Employment/RFPs page lists current instructor openings."
+    },
+    {
+      "name": "Texas Tech University Health Sciences Center",
+      "homepage_url": "https://www.ttuhsc.edu/",
+      "career_url": "https://www.ttuhsc.edu/careers",
+      "platform_type": "generic",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01. TTUHSC's current official careers page provides faculty and staff hiring entry points."
+    },
+    {
+      "name": "The University of Findlay",
+      "homepage_url": "https://www.findlay.edu/",
+      "career_url": "https://findlay.wd5.myworkdayjobs.com/careers",
+      "platform_type": "workday",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01 from the university's Human Resources page. Replaced the retired SharePoint route with Findlay's official Workday career site."
+    },
+    {
+      "name": "United States Sports University",
+      "homepage_url": "https://ussu.edu/",
+      "career_url": "https://ussu.edu/employment-opportunities/",
+      "platform_type": "generic",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually reverified 2026-09-01. The official employment page is live and explicitly reports current openings status; the shallow checker produced stale failure evidence."
+    },
+    {
+      "name": "Wartburg College",
+      "homepage_url": "https://www.wartburg.edu/",
+      "career_url": "https://www.wartburg.edu/hr/positions/",
+      "platform_type": "generic",
+      "manually_verified_at": "2026-09-01T18:00:00.000Z",
+      "notes": "Manually verified 2026-09-01. Replaced the retired synthetic path with Wartburg Human Resources' current Job Openings page."
     }
   ]
 }

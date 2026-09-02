@@ -16,6 +16,7 @@ import { canonicalInstitutionName } from "./lib/institution-aliases.js";
 import { institutionMetadataOverride } from "./lib/institution-metadata-overrides.js";
 import { isSuspiciousSyntheticCareerUrl } from "./lib/institution-audit.js";
 import { appendUniqueInstitutionNote } from "./lib/institution-notes.js";
+import { isCareerLinkQuarantineApplicable } from "./lib/career-link-quarantine.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -73,6 +74,7 @@ function buildOverridesMap() {
       platform_type: clean(row?.platform_type) || null,
       coverage_source: clean(row?.coverage_source) || null,
       notes: clean(row?.notes) || null,
+      manually_verified_at: clean(row?.manually_verified_at) || null,
     });
   }
   return map;
@@ -90,10 +92,14 @@ function buildLinkStatusMap() {
   return map;
 }
 
-function buildQuarantineSet() {
+function buildQuarantineMap() {
   const data = readJsonOrNull(QUARANTINE_PATH);
   const rows = Array.isArray(data?.institutions) ? data.institutions : [];
-  return new Set(rows.map((r) => normalizeNameKey(canonicalInstitutionName(r?.name))).filter(Boolean));
+  return new Map(
+    rows
+      .map((row) => [normalizeNameKey(canonicalInstitutionName(row?.name)), row])
+      .filter(([name]) => Boolean(name))
+  );
 }
 
 function main() {
@@ -124,7 +130,7 @@ function main() {
 
   const overrides = buildOverridesMap();
   const linkStatusByName = buildLinkStatusMap();
-  const quarantinedNames = buildQuarantineSet();
+  const quarantineByName = buildQuarantineMap();
 
   const result = [];
   const seen = new Set();
@@ -153,17 +159,32 @@ function main() {
       coverage_source,
       has_curated_shared_source: Boolean(clean(ov?.coverage_source)),
       override_notes: ov?.notes || null,
+      manually_verified_at: ov?.manually_verified_at || null,
     };
   };
 
   const applyVerification = (row, { isConfigured = false, hasSharedSource = false } = {}) => {
     const key = normalizeNameKey(row.name);
     const link = linkStatusByName.get(key);
-    const isQuarantined = quarantinedNames.has(key);
+    const quarantine = quarantineByName.get(key);
+    const isQuarantined = isCareerLinkQuarantineApplicable({
+      candidateCareerUrl: row.career_url,
+      quarantineCareerUrl: quarantine?.career_url,
+      quarantineCheckedAt: quarantine?.checked_at,
+      manuallyVerifiedAt: row.manually_verified_at,
+    });
+    const linkMatchesCandidate =
+      canonicalizeUrl(link?.career_url) === canonicalizeUrl(row.career_url);
+    const manualVerifiedAt = Date.parse(row.manually_verified_at || "");
+    const linkVerifiedAt = Date.parse(link?.last_verified_at || "");
+    const manualVerificationIsCurrent =
+      Number.isFinite(manualVerifiedAt) &&
+      (!linkMatchesCandidate || !Number.isFinite(linkVerifiedAt) || manualVerifiedAt > linkVerifiedAt);
 
     const verification_status =
       (isQuarantined ? "quarantined_broken_link" : null) ||
-      clean(link?.verification_status) ||
+      (manualVerificationIsCurrent ? "manually_verified" : null) ||
+      (linkMatchesCandidate ? clean(link?.verification_status) : null) ||
       clean(row.verification_status) ||
       "unchecked";
 
@@ -239,6 +260,7 @@ function main() {
         last_seen_job_count: currentJobCount,
         last_checked_at: new Date().toISOString(),
         notes: appendUniqueInstitutionNote(prev.notes, urls.override_notes),
+        manually_verified_at: urls.manually_verified_at || prev.manually_verified_at || null,
       }, { isConfigured: true, hasSharedSource: Boolean(urls.coverage_source) })
     );
   }
