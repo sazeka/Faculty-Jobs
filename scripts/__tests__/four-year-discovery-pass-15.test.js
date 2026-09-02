@@ -5,7 +5,9 @@ const source = fs.readFileSync(new URL("../../server.js", import.meta.url), "utf
 
 test("final exception pass promotes Grand View without misattributing hospital jobs", () => {
   assert.match(source, /^\s*\{ campus: "Grand View University", type: "paycom"/m);
-  assert.doesNotMatch(source, /^\s*\{ campus: "Jefferson Regional School of Nursing"/m);
+  const iaCampuses = source.match(/const IA_CAMPUSES = \[[\s\S]*?\n\];/);
+  assert.ok(iaCampuses);
+  assert.doesNotMatch(iaCampuses[0], /Jefferson Regional School of Nursing/);
   const ia = source.match(/async function scrapeIaAll[\s\S]*?async function scrapeWyAll/);
   assert.ok(ia);
   assert.match(ia[0], /type === "paycom"/);
