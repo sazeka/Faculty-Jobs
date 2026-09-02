@@ -1,28 +1,28 @@
 {
-  "generatedAt": "2026-09-02T00:03:36.052Z",
+  "generatedAt": "2026-09-02T00:48:31.282Z",
   "dryRun": false,
-  "newlyResolved": 0,
-  "resolvedCount": 145,
+  "newlyResolved": 201,
+  "resolvedCount": 201,
   "resolutions": {
-    "active_no_public_hiring_source": 140,
-    "closed_or_out_of_scope": 5
+    "active_no_public_hiring_source": 185,
+    "closed_or_out_of_scope": 16
   },
   "masterCounts": {
     "totalInstitutions": 3359,
-    "covered": 3165,
-    "excluded_policy": 194,
-    "missing": 0,
+    "covered": 3142,
+    "excluded_policy": 201,
+    "missing": 16,
     "quarantined": 0,
     "pending_review": 0
   },
   "qualityCounts": {
-    "direct_job_board": 708,
+    "direct_job_board": 704,
     "verified_shared_system_board": 156,
-    "official_employment_page": 1670,
+    "official_employment_page": 1642,
     "homepage_fallback": 410,
-    "no_public_hiring_source": 210,
-    "unresolved": 158,
-    "closed_or_out_of_scope": 47
+    "no_public_hiring_source": 220,
+    "unresolved": 190,
+    "closed_or_out_of_scope": 37
   },
   "resolved": [
     {
@@ -30,6 +30,36 @@
       "state": "CA",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "America Evangelical University",
+      "state": "CA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-12): no usable careers URL found on homepage, /careers, or via site search. Small evangelical graduate school."
+    },
+    {
+      "name": "American Academy McAllister Institute of Funeral Service",
+      "state": "NY",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the official site provides student placement services but no public employee openings page."
+    },
+    {
+      "name": "Assumption College for Sisters",
+      "state": "NJ",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no durable institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
+      "name": "Athenaeum of Ohio",
+      "state": "OH",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-19): the institution now operates as Mount St. Mary's Seminary & School of Theology, and a live review of the official site found no careers, employment, or faculty-openings page. The configured homepage is not a hiring destination."
+    },
+    {
+      "name": "Bacone College",
+      "state": "OK",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-12): institution ceased operations -- Chapter 11 filed June 2024, converted to Chapter 7 liquidation May 2025, HLC accreditation revoked, campus turned over to bankruptcy trustee. bacone.edu no longer resolves (DNS failure). No longer a hiring institution."
     },
     {
       "name": "Bais Binyomin Academy",
@@ -56,6 +86,12 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Bais Medrash Toras Chesed",
+      "state": "NJ",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-12): no usable careers URL found; domain has repeated SSL handshake failures. Tiny all-male Talmudic school; no jobs board or HR presence found anywhere (typical word-of-mouth hiring profile for this institution type)."
+    },
+    {
       "name": "Beis Medrash Heichal Dovid",
       "state": "NY",
       "resolution": "active_no_public_hiring_source",
@@ -80,6 +116,24 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Bnos Zion Of Bobov Seminary",
+      "state": "NY",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
+      "name": "California College of ASU",
+      "state": "CA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Institution closed; no longer operating or hiring."
+    },
+    {
+      "name": "California State University-Chancellors Office",
+      "state": "CA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-19): this is the CSU system administrative office (Long Beach), not a degree-granting campus -- is_degree_granting is unset/unmatched in IPEDS. Confirmed via the Chancellor's Office's own hiring info: it hires only executive/administrative/IT/legal/finance staff supporting the 23-campus system and explicitly does not hire faculty; all CSU faculty hiring happens independently at each of the 23 individual campuses, which are already tracked as their own separate institutions in this dataset."
+    },
+    {
       "name": "Central Yeshiva Beth Joseph",
       "state": "NY",
       "resolution": "active_no_public_hiring_source",
@@ -98,10 +152,40 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Dragon Rises College of Oriental Medicine",
+      "state": "FL",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-12): no usable careers URL found. Full sitemap crawl of dragonrises.edu shows no careers/employment/jobs page anywhere; only a student-outcomes 'career-pathways' page. Small institution (<25 employees)."
+    },
+    {
+      "name": "Eastern Nazarene College",
+      "state": "MA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-12): institution permanently closed (Board vote June 25, 2024; wound down through 2025 via teach-out agreements to Gordon College, Mount Vernon Nazarene University, and Trevecca Nazarene University). enc.edu now redirects to mvnu.edu/enc, a legacy custodian-of-record page with no jobs content. No longer a hiring institution."
+    },
+    {
       "name": "Faith Theological Seminary and Christian College",
       "state": "FL",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Generations College",
+      "state": "IL",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
+      "name": "Grace Mission University",
+      "state": "CA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the official job board is an external community board, not an employee hiring page, and no institution-run employee openings page was found."
+    },
+    {
+      "name": "Hampshire College",
+      "state": "MA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the Board of Trustees voted to permanently close the college following the fall 2026 semester."
     },
     {
       "name": "Haven University",
@@ -128,6 +212,24 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Huntington Junior College",
+      "state": "WV",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the institution now operates as Amerion College at the same campus and federal school identity, so the former-name IPEDS row is not a separate employer."
+    },
+    {
+      "name": "Hypnosis Motivation Institute",
+      "state": "CA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
+      "name": "ICOHS College",
+      "state": "CA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the official career pages are student and employer-partner services, not employee hiring pages, and no institution-run employee openings page was found."
+    },
+    {
       "name": "Indian Bible College",
       "state": "AZ",
       "resolution": "active_no_public_hiring_source",
@@ -152,16 +254,34 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "International Baptist College and Seminary",
+      "state": "AZ",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
       "name": "Jackson Theological Seminary",
       "state": "AR",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "John A Gupton College",
+      "state": "TN",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
       "name": "Jung Tao School of Classical Chinese Medicine",
       "state": "NC",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Kairos University",
+      "state": "SD",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
       "name": "Kehilath Yakov Rabbinical Seminary",
@@ -194,6 +314,18 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Lancaster Theological Seminary",
+      "state": "PA",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-31): merged into Moravian University; Moravian is the surviving institution and operates the combined School of Theology."
+    },
+    {
+      "name": "Lawrence Memorial Hospital School of Nursing",
+      "state": "MA",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-24): the school no longer admits students and closed its nursing program in 2025 when the AS curriculum moved to Regis College; it is no longer an independently hiring degree-granting school."
+    },
+    {
       "name": "Limestone University",
       "state": "SC",
       "resolution": "closed_or_out_of_scope",
@@ -204,6 +336,18 @@
       "state": "CA",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Little Big Horn College",
+      "state": "MT",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the only verified hiring artifact was a single adjunct posting packet, not a durable institution-level employee openings source."
+    },
+    {
+      "name": "Longy School of Music of Bard College",
+      "state": "MA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no separate institution-run public employee openings page was found; the discovered job board serves students and alumni rather than Longy hiring."
     },
     {
       "name": "Lourdes University",
@@ -218,10 +362,28 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Maryland University of Integrative Health",
+      "state": "MD",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-31): merged into Notre Dame of Maryland University in 2025 and no longer exists as a separate institution."
+    },
+    {
+      "name": "Marymount Manhattan College",
+      "state": "NY",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-31): the completed merger created Northeastern University-New York City; MMC no longer operates as a separate institution."
+    },
+    {
       "name": "Massachusetts School of Law",
       "state": "MA",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "McCormick Theological Seminary",
+      "state": "IL",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the official job board lists outside employers for students and alumni, and no institution-run employee openings page was found."
     },
     {
       "name": "Mechon L'hoyroa",
@@ -230,10 +392,22 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Memphis Theological Seminary",
+      "state": "TN",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-31): the seminary concluded operations on July 31, 2026."
+    },
+    {
       "name": "Mesivta of Eastern Parkway-Yeshiva Zichron Meilech",
       "state": "NY",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Mesivta Torah Vodaath Rabbinical Seminary",
+      "state": "NY",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-12): no usable careers URL found. Real site is torahvodaath.org (the previously-configured independentrabbinicalcolleges.org URL was a wrong shared placeholder). Full nav/footer crawl shows no careers/employment/HR link."
     },
     {
       "name": "Mesivtha Tifereth Jerusalem of America",
@@ -278,10 +452,34 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "New York College of Health Professions",
+      "state": "NY",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the official site provides only an HR inquiry channel and explicitly does not publish current vacancies."
+    },
+    {
+      "name": "New York Seminary",
+      "state": "NY",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
+      "name": "Northcentral University",
+      "state": "CA",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-31): merged into National University in 2022 and no longer operates as a separate institution."
+    },
+    {
       "name": "Northland College",
       "state": "WI",
       "resolution": "closed_or_out_of_scope",
       "reason": "Excluded (2026-08-30): the college closed at the end of the 2024-2025 academic year."
+    },
+    {
+      "name": "Northpoint Bible College",
+      "state": "MA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the discovered page is an external ministry job board, and no institution-run employee openings page was found."
     },
     {
       "name": "Oak Hills Christian College",
@@ -294,6 +492,18 @@
       "state": "CA",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Ohel Margulia Seminary",
+      "state": "NY",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
+      "name": "Ohio Institute of Allied Health",
+      "state": "OH",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
       "name": "Ohr Hameir Theological Seminary",
@@ -326,6 +536,24 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Pennsylvania Institute of Technology",
+      "state": "PA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the discovered URL is a student-facing career article, and no institution-run employee openings page was found."
+    },
+    {
+      "name": "Pennsylvania State University-Penn State New Kensington",
+      "state": "PA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the campus employment landing page points to Penn State's shared hiring system, but no exact New Kensington job facet was available for safe attribution."
+    },
+    {
+      "name": "Pittsburgh Institute of Mortuary Science Inc",
+      "state": "PA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the official jobs page serves students and alumni, not institutional hiring, and no employee openings page was found."
+    },
+    {
       "name": "Pontifex University",
       "state": "GA",
       "resolution": "active_no_public_hiring_source",
@@ -338,10 +566,22 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Pontifical John Paul II Institute for Studies on Marriage and Family",
+      "state": "DC",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the official job-postings page serves students and alumni, not institutional hiring, and no separate employee openings page was found."
+    },
+    {
       "name": "Presbyterian Theological Seminary in America",
       "state": "CA",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Presidio Graduate School",
+      "state": "CA",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-31): merged into the University of Redlands and no longer operates as a separate institution."
     },
     {
       "name": "Providence Christian College",
@@ -398,6 +638,12 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Rabbinical College Telshe",
+      "state": "OH",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-12): no stable official website exists. telsheyeshiva.org/.edu redirect to a Cardknox donation gateway, not an institutional site; telsheyeshiva.pages.dev is an unofficial fan-built mirror with no jobs page. No HR presence found."
+    },
+    {
       "name": "Rabbinical Seminary Mkor Chaim",
       "state": "NJ",
       "resolution": "active_no_public_hiring_source",
@@ -428,6 +674,12 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "SABER College",
+      "state": "FL",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
       "name": "Saint Anthony College of Nursing",
       "state": "IL",
       "resolution": "active_no_public_hiring_source",
@@ -446,10 +698,28 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "Salus University",
+      "state": "PA",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-31): fully merged into Drexel University and now operates as Drexel's Elkins Park Campus."
+    },
+    {
       "name": "Seattle Institute of East Asian Medicine",
       "state": "WA",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Seminar L'moros Bais Yaakov",
+      "state": "NY",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
+    },
+    {
+      "name": "Seminary Bnos Chaim",
+      "state": "NJ",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
       "name": "Sh'or Yoshuv Rabbinical College",
@@ -468,6 +738,12 @@
       "state": "NC",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Siena Heights University",
+      "state": "MI",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-31): the university closed after the 2025-2026 academic year."
     },
     {
       "name": "South Baylo University",
@@ -492,6 +768,18 @@
       "state": "TX",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "St. Andrews University",
+      "state": "NC",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the institution permanently ceased operations on May 5, 2025."
+    },
+    {
+      "name": "St. Augustine College",
+      "state": "IL",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-31): merged into Lewis University and no longer operates as a separate institution."
     },
     {
       "name": "Talmudic College of Florida",
@@ -542,6 +830,12 @@
       "reason": "Excluded (2026-08-30): the institution ceased academic instruction in June 2024 and administrative operations in December 2024."
     },
     {
+      "name": "The Landing School",
+      "state": "ME",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-24): the Board ceased all 2026-27 academic programs, stopped accepting applications, and reported that a proposed acquisition was not viable. Excluded from the active degree-granting target while operations remain ceased."
+    },
+    {
       "name": "The School of Architecture",
       "state": "AZ",
       "resolution": "active_no_public_hiring_source",
@@ -584,6 +878,18 @@
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
+      "name": "University of Florida-Online",
+      "state": "FL",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): this IPEDS row is an online modality of the University of Florida rather than a separate employer; hiring is already represented by the University of Florida."
+    },
+    {
+      "name": "University of Pittsburgh-Pittsburgh Campus",
+      "state": "PA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the shared Pitt faculty page spans multiple campuses and no exact Pittsburgh-campus control was available for safe attribution."
+    },
+    {
       "name": "University of Silicon Andhra",
       "state": "CA",
       "resolution": "active_no_public_hiring_source",
@@ -594,6 +900,18 @@
       "state": "CA",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "University of Wisconsin-Milwaukee Flex",
+      "state": "WI",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): this IPEDS row is an online delivery modality whose programs and employment belong to UW-Milwaukee, which is already represented."
+    },
+    {
+      "name": "University of Wisconsin-Parkside Flex",
+      "state": "WI",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): this IPEDS row is an online delivery modality whose programs and employment belong to UW-Parkside, which is already represented."
     },
     {
       "name": "Uta Mesivta of Kiryas Joel",
@@ -630,6 +948,18 @@
       "state": "PA",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Woodbury University",
+      "state": "CA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded (2026-08-31): the 2026 merger made the University of Redlands the continuing institution; the campus now operates as University of Redlands-Los Angeles."
+    },
+    {
+      "name": "World Mission University",
+      "state": "CA",
+      "resolution": "active_no_public_hiring_source",
+      "reason": "Excluded from public-hiring coverage (2026-08-31): the discovered URL is a federal gainful-employment disclosure, and no public employee openings page was found."
     },
     {
       "name": "Yeshiva Bais Aharon",
@@ -894,6 +1224,12 @@
       "state": "NY",
       "resolution": "active_no_public_hiring_source",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
+    },
+    {
+      "name": "Young Americans College of the Performing Arts",
+      "state": "CA",
+      "resolution": "closed_or_out_of_scope",
+      "reason": "Excluded (2026-08-24): the college formally closed after the Spring 2025 term and voluntarily withdrew accreditation; it is no longer an active degree-granting hiring institution."
     }
   ]
 }
