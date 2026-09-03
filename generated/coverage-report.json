@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-02T18:36:19.946Z",
+  "generatedAt": "2026-09-03T09:35:00.660Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json",
@@ -455,21 +455,21 @@
       "closed_or_out_of_scope": "The record is closed, merged, duplicated, administrative-only, or otherwise outside coverage scope."
     },
     "totals": {
-      "direct_job_board": 708,
+      "direct_job_board": 712,
       "verified_shared_system_board": 156,
-      "official_employment_page": 1638,
+      "official_employment_page": 1651,
       "homepage_fallback": 391,
       "no_public_hiring_source": 219,
-      "unresolved": 172,
+      "unresolved": 155,
       "closed_or_out_of_scope": 32
     },
     "percentages": {
-      "direct_job_board": 21.35,
+      "direct_job_board": 21.47,
       "verified_shared_system_board": 4.7,
-      "official_employment_page": 49.4,
+      "official_employment_page": 49.79,
       "homepage_fallback": 11.79,
       "no_public_hiring_source": 6.6,
-      "unresolved": 5.19,
+      "unresolved": 4.67,
       "closed_or_out_of_scope": 0.97
     }
   },
@@ -5212,7 +5212,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.aeu.edu/",
-      "career_url": null,
+      "career_url": "https://www.aeu.edu/",
       "reason": "Excluded (2026-08-12): no usable careers URL found on homepage, /careers, or via site search. Small evangelical graduate school."
     },
     {
@@ -5300,7 +5300,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.bacone.edu/",
-      "career_url": null,
+      "career_url": "https://www.bacone.edu/",
       "reason": "Excluded (2026-08-12): institution ceased operations -- Chapter 11 filed June 2024, converted to Chapter 7 liquidation May 2025, HLC accreditation revoked, campus turned over to bankruptcy trustee. bacone.edu no longer resolves (DNS failure). No longer a hiring institution."
     },
     {
@@ -5366,7 +5366,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.bmtc.edu/",
-      "career_url": null,
+      "career_url": "https://www.bmtc.edu/",
       "reason": "Excluded (2026-08-12): no usable careers URL found; domain has repeated SSL handshake failures. Tiny all-male Talmudic school; no jobs board or HR presence found anywhere (typical word-of-mouth hiring profile for this institution type)."
     },
     {
@@ -5696,7 +5696,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.dragonrises.edu/",
-      "career_url": null,
+      "career_url": "https://www.dragonrises.edu/",
       "reason": "Excluded (2026-08-12): no usable careers URL found. Full sitemap crawl of dragonrises.edu shows no careers/employment/jobs page anywhere; only a student-outcomes 'career-pathways' page. Small institution (<25 employees)."
     },
     {
@@ -5707,7 +5707,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.enc.edu/",
-      "career_url": null,
+      "career_url": "https://www.enc.edu/",
       "reason": "Excluded (2026-08-12): institution permanently closed (Board vote June 25, 2024; wound down through 2025 via teach-out agreements to Gordon College, Mount Vernon Nazarene University, and Trevecca Nazarene University). enc.edu now redirects to mvnu.edu/enc, a legacy custodian-of-record page with no jobs content. No longer a hiring institution."
     },
     {
@@ -6136,7 +6136,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://independentrabbinicalcolleges.org/index.html",
-      "career_url": null,
+      "career_url": "https://independentrabbinicalcolleges.org/index.html",
       "reason": "Excluded (2026-08-12): no usable careers URL found. Real site is torahvodaath.org (the previously-configured independentrabbinicalcolleges.org URL was a wrong shared placeholder). Full nav/footer crawl shows no careers/employment/HR link."
     },
     {
@@ -6532,7 +6532,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://independentrabbinicalcolleges.org/index.html",
-      "career_url": null,
+      "career_url": "https://independentrabbinicalcolleges.org/index.html",
       "reason": "Excluded (2026-08-12): no stable official website exists. telsheyeshiva.org/.edu redirect to a Cardknox donation gateway, not an institutional site; telsheyeshiva.pages.dev is an unofficial fan-built mirror with no jobs page. No HR presence found."
     },
     {
@@ -7801,17 +7801,6 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned."
     },
     {
-      "name": "Cochran School of Nursing",
-      "state": "NY",
-      "control": "private nonprofit",
-      "level": "2-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.cochranschoolofnursing.us/",
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "Commonwealth Technical Institute",
       "state": "PA",
       "control": "private nonprofit",
@@ -7977,17 +7966,6 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned."
     },
     {
-      "name": "Georgetown College",
-      "state": "KY",
-      "control": "private nonprofit",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.georgetowncollege.edu/",
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "Georgia College & State University",
       "state": "GA",
       "control": "public",
@@ -8109,17 +8087,6 @@
       "reason": null
     },
     {
-      "name": "Hillsborough Community College",
-      "state": "FL",
-      "control": "public",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.hccfl.edu/",
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "Inver Hills Community College",
       "state": "MN",
       "control": "public",
@@ -8193,17 +8160,6 @@
       "coverage_status": "covered",
       "coverage_quality": "unresolved",
       "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Mars Hill University",
-      "state": "NC",
-      "control": "private nonprofit",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.mhu.edu/",
       "career_url": null,
       "reason": null
     },
@@ -8340,28 +8296,6 @@
       "reason": null
     },
     {
-      "name": "National Louis University",
-      "state": "IL",
-      "control": "private nonprofit",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.nl.edu/",
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Nebraska Indian Community College",
-      "state": "NE",
-      "control": "public",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.thenicc.edu/",
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "New Jersey City University",
       "state": "NJ",
       "control": "public",
@@ -8371,17 +8305,6 @@
       "homepage_url": "https://phe.tbe.taleo.net/phe03/ats/careers/v2/searchResults?org=NJCU&cws=41",
       "career_url": "https://phe.tbe.taleo.net/phe03/ats/careers/v2/searchResults?org=NJCU&cws=41",
       "reason": "Oracle terms prohibit robots/spiders/scrapers for site access."
-    },
-    {
-      "name": "New Mexico Highlands University",
-      "state": "NM",
-      "control": "public",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.nmhu.edu/",
-      "career_url": null,
-      "reason": null
     },
     {
       "name": "Niagara County Community College",
@@ -8435,17 +8358,6 @@
       "coverage_status": "covered",
       "coverage_quality": "unresolved",
       "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Oglala Lakota College",
-      "state": "SD",
-      "control": "public",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.olc.edu/",
       "career_url": null,
       "reason": null
     },
@@ -8545,17 +8457,6 @@
       "coverage_status": "covered",
       "coverage_quality": "unresolved",
       "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Saint Vincent de Paul Regional Seminary",
-      "state": "FL",
-      "control": "private nonprofit",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.svdp.edu/",
       "career_url": null,
       "reason": null
     },
@@ -8692,17 +8593,6 @@
       "reason": null
     },
     {
-      "name": "Sinte Gleska University",
-      "state": "SD",
-      "control": "public",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.sintegleska.edu/",
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "Sonoma State University",
       "state": "CA",
       "control": "public",
@@ -8787,17 +8677,6 @@
       "coverage_status": "covered",
       "coverage_quality": "unresolved",
       "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Sterling College (VT)",
-      "state": "VT",
-      "control": "private nonprofit",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.sterlingcollege.edu/",
       "career_url": null,
       "reason": null
     },
@@ -9121,17 +9000,6 @@
       "reason": "Oracle terms prohibit robots/spiders/scrapers for site access."
     },
     {
-      "name": "The University of Tennessee-Martin",
-      "state": "TN",
-      "control": "public",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.utm.edu/",
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "Towson University",
       "state": "MD",
       "control": "public",
@@ -9141,17 +9009,6 @@
       "homepage_url": "https://towson.taleo.net/careersection/ex/jobsearch.ftl",
       "career_url": "https://towson.taleo.net/careersection/ex/jobsearch.ftl#mainContent",
       "reason": "Oracle terms prohibit robots/spiders/scrapers for site access."
-    },
-    {
-      "name": "Trinity Anglican Seminary",
-      "state": "PA",
-      "control": "private nonprofit",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://tas.edu/",
-      "career_url": null,
-      "reason": null
     },
     {
       "name": "UCCS",
@@ -9231,17 +9088,6 @@
       "reason": "Oracle terms prohibit robots/spiders/scrapers for site access."
     },
     {
-      "name": "University of Maryland Eastern Shore",
-      "state": "MD",
-      "control": "public",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://wwwcp.umes.edu/",
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "University of Maryland, Baltimore",
       "state": "MD",
       "control": "public",
@@ -9286,17 +9132,6 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned."
     },
     {
-      "name": "University of Valley Forge",
-      "state": "PA",
-      "control": "private nonprofit",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.valleyforge.edu/",
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "University of West Georgia",
       "state": "GA",
       "control": "public",
@@ -9304,17 +9139,6 @@
       "coverage_status": "covered",
       "coverage_quality": "unresolved",
       "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "University System of New Hampshire System Office",
-      "state": "NH",
-      "control": "public",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.usnh.edu/",
       "career_url": null,
       "reason": null
     },
@@ -9337,17 +9161,6 @@
       "coverage_status": "covered",
       "coverage_quality": "unresolved",
       "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Vermont College of Fine Arts",
-      "state": "VT",
-      "control": "private nonprofit",
-      "level": "4-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": "https://www.vcfa.edu/",
       "career_url": null,
       "reason": null
     },
