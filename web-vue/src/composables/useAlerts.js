@@ -35,12 +35,14 @@ export function useAlerts({ filtersRef, countMatches }) {
   function getSnapshot() {
     return {
       q: clean(filtersRef.value.q),
-      state: filtersRef.value.state,
-      positionType: filtersRef.value.positionType,
+      state: [...filtersRef.value.state],
+      positionType: [...filtersRef.value.positionType],
       college: filtersRef.value.college,
       department: filtersRef.value.department,
-      discipline: filtersRef.value.discipline,
+      discipline: [...filtersRef.value.discipline],
       city: filtersRef.value.city,
+      employmentType: filtersRef.value.employmentType,
+      workMode: filtersRef.value.workMode,
       sortBy: filtersRef.value.sortBy,
       tenureTrackOnly: Boolean(filtersRef.value.tenureTrackOnly),
       savedOnly: Boolean(filtersRef.value.savedOnly),
@@ -55,8 +57,8 @@ export function useAlerts({ filtersRef, countMatches }) {
       ? `Alert: ${snapshot.q}`
       : snapshot.college !== 'all'
         ? `Alert: ${snapshot.college}`
-        : snapshot.state !== 'all'
-          ? `Alert: ${snapshot.state}`
+        : snapshot.state.length
+          ? `Alert: ${snapshot.state.join(', ')}`
           : 'Alert: all faculty jobs'
 
     const deduped = alerts.value.filter((a) => !sameFilter(a.filters, snapshot))

@@ -1,4 +1,4 @@
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { normalizeSearchText, queryFullTextSearchIndex } from '../../../scripts/lib/jobs-search-index.js'
 
 const CACHE_KEY = 'facultyJobs.jobsCache.v2'
@@ -83,7 +83,7 @@ async function fetchWithTimeout(url, timeoutMs = 25000) {
   const ctrl = new AbortController()
   const t = setTimeout(() => ctrl.abort(), timeoutMs)
   try {
-    return await fetch(url, { cache: 'no-store', signal: ctrl.signal })
+    return await fetch(url, { cache: 'no-cache', signal: ctrl.signal })
   } finally {
     clearTimeout(t)
   }
@@ -342,6 +342,36 @@ export function useJobsData() {
   }
 
   let searchIndexPromise = null
+  let searchWorker = null
+  const workerRequests = new Map()
+
+  function ensureSearchWorker() {
+    if (searchWorker || typeof Worker === 'undefined') return searchWorker
+    searchWorker = new Worker(new URL('../workers/search.worker.js', import.meta.url), { type: 'module' })
+    searchWorker.addEventListener('message', (event) => {
+      const request = workerRequests.get(event.data?.id)
+      if (!request) return
+      workerRequests.delete(event.data.id)
+      if (event.data.error) request.reject(new Error(event.data.error))
+      else request.resolve(new Map((event.data.matches || []).map(([term, ids]) => [term, new Set(ids)])))
+    })
+    searchWorker.addEventListener('error', (event) => {
+      for (const request of workerRequests.values()) request.reject(event.error || new Error('Search worker failed'))
+      workerRequests.clear()
+      searchWorker?.terminate()
+      searchWorker = null
+    })
+    return searchWorker
+  }
+
+  function searchInWorker(terms, requestId) {
+    const worker = ensureSearchWorker()
+    if (!worker) return null
+    return new Promise((resolve, reject) => {
+      workerRequests.set(requestId, { resolve, reject })
+      worker.postMessage({ id: requestId, baseUrl, terms })
+    })
+  }
   let latestSearchRequest = 0
   async function searchFullText(query) {
     const terms = normalizeSearchText(query).split(/\s+/).filter((term) => term.length >= 2)
@@ -354,15 +384,22 @@ export function useJobsData() {
 
     searchIndexLoading.value = true
     try {
-      if (!searchIndexPromise) {
-        searchIndexPromise = loadFullTextIndex(baseUrl).catch((error) => {
-          searchIndexPromise = null
-          throw error
-        })
+      const workerResult = searchInWorker(terms, request)
+      let matches
+      if (workerResult) {
+        matches = await workerResult
+      } else {
+        if (!searchIndexPromise) {
+          searchIndexPromise = loadFullTextIndex(baseUrl).catch((error) => {
+            searchIndexPromise = null
+            throw error
+          })
+        }
+        const index = await searchIndexPromise
+        matches = queryFullTextSearchIndex(index, terms)
       }
-      const index = await searchIndexPromise
       if (request === latestSearchRequest) {
-        searchTermMatches.value = { query: normalizeSearchText(query), byTerm: queryFullTextSearchIndex(index, terms) }
+        searchTermMatches.value = { query: normalizeSearchText(query), byTerm: matches }
       }
     } finally {
       if (request === latestSearchRequest) searchIndexLoading.value = false
@@ -406,6 +443,13 @@ export function useJobsData() {
   onMounted(() => {
     loadJobs()
     loadSiteStats()
+  })
+
+  onBeforeUnmount(() => {
+    searchWorker?.terminate()
+    searchWorker = null
+    for (const request of workerRequests.values()) request.reject(new Error('Search closed'))
+    workerRequests.clear()
   })
 
   return {

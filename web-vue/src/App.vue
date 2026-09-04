@@ -1,13 +1,13 @@
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import heroAtlasUrl from './assets/hero-atlas-v2.jpg'
 import FilterBar from './components/FilterBar.vue'
 import ActiveChips from './components/ActiveChips.vue'
 import JobCard from './components/JobCard.vue'
 import JobDetailDrawer from './components/JobDetailDrawer.vue'
-import MapPanel from './components/MapPanel.vue'
 import PresetBar from './components/PresetBar.vue'
 import TrendsTab from './components/TrendsTab.vue'
+import AlertSignup from './components/AlertSignup.vue'
 import { useSavedJobs } from './composables/useSavedJobs'
 import { usePresets } from './composables/usePresets'
 import { useJobFilters } from './composables/useJobFilters'
@@ -15,6 +15,10 @@ import { useJobsData } from './composables/useJobsData'
 import { useAlerts } from './composables/useAlerts'
 import { useFilterUrlSync, buildShareUrl } from './composables/useFilterUrlSync'
 import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
+import { jobDetailPath } from './lib/jobPath'
+import { deriveCandidateFields } from '../../scripts/lib/job-candidate-fields.js'
+
+const MapPanel = defineAsyncComponent(() => import('./components/MapPanel.vue'))
 
 const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || 'https://github.com/sazeka/Faculty-Jobs/issues/new'
 const baseUrl = import.meta.env.BASE_URL || '/'
@@ -76,7 +80,7 @@ watch(() => filters.value.q, (query) => {
 })
 onBeforeUnmount(() => clearTimeout(queryTimer))
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
-const { catalogSummary, stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, collegeOptions, departmentOptions, cityOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
+const { catalogSummary, stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, collegeOptions, departmentOptions, cityOptions, employmentTypeOptions, workModeOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
   useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob, searchTermMatchesRef: searchTermMatches })
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({ filtersRef: filters, updateFilters })
 const { alertsWithCounts, addAlert, removeAlert, subscribeAlert, subscribeStatus, subscribeError } = useAlerts({ filtersRef: filters, countMatches })
@@ -102,12 +106,19 @@ const MAP_VISIBILITY_KEY = 'faculty-atlas-map-visible-v1'
 const FILTER_VISIBILITY_KEY = 'faculty-atlas-filters-visible-v1'
 const showMapRail = ref(readMapVisibility())
 const showFiltersCol = ref(readFilterVisibility())
-const showAllJobs = ref(false)
 const showMethodology = ref(false)
 const excludedColleges = ref(null)
 const filterDrawerOpen = ref(false)
 const catalogSection = ref(null)
 const selectedJob = ref(null)
+const methodologyModal = ref(null)
+const filterPanel = ref(null)
+const mapReady = ref(false)
+let idleMapHandle = null
+let detailReturnUrl = null
+let methodologyTrigger = null
+let filterTrigger = null
+const detailJobsByPath = new Map()
 const savedCount = computed(() => savedJobs.value.size)
 
 function readMapVisibility() {
@@ -143,13 +154,80 @@ function setFiltersColVisibility(visible) {
 }
 
 async function openJobDetail(job) {
+  const wasOpen = Boolean(selectedJob.value)
   selectedJob.value = job
+  const path = jobDetailPath(job)
+  detailJobsByPath.set(path, job)
+  if (!wasOpen) {
+    detailReturnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`
+    window.history.pushState({ facultyAtlasJob: true, returnUrl: detailReturnUrl }, '', path)
+  } else {
+    window.history.replaceState({ facultyAtlasJob: true, returnUrl: detailReturnUrl }, '', path)
+  }
   try {
     const full = await loadJobDescription(job)
-    if (full && selectedJob.value) selectedJob.value = { ...selectedJob.value, ...full }
+    if (full && selectedJob.value) selectedJob.value = { ...selectedJob.value, ...full, ...deriveCandidateFields(full) }
   } catch {
     // The drawer remains useful even when the optional full description fails.
   }
+}
+
+function closeJobDetail(fromPopState = false) {
+  if (!selectedJob.value) return
+  selectedJob.value = null
+  if (!fromPopState && window.history.state?.facultyAtlasJob) window.history.back()
+  else if (!fromPopState && detailReturnUrl) window.history.replaceState(null, '', detailReturnUrl)
+}
+
+function handlePopState() {
+  if (window.history.state?.facultyAtlasJob) {
+    const job = detailJobsByPath.get(window.location.pathname) || filteredJobs.value.find((candidate) => jobDetailPath(candidate) === window.location.pathname)
+    if (job) {
+      detailReturnUrl = window.history.state.returnUrl || detailReturnUrl
+      selectedJob.value = job
+      loadJobDescription(job).then((full) => {
+        if (full && selectedJob.value) selectedJob.value = { ...selectedJob.value, ...full, ...deriveCandidateFields(full) }
+      }).catch(() => {})
+    }
+  } else if (selectedJob.value) {
+    closeJobDetail(true)
+  }
+}
+
+function focusable(container) {
+  return [...(container?.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])') || [])]
+}
+
+function trapFocus(event, container) {
+  if (event.key !== 'Tab' || !container) return
+  const items = focusable(container)
+  if (!items.length) { event.preventDefault(); container.focus(); return }
+  const first = items[0]
+  const last = items[items.length - 1]
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+}
+
+function handleGlobalKeydown(event) {
+  if (showMethodology.value) {
+    if (event.key === 'Escape') closeMethodology()
+    else trapFocus(event, methodologyModal.value)
+  } else if (filterDrawerOpen.value) {
+    if (event.key === 'Escape') closeFilterDrawer()
+    else trapFocus(event, filterPanel.value)
+  }
+}
+
+async function openFilterDrawer(event) {
+  filterTrigger = event?.currentTarget || document.activeElement
+  filterDrawerOpen.value = true
+  await nextTick()
+  focusable(filterPanel.value)[0]?.focus()
+}
+
+function closeFilterDrawer() {
+  filterDrawerOpen.value = false
+  nextTick(() => filterTrigger?.focus?.())
 }
 
 function focusCatalog() {
@@ -158,7 +236,10 @@ function focusCatalog() {
 }
 
 async function openMethodology() {
+  methodologyTrigger = document.activeElement
   showMethodology.value = true
+  await nextTick()
+  methodologyModal.value?.focus()
   if (excludedColleges.value) return
   try {
     const res = await fetch(`${baseUrl}policy-excluded-colleges.json`)
@@ -166,11 +247,19 @@ async function openMethodology() {
   } catch { /* unavailable */ }
 }
 
+function closeMethodology() {
+  showMethodology.value = false
+  nextTick(() => methodologyTrigger?.focus?.())
+}
+
 const LISTINGS_PAGE = 30
+const displayedCount = ref(LISTINGS_PAGE)
 
 const displayedJobs = computed(() =>
-  showAllJobs.value ? filteredJobs.value : filteredJobs.value.slice(0, LISTINGS_PAGE)
+  filteredJobs.value.slice(0, displayedCount.value)
 )
+const nextPageCount = computed(() => Math.min(LISTINGS_PAGE, Math.max(0, filteredJobs.value.length - displayedCount.value)))
+watch(filters, () => { displayedCount.value = LISTINGS_PAGE }, { deep: true })
 
 // Scraped date label
 const scrapedLabel = computed(() => {
@@ -186,6 +275,21 @@ function handleMapCollegeSelect(college) {
   if (!college) updateFilters({ college: ALL_FILTER_VALUE })
   else updateFilters({ college })
 }
+
+onMounted(() => {
+  window.addEventListener('popstate', handlePopState)
+  window.addEventListener('keydown', handleGlobalKeydown)
+  const loadMap = () => { mapReady.value = true }
+  if ('requestIdleCallback' in window) idleMapHandle = window.requestIdleCallback(loadMap, { timeout: 1800 })
+  else idleMapHandle = window.setTimeout(loadMap, 500)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('popstate', handlePopState)
+  window.removeEventListener('keydown', handleGlobalKeydown)
+  if ('cancelIdleCallback' in window && idleMapHandle != null) window.cancelIdleCallback(idleMapHandle)
+  else if (idleMapHandle != null) window.clearTimeout(idleMapHandle)
+})
 
 function handleHoverCollege(college) {
   hoveredCollege.value = college || null
@@ -225,6 +329,7 @@ async function reportBadListing(job) {
 
 <template>
   <div class="fa-screen">
+    <a class="fa-skip-link" href="#main-content">Skip to main content</a>
     <header class="fa-header">
       <button class="fa-wordmark" type="button" aria-label="Faculty Atlas home" @click="focusCatalog">
         <svg width="38" height="38" viewBox="0 0 64 64" class="fa-compass-svg" aria-hidden="true">
@@ -263,7 +368,7 @@ async function reportBadListing(job) {
         </div>
         <div class="fa-hero-visual">
           <div class="fa-hero-art" aria-hidden="true">
-            <img :src="heroAtlasUrl" alt="" width="1536" height="1024" decoding="async" fetchpriority="high" />
+            <img :src="heroAtlasUrl" alt="" width="960" height="640" decoding="async" fetchpriority="high" />
           </div>
         </div>
       </section>
@@ -290,7 +395,7 @@ async function reportBadListing(job) {
       </section>
     </template>
 
-    <TrendsTab v-if="activeTab === 'trends'" :base-url="baseUrl" />
+    <TrendsTab v-if="activeTab === 'trends'" id="main-content" :base-url="baseUrl" />
 
     <section
       v-if="activeTab === 'jobs'"
@@ -299,13 +404,13 @@ async function reportBadListing(job) {
       :class="{ 'is-map-hidden': !showMapRail, 'is-filters-hidden': !showFiltersCol }"
     >
       <Teleport to="body">
-        <div v-if="filterDrawerOpen" class="fa-drawer-backdrop" @click="filterDrawerOpen = false" />
+        <div v-if="filterDrawerOpen" class="fa-drawer-backdrop" @click="closeFilterDrawer" />
       </Teleport>
 
-      <aside v-if="showFiltersCol || filterDrawerOpen" class="fa-filters-col" :class="{ 'is-open': filterDrawerOpen }">
+      <aside v-if="showFiltersCol || filterDrawerOpen" class="fa-filters-col" ref="filterPanel" :class="{ 'is-open': filterDrawerOpen }" :role="filterDrawerOpen ? 'dialog' : undefined" :aria-modal="filterDrawerOpen ? 'true' : undefined" :aria-label="filterDrawerOpen ? 'Filter jobs' : undefined" tabindex="-1">
         <div class="fa-drawer-header">
           <span class="fa-label">Refine results</span>
-          <button class="fa-drawer-close" aria-label="Close filters" @click="filterDrawerOpen = false">✕</button>
+          <button class="fa-drawer-close" aria-label="Close filters" @click="closeFilterDrawer">✕</button>
         </div>
         <FilterBar
           :filters="filters"
@@ -317,6 +422,8 @@ async function reportBadListing(job) {
           :college-options="collegeOptions"
           :department-options="departmentOptions"
           :city-options="cityOptions"
+          :employment-type-options="employmentTypeOptions"
+          :work-mode-options="workModeOptions"
           :subscribe-status="subscribeStatus"
           :subscribe-error="subscribeError"
           @update:filters="updateFilters"
@@ -327,7 +434,7 @@ async function reportBadListing(job) {
         />
       </aside>
 
-      <main class="fa-results-col">
+      <main id="main-content" class="fa-results-col" tabindex="-1">
         <ActiveChips v-if="activeFilterChips.length" :chips="activeFilterChips" @clear-chip="clearFilterChip" />
         <PresetBar
           :items="presetItems"
@@ -344,7 +451,7 @@ async function reportBadListing(job) {
           </div>
           <div class="fa-toolbar-actions">
             <button class="fa-tool-button" @click="copyShareLink">{{ shareCopied ? '✓ Copied' : '⎘ Share' }}</button>
-            <button class="fa-tool-button fa-filters-toggle" @click="filterDrawerOpen = true">⊞ Filters</button>
+            <button class="fa-tool-button fa-filters-toggle" @click="openFilterDrawer">⊞ Filters</button>
             <select :value="filters.sortBy" aria-label="Sort jobs" @change="updateFilters({ sortBy: $event.target.value })">
               <option value="recent">Newest first</option>
               <option value="relevance">Most relevant</option>
@@ -370,6 +477,13 @@ async function reportBadListing(job) {
             @click="setMapRailVisibility(!showMapRail)"
           ><span aria-hidden="true">{{ showMapRail ? '›' : '‹' }}</span></button>
         </div>
+        <p class="fa-sr-only" aria-live="polite" aria-atomic="true">{{ filteredJobs.length.toLocaleString() }} job results</p>
+        <AlertSignup
+          :match-count="filteredJobs.length"
+          :status="subscribeStatus"
+          :error="subscribeError"
+          @subscribe="subscribeAlert"
+        />
 
         <div v-if="isInitialLoading && filteredJobs.length === 0" class="fa-empty-state">
           <p class="fa-display">Loading postings…</p><span>Fetching the latest faculty listings.</span>
@@ -386,14 +500,15 @@ async function reportBadListing(job) {
             :index="i"
             :saved="isSavedJob(job.url)"
             :emphasized="Boolean(hoveredCollege) && job.college === hoveredCollege"
+            :detail-path="jobDetailPath(job)"
             @toggle-save="toggleSavedJob"
             @open-detail="openJobDetail"
             @hover-college="handleHoverCollege"
             @report-bad-listing="reportBadListing"
           />
         </div>
-        <div v-if="!showAllJobs && filteredJobs.length > LISTINGS_PAGE" class="fa-show-more">
-          <button class="fa-btn fa-btn-ghost" @click="showAllJobs = true">Show all {{ filteredJobs.length.toLocaleString() }} postings →</button>
+        <div v-if="displayedCount < filteredJobs.length" class="fa-show-more">
+          <button class="fa-btn fa-btn-ghost" @click="displayedCount += LISTINGS_PAGE">Load {{ nextPageCount }} more · {{ (filteredJobs.length - displayedCount).toLocaleString() }} remaining →</button>
         </div>
       </main>
 
@@ -404,14 +519,15 @@ async function reportBadListing(job) {
             <button type="button" @click="activeTab = 'map'">Expand ↗</button>
           </div>
         </div>
-        <MapPanel
+        <MapPanel v-if="mapReady"
           :jobs="filteredJobs"
           :selected-college="filters.college !== ALL_FILTER_VALUE ? filters.college : null"
           :hovered-college="hoveredCollege"
           @select-college="handleMapCollegeSelect"
-          @select-state="(s) => updateFilters({ state: s })"
+          @select-state="(s) => updateFilters({ state: [s] })"
           @hover-college="handleHoverCollege"
         />
+        <div v-else class="fa-map-loading" role="status">Loading interactive map…</div>
         <div class="fa-map-summary">
           <strong class="fa-display">Explore openings by place.</strong>
           <span>Select a marker to filter the catalog by institution.</span>
@@ -424,15 +540,16 @@ async function reportBadListing(job) {
         <div><div class="fa-label">Geographic explorer</div><h2 class="fa-display">Openings across the map</h2></div>
         <button class="fa-btn fa-btn-ghost" @click="activeTab = 'jobs'">← Back to catalog</button>
       </div>
-      <div class="fa-map-page-grid">
-        <MapPanel
+      <div id="main-content" class="fa-map-page-grid" tabindex="-1">
+        <MapPanel v-if="mapReady"
           :jobs="filteredJobs"
           :selected-college="filters.college !== ALL_FILTER_VALUE ? filters.college : null"
           :hovered-college="hoveredCollege"
           @select-college="handleMapCollegeSelect"
-          @select-state="(s) => updateFilters({ state: s })"
+          @select-state="(s) => updateFilters({ state: [s] })"
           @hover-college="handleHoverCollege"
         />
+        <div v-else class="fa-map-loading" role="status">Loading interactive map…</div>
       </div>
     </section>
 
@@ -446,7 +563,7 @@ async function reportBadListing(job) {
         v-if="selectedJob"
         :job="selectedJob"
         :saved="isSavedJob(selectedJob.url)"
-        @close="selectedJob = null"
+        @close="closeJobDetail"
         @toggle-save="toggleSavedJob"
         @report-bad-listing="reportBadListing"
       />
@@ -454,14 +571,14 @@ async function reportBadListing(job) {
 
     <!-- ═══ METHODOLOGY MODAL ═══ -->
     <Teleport to="body">
-      <div v-if="showMethodology" class="fa-modal-backdrop" @click.self="showMethodology = false">
-        <div class="fa-modal" role="dialog" aria-modal="true" aria-label="Methodology">
+      <div v-if="showMethodology" class="fa-modal-backdrop" @click.self="closeMethodology">
+        <div ref="methodologyModal" class="fa-modal" role="dialog" aria-modal="true" aria-labelledby="methodology-title" tabindex="-1">
           <div class="fa-modal-header">
             <div>
               <div class="fa-label" style="margin-bottom: 6px;">About the data</div>
-              <div class="fa-display" style="font-size: 36px;">Methodology</div>
+              <div id="methodology-title" class="fa-display" style="font-size: 36px;">Methodology</div>
             </div>
-            <button class="fa-modal-close" aria-label="Close" @click="showMethodology = false">✕</button>
+            <button class="fa-modal-close" aria-label="Close" @click="closeMethodology">✕</button>
           </div>
           <hr class="fa-rule" style="margin: 20px 0;" />
           <div class="fa-modal-body">
@@ -527,6 +644,19 @@ async function reportBadListing(job) {
 
 /* ─── Layout ─── */
 .fa-screen { min-height: 100vh; }
+.fa-skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 3000;
+  padding: 10px 14px;
+  color: var(--paper);
+  background: var(--ink);
+  transform: translateY(-160%);
+  transition: transform .15s;
+}
+.fa-skip-link:focus { transform: translateY(0); }
+.fa-map-loading { display: grid; min-height: 360px; place-items: center; color: var(--ink-3); background: var(--paper-2); }
 
 .fa-header {
   padding: 24px var(--pad) 0;

@@ -11,6 +11,8 @@ const props = defineProps({
   collegeOptions: { type: Array, required: true },
   departmentOptions: { type: Array, required: true },
   cityOptions: { type: Array, default: () => [] },
+  employmentTypeOptions: { type: Array, default: () => [] },
+  workModeOptions: { type: Array, default: () => [] },
   subscribeStatus: { type: String, default: 'idle' }, // 'idle' | 'pending' | 'success' | 'error'
   subscribeError: { type: String, default: '' },
 })
@@ -26,6 +28,14 @@ const showAllRanks = ref(false)
 const showAllStates = ref(false)
 const showSubscribePanel = ref(false)
 const subscribeEmail = ref('')
+
+function selectedValues(value) {
+  return Array.isArray(value) ? value : []
+}
+
+function isSelected(key, value) {
+  return selectedValues(props.filters[key]).includes(value)
+}
 
 function submitSubscribe() {
   if (!subscribeEmail.value.trim()) return
@@ -73,7 +83,7 @@ const filteredCityOptions = computed(() =>
 // alphabetized; show any state that currently has matches plus the active one.
 const statesForFilter = computed(() =>
   props.stateOptions
-    .filter((o) => o.count > 0 || o.value === props.filters.state)
+    .filter((o) => o.count > 0 || isSelected('state', o.value))
     .slice()
     .sort((a, b) => String(a.value).localeCompare(String(b.value)))
 )
@@ -81,8 +91,11 @@ const statesForFilter = computed(() =>
 function limitedOptions(options, expanded, activeValue, limit = 8) {
   if (expanded || options.length <= limit) return options
   const visible = options.slice(0, limit)
-  const active = options.find((option) => option.value === activeValue)
-  if (active && !visible.some((option) => option.value === active.value)) visible.push(active)
+  const activeValues = Array.isArray(activeValue) ? activeValue : [activeValue]
+  for (const value of activeValues) {
+    const active = options.find((option) => option.value === value)
+    if (active && !visible.some((option) => option.value === active.value)) visible.push(active)
+  }
   return visible
 }
 
@@ -101,14 +114,19 @@ function updateField(key, value) {
   emit('update:filters', { [key]: value })
 }
 
+function toggleArrayField(key, value) {
+  const selected = selectedValues(props.filters[key])
+  updateField(key, selected.includes(value) ? selected.filter((item) => item !== value) : [...selected, value])
+}
+
 function toggleState(value) {
-  updateField('state', props.filters.state === value ? 'all' : value)
+  toggleArrayField('state', value)
 }
 function togglePositionType(value) {
-  updateField('positionType', props.filters.positionType === value ? 'all' : value)
+  toggleArrayField('positionType', value)
 }
 function toggleDiscipline(value) {
-  updateField('discipline', props.filters.discipline === value ? 'all' : value)
+  toggleArrayField('discipline', value)
 }
 function toggleCollege(value) {
   updateField('college', props.filters.college === value ? 'all' : value)
@@ -160,8 +178,8 @@ function toggleCity(value) {
           :key="opt.value"
           class="fa-facet-item"
           :class="{ active: filters.college === opt.value }"
-          @click="toggleCollege(opt.value)"
         >
+          <input class="fa-sr-only" type="checkbox" :checked="filters.college === opt.value" :aria-label="`${opt.value}, ${opt.count} jobs`" @change="toggleCollege(opt.value)" />
           <span class="fa-check" :class="{ checked: filters.college === opt.value }">
             {{ filters.college === opt.value ? '✓' : '' }}
           </span>
@@ -216,11 +234,11 @@ function toggleCity(value) {
           v-for="opt in visibleDisciplineOptions"
           :key="opt.value"
           class="fa-facet-item"
-          :class="{ active: filters.discipline === opt.value }"
-          @click="toggleDiscipline(opt.value)"
+          :class="{ active: isSelected('discipline', opt.value) }"
         >
-          <span class="fa-check" :class="{ checked: filters.discipline === opt.value }">
-            {{ filters.discipline === opt.value ? '✓' : '' }}
+          <input class="fa-sr-only" type="checkbox" :checked="isSelected('discipline', opt.value)" :disabled="opt.disabled" :aria-label="`${opt.value}, ${opt.count} jobs`" @change="toggleDiscipline(opt.value)" />
+          <span class="fa-check" :class="{ checked: isSelected('discipline', opt.value) }">
+            {{ isSelected('discipline', opt.value) ? '✓' : '' }}
           </span>
           <span style="flex: 1;">{{ opt.value }}</span>
           <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
@@ -272,11 +290,11 @@ function toggleCity(value) {
           v-for="opt in visibleRankOptions"
           :key="opt.value"
           class="fa-facet-item"
-          :class="{ active: filters.positionType === opt.value }"
-          @click="togglePositionType(opt.value)"
+          :class="{ active: isSelected('positionType', opt.value) }"
         >
-          <span class="fa-check" :class="{ checked: filters.positionType === opt.value }">
-            {{ filters.positionType === opt.value ? '✓' : '' }}
+          <input class="fa-sr-only" type="checkbox" :checked="isSelected('positionType', opt.value)" :disabled="opt.disabled" :aria-label="`${opt.label}, ${opt.count} jobs`" @change="togglePositionType(opt.value)" />
+          <span class="fa-check" :class="{ checked: isSelected('positionType', opt.value) }">
+            {{ isSelected('positionType', opt.value) ? '✓' : '' }}
           </span>
           <span style="flex: 1;">{{ opt.label }}</span>
           <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
@@ -295,7 +313,8 @@ function toggleCity(value) {
     <div style="margin-bottom: 28px;">
       <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Track</div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <label class="fa-facet-item" :class="{ active: filters.tenureTrackOnly }" @click="updateField('tenureTrackOnly', !filters.tenureTrackOnly)">
+        <label class="fa-facet-item" :class="{ active: filters.tenureTrackOnly }">
+          <input class="fa-sr-only" type="checkbox" :checked="filters.tenureTrackOnly" @change="updateField('tenureTrackOnly', !filters.tenureTrackOnly)" />
           <span class="fa-check" :class="{ checked: filters.tenureTrackOnly }">{{ filters.tenureTrackOnly ? '✓' : '' }}</span>
           <span style="flex: 1;">Tenure-Track</span>
           <span class="fa-meta" style="font-size: 10px;">{{ tenureTrackCount }}</span>
@@ -311,11 +330,11 @@ function toggleCity(value) {
           v-for="opt in visibleStateOptions"
           :key="opt.value"
           class="fa-facet-item"
-          :class="{ active: filters.state === opt.value }"
-          @click="toggleState(opt.value)"
+          :class="{ active: isSelected('state', opt.value) }"
         >
-          <span class="fa-check" :class="{ checked: filters.state === opt.value }">
-            {{ filters.state === opt.value ? '✓' : '' }}
+          <input class="fa-sr-only" type="checkbox" :checked="isSelected('state', opt.value)" :disabled="opt.disabled" :aria-label="`${opt.value}, ${opt.count} jobs`" @change="toggleState(opt.value)" />
+          <span class="fa-check" :class="{ checked: isSelected('state', opt.value) }">
+            {{ isSelected('state', opt.value) ? '✓' : '' }}
           </span>
           <span style="flex: 1;">{{ opt.value }}</span>
           <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
@@ -330,19 +349,44 @@ function toggleCity(value) {
       </div>
     </div>
 
+    <div v-if="employmentTypeOptions.length" style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Schedule</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label v-for="opt in employmentTypeOptions" :key="opt.value" class="fa-facet-item" :class="{ active: filters.employmentType === opt.value }">
+          <input class="fa-sr-only" type="checkbox" :checked="filters.employmentType === opt.value" :aria-label="`${opt.value}, ${opt.count} jobs`" @change="updateField('employmentType', filters.employmentType === opt.value ? 'all' : opt.value)" />
+          <span class="fa-check" :class="{ checked: filters.employmentType === opt.value }">{{ filters.employmentType === opt.value ? '✓' : '' }}</span>
+          <span style="flex: 1;">{{ opt.value }}</span><span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
+        </label>
+      </div>
+    </div>
+
+    <div v-if="workModeOptions.length" style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Workplace</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label v-for="opt in workModeOptions" :key="opt.value" class="fa-facet-item" :class="{ active: filters.workMode === opt.value }">
+          <input class="fa-sr-only" type="checkbox" :checked="filters.workMode === opt.value" :aria-label="`${opt.value}, ${opt.count} jobs`" @change="updateField('workMode', filters.workMode === opt.value ? 'all' : opt.value)" />
+          <span class="fa-check" :class="{ checked: filters.workMode === opt.value }">{{ filters.workMode === opt.value ? '✓' : '' }}</span>
+          <span style="flex: 1;">{{ opt.value }}</span><span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
+        </label>
+      </div>
+    </div>
+
     <!-- Quick toggles -->
     <div style="margin-bottom: 28px;">
       <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">View</div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <label class="fa-facet-item" :class="{ active: filters.newOnly }" @click="updateField('newOnly', !filters.newOnly)">
+        <label class="fa-facet-item" :class="{ active: filters.newOnly }">
+          <input class="fa-sr-only" type="checkbox" :checked="filters.newOnly" @change="updateField('newOnly', !filters.newOnly)" />
           <span class="fa-check" :class="{ checked: filters.newOnly }">{{ filters.newOnly ? '✓' : '' }}</span>
           <span style="flex: 1;">New since last visit</span>
         </label>
-        <label class="fa-facet-item" :class="{ active: filters.savedOnly }" @click="updateField('savedOnly', !filters.savedOnly)">
+        <label class="fa-facet-item" :class="{ active: filters.savedOnly }">
+          <input class="fa-sr-only" type="checkbox" :checked="filters.savedOnly" @change="updateField('savedOnly', !filters.savedOnly)" />
           <span class="fa-check" :class="{ checked: filters.savedOnly }">{{ filters.savedOnly ? '✓' : '' }}</span>
           <span style="flex: 1;">Saved jobs only</span>
         </label>
-        <label class="fa-facet-item" :class="{ active: filters.showClosed }" @click="updateField('showClosed', !filters.showClosed)">
+        <label class="fa-facet-item" :class="{ active: filters.showClosed }">
+          <input class="fa-sr-only" type="checkbox" :checked="filters.showClosed" @change="updateField('showClosed', !filters.showClosed)" />
           <span class="fa-check" :class="{ checked: filters.showClosed }">{{ filters.showClosed ? '✓' : '' }}</span>
           <span style="flex: 1;">Show closed postings</span>
         </label>

@@ -5,6 +5,7 @@ import { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/
 import { classifySourceLink, institutionTitleConflict, sanitizePostingDate } from '../lib/listingTrust.js'
 import { inferAlaskaCampus } from '../../../scripts/lib/alaska-campus.js'
 import { normalizeSearchText } from '../../../scripts/lib/jobs-search-index.js'
+import { deriveCandidateFields } from '../../../scripts/lib/job-candidate-fields.js'
 
 export { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
 
@@ -108,6 +109,15 @@ function clean(value) {
   return String(value || '').replace(/\s+/g, ' ').trim()
 }
 
+function selectedValues(value) {
+  if (Array.isArray(value)) return value.filter(Boolean)
+  return value && value !== ALL_FILTER_VALUE ? [value] : []
+}
+
+function isSelected(value, option) {
+  return selectedValues(value).includes(option)
+}
+
 // Returns a sanitised department string or null if the value looks like garbage
 // (scraped job title, truncated description, etc.)
 const INSTITUTION_WORDS = ['university', 'college', 'institute', 'school', 'academy']
@@ -184,6 +194,7 @@ function normalizeJob(job) {
   const canonicalGroupId = clean(job?.canonicalGroupId) || (derivedGroupKey ? `grp_${derivedGroupKey}` : null)
   const canonicalJobId = clean(job?.canonicalJobId) || clean(job?.url) || `${title}|${college || ''}`
 
+  const candidateFields = deriveCandidateFields(job)
   const normalized = {
     title,
     url: linkQuality === 'invalid' ? '#' : (job?.url || '#'),
@@ -196,6 +207,7 @@ function normalizeJob(job) {
     summary: job?.summary || null,
     hasDescription: Boolean(job?.hasDescription || clean(job?.description) || clean(job?.summary)),
     specialization: job?.specialization || null,
+    ...candidateFields,
     discipline: null, // set after object creation
     openUntilFilled: Boolean(job?.openUntilFilled),
     closeDateRaw: job?.closeDateRaw || null,
@@ -317,6 +329,8 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
   const allCollegeValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.college))
   const allDepartmentValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.department))
   const allCityValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.city))
+  const allEmploymentTypeValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.employmentType))
+  const allWorkModeValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.workMode))
 
   function increment(counts, key) {
     if (key) counts.set(key, (counts.get(key) || 0) + 1)
@@ -335,6 +349,8 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
       department: new Map(),
       discipline: new Map(),
       city: new Map(),
+      employmentType: new Map(),
+      workMode: new Map(),
       tenureTrack: 0,
     }
 
@@ -342,31 +358,38 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
       const search = matchSearchTerms(job, terms, fullTextMatches)
       if (!search.matched) continue
 
-      const stateOk = filterValues.state === ALL_FILTER_VALUE || job.state === filterValues.state
-      const positionTypeOk = filterValues.positionType === ALL_FILTER_VALUE || (job.positionTypes || []).includes(filterValues.positionType)
+      const states = selectedValues(filterValues.state)
+      const positionTypes = selectedValues(filterValues.positionType)
+      const disciplines = selectedValues(filterValues.discipline)
+      const stateOk = states.length === 0 || states.includes(job.state)
+      const positionTypeOk = positionTypes.length === 0 || positionTypes.some((type) => (job.positionTypes || []).includes(type))
       const collegeOk = filterValues.college === ALL_FILTER_VALUE || job.college === filterValues.college
       const departmentOk = filterValues.department === ALL_FILTER_VALUE || job.department === filterValues.department
-      const disciplineOk = filterValues.discipline === ALL_FILTER_VALUE || job.discipline === filterValues.discipline
+      const disciplineOk = disciplines.length === 0 || disciplines.includes(job.discipline)
       const cityOk = filterValues.city === ALL_FILTER_VALUE || job.city === filterValues.city
+      const employmentTypeOk = filterValues.employmentType === ALL_FILTER_VALUE || job.employmentType === filterValues.employmentType
+      const workModeOk = filterValues.workMode === ALL_FILTER_VALUE || job.workMode === filterValues.workMode
       const tenureTrackOk = !filterValues.tenureTrackOnly || job.tenureTrack === true
       const savedOk = !filterValues.savedOnly || job.duplicateUrls.some((url) => isSavedJob(url))
       const newOk = !filterValues.newOnly || job.isNew === true
       const closedOk = filterValues.showClosed || !job.isClosed
       const commonOk = savedOk && newOk && closedOk
-      const allFacetsOk = stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && tenureTrackOk
+      const allFacetsOk = stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk
 
       if (commonOk && allFacetsOk) results.push(search.score ? { ...job, _score: search.score } : job)
       if (!collectFacets || !commonOk) continue
 
-      if (positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && tenureTrackOk) increment(facets.state, job.state)
-      if (stateOk && collegeOk && departmentOk && disciplineOk && cityOk && tenureTrackOk) {
+      if (positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.state, job.state)
+      if (stateOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) {
         for (const positionType of job.positionTypes || []) increment(facets.positionType, positionType)
       }
-      if (stateOk && positionTypeOk && departmentOk && disciplineOk && cityOk && tenureTrackOk) increment(facets.college, job.college)
-      if (stateOk && positionTypeOk && collegeOk && disciplineOk && cityOk && tenureTrackOk) increment(facets.department, job.department)
-      if (stateOk && positionTypeOk && collegeOk && departmentOk && cityOk && tenureTrackOk) increment(facets.discipline, job.discipline)
-      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && tenureTrackOk) increment(facets.city, job.city)
-      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && job.tenureTrack === true) facets.tenureTrack += 1
+      if (stateOk && positionTypeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.college, job.college)
+      if (stateOk && positionTypeOk && collegeOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.department, job.department)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.discipline, job.discipline)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.city, job.city)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && workModeOk && tenureTrackOk) increment(facets.employmentType, job.employmentType)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && tenureTrackOk) increment(facets.workMode, job.workMode)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && job.tenureTrack === true) facets.tenureTrack += 1
     }
 
     return { results, facets }
@@ -383,7 +406,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
         count,
         label: formatOptionLabel(value, count, 30),
         fullLabel: `${value} (${count})`,
-        disabled: count === 0 && filtersRef.value.state !== value,
+        disabled: count === 0 && !isSelected(filtersRef.value.state, value),
       }
     })
   })
@@ -397,7 +420,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
         count,
         label: formatOptionLabel(value, count, 30),
         fullLabel: `${value} (${count})`,
-        disabled: count === 0 && filtersRef.value.positionType !== value,
+        disabled: count === 0 && !isSelected(filtersRef.value.positionType, value),
       }
     })
   })
@@ -437,7 +460,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     const allLabels = [...new Set(DISCIPLINE_RULES.map(r => r.label).concat(['Other']))]
     return allLabels
       .map(label => ({ value: label, count: counts.get(label) || 0 }))
-      .filter(opt => opt.count > 0 || filtersRef.value.discipline === opt.value)
+      .filter(opt => opt.count > 0 || isSelected(filtersRef.value.discipline, opt.value))
       .sort((a, b) => b.count - a.count)
   })
 
@@ -453,6 +476,16 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
         disabled: count === 0 && filtersRef.value.city !== value,
       }
     })
+  })
+
+  const employmentTypeOptions = computed(() => {
+    const counts = filterEvaluation.value.facets.employmentType
+    return allEmploymentTypeValues.value.map((value) => ({ value, count: counts.get(value) || 0 }))
+  })
+
+  const workModeOptions = computed(() => {
+    const counts = filterEvaluation.value.facets.workMode
+    return allWorkModeValues.value.map((value) => ({ value, count: counts.get(value) || 0 }))
   })
 
   const filteredJobs = computed(() => {
@@ -507,16 +540,18 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     if (clean(filtersRef.value.q)) {
       chips.push({ key: 'search', label: `Search: "${truncate(clean(filtersRef.value.q), 20)}"` })
     }
-    if (filtersRef.value.state !== ALL_FILTER_VALUE) chips.push({ key: 'state', label: filtersRef.value.state })
+    for (const value of selectedValues(filtersRef.value.state)) chips.push({ id: `state:${value}`, key: 'state', value, label: value })
     if (filtersRef.value.tenureTrackOnly) chips.push({ key: 'tenureTrackOnly', label: 'Tenure Track' })
     if (filtersRef.value.savedOnly) chips.push({ key: 'savedOnly', label: 'Saved Jobs' })
     if (filtersRef.value.newOnly) chips.push({ key: 'newOnly', label: 'New Since Visit' })
     if (filtersRef.value.showClosed) chips.push({ key: 'showClosed', label: 'Including Closed' })
-    if (filtersRef.value.positionType !== ALL_FILTER_VALUE) chips.push({ key: 'positionType', label: filtersRef.value.positionType })
+    for (const value of selectedValues(filtersRef.value.positionType)) chips.push({ id: `positionType:${value}`, key: 'positionType', value, label: value })
     if (filtersRef.value.college !== ALL_FILTER_VALUE) chips.push({ key: 'college', label: truncate(filtersRef.value.college, 25) })
     if (filtersRef.value.department !== ALL_FILTER_VALUE) chips.push({ key: 'department', label: truncate(filtersRef.value.department, 30) })
-    if (filtersRef.value.discipline !== ALL_FILTER_VALUE) chips.push({ key: 'discipline', label: filtersRef.value.discipline })
+    for (const value of selectedValues(filtersRef.value.discipline)) chips.push({ id: `discipline:${value}`, key: 'discipline', value, label: value })
     if (filtersRef.value.city !== ALL_FILTER_VALUE) chips.push({ key: 'city', label: filtersRef.value.city })
+    if (filtersRef.value.employmentType !== ALL_FILTER_VALUE) chips.push({ key: 'employmentType', label: filtersRef.value.employmentType })
+    if (filtersRef.value.workMode !== ALL_FILTER_VALUE) chips.push({ key: 'workMode', label: filtersRef.value.workMode })
     return chips
   })
 
@@ -528,18 +563,20 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     filtersRef.value = next
   }
 
-  function clearFilterChip(key) {
+  function clearFilterChip(key, value) {
     if (key === 'search') updateFilters({ q: '' })
-    if (key === 'state') updateFilters({ state: ALL_FILTER_VALUE })
+    if (key === 'state') updateFilters({ state: selectedValues(filtersRef.value.state).filter((item) => item !== value) })
     if (key === 'tenureTrackOnly') updateFilters({ tenureTrackOnly: false })
     if (key === 'savedOnly') updateFilters({ savedOnly: false })
     if (key === 'newOnly') updateFilters({ newOnly: false })
     if (key === 'showClosed') updateFilters({ showClosed: false })
-    if (key === 'positionType') updateFilters({ positionType: ALL_FILTER_VALUE })
+    if (key === 'positionType') updateFilters({ positionType: selectedValues(filtersRef.value.positionType).filter((item) => item !== value) })
     if (key === 'college') updateFilters({ college: ALL_FILTER_VALUE })
     if (key === 'department') updateFilters({ department: ALL_FILTER_VALUE })
-    if (key === 'discipline') updateFilters({ discipline: ALL_FILTER_VALUE })
+    if (key === 'discipline') updateFilters({ discipline: selectedValues(filtersRef.value.discipline).filter((item) => item !== value) })
     if (key === 'city') updateFilters({ city: ALL_FILTER_VALUE })
+    if (key === 'employmentType') updateFilters({ employmentType: ALL_FILTER_VALUE })
+    if (key === 'workMode') updateFilters({ workMode: ALL_FILTER_VALUE })
   }
 
   function resetFilters() {
@@ -561,6 +598,8 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     collegeOptions,
     departmentOptions,
     cityOptions,
+    employmentTypeOptions,
+    workModeOptions,
     filteredJobs,
     activeFilterChips,
     updateFilters,

@@ -261,6 +261,22 @@ body {
   user-select: none;
 }
 .fa-facet-item.active { color: var(--ink); font-weight: 500; }
+.fa-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.fa-facet-item:has(.fa-sr-only:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.fa-facet-item:has(.fa-sr-only:disabled) { cursor: not-allowed; opacity: .48; }
 
 .fa-check {
   width: 14px; height: 14px;

@@ -13,7 +13,7 @@ test("listing index keeps card/filter evidence but omits full descriptions", () 
     canonicalJobId: "job_1",
     canonicalGroupId: "grp_1",
     datePosted: "2026-08-24",
-    description: "A very long full posting body",
+    description: "A full-time hybrid appointment. Salary is $72,000 to $84,000 per year.",
     summary: "Posting summary",
   });
 
@@ -21,6 +21,9 @@ test("listing index keeps card/filter evidence but omits full descriptions", () 
   assert.equal(compact.tenureTrack, "tenure-track");
   assert.equal("tenureEvidence" in compact, false);
   assert.equal(compact.hasDescription, true);
+  assert.equal(compact.employmentType, "Full-time");
+  assert.equal(compact.workMode, "Hybrid");
+  assert.equal(compact.salaryText, "$72,000 to $84,000 per year");
   assert.equal(compact.searchText, "assistant professor of biology example university biology");
   assert.equal("description" in compact, false);
   assert.equal("summary" in compact, false);

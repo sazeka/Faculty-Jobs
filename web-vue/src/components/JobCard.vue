@@ -4,6 +4,7 @@ const props = defineProps({
   index:    { type: Number,  default: 0 },
   saved:    { type: Boolean, default: false },
   emphasized: { type: Boolean, default: false },
+  detailPath: { type: String, required: true },
 })
 
 const emit = defineEmits(['toggle-save', 'hover-college', 'report-bad-listing', 'open-detail'])
@@ -57,6 +58,12 @@ function getStartLabel(job) {
   return String(s)
 }
 
+function openDetail(event) {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+  event.preventDefault()
+  emit('open-detail', props.job)
+}
+
 </script>
 
 <template>
@@ -67,9 +74,9 @@ function getStartLabel(job) {
     @mouseleave="emit('hover-college', null)"
   >
     <div class="fa-listing-main">
-      <button type="button" class="fa-listing-title listing-title-button" @click="emit('open-detail', props.job)">
+      <a :href="props.detailPath" class="fa-listing-title listing-title-button" @click="openDetail">
         {{ props.job.title }}
-      </button>
+      </a>
 
       <div class="fa-listing-inst">
         {{ props.job.college || 'Institution not specified' }}
@@ -82,6 +89,8 @@ function getStartLabel(job) {
         <span v-if="trackLabel(props.job)" class="fa-tag">{{ trackLabel(props.job) }}</span>
         <span v-for="pt in (props.job.positionTypes || []).filter((p) => p && p !== 'Faculty').slice(0, 2)" :key="pt" class="fa-tag">{{ pt }}</span>
         <span v-if="props.job.discipline" class="fa-tag">{{ props.job.discipline }}</span>
+        <span v-if="props.job.employmentType" class="fa-tag">{{ props.job.employmentType }}</span>
+        <span v-if="props.job.workMode" class="fa-tag">{{ props.job.workMode }}</span>
         <span v-if="props.job.duplicateCount > 1" class="fa-tag">{{ props.job.duplicateCount }} grouped</span>
       </div>
     </div>
@@ -106,7 +115,6 @@ function getStartLabel(job) {
 <style scoped>
 .fa-listing-emphasized { background: rgba(46, 113, 151, 0.06); }
 .listing-title-button {
-  appearance: none;
   display: block;
   width: 100%;
   border: 0;
@@ -114,6 +122,8 @@ function getStartLabel(job) {
   background: none;
   text-align: left;
   cursor: pointer;
+  color: inherit;
+  text-decoration: none;
 }
 .listing-title-button:hover,
 .listing-title-button:focus-visible { color: var(--accent); outline: none; }

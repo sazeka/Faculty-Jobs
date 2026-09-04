@@ -1,11 +1,12 @@
 import { watch } from 'vue'
-import { createDefaultFilters } from '../config/appConfig'
+import { createDefaultFilters } from '../config/appConfig.js'
 
 // Shareable filter state. We sync the "search" filters to the URL query string
 // so a view can be linked or bookmarked. savedOnly and newOnly are deliberately
 // excluded: they're per-visitor (local saved jobs / "new since YOUR last visit")
 // and meaningless — or misleading — in a link shared with someone else.
-const STRING_KEYS = ['q', 'state', 'positionType', 'college', 'department', 'discipline', 'city', 'sortBy']
+const STRING_KEYS = ['q', 'college', 'department', 'city', 'sortBy', 'employmentType', 'workMode']
+const ARRAY_KEYS = ['state', 'positionType', 'discipline']
 const BOOL_KEYS = ['tenureTrackOnly', 'showClosed']
 
 // Build a query string holding only the filters that differ from the defaults,
@@ -17,6 +18,11 @@ export function filtersToQuery(filters) {
     const value = filters[key]
     if (value != null && String(value).length && value !== defaults[key]) {
       params.set(key, String(value))
+    }
+  }
+  for (const key of ARRAY_KEYS) {
+    for (const value of Array.isArray(filters[key]) ? filters[key] : []) {
+      if (value) params.append(key, String(value))
     }
   }
   for (const key of BOOL_KEYS) {
@@ -36,6 +42,10 @@ export function queryToFilterPatch(search) {
       const value = params.get(key)
       if (value) patch[key] = value
     }
+  }
+  for (const key of ARRAY_KEYS) {
+    const values = params.getAll(key).filter(Boolean)
+    if (values.length) patch[key] = values
   }
   for (const key of BOOL_KEYS) {
     if (params.has(key)) patch[key] = params.get(key) === '1' || params.get(key) === 'true'

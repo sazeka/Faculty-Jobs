@@ -29,8 +29,8 @@ test('saved searches are visible and retain every shareable facet', () => {
   assert.match(app, /<PresetBar/)
   assert.match(app, /@save-current="saveCurrentPreset"/)
   for (const key of ['department', 'discipline', 'city']) {
-    assert.match(presets, new RegExp(`${key}: filtersRef\\.value\\.${key}`))
-    assert.match(presets, new RegExp(`${key}: preset\\?\\.${key}`))
+    assert.match(presets, new RegExp(`${key}: (?:\\[\\.\\.\\.)?filtersRef\\.value\\.${key}`))
+    assert.match(presets, new RegExp(`${key}: (?:asArray\\()?preset\\?\\.${key}`))
   }
 })
 
@@ -39,6 +39,19 @@ test('department and city filters expose searchable controls', () => {
   assert.match(filters, /placeholder="Search cities…"/)
   assert.match(filters, /updateField\('department'/)
   assert.match(filters, /updateField\('city'/)
+})
+
+test('facet toggles use native keyboard-accessible form controls', () => {
+  assert.match(filters, /class="fa-sr-only" type="checkbox"/)
+  assert.doesNotMatch(filters, /<label[^>]+@click=/)
+})
+
+test('job details expose permanent URLs and large result sets are paged', () => {
+  assert.match(card, /:href="props\.detailPath"/)
+  assert.match(app, /jobDetailPath\(job\)/)
+  assert.match(app, /window\.history\.pushState/)
+  assert.match(app, /Load \{\{ nextPageCount \}\} more/)
+  assert.doesNotMatch(app, /Show all \{\{ filteredJobs\.length/)
 })
 
 test('full-description chunks use bounded parallel loading', () => {

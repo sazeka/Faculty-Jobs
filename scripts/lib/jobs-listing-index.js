@@ -1,4 +1,5 @@
 import { normalizeSearchText } from "./jobs-search-index.js";
+import { deriveCandidateFields } from "./job-candidate-fields.js";
 
 // Fields required to render, filter, sort, group, and save listing cards.
 // Full descriptions stay in jobs.json/source chunks and are fetched lazily only
@@ -32,6 +33,9 @@ export function compactListingJob(job = {}) {
     }
   }
   compact.hasDescription = Boolean(String(job.description || job.summary || "").trim());
+  Object.assign(compact, Object.fromEntries(
+    Object.entries(deriveCandidateFields(job)).filter(([, value]) => value !== null && value !== "")
+  ));
   compact.searchText = normalizeSearchText([
     job.titleClean || job.title,
     job.source,

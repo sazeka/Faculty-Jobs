@@ -11,12 +11,14 @@ export const MAX_PRESETS = 5
 export function createDefaultFilters() {
   return {
     q: '',
-    state: ALL_FILTER_VALUE,
-    positionType: ALL_FILTER_VALUE,
+    state: [],
+    positionType: [],
     college: ALL_FILTER_VALUE,
     department: ALL_FILTER_VALUE,
-    discipline: ALL_FILTER_VALUE,
+    discipline: [],
     city: ALL_FILTER_VALUE,
+    employmentType: ALL_FILTER_VALUE,
+    workMode: ALL_FILTER_VALUE,
     sortBy: DEFAULT_SORT,
     tenureTrackOnly: false,
     savedOnly: false,

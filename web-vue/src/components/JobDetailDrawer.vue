@@ -9,6 +9,7 @@ const props = defineProps({
 const emit = defineEmits(['close', 'toggle-save', 'report-bad-listing'])
 const drawer = ref(null)
 let previousBodyOverflow = ''
+let previousFocusedElement = null
 
 function formatDate(value) {
   if (!value) return null
@@ -25,11 +26,23 @@ const positionTypes = computed(() => (props.job.positionTypes || []).filter((val
 const description = computed(() => String(props.job.description || props.job.summary || '').replace(/\s+/g, ' ').trim())
 const salary = computed(() => props.job.salaryText || props.job.salary || null)
 
+function focusableElements() {
+  return [...(drawer.value?.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])') || [])]
+}
+
 function onKeydown(event) {
   if (event.key === 'Escape') emit('close')
+  if (event.key !== 'Tab') return
+  const items = focusableElements()
+  if (!items.length) { event.preventDefault(); drawer.value?.focus(); return }
+  const first = items[0]
+  const last = items[items.length - 1]
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
 }
 
 onMounted(() => {
+  previousFocusedElement = document.activeElement
   previousBodyOverflow = document.body.style.overflow
   document.body.style.overflow = 'hidden'
   window.addEventListener('keydown', onKeydown)
@@ -38,19 +51,20 @@ onMounted(() => {
 onUnmounted(() => {
   document.body.style.overflow = previousBodyOverflow
   window.removeEventListener('keydown', onKeydown)
+  previousFocusedElement?.focus?.()
 })
 </script>
 
 <template>
   <div class="detail-backdrop" @click.self="emit('close')">
-    <aside ref="drawer" class="detail-drawer" role="dialog" aria-modal="true" tabindex="-1" :aria-label="`Job details: ${props.job.title}`">
+    <aside ref="drawer" class="detail-drawer" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="job-detail-title">
       <div class="detail-topbar">
         <div class="fa-label">Posting details</div>
         <button type="button" class="detail-close" aria-label="Close job details" @click="emit('close')">✕</button>
       </div>
 
       <div class="detail-heading">
-        <h2 class="fa-display">{{ props.job.title }}</h2>
+        <h2 id="job-detail-title" class="fa-display">{{ props.job.title }}</h2>
         <p class="detail-institution">{{ props.job.college }}</p>
         <p v-if="props.job.department" class="fa-meta detail-department">{{ props.job.department }}</p>
       </div>
@@ -68,6 +82,11 @@ onUnmounted(() => {
         <div><dt>Deadline</dt><dd>{{ deadline || 'Not provided' }}</dd></div>
         <div v-if="startDate"><dt>Anticipated start</dt><dd>{{ startDate }}</dd></div>
         <div v-if="salary"><dt>Salary</dt><dd>{{ salary }}</dd></div>
+        <div v-if="props.job.employmentType"><dt>Schedule</dt><dd>{{ props.job.employmentType }}</dd></div>
+        <div v-if="props.job.workMode"><dt>Workplace</dt><dd>{{ props.job.workMode }}</dd></div>
+        <div v-if="props.job.appointmentLength"><dt>Appointment</dt><dd>{{ props.job.appointmentLength }}</dd></div>
+        <div v-if="props.job.reviewDateText"><dt>Review begins</dt><dd>{{ props.job.reviewDateText }}</dd></div>
+        <div v-if="props.job.visaSponsorship"><dt>Visa sponsorship</dt><dd>{{ props.job.visaSponsorship }}</dd></div>
       </dl>
 
       <section class="detail-description">
@@ -77,7 +96,7 @@ onUnmounted(() => {
       </section>
 
       <div class="detail-actions">
-        <a v-if="props.job.linkQuality !== 'invalid'" :href="props.job.url" target="_blank" rel="noreferrer" class="fa-btn">Apply on university site →</a>
+        <a v-if="props.job.linkQuality !== 'invalid'" :href="props.job.url" target="_blank" rel="noopener noreferrer" class="fa-btn">Apply on university site →</a>
         <button type="button" class="fa-btn fa-btn-ghost" @click="emit('toggle-save', props.job.url)">
           {{ props.saved ? '♥ Saved' : '♡ Save job' }}
         </button>
