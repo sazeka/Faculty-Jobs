@@ -300,8 +300,13 @@ async function main() {
         // Cornerstone (csod) is a single-page app that renders the "Posted on …"
         // date client-side well after DOMContentLoaded; the default 1.5s wait
         // fires before it paints, so the date (and full body) is missed. Give
-        // those pages longer and let the network settle.
-        if (/\.csod\.com/i.test(job.url)) {
+        // those pages longer and let the network settle. NEOGOV's
+        // schooljobs.com/governmentjobs.com detail pages are the same kind of
+        // client-rendered SPA (confirmed live: e.g. Skagit Valley College
+        // postings render their full description into [role='main'] only after
+        // hydration) -- the flat 1.5s wait caught them mid-render and recorded
+        // "empty" despite a full posting body being present moments later.
+        if (/\.csod\.com/i.test(job.url) || /(?:^|\.)(?:schooljobs|governmentjobs)\.com$/i.test(new URL(job.url).hostname)) {
           await page.waitForLoadState("networkidle", { timeout: 12000 }).catch(() => {});
           await page.waitForTimeout(3500);
         } else {
