@@ -295,6 +295,17 @@ test("applies verified institution-specific title conventions as a last resort",
     null
   );
 
+  // Central Washington University: the Faculty Code separates "academic
+  // rank" (tenure-eligible) from "professional designation" (lecturer,
+  // senior lecturer, etc.); the CBA describes Lecturer as non-tenure-track.
+  for (const title of ["Lecturer Pool - Accounting", "Senior Lecturer, Applied Music", "Nonpermanent Pool - EMT/Paramedic Lab Instructors"]) {
+    assert.equal(classifyTenureTrack({ college: "Central Washington University", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Central Washington University", title: "Assistant Professor - Mathematics" }),
+    null
+  );
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),
