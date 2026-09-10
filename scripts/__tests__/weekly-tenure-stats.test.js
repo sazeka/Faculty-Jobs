@@ -225,6 +225,31 @@ test("applies verified institution-specific title conventions as a last resort",
     null
   );
 
+  // Ohio State: trustees bylaws 3335-7 define the Clinical/Teaching/
+  // Professional practice series as non-tenure; the College of Medicine
+  // faculty-tracks page defines Lecturer/Senior Lecturer as non-tenure
+  // "Associated Faculty".
+  for (const title of [
+    "Clinical Instructor in Dentistry",
+    "Assistant Clinical Professor",
+    "Teaching Professor of Mathematics",
+    "Assistant Professor - Practice",
+    "Lecturer",
+    "Senior Lecturer, Applied Trumpet (9M)",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Ohio State University", title }), false, title);
+  }
+  // OSU's own "Open Rank/Track Faculty" phrasing means the track is
+  // genuinely undetermined at posting time -- not resolvable from the
+  // title, so it correctly stays unclassified rather than being guessed.
+  assert.equal(
+    classifyTenureTrack({
+      college: "Ohio State University",
+      title: "Physician - Cardiovascular Medicine, Cardiologist (Open Rank/Track Faculty)",
+    }),
+    null
+  );
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),

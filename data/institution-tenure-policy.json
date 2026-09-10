@@ -48,6 +48,14 @@
       "note": "UK's Office for Faculty Advancement lists its faculty title series and confirms tenure status per series: the Regular/Extension/Special/Librarian series are tenure-eligible, while the Research Title Series (AR 2:5), Clinical Title Series (AR 2:6), and Lecturer Series (AR 2:9) are all explicitly non-tenure-track. Matches the 'Clinical [rank]' and 'Research [rank]' prefix conventions, bare '(Senior) Lecturer', and the literal 'Clinical Title Series' phrase seen directly in one live posting title. Deliberately does not match a plain 'Assistant, Associate or Professor in/of [Specialty]' title with no series qualifier -- UK posts the large majority of its faculty jobs this way without stating which title series applies, so those correctly stay unclassified rather than being guessed (only 16 of 88 unclassified UK jobs carry an explicit series qualifier).",
       "source": "https://ofa.uky.edu/policies-procedures/policies-title-series",
       "verifiedAt": "2026-09-09"
+    },
+    {
+      "college": "Ohio State University",
+      "titlePattern": "\\bclinical\\s+(?:instructor|(?:assistant|associate)?\\s*professor)\\b|\\bteaching\\s+(?:instructor|(?:assistant|associate)?\\s*professor)\\b|\\bprofessional\\s+practice\\s+(?:instructor|(?:assistant|associate)?\\s*professor)\\b|\\bprofessor\\s*[-–]\\s*practice\\b|\\b(?:senior\\s+)?lecturer\\b",
+      "value": false,
+      "note": "OSU's faculty appointments policy (trustees.osu.edu bylaws 3335-7) defines three non-tenure 'fixed term contract appointments that do not entail tenure': the Clinical series ('Clinical instructor, assistant clinical professor, associate clinical professor, or clinical professor'), the Teaching series (same pattern), and the Professional practice series (same pattern) -- matching the 'Assistant Professor - Practice' shorthand seen in live posting titles. Separately, OSU's College of Medicine faculty-tracks page defines 'Associated Faculty' as a non-tenure category explicitly including 'Lecturer and Senior Lecturer'. Deliberately does NOT match OSU's very common 'Physician - ... (Open Rank/Track Faculty)' posting pattern (56 of 83 unclassified OSU jobs): 'Open Rank/Track' is OSU's own phrasing that the appointment track is literally undetermined at posting time (could land on tenure-track, Clinical, or Research faculty depending on the candidate) -- genuinely unresolvable from the title, so it correctly stays unclassified rather than being guessed.",
+      "source": "https://trustees.osu.edu/bylaws-and-rules/3335-7",
+      "verifiedAt": "2026-09-09"
     }
   ]
 }
