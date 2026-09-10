@@ -195,10 +195,30 @@ test("applies verified institution-specific title conventions as a last resort",
     classifyTenureTrack({ college: "SUNY Buffalo State University", title: "Lecturer 10 Months (Pool Posting)" }),
     false
   );
+  // Multi-rank slash chains after "Clinical" (heavily used at Stony
+  // Brook/Buffalo/Downstate) also match, not just a single optional
+  // assistant/associate word.
+  assert.equal(
+    classifyTenureTrack({
+      college: "Stony Brook University",
+      title: "Anesthesiologist, Clinical Assistant/Associate/Full Professor, Anesthesiology, Pediatric",
+    }),
+    false
+  );
   // A plain title at a SUNY state-operated campus is unaffected (not "clinical"
   // or "lecturer") and stays unclassified like everywhere else.
   assert.equal(
     classifyTenureTrack({ college: "Stony Brook University", title: "Assistant Professor" }),
+    null
+  );
+  // A plain multi-rank slash chain with no "Clinical" qualifier also stays
+  // unclassified -- genuinely ambiguous, matches most of Stony Brook's
+  // remaining unclassified postings.
+  assert.equal(
+    classifyTenureTrack({
+      college: "Stony Brook University",
+      title: "Cardiologist, Assistant/Associate/Full Professor, Internal Medicine, Heart Failure",
+    }),
     null
   );
   // SUNY's separately-governed community colleges are deliberately excluded
