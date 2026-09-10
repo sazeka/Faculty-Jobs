@@ -205,6 +205,26 @@ test("applies verified institution-specific title conventions as a last resort",
     null
   );
 
+  // Kentucky: OFA confirms the Research (AR 2:5), Clinical (AR 2:6), and
+  // Lecturer (AR 2:9) title series are all non-tenure-track.
+  for (const title of [
+    "Clinical Assistant Professor in Social Work",
+    "Clinical Instructor in Urology",
+    "Clinical Title Series Assistant Professor-Emergency Medicine Physician",
+    "Research Professor",
+    "Lecturer in Criminal Justice",
+    "Senior Lecturer in Economics",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "University of Kentucky", title }), false, title);
+  }
+  // UK posts most faculty jobs as a plain "Assistant, Associate or Professor
+  // in/of [Specialty]" with no series qualifier stated -- genuinely
+  // unresolvable from title text, so it correctly stays unclassified.
+  assert.equal(
+    classifyTenureTrack({ college: "University of Kentucky", title: "Assistant, Associate or Professor in Neurology" }),
+    null
+  );
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),
