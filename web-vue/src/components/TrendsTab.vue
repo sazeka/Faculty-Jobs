@@ -67,6 +67,12 @@ function fmt(n) { return Number(n).toLocaleString() }
 function fmtWeek(s) {
   return new Date(s + 'T00:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
 }
+
+// APA style calls for a retrieval date on continuously-updated sources
+// (n.d. in place of a fixed publication year) -- computed as "today" so the
+// citation is always accurate to when it's actually copied.
+const retrievedOn = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, mapped. Retrieved ${retrievedOn}, from https://www.facultyatlas.org/`
 </script>
 
 <template>
@@ -327,6 +333,14 @@ function fmtWeek(s) {
       </div>
 
     </div>
+
+    <hr class="fa-rule-thin" style="margin: 40px 0;" />
+
+    <!-- Citation -->
+    <section class="trends-citation" aria-labelledby="trends-citation-title">
+      <div class="fa-label" id="trends-citation-title">How to cite this data</div>
+      <p class="fa-meta trends-citation-text">{{ apaCitation }}</p>
+    </section>
 
   </template>
   </div>
@@ -609,6 +623,22 @@ function fmtWeek(s) {
   align-items: center;
   padding: 11px 0;
   border-bottom: 1px solid var(--rule-2);
+}
+
+.trends-citation { max-width: 820px; }
+.trends-citation-text {
+  margin: 12px 0 0;
+  padding: 14px 16px;
+  border: 1px solid var(--rule-2);
+  background: var(--paper-2);
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  line-height: 1.6;
+  /* Preserve the trailing italic-style hanging indent APA uses without
+     needing a second element -- text-indent only affects the wrapped line,
+     not the first. */
+  text-indent: -1.2em;
+  padding-left: calc(16px + 1.2em);
 }
 
 .trends-sparkline {
