@@ -354,6 +354,24 @@ test("applies verified institution-specific title conventions as a last resort",
   // The same bare-"Instructor" title elsewhere is not affected.
   assert.equal(classifyTenureTrack({ college: "Some Other College", title: "Instructor" }), null);
 
+  // UW-Madison: SMPH's six faculty tracks include only Tenured/Tenure-Track
+  // as "full faculty"; CHS, CT, Research Professor, Teaching Professor, and
+  // Clinical Adjunct are all non-tenure "academic staff".
+  const madisonCollege = "UW-Madison";
+  for (const title of [
+    "Assistant, Associate, Full Professor - Stroke Neurologist (CHS)",
+    "Assistant/ Associate/ Professor (CHS or CT Track) Notice of Filing",
+    "Asst, Assoc, or Full Professor CHS-Cornea Service",
+    "Research Professor",
+    "Teaching Assistant Professor",
+    "Clinical Instructor, Large Animal Surgery",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: madisonCollege, title }), false, title);
+  }
+  // A plain title with no track qualifier -- including outside the medical
+  // school entirely -- correctly stays unclassified.
+  assert.equal(classifyTenureTrack({ college: madisonCollege, title: "Assistant Professor of Political Science" }), null);
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),

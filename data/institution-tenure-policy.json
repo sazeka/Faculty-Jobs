@@ -112,6 +112,14 @@
       "note": "Weaker evidentiary basis than the other rules in this table -- no explicit written tenure policy was located (search results repeatedly conflated TSTC with the unrelated Texas State University). This rule instead rests on a structural finding, empirically checked against every TSTC posting ever scraped (40 jobs, 28 unique titles): zero contain 'Professor' in any form -- 'Instructor' is the entire title vocabulary. Combined with TSTC's own institutional identity as a state technical/vocational college (welding, HVAC, diesel, electrical lineworker, aviation maintenance, etc., not a research university), 'Instructor' here reads as the sole, terminal job title for this employer rather than an entry pre-tenure rank on an academic ladder. Revisit if a professorial title is ever observed at this college.",
       "source": null,
       "verifiedAt": "2026-09-10"
+    },
+    {
+      "college": "UW-Madison",
+      "titlePattern": "\\bchs\\b|\\bct\\b|\\bresearch\\s+professor\\b|\\bteaching\\s+(?:assistant\\s+)?professor\\b|\\bteaching\\s+faculty\\b|\\bclinical\\s+(?:instructor|(?:assistant|associate)?\\s*professor)\\b",
+      "value": false,
+      "note": "UW-Madison's School of Medicine and Public Health (SMPH) defines six faculty tracks: Clinical Health Sciences (CHS), Clinician Teacher (CT), Tenured/Tenure-Track, Research Professor, Teaching Professor, and Clinical Adjunct. Quoted directly: 'UW-Madison only recognizes the tenure track faculty as full faculty members of the university. The other categories of SMPH faculty are considered academic staff according to UW-Madison policies.' Matches the '(CHS)'/'(CT)' abbreviations seen throughout live posting titles (including bare, un-parenthesized forms like 'Professor CHS-Cornea Service'), plus 'Research Professor', 'Teaching Professor'/'Teaching Faculty', and the 'Clinical [rank]' prefix convention. Deliberately does not match a plain 'Assistant Professor' with no track qualifier (9 of 35 unclassified UW-Madison jobs, including several outside the medical school entirely, e.g. Political Science) -- correctly stays unclassified.",
+      "source": "https://intranet.med.wisc.edu/faculty-affairs-and-development/faculty-central-resources/preparing-for-promotion/overview-of-faculty-tracks",
+      "verifiedAt": "2026-09-10"
     }
   ]
 }
