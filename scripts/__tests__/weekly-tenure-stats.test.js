@@ -343,6 +343,17 @@ test("applies verified institution-specific title conventions as a last resort",
   }
   assert.equal(classifyTenureTrack({ college: usfCollege, title: "Assistant Professor" }), null);
 
+  // Texas State Technical College: no explicit tenure policy was found, but
+  // every posting ever scraped from this employer uses "Instructor" -- zero
+  // "Professor" titles exist at all -- consistent with a technical/
+  // vocational college with no professorial tenure ladder.
+  assert.equal(
+    classifyTenureTrack({ college: "Texas State Technical College", title: "Welding - Instructor (Trade Experience)" }),
+    false
+  );
+  // The same bare-"Instructor" title elsewhere is not affected.
+  assert.equal(classifyTenureTrack({ college: "Some Other College", title: "Instructor" }), null);
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),
