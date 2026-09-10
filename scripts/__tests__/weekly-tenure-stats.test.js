@@ -411,6 +411,28 @@ test("applies verified institution-specific title conventions as a last resort",
   // correctly stays unclassified.
   assert.equal(classifyTenureTrack({ college: uvmCollege, title: "Assistant/Associate/Professor Breast Surgical Oncology" }), null);
 
+  // North Carolina public community colleges (collegePattern rule): the NC
+  // State Board of Community Colleges Code -- the governing document for all
+  // 58 public NC community colleges -- contains zero mentions of "tenure"
+  // anywhere in ~540 pages, so no position there can be tenure-track by
+  // institutional design. Matches ANY title, not just keyword-scoped ones.
+  for (const title of [
+    "Automotive Systems Technology Instructor",
+    "Clinical Nursing Instructor",
+    "Department Chair of Horticulture Technology",
+    "Nursing Faculty (12-Months)",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Forsyth Technical Community College", title }), false, title);
+  }
+  // Private NC junior colleges are deliberately excluded (different
+  // governance, not confirmed to be covered by the same state code) --
+  // Louisburg College is a private 2-year institution, not part of the
+  // state-operated NCCCS system.
+  assert.equal(
+    classifyTenureTrack({ college: "Louisburg College", title: "Automotive Systems Technology Instructor" }),
+    null
+  );
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),
