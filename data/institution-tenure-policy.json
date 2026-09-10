@@ -120,6 +120,14 @@
       "note": "UW-Madison's School of Medicine and Public Health (SMPH) defines six faculty tracks: Clinical Health Sciences (CHS), Clinician Teacher (CT), Tenured/Tenure-Track, Research Professor, Teaching Professor, and Clinical Adjunct. Quoted directly: 'UW-Madison only recognizes the tenure track faculty as full faculty members of the university. The other categories of SMPH faculty are considered academic staff according to UW-Madison policies.' Matches the '(CHS)'/'(CT)' abbreviations seen throughout live posting titles (including bare, un-parenthesized forms like 'Professor CHS-Cornea Service'), plus 'Research Professor', 'Teaching Professor'/'Teaching Faculty', and the 'Clinical [rank]' prefix convention. Deliberately does not match a plain 'Assistant Professor' with no track qualifier (9 of 35 unclassified UW-Madison jobs, including several outside the medical school entirely, e.g. Political Science) -- correctly stays unclassified.",
       "source": "https://intranet.med.wisc.edu/faculty-affairs-and-development/faculty-central-resources/preparing-for-promotion/overview-of-faculty-tracks",
       "verifiedAt": "2026-09-10"
+    },
+    {
+      "college": "University of Vermont",
+      "titlePattern": "\\bclinical\\s+(?:scholar\\s+pathway|academic|instructor|radiologist|(?:assistant|associate)?\\s*professor)\\b",
+      "value": false,
+      "note": "UVM Larner College of Medicine's Faculty Handbook defines one Tenure Pathway and four Non-Tenure, Ranked pathways (Clinical, Clinical Scholar, Education Scholar, Research Scholar) plus a Non-Salaried Volunteer pathway -- quoted directly, the four ranked non-tenure pathways 'are all salaried, promotable positions that do not lead to appointment with tenure.' The Clinical Pathway uses a distinct title prefix ('Clinical Instructor, Clinical Assistant Professor, Clinical Associate Professor, and Clinical Professor'). Critically, the Clinical Scholar Pathway's titles are the SAME plain 'Assistant Professor, Associate Professor, and Professor' as the Tenure Pathway -- the handbook gives no title-level way to tell them apart, so only postings that explicitly state 'Clinical Scholar Pathway' in the title (as UVM's own postings consistently do) are safely classifiable; a plain title with no pathway named stays correctly unclassified. Also matches 'Clinical Academic [Specialty]' and 'Clinical Radiologist' department-level labels seen on live Radiology postings -- not a named handbook pathway verbatim, but consistent with the 'Clinical' qualifier being this institution's one defining non-tenure signal everywhere else.",
+      "source": "https://www.uvm.edu/d10-files/documents/2025-10/LCOM-Faculty-Handbook.pdf",
+      "verifiedAt": "2026-09-10"
     }
   ]
 }

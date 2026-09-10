@@ -392,6 +392,25 @@ test("applies verified institution-specific title conventions as a last resort",
   // school entirely -- correctly stays unclassified.
   assert.equal(classifyTenureTrack({ college: madisonCollege, title: "Assistant Professor of Political Science" }), null);
 
+  // University of Vermont: the Larner College of Medicine Faculty Handbook
+  // confirms four non-tenure "Ranked" pathways (Clinical, Clinical Scholar,
+  // Education Scholar, Research Scholar). Critically, the Clinical Scholar
+  // Pathway shares the SAME plain titles as the Tenure Pathway -- only
+  // resolvable when the pathway name itself is stated in the title.
+  const uvmCollege = "University of Vermont";
+  for (const title of [
+    "Clinical Assistant Professor, Surgery",
+    "Assistant/Associate/Professor, Clinical Scholar Pathway - General Neurologist",
+    "Clinical Academic Abdominal Radiologist (Assistant/Associate/Professor - Radiology)",
+    "Clinical Radiologist (Assistant/Associate/Professor - Radiology - Porter Medical)",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: uvmCollege, title }), false, title);
+  }
+  // A plain title with no pathway named is genuinely ambiguous (could be
+  // Tenure Pathway or Clinical Scholar Pathway -- identical titles) and
+  // correctly stays unclassified.
+  assert.equal(classifyTenureTrack({ college: uvmCollege, title: "Assistant/Associate/Professor Breast Surgical Oncology" }), null);
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),
