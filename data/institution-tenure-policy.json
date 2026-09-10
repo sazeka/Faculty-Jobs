@@ -16,6 +16,14 @@
       "note": "Miller School of Medicine's Clinical Educator (non-tenure) track uses 'Professor of Clinical [Department]' / 'Clinical [rank] Professor' titles (e.g. 'Assistant Professor of Clinical - Anesthesiology'), distinct from the Tenure track's unmodified titles. This is also a standard cross-institutional academic-medicine naming convention (Yale, NYU, and others use the same 'Clinical Professor' / 'Professor of Clinical X' pattern for their non-tenure clinician-educator titles), but scoped to this institution only since 'clinical' in a title is not a safe global signal -- some institutions use it loosely for unpaid/volunteer clinical faculty or for tenure-track physician-scientists.",
       "source": "https://med.miami.edu/offices/faculty-affairs/services/appointment-promotion-and-tenure",
       "verifiedAt": "2026-09-09"
+    },
+    {
+      "college": "The University of Texas Medical Branch at Galveston",
+      "titlePattern": "\\b(?:professors?|instructor)\\b.{0,40}\\b(?:clinic(?:al)?\\s+practice|instruction|research)\\b|n[\\s-]?t\\s*trk",
+      "value": false,
+      "note": "UTMB's own IHOP faculty-titles policy: 'Non-tenure tracks will have a mission designation following the rank: research, instruction, or clinical practice (i.e. Assistant Professor of Clinical Practice).' Matches a rank word (Professor/Professors/Instructor) followed within a short span by one of those three mission designations (also covers the 'Clinic Practice' typo variant seen in the live data), plus the literal 'N-T Trk' (Non-Tenure Track) abbreviation UTMB uses directly in some titles. A plain rank + department title with no mission designation (e.g. 'Assistant Professor, Cardiovascular Medicine') is NOT matched -- UTMB postings don't always state the mission designation, so those correctly stay unclassified rather than being guessed.",
+      "source": "https://www.utmb.edu/facultyaffairs/faculty-appointments-(apt)/faculty-titles---appointments",
+      "verifiedAt": "2026-09-09"
     }
   ]
 }

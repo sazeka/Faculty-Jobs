@@ -131,6 +131,31 @@ test("applies verified institution-specific title conventions as a last resort",
     null
   );
 
+  // UTMB Galveston: IHOP policy states non-tenure tracks carry a mission
+  // designation (research, instruction, or clinical practice) after the rank.
+  for (const title of [
+    "Assistant Professor Clinical Practice, Anesthesiology",
+    "Assistant Professor Clinic Practice, Pediatric Pulmonology", // typo variant seen in the live data
+    "Assistant Professor of Instruction - School of Nursing Undergraduate Studies",
+    "Assistant, Associate or Professor Research, Pediatric Nephrology",
+    "Assistant Professor (N-T Trk Clin), Internal Medicine-Pulmonary/Critical Care",
+  ]) {
+    assert.equal(
+      classifyTenureTrack({ college: "The University of Texas Medical Branch at Galveston", title }),
+      false,
+      title
+    );
+  }
+  // A plain rank + department title with no mission designation is NOT
+  // guessed -- UTMB doesn't always state it, so this correctly stays null.
+  assert.equal(
+    classifyTenureTrack({
+      college: "The University of Texas Medical Branch at Galveston",
+      title: "Assistant Professor, Cardiovascular Medicine",
+    }),
+    null
+  );
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),
