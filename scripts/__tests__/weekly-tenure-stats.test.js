@@ -181,6 +181,30 @@ test("applies verified institution-specific title conventions as a last resort",
     null
   );
 
+  // SUNY (collegePattern rule): system-wide HR policy defines "Qualified
+  // Academic Rank" -- titles of lecturer, or academic rank preceded by
+  // "clinical" or "visiting" -- as explicitly not tenure-track.
+  for (const college of ["Stony Brook University", "University at Buffalo", "SUNY Upstate Medical University"]) {
+    assert.equal(classifyTenureTrack({ college, title: "Clinical Assistant Professor" }), false, college);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "SUNY Buffalo State University", title: "Lecturer 10 Months (Pool Posting)" }),
+    false
+  );
+  // A plain title at a SUNY state-operated campus is unaffected (not "clinical"
+  // or "lecturer") and stays unclassified like everywhere else.
+  assert.equal(
+    classifyTenureTrack({ college: "Stony Brook University", title: "Assistant Professor" }),
+    null
+  );
+  // SUNY's separately-governed community colleges are deliberately excluded
+  // from the collegePattern (different governance, not confirmed to share this
+  // title schema), so the same title there is NOT matched.
+  assert.equal(
+    classifyTenureTrack({ college: "SUNY Broome Community College", title: "Clinical Assistant Professor" }),
+    null
+  );
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),

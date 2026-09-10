@@ -21,35 +21,57 @@ const INSTITUTION_POLICY_PATH = path.resolve(__dirname, "..", "..", "data", "ins
 
 function loadInstitutionPolicyRules() {
   const byCollege = new Map();
+  const patternRules = [];
   let raw;
   try {
     raw = JSON.parse(fs.readFileSync(INSTITUTION_POLICY_PATH, "utf8"));
   } catch {
-    return byCollege;
+    return { byCollege, patternRules };
   }
   for (const rule of Array.isArray(raw?.rules) ? raw.rules : []) {
-    if (!rule?.college || !rule?.titlePattern || typeof rule.value !== "boolean") continue;
+    if (!rule?.titlePattern || typeof rule.value !== "boolean") continue;
     let titleRe;
     try {
       titleRe = new RegExp(rule.titlePattern, "i");
     } catch {
       continue;
     }
-    const list = byCollege.get(rule.college) || [];
-    list.push({ value: rule.value, titleRe });
-    byCollege.set(rule.college, list);
+    // A rule names either one exact college ("college") or a group of colleges
+    // sharing one documented, system-wide policy ("collegePattern", e.g. SUNY's
+    // state-operated campuses) -- never both.
+    if (rule.college) {
+      const list = byCollege.get(rule.college) || [];
+      list.push({ value: rule.value, titleRe });
+      byCollege.set(rule.college, list);
+    } else if (rule.collegePattern) {
+      let collegeRe;
+      try {
+        collegeRe = new RegExp(rule.collegePattern);
+      } catch {
+        continue;
+      }
+      patternRules.push({ value: rule.value, titleRe, collegeRe });
+    }
   }
-  return byCollege;
+  return { byCollege, patternRules };
 }
 
-const INSTITUTION_POLICY_RULES = loadInstitutionPolicyRules();
+const { byCollege: INSTITUTION_POLICY_RULES, patternRules: INSTITUTION_POLICY_PATTERN_RULES } =
+  loadInstitutionPolicyRules();
 
 function matchInstitutionPolicy(job) {
-  const rules = INSTITUTION_POLICY_RULES.get(job?.college);
-  if (!rules) return null;
   const title = String(job?.title || "");
-  for (const rule of rules) {
-    if (rule.titleRe.test(title)) return { value: rule.value, evidence: "institution-policy" };
+  const exactRules = INSTITUTION_POLICY_RULES.get(job?.college);
+  if (exactRules) {
+    for (const rule of exactRules) {
+      if (rule.titleRe.test(title)) return { value: rule.value, evidence: "institution-policy" };
+    }
+  }
+  const college = String(job?.college || "");
+  for (const rule of INSTITUTION_POLICY_PATTERN_RULES) {
+    if (rule.collegeRe.test(college) && rule.titleRe.test(title)) {
+      return { value: rule.value, evidence: "institution-policy" };
+    }
   }
   return null;
 }
