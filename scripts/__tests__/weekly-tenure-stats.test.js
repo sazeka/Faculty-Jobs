@@ -156,6 +156,31 @@ test("applies verified institution-specific title conventions as a last resort",
     null
   );
 
+  // Rochester: SMD Faculty Regulations define three distinct non-tenure title
+  // series -- "of Clinical [Dept]" (suffix), "Clinical [rank]" (prefix,
+  // Voluntary Clinical Faculty), and "Research [rank]" (prefix, soft-money).
+  for (const title of [
+    "Assistant Professor of Clinical Medicine",
+    "Instructor of Clinical Pediatrics",
+    "Clinical Assistant Professor",
+    "Clinical Professor",
+    "Research Assistant Professor",
+    "Research Professor",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "University of Rochester", title }), false, title);
+  }
+  // Rochester's own regulations state the plain title is used identically
+  // whether or not the underlying component is tenurable -- so a plain title
+  // genuinely cannot be resolved from text alone and correctly stays null.
+  assert.equal(
+    classifyTenureTrack({ college: "University of Rochester", title: "Assistant Professor" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "University of Rochester", title: "Instructor" }),
+    null
+  );
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),

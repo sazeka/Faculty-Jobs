@@ -24,6 +24,14 @@
       "note": "UTMB's own IHOP faculty-titles policy: 'Non-tenure tracks will have a mission designation following the rank: research, instruction, or clinical practice (i.e. Assistant Professor of Clinical Practice).' Matches a rank word (Professor/Professors/Instructor) followed within a short span by one of those three mission designations (also covers the 'Clinic Practice' typo variant seen in the live data), plus the literal 'N-T Trk' (Non-Tenure Track) abbreviation UTMB uses directly in some titles. A plain rank + department title with no mission designation (e.g. 'Assistant Professor, Cardiovascular Medicine') is NOT matched -- UTMB postings don't always state the mission designation, so those correctly stay unclassified rather than being guessed.",
       "source": "https://www.utmb.edu/facultyaffairs/faculty-appointments-(apt)/faculty-titles---appointments",
       "verifiedAt": "2026-09-09"
+    },
+    {
+      "college": "University of Rochester",
+      "titlePattern": "\\bof\\s+clinical\\b|\\bclinical\\s+(?:senior\\s+)?(?:instructor|assistant\\s+professor|associate\\s+professor|professor)\\b|\\bresearch\\s+(?:assistant\\s+professor|associate\\s+professor|professor)\\b",
+      "value": false,
+      "note": "SMD Faculty Regulations (PDF) define three distinct non-tenure title series, each confirmed by exact quoted policy language: (1) '[Rank] OF CLINICAL (DEPARTMENT)' e.g. 'Assistant Professor of Clinical Medicine' -- for faculty whose contributions are 'principally clinical or other professional services', explicitly 'not considered academic in the same sense' as the tenure-eligible track; (2) 'CLINICAL [Rank]' prefix e.g. 'Clinical Assistant Professor' -- the Voluntary Clinical Faculty series for unpaid community-based appointments; (3) 'RESEARCH [Rank]' prefix e.g. 'Research Assistant Professor' -- soft-money appointments that 'terminate concurrently with the cessation of the program, grant, or contract.' Deliberately does NOT match a plain 'Assistant Professor'/'Instructor'/'Faculty' title: the regulations state the academic titles for the main (potentially tenure-track) series 'are the same, regardless of the components of professional activity' (Research/Scholarship/Clinical), so a plain title genuinely cannot be resolved from title text alone and correctly stays unclassified.",
+      "source": "https://www.urmc.rochester.edu/MediaLibraries/URMCMedia/smd/academic-affairs/documents/faculty-regulations/faculty-regulations.pdf",
+      "verifiedAt": "2026-09-09"
     }
   ]
 }
