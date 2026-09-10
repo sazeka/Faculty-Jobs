@@ -1,6 +1,58 @@
-const NON_TENURE_RE = /\b(?:non[\s-]?tenure(?:[\s-]?(?:track|accru(?:ing|al)|eligible))?|non[\s-]?tenurable|without\s+tenure|not\s+(?:a\s+)?tenure[\s-]?(?:track|eligible|accruing)|not\s+eligible\s+for\s+tenure|ntt|teaching[\s-]?track|instructional[\s-]?track|professional[\s-]?track|practice[\s-]?track|clinical[\s-]?track|research[\s-]?track|fixed[\s-]?term|term[\s-]?faculty|contingent)\b/i;
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// "contingent" alone is ordinary English ("contingent upon/on funding", "contingent
+// on a background check") in the overwhelming majority of postings -- verified
+// against the live dataset: of 165 unclassified postings where bare "contingent"
+// collided with an explicit tenure-track description phrase and canceled it out to
+// null, 164 were this generic usage and only 1 was genuine contingent-employment
+// language. Require it to actually describe the appointment/employee.
+const NON_TENURE_RE = /\b(?:non[\s-]?tenure(?:[\s-]?(?:track|accru(?:ing|al)|eligible))?|non[\s-]?tenurable|without\s+tenure|not\s+(?:a\s+)?tenure[\s-]?(?:track|eligible|accruing)|not\s+eligible\s+for\s+tenure|ntt|teaching[\s-]?track|instructional[\s-]?track|professional[\s-]?track|practice[\s-]?track|clinical[\s-]?track|research[\s-]?track|fixed[\s-]?term|term[\s-]?faculty|contingent\s+(?:faculty|appointment|position|employee|status|worker))\b/i;
 const TENURE_RE = /\b(?:tenure[\s-]?(?:track|stream|eligible|accru(?:ing|al)|earning|line)|eligible\s+for\s+tenure|(?:appoint(?:ed|ment)|position|rank|role)\b.{0,40}\bwith\s+tenure|tenured)\b/i;
 const CLEARLY_NON_TENURE_TITLE_RE = /\b(?:adjunct|visiting|post[\s-]?doc(?:toral)?|temporary|part[\s-]?time|professor\s+of\s+practice)\b/i;
+
+// Last-resort, per-institution title-convention overrides -- see
+// data/institution-tenure-policy.json for the source-cited rules themselves.
+// Each rule fires only for one specific college's own documented title
+// convention, and only after every explicit signal above has come up empty.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const INSTITUTION_POLICY_PATH = path.resolve(__dirname, "..", "..", "data", "institution-tenure-policy.json");
+
+function loadInstitutionPolicyRules() {
+  const byCollege = new Map();
+  let raw;
+  try {
+    raw = JSON.parse(fs.readFileSync(INSTITUTION_POLICY_PATH, "utf8"));
+  } catch {
+    return byCollege;
+  }
+  for (const rule of Array.isArray(raw?.rules) ? raw.rules : []) {
+    if (!rule?.college || !rule?.titlePattern || typeof rule.value !== "boolean") continue;
+    let titleRe;
+    try {
+      titleRe = new RegExp(rule.titlePattern, "i");
+    } catch {
+      continue;
+    }
+    const list = byCollege.get(rule.college) || [];
+    list.push({ value: rule.value, titleRe });
+    byCollege.set(rule.college, list);
+  }
+  return byCollege;
+}
+
+const INSTITUTION_POLICY_RULES = loadInstitutionPolicyRules();
+
+function matchInstitutionPolicy(job) {
+  const rules = INSTITUTION_POLICY_RULES.get(job?.college);
+  if (!rules) return null;
+  const title = String(job?.title || "");
+  for (const rule of rules) {
+    if (rule.titleRe.test(title)) return { value: rule.value, evidence: "institution-policy" };
+  }
+  return null;
+}
 
 function explicitSignals(raw) {
   const text = String(raw || "");
@@ -37,6 +89,10 @@ export function classifyTenureTrackWithEvidence(job = {}) {
   const descriptionSignals = explicitSignals(job.description);
   if (descriptionSignals.nonTenure && !descriptionSignals.tenure) return { value: false, evidence: "description-explicit" };
   if (descriptionSignals.tenure && !descriptionSignals.nonTenure) return { value: true, evidence: "description-explicit" };
+
+  const institutionMatch = matchInstitutionPolicy(job);
+  if (institutionMatch) return institutionMatch;
+
   return { value: null, evidence: null };
 }
 

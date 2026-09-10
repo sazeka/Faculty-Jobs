@@ -1,0 +1,21 @@
+{
+  "_comment": "Curated, evidence-backed title-convention overrides used ONLY as a last resort by classifyTenureTrackWithEvidence, after every explicit tenure/non-tenure phrase check (stored field, title, description) has come up empty. Each rule fires only for one specific institution's own documented title naming convention -- never a blanket 'this college defaults to X' guess. Add a rule only with a citable, authoritative source (the institution's own faculty affairs / academic tracks page), and keep titlePattern as narrow as the source's own language, so a plain/ambiguous title at that institution still correctly falls through to unclassified rather than being guessed.",
+  "rules": [
+    {
+      "college": "Columbia University in the City of New York",
+      "titlePattern": "\\bat\\s+(?:the\\s+)?cumc\\b",
+      "value": false,
+      "note": "CUIMC's non-tenure track is the 'at CUMC' track: titles in this track carry the academic rank plus the suffix 'at CUMC' (e.g. 'Assistant Professor of Medicine at CUMC'). The unmodified/plain title without that suffix is the Tenure Track, but CUIMC's own docs do not confirm the reverse (plain title => always tenure-track), so this rule is intentionally one-directional and does not attempt to classify plain titles.",
+      "source": "https://www.cuimc.columbia.edu/about-us/faculty-staff-students/academic-affairs/faculty-academic-tracks",
+      "verifiedAt": "2026-09-09"
+    },
+    {
+      "college": "University of Miami",
+      "titlePattern": "\\bof\\s+clinical\\b|\\bclinical\\s+(?:assistant|associate)?\\s*professor\\b",
+      "value": false,
+      "note": "Miller School of Medicine's Clinical Educator (non-tenure) track uses 'Professor of Clinical [Department]' / 'Clinical [rank] Professor' titles (e.g. 'Assistant Professor of Clinical - Anesthesiology'), distinct from the Tenure track's unmodified titles. This is also a standard cross-institutional academic-medicine naming convention (Yale, NYU, and others use the same 'Clinical Professor' / 'Professor of Clinical X' pattern for their non-tenure clinician-educator titles), but scoped to this institution only since 'clinical' in a title is not a safe global signal -- some institutions use it loosely for unpaid/volunteer clinical faculty or for tenure-track physician-scientists.",
+      "source": "https://med.miami.edu/offices/faculty-affairs/services/appointment-promotion-and-tenure",
+      "verifiedAt": "2026-09-09"
+    }
+  ]
+}

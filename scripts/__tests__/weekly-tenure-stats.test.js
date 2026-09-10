@@ -71,6 +71,83 @@ test("recognizes additional explicit non-tenure appointment phrases", () => {
   }
 });
 
+test("does not treat generic 'contingent upon' funding/background-check language as a non-tenure signal", () => {
+  // Bare "contingent" is ordinary English in most postings ("offer is contingent
+  // upon a background check", "contingent on funding") and must not cancel out a
+  // real tenure-track signal elsewhere in the description.
+  assert.equal(
+    classifyTenureTrack({
+      description:
+        "The department seeks applicants for a tenure-track Assistant Professor position. The position is contingent on final confirmation of funding.",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      description: "This tenure-track offer is contingent upon successful completion of a background check.",
+    }),
+    true
+  );
+});
+
+test("recognizes genuine contingent-faculty language as a non-tenure signal", () => {
+  assert.equal(
+    classifyTenureTrack({ description: "This is a contingent faculty appointment." }),
+    false
+  );
+});
+
+test("applies verified institution-specific title conventions as a last resort", () => {
+  // Columbia: CUIMC's non-tenure track uses the "at CUMC" title suffix (see
+  // data/institution-tenure-policy.json for the cited source).
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Columbia University in the City of New York",
+      title: "Assistant Professor of Medicine at CUMC",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  // A plain title (no "at CUMC") at Columbia is NOT inferred as tenure-track --
+  // the source policy doesn't confirm that direction, so it stays unclassified.
+  assert.equal(
+    classifyTenureTrack({
+      college: "Columbia University in the City of New York",
+      title: "Assistant Professor of Radiology",
+    }),
+    null
+  );
+
+  // Miami: Miller School of Medicine's non-tenure Clinical Educator track uses
+  // "Professor of Clinical [Dept]" / "Clinical [rank] Professor" titles.
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of Miami",
+      title: "Assistant Professor of Clinical - Anesthesiology",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "University of Miami", title: "Assistant/Associate Professor" }),
+    null
+  );
+
+  // An institution with no rules in the policy file is unaffected.
+  assert.equal(
+    classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),
+    null
+  );
+
+  // A real explicit signal still wins over the institution-policy fallback.
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Miami",
+      title: "Assistant Professor of Clinical - Anesthesiology",
+      description: "This is a tenure-track appointment.",
+    }),
+    true
+  );
+});
+
 test("leaves conflicting appointment language unclassified", () => {
   assert.equal(classifyTenureTrack({
     description: "Depending on qualifications, appointment may be eligible for tenure or without tenure.",
