@@ -250,6 +250,37 @@ test("applies verified institution-specific title conventions as a last resort",
     null
   );
 
+  // UT Health San Antonio: IHOP policy states only plain Professor/Associate/
+  // Assistant Professor titles are "Tenure Titles"; "[Rank]/Clinical" and
+  // "[Rank]/Research" suffixes, the "Clinical [rank]" prefix, Lecturer, and
+  // bare Instructor are all explicitly enumerated non-tenure titles.
+  const uthsaCollege = "The University of Texas Health Science Center at San Antonio";
+  for (const title of [
+    "Assistant Professor/Clinical",
+    "Assistant Professor/Research",
+    "Instructor/Clinical",
+    "Clinical Assistant Professor",
+    "Lecturer",
+    "Instructor",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: uthsaCollege, title }), false, title);
+  }
+  // Two live postings append an explicit ", Tenure" / "with Tenure" to the
+  // plain title -- a positive signal specific to this institution's own
+  // convention, distinguishing the Tenure Titles from the suffixed ones.
+  assert.equal(
+    classifyTenureTrack({ college: uthsaCollege, title: "Chair and Professor, Tenure" }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({ college: uthsaCollege, title: "Distinguished Chair Professor with Tenure Faculty Position" }),
+    true
+  );
+  // A plain title with no suffix (the actual Tenure Titles category) and the
+  // common "Open Rank Faculty ..." postings both correctly stay unclassified.
+  assert.equal(classifyTenureTrack({ college: uthsaCollege, title: "Assistant Professor" }), null);
+  assert.equal(classifyTenureTrack({ college: uthsaCollege, title: "Open Rank Faculty Position" }), null);
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),

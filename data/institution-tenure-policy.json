@@ -56,6 +56,22 @@
       "note": "OSU's faculty appointments policy (trustees.osu.edu bylaws 3335-7) defines three non-tenure 'fixed term contract appointments that do not entail tenure': the Clinical series ('Clinical instructor, assistant clinical professor, associate clinical professor, or clinical professor'), the Teaching series (same pattern), and the Professional practice series (same pattern) -- matching the 'Assistant Professor - Practice' shorthand seen in live posting titles. Separately, OSU's College of Medicine faculty-tracks page defines 'Associated Faculty' as a non-tenure category explicitly including 'Lecturer and Senior Lecturer'. Deliberately does NOT match OSU's very common 'Physician - ... (Open Rank/Track Faculty)' posting pattern (56 of 83 unclassified OSU jobs): 'Open Rank/Track' is OSU's own phrasing that the appointment track is literally undetermined at posting time (could land on tenure-track, Clinical, or Research faculty depending on the candidate) -- genuinely unresolvable from the title, so it correctly stays unclassified rather than being guessed.",
       "source": "https://trustees.osu.edu/bylaws-and-rules/3335-7",
       "verifiedAt": "2026-09-09"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": ",\\s*tenure\\b|\\bwith\\s+tenure\\b",
+      "value": true,
+      "note": "UTHSA's IHOP policy (3.1.1 Academic Titles) states only the plain 'Professor, Associate Professor, and Assistant Professor' titles are 'Tenure Titles' -- distinct from the '/Clinical' and '/Research' suffixed titles (see the companion false-valued rule below). Two live postings append an explicit ', Tenure' or 'with Tenure' to the plain title to signal this (e.g. 'Chair and Professor, Tenure'), a positive signal not covered by the shared global TENURE_RE pattern (which requires 'position/appointment/rank/role' to precede 'with tenure', not follow it).",
+      "source": "https://public.powerdms.com/UTHSA/documents/1590292",
+      "verifiedAt": "2026-09-10"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "\\b(?:professor|instructor)\\s*\\/\\s*(?:clinical|research)\\b|\\bclinical\\s+(?:instructor|(?:assistant|associate)?\\s*professor)\\b|\\b(?:distinguished\\s+senior\\s+|senior\\s+)?lecturer\\b|\\binstructor\\b",
+      "value": false,
+      "note": "UTHSA's IHOP policy (3.1.1 Academic Titles), quoted directly: 'Professor, Associate Professor, and Assistant Professor are the only academic titles in which faculty members may hold tenure or be on the tenure track.' Non-Tenure Titles are explicitly enumerated: 'Professor/Clinical ... or Professor/Research ...', 'Associate Professor/Clinical ... or Associate Professor/Research ...', 'Assistant Professor/Clinical ... or Assistant Professor/Research ...', 'Instructor/Clinical ... or Instructor/Research ...' (Section A.2.b) -- matching the '[Rank]/Clinical' and '[Rank]/Research' suffix convention seen throughout live posting titles. Section B separately lists 'Other Non-Tenure Titles' including the prefix form ('Clinical Professor, Clinical Associate Professor, Clinical Assistant Professor, Clinical Instructor...'), 'Lecturer'/'Senior Lecturer'/'Distinguished Senior Lecturer', and bare 'Instructor' ('This title denotes a probationary appointment...'). Deliberately does not match a plain 'Assistant Professor'/'Associate Professor'/'Professor' with no suffix, nor the very common 'Open Rank Faculty ...' postings -- both are the Tenure Titles category or genuinely undetermined, and stay correctly unclassified.",
+      "source": "https://public.powerdms.com/UTHSA/documents/1590292",
+      "verifiedAt": "2026-09-10"
     }
   ]
 }
