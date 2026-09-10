@@ -92,6 +92,17 @@ jobs:
             if [ "${attempt}" = "5" ]; then echo "::error::Checkpoint push still failing after 5 attempts." >&2; exit 1; fi
           done
 
+      # Same reasoning as enrichment below: the labeled-field extractor reads
+      # "Department: X" / "Location: X" out of the posting body, so it needs
+      # to run after description backfill to see the freshest bodies.
+      - name: Backfill department/location from labeled description fields
+        run: npm run backfill:labeled-fields
+        continue-on-error: true
+
+      - name: Backfill department from explicit title patterns
+        run: npm run backfill:departments
+        continue-on-error: true
+
       # Enrichment must follow description backfill: title-only inference often
       # cannot determine appointment track, while the posting body can state it.
       - name: Enrich jobs with discipline, tenure status, and position type
@@ -127,7 +138,9 @@ jobs:
             generated/job-presence.json \
             generated/job-presence-report.json \
             generated/enrichment-report.json \
-            generated/job-descriptions-report.json
+            generated/job-descriptions-report.json \
+            generated/labeled-posting-fields-report.json \
+            generated/department-backfill-report.json
 
           if git diff --cached --quiet; then
             echo "No changes to commit."

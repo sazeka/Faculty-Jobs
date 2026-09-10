@@ -1,17 +1,16 @@
-// Conservative, title/description-only department inference for jobs where
-// the scraper never captured a department field. Two methods, both high
-// precision by design -- correctness over coverage, since a wrong department
-// is worse than an honestly empty one:
+// Conservative title-only department inference for jobs where the scraper
+// never captured a department field. High precision by design -- correctness
+// over coverage, since a wrong department is worse than an honestly empty
+// one.
 //
-//   1. inferDepartmentFromTitle: title patterns like "Professor of X",
-//      "Lecturer in Y", "Chair, Z" -- the department is explicitly named
-//      right after the rank.
-//   2. inferDepartmentFromDescription: a genuine LABELED field ("Department:
-//      X") in the posting body, terminated at a clear boundary (a double
-//      space, or the next known label). Deliberately does NOT do loose prose
-//      matching ("in the Department of X") -- tested against the live
-//      dataset and that pattern caught real hits but also garbage (a
-//      person's name, a UI label fragment leaking in).
+// inferDepartmentFromTitle: title patterns like "Professor of X", "Lecturer
+// in Y", "Chair, Z" -- the department is explicitly named right after the
+// rank, right in the job's own stated title.
+//
+// A separate, more sophisticated extractor already exists for the
+// description-label case ("Department: X" in the posting body) --
+// scripts/lib/labeled-posting-fields.js's extractDepartmentFromText -- so
+// this module intentionally does not duplicate that.
 
 function clean(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
@@ -51,24 +50,4 @@ export function inferDepartmentFromTitle(title) {
 
   const normalized = normalizeDepartmentValue(m[1]);
   return normalized && looksLikeSafeDepartmentValue(normalized) ? normalized : null;
-}
-
-export function inferDepartmentFromDescription(description) {
-  const text = clean(description);
-  if (!text) return null;
-
-  const labelBoundary =
-    "(?:\\s{2,}|(?=\\s+(?:Location|Salary|Posting|Position Type|Job Type|Category|Division|Campus|College|School|Job Family|Employee Class)\\s*:)|$)";
-  const re = new RegExp(`\\bDepartment\\s*:\\s*([A-Za-z][A-Za-z0-9 &/'().,-]{2,60}?)${labelBoundary}`, "i");
-  const m = text.match(re);
-  if (!m || !m[1]) return null;
-
-  const normalized = normalizeDepartmentValue(m[1]);
-  return normalized && looksLikeSafeDepartmentValue(normalized) ? normalized : null;
-}
-
-// Title first (highest precision -- the department is part of the job's own
-// stated title), then the description's labeled field.
-export function inferDepartment(job) {
-  return inferDepartmentFromTitle(job?.title) || inferDepartmentFromDescription(job?.description) || null;
 }
