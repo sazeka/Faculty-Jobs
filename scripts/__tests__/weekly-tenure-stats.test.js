@@ -310,6 +310,24 @@ test("applies verified institution-specific title conventions as a last resort",
     null
   );
 
+  // University of Washington: ap.washington.edu documents five professorial
+  // tracks; Tenure status is explicitly "N/A" for WOT, Research, Teaching,
+  // and Clinical Practice. "Acting" titles are separately confirmed
+  // non-tenure (used for ABD candidates and postdocs past the term limit).
+  const uwCollege = "University of Washington";
+  for (const title of [
+    "Assistant or Associate Professor (WOT) - Pediatric Epileptologist",
+    "Assistant Professor of Clinical Practice, Family Medicine",
+    "Clinical Assistant Professor or Clinical Associate Professor",
+    "Teaching Assistant Professor - Robotics (GIX)",
+    "Research Assistant Professor, Department of Microbiology",
+    "Acting Assistant Professor, History",
+    "Acting Instructor – Mechanistic Computational Modelling",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: uwCollege, title }), false, title);
+  }
+  assert.equal(classifyTenureTrack({ college: uwCollege, title: "Assistant Professor in Physics" }), null);
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),

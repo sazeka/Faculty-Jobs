@@ -88,6 +88,14 @@
       "note": "CWU's Faculty Code structurally separates 'academic rank' (professor/associate professor/assistant professor -- the tenure-eligible titles) from 'professional designation' (clinical faculty, senior research associate, research associate, senior lecturer, lecturer, visiting professor, coach) as two distinct faculty categories (Section I.A.1.a). Corroborated by the CWU/United Faculty of Central CBA, which describes Lecturer positions as a non-tenure track faculty category. Matches the dominant 'Lecturer Pool - [Subject]' posting pattern (55 of 65 unclassified CWU jobs) plus the literal 'Nonpermanent' qualifier seen on one posting.",
       "source": "https://www.cwu.edu/about/university-leadership/faculty-senate/_documents/facultycode.pdf",
       "verifiedAt": "2026-09-10"
+    },
+    {
+      "college": "University of Washington",
+      "titlePattern": "\\(wot\\)|\\bof\\s+clinical\\s+practice\\b|\\bclinical\\s+(?:instructor|faculty|[a-z,\\s]{0,30}professor)\\b|\\bteaching\\s+(?:assistant|associate)?\\s*professor\\b|\\bresearch\\s+(?:assistant|associate)?\\s*professor\\b|\\b(?:assistant|associate)\\s+teaching\\s+professor\\b|\\bacting\\s+(?:instructor|(?:assistant|associate)?\\s*professor)\\b",
+      "value": false,
+      "note": "UW's Academic Personnel & Faculty site (ap.washington.edu) documents five professorial tracks: Tenure, 'Without Tenure by reason of funding (WOT)', Research, Teaching, and Clinical Practice -- with 'Tenure status: N/A' listed explicitly for every rank in the last four. WOT specifically means faculty whose salary comes from grants/contracts/clinical revenue rather than state-appropriated funds, so they don't hold tenure even though fully integrated into department activities. Separately, UW's 'Acting Titles' policy page confirms: 'acting faculty appointments do not have implications for the award of tenure or for promotion in a clock-managed rank' (used for ABD candidates and postdocs past the terminal-degree limit, pending conversion to a regular title once the degree is conferred). Matches the '(WOT)' abbreviation, 'of Clinical Practice' suffix, 'Clinical [rank]'/'Clinical Faculty' prefix, 'Teaching/Research [rank]' prefix in either word order, and 'Acting [rank]' prefix. Deliberately does not match a plain 'Assistant Professor' with no qualifier, nor administrative/dean titles -- both stay correctly unclassified.",
+      "source": "https://ap.washington.edu/ahr/academic-titles-ranks/professorial/",
+      "verifiedAt": "2026-09-10"
     }
   ]
 }
