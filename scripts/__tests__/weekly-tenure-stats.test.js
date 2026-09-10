@@ -18,6 +18,10 @@ test("classifies stored and explicitly titled tenure status", () => {
   assert.equal(classifyTenureTrack({ title: "Assistant Professor of Practice" }), false);
   assert.equal(classifyTenureTrack({ title: "Psychology Temporary Lecturer" }), false);
   assert.equal(classifyTenureTrack({ title: "Part-Time Nursing Instructor" }), false);
+  // Some sources render the hyphen with a full space on both sides ("Part -
+  // Time Instructor") -- College of Southern Nevada, University of
+  // Washington, Austin Peay all format titles this way.
+  assert.equal(classifyTenureTrack({ title: "Part - Time Instructor, Biology" }), false);
   assert.equal(classifyTenureTrack({ title: "Lecturer" }), null);
   assert.equal(classifyTenureTrack({ title: "Full-Time Lecturer" }), null);
   assert.equal(classifyTenureTrack({ title: "Assistant Professor" }), null);

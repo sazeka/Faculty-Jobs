@@ -10,7 +10,13 @@ import { fileURLToPath } from "node:url";
 // language. Require it to actually describe the appointment/employee.
 const NON_TENURE_RE = /\b(?:non[\s-]?tenure(?:[\s-]?(?:track|accru(?:ing|al)|eligible))?|non[\s-]?tenurable|without\s+tenure|not\s+(?:a\s+)?tenure[\s-]?(?:track|eligible|accruing)|not\s+eligible\s+for\s+tenure|ntt|teaching[\s-]?track|instructional[\s-]?track|professional[\s-]?track|practice[\s-]?track|clinical[\s-]?track|research[\s-]?track|fixed[\s-]?term|term[\s-]?faculty|contingent\s+(?:faculty|appointment|position|employee|status|worker))\b/i;
 const TENURE_RE = /\b(?:tenure[\s-]?(?:track|stream|eligible|accru(?:ing|al)|earning|line)|eligible\s+for\s+tenure|(?:appoint(?:ed|ment)|position|rank|role)\b.{0,40}\bwith\s+tenure|tenured)\b/i;
-const CLEARLY_NON_TENURE_TITLE_RE = /\b(?:adjunct|visiting|post[\s-]?doc(?:toral)?|temporary|part[\s-]?time|professor\s+of\s+practice)\b/i;
+// part\s*-?\s*time (not part[\s-]?time): some sources render the title as
+// "Part - Time Instructor" with a full space on both sides of the hyphen
+// (College of Southern Nevada, University of Washington, Austin Peay) --
+// [\s-]? only ever allows one separator character, so it silently missed
+// this "space-hyphen-space" spacing entirely. 72 unclassified jobs across
+// those three colleges were sitting unrecognized for exactly this reason.
+const CLEARLY_NON_TENURE_TITLE_RE = /\b(?:adjunct|visiting|post[\s-]?doc(?:toral)?|temporary|part\s*-?\s*time|professor\s+of\s+practice)\b/i;
 
 // Last-resort, per-institution title-convention overrides -- see
 // data/institution-tenure-policy.json for the source-cited rules themselves.
