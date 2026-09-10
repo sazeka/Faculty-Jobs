@@ -96,6 +96,14 @@
       "note": "UW's Academic Personnel & Faculty site (ap.washington.edu) documents five professorial tracks: Tenure, 'Without Tenure by reason of funding (WOT)', Research, Teaching, and Clinical Practice -- with 'Tenure status: N/A' listed explicitly for every rank in the last four. WOT specifically means faculty whose salary comes from grants/contracts/clinical revenue rather than state-appropriated funds, so they don't hold tenure even though fully integrated into department activities. Separately, UW's 'Acting Titles' policy page confirms: 'acting faculty appointments do not have implications for the award of tenure or for promotion in a clock-managed rank' (used for ABD candidates and postdocs past the terminal-degree limit, pending conversion to a regular title once the degree is conferred). Matches the '(WOT)' abbreviation, 'of Clinical Practice' suffix, 'Clinical [rank]'/'Clinical Faculty' prefix, 'Teaching/Research [rank]' prefix in either word order, and 'Acting [rank]' prefix. Deliberately does not match a plain 'Assistant Professor' with no qualifier, nor administrative/dean titles -- both stay correctly unclassified.",
       "source": "https://ap.washington.edu/ahr/academic-titles-ranks/professorial/",
       "verifiedAt": "2026-09-10"
+    },
+    {
+      "college": "University of South Florida",
+      "titlePattern": "\\bof\\s+instruction\\b|\\binstructional\\s+faculty\\b|\\bclinical\\s+faculty\\b|\\binstructor\\.?\\s*[i1]\\b",
+      "value": false,
+      "note": "USF's Provost office confirms the 'Professor of Instruction Series' (Assistant/Associate/Professor of Instruction) is explicitly for 'full-time, non-tenure track teaching positions', alongside a separate non-tenure 'Instructor Series' (Assistant/Associate/Senior Instructor) -- both referred to collectively as 'instructional faculty'. Matches the 'of Instruction' suffix, 'Instructional Faculty' label, and the 'Instructor I'/'Instructor 1' grade notation seen on several clinical/allied-health (APRN, PA) postings. Also matches the explicit 'Clinical Faculty Position' label used on medical-school postings, consistent with the non-tenure clinical-track convention already verified at every other academic medical center in this table (Miami, UTMB, Rochester, UTHSA, UW), though not independently re-confirmed in USF's own documentation. Deliberately does not match a plain 'Assistant Professor'/'Open Rank Faculty' posting with no qualifier (26 of 39 unclassified USF jobs) -- correctly stays unclassified.",
+      "source": "https://www.usf.edu/provost/faculty-success/professional-development/guidelines-instructor-promotion-2023.aspx",
+      "verifiedAt": "2026-09-10"
     }
   ]
 }

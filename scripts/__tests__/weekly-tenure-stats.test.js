@@ -328,6 +328,21 @@ test("applies verified institution-specific title conventions as a last resort",
   }
   assert.equal(classifyTenureTrack({ college: uwCollege, title: "Assistant Professor in Physics" }), null);
 
+  // University of South Florida: the Provost's office confirms the
+  // "Professor of Instruction Series" and "Instructor Series" are both
+  // explicitly non-tenure "instructional faculty".
+  const usfCollege = "University of South Florida";
+  for (const title of [
+    "Assistant Professor of Instruction - Mechanical Eng",
+    "Instructional Faculty Position, School of Marketing",
+    "Child Abuse Pediatrics Clinical Faculty Position",
+    "APRN/Instructor 1.",
+    "Physician Asst/Instructor. I - Plastic Surgery",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: usfCollege, title }), false, title);
+  }
+  assert.equal(classifyTenureTrack({ college: usfCollege, title: "Assistant Professor" }), null);
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),
