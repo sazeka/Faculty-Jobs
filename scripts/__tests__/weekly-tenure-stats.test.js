@@ -281,6 +281,20 @@ test("applies verified institution-specific title conventions as a last resort",
   assert.equal(classifyTenureTrack({ college: uthsaCollege, title: "Assistant Professor" }), null);
   assert.equal(classifyTenureTrack({ college: uthsaCollege, title: "Open Rank Faculty Position" }), null);
 
+  // Santa Rosa Junior College: SRJC's own live posting text states
+  // "Associate assignments may be temporary, part-time and/or on-call" and
+  // caps them at 67% of a full-time assignment.
+  assert.equal(
+    classifyTenureTrack({ college: "Santa Rosa Junior College", title: "Associate Faculty - Chemistry" }),
+    false
+  );
+  // Not generalized to other colleges -- only SRJC's own posting language
+  // was verified.
+  assert.equal(
+    classifyTenureTrack({ college: "Some Other Community College", title: "Associate Faculty - Chemistry" }),
+    null
+  );
+
   // An institution with no rules in the policy file is unaffected.
   assert.equal(
     classifyTenureTrack({ college: "Some Other University", title: "Professor of Clinical Medicine" }),

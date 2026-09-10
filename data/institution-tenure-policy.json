@@ -72,6 +72,14 @@
       "note": "UTHSA's IHOP policy (3.1.1 Academic Titles), quoted directly: 'Professor, Associate Professor, and Assistant Professor are the only academic titles in which faculty members may hold tenure or be on the tenure track.' Non-Tenure Titles are explicitly enumerated: 'Professor/Clinical ... or Professor/Research ...', 'Associate Professor/Clinical ... or Associate Professor/Research ...', 'Assistant Professor/Clinical ... or Assistant Professor/Research ...', 'Instructor/Clinical ... or Instructor/Research ...' (Section A.2.b) -- matching the '[Rank]/Clinical' and '[Rank]/Research' suffix convention seen throughout live posting titles. Section B separately lists 'Other Non-Tenure Titles' including the prefix form ('Clinical Professor, Clinical Associate Professor, Clinical Assistant Professor, Clinical Instructor...'), 'Lecturer'/'Senior Lecturer'/'Distinguished Senior Lecturer', and bare 'Instructor' ('This title denotes a probationary appointment...'). Deliberately does not match a plain 'Assistant Professor'/'Associate Professor'/'Professor' with no suffix, nor the very common 'Open Rank Faculty ...' postings -- both are the Tenure Titles category or genuinely undetermined, and stay correctly unclassified.",
       "source": "https://public.powerdms.com/UTHSA/documents/1590292",
       "verifiedAt": "2026-09-10"
+    },
+    {
+      "college": "Santa Rosa Junior College",
+      "titlePattern": "\\bassociate\\s+faculty\\b",
+      "value": false,
+      "note": "SRJC's own live posting text (quoted directly, verified 2026-09-10 on an 'Associate Faculty - Chemistry' posting): 'Santa Rosa Junior College is currently accepting applications on a continuous basis to establish a pool for associate faculty assignments. Associate assignments may be temporary, part-time and/or on-call... A part-time faculty assignment may not exceed a total of 67% of an annual full-time assignment.' All 70 of SRJC's unclassified postings at the time used the exact title prefix 'Associate Faculty - [Subject]'. Scoped to this one college (not generalized to 'Associate Faculty' at other California community colleges) since only this institution's own posting language was directly verified.",
+      "source": "https://hr.santarosa.edu/benefits-associate-faculty",
+      "verifiedAt": "2026-09-10"
     }
   ]
 }
