@@ -73,6 +73,8 @@
     "backfill:description-dates": "node scripts/backfill-dates-from-descriptions.js",
     "backfill:labeled-fields": "node scripts/backfill-labeled-posting-fields.js",
     "backfill:departments": "node scripts/backfill-missing-departments.js",
+    "agent:departments": "node scripts/agent-department-enrichment.js",
+    "agent:departments:dry": "node scripts/agent-department-enrichment.js --dry-run",
     "report:quality-completion": "node scripts/generate-quality-completion-report.js",
     "compact:job-descriptions": "node scripts/compact-job-descriptions.js",
     "agent:discover-careers": "node scripts/agent-career-discovery.js",

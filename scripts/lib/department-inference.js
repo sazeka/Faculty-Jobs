@@ -18,8 +18,10 @@ function clean(value) {
 
 // Reject candidate values that don't look like a plausible department name,
 // even if they matched the extraction regex -- a cheap backstop against
-// leaked boilerplate, contact info, or clearly-too-long fragments.
-function looksLikeSafeDepartmentValue(value) {
+// leaked boilerplate, contact info, or clearly-too-long fragments. Exported
+// for reuse by the AI-assisted extractor (agent-department-enrichment.js),
+// which needs the same sanity bar applied to a model's free-text answer.
+export function looksLikeSafeDepartmentValue(value) {
   const v = clean(value);
   if (!v || v.length < 3 || v.length > 90) return false;
   if (/https?:\/\/|@|\.(com|edu|org|gov)\b/i.test(v)) return false;
@@ -50,4 +52,34 @@ export function inferDepartmentFromTitle(title) {
 
   const normalized = normalizeDepartmentValue(m[1]);
   return normalized && looksLikeSafeDepartmentValue(normalized) ? normalized : null;
+}
+
+// Grounding check for AI-extracted department values (used by
+// agent-department-enrichment.js): the model must supply a short verbatim
+// quote from the job's own title/description that names the department, and
+// that exact quote must actually appear in the source text. This is the same
+// anti-hallucination pattern already used for AI-extracted tenure evidence in
+// scripts/lib/enrichment-response.js's validateAiTenureEvidence -- a model
+// asked to "extract" a field will sometimes just invent a plausible-sounding
+// one instead, and a free-text quote is far harder to fabricate consistently
+// with the actual source than a bare department name is.
+export function validateAiDepartmentEvidence(department, quote, job = {}) {
+  const dept = normalizeDepartmentValue(department);
+  if (!dept || !looksLikeSafeDepartmentValue(dept)) return null;
+
+  const normalizedQuote = clean(quote).toLowerCase();
+  if (normalizedQuote.length < 6) return null;
+
+  const source = clean(`${job.title || ""} ${job.description || ""}`).toLowerCase();
+  if (!source.includes(normalizedQuote)) return null;
+
+  // The quote must also plausibly be about *this* department -- require the
+  // department name (or its first significant word, since the model may quote
+  // a longer surrounding phrase than the department value itself) to appear
+  // within the quote.
+  const deptWords = dept.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+  const firstWord = deptWords[0];
+  if (firstWord && !normalizedQuote.includes(firstWord)) return null;
+
+  return dept;
 }
