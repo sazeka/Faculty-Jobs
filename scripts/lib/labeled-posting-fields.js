@@ -5,7 +5,7 @@ function clean(value) {
     .trim()
 }
 
-const NEXT_LABEL = '(?:location|work location|campus location|reports?(?:\\s+directly)? to|department(?:\'s)? website|position type|job summary|summary of job duties|brief description(?: of duties)?|description|salary(?: range)?|flsa(?: status)?|classification title|supervisor title|pay (?:grade|classification|band)|number of vacancies|area of consideration|evaluation group|job code|college\\s*\\/\\s*division|work schedule|total weeks per (?:year|semester)|time type|position open to|weekly scheduled hours|start date|revision date|employment type|compensation|about)'
+const NEXT_LABEL = '(?:location|work location|campus location|reports?(?:\\s+directly)? to|department(?:\'s)? website|position type|job summary|summary of job duties|position summary|brief description(?: of duties)?|description|salary(?: range)?|flsa(?: status)?|classification title|supervisor title|pay (?:grade|classification|band)|number of vacancies|area of consideration|evaluation group|job code|college\\s*\\/\\s*division|work schedule|total weeks per (?:year|semester)|time type|position open to|weekly scheduled hours|start date|revision date|employment type|compensation|about|duties\\s*(?:&|and)\\s*responsibilities|job duties|opening date|closing date|required education|sub[\\s-]?department|type of appointment|catalog number)'
 
 function labeledValue(text, label, maxLength) {
   const source = clean(text)

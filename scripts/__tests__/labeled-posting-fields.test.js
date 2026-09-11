@@ -47,3 +47,37 @@ test('stops at a "Pay Classification" label not in the original terminator list'
   const text = 'Department: Job Workforce and Training Partnerships Pay Classification: PT Reports To: Dean'
   assert.equal(extractDepartmentFromText(text), 'Job Workforce and Training Partnerships')
 })
+
+test('stops at "Position Summary" (Clovis Community College, Villanova University templates)', () => {
+  const text = 'Department: Instruction Position Summary Under general supervision of and in accordance with Clovis Community College and departmentally established practices...'
+  assert.equal(extractDepartmentFromText(text), 'Instruction')
+  const text2 = 'Department: 576-Dean, Professional Studies Position Summary: Villanova University invites applications for adjunct faculty positions...'
+  assert.equal(extractDepartmentFromText(text2), '576-Dean, Professional Studies')
+})
+
+test('stops at "Duties & Responsibilities" and "Job Duties" (Virginia Commonwealth University, Maysville CTC)', () => {
+  const text = 'Department: Management Duties & Responsibilities: Ability to teach at least one of the following courses...'
+  assert.equal(extractDepartmentFromText(text), 'Management')
+  const text2 = 'Department: Academic Services Job Duties: Adjunct nursing clinical instructors are responsible for facilitating clinical learning experiences...'
+  assert.equal(extractDepartmentFromText(text2), 'Academic Services')
+})
+
+test('stops at "Opening Date" (North Florida College)', () => {
+  const text = 'Department: Career and Workforce Education Opening Date: 7/28/2026 Closing Date: Open until filled'
+  assert.equal(extractDepartmentFromText(text), 'Career and Workforce Education')
+})
+
+test('stops at "Required Education" (Felician University)', () => {
+  const text = "Department: School of Arts & Sciences, University Library Required Education: Master's degree in Library and/or Information Science"
+  assert.equal(extractDepartmentFromText(text), 'School of Arts & Sciences, University Library')
+})
+
+test('stops at "Sub department" and "Type of Appointment" (Baton Rouge Community College)', () => {
+  const text = 'Department: Academic & Student Affairs Sub department: Business and Law Type of Appointment: Unclassified - Adjunct'
+  assert.equal(extractDepartmentFromText(text), 'Academic & Student Affairs')
+})
+
+test('stops at "Catalog Number" even when glued to the preceding word (Eastern Iowa Community College District)', () => {
+  const text = 'Department: Health Sciences/Career AcademiesCatalog Number: HSC-137Credit Hours: 3'
+  assert.equal(extractDepartmentFromText(text), 'Health Sciences/Career Academies')
+})
