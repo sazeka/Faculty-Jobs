@@ -67,6 +67,30 @@ test("validateAiDepartmentEvidence rejects a quote present in the source but unr
   );
 });
 
+test("validateAiDepartmentEvidence rejects a bare generic noun with no qualifying name, even when grounded", () => {
+  // Real-world case: Ivy Tech postings contain "...within the framework of
+  // common syllabi provided by the school." -- the word "school" is real and
+  // grounded, but it isn't naming any specific department.
+  const job = {
+    title: "Adjunct Faculty- Nursing",
+    description: "Faculty must follow the framework of common syllabi provided by the school.",
+  };
+  assert.equal(validateAiDepartmentEvidence("School", "provided by the school", job), null);
+  assert.equal(validateAiDepartmentEvidence("Department", "our department welcomes you", {
+    title: "x",
+    description: "our department welcomes you to the team",
+  }), null);
+  // A qualified form is still accepted.
+  const qualified = {
+    title: "x",
+    description: "Join the School of Nursing faculty today.",
+  };
+  assert.equal(
+    validateAiDepartmentEvidence("School of Nursing", "Join the School of Nursing faculty", qualified),
+    "School of Nursing"
+  );
+});
+
 test("validateAiDepartmentEvidence rejects a null/empty department or too-short quote", () => {
   const job = { title: "Assistant Professor", description: "Department of Biochemistry seeks applicants." };
   assert.equal(validateAiDepartmentEvidence(null, "Department of Biochemistry", job), null);

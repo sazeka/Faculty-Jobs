@@ -16,6 +16,18 @@ function clean(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
 
+// Bare generic organizational nouns with no qualifying name attached --
+// "School", "Department" on their own aren't department names, just a word
+// that happened to appear (often in unrelated boilerplate like "...within
+// the framework of common syllabi provided by the school."). A qualified
+// form like "School of Nursing" or "Department of Radiology" is fine and
+// won't match here since it's more than one word.
+const BARE_GENERIC_NOUNS = new Set([
+  "school", "department", "division", "program", "office", "institute",
+  "college", "unit", "faculty", "staff", "center", "centre", "area",
+  "group", "team", "district",
+]);
+
 // Reject candidate values that don't look like a plausible department name,
 // even if they matched the extraction regex -- a cheap backstop against
 // leaked boilerplate, contact info, or clearly-too-long fragments. Exported
@@ -27,6 +39,7 @@ export function looksLikeSafeDepartmentValue(value) {
   if (/https?:\/\/|@|\.(com|edu|org|gov)\b/i.test(v)) return false;
   if (/^\d+$/.test(v)) return false;
   if (/\b(?:apply|click here|read more|learn more|link is external|external link)\b/i.test(v)) return false;
+  if (BARE_GENERIC_NOUNS.has(v.toLowerCase())) return false;
   return true;
 }
 
