@@ -35,6 +35,53 @@ test("rejects candidate values that don't look like a real department name", () 
   assert.equal(inferDepartmentFromTitle("Professor of Click Here To Apply"), null);
 });
 
+test("infers department from 'Faculty of/in X' and comma-separated 'Faculty, X' titles", () => {
+  assert.equal(inferDepartmentFromTitle("Adjunct Faculty in Criminology"), "Criminology");
+  assert.equal(inferDepartmentFromTitle("9.5 Faculty, MATH"), "MATH");
+  assert.equal(
+    inferDepartmentFromTitle("Adjunct Faculty, Computer Programming and Networking Technology"),
+    "Computer Programming and Networking Technology"
+  );
+});
+
+test("infers department from a dash-separated 'Faculty – X' title (no comma or of/in)", () => {
+  assert.equal(inferDepartmentFromTitle("Adjunct Faculty – Mechanical Engineering"), "Mechanical Engineering");
+  assert.equal(inferDepartmentFromTitle("Adjunct Faculty - Dental Hygiene"), "Dental Hygiene");
+});
+
+test("strips a leaked leading article from a captured department value", () => {
+  assert.equal(
+    inferDepartmentFromTitle("Adjunct Faculty in the Department of Political Science and International Affairs"),
+    "Department of Political Science and International Affairs"
+  );
+});
+
+test("rejects a captured value with a glued street address (Fresno-area community college titles)", () => {
+  // Live example: the campus address is glued directly onto the title with
+  // no separator ("...in Criminology1717 S Chestnut Ave, Fresno").
+  assert.equal(inferDepartmentFromTitle("Adjunct Faculty in Criminology1717 S Chestnut Ave, Fresno"), null);
+});
+
+test("rejects a captured value that's a sentence fragment, not a department name", () => {
+  // Live example: a garbled title leaked "...positions are available in our
+  // world-renowned clinics and labs" as if it were the department.
+  assert.equal(
+    inferDepartmentFromTitle(
+      "Faculty Opportunities Clinical, research and leadership positions are available in our world-renowned clinics and labs."
+    ),
+    null
+  );
+});
+
+test("rejects 'Faculty of Practice' -- a rank/classification, not a department", () => {
+  assert.equal(
+    inferDepartmentFromTitle(
+      "Contracted Faculty of Practice (Adjunct): EdD and PhD Kinesiology Dissertation Advisors and Committee Members"
+    ),
+    null
+  );
+});
+
 test("validateAiDepartmentEvidence accepts a department backed by a verbatim, on-topic quote", () => {
   const job = {
     title: "Assistant Professor",

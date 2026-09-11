@@ -40,6 +40,23 @@ export function looksLikeSafeDepartmentValue(value) {
   if (/^\d+$/.test(v)) return false;
   if (/\b(?:apply|click here|read more|learn more|link is external|external link)\b/i.test(v)) return false;
   if (BARE_GENERIC_NOUNS.has(v.toLowerCase())) return false;
+  // A run of 3+ consecutive digits is a strong signal of a leaked street
+  // number, zip code, or requisition ID rather than an actual department --
+  // some job boards (e.g. Fresno-area community colleges) glue the campus
+  // address directly onto the title with no separator ("...in Criminology1717
+  // S Chestnut Ave, Fresno").
+  if (/\d{3,}/.test(v)) return false;
+  // A department name is a noun phrase, not a sentence -- these words show
+  // up almost exclusively when the capture ran on into an unrelated
+  // sentence fragment (e.g. a title like "Faculty Opportunities Clinical,
+  // research and leadership positions are available in our world-renowned
+  // clinics and labs." leaking "...positions are available in our...").
+  if (/\b(?:is|are|were|have been|will be|available|located|responsible for|include[s]?)\b/i.test(v)) return false;
+  // "Faculty of Practice" is itself a rank/classification (like "Clinical
+  // Faculty"), not a department -- "Practice" as the leading word is this
+  // false positive nearly every time ("Contracted Faculty of Practice
+  // (Adjunct): EdD and PhD Kinesiology Dissertation Advisors...").
+  if (/^practice\b/i.test(v)) return false;
   return true;
 }
 
@@ -47,6 +64,8 @@ function normalizeDepartmentValue(value) {
   let v = clean(value).replace(/[.;,:]+\s*$/g, "");
   // Strip a leaked academic-year prefix ("2026/2027: ...", "AY 2026-27 - ...").
   v = v.replace(/^(?:AY\s*)?'?\d{2,4}\s*[/-]\s*\d{2,4}\b\s*[:\-]?\s*/i, "");
+  // Strip a leaked leading article ("...in the Department of X").
+  v = v.replace(/^(?:the|an?)\s+/i, "");
   v = v.replace(/\s{2,}/g, " ").trim();
   return v || null;
 }
@@ -55,11 +74,18 @@ export function inferDepartmentFromTitle(title) {
   const t = clean(title);
   if (!t) return null;
 
-  let m = t.match(/\b(?:Professor|Lecturer|Instructor|Chair)\s+(?:of|in)\s+(.+)$/i);
+  let m = t.match(/\b(?:Professor|Lecturer|Instructor|Chair|Faculty)\s+(?:of|in)\s+(.+)$/i);
   if (!m) m = t.match(/\bPost(?:doc|doctoral)\b.*?\bin\s+(.+)$/i);
   if (!m) {
-    const commaMatch = t.match(/\b(?:Professor|Lecturer|Instructor|Chair)[^,]*,\s*([A-Za-z][A-Za-z0-9 &/'().-]{2,100})$/i);
+    const commaMatch = t.match(/\b(?:Professor|Lecturer|Instructor|Chair|Faculty)[^,]*,\s*([A-Za-z][A-Za-z0-9 &/'().-]{2,100})$/i);
     if (commaMatch) m = [commaMatch[0], commaMatch[1]];
+  }
+  if (!m) {
+    // "Adjunct Faculty – English, Literature, & Writing" -- an em/en-dash
+    // (or plain hyphen set off by spaces, to avoid matching a hyphenated
+    // compound word) after "Faculty" instead of a comma or "of/in".
+    const dashMatch = t.match(/\bFaculty\s*[-–—]\s*([A-Za-z][A-Za-z0-9 &,/'().-]{2,100})$/i);
+    if (dashMatch) m = [dashMatch[0], dashMatch[1]];
   }
   if (!m || !m[1]) return null;
 
