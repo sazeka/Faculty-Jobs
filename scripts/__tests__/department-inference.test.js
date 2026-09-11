@@ -138,6 +138,22 @@ test("validateAiDepartmentEvidence rejects a bare generic noun with no qualifyin
   );
 });
 
+test("validateAiDepartmentEvidence rejects the institution's own name mistaken for a department", () => {
+  // Real-world case: generic mission-statement boilerplate ("Aims Community
+  // College actively supports an environment that embraces the College's
+  // Mission...") gives a genuine, grounded quote containing the college's
+  // own name, which the model extracted as if it were the department.
+  const job = {
+    title: "Adjunct Faculty: Chemistry",
+    college: "Aims Community College",
+    description: "Aims Community College actively supports an environment that embraces the College's Mission.",
+  };
+  assert.equal(
+    validateAiDepartmentEvidence("Aims Community College", "Aims Community College actively supports", job),
+    null
+  );
+});
+
 test("validateAiDepartmentEvidence rejects a null/empty department or too-short quote", () => {
   const job = { title: "Assistant Professor", description: "Department of Biochemistry seeks applicants." };
   assert.equal(validateAiDepartmentEvidence(null, "Department of Biochemistry", job), null);

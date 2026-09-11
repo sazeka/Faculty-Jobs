@@ -106,6 +106,13 @@ export function validateAiDepartmentEvidence(department, quote, job = {}) {
   const dept = normalizeDepartmentValue(department);
   if (!dept || !looksLikeSafeDepartmentValue(dept)) return null;
 
+  // The institution's own name is not a department -- generic mission-
+  // statement boilerplate ("Aims Community College actively supports an
+  // environment that embraces the College's Mission...") gives the model a
+  // real, grounded quote containing the college name, and it sometimes
+  // extracts that as if it were the department.
+  if (job.college && dept.toLowerCase() === clean(job.college).toLowerCase()) return null;
+
   const normalizedQuote = clean(quote).toLowerCase();
   if (normalizedQuote.length < 6) return null;
 
