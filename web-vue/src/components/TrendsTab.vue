@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { appointmentTrackHistory } from '../lib/trendsHistory.js'
+import { appointmentTrackHistory, disciplineClassificationHistory } from '../lib/trendsHistory.js'
 
 const props = defineProps({
   baseUrl: { type: String, default: '/' },
@@ -24,16 +24,8 @@ onMounted(async () => {
   }
 })
 
-const historyBars = computed(() => {
-  const items = trends.value?.history?.slice(-12) || []
-  if (!items.length) return []
-  const max = Math.max(...items.map(h => h.totalJobs))
-  return items.map(h => ({
-    weekEnd: h.weekEnd,
-    totalJobs: h.totalJobs,
-    heightPct: max > 0 ? Math.round((h.totalJobs / max) * 100) : 0,
-  }))
-})
+const disciplineStats = computed(() => trends.value?.stats?.disciplineBreakdown || null)
+const disciplineHistory = computed(() => disciplineClassificationHistory(trends.value?.history || []))
 
 const controlHistory = computed(() => (trends.value?.history || [])
   .filter(h => h.publicJobs != null && h.privateNonprofitJobs != null)
@@ -295,40 +287,50 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 
     <hr class="fa-rule-thin" style="margin: 40px 0;" />
 
-    <!-- Institutions + sparkline -->
+    <!-- Disciplines -->
     <div class="trends-lower-grid">
 
-      <!-- Top institutions -->
+      <!-- Top disciplines -->
       <div>
-        <div class="fa-label" style="margin-bottom: 20px;">Most active institutions</div>
-        <div style="border-top: 1px solid var(--rule);">
+        <div class="fa-label" style="margin-bottom: 20px;">Top disciplines</div>
+        <div v-if="disciplineStats?.topDisciplines?.length" style="border-top: 1px solid var(--rule);">
           <div
-            v-for="(inst, i) in trends.stats.topInstitutions"
-            :key="inst.institution"
+            v-for="(d, i) in disciplineStats.topDisciplines"
+            :key="d.discipline"
             class="trends-inst-row"
           >
             <span class="fa-meta" style="font-size: 10px; width: 24px; color: var(--ink-4);">{{ String(i + 1).padStart(2, '0') }}</span>
-            <span class="fa-display" style="font-size: 18px; flex: 1; line-height: 1.2;">{{ inst.institution }}</span>
-            <span class="fa-num" style="font-size: 16px;">{{ fmt(inst.count) }}</span>
+            <span class="fa-display" style="font-size: 18px; flex: 1; line-height: 1.2;">{{ d.discipline }}</span>
+            <span class="fa-num" style="font-size: 16px;">{{ fmt(d.count) }}</span>
           </div>
+        </div>
+        <div class="fa-meta" style="margin-top: 10px; color: var(--ink-4); line-height: 1.5;">
+          Based on {{ fmt(disciplineStats?.classified || 0) }} listings with a discipline identified so far, out of
+          {{ fmt(disciplineStats?.classified + disciplineStats?.unknown || 0) }} tracked
+          ({{ disciplineStats?.distinctDisciplines || 0 }} distinct disciplines).
         </div>
       </div>
 
-      <!-- Sparkline -->
-      <div v-if="historyBars.length > 1">
-        <div class="fa-label" style="margin-bottom: 20px;">12-week history</div>
-        <div class="trends-sparkline">
-          <div
-            v-for="bar in historyBars"
-            :key="bar.weekEnd"
-            class="trends-spark-bar"
-            :style="{ height: `${bar.heightPct}%` }"
-            :title="`${fmtWeek(bar.weekEnd)}: ${fmt(bar.totalJobs)} jobs`"
-          ></div>
-        </div>
-        <div class="trends-spark-labels fa-meta">
-          <span>{{ fmtWeek(historyBars[0].weekEnd) }}</span>
-          <span>{{ fmtWeek(historyBars[historyBars.length - 1].weekEnd) }}</span>
+      <!-- Discipline classification sparkline -->
+      <div>
+        <div class="fa-label" style="margin-bottom: 20px;">Discipline coverage over time</div>
+        <template v-if="disciplineHistory.length > 1">
+          <div class="trends-sparkline" aria-label="Weekly share of listings with a known discipline">
+            <div
+              v-for="week in disciplineHistory"
+              :key="week.weekEnd"
+              class="trends-spark-bar"
+              :style="{ height: `${week.classifiedPct}%` }"
+              :title="`${fmtWeek(week.weekEnd)}: ${week.classifiedPct}% classified (${fmt(week.classified)} of ${fmt(week.classified + week.unknown)})`"
+            ></div>
+          </div>
+          <div class="trends-spark-labels fa-meta">
+            <span>{{ fmtWeek(disciplineHistory[0].weekEnd) }}</span>
+            <span>{{ fmtWeek(disciplineHistory[disciplineHistory.length - 1].weekEnd) }}</span>
+          </div>
+        </template>
+        <div v-else class="fa-meta control-unavailable">
+          Tracking starts this week; a new comparison point will be added to this chart each week.
         </div>
       </div>
 

@@ -28,3 +28,21 @@ export function appointmentTrackHistory(history, limit = 12) {
     })
     .slice(-Math.max(1, Number(limit) || 12))
 }
+
+export function disciplineClassificationHistory(history, limit = 12) {
+  if (!Array.isArray(history)) return []
+
+  return history
+    .filter((week) => {
+      if (week?.disciplineClassifiedPct == null) return false
+      const pct = Number(week.disciplineClassifiedPct)
+      return Number.isFinite(pct) && pct >= 0
+    })
+    .map((week) => ({
+      weekEnd: week.weekEnd,
+      classified: Number(week.disciplineClassified) || 0,
+      unknown: Number(week.disciplineUnknown) || 0,
+      classifiedPct: Math.min(100, Math.max(0, Number(week.disciplineClassifiedPct))),
+    }))
+    .slice(-Math.max(1, Number(limit) || 12))
+}

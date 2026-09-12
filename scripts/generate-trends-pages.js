@@ -191,11 +191,11 @@ function renderWeekPage(entry, prevEntry, nextEntry) {
     </table>`
     : "";
 
-  const institutions = Array.isArray(entry.topInstitutions) ? entry.topInstitutions : [];
-  const institutionsHtml = institutions.length
-    ? `<h2>Most active institutions</h2>
+  const disciplines = Array.isArray(entry.disciplineBreakdown?.topDisciplines) ? entry.disciplineBreakdown.topDisciplines : [];
+  const disciplinesHtml = disciplines.length
+    ? `<h2>Top disciplines</h2>
     <table>
-      ${institutions.map(({ institution, count }) => `<tr><td>${esc(institution)}</td><td class="n">${count.toLocaleString()}</td></tr>`).join("\n      ")}
+      ${disciplines.map(({ discipline, count }) => `<tr><td>${esc(discipline)}</td><td class="n">${count.toLocaleString()}</td></tr>`).join("\n      ")}
     </table>`
     : "";
 
@@ -243,7 +243,7 @@ ${deltaHtml}${topType ? `      <div class="stat"><div class="l">Top position typ
     </div>
     ${prose}
     ${sourcesHtml}
-    ${institutionsHtml}${aiHtml ? `\n    ${aiHtml}` : ""}${tenureHtml ? `\n    ${tenureHtml}` : ""}
+    ${disciplinesHtml}${aiHtml ? `\n    ${aiHtml}` : ""}${tenureHtml ? `\n    ${tenureHtml}` : ""}
     ${typesHtml}
     ${pagerHtml}
   `;
