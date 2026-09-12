@@ -57,6 +57,11 @@ export function looksLikeSafeDepartmentValue(value) {
   // false positive nearly every time ("Contracted Faculty of Practice
   // (Adjunct): EdD and PhD Kinesiology Dissertation Advisors...").
   if (/^practice\b/i.test(v)) return false;
+  // A central administrative office, not an academic department -- shows up
+  // when a job posting's contact-info boilerplate ("...let Human Resources
+  // know by submitting your information...") gets mistaken for the actual
+  // department. A faculty posting is essentially never itself "in" HR.
+  if (/^human resources$/i.test(v)) return false;
   return true;
 }
 
@@ -66,6 +71,11 @@ function normalizeDepartmentValue(value) {
   v = v.replace(/^(?:AY\s*)?'?\d{2,4}\s*[/-]\s*\d{2,4}\b\s*[:\-]?\s*/i, "");
   // Strip a leaked leading article ("...in the Department of X").
   v = v.replace(/^(?:the|an?)\s+/i, "");
+  // Strip a leaked "Unit Name" form-field label -- some HR systems
+  // (PeopleAdmin-style) render structured posting fields glued together with
+  // no separator ("...Position Title X Unit Name Academic Affairs Salary
+  // Grade..."), and the model quotes the label along with the value.
+  v = v.replace(/^unit name\s+/i, "");
   v = v.replace(/\s{2,}/g, " ").trim();
   return v || null;
 }

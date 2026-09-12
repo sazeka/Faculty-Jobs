@@ -167,6 +167,33 @@ test("validateAiDepartmentEvidence rejects a shortened alias of the institution'
   assert.equal(validateAiDepartmentEvidence("Harper College", "We are Harper College", job), null);
 });
 
+test("validateAiDepartmentEvidence rejects 'Human Resources' grounded in contact-info boilerplate", () => {
+  // Live example (Blackburn College): "...let Human Resources know by
+  // submitting your information..." is a real, grounded quote, but HR is
+  // the office to notify, not the job's actual department.
+  const job = {
+    title: "Adjunct Faculty Positions",
+    college: "Blackburn College",
+    description: "Let Human Resources know by submitting your information to be considered for future openings.",
+  };
+  assert.equal(validateAiDepartmentEvidence("Human Resources", "Let Human Resources know", job), null);
+});
+
+test("validateAiDepartmentEvidence strips a leaked 'Unit Name' form-field label", () => {
+  // Live example (Mississippi University for Women, PeopleAdmin-style
+  // posting): structured fields glued together with no separator --
+  // "...Position Title X Unit Name Academic Affairs Salary Grade...".
+  const job = {
+    title: "Dual Enrollment Instructor Applicant Pool",
+    college: "Mississippi University for Women",
+    description: "Position Title Dual Enrollment Instructor Applicant Pool Unit Name Academic Affairs Salary Grade Faculty",
+  };
+  assert.equal(
+    validateAiDepartmentEvidence("Unit Name Academic Affairs", "Unit Name Academic Affairs Salary Grade", job),
+    "Academic Affairs"
+  );
+});
+
 test("validateAiDepartmentEvidence rejects a null/empty department or too-short quote", () => {
   const job = { title: "Assistant Professor", description: "Department of Biochemistry seeks applicants." };
   assert.equal(validateAiDepartmentEvidence(null, "Department of Biochemistry", job), null);
