@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { extractDepartmentFromText, extractLocationFromText } from '../lib/labeled-posting-fields.js'
+import { extractDepartmentFromText, extractLocationFromText, extractVccsCollegeFromText } from '../lib/labeled-posting-fields.js'
 
 test('extracts bounded labeled department and location fields', () => {
   const text = 'Department: Teacher Education Location: Joplin, MO Reports To: Dean Job Summary: Teach courses.'
@@ -80,4 +80,44 @@ test('stops at "Sub department" and "Type of Appointment" (Baton Rouge Community
 test('stops at "Catalog Number" even when glued to the preceding word (Eastern Iowa Community College District)', () => {
   const text = 'Department: Health Sciences/Career AcademiesCatalog Number: HSC-137Credit Hours: 3'
   assert.equal(extractDepartmentFromText(text), 'Health Sciences/Career Academies')
+})
+
+test('extracts the real VCCS college from the shared jobs.vccs.edu "Agency" field', () => {
+  // Live example: this posting was scraped under the "Central Virginia
+  // Community College" config (an unfiltered statewide query), but its own
+  // Agency field names the actual college -- Northern Virginia Community
+  // College, abbreviated "VA" in the raw HR record.
+  const text = 'Position Number 280G0093 Agency Northern VA Community College Agency/Division NV280-VP Workforce Development Work Location Loudoun - 107'
+  assert.equal(extractVccsCollegeFromText(text), 'Northern Virginia Community College')
+})
+
+test('handles the "Agency X Division X (Div)" template variant (no Agency/Division combined label)', () => {
+  const text = 'Position Number 999 Agency Blue Ridge Community College Division Blue Ridge Community College (Div) Work Location Augusta - 015'
+  assert.equal(extractVccsCollegeFromText(text), 'Blue Ridge Community College')
+})
+
+test('normalizes punctuation variants of a real VCCS college name', () => {
+  assert.equal(
+    extractVccsCollegeFromText('Agency Paul D. Camp Community College Agency/Division Paul D. Camp Community College (Div)'),
+    'Paul D Camp Community College'
+  )
+  assert.equal(
+    extractVccsCollegeFromText('Agency J. Sargeant Reynolds Community College Agency/Division J. Sargeant Reynolds Comm'),
+    'J Sargeant Reynolds Community College'
+  )
+})
+
+test('maps a pre-rename VCCS agency name to its current college name', () => {
+  assert.equal(
+    extractVccsCollegeFromText('Agency Dabney S. Lancaster Community College Agency/Division DSLCC'),
+    'Mountain Gateway Community College'
+  )
+  assert.equal(
+    extractVccsCollegeFromText('Agency Lord Fairfax Community College Agency/Division LFCC'),
+    'Laurel Ridge Community College'
+  )
+})
+
+test('returns null when there is no Agency field to parse', () => {
+  assert.equal(extractVccsCollegeFromText('Department: Nursing Location: Lynchburg, VA'), null)
 })
