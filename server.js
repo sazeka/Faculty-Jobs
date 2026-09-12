@@ -86,6 +86,7 @@ import { extractCsodJobsFromDocument } from "./scripts/lib/csod-extraction.js";
 import { extractRiceFacultyRows } from "./scripts/lib/rice-faculty-extraction.js";
 import { extractCunyJobRows } from "./scripts/lib/cuny-jobs-extraction.js";
 import { canonicalInstitutionName } from "./scripts/lib/institution-aliases.js";
+import { extractVccsCollegeFromText } from "./scripts/lib/labeled-posting-fields.js";
 import { interfolioApplicationUrl } from "./scripts/lib/interfolio-position.js";
 import { alaskaCampusLocation, inferAlaskaCampus } from "./scripts/lib/alaska-campus.js";
 import { canonicalCsuInstitutionFromLocation, repairKnownInstitutionAttribution } from "./scripts/lib/institution-attribution.js";
@@ -2414,6 +2415,24 @@ const VA_CAMPUSES = [
   // live with locationFilter "VIRGINIA BEACH" + the faculty-keyword gate:
   // exactly 1 real posting, "Adjunct Professor - Biology".
   { campus: "Bryant & Stratton College-Virginia Beach", type: "ultipro-ukg", url: "https://recruiting.ultipro.com/BRY1002BSC/JobBoard/6b838b9a-cd2b-436a-903b-0de7b6e17b4f/?q=virginia+beach&o=postedDateDesc", locationFilter: "VIRGINIA BEACH" },
+  // This query has no query_organizational_tier_1_id/tier_2_id facet at all --
+  // unlike every other campus below on this same jobs.vccs.edu instance, it
+  // is an UNFILTERED statewide search across all 23 VCCS colleges' Faculty
+  // postings. Confirmed live: 17 jobs previously landed here with "college"
+  // set to Central Virginia Community College even though each posting's own
+  // "Agency: <college>" field named a different VCCS college entirely (Paul
+  // D. Camp, Northern VA, J. Sargeant Reynolds, New River, Piedmont
+  // Virginia, Virginia Peninsula, Virginia Western, Tidewater) -- this campus
+  // was acting as a wrong catch-all bucket, and several other VCCS colleges'
+  // own dedicated tier-scoped entries below were returning 0 despite real
+  // openings existing (their real postings were being swept in here
+  // instead). Left the query itself unfiltered (no verified real tier id for
+  // Central Virginia CC's own facet) but scrapePeopleAdminAs now re-derives
+  // each posting's real college from its own Agency field (see
+  // extractVccsCollegeFromText) rather than trusting this static campusName --
+  // self-healing for genuinely-CVCC postings and for any other VCCS college
+  // going forward, and de-duplicated against the dedicated per-college
+  // entries below by scrapeVaAll's existing uniqByUrl.
   {
     campus: "Central Virginia Community College",
     type: "peopleadmin",
@@ -12914,11 +12933,33 @@ export async function scrapePeopleAdminAs(context, startUrl, campusName, sourceN
       }
     }
 
+    // Same shape of bug, same fix: Central Virginia Community College's own
+    // VA_CAMPUSES entry is an unfiltered statewide jobs.vccs.edu query (see
+    // its config comment above), so it needs the real college re-derived
+    // from each posting's own "Agency: <college>" field rather than trusting
+    // the static campusName.
+    let vccsByUrl = new Map();
+    if (campusName === "Central Virginia Community College" && jobs.length > 0) {
+      const inferred = await mapWithConcurrency(jobs, 4, async (j) => {
+        try {
+          const res = await context.request.get(j.url, { timeout: 45_000 });
+          if (!res.ok()) return { url: j.url, college: null };
+          const html = await res.text();
+          return { url: j.url, college: extractVccsCollegeFromText(stripHtmlToText(html)) };
+        } catch {
+          return { url: j.url, college: null };
+        }
+      });
+      for (const row of inferred) {
+        if (row?.url && row.college) vccsByUrl.set(row.url, row.college);
+      }
+    }
+
     const out = jobs
       .map((j) => {
         const title = normalizeJobTitle(j.title);
         const inferred = inferAcademicFieldsFromTitle(title);
-        const inferredCollege = sdborByUrl.get(j.url) || null;
+        const inferredCollege = sdborByUrl.get(j.url) || vccsByUrl.get(j.url) || null;
         return {
           title,
           url: j.url,
