@@ -167,109 +167,57 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 
     <hr v-if="aiStats" class="fa-rule-thin" style="margin: 40px 0;" />
 
-    <!-- Appointment-track history -->
-    <section v-if="tenureStats" class="tenure-comparison" aria-labelledby="tenure-comparison-title">
-      <div class="fa-label" id="tenure-comparison-title">Appointment track over time</div>
-      <div class="tenure-metrics">
-        <div class="tenure-metric">
-          <div class="fa-meta">Tenure-track</div>
-          <div class="fa-display tenure-metric-value">{{ fmt(tenureStats.tenureTrack) }}</div>
-          <div class="fa-num tenure-metric-share">{{ tenureStats.tenureTrackPct }}% of classified</div>
-        </div>
-        <div class="tenure-metric">
-          <div class="fa-meta">Non-tenure-track</div>
-          <div class="fa-display tenure-metric-value">{{ fmt(tenureStats.nonTenureTrack) }}</div>
-          <div class="fa-num tenure-metric-share">{{ tenureStats.nonTenureTrackPct }}% of classified</div>
-        </div>
-      </div>
-      <div
-        v-if="tenureHistory.length"
-        class="tenure-history"
-        aria-label="Weekly share of classified tenure-track and non-tenure-track job listings"
-      >
-        <div
-          v-for="week in tenureHistory"
-          :key="week.weekEnd"
-          class="tenure-week"
-          tabindex="0"
-          :aria-label="`${fmtWeek(week.weekEnd)}: ${week.tenureTrackPct}% tenure-track and ${week.nonTenureTrackPct}% non-tenure-track`"
-          :data-tooltip="`${fmtWeek(week.weekEnd)} · Tenure ${week.tenureTrackPct}% · Non-tenure ${week.nonTenureTrackPct}%`"
-        >
-          <div class="tenure-week-ntt" :style="{ height: `${week.nonTenureTrackPct}%` }"></div>
-          <div class="tenure-week-tt" :style="{ height: `${week.tenureTrackPct}%` }"></div>
-        </div>
-      </div>
-      <div v-if="tenureHistory.length" class="trends-spark-labels fa-meta">
-        <span>{{ fmtWeek(tenureHistory[0].weekEnd) }}</span>
-        <span>{{ fmtWeek(tenureHistory[tenureHistory.length - 1].weekEnd) }}</span>
-      </div>
-      <div v-if="tenureHistory.length === 1" class="fa-meta tenure-start-note">
-        Tracking starts this week; a new comparison point will be added after each weekly digest.
-      </div>
-      <div v-if="tenureHistory.length" class="tenure-legend fa-meta">
-        <span><i class="tenure-key tenure-key-tt"></i>Tenure-track</span>
-        <span><i class="tenure-key tenure-key-ntt"></i>Non-tenure-track</span>
-      </div>
-      <div class="fa-meta tenure-note">
-        Based on {{ fmt(tenureStats.classified) }} listings with a known appointment track.
-        {{ fmt(tenureStats.unknown) }} additional listings are unclassified and excluded from the percentages.
-      </div>
-    </section>
-
-    <hr v-if="tenureStats" class="fa-rule-thin" style="margin: 40px 0;" />
-
-    <!-- Stats grid -->
+    <!-- Appointment-track history + Position types -->
     <div class="trends-stats-grid">
 
-      <!-- Public/private history -->
-      <div class="trends-col">
-        <div class="fa-label" style="margin-bottom: 20px;">Public vs private over time</div>
-        <template v-if="controlStats">
-          <div class="control-current">
-            <div>
-              <div class="fa-meta">Public</div>
-              <div class="fa-display control-value">{{ fmt(controlStats.public) }}</div>
-              <div class="fa-num control-share">{{ controlStats.publicPct }}%</div>
-            </div>
-            <div>
-              <div class="fa-meta">Private nonprofit</div>
-              <div class="fa-display control-value">{{ fmt(controlStats.privateNonprofit) }}</div>
-              <div class="fa-num control-share">{{ controlStats.privateNonprofitPct }}%</div>
-            </div>
+      <!-- Appointment-track history -->
+      <section v-if="tenureStats" class="tenure-comparison trends-col" aria-labelledby="tenure-comparison-title">
+        <div class="fa-label" id="tenure-comparison-title">Appointment track over time</div>
+        <div class="tenure-metrics">
+          <div class="tenure-metric">
+            <div class="fa-meta">Tenure-track</div>
+            <div class="fa-display tenure-metric-value">{{ fmt(tenureStats.tenureTrack) }}</div>
+            <div class="fa-num tenure-metric-share">{{ tenureStats.tenureTrackPct }}% of classified</div>
           </div>
-          <div v-if="controlHistory.length" class="control-history" aria-label="Weekly share of classified public and private nonprofit job listings">
-            <div
-              v-for="week in controlHistory"
-              :key="week.weekEnd"
-              class="control-week"
-              tabindex="0"
-              :aria-label="`${fmtWeek(week.weekEnd)}: ${week.publicPct}% public and ${week.privateNonprofitPct}% private nonprofit`"
-              :data-tooltip="`${fmtWeek(week.weekEnd)} · Public ${week.publicPct}% · Private ${week.privateNonprofitPct}%`"
-            >
-              <div class="control-week-private" :style="{ height: `${week.privateNonprofitPct}%` }"></div>
-              <div class="control-week-public" :style="{ height: `${week.publicPct}%` }"></div>
-            </div>
+          <div class="tenure-metric">
+            <div class="fa-meta">Non-tenure-track</div>
+            <div class="fa-display tenure-metric-value">{{ fmt(tenureStats.nonTenureTrack) }}</div>
+            <div class="fa-num tenure-metric-share">{{ tenureStats.nonTenureTrackPct }}% of classified</div>
           </div>
-          <div v-if="controlHistory.length" class="trends-spark-labels fa-meta">
-            <span>{{ fmtWeek(controlHistory[0].weekEnd) }}</span>
-            <span>{{ fmtWeek(controlHistory[controlHistory.length - 1].weekEnd) }}</span>
-          </div>
-          <div v-if="controlHistory.length === 1" class="fa-meta control-start-note">
-            Tracking starts this week; a new comparison point will be added to this chart each week.
-          </div>
-          <div class="control-legend fa-meta">
-            <span><i class="control-key control-key-public"></i>Public</span>
-            <span><i class="control-key control-key-private"></i>Private nonprofit</span>
-          </div>
-          <div class="fa-meta control-note">
-            Percentages use {{ fmt(controlStats.classified) }} listings matched to institution control.
-            {{ fmt(controlStats.unknown) }} unmatched listings are excluded.
-          </div>
-        </template>
-        <div v-else class="fa-meta control-unavailable">
-          Institution-control history will appear after the latest weekly data finishes loading.
         </div>
-      </div>
+        <div
+          v-if="tenureHistory.length"
+          class="tenure-history"
+          aria-label="Weekly share of classified tenure-track and non-tenure-track job listings"
+        >
+          <div
+            v-for="week in tenureHistory"
+            :key="week.weekEnd"
+            class="tenure-week"
+            tabindex="0"
+            :aria-label="`${fmtWeek(week.weekEnd)}: ${week.tenureTrackPct}% tenure-track and ${week.nonTenureTrackPct}% non-tenure-track`"
+            :data-tooltip="`${fmtWeek(week.weekEnd)} · Tenure ${week.tenureTrackPct}% · Non-tenure ${week.nonTenureTrackPct}%`"
+          >
+            <div class="tenure-week-ntt" :style="{ height: `${week.nonTenureTrackPct}%` }"></div>
+            <div class="tenure-week-tt" :style="{ height: `${week.tenureTrackPct}%` }"></div>
+          </div>
+        </div>
+        <div v-if="tenureHistory.length" class="trends-spark-labels fa-meta">
+          <span>{{ fmtWeek(tenureHistory[0].weekEnd) }}</span>
+          <span>{{ fmtWeek(tenureHistory[tenureHistory.length - 1].weekEnd) }}</span>
+        </div>
+        <div v-if="tenureHistory.length === 1" class="fa-meta tenure-start-note">
+          Tracking starts this week; a new comparison point will be added after each weekly digest.
+        </div>
+        <div v-if="tenureHistory.length" class="tenure-legend fa-meta">
+          <span><i class="tenure-key tenure-key-tt"></i>Tenure-track</span>
+          <span><i class="tenure-key tenure-key-ntt"></i>Non-tenure-track</span>
+        </div>
+        <div class="fa-meta tenure-note">
+          Based on {{ fmt(tenureStats.classified) }} listings with a known appointment track.
+          {{ fmt(tenureStats.unknown) }} additional listings are unclassified and excluded from the percentages.
+        </div>
+      </section>
 
       <!-- Position types -->
       <div class="trends-col">
@@ -283,6 +231,58 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
         </div>
       </div>
 
+    </div>
+
+    <hr v-if="tenureStats" class="fa-rule-thin" style="margin: 40px 0;" />
+
+    <!-- Public/private history -->
+    <div class="control-standalone">
+      <div class="fa-label" style="margin-bottom: 20px;">Public vs private over time</div>
+      <template v-if="controlStats">
+        <div class="control-current">
+          <div>
+            <div class="fa-meta">Public</div>
+            <div class="fa-display control-value">{{ fmt(controlStats.public) }}</div>
+            <div class="fa-num control-share">{{ controlStats.publicPct }}%</div>
+          </div>
+          <div>
+            <div class="fa-meta">Private nonprofit</div>
+            <div class="fa-display control-value">{{ fmt(controlStats.privateNonprofit) }}</div>
+            <div class="fa-num control-share">{{ controlStats.privateNonprofitPct }}%</div>
+          </div>
+        </div>
+        <div v-if="controlHistory.length" class="control-history" aria-label="Weekly share of classified public and private nonprofit job listings">
+          <div
+            v-for="week in controlHistory"
+            :key="week.weekEnd"
+            class="control-week"
+            tabindex="0"
+            :aria-label="`${fmtWeek(week.weekEnd)}: ${week.publicPct}% public and ${week.privateNonprofitPct}% private nonprofit`"
+            :data-tooltip="`${fmtWeek(week.weekEnd)} · Public ${week.publicPct}% · Private ${week.privateNonprofitPct}%`"
+          >
+            <div class="control-week-private" :style="{ height: `${week.privateNonprofitPct}%` }"></div>
+            <div class="control-week-public" :style="{ height: `${week.publicPct}%` }"></div>
+          </div>
+        </div>
+        <div v-if="controlHistory.length" class="trends-spark-labels fa-meta">
+          <span>{{ fmtWeek(controlHistory[0].weekEnd) }}</span>
+          <span>{{ fmtWeek(controlHistory[controlHistory.length - 1].weekEnd) }}</span>
+        </div>
+        <div v-if="controlHistory.length === 1" class="fa-meta control-start-note">
+          Tracking starts this week; a new comparison point will be added to this chart each week.
+        </div>
+        <div class="control-legend fa-meta">
+          <span><i class="control-key control-key-public"></i>Public</span>
+          <span><i class="control-key control-key-private"></i>Private nonprofit</span>
+        </div>
+        <div class="fa-meta control-note">
+          Percentages use {{ fmt(controlStats.classified) }} listings matched to institution control.
+          {{ fmt(controlStats.unknown) }} unmatched listings are excluded.
+        </div>
+      </template>
+      <div v-else class="fa-meta control-unavailable">
+        Institution-control history will appear after the latest weekly data finishes loading.
+      </div>
     </div>
 
     <hr class="fa-rule-thin" style="margin: 40px 0;" />
@@ -517,6 +517,8 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   gap: 48px;
 }
 .trends-col {}
+
+.control-standalone { max-width: 620px; }
 
 .control-current {
   display: grid;
