@@ -30,6 +30,10 @@ import {
   alignEnrichmentResults,
   validateAiTenureEvidence,
 } from './lib/enrichment-response.js';
+import {
+  buildKnownDisciplineVocabulary,
+  deriveDisciplineFromDepartment,
+} from './lib/discipline-from-department.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -280,6 +284,20 @@ async function main() {
     }
   }
 
+  // Fill `discipline` for free wherever the job's department string exactly
+  // matches (after stripping common institutional boilerplate) a discipline
+  // value the AI has already validated elsewhere in the dataset. Zero cost,
+  // zero network calls -- runs even under AI_BACKEND=rules-only in CI.
+  const disciplineVocabulary = buildKnownDisciplineVocabulary(payload.jobs);
+  let deterministicDisciplineCount = 0;
+  for (const job of payload.jobs) {
+    if (job.discipline !== undefined) continue;
+    const derived = deriveDisciplineFromDepartment(job.department, disciplineVocabulary);
+    if (!derived) continue;
+    deterministicDisciplineCount++;
+    if (!DRY_RUN) job.discipline = derived;
+  }
+
   const needsDiscipline = job => job.discipline === undefined;
   const needsTenure = job => classifyTenureTrack(job) === null;
   const candidates = payload.jobs
@@ -301,16 +319,17 @@ async function main() {
   console.log(`  Discipline known : ${(payload.jobs.length - disciplineMissing).toLocaleString()}`);
   console.log(`  Tenure unknown   : ${tenureUnknown.toLocaleString()}`);
   console.log(`  Rule-classified  : ${deterministicTenureCount.toLocaleString()}`);
+  console.log(`  Dept-derived now : ${deterministicDisciplineCount.toLocaleString()} (free, no AI)`);
   console.log(`  To process now   : ${toProcess.length.toLocaleString()} (max ${MAX})`);
   console.log(`  Batch size       : ${BATCH_SIZE}`);
   console.log(`  Concurrency      : ${CONCURRENCY}`);
 
   if (AI_BACKEND === 'rules-only') {
     if (DRY_RUN) {
-      console.log(`\n  Would save ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications. No files written.`);
+      console.log(`\n  Would save ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications and ${deterministicDisciplineCount.toLocaleString()} dept-derived disciplines. No files written.`);
       return;
     }
-    if (deterministicTenureCount) {
+    if (deterministicTenureCount || deterministicDisciplineCount) {
       writeJson(PUBLIC_JOBS, payload);
       if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
     }
@@ -323,27 +342,37 @@ async function main() {
       totalEnriched,
       remaining: payload.jobs.length - totalEnriched,
       tenureClassifiedByRules: deterministicTenureCount,
+      disciplineClassifiedByRules: deterministicDisciplineCount,
       tenureUnknown,
       errors: 0,
     });
-    console.log(`\n  Saved ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications.`);
+    console.log(`\n  Saved ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications and ${deterministicDisciplineCount.toLocaleString()} dept-derived disciplines.`);
     console.log('  Model enrichment skipped in CI; run locally with Ollama for remaining fields.');
     return;
   }
 
   if (toProcess.length === 0) {
-    console.log('\n  All jobs already enriched. Nothing to do.');
-    if (!DRY_RUN && deterministicTenureCount) {
+    // candidates.length === 0 means every job genuinely has a discipline and
+    // a known tenure status; MAX === 0 (or AI_BACKEND === 'rules-only', which
+    // is handled above) can also reach here with real candidates still
+    // outstanding, so totalEnriched must be counted, not assumed.
+    console.log(candidates.length === 0
+      ? '\n  All jobs already enriched. Nothing to do.'
+      : `\n  Nothing to process this run (max ${MAX}); ${candidates.length.toLocaleString()} candidates remain.`);
+    if (!DRY_RUN && (deterministicTenureCount || deterministicDisciplineCount)) {
       writeJson(PUBLIC_JOBS, payload);
       if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
     }
+    const totalEnriched = payload.jobs.filter(j => j.discipline !== undefined).length;
     writeJson(REPORT_PATH, {
       generatedAt: new Date().toISOString(),
       totalJobs: payload.jobs.length,
       enrichedThisRun: 0,
-      totalEnriched: payload.jobs.length,
+      totalEnriched,
+      remaining: payload.jobs.length - totalEnriched,
       tenureClassifiedByRules: deterministicTenureCount,
-      tenureUnknown,
+      disciplineClassifiedByRules: deterministicDisciplineCount,
+      tenureUnknown: payload.jobs.filter(needsTenure).length,
       errors: 0,
     });
     return;
@@ -361,10 +390,10 @@ async function main() {
   // Persist deterministic work before making any external model calls. A bad
   // or expired API credential must not throw away thousands of rule-based
   // classifications discovered earlier in this run.
-  if (deterministicTenureCount) {
+  if (deterministicTenureCount || deterministicDisciplineCount) {
     writeJson(PUBLIC_JOBS, payload);
     if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
-    console.log(`\n  Saved ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications before AI enrichment.`);
+    console.log(`\n  Saved ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications and ${deterministicDisciplineCount.toLocaleString()} dept-derived disciplines before AI enrichment.`);
   }
 
   // Index by canonicalJobId for fast in-place mutation
@@ -474,6 +503,7 @@ async function main() {
     totalJobs:       payload.jobs.length,
     enrichedThisRun: enrichedCount,
     tenureClassifiedByRules: deterministicTenureCount,
+    disciplineClassifiedByRules: deterministicDisciplineCount,
     tenureClassifiedByAi: aiTenureCount,
     tenureUnknown: payload.jobs.filter(needsTenure).length,
     totalEnriched,
@@ -482,7 +512,7 @@ async function main() {
     config: { max: MAX, batchSize: BATCH_SIZE },
   });
 
-  console.log(`\n  Enriched this run : ${enrichedCount}`);
+  console.log(`\n  Enriched this run : ${enrichedCount} (AI) + ${deterministicDisciplineCount.toLocaleString()} (dept-derived)`);
   console.log(`  Total enriched    : ${totalEnriched.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
   console.log(`  Tenure accepted   : ${aiTenureCount.toLocaleString()} (exact quoted evidence)`);
   if (errorCount) console.log(`  Jobs left for next run : ${errorCount}`);
