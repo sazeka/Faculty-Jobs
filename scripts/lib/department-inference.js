@@ -133,6 +133,13 @@ export function validateAiDepartmentEvidence(department, quote, job = {}) {
     if (collegeLower.includes(deptLower)) return null;
   }
 
+  // The job's own title is not a department either -- since job.title is
+  // itself part of the source text the quote is checked against, quoting
+  // the title back verbatim always "grounds" trivially. Real example: title
+  // "Geology and Earth Systems Science Faculty (Tenure Track)" extracted
+  // as its own department, "(Tenure Track)" and all.
+  if (job.title && dept.toLowerCase() === clean(job.title).toLowerCase()) return null;
+
   const normalizedQuote = clean(quote).toLowerCase();
   if (normalizedQuote.length < 6) return null;
 

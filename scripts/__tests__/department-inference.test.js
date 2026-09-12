@@ -194,6 +194,25 @@ test("validateAiDepartmentEvidence strips a leaked 'Unit Name' form-field label"
   );
 });
 
+test("validateAiDepartmentEvidence rejects the job's own title copied back as the department", () => {
+  // Live example (Evergreen State College): the model quoted the title
+  // itself back verbatim -- trivially "grounded" since job.title is part
+  // of the source text the quote is checked against.
+  const job = {
+    title: "Geology and Earth Systems Science Faculty (Tenure Track)",
+    college: "Evergreen State College",
+    description: "We seek applicants for this open position. Apply by the deadline listed below.",
+  };
+  assert.equal(
+    validateAiDepartmentEvidence(
+      "Geology and Earth Systems Science Faculty (Tenure Track)",
+      "Geology and Earth Systems Science Faculty (Tenure Track)",
+      job
+    ),
+    null
+  );
+});
+
 test("validateAiDepartmentEvidence rejects a null/empty department or too-short quote", () => {
   const job = { title: "Assistant Professor", description: "Department of Biochemistry seeks applicants." };
   assert.equal(validateAiDepartmentEvidence(null, "Department of Biochemistry", job), null);
