@@ -106,12 +106,22 @@ export function validateAiDepartmentEvidence(department, quote, job = {}) {
   const dept = normalizeDepartmentValue(department);
   if (!dept || !looksLikeSafeDepartmentValue(dept)) return null;
 
-  // The institution's own name is not a department -- generic mission-
-  // statement boilerplate ("Aims Community College actively supports an
-  // environment that embraces the College's Mission...") gives the model a
-  // real, grounded quote containing the college name, and it sometimes
-  // extracts that as if it were the department.
-  if (job.college && dept.toLowerCase() === clean(job.college).toLowerCase()) return null;
+  // The institution's own name (or a shortened/aliased form of it) is not a
+  // department -- generic "About Us" boilerplate gives the model a real,
+  // grounded quote containing the college's name, and it sometimes extracts
+  // that as if it were the department: an exact repeat ("Aims Community
+  // College" for a college of the same name), or a shortened alias ("Harper
+  // College" for "William Rainey Harper College"; "Forsyth Tech" for
+  // "Forsyth Technical Community College"). Only check department-inside-
+  // college, one direction: a real (if verbose) department legitimately
+  // cites the full institution name as part of a longer, genuine value
+  // ("Department of Anesthesiology at the Medical College of Wisconsin"),
+  // so the reverse direction is NOT safe to reject on.
+  if (job.college) {
+    const collegeLower = clean(job.college).toLowerCase();
+    const deptLower = dept.toLowerCase();
+    if (collegeLower.includes(deptLower)) return null;
+  }
 
   const normalizedQuote = clean(quote).toLowerCase();
   if (normalizedQuote.length < 6) return null;

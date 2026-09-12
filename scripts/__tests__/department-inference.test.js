@@ -154,6 +154,19 @@ test("validateAiDepartmentEvidence rejects the institution's own name mistaken f
   );
 });
 
+test("validateAiDepartmentEvidence rejects a shortened alias of the institution's own name", () => {
+  // Real-world case: "Harper College" (the common short name) extracted as
+  // the department for a job at "William Rainey Harper College", grounded
+  // in generic "About Us" boilerplate -- same failure mode as the exact-name
+  // case above, just not a literal string match.
+  const job = {
+    title: "Adjunct Faculty Credit - Physics",
+    college: "William Rainey Harper College",
+    description: "We are Harper College…the college in your community. The College was established by referendum in 1965.",
+  };
+  assert.equal(validateAiDepartmentEvidence("Harper College", "We are Harper College", job), null);
+});
+
 test("validateAiDepartmentEvidence rejects a null/empty department or too-short quote", () => {
   const job = { title: "Assistant Professor", description: "Department of Biochemistry seeks applicants." };
   assert.equal(validateAiDepartmentEvidence(null, "Department of Biochemistry", job), null);
