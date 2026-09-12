@@ -25,6 +25,7 @@ import { fileURLToPath } from "url";
 import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
 import { computeInstitutionControlBreakdown } from "./lib/weekly-institution-control-stats.js";
 import { computeAiHiringBreakdown } from "./lib/weekly-ai-hiring-stats.js";
+import { computeDisciplineBreakdown } from "./lib/weekly-discipline-stats.js";
 import { latestPriorWeek } from "./lib/weekly-trends-history.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -118,6 +119,7 @@ function computeStats(jobs, institutions) {
     tenureTrackBreakdown: computeTenureTrackBreakdown(jobs),
     institutionControlBreakdown: computeInstitutionControlBreakdown(jobs, institutions),
     aiHiringBreakdown: computeAiHiringBreakdown(jobs),
+    disciplineBreakdown: computeDisciplineBreakdown(jobs),
   };
 }
 
@@ -141,6 +143,9 @@ function templateSummary(stats, prev) {
       : "",
     stats.aiHiringBreakdown.related
       ? `${stats.aiHiringBreakdown.related.toLocaleString()} listings (${stats.aiHiringBreakdown.sharePct}%) explicitly reference artificial intelligence or a core AI method.`
+      : "",
+    stats.disciplineBreakdown.topDisciplines[0]
+      ? `${stats.disciplineBreakdown.topDisciplines[0].discipline} is the most in-demand discipline among classified listings this week, with ${stats.disciplineBreakdown.topDisciplines[0].count.toLocaleString()} open positions.`
       : "",
   ].filter(Boolean).join(" ");
 }
@@ -247,6 +252,7 @@ async function main() {
         : null,
     },
     topInstitutions: stats.topInstitutions.slice(0, 5),
+    disciplineBreakdown: stats.disciplineBreakdown,
   };
 
   // Generate prose summary
@@ -274,6 +280,7 @@ async function main() {
     tenureTrackBreakdown: stats.tenureTrackBreakdown,
     institutionControlBreakdown: stats.institutionControlBreakdown,
     aiHiringBreakdown: statsForPrompt.aiHiringBreakdown,
+    disciplineBreakdown: stats.disciplineBreakdown,
     topSources: stats.topSources,
     topInstitutions: stats.topInstitutions,
     aiSummary: summary,
@@ -310,6 +317,9 @@ async function main() {
       aiRelatedJobs: h.aiHiringBreakdown?.related ?? null,
       aiRelatedPct: h.aiHiringBreakdown?.sharePct ?? null,
       aiClassifierVersion: h.aiHiringBreakdown?.classifierVersion ?? null,
+      disciplineClassified: h.disciplineBreakdown?.classified ?? null,
+      disciplineUnknown: h.disciplineBreakdown?.unknown ?? null,
+      disciplineClassifiedPct: h.disciplineBreakdown?.classifiedPct ?? null,
     })),
   };
 
