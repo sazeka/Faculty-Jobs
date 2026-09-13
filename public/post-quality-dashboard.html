@@ -4,91 +4,90 @@
 <style>
 :root{color-scheme:light;--ink:#152439;--muted:#607086;--line:#dbe3ec;--panel:#f6f9fc;--blue:#1f5f99;--red:#9b2c2c;--green:#17643c}*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{width:min(1180px,calc(100% - 32px));margin:36px auto 64px}h1{font-size:clamp(30px,5vw,48px);line-height:1.05;margin:0 0 8px}h2{margin:34px 0 12px}.muted,.meta{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:22px 0}.card{border:1px solid var(--line);border-radius:14px;padding:15px;background:var(--panel)}.label{text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-size:11px;font-weight:700}.value{font-size:28px;font-weight:750}.value.small{font-size:22px}.ok,.alert{border-radius:10px;padding:12px 15px;margin:18px 0}.ok{background:#edf8f1;color:var(--green)}.alert{background:#fff0f0;color:var(--red)}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;min-width:720px}th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#eef3f8;font-size:12px}tr:last-child td{border-bottom:0}a{color:var(--blue)}code{font-size:12px}.note{border-left:4px solid var(--blue);padding:4px 14px;color:var(--muted)}
 </style></head><body><main class="wrap">
-<h1>Post quality dashboard</h1><p class="meta">Generated 2026-09-11T09:37:11.145Z · scoring model v1</p>
+<h1>Post quality dashboard</h1><p class="meta">Generated 2026-09-13T09:56:14.446Z · scoring model v1</p>
 <p class="note">This is a report-only audit. Quarantined posts remain in the public catalog until a person confirms that they should be excluded.</p>
 <div class="grid">
-<div class="card"><div class="label">Average score</div><div class="value">99.16</div></div>
-<div class="card"><div class="label">Pass</div><div class="value">22956</div><div class="muted">99.59%</div></div>
-<div class="card"><div class="label">Review</div><div class="value">92</div><div class="muted">0.4%</div></div>
-<div class="card"><div class="label">Quarantine</div><div class="value">2</div><div class="muted">0.01%</div></div>
+<div class="card"><div class="label">Average score</div><div class="value">99.25</div></div>
+<div class="card"><div class="label">Pass</div><div class="value">23109</div><div class="muted">99.85%</div></div>
+<div class="card"><div class="label">Review</div><div class="value">33</div><div class="muted">0.14%</div></div>
+<div class="card"><div class="label">Quarantine</div><div class="value">1</div><div class="muted">0%</div></div>
 <div class="card"><div class="label">Reviewed precision</div><div class="value small">100%</div><div class="muted">1 labels</div></div>
-<div class="card"><div class="label">Missing descriptions</div><div class="value small">2269</div><div class="muted">9.84%</div></div>
+<div class="card"><div class="label">Missing descriptions</div><div class="value small">2110</div><div class="muted">9.12%</div></div>
 </div><div class="ok">All configured automated thresholds passed.</div>
-<h2>Dimension averages</h2><div class="grid"><div class="card"><div class="label">relevance</div><div class="value small">99.89</div></div>
+<h2>Dimension averages</h2><div class="grid"><div class="card"><div class="label">relevance</div><div class="value small">99.97</div></div>
 <div class="card"><div class="label">attribution</div><div class="value small">100</div></div>
 <div class="card"><div class="label">link</div><div class="value small">99.98</div></div>
 <div class="card"><div class="label">freshness</div><div class="value small">100</div></div>
-<div class="card"><div class="label">completeness</div><div class="value small">89.23</div></div>
+<div class="card"><div class="label">completeness</div><div class="value small">89.73</div></div>
 <div class="card"><div class="label">duplication</div><div class="value small">100</div></div></div>
-<h2>Most common reason codes</h2><div class="table-wrap"><table><thead><tr><th>Reason</th><th>Severity</th><th>Dimension</th><th>Posts</th></tr></thead><tbody><tr><td><code>missing_deadline</code></td><td>info</td><td>completeness</td><td>15257</td></tr>
-<tr><td><code>missing_department</code></td><td>info</td><td>completeness</td><td>9010</td></tr>
-<tr><td><code>missing_description</code></td><td>info</td><td>completeness</td><td>2269</td></tr>
-<tr><td><code>missing_location</code></td><td>info</td><td>completeness</td><td>168</td></tr>
-<tr><td><code>weak_academic_evidence</code></td><td>warning</td><td>relevance</td><td>81</td></tr>
+<h2>Most common reason codes</h2><div class="table-wrap"><table><thead><tr><th>Reason</th><th>Severity</th><th>Dimension</th><th>Posts</th></tr></thead><tbody><tr><td><code>missing_deadline</code></td><td>info</td><td>completeness</td><td>15254</td></tr>
+<tr><td><code>missing_department</code></td><td>info</td><td>completeness</td><td>8497</td></tr>
+<tr><td><code>missing_description</code></td><td>info</td><td>completeness</td><td>2110</td></tr>
+<tr><td><code>missing_location</code></td><td>info</td><td>completeness</td><td>169</td></tr>
+<tr><td><code>weak_academic_evidence</code></td><td>warning</td><td>relevance</td><td>22</td></tr>
 <tr><td><code>search_page_url</code></td><td>warning</td><td>link</td><td>11</td></tr>
-<tr><td><code>nonacademic_staff_title</code></td><td>error</td><td>relevance</td><td>2</td></tr>
+<tr><td><code>nonacademic_staff_title</code></td><td>error</td><td>relevance</td><td>1</td></tr>
 <tr><td><code>thin_description</code></td><td>info</td><td>completeness</td><td>1</td></tr></tbody></table></div>
-<h2>Quality by source</h2><div class="table-wrap"><table><thead><tr><th>Source</th><th>Posts</th><th>Score</th><th>Pass</th><th>Review</th><th>Quarantine</th><th>Top reasons</th></tr></thead><tbody><tr><td>MN</td><td>183</td><td>98.56</td><td>179</td><td>3</td><td>1 (0.55%)</td><td>missing_deadline (126), missing_department (107), missing_description (23)</td></tr>
-<tr><td>MS</td><td>219</td><td>98.92</td><td>217</td><td>1</td><td>1 (0.46%)</td><td>missing_department (131), missing_deadline (73), missing_description (15)</td></tr>
-<tr><td>NY</td><td>2282</td><td>98.44</td><td>2272</td><td>10</td><td>0 (0%)</td><td>missing_deadline (1836), missing_department (1138), missing_description (577)</td></tr>
-<tr><td>TX</td><td>2194</td><td>99</td><td>2189</td><td>5</td><td>0 (0%)</td><td>missing_deadline (1484), missing_department (713), missing_description (356)</td></tr>
-<tr><td>NC</td><td>1077</td><td>99.47</td><td>1073</td><td>4</td><td>0 (0%)</td><td>missing_deadline (523), missing_department (289), missing_description (61)</td></tr>
-<tr><td>FL</td><td>1041</td><td>99.44</td><td>1041</td><td>0</td><td>0 (0%)</td><td>missing_deadline (838), missing_department (232), missing_description (88)</td></tr>
-<tr><td>OH</td><td>1032</td><td>99.28</td><td>1032</td><td>0</td><td>0 (0%)</td><td>missing_deadline (834), missing_department (491), missing_description (67)</td></tr>
-<tr><td>CA Private</td><td>915</td><td>99.42</td><td>912</td><td>3</td><td>0 (0%)</td><td>missing_deadline (551), missing_department (307), missing_description (49)</td></tr>
-<tr><td>PA</td><td>875</td><td>99.17</td><td>868</td><td>7</td><td>0 (0%)</td><td>missing_deadline (779), missing_department (479), missing_description (44)</td></tr>
-<tr><td>IL</td><td>749</td><td>99.35</td><td>747</td><td>2</td><td>0 (0%)</td><td>missing_deadline (561), missing_department (290), missing_description (45)</td></tr>
-<tr><td>IN</td><td>726</td><td>99.39</td><td>723</td><td>3</td><td>0 (0%)</td><td>missing_deadline (704), missing_department (286), missing_description (31)</td></tr>
-<tr><td>NJ</td><td>711</td><td>99.3</td><td>709</td><td>2</td><td>0 (0%)</td><td>missing_deadline (520), missing_department (349), missing_description (33)</td></tr>
-<tr><td>VA</td><td>659</td><td>99.35</td><td>654</td><td>5</td><td>0 (0%)</td><td>missing_deadline (340), missing_department (280), missing_description (25)</td></tr>
-<tr><td>WI</td><td>629</td><td>99.46</td><td>629</td><td>0</td><td>0 (0%)</td><td>missing_deadline (569), missing_department (230), missing_description (27)</td></tr>
-<tr><td>MA</td><td>600</td><td>99.39</td><td>594</td><td>6</td><td>0 (0%)</td><td>missing_deadline (550), missing_department (209), missing_description (22)</td></tr>
-<tr><td>WA</td><td>534</td><td>99.56</td><td>533</td><td>1</td><td>0 (0%)</td><td>missing_deadline (152), missing_department (151), missing_description (20)</td></tr>
-<tr><td>AL</td><td>487</td><td>99.2</td><td>487</td><td>0</td><td>0 (0%)</td><td>missing_deadline (237), missing_department (135), missing_description (64)</td></tr>
-<tr><td>MI</td><td>471</td><td>99.25</td><td>468</td><td>3</td><td>0 (0%)</td><td>missing_deadline (256), missing_department (118), missing_description (51)</td></tr>
-<tr><td>MO</td><td>452</td><td>99.43</td><td>449</td><td>3</td><td>0 (0%)</td><td>missing_deadline (426), missing_department (110), missing_description (29)</td></tr>
-<tr><td>MD</td><td>440</td><td>99.4</td><td>440</td><td>0</td><td>0 (0%)</td><td>missing_deadline (232), missing_department (219), missing_description (11)</td></tr>
-<tr><td>SC</td><td>437</td><td>99.4</td><td>434</td><td>3</td><td>0 (0%)</td><td>missing_deadline (197), missing_department (84), missing_description (38)</td></tr>
-<tr><td>GA</td><td>393</td><td>98.42</td><td>393</td><td>0</td><td>0 (0%)</td><td>missing_deadline (258), missing_department (220), missing_description (100)</td></tr>
-<tr><td>HI</td><td>383</td><td>99.8</td><td>383</td><td>0</td><td>0 (0%)</td><td>missing_department (55), missing_deadline (33), missing_description (5)</td></tr>
-<tr><td>CO</td><td>367</td><td>99.25</td><td>365</td><td>2</td><td>0 (0%)</td><td>missing_deadline (210), missing_department (185), missing_description (18)</td></tr>
-<tr><td>LA</td><td>352</td><td>99.34</td><td>352</td><td>0</td><td>0 (0%)</td><td>missing_deadline (203), missing_department (116), missing_description (29)</td></tr>
-<tr><td>KY</td><td>349</td><td>99.38</td><td>349</td><td>0</td><td>0 (0%)</td><td>missing_department (134), missing_deadline (57), missing_description (21)</td></tr>
-<tr><td>OK</td><td>332</td><td>99.47</td><td>332</td><td>0</td><td>0 (0%)</td><td>missing_deadline (172), missing_department (44), missing_description (33)</td></tr>
-<tr><td>OR</td><td>317</td><td>99.08</td><td>316</td><td>1</td><td>0 (0%)</td><td>missing_deadline (182), missing_department (102), missing_description (45)</td></tr>
-<tr><td>TN</td><td>317</td><td>99.33</td><td>314</td><td>3</td><td>0 (0%)</td><td>missing_deadline (231), missing_department (140), missing_description (10)</td></tr>
-<tr><td>AR</td><td>301</td><td>98.83</td><td>297</td><td>4</td><td>0 (0%)</td><td>missing_deadline (251), missing_department (151), missing_description (40)</td></tr>
-<tr><td>UC</td><td>282</td><td>98.99</td><td>276</td><td>6</td><td>0 (0%)</td><td>missing_department (120), missing_deadline (26), missing_description (26)</td></tr>
-<tr><td>NH</td><td>212</td><td>99.37</td><td>212</td><td>0</td><td>0 (0%)</td><td>missing_deadline (178), missing_department (101), missing_description (8)</td></tr>
-<tr><td>DC</td><td>203</td><td>98.51</td><td>203</td><td>0</td><td>0 (0%)</td><td>missing_location (154), missing_department (95), missing_deadline (63)</td></tr>
-<tr><td>IA</td><td>196</td><td>99.21</td><td>195</td><td>1</td><td>0 (0%)</td><td>missing_department (117), missing_deadline (116), missing_description (7)</td></tr>
-<tr><td>KS</td><td>192</td><td>98.75</td><td>191</td><td>1</td><td>0 (0%)</td><td>missing_deadline (169), missing_department (129), missing_description (25)</td></tr>
-<tr><td>NV</td><td>179</td><td>99.54</td><td>179</td><td>0</td><td>0 (0%)</td><td>missing_deadline (61), missing_department (51), missing_description (8)</td></tr>
-<tr><td>CA CC</td><td>172</td><td>99.45</td><td>172</td><td>0</td><td>0 (0%)</td><td>missing_deadline (124), missing_department (62), missing_description (8)</td></tr>
-<tr><td>WV</td><td>163</td><td>99.45</td><td>163</td><td>0</td><td>0 (0%)</td><td>missing_deadline (100), missing_department (61), missing_description (7)</td></tr>
-<tr><td>NE</td><td>154</td><td>99.16</td><td>154</td><td>0</td><td>0 (0%)</td><td>missing_deadline (121), missing_department (97), missing_description (8)</td></tr>
-<tr><td>CSU</td><td>150</td><td>99.77</td><td>150</td><td>0</td><td>0 (0%)</td><td>missing_deadline (119), missing_department (35)</td></tr>
-<tr><td>MT</td><td>123</td><td>99.07</td><td>123</td><td>0</td><td>0 (0%)</td><td>missing_deadline (117), missing_department (79), missing_description (9)</td></tr>
-<tr><td>NM</td><td>122</td><td>99.04</td><td>120</td><td>2</td><td>0 (0%)</td><td>missing_deadline (95), missing_department (75), missing_description (5)</td></tr>
-<tr><td>UT</td><td>121</td><td>99.16</td><td>119</td><td>2</td><td>0 (0%)</td><td>missing_department (50), missing_deadline (24), missing_description (8)</td></tr>
-<tr><td>CT</td><td>117</td><td>98.56</td><td>117</td><td>0</td><td>0 (0%)</td><td>missing_department (69), missing_deadline (68), missing_description (25)</td></tr>
-<tr><td>AZ</td><td>109</td><td>99.27</td><td>108</td><td>1</td><td>0 (0%)</td><td>missing_deadline (69), missing_department (50), missing_description (5)</td></tr>
-<tr><td>USG</td><td>99</td><td>95.59</td><td>97</td><td>2</td><td>0 (0%)</td><td>missing_deadline (99), missing_description (97), missing_department (29)</td></tr>
-<tr><td>ME</td><td>93</td><td>98.83</td><td>88</td><td>5</td><td>0 (0%)</td><td>missing_deadline (60), missing_department (36), missing_description (6)</td></tr>
-<tr><td>RI</td><td>91</td><td>99.23</td><td>91</td><td>0</td><td>0 (0%)</td><td>missing_department (54), missing_deadline (16), missing_description (4)</td></tr>
-<tr><td>ID</td><td>61</td><td>99.11</td><td>61</td><td>0</td><td>0 (0%)</td><td>missing_deadline (39), missing_department (30), missing_description (6)</td></tr>
-<tr><td>VT</td><td>60</td><td>99.45</td><td>60</td><td>0</td><td>0 (0%)</td><td>missing_deadline (52), missing_department (29), missing_description (1)</td></tr>
-<tr><td>AK</td><td>59</td><td>99.59</td><td>59</td><td>0</td><td>0 (0%)</td><td>missing_deadline (14), missing_department (12), missing_description (3)</td></tr>
-<tr><td>DE</td><td>51</td><td>99.59</td><td>51</td><td>0</td><td>0 (0%)</td><td>missing_department (17), missing_deadline (3), missing_description (1)</td></tr>
-<tr><td>Claremont Colleges</td><td>49</td><td>99.37</td><td>49</td><td>0</td><td>0 (0%)</td><td>missing_deadline (46), missing_department (31)</td></tr>
-<tr><td>SD</td><td>41</td><td>99.32</td><td>41</td><td>0</td><td>0 (0%)</td><td>missing_deadline (17), missing_department (16), missing_description (3)</td></tr>
-<tr><td>UMass</td><td>39</td><td>99.46</td><td>39</td><td>0</td><td>0 (0%)</td><td>missing_deadline (21), missing_department (17), missing_description (1)</td></tr>
+<h2>Quality by source</h2><div class="table-wrap"><table><thead><tr><th>Source</th><th>Posts</th><th>Score</th><th>Pass</th><th>Review</th><th>Quarantine</th><th>Top reasons</th></tr></thead><tbody><tr><td>MS</td><td>220</td><td>99.04</td><td>219</td><td>0</td><td>1 (0.45%)</td><td>missing_department (129), missing_deadline (72), missing_description (12)</td></tr>
+<tr><td>NY</td><td>2267</td><td>98.53</td><td>2265</td><td>2</td><td>0 (0%)</td><td>missing_deadline (1824), missing_department (1063), missing_description (561)</td></tr>
+<tr><td>TX</td><td>2211</td><td>99.04</td><td>2208</td><td>3</td><td>0 (0%)</td><td>missing_deadline (1494), missing_department (718), missing_description (345)</td></tr>
+<tr><td>NC</td><td>1087</td><td>99.56</td><td>1085</td><td>2</td><td>0 (0%)</td><td>missing_deadline (505), missing_department (294), missing_description (42)</td></tr>
+<tr><td>OH</td><td>1038</td><td>99.29</td><td>1036</td><td>2</td><td>0 (0%)</td><td>missing_deadline (838), missing_department (484), missing_description (61)</td></tr>
+<tr><td>FL</td><td>1010</td><td>99.53</td><td>1010</td><td>0</td><td>0 (0%)</td><td>missing_deadline (819), missing_department (194), missing_description (71)</td></tr>
+<tr><td>CA Private</td><td>926</td><td>99.45</td><td>925</td><td>1</td><td>0 (0%)</td><td>missing_deadline (554), missing_department (305), missing_description (48)</td></tr>
+<tr><td>PA</td><td>884</td><td>99.38</td><td>884</td><td>0</td><td>0 (0%)</td><td>missing_deadline (781), missing_department (412), missing_description (33)</td></tr>
+<tr><td>IL</td><td>762</td><td>99.25</td><td>760</td><td>2</td><td>0 (0%)</td><td>missing_deadline (574), missing_department (265), missing_description (72)</td></tr>
+<tr><td>IN</td><td>738</td><td>99.54</td><td>737</td><td>1</td><td>0 (0%)</td><td>missing_deadline (714), missing_department (254), missing_description (20)</td></tr>
+<tr><td>NJ</td><td>724</td><td>99.28</td><td>723</td><td>1</td><td>0 (0%)</td><td>missing_deadline (534), missing_department (345), missing_description (42)</td></tr>
+<tr><td>VA</td><td>660</td><td>99.46</td><td>659</td><td>1</td><td>0 (0%)</td><td>missing_deadline (340), missing_department (281), missing_description (17)</td></tr>
+<tr><td>WI</td><td>636</td><td>99.57</td><td>636</td><td>0</td><td>0 (0%)</td><td>missing_deadline (571), missing_department (191), missing_description (21)</td></tr>
+<tr><td>MA</td><td>598</td><td>99.51</td><td>598</td><td>0</td><td>0 (0%)</td><td>missing_deadline (542), missing_department (211), missing_description (20)</td></tr>
+<tr><td>WA</td><td>534</td><td>99.86</td><td>534</td><td>0</td><td>0 (0%)</td><td>missing_deadline (150), missing_department (21), missing_description (13)</td></tr>
+<tr><td>AL</td><td>486</td><td>99.32</td><td>486</td><td>0</td><td>0 (0%)</td><td>missing_deadline (226), missing_department (135), missing_description (50)</td></tr>
+<tr><td>MI</td><td>479</td><td>99.26</td><td>478</td><td>1</td><td>0 (0%)</td><td>missing_deadline (265), missing_department (117), missing_description (57)</td></tr>
+<tr><td>MO</td><td>455</td><td>99.54</td><td>453</td><td>2</td><td>0 (0%)</td><td>missing_deadline (428), missing_department (110), missing_description (20)</td></tr>
+<tr><td>SC</td><td>440</td><td>99.39</td><td>435</td><td>5</td><td>0 (0%)</td><td>missing_deadline (201), missing_department (89), missing_description (34)</td></tr>
+<tr><td>MD</td><td>433</td><td>99.46</td><td>433</td><td>0</td><td>0 (0%)</td><td>missing_deadline (225), missing_department (213), missing_description (5)</td></tr>
+<tr><td>GA</td><td>405</td><td>98.48</td><td>404</td><td>1</td><td>0 (0%)</td><td>missing_deadline (268), missing_department (226), missing_description (95)</td></tr>
+<tr><td>HI</td><td>374</td><td>99.93</td><td>374</td><td>0</td><td>0 (0%)</td><td>missing_deadline (30), missing_department (10), missing_description (4)</td></tr>
+<tr><td>CO</td><td>368</td><td>99.35</td><td>368</td><td>0</td><td>0 (0%)</td><td>missing_deadline (206), missing_department (184), missing_description (14)</td></tr>
+<tr><td>KY</td><td>352</td><td>99.37</td><td>352</td><td>0</td><td>0 (0%)</td><td>missing_department (137), missing_deadline (58), missing_description (21)</td></tr>
+<tr><td>LA</td><td>351</td><td>99.45</td><td>351</td><td>0</td><td>0 (0%)</td><td>missing_deadline (195), missing_department (112), missing_description (20)</td></tr>
+<tr><td>OK</td><td>332</td><td>99.52</td><td>332</td><td>0</td><td>0 (0%)</td><td>missing_deadline (168), missing_department (44), missing_description (29)</td></tr>
+<tr><td>OR</td><td>331</td><td>98.98</td><td>331</td><td>0</td><td>0 (0%)</td><td>missing_deadline (196), missing_department (103), missing_description (59)</td></tr>
+<tr><td>TN</td><td>322</td><td>99.4</td><td>321</td><td>1</td><td>0 (0%)</td><td>missing_deadline (234), missing_department (136), missing_description (12)</td></tr>
+<tr><td>AR</td><td>299</td><td>99.19</td><td>299</td><td>0</td><td>0 (0%)</td><td>missing_deadline (247), missing_department (145), missing_description (24)</td></tr>
+<tr><td>UC</td><td>273</td><td>99.51</td><td>272</td><td>1</td><td>0 (0%)</td><td>missing_department (117), missing_deadline (2), missing_description (2)</td></tr>
+<tr><td>NH</td><td>211</td><td>99.51</td><td>211</td><td>0</td><td>0 (0%)</td><td>missing_deadline (176), missing_department (99), missing_description (1)</td></tr>
+<tr><td>DC</td><td>203</td><td>98.52</td><td>203</td><td>0</td><td>0 (0%)</td><td>missing_location (155), missing_department (94), missing_deadline (63)</td></tr>
+<tr><td>IA</td><td>193</td><td>99.28</td><td>192</td><td>1</td><td>0 (0%)</td><td>missing_department (117), missing_deadline (115), missing_description (3)</td></tr>
+<tr><td>MN</td><td>192</td><td>98.96</td><td>190</td><td>2</td><td>0 (0%)</td><td>missing_deadline (130), missing_department (112), missing_description (17)</td></tr>
+<tr><td>KS</td><td>190</td><td>98.9</td><td>190</td><td>0</td><td>0 (0%)</td><td>missing_deadline (166), missing_department (125), missing_description (21)</td></tr>
+<tr><td>NV</td><td>183</td><td>99.55</td><td>183</td><td>0</td><td>0 (0%)</td><td>missing_deadline (64), missing_department (51), missing_description (8)</td></tr>
+<tr><td>CA CC</td><td>170</td><td>99.01</td><td>170</td><td>0</td><td>0 (0%)</td><td>missing_deadline (128), missing_department (56), missing_description (28)</td></tr>
+<tr><td>WV</td><td>160</td><td>99.47</td><td>160</td><td>0</td><td>0 (0%)</td><td>missing_deadline (100), missing_department (60), missing_description (6)</td></tr>
+<tr><td>NE</td><td>159</td><td>99.17</td><td>159</td><td>0</td><td>0 (0%)</td><td>missing_deadline (122), missing_department (96), missing_description (9)</td></tr>
+<tr><td>CSU</td><td>150</td><td>99.99</td><td>150</td><td>0</td><td>0 (0%)</td><td>missing_deadline (119), missing_department (1)</td></tr>
+<tr><td>UT</td><td>127</td><td>99.42</td><td>127</td><td>0</td><td>0 (0%)</td><td>missing_department (50), missing_deadline (24), missing_description (6)</td></tr>
+<tr><td>MT</td><td>125</td><td>99.1</td><td>125</td><td>0</td><td>0 (0%)</td><td>missing_deadline (119), missing_department (80), missing_description (8)</td></tr>
+<tr><td>NM</td><td>121</td><td>99.35</td><td>121</td><td>0</td><td>0 (0%)</td><td>missing_deadline (93), missing_department (75), missing_description (1)</td></tr>
+<tr><td>CT</td><td>118</td><td>98.79</td><td>118</td><td>0</td><td>0 (0%)</td><td>missing_deadline (67), missing_department (67), missing_description (19)</td></tr>
+<tr><td>USG</td><td>108</td><td>95.71</td><td>107</td><td>1</td><td>0 (0%)</td><td>missing_deadline (108), missing_description (106), missing_department (29)</td></tr>
+<tr><td>AZ</td><td>102</td><td>99.22</td><td>101</td><td>1</td><td>0 (0%)</td><td>missing_deadline (70), missing_department (50), missing_description (5)</td></tr>
+<tr><td>RI</td><td>100</td><td>98.95</td><td>100</td><td>0</td><td>0 (0%)</td><td>missing_department (53), missing_deadline (25), missing_description (13)</td></tr>
+<tr><td>ME</td><td>88</td><td>99.34</td><td>87</td><td>1</td><td>0 (0%)</td><td>missing_deadline (56), missing_department (33), missing_description (4)</td></tr>
+<tr><td>ID</td><td>61</td><td>99.18</td><td>61</td><td>0</td><td>0 (0%)</td><td>missing_deadline (39), missing_department (30), missing_description (5)</td></tr>
+<tr><td>VT</td><td>60</td><td>99.52</td><td>60</td><td>0</td><td>0 (0%)</td><td>missing_deadline (52), missing_department (29)</td></tr>
+<tr><td>AK</td><td>59</td><td>99.61</td><td>59</td><td>0</td><td>0 (0%)</td><td>missing_deadline (14), missing_department (11), missing_description (3)</td></tr>
+<tr><td>Claremont Colleges</td><td>50</td><td>99.3</td><td>50</td><td>0</td><td>0 (0%)</td><td>missing_deadline (47), missing_department (31), missing_description (1)</td></tr>
+<tr><td>DE</td><td>47</td><td>99.64</td><td>47</td><td>0</td><td>0 (0%)</td><td>missing_department (17), missing_deadline (2)</td></tr>
+<tr><td>SD</td><td>42</td><td>99.33</td><td>42</td><td>0</td><td>0 (0%)</td><td>missing_deadline (17), missing_department (16), missing_description (3)</td></tr>
+<tr><td>UMass</td><td>40</td><td>99.47</td><td>40</td><td>0</td><td>0 (0%)</td><td>missing_deadline (22), missing_department (17), missing_description (1)</td></tr>
+<tr><td>WY</td><td>27</td><td>99.67</td><td>27</td><td>0</td><td>0 (0%)</td><td>missing_deadline (27), missing_department (5), missing_description (1)</td></tr>
 <tr><td>ND</td><td>26</td><td>97.88</td><td>25</td><td>1</td><td>0 (0%)</td><td>missing_department (22), missing_deadline (12), missing_description (6)</td></tr>
-<tr><td>WY</td><td>26</td><td>99.5</td><td>26</td><td>0</td><td>0 (0%)</td><td>missing_deadline (26), missing_department (5), missing_description (2)</td></tr>
-<tr><td>CT State</td><td>16</td><td>98.88</td><td>16</td><td>0</td><td>0 (0%)</td><td>missing_department (14), missing_deadline (1), missing_description (1)</td></tr>
+<tr><td>CT State</td><td>16</td><td>99.13</td><td>16</td><td>0</td><td>0 (0%)</td><td>missing_department (14)</td></tr>
 <tr><td>TCSG</td><td>14</td><td>97.21</td><td>14</td><td>0</td><td>0 (0%)</td><td>missing_location (14), missing_department (12), missing_deadline (10)</td></tr>
 <tr><td>Herzing</td><td>6</td><td>100</td><td>6</td><td>0</td><td>0 (0%)</td><td>missing_deadline (6)</td></tr></tbody></table></div>
-<h2>Quarantine preview</h2><p class="muted">First 100 candidates. The complete machine-readable list is generated as <code>post-quality-quarantine.json</code>.</p><div class="table-wrap"><table><thead><tr><th>Score</th><th>Post</th><th>Source</th><th>Error reasons</th></tr></thead><tbody><tr><td>60</td><td><a href="https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/Anoka/Construction-Electrician-Faculty_JR0000005702" target="_blank" rel="noopener">Construction Electrician Faculty</a><div class="muted">Anoka Technical College</div></td><td>MN</td><td>nonacademic_staff_title</td></tr>
-<tr><td>61</td><td><a href="https://explore.msujobs.msstate.edu/jobs/fellow-athletic-trainer-baseball-main-campus-starkville-ms-mississippi-united-states" target="_blank" rel="noopener">Fellow Athletic Trainer - Baseball</a><div class="muted">Mississippi State University</div></td><td>MS</td><td>nonacademic_staff_title</td></tr></tbody></table></div>
+<h2>Quarantine preview</h2><p class="muted">First 100 candidates. The complete machine-readable list is generated as <code>post-quality-quarantine.json</code>.</p><div class="table-wrap"><table><thead><tr><th>Score</th><th>Post</th><th>Source</th><th>Error reasons</th></tr></thead><tbody><tr><td>65</td><td><a href="https://explore.msujobs.msstate.edu/jobs/fellow-athletic-trainer-baseball-main-campus-starkville-ms-mississippi-united-states" target="_blank" rel="noopener">Fellow Athletic Trainer - Baseball</a><div class="muted">Mississippi State University</div></td><td>MS</td><td>nonacademic_staff_title</td></tr></tbody></table></div>
 <h2>How it works</h2><p class="muted">Every post receives scores for relevance, institution attribution, link quality, freshness, completeness, and duplicate grouping. Conservative error rules nominate likely false positives for quarantine; warnings route ambiguous records to review. A deterministic source-and-status sample supports repeatable human precision checks.</p>
 </main></body></html>

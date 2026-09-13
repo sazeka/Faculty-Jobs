@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T09:36:13.430Z",
+  "generatedAt": "2026-09-13T09:55:22.333Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json",
@@ -20,8 +20,8 @@
     "target": "degree-granting"
   },
   "totals": {
-    "eligible_universe": 3317,
-    "covered": 3018,
+    "eligible_universe": 3318,
+    "covered": 3019,
     "missing": 0,
     "excluded_policy": 299,
     "pending_review": 0
@@ -362,6 +362,13 @@
       "excluded_policy": 2,
       "pending_review": 0
     },
+    "Unknown": {
+      "total": 6,
+      "covered": 6,
+      "missing": 0,
+      "excluded_policy": 0,
+      "pending_review": 0
+    },
     "WY": {
       "total": 9,
       "covered": 9,
@@ -389,13 +396,6 @@
       "missing": 0,
       "excluded_policy": 2,
       "pending_review": 0
-    },
-    "Unknown": {
-      "total": 5,
-      "covered": 5,
-      "missing": 0,
-      "excluded_policy": 0,
-      "pending_review": 0
     }
   },
   "byControl": {
@@ -414,8 +414,8 @@
       "pending_review": 0
     },
     "Unknown": {
-      "total": 5,
-      "covered": 5,
+      "total": 6,
+      "covered": 6,
       "missing": 0,
       "excluded_policy": 0,
       "pending_review": 0
@@ -437,8 +437,8 @@
       "pending_review": 0
     },
     "Unknown": {
-      "total": 5,
-      "covered": 5,
+      "total": 6,
+      "covered": 6,
       "missing": 0,
       "excluded_policy": 0,
       "pending_review": 0
@@ -460,16 +460,16 @@
       "official_employment_page": 1653,
       "homepage_fallback": 421,
       "no_public_hiring_source": 219,
-      "unresolved": 87,
+      "unresolved": 88,
       "closed_or_out_of_scope": 32
     },
     "percentages": {
-      "direct_job_board": 21.47,
+      "direct_job_board": 21.46,
       "verified_shared_system_board": 5.82,
-      "official_employment_page": 49.83,
+      "official_employment_page": 49.82,
       "homepage_fallback": 12.69,
       "no_public_hiring_source": 6.6,
-      "unresolved": 2.62,
+      "unresolved": 2.65,
       "closed_or_out_of_scope": 0.96
     }
   },
@@ -8030,6 +8030,17 @@
       "homepage_url": "https://cabarruscollege.edu/",
       "career_url": "https://cabarruscollege.edu/",
       "reason": "Excluded (2026-08-06): the College's own employment page explicitly states hiring is \"managed through Atrium Health Cabarrus' Department of Human Resources\" -- an unscoped system-wide hospital job board, not a College-specific listing (same shape as the already-excluded Barnes-Jewish College Goldfarb School of Nursing)."
+    },
+    {
+      "name": "Calbright College",
+      "state": null,
+      "control": null,
+      "level": null,
+      "coverage_status": "covered",
+      "coverage_quality": "unresolved",
+      "homepage_url": null,
+      "career_url": null,
+      "reason": null
     },
     {
       "name": "California Institute of Integral Studies",
