@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { appointmentTrackHistory, disciplineClassificationHistory } from '../lib/trendsHistory.js'
+import { appointmentTrackHistory } from '../lib/trendsHistory.js'
 
 const props = defineProps({
   baseUrl: { type: String, default: '/' },
@@ -25,7 +25,6 @@ onMounted(async () => {
 })
 
 const disciplineStats = computed(() => trends.value?.stats?.disciplineBreakdown || null)
-const disciplineHistory = computed(() => disciplineClassificationHistory(trends.value?.history || []))
 
 const controlHistory = computed(() => (trends.value?.history || [])
   .filter(h => h.publicJobs != null && h.privateNonprofitJobs != null)
@@ -287,53 +286,25 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 
     <hr class="fa-rule-thin" style="margin: 40px 0;" />
 
-    <!-- Disciplines -->
-    <div class="trends-lower-grid">
-
-      <!-- Top disciplines -->
-      <div>
-        <div class="fa-label" style="margin-bottom: 20px;">Top disciplines</div>
-        <div v-if="disciplineStats?.topDisciplines?.length" style="border-top: 1px solid var(--rule);">
-          <div
-            v-for="(d, i) in disciplineStats.topDisciplines"
-            :key="d.discipline"
-            class="trends-inst-row"
-          >
-            <span class="fa-meta" style="font-size: 10px; width: 24px; color: var(--ink-4);">{{ String(i + 1).padStart(2, '0') }}</span>
-            <span class="fa-display" style="font-size: 18px; flex: 1; line-height: 1.2;">{{ d.discipline }}</span>
-            <span class="fa-num" style="font-size: 16px;">{{ fmt(d.count) }}</span>
-          </div>
-        </div>
-        <div class="fa-meta" style="margin-top: 10px; color: var(--ink-4); line-height: 1.5;">
-          Based on {{ fmt(disciplineStats?.classified || 0) }} listings with a discipline identified so far, out of
-          {{ fmt(disciplineStats?.classified + disciplineStats?.unknown || 0) }} tracked
-          ({{ disciplineStats?.distinctDisciplines || 0 }} distinct disciplines).
+    <!-- Top disciplines -->
+    <div class="trends-disciplines">
+      <div class="fa-label" style="margin-bottom: 20px;">Top disciplines</div>
+      <div v-if="disciplineStats?.topDisciplines?.length" style="border-top: 1px solid var(--rule);">
+        <div
+          v-for="(d, i) in disciplineStats.topDisciplines"
+          :key="d.discipline"
+          class="trends-inst-row"
+        >
+          <span class="fa-meta" style="font-size: 10px; width: 24px; color: var(--ink-4);">{{ String(i + 1).padStart(2, '0') }}</span>
+          <span class="fa-display" style="font-size: 18px; flex: 1; line-height: 1.2;">{{ d.discipline }}</span>
+          <span class="fa-num" style="font-size: 16px;">{{ fmt(d.count) }}</span>
         </div>
       </div>
-
-      <!-- Discipline classification sparkline -->
-      <div>
-        <div class="fa-label" style="margin-bottom: 20px;">Discipline coverage over time</div>
-        <template v-if="disciplineHistory.length > 1">
-          <div class="trends-sparkline" aria-label="Weekly share of listings with a known discipline">
-            <div
-              v-for="week in disciplineHistory"
-              :key="week.weekEnd"
-              class="trends-spark-bar"
-              :style="{ height: `${week.classifiedPct}%` }"
-              :title="`${fmtWeek(week.weekEnd)}: ${week.classifiedPct}% classified (${fmt(week.classified)} of ${fmt(week.classified + week.unknown)})`"
-            ></div>
-          </div>
-          <div class="trends-spark-labels fa-meta">
-            <span>{{ fmtWeek(disciplineHistory[0].weekEnd) }}</span>
-            <span>{{ fmtWeek(disciplineHistory[disciplineHistory.length - 1].weekEnd) }}</span>
-          </div>
-        </template>
-        <div v-else class="fa-meta control-unavailable">
-          Tracking starts this week; a new comparison point will be added to this chart each week.
-        </div>
+      <div class="fa-meta" style="margin-top: 10px; color: var(--ink-4); line-height: 1.5;">
+        Based on {{ fmt(disciplineStats?.classified || 0) }} listings with a discipline identified so far, out of
+        {{ fmt(disciplineStats?.classified + disciplineStats?.unknown || 0) }} tracked
+        ({{ disciplineStats?.distinctDisciplines || 0 }} distinct disciplines).
       </div>
-
     </div>
 
     <hr class="fa-rule-thin" style="margin: 40px 0;" />
@@ -616,11 +587,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   color: var(--ink-2);
 }
 
-.trends-lower-grid {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 48px;
-}
+.trends-disciplines { max-width: 560px; }
 .trends-inst-row {
   display: flex;
   gap: 16px;
@@ -645,21 +612,6 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   padding-left: calc(16px + 1.2em);
 }
 
-.trends-sparkline {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 120px;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 0;
-}
-.trends-spark-bar {
-  flex: 1;
-  background: var(--ink-3);
-  transition: background .12s;
-  min-height: 2px;
-}
-.trends-spark-bar:hover { background: var(--accent); }
 .trends-spark-labels {
   display: flex;
   justify-content: space-between;
@@ -681,7 +633,6 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   /* Stack the two-up grids — the side-by-side columns and the fixed 380px
      sparkline column both overflow a phone viewport otherwise. */
   .trends-stats-grid { grid-template-columns: 1fr; gap: 36px; }
-  .trends-lower-grid { grid-template-columns: 1fr; gap: 36px; }
 
   /* Narrow the label/count tracks so the bar keeps usable width on small screens. */
   .trends-bar-row { grid-template-columns: 96px 1fr 40px; gap: 10px; }
