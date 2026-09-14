@@ -80,7 +80,7 @@ watch(() => filters.value.q, (query) => {
 })
 onBeforeUnmount(() => clearTimeout(queryTimer))
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
-const { catalogSummary, stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, collegeOptions, departmentOptions, cityOptions, employmentTypeOptions, workModeOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
+const { catalogSummary, stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, subdisciplineOptions, collegeOptions, departmentOptions, cityOptions, employmentTypeOptions, workModeOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
   useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob, searchTermMatchesRef: searchTermMatches })
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({ filtersRef: filters, updateFilters })
 const { alertsWithCounts, addAlert, removeAlert, subscribeAlert, subscribeStatus, subscribeError } = useAlerts({ filtersRef: filters, countMatches })
@@ -483,6 +483,7 @@ async function reportBadListing(job) {
           :position-type-options="positionTypeOptions"
           :tenure-track-count="tenureTrackCount"
           :discipline-options="disciplineOptions"
+          :subdiscipline-options="subdisciplineOptions"
           :college-options="collegeOptions"
           :department-options="departmentOptions"
           :city-options="cityOptions"

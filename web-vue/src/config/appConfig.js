@@ -16,6 +16,7 @@ export function createDefaultFilters() {
     college: ALL_FILTER_VALUE,
     department: ALL_FILTER_VALUE,
     discipline: [],
+    subdiscipline: [],
     city: ALL_FILTER_VALUE,
     employmentType: ALL_FILTER_VALUE,
     workMode: ALL_FILTER_VALUE,

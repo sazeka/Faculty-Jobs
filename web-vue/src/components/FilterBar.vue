@@ -8,6 +8,7 @@ const props = defineProps({
   positionTypeOptions: { type: Array, required: true },
   tenureTrackCount: { type: Number, default: 0 },
   disciplineOptions: { type: Array, default: () => [] },
+  subdisciplineOptions: { type: Array, default: () => [] },
   collegeOptions: { type: Array, required: true },
   departmentOptions: { type: Array, required: true },
   cityOptions: { type: Array, default: () => [] },
@@ -20,10 +21,12 @@ const props = defineProps({
 const emit = defineEmits(['update:filters', 'update:query', 'reset-filters', 'refresh-data', 'subscribe-alert'])
 
 const disciplineSearch = ref('')
+const subdisciplineSearch = ref('')
 const collegeSearch = ref('')
 const departmentSearch = ref('')
 const citySearch = ref('')
 const showAllDisciplines = ref(false)
+const showAllSubdisciplines = ref(false)
 const showAllRanks = ref(false)
 const showAllStates = ref(false)
 const showSubscribePanel = ref(false)
@@ -46,6 +49,14 @@ const filteredDisciplineOptions = computed(() => {
   const q = disciplineSearch.value.trim().toLowerCase()
   if (!q) return props.disciplineOptions
   return props.disciplineOptions.filter(opt => opt.value.toLowerCase().includes(q))
+})
+
+// Only shown once a discipline is selected (progressive disclosure) — see
+// the "Sub-discipline" block in the template below.
+const filteredSubdisciplineOptions = computed(() => {
+  const q = subdisciplineSearch.value.trim().toLowerCase()
+  if (!q) return props.subdisciplineOptions
+  return props.subdisciplineOptions.filter(opt => opt.value.toLowerCase().includes(q))
 })
 
 // Institution list can run into the hundreds — only show matches once the
@@ -103,6 +114,10 @@ const visibleDisciplineOptions = computed(() => {
   if (disciplineSearch.value.trim()) return filteredDisciplineOptions.value
   return limitedOptions(filteredDisciplineOptions.value, showAllDisciplines.value, props.filters.discipline)
 })
+const visibleSubdisciplineOptions = computed(() => {
+  if (subdisciplineSearch.value.trim()) return filteredSubdisciplineOptions.value
+  return limitedOptions(filteredSubdisciplineOptions.value, showAllSubdisciplines.value, props.filters.subdiscipline)
+})
 const visibleRankOptions = computed(() =>
   limitedOptions(props.positionTypeOptions, showAllRanks.value, props.filters.positionType)
 )
@@ -127,6 +142,9 @@ function togglePositionType(value) {
 }
 function toggleDiscipline(value) {
   toggleArrayField('discipline', value)
+}
+function toggleSubdiscipline(value) {
+  toggleArrayField('subdiscipline', value)
 }
 function toggleCollege(value) {
   updateField('college', props.filters.college === value ? 'all' : value)
@@ -251,6 +269,42 @@ function toggleCity(value) {
           style="margin-top: 6px; justify-content: center;"
           @click="showAllDisciplines = !showAllDisciplines"
         >{{ showAllDisciplines ? 'Show less' : `View ${filteredDisciplineOptions.length - 8} more` }}</button>
+      </div>
+    </div>
+
+    <!-- Sub-discipline: only appears once at least one discipline is selected -->
+    <div v-if="filters.discipline.length && subdisciplineOptions.length" style="margin-bottom: 28px;">
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 10px;">Sub-discipline</div>
+      <input
+        class="fa-input"
+        v-model="subdisciplineSearch"
+        type="search"
+        placeholder="Search sub-disciplines…"
+        aria-label="Search sub-disciplines"
+        style="font-size: 13px; margin-bottom: 8px;"
+      />
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label
+          v-for="opt in visibleSubdisciplineOptions"
+          :key="opt.value"
+          class="fa-facet-item"
+          :class="{ active: isSelected('subdiscipline', opt.value) }"
+        >
+          <input class="fa-sr-only" type="checkbox" :checked="isSelected('subdiscipline', opt.value)" :disabled="opt.disabled" :aria-label="`${opt.value}, ${opt.count} jobs`" @change="toggleSubdiscipline(opt.value)" />
+          <span class="fa-check" :class="{ checked: isSelected('subdiscipline', opt.value) }">
+            {{ isSelected('subdiscipline', opt.value) ? '✓' : '' }}
+          </span>
+          <span style="flex: 1;">{{ opt.value }}</span>
+          <span class="fa-meta" style="font-size: 10px;">{{ opt.count }}</span>
+        </label>
+        <div v-if="filteredSubdisciplineOptions.length === 0" class="fa-meta" style="padding: 4px 0; font-style: italic;">No match</div>
+        <button
+          v-if="!subdisciplineSearch.trim() && filteredSubdisciplineOptions.length > 8"
+          type="button"
+          class="fa-btn fa-btn-ghost"
+          style="margin-top: 6px; justify-content: center;"
+          @click="showAllSubdisciplines = !showAllSubdisciplines"
+        >{{ showAllSubdisciplines ? 'Show less' : `View ${filteredSubdisciplineOptions.length - 8} more` }}</button>
       </div>
     </div>
 
