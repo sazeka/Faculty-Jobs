@@ -6,7 +6,7 @@ import { createDefaultFilters } from '../config/appConfig.js'
 // excluded: they're per-visitor (local saved jobs / "new since YOUR last visit")
 // and meaningless — or misleading — in a link shared with someone else.
 const STRING_KEYS = ['q', 'college', 'department', 'city', 'sortBy', 'employmentType', 'workMode']
-const ARRAY_KEYS = ['state', 'positionType', 'discipline']
+const ARRAY_KEYS = ['state', 'positionType', 'discipline', 'subdiscipline']
 const BOOL_KEYS = ['tenureTrackOnly', 'showClosed']
 
 // Build a query string holding only the filters that differ from the defaults,

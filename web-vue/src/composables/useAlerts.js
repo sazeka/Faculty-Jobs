@@ -40,6 +40,7 @@ export function useAlerts({ filtersRef, countMatches }) {
       college: filtersRef.value.college,
       department: filtersRef.value.department,
       discipline: [...filtersRef.value.discipline],
+      subdiscipline: [...filtersRef.value.subdiscipline],
       city: filtersRef.value.city,
       employmentType: filtersRef.value.employmentType,
       workMode: filtersRef.value.workMode,

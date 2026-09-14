@@ -23,28 +23,120 @@ const STALE_DATE_CUTOFF_ISO = (() => {
   return d.toISOString().slice(0, 10)
 })()
 
+// Each top-level discipline is broken into labeled sub-disciplines so a user
+// can narrow further once they've picked a discipline (progressive
+// disclosure — see subdisciplineOptions below). The union of every
+// sub-discipline's terms within a rule is exactly the old flat term list, so
+// top-level discipline classification is unchanged.
 export const DISCIPLINE_RULES = [
-  { label: 'Arts & Music',            terms: ['art', 'music', 'theatre', 'theater', 'dance', 'film', 'studio', 'visual art', 'fine art', 'performing', 'sculpture', 'painting', 'ceramics', 'graphic design', 'illustration', 'photography'] },
-  { label: 'Biological Sciences',     terms: ['biology', 'biolog', 'botany', 'zoology', 'ecology', 'genetics', 'genomics', 'neuroscience', 'biochemistry', 'microbiology', 'molecular', 'cell biology', 'evolutionary', 'anatomy', 'physiology', 'marine biology', 'wildlife'] },
-  { label: 'Business & Economics',    terms: ['business', 'economics', 'econom', 'accounting', 'finance', 'marketing', 'management', 'entrepreneurship', 'supply chain', 'operations', 'mba', 'commerce', 'hospitality', 'real estate', 'taxation', 'audit'] },
-  { label: 'Computer Science & Engineering', terms: ['computer science', 'software', 'computer engineering', 'electrical engineering', 'mechanical engineering', 'civil engineering', 'chemical engineering', 'aerospace', 'biomedical engineering', 'industrial engineering', 'systems engineering', 'data science', 'artificial intelligence', 'machine learning', 'cybersecurity', 'robotics', 'materials science'] },
-  { label: 'Education',               terms: ['education', 'teaching', 'curriculum', 'pedagogy', 'early childhood', 'literacy', 'special education', 'educational leadership', 'school counseling', 'instructional design', 'higher education'] },
-  { label: 'Health & Medicine',       terms: ['medicine', 'nursing', 'health', 'pharmacy', 'clinical', 'medical', 'dental', 'physical therapy', 'occupational therapy', 'public health', 'epidemiology', 'nutrition', 'kinesiology', 'exercise science', 'radiolog', 'surgery', 'pediatrics', 'psychiatry', 'pathology', 'anesthesiology', 'oncology', 'physician assistant'] },
-  { label: 'Humanities',              terms: ['english', 'literature', 'history', 'philosophy', 'classics', 'rhetoric', 'writing', 'humanities', 'religious studies', 'theology', 'ethics', 'medieval', 'cultural studies', 'american studies', 'comparative literature'] },
-  { label: 'Languages & Linguistics', terms: ['linguistics', 'language', 'spanish', 'french', 'german', 'chinese', 'japanese', 'arabic', 'portuguese', 'italian', 'russian', 'korean', 'translation', 'applied linguistics', 'esl', 'tesol', 'second language'] },
-  { label: 'Law & Criminal Justice',  terms: ['law', 'legal', 'criminology', 'criminal justice', 'jurisprudence', 'paralegal', 'forensic', 'corrections', 'policing', 'homeland security'] },
-  { label: 'Mathematics & Statistics',terms: ['mathematics', 'statistics', 'math', 'actuarial', 'applied math', 'calculus', 'algebra', 'analysis', 'probability', 'data analytics'] },
-  { label: 'Natural Sciences',        terms: ['physics', 'chemistry', 'geology', 'astronomy', 'astrophysics', 'geophysics', 'environmental science', 'earth science', 'atmospheric', 'oceanography', 'climate', 'geoscience', 'material science'] },
-  { label: 'Psychology & Social Work',terms: ['psychology', 'social work', 'counseling', 'mental health', 'behavioral', 'cognitive', 'developmental psychology', 'clinical psychology', 'human services'] },
-  { label: 'Social Sciences',         terms: ['sociology', 'anthropology', 'political science', 'geography', 'communications', 'journalism', 'media studies', 'public administration', 'public policy', 'international relations', 'urban planning', 'social science', 'demography', 'gender studies', 'ethnic studies', 'african american', 'chicano', 'latinx'] },
+  { label: 'Arts & Music', subdisciplines: [
+    { label: 'Visual Arts',      terms: ['art', 'studio', 'visual art', 'fine art', 'sculpture', 'painting', 'ceramics', 'graphic design', 'illustration', 'photography'] },
+    { label: 'Music',            terms: ['music'] },
+    { label: 'Theatre & Dance',  terms: ['theatre', 'theater', 'dance', 'performing'] },
+    { label: 'Film',             terms: ['film'] },
+  ]},
+  { label: 'Biological Sciences', subdisciplines: [
+    { label: 'General & Organismal Biology',          terms: ['biology', 'biolog', 'botany', 'zoology', 'wildlife'] },
+    { label: 'Ecology & Evolution',                   terms: ['ecology', 'evolutionary', 'marine biology'] },
+    { label: 'Genetics & Genomics',                   terms: ['genetics', 'genomics'] },
+    { label: 'Neuroscience',                          terms: ['neuroscience'] },
+    { label: 'Biochemistry & Molecular Biology',      terms: ['biochemistry', 'molecular', 'cell biology'] },
+    { label: 'Microbiology',                          terms: ['microbiology'] },
+    { label: 'Anatomy & Physiology',                  terms: ['anatomy', 'physiology'] },
+  ]},
+  { label: 'Business & Economics', subdisciplines: [
+    { label: 'Economics',                     terms: ['economics', 'econom'] },
+    { label: 'Accounting & Finance',          terms: ['accounting', 'finance', 'taxation', 'audit'] },
+    { label: 'Management & Entrepreneurship', terms: ['management', 'entrepreneurship', 'business', 'mba', 'commerce'] },
+    { label: 'Marketing',                     terms: ['marketing'] },
+    { label: 'Operations & Supply Chain',     terms: ['supply chain', 'operations'] },
+    { label: 'Hospitality & Real Estate',     terms: ['hospitality', 'real estate'] },
+  ]},
+  { label: 'Computer Science & Engineering', subdisciplines: [
+    { label: 'Computer Science & Software',          terms: ['computer science', 'software', 'data science', 'artificial intelligence', 'machine learning', 'cybersecurity'] },
+    { label: 'Electrical & Computer Engineering',    terms: ['electrical engineering', 'computer engineering', 'robotics'] },
+    { label: 'Mechanical & Aerospace Engineering',   terms: ['mechanical engineering', 'aerospace'] },
+    { label: 'Civil & Industrial Engineering',       terms: ['civil engineering', 'industrial engineering', 'systems engineering'] },
+    { label: 'Chemical & Materials Engineering',     terms: ['chemical engineering', 'materials science'] },
+    { label: 'Biomedical Engineering',               terms: ['biomedical engineering'] },
+  ]},
+  { label: 'Education', subdisciplines: [
+    { label: 'Curriculum & Instruction',            terms: ['curriculum', 'pedagogy', 'instructional design', 'teaching', 'education'] },
+    { label: 'Early Childhood & Literacy',          terms: ['early childhood', 'literacy'] },
+    { label: 'Special Education',                   terms: ['special education'] },
+    { label: 'Educational Leadership & Higher Ed',  terms: ['educational leadership', 'higher education', 'school counseling'] },
+  ]},
+  { label: 'Health & Medicine', subdisciplines: [
+    { label: 'Medicine & Clinical',              terms: ['medicine', 'clinical', 'medical', 'surgery', 'pediatrics', 'psychiatry', 'pathology', 'anesthesiology', 'oncology', 'radiolog'] },
+    { label: 'Nursing',                          terms: ['nursing'] },
+    { label: 'Pharmacy',                         terms: ['pharmacy'] },
+    { label: 'Dental',                           terms: ['dental'] },
+    { label: 'Public Health & Epidemiology',     terms: ['public health', 'epidemiology', 'nutrition', 'health'] },
+    { label: 'Rehabilitation Sciences',          terms: ['physical therapy', 'occupational therapy', 'kinesiology', 'exercise science', 'physician assistant'] },
+  ]},
+  { label: 'Humanities', subdisciplines: [
+    { label: 'English & Literature',            terms: ['english', 'literature', 'writing', 'comparative literature'] },
+    { label: 'History',                         terms: ['history', 'medieval', 'american studies'] },
+    { label: 'Philosophy & Ethics',             terms: ['philosophy', 'ethics'] },
+    { label: 'Religious Studies & Theology',    terms: ['religious studies', 'theology'] },
+    { label: 'Classics & Rhetoric',             terms: ['classics', 'rhetoric', 'humanities', 'cultural studies'] },
+  ]},
+  { label: 'Languages & Linguistics', subdisciplines: [
+    { label: 'Linguistics & Applied Linguistics', terms: ['linguistics', 'applied linguistics', 'esl', 'tesol', 'second language', 'translation'] },
+    { label: 'Romance Languages',                 terms: ['spanish', 'french', 'italian', 'portuguese'] },
+    { label: 'Germanic Languages',                terms: ['german'] },
+    { label: 'East Asian Languages',              terms: ['chinese', 'japanese', 'korean'] },
+    { label: 'Other World Languages',             terms: ['arabic', 'russian', 'language'] },
+  ]},
+  { label: 'Law & Criminal Justice', subdisciplines: [
+    { label: 'Law',                               terms: ['law', 'legal', 'jurisprudence', 'paralegal'] },
+    { label: 'Criminal Justice & Criminology',    terms: ['criminology', 'criminal justice', 'forensic', 'corrections', 'policing', 'homeland security'] },
+  ]},
+  { label: 'Mathematics & Statistics', subdisciplines: [
+    { label: 'Mathematics',                   terms: ['mathematics', 'math', 'applied math', 'calculus', 'algebra', 'analysis'] },
+    { label: 'Statistics & Data Analytics',   terms: ['statistics', 'actuarial', 'probability', 'data analytics'] },
+  ]},
+  { label: 'Natural Sciences', subdisciplines: [
+    { label: 'Physics & Astronomy',              terms: ['physics', 'astronomy', 'astrophysics'] },
+    { label: 'Chemistry',                         terms: ['chemistry'] },
+    { label: 'Earth & Environmental Sciences',    terms: ['geology', 'geophysics', 'environmental science', 'earth science', 'atmospheric', 'oceanography', 'climate', 'geoscience', 'material science'] },
+  ]},
+  { label: 'Psychology & Social Work', subdisciplines: [
+    { label: 'Psychology',                    terms: ['psychology', 'behavioral', 'cognitive', 'developmental psychology', 'clinical psychology'] },
+    { label: 'Social Work & Counseling',      terms: ['social work', 'counseling', 'mental health', 'human services'] },
+  ]},
+  { label: 'Social Sciences', subdisciplines: [
+    { label: 'Sociology & Anthropology',              terms: ['sociology', 'anthropology', 'demography'] },
+    { label: 'Political Science & Public Policy',     terms: ['political science', 'public administration', 'public policy', 'international relations'] },
+    { label: 'Geography & Urban Planning',            terms: ['geography', 'urban planning'] },
+    { label: 'Communications & Media',                terms: ['communications', 'journalism', 'media studies'] },
+    { label: 'Gender & Ethnic Studies',               terms: ['social science', 'gender studies', 'ethnic studies', 'african american', 'chicano', 'latinx'] },
+  ]},
 ]
 
 export function getDiscipline(job) {
   const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
   for (const rule of DISCIPLINE_RULES) {
-    if (rule.terms.some(t => hay.includes(t))) return rule.label
+    if (rule.subdisciplines.some((sub) => sub.terms.some((t) => hay.includes(t)))) return rule.label
   }
   return 'Other'
+}
+
+// Finds which sub-discipline within the job's already-determined discipline
+// matched. Returns null for 'Other' jobs, or a discipline whose matched term
+// doesn't map to a specific sub-group.
+export function getSubdiscipline(job) {
+  const rule = DISCIPLINE_RULES.find((r) => r.label === job.discipline)
+  if (!rule) return null
+  const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
+  for (const sub of rule.subdisciplines) {
+    if (sub.terms.some((t) => hay.includes(t))) return sub.label
+  }
+  return null
+}
+
+export function subdisciplinesForDiscipline(label) {
+  return DISCIPLINE_RULES.find((r) => r.label === label)?.subdisciplines || []
 }
 
 function stripDateTextFromTitle(value) {
@@ -209,6 +301,7 @@ function normalizeJob(job) {
     specialization: job?.specialization || null,
     ...candidateFields,
     discipline: null, // set after object creation
+    subdiscipline: null, // set after object creation, depends on discipline
     openUntilFilled: Boolean(job?.openUntilFilled),
     closeDateRaw: job?.closeDateRaw || null,
     closeDate: job?.closeDate || null,
@@ -246,6 +339,7 @@ function normalizeJob(job) {
     searchCollege: normalizeSearchText(college),
   }
   normalized.discipline = getDiscipline(normalized)
+  normalized.subdiscipline = getSubdiscipline(normalized)
   return normalized
 }
 
@@ -348,6 +442,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
       college: new Map(),
       department: new Map(),
       discipline: new Map(),
+      subdiscipline: new Map(),
       city: new Map(),
       employmentType: new Map(),
       workMode: new Map(),
@@ -361,11 +456,13 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
       const states = selectedValues(filterValues.state)
       const positionTypes = selectedValues(filterValues.positionType)
       const disciplines = selectedValues(filterValues.discipline)
+      const subdisciplines = selectedValues(filterValues.subdiscipline)
       const stateOk = states.length === 0 || states.includes(job.state)
       const positionTypeOk = positionTypes.length === 0 || positionTypes.some((type) => (job.positionTypes || []).includes(type))
       const collegeOk = filterValues.college === ALL_FILTER_VALUE || job.college === filterValues.college
       const departmentOk = filterValues.department === ALL_FILTER_VALUE || job.department === filterValues.department
       const disciplineOk = disciplines.length === 0 || disciplines.includes(job.discipline)
+      const subdisciplineOk = subdisciplines.length === 0 || subdisciplines.includes(job.subdiscipline)
       const cityOk = filterValues.city === ALL_FILTER_VALUE || job.city === filterValues.city
       const employmentTypeOk = filterValues.employmentType === ALL_FILTER_VALUE || job.employmentType === filterValues.employmentType
       const workModeOk = filterValues.workMode === ALL_FILTER_VALUE || job.workMode === filterValues.workMode
@@ -374,22 +471,23 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
       const newOk = !filterValues.newOnly || job.isNew === true
       const closedOk = filterValues.showClosed || !job.isClosed
       const commonOk = savedOk && newOk && closedOk
-      const allFacetsOk = stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk
+      const allFacetsOk = stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk
 
       if (commonOk && allFacetsOk) results.push(search.score ? { ...job, _score: search.score } : job)
       if (!collectFacets || !commonOk) continue
 
-      if (positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.state, job.state)
-      if (stateOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) {
+      if (positionTypeOk && collegeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.state, job.state)
+      if (stateOk && collegeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) {
         for (const positionType of job.positionTypes || []) increment(facets.positionType, positionType)
       }
-      if (stateOk && positionTypeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.college, job.college)
-      if (stateOk && positionTypeOk && collegeOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.department, job.department)
-      if (stateOk && positionTypeOk && collegeOk && departmentOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.discipline, job.discipline)
-      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.city, job.city)
-      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && workModeOk && tenureTrackOk) increment(facets.employmentType, job.employmentType)
-      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && tenureTrackOk) increment(facets.workMode, job.workMode)
-      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && job.tenureTrack === true) facets.tenureTrack += 1
+      if (stateOk && positionTypeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.college, job.college)
+      if (stateOk && positionTypeOk && collegeOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.department, job.department)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.discipline, job.discipline)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.subdiscipline, job.subdiscipline)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && subdisciplineOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.city, job.city)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && workModeOk && tenureTrackOk) increment(facets.employmentType, job.employmentType)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && tenureTrackOk) increment(facets.workMode, job.workMode)
+      if (stateOk && positionTypeOk && collegeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && job.tenureTrack === true) facets.tenureTrack += 1
     }
 
     return { results, facets }
@@ -461,6 +559,20 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     return allLabels
       .map(label => ({ value: label, count: counts.get(label) || 0 }))
       .filter(opt => opt.count > 0 || isSelected(filtersRef.value.discipline, opt.value))
+      .sort((a, b) => b.count - a.count)
+  })
+
+  // Only meaningful once at least one discipline is selected — the options
+  // are the union of the sub-disciplines belonging to the selected
+  // discipline(s), so the list narrows/grows as the parent selection changes.
+  const subdisciplineOptions = computed(() => {
+    const selectedDisciplines = selectedValues(filtersRef.value.discipline)
+    if (selectedDisciplines.length === 0) return []
+    const counts = filterEvaluation.value.facets.subdiscipline
+    const labels = [...new Set(selectedDisciplines.flatMap((d) => subdisciplinesForDiscipline(d).map((s) => s.label)))]
+    return labels
+      .map((label) => ({ value: label, count: counts.get(label) || 0 }))
+      .filter((opt) => opt.count > 0 || isSelected(filtersRef.value.subdiscipline, opt.value))
       .sort((a, b) => b.count - a.count)
   })
 
@@ -549,6 +661,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     if (filtersRef.value.college !== ALL_FILTER_VALUE) chips.push({ key: 'college', label: truncate(filtersRef.value.college, 25) })
     if (filtersRef.value.department !== ALL_FILTER_VALUE) chips.push({ key: 'department', label: truncate(filtersRef.value.department, 30) })
     for (const value of selectedValues(filtersRef.value.discipline)) chips.push({ id: `discipline:${value}`, key: 'discipline', value, label: value })
+    for (const value of selectedValues(filtersRef.value.subdiscipline)) chips.push({ id: `subdiscipline:${value}`, key: 'subdiscipline', value, label: value })
     if (filtersRef.value.city !== ALL_FILTER_VALUE) chips.push({ key: 'city', label: filtersRef.value.city })
     if (filtersRef.value.employmentType !== ALL_FILTER_VALUE) chips.push({ key: 'employmentType', label: filtersRef.value.employmentType })
     if (filtersRef.value.workMode !== ALL_FILTER_VALUE) chips.push({ key: 'workMode', label: filtersRef.value.workMode })
@@ -559,6 +672,16 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     const next = { ...filtersRef.value, ...patch }
     if ('state' in patch && !('college' in patch)) {
       next.college = ALL_FILTER_VALUE
+    }
+    // Sub-disciplines are only meaningful under their parent discipline(s), so
+    // whenever the discipline selection changes (and the caller isn't already
+    // setting subdiscipline explicitly), drop any selected sub-discipline that
+    // no longer belongs to a still-selected discipline.
+    if ('discipline' in patch && !('subdiscipline' in patch)) {
+      const validLabels = new Set(
+        selectedValues(next.discipline).flatMap((d) => subdisciplinesForDiscipline(d).map((s) => s.label)),
+      )
+      next.subdiscipline = selectedValues(next.subdiscipline).filter((label) => validLabels.has(label))
     }
     filtersRef.value = next
   }
@@ -574,6 +697,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     if (key === 'college') updateFilters({ college: ALL_FILTER_VALUE })
     if (key === 'department') updateFilters({ department: ALL_FILTER_VALUE })
     if (key === 'discipline') updateFilters({ discipline: selectedValues(filtersRef.value.discipline).filter((item) => item !== value) })
+    if (key === 'subdiscipline') updateFilters({ subdiscipline: selectedValues(filtersRef.value.subdiscipline).filter((item) => item !== value) })
     if (key === 'city') updateFilters({ city: ALL_FILTER_VALUE })
     if (key === 'employmentType') updateFilters({ employmentType: ALL_FILTER_VALUE })
     if (key === 'workMode') updateFilters({ workMode: ALL_FILTER_VALUE })
@@ -595,6 +719,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     positionTypeOptions,
     tenureTrackCount,
     disciplineOptions,
+    subdisciplineOptions,
     collegeOptions,
     departmentOptions,
     cityOptions,

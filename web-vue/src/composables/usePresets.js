@@ -29,6 +29,7 @@ function presetHasFilters(preset) {
       preset.college !== ALL_FILTER_VALUE ||
       preset.department !== ALL_FILTER_VALUE ||
       asArray(preset.discipline).length ||
+      asArray(preset.subdiscipline).length ||
       preset.city !== ALL_FILTER_VALUE ||
       preset.employmentType !== ALL_FILTER_VALUE ||
       preset.workMode !== ALL_FILTER_VALUE ||
@@ -45,6 +46,7 @@ function presetLabel(preset) {
   if (asArray(preset.state).length) parts.push(asArray(preset.state).join(', '))
   if (asArray(preset.positionType).length) parts.push(asArray(preset.positionType).join(', '))
   if (asArray(preset.discipline).length) parts.push(asArray(preset.discipline).join(', '))
+  if (asArray(preset.subdiscipline).length) parts.push(asArray(preset.subdiscipline).join(', '))
   if (preset.department && preset.department !== ALL_FILTER_VALUE) parts.push(truncate(preset.department, 18))
   if (preset.city && preset.city !== ALL_FILTER_VALUE) parts.push(preset.city)
   if (preset.employmentType && preset.employmentType !== ALL_FILTER_VALUE) parts.push(preset.employmentType)
@@ -70,6 +72,7 @@ export function usePresets({ filtersRef, updateFilters }) {
       college: filtersRef.value.college,
       department: filtersRef.value.department,
       discipline: [...filtersRef.value.discipline],
+      subdiscipline: [...filtersRef.value.subdiscipline],
       city: filtersRef.value.city,
       employmentType: filtersRef.value.employmentType,
       workMode: filtersRef.value.workMode,
@@ -90,6 +93,7 @@ export function usePresets({ filtersRef, updateFilters }) {
       college: preset?.college || ALL_FILTER_VALUE,
       department: preset?.department || ALL_FILTER_VALUE,
       discipline: asArray(preset?.discipline),
+      subdiscipline: asArray(preset?.subdiscipline),
       city: preset?.city || ALL_FILTER_VALUE,
       employmentType: preset?.employmentType || ALL_FILTER_VALUE,
       workMode: preset?.workMode || ALL_FILTER_VALUE,
