@@ -26,8 +26,10 @@ const STALE_DATE_CUTOFF_ISO = (() => {
 // Each top-level discipline is broken into labeled sub-disciplines so a user
 // can narrow further once they've picked a discipline (progressive
 // disclosure — see subdisciplineOptions below). The union of every
-// sub-discipline's terms within a rule is exactly the old flat term list, so
-// top-level discipline classification is unchanged.
+// sub-discipline's terms within a rule is exactly the old flat term list
+// (Education's added subject-area terms below are the one deliberate
+// exception — see the comment there), so top-level discipline classification
+// is otherwise unchanged.
 export const DISCIPLINE_RULES = [
   { label: 'Arts & Music', subdisciplines: [
     { label: 'Visual Arts',      terms: ['art', 'studio', 'visual art', 'fine art', 'sculpture', 'painting', 'ceramics', 'graphic design', 'illustration', 'photography'] },
@@ -61,6 +63,20 @@ export const DISCIPLINE_RULES = [
     { label: 'Biomedical Engineering',               terms: ['biomedical engineering'] },
   ]},
   { label: 'Education', subdisciplines: [
+    // These subject-area terms are new (not in the original flat list) — the
+    // old rule only distinguished HOW someone teaches (curriculum, early
+    // childhood, ...), never WHAT subject. Every phrase here already
+    // contains "education", which was already a term below, so adding them
+    // only changes which sub-discipline a job lands in, never its top-level
+    // discipline. They're listed first so a specific subject match (e.g.
+    // "Mathematics Education") wins over the generic 'education' catch-all
+    // in Curriculum & Instruction.
+    { label: 'Mathematics Education',              terms: ['mathematics education', 'math education'] },
+    { label: 'Science Education',                  terms: ['science education', 'stem education'] },
+    { label: 'Social Studies Education',            terms: ['social studies education', 'history education', 'civics education'] },
+    { label: 'Language & Literacy Education',       terms: ['literacy education', 'english education', 'language arts education', 'reading education', 'esl education'] },
+    { label: 'Arts Education',                      terms: ['art education', 'music education', 'arts education'] },
+    { label: 'Physical & Health Education',         terms: ['physical education', 'health education'] },
     { label: 'Curriculum & Instruction',            terms: ['curriculum', 'pedagogy', 'instructional design', 'teaching', 'education'] },
     { label: 'Early Childhood & Literacy',          terms: ['early childhood', 'literacy'] },
     { label: 'Special Education',                   terms: ['special education'] },
