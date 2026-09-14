@@ -367,19 +367,10 @@ async function reportBadListing(job) {
         <span class="fa-display">Faculty <i>Atlas</i></span>
       </button>
 
-      <nav
-        id="fa-mobile-nav"
-        ref="mobileNavPanel"
-        class="fa-nav"
-        :class="{ 'is-open': mobileNavOpen }"
-        :role="mobileNavOpen ? 'dialog' : undefined"
-        :aria-modal="mobileNavOpen ? 'true' : undefined"
-        tabindex="-1"
-        aria-label="Primary navigation"
-      >
-        <button class="fa-nav-link" :class="{ active: activeTab === 'jobs' || activeTab === 'map' }" @click="focusCatalog(); closeMobileNav()">Explore jobs</button>
-        <button class="fa-nav-link" :class="{ active: activeTab === 'trends' }" @click="activeTab = 'trends'; closeMobileNav()">Market trends</button>
-        <button class="fa-nav-link" @click="openMethodology(); closeMobileNav()">About the data</button>
+      <nav class="fa-nav" aria-label="Primary navigation">
+        <button class="fa-nav-link" :class="{ active: activeTab === 'jobs' || activeTab === 'map' }" @click="focusCatalog">Explore jobs</button>
+        <button class="fa-nav-link" :class="{ active: activeTab === 'trends' }" @click="activeTab = 'trends'">Market trends</button>
+        <button class="fa-nav-link" @click="openMethodology">About the data</button>
       </nav>
 
       <button
@@ -400,12 +391,31 @@ async function reportBadListing(job) {
       </button>
     </header>
 
-    <!-- Rendered outside <header> because .fa-header's backdrop-filter would
-         otherwise make it the containing block for this fixed-position
-         overlay, shrinking it to the header's own box instead of the
-         viewport (the same reason the filter-drawer backdrop below also
-         lives outside its trigger's ancestor). -->
+    <!-- Both rendered outside <header>, not just for the backdrop-filter
+         containing-block reason (see below) but because .fa-header is its
+         own stacking context (position:sticky + z-index): a dropdown nested
+         inside it can never out-rank a sibling backdrop at the root level no
+         matter what z-index it's given internally, since the whole header is
+         compared as one unit at its own z-index. Living outside the header
+         sidesteps both problems, matching the filter drawer's own panel
+         (.fa-filters-col), which is likewise never nested inside its
+         trigger's container. -->
     <div v-if="mobileNavOpen" class="fa-drawer-backdrop" @click="closeMobileNav" />
+
+    <nav
+      v-if="mobileNavOpen"
+      id="fa-mobile-nav"
+      ref="mobileNavPanel"
+      class="fa-mobile-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Primary navigation"
+      tabindex="-1"
+    >
+      <button class="fa-mobile-menu-link" :class="{ active: activeTab === 'jobs' || activeTab === 'map' }" @click="focusCatalog(); closeMobileNav()">Explore jobs</button>
+      <button class="fa-mobile-menu-link" :class="{ active: activeTab === 'trends' }" @click="activeTab = 'trends'; closeMobileNav()">Market trends</button>
+      <button class="fa-mobile-menu-link" @click="openMethodology(); closeMobileNav()">About the data</button>
+    </nav>
 
     <template v-if="activeTab !== 'trends'">
       <section class="fa-hero">
@@ -1587,28 +1597,38 @@ a.fa-listing-title:hover { color: var(--accent); }
   .fa-header .fa-wordmark .fa-display { font-size: 23px; }
   .fa-header .fa-wordmark svg { width: 34px; height: 34px; }
   .fa-nav { display: none; }
-  .fa-nav.is-open {
+  .fa-mobile-menu {
     display: flex;
     flex-direction: column;
     gap: 0;
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 64px;
     left: 0;
     right: 0;
-    justify-self: auto;
     padding: 6px var(--pad) 10px;
     background: var(--paper);
     border-bottom: 1px solid var(--rule-2);
     box-shadow: 0 12px 24px rgba(24, 38, 46, .1);
     z-index: 200;
   }
-  .fa-nav.is-open .fa-nav-link {
+  .fa-mobile-menu-link {
+    appearance: none;
     width: 100%;
     padding: 13px 4px;
-    text-align: left;
+    border: 0;
     border-bottom: 1px solid var(--rule-2);
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+    background: transparent;
+    cursor: pointer;
   }
-  .fa-nav.is-open .fa-nav-link:last-child { border-bottom: 0; }
+  .fa-mobile-menu-link.active { color: var(--ink); }
+  .fa-mobile-menu-link:last-child { border-bottom: 0; }
   .fa-nav-toggle { display: flex; }
   .fa-saved-button { padding: 7px 10px; }
   .fa-hero { grid-template-columns: 1fr; gap: 24px; padding: 28px var(--pad) 26px; }
