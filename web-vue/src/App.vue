@@ -109,10 +109,12 @@ const showFiltersCol = ref(readFilterVisibility())
 const showMethodology = ref(false)
 const excludedColleges = ref(null)
 const filterDrawerOpen = ref(false)
+const mobileNavOpen = ref(false)
 const catalogSection = ref(null)
 const selectedJob = ref(null)
 const methodologyModal = ref(null)
 const filterPanel = ref(null)
+const mobileNavPanel = ref(null)
 const mapReady = ref(false)
 let idleMapHandle = null
 let detailReturnUrl = null
@@ -215,6 +217,9 @@ function handleGlobalKeydown(event) {
   } else if (filterDrawerOpen.value) {
     if (event.key === 'Escape') closeFilterDrawer()
     else trapFocus(event, filterPanel.value)
+  } else if (mobileNavOpen.value) {
+    if (event.key === 'Escape') closeMobileNav()
+    else trapFocus(event, mobileNavPanel.value)
   }
 }
 
@@ -228,6 +233,26 @@ async function openFilterDrawer(event) {
 function closeFilterDrawer() {
   filterDrawerOpen.value = false
   nextTick(() => filterTrigger?.focus?.())
+}
+
+let mobileNavTrigger = null
+
+async function openMobileNav(event) {
+  mobileNavTrigger = event?.currentTarget || document.activeElement
+  mobileNavOpen.value = true
+  await nextTick()
+  focusable(mobileNavPanel.value)[0]?.focus()
+}
+
+function closeMobileNav() {
+  if (!mobileNavOpen.value) return
+  mobileNavOpen.value = false
+  nextTick(() => mobileNavTrigger?.focus?.())
+}
+
+function toggleMobileNav(event) {
+  if (mobileNavOpen.value) closeMobileNav()
+  else openMobileNav(event)
 }
 
 function focusCatalog() {
@@ -342,16 +367,45 @@ async function reportBadListing(job) {
         <span class="fa-display">Faculty <i>Atlas</i></span>
       </button>
 
-      <nav class="fa-nav" aria-label="Primary navigation">
-        <button class="fa-nav-link" :class="{ active: activeTab === 'jobs' || activeTab === 'map' }" @click="focusCatalog">Explore jobs</button>
-        <button class="fa-nav-link" :class="{ active: activeTab === 'trends' }" @click="activeTab = 'trends'">Market trends</button>
-        <button class="fa-nav-link" @click="openMethodology">About the data</button>
+      <nav
+        id="fa-mobile-nav"
+        ref="mobileNavPanel"
+        class="fa-nav"
+        :class="{ 'is-open': mobileNavOpen }"
+        :role="mobileNavOpen ? 'dialog' : undefined"
+        :aria-modal="mobileNavOpen ? 'true' : undefined"
+        tabindex="-1"
+        aria-label="Primary navigation"
+      >
+        <button class="fa-nav-link" :class="{ active: activeTab === 'jobs' || activeTab === 'map' }" @click="focusCatalog(); closeMobileNav()">Explore jobs</button>
+        <button class="fa-nav-link" :class="{ active: activeTab === 'trends' }" @click="activeTab = 'trends'; closeMobileNav()">Market trends</button>
+        <button class="fa-nav-link" @click="openMethodology(); closeMobileNav()">About the data</button>
       </nav>
+
+      <button
+        class="fa-nav-toggle"
+        type="button"
+        :aria-expanded="mobileNavOpen ? 'true' : 'false'"
+        aria-controls="fa-mobile-nav"
+        aria-label="Toggle navigation menu"
+        @click="toggleMobileNav"
+      >
+        <span class="fa-nav-toggle-bar"></span>
+        <span class="fa-nav-toggle-bar"></span>
+        <span class="fa-nav-toggle-bar"></span>
+      </button>
 
       <button class="fa-saved-button" :class="{ active: filters.savedOnly }" @click="activeTab = 'jobs'; updateFilters({ savedOnly: !filters.savedOnly })">
         {{ filters.savedOnly ? '♥' : '♡' }} Saved · {{ savedCount }}
       </button>
     </header>
+
+    <!-- Rendered outside <header> because .fa-header's backdrop-filter would
+         otherwise make it the containing block for this fixed-position
+         overlay, shrinking it to the header's own box instead of the
+         viewport (the same reason the filter-drawer backdrop below also
+         lives outside its trigger's ancestor). -->
+    <div v-if="mobileNavOpen" class="fa-drawer-backdrop" @click="closeMobileNav" />
 
     <template v-if="activeTab !== 'trends'">
       <section class="fa-hero">
@@ -1147,6 +1201,26 @@ async function reportBadListing(job) {
 }
 .fa-nav-link:hover,
 .fa-nav-link.active { color: var(--ink); border-bottom-color: var(--accent); }
+.fa-nav-toggle {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.fa-nav-toggle-bar {
+  display: block;
+  width: 19px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ink-2);
+}
 .fa-saved-button {
   appearance: none;
   border: 1px solid var(--rule);
@@ -1509,10 +1583,33 @@ a.fa-listing-title:hover { color: var(--accent); }
 
 @media (max-width: 767px) {
   :root { --pad: 18px; }
-  .fa-header { grid-template-columns: 1fr auto; min-height: 64px; padding: 0 var(--pad); }
+  .fa-header { grid-template-columns: 1fr auto auto; min-height: 64px; padding: 0 var(--pad); }
   .fa-header .fa-wordmark .fa-display { font-size: 23px; }
   .fa-header .fa-wordmark svg { width: 34px; height: 34px; }
   .fa-nav { display: none; }
+  .fa-nav.is-open {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    justify-self: auto;
+    padding: 6px var(--pad) 10px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule-2);
+    box-shadow: 0 12px 24px rgba(24, 38, 46, .1);
+    z-index: 200;
+  }
+  .fa-nav.is-open .fa-nav-link {
+    width: 100%;
+    padding: 13px 4px;
+    text-align: left;
+    border-bottom: 1px solid var(--rule-2);
+  }
+  .fa-nav.is-open .fa-nav-link:last-child { border-bottom: 0; }
+  .fa-nav-toggle { display: flex; }
   .fa-saved-button { padding: 7px 10px; }
   .fa-hero { grid-template-columns: 1fr; gap: 24px; padding: 28px var(--pad) 26px; }
   .fa-hero h1 { font-size: clamp(39px, 11.5vw, 54px); }
