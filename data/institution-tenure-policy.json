@@ -219,9 +219,9 @@
     },
     {
       "collegePattern": "^(?:UC Berkeley|UC Davis|UC Irvine|UC Merced|UC Riverside|UC San Francisco|UC Santa Barbara|UC Santa Cruz|UCLA|University of California-San Diego)$",
-      "titlePattern": "\\bHSCP\\b|\\bClin[\\s-]?X\\b|\\bClinical\\s+X\\b|\\bHealth\\s+Sciences\\s+(?:Clinical\\s+Instructor|Assistant\\s+Clinical\\s+Professor|Associate\\s+Clinical\\s+Professor|Clinical\\s+Professor)\\b|\\bProfessor\\s+of\\s+Clinical\\b",
+      "titlePattern": "\\bHSCP\\b|\\bClin[\\s-]?X\\b|\\bClinical\\s+X\\b|\\bHealth\\s+Sciences\\s+(?:Clinical\\s+Instructor|Assistant\\s+Clinical\\s+Professor|Associate\\s+Clinical\\s+Professor|Clinical\\s+Professor)\\b|\\bProfessor\\s+of\\s+Clinical\\b|\\blecturer\\b",
       "value": false,
-      "note": "The University of California's systemwide Academic Personnel Manual (APM), issued by UCOP and identical across every campus, explicitly separates the tenure-eligible 'regular ranks' faculty from several other series. APM 220-4-b (Professor series), quoted directly: 'Persons appointed to titles in the Professor series form the \"regular ranks\" faculty of the University. This series is distinct from the following series: Acting Professor series, Adjunct Professor series, Health Sciences Clinical Professor series, Professor in Residence series, Visiting Professor series, Professor of Clinical ___ series, Professor of Teaching series.' APM 278 (Health Sciences Clinical Professor / HSCP), section 278-20: 'Neither tenure nor security of employment is acquired by appointment to a title in this series, regardless of percentage of State funding.' APM 275 (Professor of Clinical ___, i.e. 'Clinical X'/'ClinX'), section 275-20: 'Neither tenure nor security of employment is acquired by appointment to a title in this series' -- and 275-17-a specifies time in this series 'does not count toward service as an Assistant Professor in Residence or any title eligible for tenure.' Both APM sections are systemwide (not campus-specific); campus-level pages (e.g. UCSD, UCLA, UC Irvine) implement but do not alter these definitions. Matches both full names ('Health Sciences Clinical Professor', 'Professor of Clinical [specialty]') and the abbreviations UC postings commonly use ('HSCP', 'Clin X', 'ClinX'). Checked every live UC posting containing any of these terms across all 10 campuses present in the dataset -- several postings offer a choice among multiple non-tenure series in one listing (e.g. 'Adjunct, Clinical X, HS Clinical, In Residence Faculty'), which is still safely classifiable since APM 220-4-b confirms Adjunct, Clinical X, HSCP, and In-Residence are ALL outside the tenure-eligible Professor series -- none is a live alternative in the announcement. Deliberately does not match bare 'Professor'/'Assistant Professor'/'Associate Professor' with no HSCP/Clinical X/Health Sciences qualifier, which is the actual tenure-eligible Ladder Rank series, nor any posting mixing a Ladder Rank/tenure-track option with a clinical-series option (none were found in the live data, but would need separate handling if one appears).",
+      "note": "The University of California's systemwide Academic Personnel Manual (APM), issued by UCOP and identical across every campus, explicitly separates the tenure-eligible 'regular ranks' faculty from several other series. APM 220-4-b (Professor series), quoted directly: 'Persons appointed to titles in the Professor series form the \"regular ranks\" faculty of the University. This series is distinct from the following series: Acting Professor series, Adjunct Professor series, Health Sciences Clinical Professor series, Professor in Residence series, Visiting Professor series, Professor of Clinical ___ series, Professor of Teaching series.' APM 278 (Health Sciences Clinical Professor / HSCP), section 278-20: 'Neither tenure nor security of employment is acquired by appointment to a title in this series, regardless of percentage of State funding.' APM 275 (Professor of Clinical ___, i.e. 'Clinical X'/'ClinX'), section 275-20: 'Neither tenure nor security of employment is acquired by appointment to a title in this series' -- and 275-17-a specifies time in this series 'does not count toward service as an Assistant Professor in Residence or any title eligible for tenure.' Both APM sections are systemwide (not campus-specific); campus-level pages (e.g. UCSD, UCLA, UC Irvine) implement but do not alter these definitions. Matches both full names ('Health Sciences Clinical Professor', 'Professor of Clinical [specialty]') and the abbreviations UC postings commonly use ('HSCP', 'Clin X', 'ClinX'). Checked every live UC posting containing any of these terms across all 10 campuses present in the dataset -- several postings offer a choice among multiple non-tenure series in one listing (e.g. 'Adjunct, Clinical X, HS Clinical, In Residence Faculty'), which is still safely classifiable since APM 220-4-b confirms Adjunct, Clinical X, HSCP, and In-Residence are ALL outside the tenure-eligible Professor series -- none is a live alternative in the announcement. Deliberately does not match bare 'Professor'/'Assistant Professor'/'Associate Professor' with no HSCP/Clinical X/Health Sciences qualifier, which is the actual tenure-eligible Ladder Rank series, nor any posting mixing a Ladder Rank/tenure-track option with a clinical-series option (none were found in the live data, but would need separate handling if one appears). Also extended to bare 'Lecturer': UC's Academic Personnel Manual (APM-285) explicitly substitutes the term 'security of employment' for 'tenure' in its Lecturer-series policy ('The term \"security of employment\" shall be substituted for the term \"tenure\"'), and as of the May 2024 APM revision the former Lecturer-with-Security-of-Employment series was renamed to 'Assistant/Associate/Professor of Teaching' -- so a current bare 'Lecturer' title at any UC campus refers only to the non-Senate, definitionally non-tenure-track title, never the renamed continuing-teaching-professor series.",
       "source": "https://www.ucop.edu/academic-personnel-programs/_files/apm/apm-220.pdf",
       "verifiedAt": "2026-09-15"
     },
@@ -359,6 +359,62 @@
       "value": false,
       "note": "Rice University Policy 201 ('Faculty Appointments, Promotions and Tenure'), Section 1, quoted directly: tenure-track ranks are only 'Assistant professor, Associate professor, and (Full) professor.' Non-tenure-track promotable ranks are separately, explicitly named: 'Assistant research professor, Associate research professor, and (Full) research professor,' 'Assistant teaching professor, Associate teaching professor, and (Full) teaching professor,' and 'Lecturer, and Senior lecturer' -- each defined as non-tenure-eligible ('By definition, non-tenure-track faculty ranks do not carry tenure and are not tenure eligible'). Section 1.b.2 ('Other non-tenure-track faculty ranks') additionally and unambiguously lists 'Professor in the practice rank' and 'Instructor rank' with no contradicting language elsewhere in the policy -- unlike some peer institutions, Rice's own source contains no ambiguity about Instructor, so it is included here. 'Professor in the Practice' uses Rice's own distinct phrasing ('Professor in the Practice of [Field]'), separate from the generic 'professor of practice' already caught globally. Confirmed against live Rice postings using this exact convention (e.g. 'Lecturer/Assistant Teaching Professor of Health Sciences').",
       "source": "https://policy.rice.edu/201",
+      "verifiedAt": "2026-09-15"
+    },
+    {
+      "college": "NC State University",
+      "titlePattern": "\\blecturer\\b",
+      "value": false,
+      "note": "NC State's REG 05.20.34 defines Lecturer as part of 'Professional faculty,' explicitly 'not eligible for consideration or conferral of permanent tenure.' Live postings sometimes offer Lecturer alongside a 'Teaching Assistant Professor' alternative (e.g. 'Lecturer or Teaching Assistant Professor in Political Science') -- both are NC State's non-tenure-track professional-faculty titles, so this does not introduce the kind of tenure/non-tenure ambiguity seen at other institutions' compound titles.",
+      "source": "https://policies.ncsu.edu/regulation/reg-05-20-34/",
+      "verifiedAt": "2026-09-15"
+    },
+    {
+      "college": "University of Miami",
+      "titlePattern": "\\blecturer\\b",
+      "value": false,
+      "note": "University of Miami's Faculty Manual states directly: 'Lecturers do not hold tenured or tenure-earning appointments.' Live postings occasionally offer 'Lecturer or Senior Lecturer' as alternatives -- both are non-tenure Lecturer-series ranks, so no ambiguity is introduced.",
+      "source": "https://faculty.miami.edu/policies-and-procedures/faculty-manual/index.html",
+      "verifiedAt": "2026-09-15"
+    },
+    {
+      "college": "Columbia University in the City of New York",
+      "titlePattern": "\\b(?:senior\\s+)?lecturer\\s+in\\s+discipline\\b",
+      "value": false,
+      "note": "'Lecturer in Discipline' and 'Senior Lecturer in Discipline' are Columbia's own formally defined, renewable non-ladder teaching titles, distinct from the tenure-track Assistant/Associate/Professor ladder. Deliberately scoped to this exact phrase rather than bare 'Lecturer': Columbia postings also use plain 'Lecturer in [Hebrew/Korean/Sanskrit and Tamil/etc.]' language-instruction titles that were not independently verified against this same non-tenure convention, and titles combining Lecturer with Instructor/Assistant Professor/Visiting Professor as genuine multi-track alternatives (e.g. 'Lecturer, Instructor, or Assistant Professor') are correctly excluded and stay unclassified rather than guessed.",
+      "source": "https://provost.columbia.edu/content/lecturer-discipline",
+      "verifiedAt": "2026-09-15"
+    },
+    {
+      "college": "Kennesaw State University",
+      "titlePattern": "\\blecturer\\b",
+      "value": false,
+      "note": "Kennesaw State's Faculty Handbook contains a section explicitly titled 'Non-Tenure Track Lecturer Faculty Ranks,' confirming Lecturer (all levels) is outside the tenure system.",
+      "source": "https://facultyhandbook.kennesaw.edu/",
+      "verifiedAt": "2026-09-15"
+    },
+    {
+      "college": "University of North Texas",
+      "titlePattern": "\\blecturer\\b",
+      "value": false,
+      "note": "University of North Texas Policy 06.005 ('Non-Tenure Track Faculty Reappointment and Promotion') governs UNT's Lecturer/Professional Faculty titles as a category structurally separate from the tenure system. Scoped to the Denton main campus only ('University of North Texas'); not extended to University of North Texas at Dallas or the Health Science Center, which were not independently verified.",
+      "source": "https://policy.unt.edu/policy/06-005",
+      "verifiedAt": "2026-09-15"
+    },
+    {
+      "college": "University of Hawaii System",
+      "titlePattern": "\\blecturers?\\b",
+      "value": false,
+      "note": "University of Hawaii Executive Policy E5.221 defines 'Lecturer' as 'persons employed for short-term teaching assignments, usually on a part-time basis' -- a category structurally separate from the tenure-eligible Instructor/Assistant Professor/Associate Professor/Professor (I3-I5) ranks. This is a UH System-wide executive policy. Scoped to the exact college string 'University of Hawaii System' as it appears in the live dataset (an umbrella entry under which the live Lecturer/Lecturer-CC postings are actually filed, rather than a specific campus).",
+      "source": "https://www.hawaii.edu/policy/index.php?action=viewPolicy&policySection=ep&policyChapter=5&policyNumber=221",
+      "verifiedAt": "2026-09-15"
+    },
+    {
+      "collegePattern": "^(?:CUNY Bernard M Baruch College|CUNY Borough of Manhattan Community College|CUNY Bronx Community College|CUNY Brooklyn College|CUNY City College|CUNY Graduate School and University Center|CUNY Hunter College|CUNY John Jay College of Criminal Justice|CUNY LaGuardia Community College|CUNY New York City College of Technology|CUNY Queens College|CUNY Queensborough Community College|CUNY School of Law|CUNY School of Professional Studies|CUNY Stella and Charles Guttman Community College|CUNY York College|College of Staten Island CUNY)$",
+      "titlePattern": "(?<!doctoral\\s)\\blecturer\\b(?!\\s+doctoral)",
+      "value": true,
+      "note": "UNUSUAL CASE -- this is the one confirmed exception to the otherwise-near-universal US convention that bare 'Lecturer' is non-tenure-track (verified this session against ~15 other institutions with zero other exceptions found). The PSC-CUNY collective bargaining agreement (the governing document for faculty titles across every CUNY senior and community college under one master contract), Article 11.1, quoted directly: 'The title Lecturer shall be a tenure-bearing (certificate of continuous employment) title used for full-time members of the faculty who are hired to teach and perform related faculty functions, but do not have a research commitment.' Article 12 confirms the mechanism: a full-time Lecturer becomes eligible for a Certificate of Continuous Employment (CCE) after five years, which 'carries with it the guarantee of full-time reappointment' terminable only for cause -- functionally the same permanent-employment protection tenure provides, even though CUNY's own formal terminology names the status 'CCE' rather than 'tenure.' Given the contract's own classification article calls the title itself 'tenure-bearing,' this is treated as tenure-track=true. 'Adjunct Lecturer' postings are unaffected -- already resolved to non-tenure by the global 'adjunct' keyword shortcut before this institution rule is ever reached. Excludes the prefix form 'Doctoral Lecturer' (as opposed to the suffix/parenthetical '(Doctoral Schedule)' form, which reads as a compensation-schedule detail for lecturers holding a doctorate, not a different appointment category) out of genuine uncertainty over whether it denotes the same full-time tenure-bearing title -- a small number of postings left conservatively unclassified rather than guessed. Excludes CUNY System Office, CUNY Start, and CUNY Language (non-degree-granting program/administrative entities, not independently confirmed to be covered by the same faculty title schedule).",
+      "source": "https://psc-cuny.org/contract/article-11-classification-titles/",
       "verifiedAt": "2026-09-15"
     }
   ]
