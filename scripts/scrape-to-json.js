@@ -104,7 +104,27 @@ function isPlaceholderTitle(title) {
   if (!t) return true;
   return (
     /^(faculty|staff|faculty jobs|employment|careers?)$/.test(t) ||
-    /^(view details|learn more|read more|click here)$/.test(t) ||
+    // A CTA button's own text ("View Details"), possibly with a school/dept
+    // suffix tacked on by a scraper that fell back to it (e.g. Harvard's
+    // PeopleAdmin listing appends " — Faculty of Arts and Sciences" when the
+    // anchor it picked was the row's "View Details" button, not its title
+    // link). The exact-match form alone missed every one of these.
+    /^(view details|learn more|read more|click here)\b/.test(t) ||
+    // A department/college's own "Faculty Employment Opportunities" hub-page
+    // label (optionally with a short department-code prefix like "CBT ")
+    // gets scraped as if it were a posting when a generic crawler follows a
+    // nav link back to the hub page itself, or to an unrelated page (home,
+    // an admissions page) that happens to carry the same sitewide link text.
+    // No real posting is ever titled this.
+    /\bfaculty employment opportunities$/.test(t) ||
+    /^employment opportunities$/.test(t) ||
+    // Department directory/roster tiles ("Accounting Faculty & Staff",
+    // "Radiologic Technology Staff and Faculty", "Meet the Environmental
+    // Science Faculty") -- link text off a department's own faculty-listing
+    // page, not an individual job posting.
+    /\bfaculty\s*(&|and)\s*staff$/.test(t) ||
+    /\bstaff\s*(&|and)\s*faculty$/.test(t) ||
+    /^meet\s+(the\s+)?[a-z0-9&.'/ -]+\bfaculty$/.test(t) ||
     /^1[-\s]?\d{3}[-\s]?[a-z0-9-]+$/i.test(clean(title))
   );
 }
@@ -120,10 +140,35 @@ function isLikelyJobUrl(url) {
   // (no word boundary), so real ATS job-search URLs were being misclassified as faculty
   // directory/profile pages. Only apply this heuristic to generic .edu URLs, where a bare
   // "/faculty" path is much more likely to actually be a staff directory page.
+  const isGenericSite = inferPlatformFromUrl(u) === "generic";
+  const looksLikeJobPath = /\/(job|jobs|career|careers|employment|positions?|openings?|vacanc(y|ies))\b/i.test(u);
+  if (isGenericSite && /\/faculty(?:\/|$|\?)/i.test(u) && !looksLikeJobPath) {
+    return false;
+  }
+  // Same directory-page signal as above, but for a compound trailing segment
+  // ("…-faculty-staff", "…-faculty-and-staff", "…-staff-and-faculty") instead
+  // of a bare "/faculty" path segment -- e.g. Brookdale's
+  // ".../accounting-faculty-staff" or NEIU's ".../afam-faculty-and-staff".
+  // Confirmed live: these are department roster pages (link text like
+  // "Accounting Faculty & Staff"), never individual postings.
   if (
-    inferPlatformFromUrl(u) === "generic" &&
-    /\/faculty(?:\/|$|\?)/i.test(u) &&
-    !/\/(job|jobs|career|careers|employment|positions?|openings?|vacanc(y|ies))\b/i.test(u)
+    isGenericSite &&
+    /-faculty(-and)?-staff(?:\/|$|\?)|-staff-and-faculty(?:\/|$|\?)/i.test(u) &&
+    !looksLikeJobPath
+  ) {
+    return false;
+  }
+  // A department's own subpage tree ("/departments/<dept>/…") on a college
+  // site is a directory/contact/roster area, not a jobs board -- confirmed
+  // live on NEIU, where every one of these resolves to a department faculty
+  // or contact page (e.g. ".../departments/mathematics/mathematics-faculty").
+  // Scoped to URLs that also mention faculty/staff so this doesn't reach
+  // unrelated department subpages that happen to lack any job-ish keyword.
+  if (
+    isGenericSite &&
+    !looksLikeJobPath &&
+    /\/departments\/[^/]+\/.+/i.test(u) &&
+    /\b(faculty|staff)\b/i.test(u)
   ) {
     return false;
   }

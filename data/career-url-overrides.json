@@ -799,6 +799,13 @@
       "notes": "Discovered via agent-career-discovery; verified live (3 faculty postings)."
     },
     {
+      "name": "Brookdale Community College",
+      "homepage_url": "https://www.brookdalecc.edu/",
+      "career_url": "https://careers-brookdalecc.icims.com/jobs/search?ss=1",
+      "platform_type": "icims",
+      "notes": "Was pointing at a student-facing 'careers and benefits for history majors' page (a department career-advice page, not a jobs board), which caused the generic crawler to pick up department faculty-directory link tiles (e.g. 'Accounting Faculty & Staff', 'Radiologic Technology Staff and Faculty') as if they were individual postings -- 100% of scraped listings for this campus were this artifact. Routed to their real iCIMS careers portal, linked from the site's header/footer nav but never scraped itself. Verified live: real multi-page job board with individual reqs (e.g. req 2026-1278)."
+    },
+    {
       "name": "Brunswick Community College",
       "homepage_url": "https://www.brunswickcc.edu/",
       "career_url": "https://www.schooljobs.com/careers/brunswickcc",

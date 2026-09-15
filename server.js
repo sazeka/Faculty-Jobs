@@ -13625,6 +13625,20 @@ async function scrapePeopleAdminWithDept(context, startUrl, campusName, sourceNa
           const title = clean(a.textContent);
           if (!title || title.length < 4) continue;
           if (/search|home|back|return|login|logout|help|privacy|accessibility/i.test(title)) continue;
+          // Each PeopleAdmin listing row typically has TWO anchors to the same
+          // posting: the real title (usually in an h3) and a separate
+          // "View Details" button further down the card. Both match the
+          // broad `a[href*="/postings/"]` selector above, and the per-URL
+          // dedup below keeps whichever one this loop reaches FIRST in DOM
+          // order -- normally the title, but that ordering isn't guaranteed
+          // across every PeopleAdmin theme/template. Skipping the CTA anchor
+          // outright (mirroring the same check in scrapeGenericJobPage) means
+          // the real title anchor always wins regardless of DOM order, so a
+          // template where the button happens to come first can't silently
+          // replace a real title with "View Details" (then get a department
+          // suffix appended below, e.g. "View Details — Faculty of Arts and
+          // Sciences" -- confirmed live on Harvard's academicpositions site).
+          if (/^\+?\s*(view\s+details?|apply(\s+now)?|learn\s+more\.*|read\s+more\.*|more\s+info(rmation)?)\.*$/i.test(title)) continue;
 
           const container = a.closest("tr") || a.closest("li") || a.closest("div") || null;
           const containerText = container ? clean(container.innerText || "") : "";
