@@ -83,7 +83,20 @@ export const DISCIPLINE_RULES = [
     { label: 'Educational Leadership & Higher Ed',  terms: ['educational leadership', 'higher education', 'school counseling'] },
   ]},
   { label: 'Health & Medicine', subdisciplines: [
-    { label: 'Medicine & Clinical',              terms: ['medicine', 'clinical', 'medical', 'surgery', 'pediatrics', 'psychiatry', 'pathology', 'anesthesiology', 'oncology', 'radiolog'] },
+    // Each clinical specialty gets its own label instead of being lumped
+    // into one "Medicine & Clinical" bucket — they were already distinct
+    // terms, just sharing a label. The specific specialties are listed
+    // before the generic medicine/clinical/medical catch-all so, e.g., a
+    // surgery posting that also happens to say "Department of Medicine"
+    // still lands under Surgery rather than the generic bucket.
+    { label: 'Surgery',                          terms: ['surgery'] },
+    { label: 'Pediatrics',                       terms: ['pediatrics'] },
+    { label: 'Psychiatry',                       terms: ['psychiatry'] },
+    { label: 'Pathology',                        terms: ['pathology'] },
+    { label: 'Anesthesiology',                   terms: ['anesthesiology'] },
+    { label: 'Oncology',                         terms: ['oncology'] },
+    { label: 'Radiology',                        terms: ['radiolog'] },
+    { label: 'General & Internal Medicine',      terms: ['medicine', 'clinical', 'medical'] },
     { label: 'Nursing',                          terms: ['nursing'] },
     { label: 'Pharmacy',                         terms: ['pharmacy'] },
     { label: 'Dental',                           terms: ['dental'] },
@@ -126,7 +139,11 @@ export const DISCIPLINE_RULES = [
     { label: 'Political Science & Public Policy',     terms: ['political science', 'public administration', 'public policy', 'international relations'] },
     { label: 'Geography & Urban Planning',            terms: ['geography', 'urban planning'] },
     { label: 'Communications & Media',                terms: ['communications', 'journalism', 'media studies'] },
-    { label: 'Gender & Ethnic Studies',               terms: ['social science', 'gender studies', 'ethnic studies', 'african american', 'chicano', 'latinx'] },
+    // 'social science' used to sit in this group's term list, so a job
+    // generically titled "Social Science" got mislabeled with the specific
+    // Gender & Ethnic Studies tag. It now has its own generic bucket.
+    { label: 'Gender & Ethnic Studies',               terms: ['gender studies', 'ethnic studies', 'african american', 'chicano', 'latinx'] },
+    { label: 'General Social Sciences',                terms: ['social science'] },
   ]},
 ]
 
