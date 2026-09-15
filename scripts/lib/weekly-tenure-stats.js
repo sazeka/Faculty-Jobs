@@ -8,7 +8,13 @@ import { fileURLToPath } from "node:url";
 // collided with an explicit tenure-track description phrase and canceled it out to
 // null, 164 were this generic usage and only 1 was genuine contingent-employment
 // language. Require it to actually describe the appointment/employee.
-const NON_TENURE_RE = /\b(?:non[\s-]?tenure(?:[\s-]?(?:track|accru(?:ing|al)|eligible))?|non[\s-]?tenurable|without\s+tenure|not\s+(?:a\s+)?tenure[\s-]?(?:track|eligible|accruing)|not\s+eligible\s+for\s+tenure|ntt|teaching[\s-]?track|instructional[\s-]?track|professional[\s-]?track|practice[\s-]?track|clinical[\s-]?track|research[\s-]?track|fixed[\s-]?term|term[\s-]?faculty|contingent\s+(?:faculty|appointment|position|employee|status|worker))\b/i;
+// non[\s-]?tenured? (not just non[\s-]?tenure): several UT System institutions'
+// own HOOP/IHOP policies use "Non-Tenured Research/Clinical/Instructional/Practice"
+// (with a trailing "d") as their official non-tenure title suffix -- e.g. UTHealth
+// Houston HOOP Policy 192: "Instructor, Non-Tenured Clinical (NTC)". The bare
+// "non-tenure" alternative's \b boundary can't see past that "d" (both are word
+// characters), so it silently missed this phrasing wherever it appears verbatim.
+const NON_TENURE_RE = /\b(?:non[\s-]?tenured?(?:[\s-]?(?:track|accru(?:ing|al)|eligible))?|non[\s-]?tenurable|without\s+tenure|not\s+(?:a\s+)?tenure[\s-]?(?:track|eligible|accruing)|not\s+eligible\s+for\s+tenure|ntt|teaching[\s-]?track|instructional[\s-]?track|professional[\s-]?track|practice[\s-]?track|clinical[\s-]?track|research[\s-]?track|fixed[\s-]?term|term[\s-]?faculty|contingent\s+(?:faculty|appointment|position|employee|status|worker))\b/i;
 const TENURE_RE = /\b(?:tenure[\s-]?(?:track|stream|eligible|accru(?:ing|al)|earning|line)|eligible\s+for\s+tenure|(?:appoint(?:ed|ment)|position|rank|role)\b.{0,40}\bwith\s+tenure|tenured)\b/i;
 
 // Some sources render scraped text with two fields glued together, no space
