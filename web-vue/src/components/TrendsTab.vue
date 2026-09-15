@@ -6,6 +6,8 @@ const props = defineProps({
   baseUrl: { type: String, default: '/' },
 })
 
+const emit = defineEmits(['open-methodology'])
+
 const trends = ref(null)
 const loading = ref(true)
 const error = ref(null)
@@ -223,6 +225,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
         <div class="fa-meta tenure-note">
           Based on {{ fmt(tenureStats.classified) }} listings with a known appointment track.
           {{ fmt(tenureStats.unknown) }} additional listings are unclassified and excluded from the percentages.
+          <button type="button" class="tenure-methods-link" @click="emit('open-methodology')">How this is classified</button>
         </div>
       </section>
 
@@ -489,6 +492,21 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   line-height: 1.6;
   margin-top: 10px;
 }
+.tenure-methods-link {
+  display: inline;
+  margin-left: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 2px;
+}
+.tenure-methods-link:hover,
+.tenure-methods-link:focus-visible { color: var(--accent); }
 
 .trends-stats-grid {
   display: grid;

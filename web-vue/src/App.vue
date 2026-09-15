@@ -107,6 +107,7 @@ const FILTER_VISIBILITY_KEY = 'faculty-atlas-filters-visible-v1'
 const showMapRail = ref(readMapVisibility())
 const showFiltersCol = ref(readFilterVisibility())
 const showMethodology = ref(false)
+const highlightedMethodologySection = ref(null)
 const excludedColleges = ref(null)
 const filterDrawerOpen = ref(false)
 const mobileNavOpen = ref(false)
@@ -119,6 +120,7 @@ const mapReady = ref(false)
 let idleMapHandle = null
 let detailReturnUrl = null
 let methodologyTrigger = null
+let methodologyHighlightTimer = null
 let filterTrigger = null
 const detailJobsByPath = new Map()
 const savedCount = computed(() => savedJobs.value.size)
@@ -260,11 +262,20 @@ function focusCatalog() {
   requestAnimationFrame(() => catalogSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
 }
 
-async function openMethodology() {
+async function openMethodology(sectionId) {
   methodologyTrigger = document.activeElement
   showMethodology.value = true
   await nextTick()
-  methodologyModal.value?.focus()
+  const section = sectionId ? document.getElementById(sectionId) : null
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    section.focus()
+    clearTimeout(methodologyHighlightTimer)
+    highlightedMethodologySection.value = sectionId
+    methodologyHighlightTimer = setTimeout(() => { highlightedMethodologySection.value = null }, 2200)
+  } else {
+    methodologyModal.value?.focus()
+  }
   if (excludedColleges.value) return
   try {
     const res = await fetch(`${baseUrl}policy-excluded-colleges.json`)
@@ -274,6 +285,8 @@ async function openMethodology() {
 
 function closeMethodology() {
   showMethodology.value = false
+  highlightedMethodologySection.value = null
+  clearTimeout(methodologyHighlightTimer)
   nextTick(() => methodologyTrigger?.focus?.())
 }
 
@@ -459,7 +472,12 @@ async function reportBadListing(job) {
       </section>
     </template>
 
-    <TrendsTab v-if="activeTab === 'trends'" id="main-content" :base-url="baseUrl" />
+    <TrendsTab
+      v-if="activeTab === 'trends'"
+      id="main-content"
+      :base-url="baseUrl"
+      @open-methodology="openMethodology('methodology-classification')"
+    />
 
     <section
       v-if="activeTab === 'jobs'"
@@ -658,7 +676,12 @@ async function reportBadListing(job) {
               <p>Data is collected from state university systems and individual institutions. Current coverage includes the University of California system, California State University, SUNY New York, University of Washington, University of North Carolina system, University of Texas system, and dozens of individual public and private universities across all 50 states. The “no current openings” statistic counts covered, in-scope institutions whose latest scrape returned zero faculty listings; policy-excluded or missing sources are not counted as zero-opening schools.</p>
             </div>
 
-            <div class="fa-modal-section">
+            <div
+              id="methodology-classification"
+              class="fa-modal-section"
+              :class="{ 'fa-modal-section-highlighted': highlightedMethodologySection === 'methodology-classification' }"
+              tabindex="-1"
+            >
               <div class="fa-label" style="margin-bottom: 10px;">Classification</div>
               <p><b>Rank</b> is inferred from job titles — "Assistant Professor," "Lecturer," "Visiting Faculty," etc. <b>Tenure-track</b> status is determined by whether the title or posting explicitly mentions tenure or tenure-track. <b>Discipline</b> is inferred by matching job titles and department names against a curated keyword taxonomy covering 13 broad academic fields.</p>
             </div>
@@ -1008,6 +1031,8 @@ async function reportBadListing(job) {
   border-bottom: 1px solid var(--rule-2);
 }
 .fa-modal-section:last-child { border-bottom: none; }
+.fa-modal-section { outline: none; transition: background-color .3s ease; }
+.fa-modal-section-highlighted { background-color: color-mix(in srgb, var(--accent) 10%, transparent); }
 .fa-modal-section p {
   font-family: var(--font-body);
   font-size: 15px;
