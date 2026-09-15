@@ -49,10 +49,15 @@ export const DISCIPLINE_RULES = [
   { label: 'Business & Economics', subdisciplines: [
     { label: 'Economics',                     terms: ['economics', 'econom'] },
     { label: 'Accounting & Finance',          terms: ['accounting', 'finance', 'taxation', 'audit'] },
-    { label: 'Management & Entrepreneurship', terms: ['management', 'entrepreneurship', 'business', 'mba', 'commerce'] },
+    { label: 'Management & Entrepreneurship', terms: ['management', 'entrepreneurship'] },
     { label: 'Marketing',                     terms: ['marketing'] },
     { label: 'Operations & Supply Chain',     terms: ['supply chain', 'operations'] },
     { label: 'Hospitality & Real Estate',     terms: ['hospitality', 'real estate'] },
+    // 'business', 'mba', and 'commerce' used to sit in Management &
+    // Entrepreneurship, so a generically titled "Assistant Professor of
+    // Business" was mislabeled as management/entrepreneurship-specific.
+    // Placed last as the catch-all for the generic term.
+    { label: 'General Business',              terms: ['business', 'mba', 'commerce'] },
   ]},
   { label: 'Computer Science & Engineering', subdisciplines: [
     { label: 'Computer Science & Software',          terms: ['computer science', 'software', 'data science', 'artificial intelligence', 'machine learning', 'cybersecurity'] },
@@ -108,7 +113,12 @@ export const DISCIPLINE_RULES = [
     { label: 'History',                         terms: ['history', 'medieval', 'american studies'] },
     { label: 'Philosophy & Ethics',             terms: ['philosophy', 'ethics'] },
     { label: 'Religious Studies & Theology',    terms: ['religious studies', 'theology'] },
-    { label: 'Classics & Rhetoric',             terms: ['classics', 'rhetoric', 'humanities', 'cultural studies'] },
+    { label: 'Classics & Rhetoric',             terms: ['classics', 'rhetoric'] },
+    // 'humanities' and 'cultural studies' used to sit in Classics &
+    // Rhetoric, so a generically titled "Assistant Professor of
+    // Humanities" was mislabeled as classics/rhetoric-specific. Placed
+    // last as the catch-all for the generic terms.
+    { label: 'General Humanities & Cultural Studies', terms: ['humanities', 'cultural studies'] },
   ]},
   { label: 'Languages & Linguistics', subdisciplines: [
     { label: 'Linguistics & Applied Linguistics', terms: ['linguistics', 'applied linguistics', 'esl', 'tesol', 'second language', 'translation'] },
