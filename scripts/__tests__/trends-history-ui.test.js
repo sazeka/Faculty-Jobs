@@ -13,6 +13,7 @@ test("appointment-track history ignores weeks recorded before classification beg
     weekEnd: "2026-08-23",
     tenureTrack: 20,
     nonTenureTrack: 80,
+    classified: 100,
     tenureTrackPct: 20,
     nonTenureTrackPct: 80,
   }]);

@@ -10,6 +10,19 @@ import { fileURLToPath } from "node:url";
 // language. Require it to actually describe the appointment/employee.
 const NON_TENURE_RE = /\b(?:non[\s-]?tenure(?:[\s-]?(?:track|accru(?:ing|al)|eligible))?|non[\s-]?tenurable|without\s+tenure|not\s+(?:a\s+)?tenure[\s-]?(?:track|eligible|accruing)|not\s+eligible\s+for\s+tenure|ntt|teaching[\s-]?track|instructional[\s-]?track|professional[\s-]?track|practice[\s-]?track|clinical[\s-]?track|research[\s-]?track|fixed[\s-]?term|term[\s-]?faculty|contingent\s+(?:faculty|appointment|position|employee|status|worker))\b/i;
 const TENURE_RE = /\b(?:tenure[\s-]?(?:track|stream|eligible|accru(?:ing|al)|earning|line)|eligible\s+for\s+tenure|(?:appoint(?:ed|ment)|position|rank|role)\b.{0,40}\bwith\s+tenure|tenured)\b/i;
+
+// Some sources render scraped text with two fields glued together, no space
+// in between -- e.g. "...Tenure-TrackJob Number:...", "TENURE-TRACKAdvertising",
+// "tenure trackFull Time". \b doesn't see a boundary at that junction since the
+// letters on both sides are word characters regardless of case, so it was
+// silently missing an explicit signal sitting right there in the text. Insert
+// a space at a lower/digit->upper transition, or an ACRONYM->TitleCase one, so
+// the phrase reads as its own word again. Genuine word-continuations like
+// "tenure-tracked" or "non-tenure-tracking" have no case transition and are
+// left untouched.
+function insertConcatenationBoundaries(text) {
+  return text.replace(/(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/g, " ");
+}
 // part\s*-?\s*time (not part[\s-]?time): some sources render the title as
 // "Part - Time Instructor" with a full space on both sides of the hyphen
 // (College of Southern Nevada, University of Washington, Austin Peay) --
@@ -83,7 +96,7 @@ function matchInstitutionPolicy(job) {
 }
 
 function explicitSignals(raw) {
-  const text = String(raw || "");
+  const text = insertConcatenationBoundaries(String(raw || ""));
   const nonTenure = NON_TENURE_RE.test(text);
   // Remove negative/alternative phrases before testing for a positive tenure
   // signal; otherwise "non-tenure-track" also matches "tenure-track".
