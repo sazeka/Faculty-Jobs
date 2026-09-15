@@ -22,6 +22,7 @@ export function appointmentTrackHistory(history, limit = 12) {
         weekEnd: week.weekEnd,
         tenureTrack,
         nonTenureTrack,
+        classified,
         tenureTrackPct,
         nonTenureTrackPct: Number((100 - tenureTrackPct).toFixed(1)),
       }

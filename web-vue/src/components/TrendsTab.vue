@@ -37,7 +37,14 @@ const sortedPositionTypes = computed(() => {
 })
 const maxTypeCount = computed(() => sortedPositionTypes.value[0]?.count || 1)
 const tenureStats = computed(() => trends.value?.stats?.tenureTrackBreakdown || null)
-const tenureHistory = computed(() => appointmentTrackHistory(trends.value?.history || []))
+const tenureHistory = computed(() => {
+  const items = appointmentTrackHistory(trends.value?.history || [])
+  const max = Math.max(1, ...items.map(w => w.classified))
+  return items.map(w => ({
+    ...w,
+    heightPct: Math.max(6, Math.round((w.classified / max) * 100)),
+  }))
+})
 const aiStats = computed(() => trends.value?.stats?.aiHiringBreakdown || null)
 const aiHistory = computed(() => {
   const items = (trends.value?.history || [])
@@ -194,8 +201,9 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
             :key="week.weekEnd"
             class="tenure-week"
             tabindex="0"
-            :aria-label="`${fmtWeek(week.weekEnd)}: ${week.tenureTrackPct}% tenure-track and ${week.nonTenureTrackPct}% non-tenure-track`"
-            :data-tooltip="`${fmtWeek(week.weekEnd)} · Tenure ${week.tenureTrackPct}% · Non-tenure ${week.nonTenureTrackPct}%`"
+            :style="{ height: `${week.heightPct}%` }"
+            :aria-label="`${fmtWeek(week.weekEnd)}: ${fmt(week.tenureTrack)} tenure-track (${week.tenureTrackPct}%) and ${fmt(week.nonTenureTrack)} non-tenure-track (${week.nonTenureTrackPct}%), out of ${fmt(week.classified)} classified`"
+            :data-tooltip="`${fmtWeek(week.weekEnd)} · Tenure ${fmt(week.tenureTrack)} (${week.tenureTrackPct}%) · Non-tenure ${fmt(week.nonTenureTrack)} (${week.nonTenureTrackPct}%)`"
           >
             <div class="tenure-week-ntt" :style="{ height: `${week.nonTenureTrackPct}%` }"></div>
             <div class="tenure-week-tt" :style="{ height: `${week.tenureTrackPct}%` }"></div>
@@ -422,7 +430,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 }
 .tenure-history {
   display: flex;
-  align-items: stretch;
+  align-items: flex-end;
   gap: 4px;
   height: 132px;
   margin-top: 48px;
