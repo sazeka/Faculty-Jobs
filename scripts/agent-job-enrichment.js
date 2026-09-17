@@ -216,6 +216,32 @@ function parseResponse(text) {
 
 // ── Ollama API ────────────────────────────────────────────────────────────────
 
+// Grammar-constrains qwen3.5:9b's output to actually be a JSON array of
+// per-item objects. A bare format:"json" string is *too* loose here: for a
+// single-item batch it satisfied "valid JSON" by emitting one bare object
+// instead of a 1-element array (observed live -- alignEnrichmentResults then
+// saw a non-array and every single-item retry failed with "expected 1
+// result, got 0"). An explicit schema pins the top level to an array.
+// positionType deliberately has no enum -- coercePositionType already maps
+// free-form answers like "Clinical Instructor" or "Postdoctoral Fellow" onto
+// the valid set, and constraining generation to the enum directly would
+// prevent the model from saying what it actually means when nothing in the
+// enum fits well.
+const ENRICHMENT_RESPONSE_SCHEMA = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      itemId: { type: 'integer' },
+      discipline: { type: ['string', 'null'] },
+      tenureTrack: { type: 'string', enum: ['tenure-track', 'non-tenure-track', 'unknown'] },
+      tenureEvidence: { type: ['string', 'null'] },
+      positionType: { type: 'string' },
+    },
+    required: ['itemId', 'discipline', 'tenureTrack', 'tenureEvidence', 'positionType'],
+  },
+};
+
 function callOllama(batch) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
@@ -226,6 +252,32 @@ function callOllama(batch) {
       // above. Ollama silently ignores this field for models without a
       // "thinking" capability (e.g. qwen2.5:7b), so it's safe to always send.
       think: false,
+      // Without an explicit cap, a full 25-item batch's JSON array response
+      // was silently truncated mid-array on qwen3.5:9b -- every single batch
+      // failed alignEnrichmentResults' length check on the first attempt and
+      // fell through to the bisect-and-retry path (observed live: batches 1-5
+      // of a real run all mismatched at 25, then succeeded cleanly once split
+      // to ~12-13). Root cause, confirmed by dumping the raw Ollama response
+      // (done_reason: "length" after only ~71 output tokens): Ollama's
+      // runtime num_ctx defaults to far less than qwen3.5:9b's 262K
+      // architectural max, and a 25-item batch's prompt (title + up to 600
+      // chars of description each) alone already used ~4,025 of that tiny
+      // default window, leaving almost nothing for the output. Raising
+      // num_predict alone did not fix it -- num_ctx must be raised too.
+      // 32768 covers even a max-size 50-item batch's prompt (BATCH_SIZE is
+      // capped at 50 above) plus an 8192-token completion with headroom.
+      //
+      // Fixing num_ctx surfaced a second, distinct bug: with qwen3.5:9b's
+      // default temperature of 1.0 (meant for open-ended chat, not
+      // structured extraction), it would drop the "},{" separator between
+      // consecutive array items and merge all 25 objects into one object
+      // with 25 repeated keys -- syntactically valid JSON (last key wins)
+      // but semantically wrong, so alignEnrichmentResults saw an array of
+      // length 1 and mismatched every time. A schema-constrained format
+      // (see ENRICHMENT_RESPONSE_SCHEMA above) plus a low temperature fixes
+      // both the shape and the wandering.
+      format: ENRICHMENT_RESPONSE_SCHEMA,
+      options: { num_predict: 8192, num_ctx: 32768, temperature: 0.1 },
     });
 
     const [hostname, port] = OLLAMA_HOST.split(':');
@@ -247,6 +299,9 @@ function callOllama(batch) {
           try {
             const parsed = JSON.parse(data);
             const text = parsed?.message?.content?.trim();
+            if (process.env.DEBUG_ENRICH) {
+              fs.writeFileSync(`/tmp/enrich-debug-${Date.now()}.json`, JSON.stringify({ text, parsed }, null, 2));
+            }
             if (!text) { reject(new Error(JSON.stringify(parsed))); return; }
             resolve(parseResponse(text));
           } catch (e) {
