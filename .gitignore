@@ -25,3 +25,9 @@ gitignore_addition.txt
 # the repo ~760KB/night. The git add generated/ in the script skips ignored
 # files, so this is all that's needed to stop tracking them.)
 generated/automation-logs/
+
+# Pure build intermediate: `npm run sync:web-data` regenerates this from
+# public/jobs.json before every `vite build` (see package.json's
+# build:frontend), so the committed copy was never actually read by anything —
+# just a ~97MB duplicate of public/jobs.json re-added on every scrape commit.
+web-vue/public/jobs.json

@@ -241,6 +241,10 @@ export function useJobsData() {
     const n = Number(siteStats.value?.newPostingsThisWeek ?? siteStats.value?.newThisWeek)
     return Number.isFinite(n) ? n : null
   })
+  const removedThisWeek = computed(() => {
+    const n = Number(siteStats.value?.removedThisWeek)
+    return Number.isFinite(n) ? n : null
+  })
 
   async function loadSiteStats() {
     try {
@@ -463,6 +467,7 @@ export function useJobsData() {
     qualitySummary,
     newJobsCount,
     newThisWeek,
+    removedThisWeek,
     siteStats,
     transport,
     lastVisitAt,
