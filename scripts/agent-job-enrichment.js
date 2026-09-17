@@ -64,7 +64,17 @@ const MAX         = Number(args['max'] || process.env.AI_ENRICH_MAX || 500);
 const BATCH_SIZE  = Math.min(Number(args['batch-size'] || 25), 50);
 const CONCURRENCY = Math.min(Number(args['concurrency'] || process.env.AI_ENRICH_CONCURRENCY || 1), 8);
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'localhost:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
+// qwen3.5:9b (9.7B params, 262K context vs. qwen2.5:7b's much smaller window)
+// -- confirmed on the Dell's 8GB laptop GPU that a cold load takes ~235s
+// (vision-tower tensor conversion, unused by this text-only task, dominates
+// that one-time cost) but generation itself is ~26-31 tok/s once warm, same
+// ballpark as qwen2.5:7b. Requires "think": false below -- without it, this
+// model burns hundreds of chain-of-thought tokens per request before its
+// actual answer (measured: 843 tokens / 32s to answer a single trivial
+// 2-field JSON question), which would multiply out badly across real
+// 25-job batches. With think disabled, response time and token count are
+// back in line with qwen2.5:7b.
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen3.5:9b';
 const AI_BACKEND = process.env.AI_BACKEND || 'ollama';
 // A hung/overloaded backend (e.g. Ollama swapping a 7B model on an 8GB
 // Jetson, or thrashing under memory pressure) can accept the connection and
@@ -74,8 +84,13 @@ const AI_BACKEND = process.env.AI_BACKEND || 'ollama';
 // this step either) hangs forever. Same bug class as the 2026-07-27 5-day
 // hang already fixed in agent-job-descriptions.js -- that fix never made it
 // to this file. Ollama gets a generous budget since local inference on
-// constrained hardware is genuinely slow.
-const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS || 180_000);
+// constrained hardware is genuinely slow. Bumped from 180s to 300s: a cold
+// qwen3.5:9b load alone measured ~235s on the Dell, which would already
+// trip the old 180s timeout on the very first batch of a run, before the
+// model even finished loading -- wasting that whole batch on a doomed
+// bisect-and-retry cascade (see processBatch below) rather than actually
+// erroring on a genuinely stuck backend.
+const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS || 300_000);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -207,6 +222,10 @@ function callOllama(batch) {
       model: OLLAMA_MODEL,
       messages: [{ role: 'user', content: buildPrompt(batch) }],
       stream: false,
+      // Disable qwen3.5's reasoning trace -- see the OLLAMA_MODEL comment
+      // above. Ollama silently ignores this field for models without a
+      // "thinking" capability (e.g. qwen2.5:7b), so it's safe to always send.
+      think: false,
     });
 
     const [hostname, port] = OLLAMA_HOST.split(':');
