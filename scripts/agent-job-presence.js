@@ -311,6 +311,21 @@ for (const firstSeen of firstSeenByGroup.values()) {
   if (firstSeen >= weekCutoff) newThisWeek += 1;
 }
 
+// Global "removed" counts, mirroring "new" above. Purged jobs are dropped from
+// `presence.jobs` immediately (step 7), so there's no per-job history to
+// re-derive this from later — instead we keep a small rolling log of
+// {date, count} entries, trimmed to the trailing 7-day window on every run.
+if (!Array.isArray(presence.purgeLog)) presence.purgeLog = [];
+const todayPurgeEntry = presence.purgeLog.find((entry) => entry.date === today);
+if (todayPurgeEntry) {
+  todayPurgeEntry.count += purgedCount;
+} else {
+  presence.purgeLog.push({ date: today, count: purgedCount });
+}
+presence.purgeLog = presence.purgeLog.filter((entry) => entry.date >= weekCutoff);
+const removedToday = purgedCount;
+const removedThisWeek = presence.purgeLog.reduce((sum, entry) => sum + (entry.count || 0), 0);
+
 const catalogSummary = summarizeCatalog(cleanedJobs, new Date(`${today}T12:00:00Z`));
 const institutionsPayload = readJson(INSTITUTIONS_PATH);
 const policyRules = readJson(POLICY_RULES_PATH);
@@ -346,10 +361,15 @@ const siteStats = attachUniversityCoverage({
   newPostingsToday: newToday,
   newPostingsThisWeek: newThisWeek,
   newDefinition: "Consolidated postings first cataloged by Faculty Atlas; not necessarily newly posted by the institution.",
+  removedToday,
+  removedThisWeek,
+  removedDefinition: "Postings purged from the catalog (expired deadline or absent for several consecutive scrapes) in the trailing 7 days.",
 }, readJson(COVERAGE_PATH));
 
 console.log(`  New today        : ${newToday.toLocaleString()}`);
 console.log(`  New this week    : ${newThisWeek.toLocaleString()}`);
+console.log(`  Removed today    : ${removedToday.toLocaleString()}`);
+console.log(`  Removed this week: ${removedThisWeek.toLocaleString()}`);
 
 const report = {
   generatedAt:  new Date().toISOString(),
@@ -361,6 +381,8 @@ const report = {
   expiredDeadlineCacheCount: Object.keys(presence.expiredDeadlines).length,
   newToday,
   newThisWeek,
+  removedToday,
+  removedThisWeek,
   catalogSummary,
   purgedJobs,
 };
