@@ -235,6 +235,13 @@ test("detects institution-name-as-city location placeholders (issue #120)", () =
   assert.equal(isPlaceholderLocation("Milwaukee, WI", "Medical College of Wisconsin"), false);
   assert.equal(isPlaceholderLocation("Cambridge, MA", "Harvard University"), false);
   assert.equal(isPlaceholderLocation("Tempe, AZ", "Arizona State University"), false);
+  // Institutions actually named after (and located in) a real city of the
+  // same name — a looser "location's words are a subset of college's words"
+  // check would wrongly flag every one of these as a placeholder.
+  assert.equal(isPlaceholderLocation("Santa Clara, CA", "Santa Clara University"), false);
+  assert.equal(isPlaceholderLocation("Houston, TX", "University of Houston"), false);
+  assert.equal(isPlaceholderLocation("Radford, VA", "Radford University"), false);
+  assert.equal(isPlaceholderLocation("Villanova, PA", "Villanova University"), false);
   // A campus name that's a real, distinct place should not be flagged.
   assert.equal(isPlaceholderLocation("Remote", "Harvard University"), false);
   assert.equal(isPlaceholderLocation("", "Harvard University"), false);

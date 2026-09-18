@@ -52,13 +52,19 @@ function explicitInstitutionInTitle(title) {
 // ("Wilson Community College, NC", "Harvard University, MA") is a
 // placeholder, not a real city — it passes a plain non-empty check, which
 // undercounts how many jobs actually lack a usable location (issue #120).
+// This is an exact-string check (not a token-overlap one) because several
+// real institutions are named after — and legitimately located in — a city
+// of the same name (Santa Clara University → "Santa Clara, CA", University
+// of Houston → "Houston, TX", Radford University → "Radford, VA", Villanova
+// University → "Villanova, PA"): those are correct, real locations, and a
+// looser "location's words are a subset of college's words" check would
+// wrongly flag every one of them as a placeholder.
 export function isPlaceholderLocation(location, college) {
-  const withoutState = clean(location).replace(/,\s*[A-Z]{2}$/i, '')
-  if (!withoutState || !clean(college)) return false
-  const locationTokens = institutionTokens(withoutState)
-  const collegeTokens = new Set(institutionTokens(college))
-  if (!locationTokens.length || !collegeTokens.size) return false
-  return locationTokens.length === collegeTokens.size && locationTokens.every((token) => collegeTokens.has(token))
+  const loc = clean(location)
+  const col = clean(college)
+  if (!loc || !col) return false
+  return loc.toLowerCase() === `${col}, ${clean(loc.match(/,\s*([A-Za-z]{2})$/)?.[1] || '')}`.toLowerCase()
+    && /,\s*[A-Za-z]{2}$/.test(loc)
 }
 
 function institutionConflict(title, college) {
