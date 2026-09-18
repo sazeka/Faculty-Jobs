@@ -1,18 +1,87 @@
 import crypto from 'node:crypto'
 import { isExpiredPastGrace } from './post-expiration.js'
+import { cleanDepartment } from './department-clean.js'
+import { isChallengeDescription } from './description-quality.js'
 
 export const POST_QUALITY_VERSION = 1
 
 const PLACEHOLDER_TITLE_RE = /^(?:faculty|staff|faculty jobs|employment|careers?|view details|learn more|read more|click here)$/i
-const RESOURCE_TITLE_RE = /^(?:\/?\s*faculty\s*(?:\/|&|and)\s*staff(?:\s+(?:resources?|panel))?|faculty careers?|faculty handbook|faculty affairs|faculty support|faculty support services\b.*|faculty resources?|faculty development|academic affairs|human resources|office of faculty affairs(?:\s*&\s*strategic planning)?|contract faculty payroll calendar|staff,? faculty (?:&|and) student employment opportunities|view lecturer opportunities|access center resources for faculty|affiliate faculty resources|center for faculty excellence|faculty accompanying students(?: \(fas\))? grant|faculty awards|faculty employment handbook|faculty forms|faculty offer letter templates\b.*|faculty performance|faculty review|(?:msu denver )?faculty fellowships|recruiting excellent faculty workshops)$/i
+const RESOURCE_TITLE_RE = /^(?:\/?\s*faculty\s*(?:\/|&|and)\s*staff(?:\s+(?:resources?|panel))?|faculty careers?|faculty handbook|faculty affairs|faculty support|faculty support services\b.*|faculty resources?|faculty development|academic affairs|human resources|office of faculty affairs(?:\s*&\s*strategic planning)?|contract faculty payroll calendar|staff,? faculty (?:&|and) student employment opportunities|view lecturer opportunities|access center resources for faculty|affiliate faculty resources|center for faculty excellence|faculty accompanying students(?: \(fas\))? grant|faculty awards|faculty employment handbook|faculty forms|faculty offer letter templates\b.*|faculty performance|faculty review|(?:msu denver )?faculty fellowships|recruiting excellent faculty workshops|academic leadership (?:&|and) faculty|faculty experience|faculty overview)$/i
 const SEARCH_PAGE_CHROME_TITLE_RE = /^(?:faculty (?:&|and|\+) staff(?: jobs| resources| employment)?|faculty and staff faqclick to open|faculty and staff human resources guide: employment|faculty employment|faculty stories|faculty, lecturer, and academic staff jobs|faculty\/staff resources|full-time faculty|prospective faculty & staff|regular faculty and staff|staff and faculty)$/i
-const STRONG_ACADEMIC_TITLE_RE = /\b(?:assistant|associate|full|distinguished|endowed|visiting|adjunct|clinical|research|teaching)?\s*professor\b|\bprofessor of\b|\blecturer\b|\binstructor\b|\bpost[- ]?doctoral\b|\bpost[- ]?doc\b|\bfaculty fellow\b|\bresearch (?:scientist|associate|fellow)\b|\b(?:assistant|associate)?\s*dean\b|\bdepartment chair\b|\b(?:academic|assistant|associate|faculty) librarian\b/i
+// Directory/biography/overview/video pages ABOUT faculty as a group, not a
+// specific role being recruited (issue #129). Deliberately narrow: "director"
+// is excluded (only "directory"/"directories") because "Faculty Director of
+// ..." is a real appointment title, and every keyword here is gated at the
+// call site on the title NOT already containing a strong academic title, so
+// a real posting that happens to also mention e.g. a video interview isn't
+// caught.
+const FACULTY_RESOURCE_KEYWORD_RE = /\b(?:faculty|academic)\b[^.!?]*\b(?:directory|directories|biograph(?:y|ies)|overview|videos?)\b/i
+// Informational "how to apply" / applicant-guidance pages name faculty
+// applicants as an audience, not a specific position (issue #129 -- St.
+// John's College "Information for Santa Fe Faculty Applicants"). Restricted
+// to this "information for ... applicants" shape so it doesn't catch a real
+// "<Position> Applicant Pool" posting title (an established convention for
+// standing adjunct pools elsewhere in this codebase -- see EVERGREEN_POOL_RE
+// below).
+const APPLICANT_INFORMATION_PAGE_RE = /\b(?:information|instructions|guidance)\s+for\b[^.!?]*\bapplicants?\b/i
+// Admissions/marketing copy that happens to mention faculty in passing is not
+// a job posting (issue #129 -- Southeastern Baptist's campus-visit page).
+const CAMPUS_VISIT_MARKETING_RE = /\bexplore campus\b|\bmeet (?:our\s+)?faculty\b/i
+// Explicit "do not apply" / test-record language is decisive regardless of
+// any other title evidence (issue #129 -- Centre College's "New Test for
+// Faculty — Do NOT Apply" scored 99/pass).
+const TEST_OR_PLACEHOLDER_TITLE_RE = /\bdo[\s-]*not[\s-]*apply\b/i
+// "Dean" alone is weak evidence: it also appears in incidental
+// reporting-relationship phrases like "Executive Assistant to the Dean" or
+// "reports to the Dean", where the role actually being recruited is the
+// assistant, not the dean (issue #129 -- Howard Community College's "Office
+// Manager and Executive Assistant to the Dean" scored 100/pass on this false
+// match). Require the title to actually BE a dean role, not merely name one
+// as who the position reports to.
+const DEAN_TITLE_RE = /\b(?:assistant|associate)?\s*dean\b/i
+const DEAN_REPORTING_RELATIONSHIP_RE = /\b(?:to|for|of|under)\s+(?:the\s+)?(?:assistant|associate)?\s*dean\b/i
+const STRONG_ACADEMIC_TITLE_RE = /\b(?:assistant|associate|full|distinguished|endowed|visiting|adjunct|clinical|research|teaching)?\s*professor\b|\bprofessor of\b|\blecturer\b|\binstructor\b|\bpost[- ]?doctoral\b|\bpost[- ]?doc\b|\bfaculty fellow\b|\bresearch (?:scientist|associate|fellow)\b|\bdepartment chair\b|\b(?:academic|assistant|associate|faculty) librarian\b/i
 const STAFF_ROLE_RE = /\b(?:faculty affairs|faculty development|faculty support|human resources|hr associate|hr business|coordinator|specialist|recruiter|talent acquisition|administrative assistant|executive assistant|office manager|program assistant|assistant director|associate director|operations manager|business manager)\b/i
 const CLEAR_NONACADEMIC_RE = /\b(?:custodian|groundskeeper|maintenance technician|police officer|security officer|bus driver|food service|payroll|accounts payable|facilities technician|electrician|plumber|carpenter|head coach|assistant coach|athletic trainer)\b/i
-const STUDENT_RESOURCE_RE = /\b(?:student services|career services|career center|disability services|office for students|student employment)\b/i
+const STUDENT_RESOURCE_RE = /\b(?:student services|career services|career center|disability services|office for students|student employment|academic advis(?:or|ing))\b/i
 const APPOINTMENT_CONTEXT_RE = /\b(?:12[- ]month|adjunct|clinical|core|ft|full[- ]time|instructional|non[- ]tenure|ntt|open[- ]rank|part[- ]time|professional|rank (?:doq|open|tbd)|research|teaching|tenure(?:d|[- ]track)?)\b/i
 const NON_APPOINTMENT_FACULTY_CONTEXT_RE = /\b(?:faculty affairs|faculty development|faculty recruitment|faculty shared services|faculty support|recruit(?:er|ing|ment))\b/i
 const GENERIC_INSTITUTION_WORDS = new Set(['and', 'at', 'college', 'institute', 'of', 'school', 'system', 'the', 'university'])
+// An explicit signal that a posting is a standing/evergreen recruitment pool
+// rather than a single dated vacancy (issue #131) -- either the "Open Pool" /
+// "Applicant Pool" title convention this codebase already recognizes
+// elsewhere (see scripts/lib/weekly-tenure-stats.js and
+// scripts/__tests__/weekly-tenure-stats.test.js), or prose stating
+// applications are accepted on a rolling/continuous basis and candidates are
+// contacted as needs arise (the Villanova adjunct-pool example in the
+// issue). `openUntilFilled` alone is deliberately NOT treated as this signal
+// -- the issue is explicit that a multi-year-old individual search marked
+// merely "Open Until Filled" (the UNC Nutrigenomics example) is not proof of
+// an evergreen pool.
+const EVERGREEN_POOL_RE = /\bopen pool\b|\bapplicant pool\b|\bstanding pool\b|\bpool of (?:qualified )?(?:applicants|candidates)\b|\brolling basis\b|\bcontinuous(?:ly)?\s+(?:accept|recruit)/i
+const EVERGREEN_STATEMENT_RE = /\baccepts?\s+applications\b.{0,40}\b(?:any time|year[- ]round|on an? ongoing basis|continuously)\b|\bcontact(?:s|ed)?\b.{0,40}\bwhen\b.{0,40}\b(?:need|opening|position)s?\b.{0,20}\barises?\b/i
+// Graduated freshness deductions for postings whose datePosted is old and
+// that carry no evergreen/pool signal (issue #131). Ordered from largest
+// threshold to smallest so the first match is the correct (largest) tier.
+// The 1-2yr tier is 'info' severity (dings the score but doesn't by itself
+// push a listing out of 'pass'); 2yr+ is 'warning' (forces 'review' so it
+// gets re-verified), matching how every other freshness/relevance warning in
+// this function behaves.
+const AGE_FRESHNESS_TIERS = [
+  { years: 5, code: 'stale_posting_no_evergreen_signal', severity: 'warning', deduction: 40 },
+  { years: 2, code: 'stale_posting_no_evergreen_signal', severity: 'warning', deduction: 25 },
+  { years: 1, code: 'aging_posting_no_evergreen_signal', severity: 'info', deduction: 10 },
+]
+const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000
+
+function hasDeanAppointmentTitle(title) {
+  return DEAN_TITLE_RE.test(title) && !DEAN_REPORTING_RELATIONSHIP_RE.test(title)
+}
+
+function hasEvergreenPoolSignal(title, description) {
+  const hay = `${title} ${description}`
+  return EVERGREEN_POOL_RE.test(hay) || EVERGREEN_STATEMENT_RE.test(hay)
+}
 
 function clean(value) {
   return String(value || '').replace(/\s+/g, ' ').trim()
@@ -140,10 +209,15 @@ export function stableJobId(job) {
 
 export function scorePost(job, { today = new Date() } = {}) {
   const title = clean(job?.title)
-  const description = clean(job?.description || job?.summary)
+  const rawDescription = clean(job?.description) || clean(job?.summary)
+  const challengeDescription = isChallengeDescription(rawDescription)
+  // A bot-challenge/security-verification page is not real description
+  // content -- treat it as absent everywhere below (issue #130).
+  const description = challengeDescription ? '' : rawDescription
   const college = clean(job?.college)
   const location = clean(job?.location)
-  const department = clean(job?.department)
+  const rawDepartment = clean(job?.department)
+  const department = cleanDepartment(rawDepartment) || ''
   const url = clean(job?.url)
   const todayIso = dateOnly(today) || new Date().toISOString().slice(0, 10)
   const dimensions = { relevance: 100, attribution: 100, link: 100, freshness: 100, completeness: 100, duplication: 100 }
@@ -157,8 +231,20 @@ export function scorePost(job, { today = new Date() } = {}) {
     addReason(reasons, dimensions, 'placeholder_title', 'error', 'relevance', 100, 'The title is empty or generic page chrome.')
     hardQuarantine = true
   }
-  if (RESOURCE_TITLE_RE.test(title) || (SEARCH_PAGE_CHROME_TITLE_RE.test(title) && classifyLink(url) === 'search-page')) {
-    addReason(reasons, dimensions, 'resource_page_title', 'error', 'relevance', 100, 'The title names a faculty resource office rather than an appointment.')
+
+  const hasStrongAcademicTitle = STRONG_ACADEMIC_TITLE_RE.test(title) || hasDeanAppointmentTitle(title)
+  const isFacultyResourceOrMarketingTitle =
+    RESOURCE_TITLE_RE.test(title)
+    || (SEARCH_PAGE_CHROME_TITLE_RE.test(title) && classifyLink(url) === 'search-page')
+    || (FACULTY_RESOURCE_KEYWORD_RE.test(title) && !hasStrongAcademicTitle)
+    || APPLICANT_INFORMATION_PAGE_RE.test(title)
+    || CAMPUS_VISIT_MARKETING_RE.test(title)
+  if (isFacultyResourceOrMarketingTitle) {
+    addReason(reasons, dimensions, 'resource_page_title', 'error', 'relevance', 100, 'The title names a faculty resource, directory, or marketing page rather than an appointment.')
+    hardQuarantine = true
+  }
+  if (TEST_OR_PLACEHOLDER_TITLE_RE.test(title)) {
+    addReason(reasons, dimensions, 'test_or_placeholder_posting', 'error', 'relevance', 100, 'The title indicates a test record or explicitly instructs applicants not to apply.')
     hardQuarantine = true
   }
   if (reviewedFalsePositive) {
@@ -166,7 +252,6 @@ export function scorePost(job, { today = new Date() } = {}) {
     hardQuarantine = true
   }
 
-  const hasStrongAcademicTitle = STRONG_ACADEMIC_TITLE_RE.test(title)
   const startsWithAppointment = /^(?:adjunct\b|associate\s+faculty\b|faculty\b)/i.test(title) && !/^(?:faculty affairs|faculty support|faculty development|faculty resources?)\b/i.test(title)
   const contextualFacultyAppointment =
     /\bfaculty\b/i.test(title)
@@ -194,8 +279,22 @@ export function scorePost(job, { today = new Date() } = {}) {
   } else if (STUDENT_RESOURCE_RE.test(title) && !hasAcademicAppointmentTitle) {
     addReason(reasons, dimensions, 'student_service_title', 'error', 'relevance', 90, 'Student-facing service role lacks an academic appointment title.')
     hardQuarantine = true
-  } else if (!hasAcademicAppointmentTitle && !clean(job?.positionType) && !clean(job?.tenureTrack)) {
-    addReason(reasons, dimensions, 'weak_academic_evidence', 'warning', 'relevance', 30, 'No strong academic appointment signal appears in the title or normalized metadata.')
+  } else {
+    // "Other" is the classifier's catch-all for "did not fit any real
+    // category" -- it carries no positive signal about the role, so it must
+    // not suppress the weak-evidence check the way a real positionType
+    // (e.g. "Lecturer", "Adjunct") does. This is the same convention already
+    // used elsewhere in this codebase (see generate-job-pages.js,
+    // generate-rss.js, generate-hub-pages.js: `!job.positionType ||
+    // job.positionType === "Other"`). Before this fix, 67 of the 126
+    // `academicAppointment=false` records that passed quality did so purely
+    // because `positionType: "Other"` was treated as if it were positive
+    // metadata (issue #129).
+    const positionTypeValue = clean(job?.positionType)
+    const hasPositionTypeEvidence = Boolean(positionTypeValue) && positionTypeValue !== 'Other'
+    if (!hasAcademicAppointmentTitle && !hasPositionTypeEvidence && !clean(job?.tenureTrack)) {
+      addReason(reasons, dimensions, 'weak_academic_evidence', 'warning', 'relevance', 30, 'No strong academic appointment signal appears in the title or normalized metadata.')
+    }
   }
 
   const reviewedLinkEvidence = ['verified-inline-posting', 'verified-filtered-board', 'verified-application-form'].includes(clean(job?.qualityLinkEvidence))
@@ -230,9 +329,30 @@ export function scorePost(job, { today = new Date() } = {}) {
   if (postedDate && postedDate > todayIso) addReason(reasons, dimensions, 'future_posting_date', 'warning', 'freshness', 60, `Posting date ${postedDate} is in the future.`)
   if (!postedDate && !dateOnly(job?.firstSeen)) addReason(reasons, dimensions, 'missing_observation_date', 'info', 'freshness', 15, 'No source posting or first-seen date is available.')
 
-  if (!description) addReason(reasons, dimensions, 'missing_description', 'info', 'completeness', 35, 'Description is missing.')
-  else if (description.length < 80) addReason(reasons, dimensions, 'thin_description', 'info', 'completeness', 20, 'Description is unusually short.')
-  if (!department) addReason(reasons, dimensions, 'missing_department', 'info', 'completeness', 10, 'Department is missing.')
+  // A decade-old posting shouldn't get the same freshness confidence as a
+  // newly advertised vacancy just because its page is still reachable and no
+  // deadline has passed -- unless it carries an explicit evergreen/pool
+  // signal, in which case age is expected and shouldn't be penalized at all
+  // (issue #131).
+  const evergreenPool = hasEvergreenPoolSignal(title, description)
+  if (postedDate && postedDate <= todayIso && !evergreenPool) {
+    const ageYears = (Date.parse(`${todayIso}T00:00:00Z`) - Date.parse(`${postedDate}T00:00:00Z`)) / MS_PER_YEAR
+    const tier = AGE_FRESHNESS_TIERS.find((candidate) => ageYears >= candidate.years)
+    if (tier) {
+      addReason(reasons, dimensions, tier.code, tier.severity, 'freshness', tier.deduction, `Posting date ${postedDate} is more than ${tier.years} year(s) old with no evergreen/applicant-pool signal.`)
+    }
+  }
+
+  if (!description) {
+    if (challengeDescription) {
+      addReason(reasons, dimensions, 'bot_challenge_description', 'warning', 'completeness', 35, 'Description content is a bot-challenge/security-verification page, not real job content.')
+    } else {
+      addReason(reasons, dimensions, 'missing_description', 'info', 'completeness', 35, 'Description is missing.')
+    }
+  } else if (description.length < 80) {
+    addReason(reasons, dimensions, 'thin_description', 'info', 'completeness', 20, 'Description is unusually short.')
+  }
+  if (!department) addReason(reasons, dimensions, 'missing_department', 'info', 'completeness', 10, 'Department is missing or does not look like a valid department name.')
   if (!location && !clean(job?.state)) addReason(reasons, dimensions, 'missing_location', 'info', 'completeness', 15, 'Location is missing.')
   else if (isPlaceholderLocation(location, job?.college)) addReason(reasons, dimensions, 'placeholder_location', 'info', 'completeness', 15, 'Location is just the institution name, not a real city.')
   if (!closeDate && !job?.openUntilFilled) addReason(reasons, dimensions, 'missing_deadline', 'info', 'completeness', 5, 'Deadline is not provided.')
@@ -254,6 +374,7 @@ export function scorePost(job, { today = new Date() } = {}) {
     reasons,
     linkType,
     academicAppointment: hasAcademicAppointmentTitle,
+    evergreenPool,
   }
 }
 
@@ -263,6 +384,7 @@ export function confirmedNonFacultyReason(job, options = {}) {
   const quality = scorePost(job, options)
   const codes = new Set(quality.reasons.map((reason) => reason.code))
   if (codes.has('resource_page_title')) return 'resource_page_title'
+  if (codes.has('test_or_placeholder_posting')) return 'test_or_placeholder_posting'
   if (codes.has('administrative_staff_title')) return 'administrative_staff_title'
   if (codes.has('student_service_title')) return 'student_service_title'
   if (codes.has('resource_page_url') && !quality.academicAppointment) return 'resource_page_url'
