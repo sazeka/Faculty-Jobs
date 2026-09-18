@@ -357,6 +357,7 @@ function main() {
     if (!hit) continue;
     ipedsMatched += 1;
     r.unitid = r.unitid || hit.unitid || null;
+    r.city = hit.city || r.city || null;
     r.state = hit.state || r.state || null;
     r.sector = hit.sector ?? r.sector ?? null;
     r.level = hit.level || r.level || null;

@@ -91,6 +91,7 @@ import { interfolioApplicationUrl } from "./scripts/lib/interfolio-position.js";
 import { alaskaCampusLocation, inferAlaskaCampus } from "./scripts/lib/alaska-campus.js";
 import { canonicalCsuInstitutionFromLocation, repairKnownInstitutionAttribution } from "./scripts/lib/institution-attribution.js";
 import { peopleSoftJobDetailUrl } from "./scripts/lib/peoplesoft-job-url.js";
+import { isPlaceholderLocation } from "./scripts/lib/post-quality.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -8830,6 +8831,43 @@ const COLLEGE_LOCATION_DEFAULTS_BY_KEY = new Map(
   Object.entries(COLLEGE_LOCATION_DEFAULTS).map(([college, location]) => [toCollegeLocationKey(college), location])
 );
 
+// Issue #120: institution-name-as-location placeholders ("Wilson Community
+// College, NC", "Medical College of Wisconsin, WI") should resolve to the
+// institution's real campus city/state when it's known, not just the ~200
+// hand-curated entries above. data/institutions-master.json's `city` field
+// (populated from IPEDS hd*.csv by scripts/build-institutions-master.js) now
+// covers thousands of institutions, so it's loaded here as a second-tier
+// fallback that only kicks in when COLLEGE_LOCATION_DEFAULTS has no entry.
+// Matched by exact name only (never a substring/fuzzy match), for the same
+// reason #127 removed fuzzy matching from this function: a college name is
+// compared as a whole normalized string so "Azusa Pacific University" can
+// never resolve via a partial match against a different "Pacific University".
+function loadInstitutionCityFallbacks() {
+  try {
+    const rootDir = path.dirname(fileURLToPath(import.meta.url));
+    const masterPath = path.join(rootDir, "data", "institutions-master.json");
+    const payload = JSON.parse(fs.readFileSync(masterPath, "utf8"));
+    const rows = Array.isArray(payload?.institutions) ? payload.institutions : [];
+    const map = new Map();
+    for (const r of rows) {
+      const name = clean(r?.name);
+      const city = clean(r?.city);
+      const state = clean(r?.state);
+      if (!name || !city || !state) continue;
+      map.set(name, `${city}, ${state}`);
+    }
+    return map;
+  } catch (e) {
+    console.warn(`⚠️  Failed to load institution city fallbacks: ${e?.message || e}`);
+    return new Map();
+  }
+}
+
+const INSTITUTION_CITY_FALLBACKS = loadInstitutionCityFallbacks();
+const INSTITUTION_CITY_FALLBACKS_BY_KEY = new Map(
+  [...INSTITUTION_CITY_FALLBACKS].map(([college, location]) => [toCollegeLocationKey(college), location])
+);
+
 export function getCollegeLocationFallback(collegeName) {
   const exact = COLLEGE_LOCATION_DEFAULTS[collegeName];
   if (exact) return exact;
@@ -8846,7 +8884,14 @@ export function getCollegeLocationFallback(collegeName) {
   // exists the location is left unknown rather than guessed from a partial
   // match; add a reviewed entry to COLLEGE_LOCATION_DEFAULTS (or an alias
   // key) instead of restoring substring matching.
-  return COLLEGE_LOCATION_DEFAULTS_BY_KEY.get(key) || null;
+  const curated = COLLEGE_LOCATION_DEFAULTS_BY_KEY.get(key);
+  if (curated) return curated;
+
+  return (
+    INSTITUTION_CITY_FALLBACKS.get(collegeName) ||
+    INSTITUTION_CITY_FALLBACKS_BY_KEY.get(key) ||
+    null
+  );
 }
 
 function isLikelyGeographicLocation(location) {
@@ -8908,6 +8953,16 @@ export function normalizeLocationByCollege(job) {
   const fallback = getCollegeLocationFallback(job.college);
   const looksLikeInstitutionName = (text) =>
     /\b(university|college|institute|school|campus|polytechnic|academy|system)\b/i.test(String(text || ""));
+
+  // A location like "Wilson Community College, NC" or "Medical College of
+  // Wisconsin, WI" parses as a syntactically valid "City, ST" pattern to
+  // normalizeUsLocation() below, but the "city" part is just the
+  // institution's own name — a placeholder, not a real city (issue #120).
+  // Catch this first so it doesn't short-circuit past the campus-city
+  // fallback the same way a non-geographic location already does.
+  if (fallback && isPlaceholderLocation(job.location, job.college)) {
+    return { ...job, location: fallback };
+  }
 
   const normalized = normalizeUsLocation(job.location);
   if (normalized) {
