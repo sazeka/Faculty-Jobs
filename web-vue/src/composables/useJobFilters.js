@@ -6,6 +6,8 @@ import { classifySourceLink, institutionTitleConflict, sanitizePostingDate } fro
 import { inferAlaskaCampus } from '../../../scripts/lib/alaska-campus.js'
 import { normalizeSearchText } from '../../../scripts/lib/jobs-search-index.js'
 import { deriveCandidateFields } from '../../../scripts/lib/job-candidate-fields.js'
+import { cleanDepartment } from '../../../scripts/lib/department-clean.js'
+import { isChallengeDescription } from '../../../scripts/lib/description-quality.js'
 
 export { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
 
@@ -322,21 +324,11 @@ function isSelected(value, option) {
   return selectedValues(value).includes(option)
 }
 
-// Returns a sanitised department string or null if the value looks like garbage
-// (scraped job title, truncated description, etc.)
+// Department validation/normalization now lives in scripts/lib/department-clean.js
+// (imported above) so scoring, badges, display, and reports all agree on what
+// counts as a usable department value (issue #130) -- this used to be a
+// separate, display-only copy of the same rejection logic.
 const INSTITUTION_WORDS = ['university', 'college', 'institute', 'school', 'academy']
-function cleanDepartment(dept) {
-  if (!dept) return null
-  const s = clean(String(dept))
-  if (!s || s.length < 3) return null
-  if (s.length > 80) return null                   // likely a description
-  if (/^[\d()\-,]/.test(s)) return null            // starts with digit, bracket, or punctuation
-  if (/\.\s[a-z]/.test(s)) return null             // sentence break mid-string
-  if (/\)\s/.test(s)) return null                  // leftover parenthetical noise
-  if (/^\d{4}\s/.test(s)) return null              // starts with year
-  if (/\b(position|posted|internal only|open until filled|all ranks|region:)\b/i.test(s)) return null
-  return s
-}
 
 // Extracts "City, ST" from raw location strings like "Campus - Philadelphia, PA".
 // `college` lets this reject a placeholder location that's just the
@@ -370,12 +362,22 @@ function deriveConfidenceBadges(job, { datePosted, linkQuality, institutionConfl
   if (/^https:\/\//i.test(String(job?.url || ''))) {
     badges.push({ kind: 'good', label: 'Verified Link' })
   }
-  if (clean(job?.department)) {
+  // Use the same validator the display path uses to reject malformed
+  // departments (a truncated description, a scraper-appended "Region: ..."
+  // suffix, leftover parenthetical noise, etc.) so a record that would show
+  // "Missing Department" to the user can't still earn a "Department Tagged"
+  // badge off the raw, unvalidated value (issue #130).
+  if (cleanDepartment(job?.department)) {
     badges.push({ kind: 'good', label: 'Department Tagged' })
   } else {
     badges.push({ kind: 'warn', label: 'Missing Department' })
   }
-  if (!(job?.hasDescription || clean(job?.description)) || !clean(job?.location)) {
+  // A description that's actually bot-challenge/security-verification
+  // boilerplate (e.g. "Performing security verification...") is not
+  // substantive job content, even though it's non-empty text -- treat it the
+  // same as a missing description here too (issue #130).
+  const hasUsableDescription = (job?.hasDescription || Boolean(clean(job?.description))) && !isChallengeDescription(job?.description)
+  if (!hasUsableDescription || !clean(job?.location)) {
     badges.push({ kind: 'warn', label: 'Missing Metadata' })
   }
   if (job?.datePosted && !datePosted) badges.push({ kind: 'warn', label: 'Posting date suppressed', detail: 'The supplied posting date was invalid or in the future.' })
