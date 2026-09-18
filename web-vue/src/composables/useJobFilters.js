@@ -290,8 +290,15 @@ function cleanDepartment(dept) {
   return s
 }
 
-// Extracts "City, ST" from raw location strings like "Campus - Philadelphia, PA"
-function extractCity(location) {
+// Extracts "City, ST" from raw location strings like "Campus - Philadelphia, PA".
+// `college` lets this reject a placeholder location that's just the
+// institution's own name plus a state suffix ("Wilson Community College,
+// NC", "SUNY Cortland, NY") — those aren't real cities, even when they don't
+// contain an obvious institution word like "university"/"college" (see
+// issue #120). Institutions actually named after their own city (Santa
+// Clara University → "Santa Clara, CA") are exact-string-compared against
+// `college`, not token-matched, so they aren't caught by this.
+export function extractCity(location, college) {
   if (!location) return null
   const parts = String(location).split(' - ')
   const candidate = parts[parts.length - 1].trim()
@@ -302,6 +309,7 @@ function extractCity(location) {
   const lower = cityPart.toLowerCase()
   if (INSTITUTION_WORDS.some((w) => lower.includes(w))) return null
   if (cityPart.split(/\s+/).length > 4) return null
+  if (college && candidate.toLowerCase() === `${clean(college)}, ${statePart}`.toLowerCase()) return null
   return `${cityPart}, ${statePart}`
 }
 
@@ -357,7 +365,7 @@ function normalizeJob(job) {
     source: job?.source || null,
     college,
     location: job?.location || null,
-    city: extractCity(job?.location),
+    city: extractCity(job?.location, job?.college),
     department,
     description: job?.description || null,
     summary: job?.summary || null,
