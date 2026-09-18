@@ -19,3 +19,9 @@ test("canonicalizes 'St. Norbert College' to the IPEDS spelling (issue #119)", (
   assert.equal(isInstitutionAlias("St. Norbert College"), true);
   assert.equal(canonicalInstitutionName("Saint Norbert College"), "Saint Norbert College");
 });
+
+test("canonicalizes Trine's 'Regional/Non-Traditional Campuses' label (issue #119)", () => {
+  assert.equal(canonicalInstitutionName("Trine University-Regional/Non-Traditional Campuses"), "Trine University");
+  assert.equal(isInstitutionAlias("Trine University-Regional/Non-Traditional Campuses"), true);
+  assert.equal(canonicalInstitutionName("Trine University"), "Trine University");
+});

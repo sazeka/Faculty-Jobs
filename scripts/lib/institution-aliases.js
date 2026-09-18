@@ -112,6 +112,13 @@ const ALIASES = new Map(
     // institution (same Workday career site, same postings — see issue
     // #119); "Saint Norbert College" is the IPEDS-official spelling.
     ["St. Norbert College", "Saint Norbert College"],
+    // Same for Trine's "Regional/Non-Traditional Campuses" label: verified
+    // 35 of 35 of its postings also appear under the main "Trine
+    // University" label with identical URLs. "Trine University" has the
+    // stronger IPEDS/verification signal (coverage_source set, confidence
+    // 1); the Regional/Non-Traditional entry has a history of repeated
+    // broken career-link checks.
+    ["Trine University-Regional/Non-Traditional Campuses", "Trine University"],
   ].map(([alias, canonical]) => [key(alias), canonical])
 );
 
