@@ -194,8 +194,12 @@ function main() {
     let title = job.title;
     const handFix = TITLE_FIXES_BY_URL.get(job.url);
     if (handFix) {
+      // Idempotency guard: only count/apply this as a fix when the title
+      // doesn't already match (a rerun against a base where this record was
+      // already fixed -- e.g. by a prior pass of this same script -- must not
+      // re-report it as freshly fixed).
+      if (handFix !== title) titlesHandFixed += 1;
       title = handFix;
-      titlesHandFixed += 1;
     } else if (COLLEGE_NAME_TRUNCATION_COLLEGES.has(job.college)) {
       const truncated = truncateTitleAtEmbeddedCollegeName(title, job.college);
       if (truncated !== title) {

@@ -15,7 +15,7 @@ import { deriveCoverageStatus, deriveJobPresenceStatus } from "./lib/institution
 import { canonicalInstitutionName } from "./lib/institution-aliases.js";
 import { institutionMetadataOverride } from "./lib/institution-metadata-overrides.js";
 import { isSuspiciousSyntheticCareerUrl } from "./lib/institution-audit.js";
-import { appendUniqueInstitutionNote } from "./lib/institution-notes.js";
+import { appendUniqueInstitutionNote, dedupeNotesText } from "./lib/institution-notes.js";
 import { isCareerLinkQuarantineApplicable } from "./lib/career-link-quarantine.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -295,7 +295,9 @@ function main() {
         coverage_source: urls.coverage_source,
         last_seen_job_count: count,
         last_checked_at: new Date().toISOString(),
-        notes: prev.notes || "Present in jobs data but missing from explicit campus config.",
+        // Self-heal any duplicate sentences already carried forward on prev.notes
+        // (issue #161) even though this branch doesn't append anything new.
+        notes: dedupeNotesText(prev.notes) || "Present in jobs data but missing from explicit campus config.",
       })
     );
   }
@@ -324,7 +326,9 @@ function main() {
         // attribute jobs to campuses that do not have their own config row.
         last_seen_job_count: Number(prev.last_seen_job_count || 0),
         last_checked_at: new Date().toISOString(),
-        notes: prev.notes || "Preserved from previous master snapshot.",
+        // Self-heal any duplicate sentences already carried forward on prev.notes
+        // (issue #161) even though this branch doesn't append anything new.
+        notes: dedupeNotesText(prev.notes) || "Preserved from previous master snapshot.",
       }, {
         // Shared system scrapers emit member-campus names without requiring a
         // duplicate standalone scraper config or campus-specific career URL.
