@@ -2,9 +2,9 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { createHash } from "crypto";
 import { buildListingIndex } from "./lib/jobs-listing-index.js";
 import { buildFullTextSearchIndex } from "./lib/jobs-search-index.js";
+import { attachCanonicalIds } from "./lib/canonical-id.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,27 +41,8 @@ function writeCompactJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value)}\n`, "utf8");
 }
 
-function sha1Hex(value) {
-  return createHash("sha1").update(String(value || "")).digest("hex");
-}
-
-function normalizeKeyPart(value) {
-  return clean(value).toLowerCase();
-}
-
-function attachCanonicalIds(jobs) {
-  return jobs.map((job) => {
-    const title = normalizeKeyPart(job?.titleClean || job?.title || "");
-    const college = normalizeKeyPart(job?.college || "");
-    const dept = normalizeKeyPart(job?.department || "");
-    const state = normalizeKeyPart(job?.state || job?.source || "");
-    const source = normalizeKeyPart(job?.source || "");
-    const url = normalizeKeyPart(job?.url || "");
-    const canonicalGroupId = clean(job?.canonicalGroupId) || `grp_${sha1Hex([title, college, dept, state].join("|")).slice(0, 16)}`;
-    const canonicalJobId = clean(job?.canonicalJobId) || `job_${sha1Hex([canonicalGroupId, source, url].join("|")).slice(0, 16)}`;
-    return { ...job, canonicalGroupId, canonicalJobId };
-  });
-}
+// Canonical-ID hash formula lives in ./lib/canonical-id.js (issue #135) --
+// shared with scripts/scrape-to-json.js so the two never drift apart.
 
 function buildJobsChunks(sourcePath, outDir) {
   if (!fs.existsSync(sourcePath)) return;
