@@ -450,6 +450,70 @@ test("applies verified institution-specific title conventions as a last resort",
   );
 });
 
+test("does not treat a department-overview faculty headcount as a position-track signal", () => {
+  // CSU Fort Collins SMTD's boilerplate "department overview" sentence states the
+  // CURRENT SIZE of the department, not the track of the posted position -- nine
+  // live "Open Pool" Instructor postings were incorrectly stored as
+  // tenureTrack: true purely off this sentence.
+  assert.equal(
+    classifyTenureTrack({
+      college: "Colorado State University-Fort Collins",
+      title: "Applied Music Instructors - Open Pool",
+      description:
+        "The School of Music, Theatre, and Dance (SMTD) at Colorado State University empowers students. SMTD has 46 tenured and tenure-track faculty as well as 55 contract, continuing and adjunct faculty. There are currently over 550 students in SMTD.",
+    }),
+    // The CSU institution-policy rule below resolves this to false; the point of
+    // this assertion is that it is NOT true.
+    false
+  );
+  // The same shape appears verbatim at other institutions (Texas A&M, Virginia
+  // Tech, UMass Lowell, and others), so it is not CSU-specific.
+  for (const description of [
+    "The Department has 30 tenured and tenure-track faculty, modern research facilities, and a vibrant graduate program.",
+    "The Department of Finance, Insurance and Law has 19 tenured and tenure-track faculty members and 800 undergraduate students.",
+    "It currently has 19 tenured/tenure-track faculty and 7 instructional academic staff serving approximately 1000 students.",
+    // The second enumerated clause here ("22 academic professional track faculty
+    // members") must not leak through as a false NON-tenure signal either.
+    "with approximately 55 tenured/tenure-track faculty, 22 academic professional track faculty members",
+  ]) {
+    assert.equal(classifyTenureTrack({ description }), null, description);
+  }
+  // A genuine per-position statement elsewhere in the same description still
+  // wins -- the aggregate clause is stripped, not the whole description.
+  assert.equal(
+    classifyTenureTrack({
+      description:
+        "This is a full-time, tenured/tenure-track faculty position. Our Clinical Nutrition Service has 1 tenure-track clinical nutritionist and one licensed veterinary technician.",
+    }),
+    true
+  );
+});
+
+test("applies the CSU Fort Collins Instructor-rank institution policy", () => {
+  for (const title of [
+    "Applied Music Instructors - Open Pool",
+    "Dance Instructors - Open Pool",
+    "Marching Band Instructor - Open Pool",
+    "Music Education Instructor (Evergreen)",
+    "Theatre Instructor - Open Pool",
+  ]) {
+    assert.equal(
+      classifyTenureTrack({ college: "Colorado State University-Fort Collins", title }),
+      false,
+      title
+    );
+  }
+  // A title also naming a Professor rank is genuinely ambiguous about which rank
+  // the hire lands at, so it is NOT matched by the Instructor-only policy.
+  assert.equal(
+    classifyTenureTrack({
+      college: "Colorado State University-Fort Collins",
+      title: "Instructor/Assistant/Associate Professor in Livestock Veterinary Services",
+    }),
+    null
+  );
+});
+
 test("applies Colorado State, Morgan State, Northeastern, and Ball State institution-specific conventions", () => {
   // CSU-Fort Collins: Faculty Manual Section E limits both Tenured and
   // Tenure-Track appointments to the assistant/associate/professor ranks, so

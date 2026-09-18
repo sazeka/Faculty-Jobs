@@ -37,6 +37,34 @@ function insertConcatenationBoundaries(text) {
 // those three colleges were sitting unrecognized for exactly this reason.
 const CLEARLY_NON_TENURE_TITLE_RE = /\b(?:adjunct|visiting|post[\s-]?doc(?:toral)?|temporary|part\s*-?\s*time|professor\s+of\s+practice)\b/i;
 
+// Many postings include a boilerplate "department overview" sentence stating the
+// CURRENT SIZE of the department, not the track of the position being posted --
+// e.g. "SMTD has 46 tenured and tenure-track faculty as well as 55 contract,
+// continuing and adjunct faculty" (CSU Fort Collins), "The Department has 30
+// tenured and tenure-track faculty..." (Texas A&M), "...with approximately 55
+// tenured/tenure-track faculty, 22 academic professional track faculty members"
+// (Virginia Tech). This phrasing is common across many institutions, not
+// institution-specific. The bare "tenured"/"tenure-track" words inside it were
+// being read as an explicit signal for the position itself (verified: nine CSU
+// Fort Collins SMTD "Open Pool" instructor postings were stored as
+// tenureTrack: true purely off this sentence, even though CSU's Faculty Manual
+// defines the Instructor rank as never tenure-track). Strip this
+// verb+headcount+"faculty" shape before testing for a signal either way -- a
+// genuine per-position statement never takes this "has N ... faculty" form, it
+// uses phrasing like "this is a tenure-track appointment" instead (see TENURE_RE
+// above), so stripping it does not cost us any real signal. The trailing
+// repeating group also absorbs a second enumerated headcount clause in the same
+// sentence (e.g. Virginia Tech's "...55 tenured/tenure-track faculty, 22
+// academic professional track faculty members") -- without it, that second
+// clause's bare "professional track" would itself read as a false NON-tenure
+// signal for the position.
+const AGGREGATE_FACULTY_COUNT_CLAUSE = "(?:approximately\\s+)?\\d+(?:[\\s,\\/-]+(?:and\\s+|or\\s+)?(?:[A-Za-z][A-Za-z-]*|\\d+)){0,6}[\\s,\\/-]+faculty\\b(?:\\s+members?\\b)?";
+const AGGREGATE_FACULTY_COUNT_RE = new RegExp(
+  `\\b(?:currently\\s+)?(?:has|have|comprises?|comprised\\s+of|consists?\\s+of|consisting\\s+of|with)\\s+${AGGREGATE_FACULTY_COUNT_CLAUSE}` +
+    `(?:\\s*(?:,|and|or)\\s*${AGGREGATE_FACULTY_COUNT_CLAUSE})*`,
+  "gi"
+);
+
 // Structural ATS-metadata signals, not prose -- these are labeled fields a
 // scraper concatenates into the description text verbatim (e.g. NEOGOV's
 // "Salary $89.24 Hourly ... Job Type Part-Time Faculty ..."), not free-text
@@ -119,7 +147,11 @@ function matchInstitutionPolicy(job) {
 }
 
 function explicitSignals(raw) {
-  const text = insertConcatenationBoundaries(String(raw || ""));
+  const withConcatenationBoundaries = insertConcatenationBoundaries(String(raw || ""));
+  // Remove department-composition headcount asides ("has 46 tenured and
+  // tenure-track faculty...") before testing either direction -- they describe
+  // the department, not the posted position.
+  const text = withConcatenationBoundaries.replace(AGGREGATE_FACULTY_COUNT_RE, " ");
   const nonTenure = NON_TENURE_RE.test(text);
   // Remove negative/alternative phrases before testing for a positive tenure
   // signal; otherwise "non-tenure-track" also matches "tenure-track".
