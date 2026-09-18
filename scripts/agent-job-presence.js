@@ -34,7 +34,7 @@ import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 import { attachUniversityCoverage } from "./lib/site-coverage.js";
 import { computeInstitutionOpeningStats } from "./lib/institution-opening-stats.js";
 import { partitionExpiredJobs } from "./lib/post-expiration.js";
-import { repairKnownInstitutionAttribution } from "./lib/institution-attribution.js";
+import { repairKnownInstitutionAttribution, repairKnownSourceOwnership } from "./lib/institution-attribution.js";
 import { normalizeTenureTrack } from "../web-vue/src/lib/jobClassification.js";
 import {
   classifySourceLink,
@@ -238,7 +238,8 @@ for (const id of purgedIds) {
 
 const cleanedJobs = deadlinePartition.kept
   .filter((job) => !missingIds.has(job.canonicalJobId))
-  .map(repairKnownInstitutionAttribution);
+  .map(repairKnownInstitutionAttribution)
+  .map(repairKnownSourceOwnership);
 // Stamp each surviving job with firstSeen from the presence ledger so the
 // frontend can sort "Most recent" (newest postings first) without a per-job
 // posting date from the source.
@@ -254,7 +255,7 @@ for (const job of cleanedJobs) {
   const safeDate = sanitizePostingDate(job.datePosted, new Date(`${today}T12:00:00Z`));
   if (job.datePosted && !safeDate) flags.add("posting-date-suppressed");
   job.datePosted = safeDate;
-  job.tenureTrack = normalizeTenureTrack(job.tenureTrack, job.titleClean || job.title || "");
+  job.tenureTrack = normalizeTenureTrack(job.tenureTrack, job.titleClean || job.title || "", job.college || "");
   if (institutionTitleConflict(job.titleClean || job.title || "", job.college)) flags.add("institution-title-conflict");
   const linkQuality = classifySourceLink(job.url);
   if (linkQuality !== "direct") flags.add(`${linkQuality}-source-link`);
