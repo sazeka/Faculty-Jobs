@@ -23,6 +23,7 @@ import { jobSlug, kebab } from "./lib/job-slug.js";
 import { buildInstitutionIndex, lookupInstitution } from "./lib/institution-lookup.js";
 import { MIN_STATE_JOBS, MIN_INSTITUTION_JOBS, DISCIPLINE_SKIP } from "./lib/hub-thresholds.js";
 import { getDiscipline, inferState, normalizeSystemCollege } from "../web-vue/src/composables/useJobFilters.js";
+import { derivePositionTypes, deriveTenureTrack, deriveEmploymentType } from "./lib/job-posting-classification.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -60,23 +61,18 @@ function fmtDate(iso) {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
+// Position type(s) and tenure status come from the same title-aware
+// normalizers the interactive app uses (web-vue/src/lib/jobClassification.js,
+// via scripts/lib/job-posting-classification.js) rather than the raw
+// job.positionType/job.tenureTrack fields, so static pages agree with the
+// app's own filters and detail drawer (issue #136).
 function tagList(job) {
-  const tags = [];
-  if (job.positionType && job.positionType !== "Other") tags.push(job.positionType);
-  if (job.tenureTrack === "tenure-track") tags.push("Tenure-Track");
-  else if (job.tenureTrack === "non-tenure-track") tags.push("Non-Tenure");
+  const tags = [...derivePositionTypes(job)];
+  const tenureTrack = deriveTenureTrack(job);
+  if (tenureTrack === true) tags.push("Tenure-Track");
+  else if (tenureTrack === false) tags.push("Non-Tenure");
   if (job.discipline) tags.push(job.discipline);
   return tags;
-}
-
-// Google's employmentType enum has no "fixed-term" value, so short-term
-// academic appointments are tagged FULL_TIME + TEMPORARY rather than invented
-// a non-standard value.
-function deriveEmploymentType(job) {
-  const pt = String(job.positionType || "").toLowerCase();
-  if (pt === "adjunct") return "PART_TIME";
-  if (pt === "visiting" || pt === "postdoctoral" || pt === "research") return ["FULL_TIME", "TEMPORARY"];
-  return "FULL_TIME";
 }
 
 function isRemote(job) {
