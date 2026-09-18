@@ -245,6 +245,14 @@ test("detects institution-name-as-city location placeholders (issue #120)", () =
   // A campus name that's a real, distinct place should not be flagged.
   assert.equal(isPlaceholderLocation("Remote", "Harvard University"), false);
   assert.equal(isPlaceholderLocation("", "Harvard University"), false);
+  // "Main Campus - City, ST" is a legitimate convention for a real satellite
+  // campus, even when the college name itself embeds that campus suffix
+  // (so the whole location string would otherwise equal `${college}, ${state}`).
+  assert.equal(isPlaceholderLocation("Saint Joseph's University - Lancaster, PA", "Saint Joseph's University - Lancaster"), false);
+  // Institutions without "university"/"college"/etc. in the name (SUNY
+  // campuses, seminaries) are still real placeholder candidates.
+  assert.equal(isPlaceholderLocation("SUNY Cortland, NY", "SUNY Cortland"), true);
+  assert.equal(isPlaceholderLocation("Midwestern Baptist Theological Seminary, MO", "Midwestern Baptist Theological Seminary"), true);
 });
 
 test("scorePost flags a placeholder location as a completeness reason, distinct from missing_location", () => {
