@@ -49,16 +49,28 @@ export function getPositionTypes(title) {
   return [primary]
 }
 
-export function normalizeTenureTrack(value, title = '') {
+export function normalizeTenureTrack(value, title = '', college = '') {
   // Explicit title language is the most visible source evidence and wins over
   // stale or contradictory enrichment. Professor rank alone is never enough.
   const rawTitle = String(title || '').toLowerCase()
-  if (/\bnon[\s-]?tenure|\bntt\b/.test(rawTitle)) return false
+  // "Without tenure" is unambiguous regardless of institution -- there is no
+  // reading of that phrase in a faculty title that means tenure-track.
+  if (/\bnon[\s-]?tenure|\bntt\b|\bwithout\s+tenure\b/.test(rawTitle)) return false
+  // Bare "WOT" (no parens) is University of Washington's own title convention
+  // for "without tenure" appointments (ap.washington.edu documents WOT as a
+  // distinct, explicitly non-tenure track) -- issue #145 found 11 UW records
+  // titled e.g. "Assistant Professor WOT" stuck at tenureTrack: true because
+  // only the parenthesized "(WOT)" form was recognized anywhere in the
+  // pipeline. Scoped to UW so an unrelated "WOT" acronym elsewhere is never
+  // misread as tenure evidence.
+  const isUw = /\buniversity of washington\b/i.test(String(college || ''))
+  if (isUw && /\bwot\b/.test(rawTitle)) return false
   if (/tenure[\s-]?track|tenure[\s-]?stream|tenure[\s-]?eligible|\btenured\b/.test(rawTitle)) return true
 
   if (value === true || value === false) return value
   const status = String(value || '').toLowerCase().trim()
-  if (/\bnon[\s-]?tenure|\bntt\b/.test(status)) return false
+  if (/\bnon[\s-]?tenure|\bntt\b|\bwithout\s+tenure\b/.test(status)) return false
+  if (isUw && /\bwot\b/.test(status)) return false
   if (/tenure[\s-]?track|tenure[\s-]?stream|tenure[\s-]?eligible|\btenured\b/.test(status)) return true
   return null
 }

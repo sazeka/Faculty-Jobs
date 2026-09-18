@@ -48,3 +48,34 @@ test("normalizes stored tenure strings and explicit title language", () => {
   assert.equal(normalizeTenureTrack(true, "Clinical Professor (Non-Tenured Track)"), false);
   assert.equal(normalizeTenureTrack(false, "Tenure-Track Assistant Professor"), true);
 });
+
+// Issue #145: eleven live University of Washington "WOT" (without tenure)
+// appointments were stored as tenureTrack: true. UW's own title convention
+// uses bare "WOT", parenthesized "(WOT)", and spelled-out "without tenure" --
+// all three must be recognized as explicit non-tenure evidence and must win
+// over a contradictory stored `true`.
+test("recognizes University of Washington WOT appointments as non-tenure regardless of stored value (issue #145)", () => {
+  assert.equal(
+    normalizeTenureTrack(true, "Assistant Professor WOT – Department of Laboratory Medicine and Pathology", "University of Washington"),
+    false
+  );
+  assert.equal(
+    normalizeTenureTrack(true, "Assistant or Associate Professor (WOT) in Radiology, Emergency and Trauma", "University of Washington"),
+    false
+  );
+  assert.equal(
+    normalizeTenureTrack(
+      true,
+      "Assistant, Associate or Full Professor without tenure - UW Pediatrics - Gastroenterology & Hepatology",
+      "University of Washington"
+    ),
+    false
+  );
+  // "without tenure" is unambiguous regardless of institution.
+  assert.equal(normalizeTenureTrack(true, "Lecturer without tenure", "Some Other University"), false);
+  // Bare "WOT" is scoped to UW -- an unrelated "WOT" acronym elsewhere must
+  // not be misread as tenure evidence.
+  assert.equal(normalizeTenureTrack(true, "Assistant Professor WOT", "Some Other University"), true);
+  // A plain UW title with no WOT/without-tenure language is unaffected.
+  assert.equal(normalizeTenureTrack(true, "Assistant Professor of Biology", "University of Washington"), true);
+});
