@@ -2,7 +2,18 @@ export function getPositionType(title) {
   const t = String(title || '').toLowerCase()
   if (t.includes('assistant professor')) return 'Assistant Professor'
   if (t.includes('associate professor')) return 'Associate Professor'
-  if (t.includes('full professor') || (/(^|\W)professor(\W|$)/.test(t) && !t.includes('assistant') && !t.includes('associate'))) return 'Full Professor'
+  // "Professor" combined with an explicit appointment modifier (Adjunct,
+  // Visiting, Research, Clinical, Teaching, Professor of Practice) should
+  // resolve to that modifier, not the generic Full Professor fallback below
+  // — e.g. "Adjunct Professor of X" was incorrectly resolving to Full
+  // Professor (issue #117). Skip the fallback here and let the modifier
+  // checks further down (unchanged, same order as before this fix) pick it
+  // up, so non-professor titles ("Adjunct Instructor", "Visiting Lecturer",
+  // "Postdoctoral Research Fellow", ...) keep their existing precedence.
+  const hasProfessorModifier =
+    t.includes('adjunct') || t.includes('visiting') || t.includes('research') || t.includes('clinical') ||
+    t.includes('teaching professor') || t.includes('professor of practice')
+  if (!hasProfessorModifier && (t.includes('full professor') || (/(^|\W)professor(\W|$)/.test(t) && !t.includes('assistant') && !t.includes('associate')))) return 'Full Professor'
   if (t.includes('lecturer')) return 'Lecturer'
   if (t.includes('instructor')) return 'Instructor'
   if (t.includes('visiting')) return 'Visiting Faculty'
@@ -10,6 +21,7 @@ export function getPositionType(title) {
   if (/\bpost[\s-]?doc(?:toral)?\b/.test(t)) return 'Postdoctoral'
   if (t.includes('research')) return 'Research Faculty'
   if (t.includes('clinical')) return 'Clinical Faculty'
+  if (t.includes('teaching professor') || t.includes('professor of practice')) return 'Teaching Faculty'
   return 'Faculty'
 }
 

@@ -23,9 +23,14 @@ const MONTH_YEAR = `${MONTH}\\s+\\d{4}`;
 const VALUE = `(${FULL}|${SEASON}|${MONTH_YEAR})`;
 
 // Each label must anchor on a START/BEGIN-of-appointment phrase so we don't grab
-// "review begins", "application deadline", or "starting salary".
+// "review begins", "application deadline", or "starting salary". The negative
+// lookbehind on "start date" rejects Workday's administrative/HR metadata
+// fields — "Recruiting Start Date", "Posting Start Date", "Application Start
+// Date", "Review Start Date" — which describe the hiring process, not the
+// faculty appointment (issue #118).
+const NOT_ADMIN_START = "(?<!recruiting\\s)(?<!posting\\s)(?<!job\\s+posting\\s)(?<!application\\s)(?<!review\\s)(?<!screening\\s)";
 const LABELS = [
-  `(?:anticipated|expected|projected|targeted?|tentative|preferred|desired|earliest)?\\s*(?:position |employment |appointment |faculty )?start(?:ing)?\\s+date\\b[\\s\\w]{0,14}?(?:is|of|:|will be|would be)?\\s*`,
+  `(?:anticipated|expected|projected|targeted?|tentative|preferred|desired|earliest)?\\s*(?:position |employment |appointment |faculty )?${NOT_ADMIN_START}start(?:ing)?\\s+date\\b[\\s\\w]{0,14}?(?:is|of|:|will be|would be)?\\s*`,
   `(?:appointment|position|employment|the\\s+position)\\s+(?:is\\s+expected\\s+to\\s+|will\\s+|to\\s+)?(?:begin|start|commence)s?\\b[\\s\\w]{0,12}?(?:on|in|:)?\\s*`,
 ];
 
