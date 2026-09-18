@@ -20,6 +20,26 @@ test("uses the Full Professor label for full and open-rank postings", () => {
   );
 });
 
+test("modified professor titles resolve to their modifier, not Full Professor (issue #117)", () => {
+  assert.equal(getPositionType("Adjunct Professor of Art & Art History (Studio Art)"), "Adjunct");
+  assert.equal(
+    getPositionType("Clinical Professor - Director of Environmental Law & Policy Clinic"),
+    "Clinical Faculty"
+  );
+  assert.equal(getPositionType("Research Professor"), "Research Faculty");
+  assert.equal(getPositionType("Visiting Professor"), "Visiting Faculty");
+  assert.equal(getPositionType("Teaching Professor of Mathematics"), "Teaching Faculty");
+  assert.equal(getPositionType("Assistant, Associate, or Full Professor of Practice – Management"), "Teaching Faculty");
+  assert.deepEqual(getPositionTypes("Adjunct Professor of History"), ["Adjunct"]);
+});
+
+test("unmodified professor titles and non-professor titles keep their existing precedence", () => {
+  assert.equal(getPositionType("Professor of History"), "Full Professor");
+  assert.equal(getPositionType("Adjunct Instructor of Biology"), "Instructor");
+  assert.equal(getPositionType("Visiting Lecturer in English"), "Lecturer");
+  assert.equal(getPositionType("Postdoctoral Research Fellow"), "Postdoctoral");
+});
+
 test("normalizes stored tenure strings and explicit title language", () => {
   assert.equal(normalizeTenureTrack("tenure-track"), true);
   assert.equal(normalizeTenureTrack("non-tenure-track"), false);
