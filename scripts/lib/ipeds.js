@@ -171,6 +171,7 @@ export function mapIpedsRows(rows) {
       homepage_url: normalizeHomepageUrl(
         firstField(row, ["WEBADDR", "webaddr"])
       ),
+      city: firstField(row, ["CITY", "city"]) || null,
       state: firstField(row, ["STABBR", "stabbr", "STATE", "state"]) || null,
       sector: sectorRaw ? toInt(sectorRaw) : null,
       level: mapLevel(levelRaw),

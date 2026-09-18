@@ -89,3 +89,76 @@ test('normalizeLocationByCollege does not corrupt Salem State University records
   })
   assert.equal(job.location, 'Salem, MA')
 });
+
+// Regression tests for https://github.com/sazeka/Faculty-Jobs/issues/120
+//
+// getCollegeLocationFallback() previously only resolved via the ~200-entry
+// hand-curated COLLEGE_LOCATION_DEFAULTS map, so the vast majority of
+// institutions using the "College Name, ST" placeholder convention (Wilson
+// Community College, Medical College of Wisconsin, Harvard University,
+// Tennessee Technological University — none of which were in that curated
+// map) had no fallback available. It now also consults a second tier built
+// from data/institutions-master.json's IPEDS-derived `city` field, matched
+// by exact institution name only (same discipline as #127).
+test('resolves institutions not in the curated map via the IPEDS-derived city fallback (issue #120)', () => {
+  assert.equal(getCollegeLocationFallback('Wilson Community College'), 'Wilson, NC')
+  assert.equal(getCollegeLocationFallback('Medical College of Wisconsin'), 'Milwaukee, WI')
+  assert.equal(getCollegeLocationFallback('Harvard University'), 'Cambridge, MA')
+  assert.equal(getCollegeLocationFallback('Tennessee Technological University'), 'Cookeville, TN')
+});
+
+// normalizeLocationByCollege() previously trusted normalizeUsLocation()'s
+// parse of any string matching "<text>, ST" as already being a real "City,
+// ST" location — which meant a placeholder like "Wilson Community College,
+// NC" (the institution's own name plus a state suffix, with no real city)
+// was returned unchanged instead of ever reaching the campus-city fallback
+// below. It must now catch this case before normalizeUsLocation runs.
+test('normalizeLocationByCollege resolves a "College Name, ST" placeholder to the real campus city', () => {
+  const wilson = normalizeLocationByCollege({
+    college: 'Wilson Community College',
+    location: 'Wilson Community College, NC',
+    source: 'NC',
+  })
+  assert.equal(wilson.location, 'Wilson, NC')
+
+  const mcw = normalizeLocationByCollege({
+    college: 'Medical College of Wisconsin',
+    location: 'Medical College of Wisconsin, WI',
+    source: 'WI',
+  })
+  assert.equal(mcw.location, 'Milwaukee, WI')
+
+  const harvard = normalizeLocationByCollege({
+    college: 'Harvard University',
+    location: 'Harvard University, MA',
+    source: 'MA Private',
+  })
+  assert.equal(harvard.location, 'Cambridge, MA')
+});
+
+test('normalizeLocationByCollege leaves a legitimate real city/state location untouched', () => {
+  const job = normalizeLocationByCollege({
+    college: 'Wilson Community College',
+    location: 'Rocky Mount, NC',
+    source: 'NC',
+  })
+  assert.equal(job.location, 'Rocky Mount, NC')
+});
+
+test('normalizeLocationByCollege leaves a remote role untouched', () => {
+  const job = normalizeLocationByCollege({
+    college: 'Harvard University',
+    location: 'Remote',
+    source: 'MA Private',
+  })
+  assert.equal(job.location, 'Remote')
+});
+
+test('normalizeLocationByCollege leaves an institution with no known campus city unresolved', () => {
+  const job = normalizeLocationByCollege({
+    college: 'Totally Fictional University',
+    location: 'Totally Fictional University, XX',
+    source: 'XX',
+  })
+  assert.equal(job.location, 'Totally Fictional University, XX')
+});
