@@ -2,7 +2,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { scorePost } from './lib/post-quality.js'
+import { scorePost, isPlaceholderLocation } from './lib/post-quality.js'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const jobsPayload = JSON.parse(fs.readFileSync(path.join(ROOT, 'public', 'jobs.json'), 'utf8'))
@@ -44,6 +44,10 @@ const report = {
     departmentMissing: jobs.filter((job) => !String(job.department || '').trim()).length,
     locationPresent: jobs.filter((job) => String(job.location || job.state || '').trim()).length,
     locationMissing: jobs.filter((job) => !String(job.location || job.state || '').trim()).length,
+    // A nonempty `location` that's just the institution name plus a state
+    // suffix isn't a real city — counted separately so it doesn't inflate
+    // locationPresent's implied completeness (issue #120).
+    locationPlaceholder: jobs.filter((job) => isPlaceholderLocation(job.location, job.college)).length,
     postingDatePresent: jobs.filter((job) => job.datePosted).length,
     explicitDeadlinePresent: jobs.filter((job) => job.closeDate).length,
     rollingDeadlinePresent: jobs.filter((job) => job.openUntilFilled).length,

@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   confirmedNonFacultyReason,
   deterministicStratifiedSample,
+  isPlaceholderLocation,
   scoreCatalog,
   scorePost,
   stableJobId,
@@ -224,6 +225,32 @@ test("stable IDs and deterministic samples are repeatable and stratified", () =>
   assert.deepEqual(first, second);
   assert.equal(new Set(first).size, 3);
   assert.equal(stableJobId(jobs[0]), stableJobId({ ...jobs[0], title: "Changed title" }));
+});
+
+test("detects institution-name-as-city location placeholders (issue #120)", () => {
+  assert.equal(isPlaceholderLocation("Wilson Community College, NC", "Wilson Community College"), true);
+  assert.equal(isPlaceholderLocation("Harvard University, MA", "Harvard University"), true);
+  assert.equal(isPlaceholderLocation("Medical College of Wisconsin, WI", "Medical College of Wisconsin"), true);
+  // Real cities, including one that happens to share a word with the college name.
+  assert.equal(isPlaceholderLocation("Milwaukee, WI", "Medical College of Wisconsin"), false);
+  assert.equal(isPlaceholderLocation("Cambridge, MA", "Harvard University"), false);
+  assert.equal(isPlaceholderLocation("Tempe, AZ", "Arizona State University"), false);
+  // A campus name that's a real, distinct place should not be flagged.
+  assert.equal(isPlaceholderLocation("Remote", "Harvard University"), false);
+  assert.equal(isPlaceholderLocation("", "Harvard University"), false);
+});
+
+test("scorePost flags a placeholder location as a completeness reason, distinct from missing_location", () => {
+  const placeholder = scorePost(job({ location: "Wilson Community College, NC", college: "Wilson Community College" }), { today: TODAY });
+  assert.ok(placeholder.reasons.some((r) => r.code === "placeholder_location"));
+  assert.ok(!placeholder.reasons.some((r) => r.code === "missing_location"));
+
+  const realLocation = scorePost(job({ location: "Milwaukee, WI", college: "Medical College of Wisconsin" }), { today: TODAY });
+  assert.ok(!realLocation.reasons.some((r) => r.code === "placeholder_location"));
+
+  const missing = scorePost(job({ location: "", state: "", college: "Example University" }), { today: TODAY });
+  assert.ok(missing.reasons.some((r) => r.code === "missing_location"));
+  assert.ok(!missing.reasons.some((r) => r.code === "placeholder_location"));
 });
 
 test("human labels produce a precision summary and ignore unfinished labels", () => {
