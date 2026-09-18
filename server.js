@@ -1245,7 +1245,10 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Contra Costa Community College District Office", type: "generic", url: "https://www.4cd.edu/" },
   { campus: "Copper Mountain Community College", type: "schooljobs", url: "https://www.schooljobs.com/careers/cmccd" },
   { campus: "Cosumnes River College", type: "generic", url: "https://www.crc.losrios.edu/" },
-  { campus: "Crafton Hills College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sbccd", locationFilter: "Crafton Hills College" },
+  // SBCCD's board renders a single-campus posting's location as just its
+  // CITY on some cards, not the full college name (issue #133) -- Yucaipa is
+  // Crafton Hills' own city, distinct from San Bernardino Valley's.
+  { campus: "Crafton Hills College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sbccd", locationFilter: ["Crafton Hills College", "Yucaipa, CA"] },
   // Was pointing at the bare homepage. Real ATS is NEOGOV/schooljobs
   // (single-institution tenant). Verified live: 26 postings, several
   // faculty-titled ("Automotive Technology Part-Time Instructor Pool",
@@ -1417,8 +1420,11 @@ const CA_PRIVATE_CAMPUSES = [
   { campus: "Riverside City College", type: "peopleadmin", url: "https://jobs.rccd.edu/postings/search?1541%5B%5D=2&query_organizational_tier_1_id%5B%5D=756&commit=Search" },
   { campus: "Norco College", type: "peopleadmin", url: "https://jobs.rccd.edu/postings/search?1541%5B%5D=2&query_organizational_tier_1_id%5B%5D=755&commit=Search" },
   // SBCCD uses NEOGOV for both colleges; the location field is rendered on
-  // every card and is already enforced by scrapeSchoolJobsAs.
-  { campus: "San Bernardino Valley College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sbccd", locationFilter: "San Bernardino Valley College" },
+  // every card and is enforced by scrapeSchoolJobsAs. That field is
+  // sometimes just the campus's CITY rather than the full college name
+  // (issue #133) -- San Bernardino is SBV's own city, distinct from
+  // Crafton Hills' Yucaipa.
+  { campus: "San Bernardino Valley College", type: "schooljobs", url: "https://www.schooljobs.com/careers/sbccd", locationFilter: ["San Bernardino Valley College", "San Bernardino, CA"] },
   { campus: "Notre Dame de Namur University", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=fde135bd-bf6a-4ebd-965f-43a1d08a2241&ccId=19000101_000001&lang=en_US" },
   { campus: "Touro University California", type: "icims", url: "https://tuccareers-touro.icims.com/" },
   { campus: "Yosemite Community College District Office", type: "peopleadmin", url: "https://yosemite.peopleadmin.com/" },
@@ -11893,10 +11899,22 @@ async function scrapeNjCsod(
 
 // SchoolJobs pagination sometimes uses javascript:void(0) for Next.
 // We click and wait for results signature to change.
+// locationFilter may be a single string or an array of alternatives (OR
+// semantics) -- SBCCD's shared board (issue #133) renders a single-campus
+// posting's location as just the campus's CITY ("Yucaipa, CA", "San
+// Bernardino, CA") rather than the full college name on roughly a third of
+// postings, so a caller needs to match on either identifier for the same
+// campus. Genuinely dual-campus postings ("San Bernardino Valley College
+// and/or Crafton Hills College, CA") are left matching both campuses'
+// filters, same as before -- that's the source's own stated ambiguity, not
+// a scraper bug.
 export function matchesSchoolJobsCampusScope(job, locationFilter = null, contentFilter = null) {
   const location = clean(job?.location || "").toLowerCase();
   const content = clean(job?.cardText || "").toLowerCase();
-  if (locationFilter && !location.includes(clean(locationFilter).toLowerCase())) return false;
+  if (locationFilter) {
+    const filters = Array.isArray(locationFilter) ? locationFilter : [locationFilter];
+    if (!filters.some((f) => location.includes(clean(f).toLowerCase()))) return false;
+  }
   if (contentFilter && !content.includes(clean(contentFilter).toLowerCase())) return false;
   return true;
 }
