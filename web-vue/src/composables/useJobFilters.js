@@ -157,10 +157,27 @@ export const DISCIPLINE_RULES = [
   ]},
 ]
 
+// Most terms deliberately rely on plain substring matching so they also
+// catch inflected/compound forms — 'math' → 'mathematical', 'health' →
+// 'healthcare', 'medicine' → 'paramedicine', 'radiolog' → 'neuroradiology',
+// etc. — so that behavior stays as-is here. The single reported exception is
+// 'art' (issue #115): as a bare 3-letter term it also matched mid-word
+// inside completely unrelated words ('department', 'part-time',
+// 'artificial'), which substring matching can't tell apart from a real
+// match. 'art' is a complete word on its own, so it doesn't need that
+// compound-catching behavior — require it to appear as a whole word instead
+// (tolerant of a trailing plural "s" so "arts" still matches).
+const ART_TERM_REGEX = /\barts?\b/i
+
+function matchesTerm(hay, term) {
+  if (term === 'art') return ART_TERM_REGEX.test(hay)
+  return hay.includes(term)
+}
+
 export function getDiscipline(job) {
   const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
   for (const rule of DISCIPLINE_RULES) {
-    if (rule.subdisciplines.some((sub) => sub.terms.some((t) => hay.includes(t)))) return rule.label
+    if (rule.subdisciplines.some((sub) => sub.terms.some((t) => matchesTerm(hay, t)))) return rule.label
   }
   return 'Other'
 }
@@ -173,7 +190,7 @@ export function getSubdiscipline(job) {
   if (!rule) return null
   const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
   for (const sub of rule.subdisciplines) {
-    if (sub.terms.some((t) => hay.includes(t))) return sub.label
+    if (sub.terms.some((t) => matchesTerm(hay, t))) return sub.label
   }
   return null
 }
