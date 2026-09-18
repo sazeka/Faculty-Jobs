@@ -12,6 +12,7 @@ import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 import { filterExpiredDeadlineCache } from "./lib/post-expiration.js";
 import { confirmedNonFacultyReason } from "./lib/post-quality.js";
 import { loadReviewedExclusions, reviewedExclusionReason } from "./lib/post-quality-exclusions.js";
+import { consolidateSystemUmbrellaDuplicates } from "./lib/duplicate-url-consolidation.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -329,6 +330,17 @@ function canonicalizeJobUrls(data) {
   data = titled.data;
   if (titled.changed > 0) {
     console.log(`✂️  Normalized ${titled.changed} job titles`);
+  }
+
+  // Drop system/umbrella-labeled copies that are the exact same posting
+  // (same URL, same title) as a specific-campus record, BEFORE canonical
+  // IDs are assigned -- otherwise the two copies get different
+  // canonicalGroupIds (title|college|dept|state includes college) and no
+  // downstream consolidation ever recognizes them as duplicates (issue #119).
+  const umbrellaDedup = consolidateSystemUmbrellaDuplicates(data.jobs);
+  if (umbrellaDedup.dropped.length > 0) {
+    data = { ...data, jobs: umbrellaDedup.jobs, count: umbrellaDedup.jobs.length };
+    console.log(`🏛️  Consolidated ${umbrellaDedup.dropped.length} system/umbrella-label duplicate URL(s) (issue #119)`);
   }
 
   const canonicalIds = addCanonicalIds(data);
