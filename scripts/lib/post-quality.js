@@ -48,6 +48,34 @@ function explicitInstitutionInTitle(title) {
   return null
 }
 
+// A `location` that's just the institution's own name plus a state suffix
+// ("Wilson Community College, NC", "Harvard University, MA") is a
+// placeholder, not a real city — it passes a plain non-empty check, which
+// undercounts how many jobs actually lack a usable location (issue #120).
+// This is an exact-string check (not a token-overlap one) because several
+// real institutions are named after — and legitimately located in — a city
+// of the same name (Santa Clara University → "Santa Clara, CA", University
+// of Houston → "Houston, TX", Radford University → "Radford, VA", Villanova
+// University → "Villanova, PA"): those are correct, real locations, and a
+// looser "location's words are a subset of college's words" check would
+// wrongly flag every one of them as a placeholder.
+//
+// Some locations legitimately use a "Main Campus - City, ST" convention
+// (e.g. "Saint Joseph's University - Lancaster, PA" for a real satellite
+// campus) where the college name itself happens to embed that campus
+// suffix, making the *whole* location string equal `${college}, ${state}`
+// even though a real city follows the dash — so only the last " - "
+// segment is compared, matching how the frontend already parses this.
+export function isPlaceholderLocation(location, college) {
+  const col = clean(college)
+  if (!col) return false
+  const segments = clean(location).split(' - ')
+  const last = clean(segments[segments.length - 1])
+  const stateMatch = last.match(/,\s*([A-Za-z]{2})$/)
+  if (!stateMatch) return false
+  return last.toLowerCase() === `${col}, ${stateMatch[1]}`.toLowerCase()
+}
+
 function institutionConflict(title, college) {
   // A few scrapers truncate a trailing institution phrase at "University of".
   // Treat that as incomplete page text, not as evidence naming another school.
@@ -206,6 +234,7 @@ export function scorePost(job, { today = new Date() } = {}) {
   else if (description.length < 80) addReason(reasons, dimensions, 'thin_description', 'info', 'completeness', 20, 'Description is unusually short.')
   if (!department) addReason(reasons, dimensions, 'missing_department', 'info', 'completeness', 10, 'Department is missing.')
   if (!location && !clean(job?.state)) addReason(reasons, dimensions, 'missing_location', 'info', 'completeness', 15, 'Location is missing.')
+  else if (isPlaceholderLocation(location, job?.college)) addReason(reasons, dimensions, 'placeholder_location', 'info', 'completeness', 15, 'Location is just the institution name, not a real city.')
   if (!closeDate && !job?.openUntilFilled) addReason(reasons, dimensions, 'missing_deadline', 'info', 'completeness', 5, 'Deadline is not provided.')
 
   const duplicateCount = Number(job?.duplicateCount || 1)
