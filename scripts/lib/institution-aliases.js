@@ -108,6 +108,10 @@ const ALIASES = new Map(
     ["SUNY Jamestown Community College", "Jamestown Community College"],
     ["SUNY Schenectady County Community College", "Schenectady County Community College"],
     ["UNC School of the Arts", "University of North Carolina School of the Arts"],
+    // "St. Norbert College" and "Saint Norbert College" are the same
+    // institution (same Workday career site, same postings — see issue
+    // #119); "Saint Norbert College" is the IPEDS-official spelling.
+    ["St. Norbert College", "Saint Norbert College"],
   ].map(([alias, canonical]) => [key(alias), canonical])
 );
 

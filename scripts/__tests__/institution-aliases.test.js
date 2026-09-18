@@ -13,3 +13,9 @@ test("leaves canonical and unknown names unchanged", () => {
   assert.equal(canonicalInstitutionName("Pomona College"), "Pomona College");
   assert.equal(isInstitutionAlias("Pomona College"), false);
 });
+
+test("canonicalizes 'St. Norbert College' to the IPEDS spelling (issue #119)", () => {
+  assert.equal(canonicalInstitutionName("St. Norbert College"), "Saint Norbert College");
+  assert.equal(isInstitutionAlias("St. Norbert College"), true);
+  assert.equal(canonicalInstitutionName("Saint Norbert College"), "Saint Norbert College");
+});
