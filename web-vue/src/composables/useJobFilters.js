@@ -132,7 +132,11 @@ export const DISCIPLINE_RULES = [
     { label: 'Criminal Justice & Criminology',    terms: ['criminology', 'criminal justice', 'forensic', 'corrections', 'policing', 'homeland security'] },
   ]},
   { label: 'Mathematics & Statistics', subdisciplines: [
-    { label: 'Mathematics',                   terms: ['mathematics', 'math', 'applied math', 'calculus', 'algebra', 'analysis'] },
+    // 'analysis' alone used to sit here as a bare term, so substring matching
+    // caught unrelated fields like "applied behavior analysis", "business
+    // analysis", "data analysis" — see issue #116. Only the specific
+    // mathematical-analysis subfields imply Mathematics.
+    { label: 'Mathematics',                   terms: ['mathematics', 'math', 'applied math', 'calculus', 'algebra', 'real analysis', 'complex analysis', 'functional analysis', 'numerical analysis', 'harmonic analysis', 'mathematical analysis'] },
     { label: 'Statistics & Data Analytics',   terms: ['statistics', 'actuarial', 'probability', 'data analytics'] },
   ]},
   { label: 'Natural Sciences', subdisciplines: [
