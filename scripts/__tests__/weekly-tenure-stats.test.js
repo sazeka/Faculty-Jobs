@@ -450,6 +450,73 @@ test("applies verified institution-specific title conventions as a last resort",
   );
 });
 
+test("applies Colorado State, Morgan State, Northeastern, and Ball State institution-specific conventions", () => {
+  // CSU-Fort Collins: Faculty Manual Section E limits both Tenured and
+  // Tenure-Track appointments to the assistant/associate/professor ranks, so
+  // Instructor (and Senior/Master Instructor) can never be tenure-track.
+  for (const title of ["Instructor - Open Pool - Communication Studies", "Instructor: VM710 - Foundations, Bandaging Lab", "Instructors - Open Pool"]) {
+    assert.equal(classifyTenureTrack({ college: "Colorado State University-Fort Collins", title }), false, title);
+  }
+  // A compound "Instructor/.../Professor" open-rank search is genuinely
+  // ambiguous (could land at either rank) and stays unclassified, same as
+  // the Troy University "Lecturer/...Professor" precedent.
+  assert.equal(
+    classifyTenureTrack({
+      college: "Colorado State University-Fort Collins",
+      title: "Instructor/Sr. Instructor/Assistant Professor, Veterinary Communications",
+    }),
+    null
+  );
+
+  // Morgan State: Faculty Handbook Sec. 2.0 names Lecturer directly as a
+  // "non-tenure-track rank."
+  assert.equal(
+    classifyTenureTrack({ college: "Morgan State University", title: "Full-Time Lecturer - Supply Chain Management" }),
+    false
+  );
+
+  // Northeastern: a Senior Vice Provost presentation lists Teaching
+  // Professor, Clinical Professor, Professor of the Practice, Academic
+  // Specialist, Full-time Lecturer, Co-op Coordinator, and Research
+  // Professor as the full-time non-tenure-track faculty types.
+  for (const title of [
+    "Assistant/Associate Teaching Professor - MS in Human Resources Management",
+    "Professor of the Practice & Director - Engineering Design Program",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Northeastern University", title }), false, title);
+  }
+  // A plain title with no qualifier is Northeastern's tenure-line series and
+  // stays unclassified, as does an unranked "Research Fellow" title.
+  assert.equal(
+    classifyTenureTrack({ college: "Northeastern University", title: "Assistant Professor, Modern Korean History" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Northeastern University", title: "Distinguished Research Fellow, Khoury College of Computer Sciences" }),
+    null
+  );
+
+  // Ball State: Faculty and Professional Personnel Handbook Sec.
+  // 16.1.4.1.1 names Lecturer directly as "non-tenure-line."
+  assert.equal(
+    classifyTenureTrack({
+      college: "Ball State University",
+      title: "Assistant Lecturer of Early Childhood, Youth, and Family Studies (Child Life)",
+    }),
+    false
+  );
+  // The compound "Lecturer/...Teaching Professor" form stays unclassified --
+  // Ball State's Teaching Professor series isn't independently confirmed
+  // non-tenure in this handbook edition, unlike Lecturer.
+  assert.equal(
+    classifyTenureTrack({
+      college: "Ball State University",
+      title: "Assistant Lecturer/Assistant Teaching Professor of Entrepreneurship",
+    }),
+    null
+  );
+});
+
 test("applies USG, UNLV, Virginia Tech, and Florida institution-specific conventions", () => {
   // USG (collegePattern): Board of Regents-defined non-tenure ranks (Academic
   // Professional, Lecturer, Public Service, Clinical, Research Scientist,
