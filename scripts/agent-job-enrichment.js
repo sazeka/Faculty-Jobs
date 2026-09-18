@@ -64,7 +64,17 @@ const MAX         = Number(args['max'] || process.env.AI_ENRICH_MAX || 500);
 const BATCH_SIZE  = Math.min(Number(args['batch-size'] || 25), 50);
 const CONCURRENCY = Math.min(Number(args['concurrency'] || process.env.AI_ENRICH_CONCURRENCY || 1), 8);
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'localhost:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b';
+// qwen3.5:9b (9.7B params, 262K context vs. qwen2.5:7b's much smaller window)
+// -- confirmed on the Dell's 8GB laptop GPU that a cold load takes ~235s
+// (vision-tower tensor conversion, unused by this text-only task, dominates
+// that one-time cost) but generation itself is ~26-31 tok/s once warm, same
+// ballpark as qwen2.5:7b. Requires "think": false below -- without it, this
+// model burns hundreds of chain-of-thought tokens per request before its
+// actual answer (measured: 843 tokens / 32s to answer a single trivial
+// 2-field JSON question), which would multiply out badly across real
+// 25-job batches. With think disabled, response time and token count are
+// back in line with qwen2.5:7b.
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen3.5:9b';
 const AI_BACKEND = process.env.AI_BACKEND || 'ollama';
 // A hung/overloaded backend (e.g. Ollama swapping a 7B model on an 8GB
 // Jetson, or thrashing under memory pressure) can accept the connection and
@@ -74,8 +84,13 @@ const AI_BACKEND = process.env.AI_BACKEND || 'ollama';
 // this step either) hangs forever. Same bug class as the 2026-07-27 5-day
 // hang already fixed in agent-job-descriptions.js -- that fix never made it
 // to this file. Ollama gets a generous budget since local inference on
-// constrained hardware is genuinely slow.
-const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS || 180_000);
+// constrained hardware is genuinely slow. Bumped from 180s to 300s: a cold
+// qwen3.5:9b load alone measured ~235s on the Dell, which would already
+// trip the old 180s timeout on the very first batch of a run, before the
+// model even finished loading -- wasting that whole batch on a doomed
+// bisect-and-retry cascade (see processBatch below) rather than actually
+// erroring on a genuinely stuck backend.
+const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS || 300_000);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -201,12 +216,68 @@ function parseResponse(text) {
 
 // ── Ollama API ────────────────────────────────────────────────────────────────
 
+// Grammar-constrains qwen3.5:9b's output to actually be a JSON array of
+// per-item objects. A bare format:"json" string is *too* loose here: for a
+// single-item batch it satisfied "valid JSON" by emitting one bare object
+// instead of a 1-element array (observed live -- alignEnrichmentResults then
+// saw a non-array and every single-item retry failed with "expected 1
+// result, got 0"). An explicit schema pins the top level to an array.
+// positionType deliberately has no enum -- coercePositionType already maps
+// free-form answers like "Clinical Instructor" or "Postdoctoral Fellow" onto
+// the valid set, and constraining generation to the enum directly would
+// prevent the model from saying what it actually means when nothing in the
+// enum fits well.
+const ENRICHMENT_RESPONSE_SCHEMA = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      itemId: { type: 'integer' },
+      discipline: { type: ['string', 'null'] },
+      tenureTrack: { type: 'string', enum: ['tenure-track', 'non-tenure-track', 'unknown'] },
+      tenureEvidence: { type: ['string', 'null'] },
+      positionType: { type: 'string' },
+    },
+    required: ['itemId', 'discipline', 'tenureTrack', 'tenureEvidence', 'positionType'],
+  },
+};
+
 function callOllama(batch) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
       model: OLLAMA_MODEL,
       messages: [{ role: 'user', content: buildPrompt(batch) }],
       stream: false,
+      // Disable qwen3.5's reasoning trace -- see the OLLAMA_MODEL comment
+      // above. Ollama silently ignores this field for models without a
+      // "thinking" capability (e.g. qwen2.5:7b), so it's safe to always send.
+      think: false,
+      // Without an explicit cap, a full 25-item batch's JSON array response
+      // was silently truncated mid-array on qwen3.5:9b -- every single batch
+      // failed alignEnrichmentResults' length check on the first attempt and
+      // fell through to the bisect-and-retry path (observed live: batches 1-5
+      // of a real run all mismatched at 25, then succeeded cleanly once split
+      // to ~12-13). Root cause, confirmed by dumping the raw Ollama response
+      // (done_reason: "length" after only ~71 output tokens): Ollama's
+      // runtime num_ctx defaults to far less than qwen3.5:9b's 262K
+      // architectural max, and a 25-item batch's prompt (title + up to 600
+      // chars of description each) alone already used ~4,025 of that tiny
+      // default window, leaving almost nothing for the output. Raising
+      // num_predict alone did not fix it -- num_ctx must be raised too.
+      // 32768 covers even a max-size 50-item batch's prompt (BATCH_SIZE is
+      // capped at 50 above) plus an 8192-token completion with headroom.
+      //
+      // Fixing num_ctx surfaced a second, distinct bug: with qwen3.5:9b's
+      // default temperature of 1.0 (meant for open-ended chat, not
+      // structured extraction), it would drop the "},{" separator between
+      // consecutive array items and merge all 25 objects into one object
+      // with 25 repeated keys -- syntactically valid JSON (last key wins)
+      // but semantically wrong, so alignEnrichmentResults saw an array of
+      // length 1 and mismatched every time. A schema-constrained format
+      // (see ENRICHMENT_RESPONSE_SCHEMA above) plus a low temperature fixes
+      // both the shape and the wandering.
+      format: ENRICHMENT_RESPONSE_SCHEMA,
+      options: { num_predict: 8192, num_ctx: 32768, temperature: 0.1 },
     });
 
     const [hostname, port] = OLLAMA_HOST.split(':');
@@ -228,6 +299,9 @@ function callOllama(batch) {
           try {
             const parsed = JSON.parse(data);
             const text = parsed?.message?.content?.trim();
+            if (process.env.DEBUG_ENRICH) {
+              fs.writeFileSync(`/tmp/enrich-debug-${Date.now()}.json`, JSON.stringify({ text, parsed }, null, 2));
+            }
             if (!text) { reject(new Error(JSON.stringify(parsed))); return; }
             resolve(parseResponse(text));
           } catch (e) {

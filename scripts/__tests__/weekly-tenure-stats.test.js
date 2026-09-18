@@ -517,6 +517,125 @@ test("applies Colorado State, Morgan State, Northeastern, and Ball State institu
   );
 });
 
+test("applies USG, UNLV, Virginia Tech, and Florida institution-specific conventions", () => {
+  // USG (collegePattern): Board of Regents-defined non-tenure ranks (Academic
+  // Professional, Lecturer, Public Service, Clinical, Research Scientist,
+  // Librarian) extended from the existing University of Georgia rule to the
+  // rest of the University System of Georgia.
+  for (const college of ["University of North Georgia", "Georgia College & State University", "Fort Valley State University"]) {
+    assert.equal(classifyTenureTrack({ college, title: "Lecturer of Psychology" }), false, college);
+  }
+  // A plain title at a USG institution stays unclassified, same as UGA.
+  assert.equal(
+    classifyTenureTrack({ college: "University of North Georgia", title: "Assistant Professor of Biology" }),
+    null
+  );
+  // The compound "Lecturer/[Assistant/Associate] Professor" form is genuinely
+  // ambiguous (mixes a non-tenure rank with a potentially tenure-track one)
+  // and is deliberately excluded, same as the Troy University precedent.
+  assert.equal(
+    classifyTenureTrack({
+      college: "Middle Georgia State University",
+      title: "Lecturer/Assistant Professor of Aviation & Air Traffic Control Specialist",
+    }),
+    null
+  );
+  // "Lecturer/Senior Lecturer" has no such ambiguity (both alternatives are
+  // non-tenure) and still matches.
+  assert.equal(
+    classifyTenureTrack({ college: "University of North Georgia", title: "Lecturer/Senior Lecturer of Nursing, BSN" }),
+    false
+  );
+  // Georgia State University is deliberately excluded from the collegePattern
+  // (a live Perimeter College "Clinical" posting resolved tenure-track via an
+  // explicit description signal, showing GSU doesn't reliably follow the
+  // system-wide convention), so the same title there stays unclassified.
+  assert.equal(
+    classifyTenureTrack({ college: "Georgia State University", title: "Clinical Assistant Professor of Radiology" }),
+    null
+  );
+
+  // UNLV: University Bylaws Ch. III name "faculty in residence" as
+  // non-tenure-track in the same breath as tenure-track faculty.
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Nevada, Las Vegas",
+      title: "Assistant Professor-in-Residence, Criminal Justice",
+    }),
+    false
+  );
+  // A plain title with no "in Residence"/"Clinical"/"Research"/"Lecturer"
+  // qualifier (common on UNLV med-school postings) stays unclassified.
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Nevada, Las Vegas",
+      title: "Geriatrics, Assistant/Associate/Professor, Internal Medicine",
+    }),
+    null
+  );
+
+  // Virginia Tech: Faculty Handbook Ch. 5/6 define Clinical, Collegiate,
+  // Instructor, and Research Professor as non-tenure-track series.
+  for (const title of ["Collegiate Assistant Professor of Forestry", "Instructor", "Research Assistant Professor", "Open Rank - Research Faculty"]) {
+    assert.equal(classifyTenureTrack({ college: "Virginia Tech", title }), false, title);
+  }
+  // A plain title with no Clinical/Collegiate/Research qualifier is VT's
+  // tenure-track series and stays unclassified.
+  assert.equal(
+    classifyTenureTrack({ college: "Virginia Tech", title: "Assistant/Associate Professor of Mammalian Conservation Ecology" }),
+    null
+  );
+
+  // Florida: 2021 Faculty Senate Resolution renamed the non-tenure Lecturer
+  // series to "Instructional Professor" and confirms Clinical/Research
+  // Professor are also non-tenure-track series.
+  assert.equal(
+    classifyTenureTrack({ college: "University of Florida", title: "Assistant Instructional Professor" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Florida",
+      title: "Clinical Assistant or Associate Professor of Veterinary Clinical Pathology",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "University of Florida", title: "Assistant Professor in American Politics" }),
+    null
+  );
+});
+
+test("recognizes ATS structural metadata (hourly salary, labeled non-tenure Job Type) as a non-tenure signal", () => {
+  // NEOGOV/schooljobs.com-style descriptions concatenate labeled fields
+  // verbatim -- an hourly rate (rather than an annual salary schedule) is
+  // definitional of part-time/adjunct employment, never tenure-track.
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      title: "French (Foreign Languages) Instructor Applicant Pool",
+      description:
+        "French (Foreign Languages) Instructor Applicant Pool Salary $89.24 Hourly Location Santa Clarita, CA Job Type Part-Time Faculty",
+    }),
+    { value: false, evidence: "description-job-type" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      title: "Noncredit Business (Non-Vocational) Instructor Applicant Pool",
+      description: "Salary $89.24 Hourly Location Santa Clarita, CA Job Type Non-Credit Instructor",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ description: "Salary $62.16 - $71.40 Hourly Job Type Staff Part Time" }),
+    false
+  );
+  // A real tenure-track salary schedule (annual, not hourly) is unaffected.
+  assert.equal(
+    classifyTenureTrack({ description: "Salary $75,000.00 - $95,000.00 Annually Job Type Full-Time Faculty" }),
+    null
+  );
+});
+
 test("leaves conflicting appointment language unclassified", () => {
   assert.equal(classifyTenureTrack({
     description: "Depending on qualifications, appointment may be eligible for tenure or without tenure.",

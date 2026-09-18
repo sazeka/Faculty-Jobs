@@ -13,3 +13,15 @@ test("leaves canonical and unknown names unchanged", () => {
   assert.equal(canonicalInstitutionName("Pomona College"), "Pomona College");
   assert.equal(isInstitutionAlias("Pomona College"), false);
 });
+
+test("canonicalizes 'St. Norbert College' to the IPEDS spelling (issue #119)", () => {
+  assert.equal(canonicalInstitutionName("St. Norbert College"), "Saint Norbert College");
+  assert.equal(isInstitutionAlias("St. Norbert College"), true);
+  assert.equal(canonicalInstitutionName("Saint Norbert College"), "Saint Norbert College");
+});
+
+test("canonicalizes Trine's 'Regional/Non-Traditional Campuses' label (issue #119)", () => {
+  assert.equal(canonicalInstitutionName("Trine University-Regional/Non-Traditional Campuses"), "Trine University");
+  assert.equal(isInstitutionAlias("Trine University-Regional/Non-Traditional Campuses"), true);
+  assert.equal(canonicalInstitutionName("Trine University"), "Trine University");
+});
