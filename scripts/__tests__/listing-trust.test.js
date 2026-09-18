@@ -3,6 +3,7 @@ import test from 'node:test'
 
 import {
   classifySourceLink,
+  explicitInstitutionInTitle,
   institutionTitleConflict,
   sanitizePostingDate,
   summarizeCatalog,
@@ -44,6 +45,77 @@ test('flags explicit institution contradictions in dash-delimited titles', () =>
   assert.equal(
     institutionTitleConflict('Adjunct Instructor - High School College Partnership', 'University of Missouri-Kansas City'),
     null,
+  )
+})
+
+// Issue #140: explicitInstitutionInTitle() used to stop at the first bare
+// "University" token, so "... Department of Sciences and Mathematics
+// University of Washington" was truncated to the invented name "...
+// Mathematics University" -- which obviously never matches the real college
+// "University of Washington", producing a false conflict warning. Anchoring
+// on the full "University of X" construction fixes all four confirmed
+// examples from the issue.
+test('does not flag University of Washington department-phrase titles as institution conflicts (issue #140)', () => {
+  assert.equal(
+    institutionTitleConflict(
+      'Assistant Professor (Teaching Track) - Organic Chemistry Department of Sciences and Mathematics University of Washington',
+      'University of Washington'
+    ),
+    null
+  )
+  assert.equal(
+    institutionTitleConflict(
+      'Assistant Professor (Tenure Track) - Psychology Department of Social Sciences University of Washington',
+      'University of Washington'
+    ),
+    null
+  )
+  assert.equal(
+    institutionTitleConflict(
+      'Postdoctoral Scholar – Scientific Program Manager, Paros Geohazards Center School of Oceanography University of Washington',
+      'University of Washington'
+    ),
+    null
+  )
+})
+
+test('does not flag University of Nebraska at Omaha or University of Alabama at Birmingham department-phrase titles (issue #140)', () => {
+  assert.equal(
+    institutionTitleConflict(
+      'Assistant/Associate Professor – Department of Biomechanics, Cardiovascular Science focus College of Education, Health, and Human Sciences University of Nebraska at Omaha',
+      'University of Nebraska at Omaha'
+    ),
+    null
+  )
+  assert.equal(
+    institutionTitleConflict(
+      'Fully remote, hybrid and/or in-person Open-Rank - Faculty Radiologist Position in Abdominal Imaging at The University of Alabama at Birmingham',
+      'University of Alabama at Birmingham'
+    ),
+    null
+  )
+})
+
+test('does not flag bot-challenge-contaminated University of Houston titles (issue #140)', () => {
+  assert.equal(
+    institutionTitleConflict(
+      "Let's confirm you are human - of Computer Science at the University of Houston invites applications for a Postdoctoral R",
+      'University of Houston'
+    ),
+    null
+  )
+})
+
+test('still extracts the full "University of X" name, not a truncated fallback (issue #140)', () => {
+  assert.equal(
+    explicitInstitutionInTitle('Academic Faculty - Cancer Research - University of Washington'),
+    'University of Washington'
+  )
+  // A title truncated right after "University of" (a corrupted scrape) has no
+  // usable institution evidence in that segment.
+  assert.equal(
+    explicitInstitutionInTitle('Restorative Neurosurgeon — Assistant Professor, WOT Neurological Surgery University of'),
+    null
   )
 })
 
