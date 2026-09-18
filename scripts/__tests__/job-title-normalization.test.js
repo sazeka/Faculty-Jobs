@@ -5,6 +5,7 @@ import {
   normalizeJobTitle,
   truncateTitleAtEmbeddedCollegeName,
   isPlausibleCityStateLocation,
+  recoverLabelPrefixedLocation,
 } from "../../server.js";
 
 test("removes embedded and bracketed requisition codes without losing specialization", () => {
@@ -112,4 +113,51 @@ test("isPlausibleCityStateLocation accepts real city/state pairs, including Wash
   assert.equal(isPlausibleCityStateLocation("Washington, DC"), true);
   assert.equal(isPlausibleCityStateLocation("Not A Real State, ZZ"), false);
   assert.equal(isPlausibleCityStateLocation(""), false);
+});
+
+// A bug related to, but distinct from, #137: these locations DO end in a
+// real, correct "City, ST", but a job-label or employment-status fragment
+// was glued onto the front with no separator (HACC's "... Faculty Exempt" /
+// "... Staff Non exempt", University of Toledo's "... Health Science Campus
+// College"). recoverLabelPrefixedLocation() strips the unambiguous marker
+// and recovers the real trailing city.
+test("recoverLabelPrefixedLocation strips HACC's Exempt/Non-exempt FLSA-status markers", () => {
+  assert.equal(recoverLabelPrefixedLocation("MATH Faculty Exempt Gettysburg, PA"), "Gettysburg, PA");
+  assert.equal(recoverLabelPrefixedLocation("Civil Construction Technology Faculty Exempt York, PA"), "York, PA");
+  assert.equal(recoverLabelPrefixedLocation("Dental Hygiene Faculty Exempt Harrisburg, PA"), "Harrisburg, PA");
+  assert.equal(recoverLabelPrefixedLocation("Adjunct Faculty - Chemistry Faculty Exempt Harrisburg, PA"), "Harrisburg, PA");
+  assert.equal(recoverLabelPrefixedLocation("Instructor - GED Staff Non exempt Harrisburg, PA"), "Harrisburg, PA");
+  assert.equal(recoverLabelPrefixedLocation("Industrial Maintenance Faculty Staff Non exempt Harrisburg, PA"), "Harrisburg, PA");
+});
+
+test("recoverLabelPrefixedLocation strips University of Toledo's 'Health Science Campus College' marker", () => {
+  assert.equal(recoverLabelPrefixedLocation("Full Professor Health Science Campus College Toledo, OH"), "Toledo, OH");
+  assert.equal(recoverLabelPrefixedLocation("Professor of Medicine Health Science Campus College Toledo, OH"), "Toledo, OH");
+  assert.equal(recoverLabelPrefixedLocation("Pathologists' Assistant Health Science Campus College Toledo, OH"), "Toledo, OH");
+});
+
+test("recoverLabelPrefixedLocation strips a Full-Time/Part-Time employment-status marker", () => {
+  assert.equal(recoverLabelPrefixedLocation("Welding Instructor Full-Time Carrollton, KY"), "Carrollton, KY");
+});
+
+test("recoverLabelPrefixedLocation refuses to strip a bare Faculty/Staff marker (too ambiguous to recover by rule)", () => {
+  // Kenyon's real city sits right after "Faculty", same shape as the safe
+  // cases above -- but "Faculty" alone isn't a safe marker (see the UWF case
+  // below), so these are left for hand verification instead of a guess.
+  assert.equal(recoverLabelPrefixedLocation("Tenure-track Biology Faculty Gambier, OH"), null);
+  assert.equal(recoverLabelPrefixedLocation("Environmental Studies Political Science Faculty Gambier, OH"), null);
+  // UWF's "Usha Kundu, M.D." is a campus building, not a city -- "MD" is
+  // being misread as Maryland the same way "MD, DO" was in #137. If a bare
+  // "Faculty" marker were stripped here the leftover "Usha Kundu, MD" would
+  // itself pass isPlausibleCityStateLocation and be silently accepted as a
+  // (wrong) real place, which is exactly the failure mode this guards against.
+  assert.equal(recoverLabelPrefixedLocation("Tenured and Tenure-Track Faculty Usha Kundu, MD"), null);
+  assert.equal(recoverLabelPrefixedLocation("Non-Tenure-Track Faculty Usha Kundu, MD"), null);
+});
+
+test("recoverLabelPrefixedLocation returns null for markerless prefixes, already-plausible locations, and non-matching shapes", () => {
+  assert.equal(recoverLabelPrefixedLocation("Nursing Instructor - LPN Carrollton, KY"), null);
+  assert.equal(recoverLabelPrefixedLocation("Tulsa, OK"), null); // already plausible, nothing to recover
+  assert.equal(recoverLabelPrefixedLocation("MD, DO"), null); // no city/state shape survives stripping
+  assert.equal(recoverLabelPrefixedLocation(""), null);
 });
