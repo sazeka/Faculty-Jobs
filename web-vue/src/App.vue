@@ -23,12 +23,15 @@ const MapPanel = defineAsyncComponent(() => import('./components/MapPanel.vue'))
 const REPORT_ISSUE_URL = import.meta.env.VITE_REPORT_ISSUE_URL || 'https://github.com/sazeka/Faculty-Jobs/issues/new'
 const baseUrl = import.meta.env.BASE_URL || '/'
 
-const { jobs, scrapedAt, loadError, loadJobs, searchFullText, loadJobDescription, searchTermMatches, searchIndexLoading, qualitySummary, newJobsCount, newThisWeek, siteStats, hadPriorVisit } = useJobsData()
+const { jobs, scrapedAt, loadError, loadJobs, searchFullText, loadJobDescription, searchTermMatches, searchIndexLoading, qualitySummary, newJobsCount, newThisWeek, removedThisWeek, siteStats, hadPriorVisit } = useJobsData()
 
 // Prefer the global, daily-computed "new this week" figure; fall back to the
 // per-visitor count only if site-stats.json hasn't loaded.
 const heroNew = computed(() => (newThisWeek.value != null ? newThisWeek.value : newJobsCount.value))
 const heroNewLabel = computed(() => (newThisWeek.value != null ? 'new to Atlas this week' : 'new since last visit'))
+// "Removed" has no per-visitor equivalent, so it only ever comes from the
+// global site-stats.json figure; show a dash until that loads.
+const heroRemoved = computed(() => removedThisWeek.value)
 
 // Hero counts. Once the job chunks load, the computed values are authoritative.
 // Until then (first visit, cold cache) fall back to site-stats.json — a tiny
@@ -438,7 +441,13 @@ async function reportBadListing(job) {
           <p>A transparent, independent catalog of faculty openings across the United States—updated every day and free to search.</p>
           <div class="fa-stat-grid" aria-label="Catalog summary">
             <div class="fa-stat"><div class="fa-stat-val">{{ heroTotal.toLocaleString() }}</div><div class="fa-stat-label">Open roles</div></div>
-            <div class="fa-stat fa-stat--this-week"><div class="fa-stat-val">+{{ heroNew.toLocaleString() }}</div><div class="fa-stat-label">This week</div></div>
+            <div class="fa-stat fa-stat--this-week">
+              <div class="fa-stat-val fa-stat-val--split">
+                <span class="fa-stat-added">+{{ heroNew.toLocaleString() }}</span>
+                <span class="fa-stat-removed">&minus;{{ heroRemoved == null ? '—' : heroRemoved.toLocaleString() }}</span>
+              </div>
+              <div class="fa-stat-label">Added / removed this week</div>
+            </div>
             <div class="fa-stat"><div class="fa-stat-val">{{ heroInstitutions.toLocaleString() }}</div><div class="fa-stat-label">Institutions</div></div>
             <div class="fa-stat fa-stat--no-openings"><div class="fa-stat-val">{{ heroNoOpenings == null ? '—' : heroNoOpenings.toLocaleString() }}</div><div class="fa-stat-label">Institutions with no current openings</div></div>
           </div>
@@ -1348,7 +1357,9 @@ async function reportBadListing(job) {
 }
 .fa-stat-val { font-size: 29px; color: var(--ink); }
 .fa-stat-label { margin-top: 4px; color: var(--ink-3); font-size: 8px; font-weight: 600; letter-spacing: .08em; }
-.fa-stat--this-week .fa-stat-val { color: var(--accent); }
+.fa-stat-val--split { display: flex; align-items: baseline; gap: 8px; }
+.fa-stat--this-week .fa-stat-added { color: var(--accent); }
+.fa-stat--this-week .fa-stat-removed { color: var(--ink-3); font-size: 0.72em; }
 .fa-stat--no-openings .fa-stat-val,
 .fa-stat--no-openings .fa-stat-label { color: var(--ink); }
 .fa-stat--no-openings .fa-stat-label { font-weight: 400; }

@@ -132,7 +132,11 @@ export const DISCIPLINE_RULES = [
     { label: 'Criminal Justice & Criminology',    terms: ['criminology', 'criminal justice', 'forensic', 'corrections', 'policing', 'homeland security'] },
   ]},
   { label: 'Mathematics & Statistics', subdisciplines: [
-    { label: 'Mathematics',                   terms: ['mathematics', 'math', 'applied math', 'calculus', 'algebra', 'analysis'] },
+    // 'analysis' alone used to sit here as a bare term, so substring matching
+    // caught unrelated fields like "applied behavior analysis", "business
+    // analysis", "data analysis" — see issue #116. Only the specific
+    // mathematical-analysis subfields imply Mathematics.
+    { label: 'Mathematics',                   terms: ['mathematics', 'math', 'applied math', 'calculus', 'algebra', 'real analysis', 'complex analysis', 'functional analysis', 'numerical analysis', 'harmonic analysis', 'mathematical analysis'] },
     { label: 'Statistics & Data Analytics',   terms: ['statistics', 'actuarial', 'probability', 'data analytics'] },
   ]},
   { label: 'Natural Sciences', subdisciplines: [
@@ -157,10 +161,27 @@ export const DISCIPLINE_RULES = [
   ]},
 ]
 
+// Most terms deliberately rely on plain substring matching so they also
+// catch inflected/compound forms — 'math' → 'mathematical', 'health' →
+// 'healthcare', 'medicine' → 'paramedicine', 'radiolog' → 'neuroradiology',
+// etc. — so that behavior stays as-is here. The single reported exception is
+// 'art' (issue #115): as a bare 3-letter term it also matched mid-word
+// inside completely unrelated words ('department', 'part-time',
+// 'artificial'), which substring matching can't tell apart from a real
+// match. 'art' is a complete word on its own, so it doesn't need that
+// compound-catching behavior — require it to appear as a whole word instead
+// (tolerant of a trailing plural "s" so "arts" still matches).
+const ART_TERM_REGEX = /\barts?\b/i
+
+function matchesTerm(hay, term) {
+  if (term === 'art') return ART_TERM_REGEX.test(hay)
+  return hay.includes(term)
+}
+
 export function getDiscipline(job) {
   const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
   for (const rule of DISCIPLINE_RULES) {
-    if (rule.subdisciplines.some((sub) => sub.terms.some((t) => hay.includes(t)))) return rule.label
+    if (rule.subdisciplines.some((sub) => sub.terms.some((t) => matchesTerm(hay, t)))) return rule.label
   }
   return 'Other'
 }
@@ -173,7 +194,7 @@ export function getSubdiscipline(job) {
   if (!rule) return null
   const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
   for (const sub of rule.subdisciplines) {
-    if (sub.terms.some((t) => hay.includes(t))) return sub.label
+    if (sub.terms.some((t) => matchesTerm(hay, t))) return sub.label
   }
   return null
 }
@@ -269,8 +290,15 @@ function cleanDepartment(dept) {
   return s
 }
 
-// Extracts "City, ST" from raw location strings like "Campus - Philadelphia, PA"
-function extractCity(location) {
+// Extracts "City, ST" from raw location strings like "Campus - Philadelphia, PA".
+// `college` lets this reject a placeholder location that's just the
+// institution's own name plus a state suffix ("Wilson Community College,
+// NC", "SUNY Cortland, NY") — those aren't real cities, even when they don't
+// contain an obvious institution word like "university"/"college" (see
+// issue #120). Institutions actually named after their own city (Santa
+// Clara University → "Santa Clara, CA") are exact-string-compared against
+// `college`, not token-matched, so they aren't caught by this.
+export function extractCity(location, college) {
   if (!location) return null
   const parts = String(location).split(' - ')
   const candidate = parts[parts.length - 1].trim()
@@ -281,6 +309,7 @@ function extractCity(location) {
   const lower = cityPart.toLowerCase()
   if (INSTITUTION_WORDS.some((w) => lower.includes(w))) return null
   if (cityPart.split(/\s+/).length > 4) return null
+  if (college && candidate.toLowerCase() === `${clean(college)}, ${statePart}`.toLowerCase()) return null
   return `${cityPart}, ${statePart}`
 }
 
@@ -336,7 +365,7 @@ function normalizeJob(job) {
     source: job?.source || null,
     college,
     location: job?.location || null,
-    city: extractCity(job?.location),
+    city: extractCity(job?.location, job?.college),
     department,
     description: job?.description || null,
     summary: job?.summary || null,

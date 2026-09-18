@@ -435,10 +435,66 @@
     },
     {
       "college": "Colorado State University-Fort Collins",
-      "titlePattern": "^(?!.*\\bprofessor\\b).*\\binstructors?\\b",
+      "titlePattern": "^(?!.*\\bProfessor\\b).*\\bInstructors?\\b",
       "value": false,
-      "note": "CSU's Faculty Manual Section E defines faculty rank as Assistant/Associate/Professor for the tenure system; the Instructor rank sits outside that rank structure and is never tenure-track by definition. Scoped to titles that are Instructor-only (excludes any title also naming a Professor rank, e.g. 'Instructor/Assistant/Associate Professor in Livestock Veterinary Services', which is genuinely ambiguous about which rank the hire lands at and is left to other signals). Found via nine School of Music, Theatre and Dance 'Open Pool' Instructor postings that were incorrectly stored as tenure-track=true off a department-overview sentence ('SMTD has 46 tenured and tenure-track faculty...') describing the department's existing headcount, not the posted position -- see the AGGREGATE_FACULTY_COUNT_RE fix in scripts/lib/weekly-tenure-stats.js.",
+      "note": "CSU's Faculty Manual Section E, quoted directly: 'E.2.1.1 Tenured Faculty Appointments... b. It is limited to the ranks of assistant professor, associate professor, and professor' and 'E.2.1.2 Tenure-Track Faculty Appointments... b. It is limited to the ranks of assistant professor, associate professor, and professor' -- i.e. by rank definition alone, the Instructor/Senior Instructor/Master Instructor ranks (listed in E.1's definition of faculty) can never be tenured or tenure-track at CSU, regardless of appointment type. Matches a title containing 'Instructor(s)' anywhere, but only when the title does NOT also contain 'Professor' -- CSU's veterinary school posts open-rank searches like 'Instructor/Sr. Instructor/Assistant Professor' where the candidate could land at either a non-tenure Instructor rank or a tenure-eligible Assistant Professor rank depending on qualifications, the same genuine ambiguity already excluded at Troy University's 'Lecturer/...Professor' compound titles. Note: a cluster of School of Music, Theatre and Dance 'Instructor - Open Pool' postings for explicitly temporary positions are currently misclassified tenure-track upstream (evidence: 'stored') because their description text includes generic department-composition boilerplate ('SMTD has 46 tenured and tenure-track faculty as well as 55 contract, continuing and adjunct faculty') that an earlier signal misreads as describing the posted position -- this rule cannot correct that (institution-policy is checked last, after the earlier signal already resolved the value), and is a separate, pre-existing data-quality issue flagged elsewhere, not something introduced or fixed by this rule.",
       "source": "https://facultycouncil.colostate.edu/faculty-manual-section-e/",
+      "verifiedAt": "2026-09-17"
+    },
+    {
+      "college": "Morgan State University",
+      "titlePattern": "\\bLecturer\\b",
+      "value": false,
+      "note": "Morgan State's Faculty Handbook (Section 2.0, Appointment, Promotion and Tenure), quoted directly: 'The qualifications for appointment to the non-tenure-track rank of Lecturer shall vary according to the nature of the instruction provided.' Appointments to Lecturer are also capped at one fiscal year and 'terminate[ ] without notice automatically at the end of the fiscal year,' consistent with a non-tenure-track appointment. Matches the 'Full-Time Lecturer' title convention used throughout live Morgan State postings.",
+      "source": "https://www.morgan.edu/faculty-handbook/section-2",
+      "verifiedAt": "2026-09-17"
+    },
+    {
+      "college": "Northeastern University",
+      "titlePattern": "\\b(?:Teaching|Clinical|Research)\\s+Professor\\b|\\bProfessor\\s+of\\s+the\\s+Practice\\b|\\bAcademic\\s+Specialist\\b|\\bFull[\\s-]?time\\s+Lecturer\\b|\\bCo-?op\\s+Coordinator\\b",
+      "value": false,
+      "note": "A February 2024 presentation by Northeastern's Senior Vice Provost for Academic Affairs, titled 'Full-Time Non-Tenure Track Faculty Promotion,' quoted directly, lists the 'Types of FT NTT Faculty' as: 'Teaching Professors, Clinical Professors, Academic Specialists, Full-time Lecturers, Professors of the Practice, Co-op Coordinators, Research Professors.' Deliberately does not match a plain 'Assistant/Associate/Professor' with no qualifier (Northeastern's tenure-line series uses the identical unmodified names), nor 'Research Fellow' (a distinct, unranked title not named in this list), which stay correctly unclassified.",
+      "source": "https://provost.northeastern.edu/wp-content/uploads/2024-Preparing-for-FTNTT-Promotion.pdf",
+      "verifiedAt": "2026-09-17"
+    },
+    {
+      "college": "Ball State University",
+      "titlePattern": "^(?!.*\\bProfessor\\b).*\\bLecturer\\b",
+      "value": false,
+      "note": "Ball State's Faculty and Professional Personnel Handbook, Section 16.1.4.1.1, quoted directly: 'The title Lecturer may be used for persons employed as non-tenure-line full-time or part-time faculty who are uniquely qualified to serve the University.' Excludes the compound 'Lecturer/...Teaching Professor' form seen in one live posting ('Assistant Lecturer/Assistant Teaching Professor of Entrepreneurship') since Ball State's own Teaching Professor title series is not independently confirmed as non-tenure in this handbook edition (unlike Lecturer) -- that compound stays correctly unclassified rather than guessed.",
+      "source": "https://www.bsu.edu/-/media/www/departmentalcontent/facprofhandbook/2022-2023-fpph/20222023-handbook-12323.pdf",
+      "verifiedAt": "2026-09-17"
+    },
+    {
+      "collegePattern": "^(?:Abraham Baldwin Agricultural College|Albany State University|College of Coastal Georgia|Dalton State College|Fort Valley State University|Georgia College & State University|Georgia Gwinnett College|Georgia Highlands College|Georgia Southern University|Georgia Southwestern State University|Gordon State College|Middle Georgia State University|University of North Georgia|University of West Georgia|Valdosta State University)$",
+      "titlePattern": "^(?:(?:Senior\\s+)?Academic Professional(?:\\s+Associate)?|(?:Senior\\s+|Principal\\s+)?Lecturer(?!\\s*\\/\\s*(?:Assistant\\s+|Associate\\s+)?Professor)|Public Service (?:Representative|Assistant|Associate)|Senior Public Service Associate|Clinical (?:Instructor|Assistant Professor|Associate Professor|Professor)|(?:Assistant|Associate|Senior) Research Scientist|Librarian (?:I|II|III|IV)|Staff Physician)\\b",
+      "value": false,
+      "note": "Direct extension of the existing University of Georgia rule (see below) to the rest of the University System of Georgia (USG). UGA's own Guidelines for Appointment, Promotion and Tenure state directly: 'The University System of Georgia Board of Regents defines Academic Rank Faculty as faculty on the tenure-track Assistant Professors, Associate Professors, and Professors as well as Instructors' -- i.e. this is a Board of Regents-level definition, not a UGA-specific policy -- and separately: 'Non-tenured faculty are employed on a year-to-year basis... Persons with adjunct appointments, honorific appointments, and faculty in other faculty ranks are not eligible for tenure and are not bound by time limits: Academic Professionals, Clinical Faculty, Lecturers, Librarians, Public Service Faculty, and Research Scientists.' Corroborated by BOR Policy Manual Section 8.3.4 (Lecturer/Senior Lecturer/Principal Lecturer appointed year-to-year, non-tenure-track). Scoped by collegePattern to USG's other public universities and state colleges appearing in the live dataset -- excludes University of Georgia and Georgia Institute of Technology (each already covered by their own more detailed, independently-sourced rule) and Kennesaw State/Augusta University (already covered by their own rules from separate research passes), to avoid two rules describing the same institution differently. Also excludes Georgia State University: a live GSU 'Clinical Assistant Professor'/'Clinical Instructor/Clinical Assistant Professor' posting pair at GSU's Perimeter College resolved to tenure-track via an explicit description signal, showing GSU's own use of 'Clinical' does not reliably follow the system-wide convention, so GSU is deliberately left out of this rule rather than risk a similar false match with no explicit signal to save it. The Lecturer branch excludes the compound 'Lecturer/[Assistant/Associate] Professor' form (mixing a non-tenure rank with a potentially tenure-track one in one posting, the same genuine ambiguity already excluded at Troy University) but not 'Lecturer/Senior Lecturer' (both alternatives are non-tenure regardless). Excludes the Technical College System of Georgia (TCSG) institutions in the live data (e.g. Georgia Northwestern Technical College) -- a separate governing system from USG, not confirmed to share this rank schema.",
+      "source": "https://provost.uga.edu/wp-content/uploads/appointment-promotion-tenure-guidelines-academic-rank-faculty.pdf",
+      "verifiedAt": "2026-09-17"
+    },
+    {
+      "college": "University of Nevada, Las Vegas",
+      "titlePattern": "\\bin[\\s-]+residence\\b",
+      "value": false,
+      "note": "UNLV's own University Bylaws (Chapter III, Section 6.1.a), quoted directly: 'Only tenured and tenure-track faculty, as well as faculty in residence, research faculty, clinical faculty, and lecturers (hereinafter referred to as non-tenure track) may attend or serve on departmental/unit personnel committees...' -- an explicit, direct definition naming 'faculty in residence' as non-tenure-track in the same breath as tenure-track faculty. Matches the '[Rank]-in-Residence'/'[Rank] in Residence' title convention seen throughout live UNLV postings (e.g. 'Assistant Professor-in-Residence, Criminal Justice'). Deliberately does not match a plain 'Assistant/Associate/Professor' with no 'in Residence'/'Clinical'/'Research'/'Lecturer' qualifier (UNLV's Kirk Kerkorian School of Medicine posts most physician-faculty jobs this way), which stays correctly unclassified.",
+      "source": "https://www.unlv.edu/policies/unlv-bylaws/chapter-3",
+      "verifiedAt": "2026-09-17"
+    },
+    {
+      "college": "Virginia Tech",
+      "titlePattern": "^(?:(?:Advanced\\s+|Senior\\s+)?Instructor)\\b|\\b(?:Collegiate|Clinical)\\s+(?:Assistant\\s+|Associate\\s+)?Professor\\b|\\bResearch\\s+(?:Assistant\\s+|Associate\\s+)?Professor\\b|\\bResearch\\s+Faculty\\b",
+      "value": false,
+      "note": "Virginia Tech's Faculty Handbook Chapter Five ('Non-Tenure-Track Instructional Faculty') defines three ranked series: Clinical Faculty (Clinical Instructor/Assistant/Associate/Professor), Collegiate Faculty (Collegiate Assistant/Associate/Professor), and Instructor (Instructor, Advanced Instructor, Senior Instructor) -- quoted directly, '5.0 ... Not Eligible for Tenure. Tenure cannot be awarded to individuals with non-tenure-track [titles].' Chapter Six ('Research Faculty') separately defines the Research Professor ranks (Research Assistant/Associate/Professor) as a distinct non-tenure-track series. Matches both the specific ranked titles and the generic 'Research Faculty' label used on live 'Open Rank - Research Faculty' postings. Deliberately does not match a plain 'Assistant Professor'/'Associate Professor'/'Professor' with no Clinical/Collegiate/Research qualifier (Chapter Three's tenure-track ranks use the identical unmodified names), which stays correctly unclassified.",
+      "source": "https://faculty.vt.edu/content/dam/faculty_vt_edu/files/Virginia%20Tech%20Faculty%20Handbook.pdf",
+      "verifiedAt": "2026-09-17"
+    },
+    {
+      "college": "University of Florida",
+      "titlePattern": "\\bInstructional\\s+(?:Assistant\\s+|Associate\\s+)?Professor\\b|\\bClinical\\s+(?:Assistant\\s+|Associate\\s+|Full\\s+)?(?:or\\s+(?:Assistant|Associate|Full)\\s+)?Professor\\b|\\bResearch\\s+(?:Assistant\\s+|Associate\\s+|Full\\s+)?Professor\\b",
+      "value": false,
+      "note": "UF's 2021 Faculty Senate Resolution (adopted, effective Fall 2022) renamed the non-tenure-track instruction-intensive 'Lecturer' series to 'Assistant/Associate/[Full] Instructional Professor', quoted directly: 'Instruction-intensive \"Lecturers\" to the rank of \"Assistant Instructional Professor\"... \"Senior Lecturers\" to... \"Associate Instructional Professor\"... \"Master Lecturers\" to... \"Instructional Professor.\"' The same resolution independently confirms, as supporting rationale, that UF 'already uses the titles of Assistant, Associate, and [Full] Clinical Professor as well as Assistant, Associate, and [Full] Research Professor to designate non-tenure track faculty members in the areas of biomedical science and/or grant-funded research.' Deliberately does not match a plain 'Assistant Professor'/'Associate Professor'/'Professor' with no Instructional/Clinical/Research qualifier, which remains UF's tenure-track series and stays correctly unclassified.",
+      "source": "https://fora.aa.ufl.edu/docs/10/2021-2022/Faculty%20Senate%20Resolution_Faculty%20Titles_28%20Sept%202021.pdf",
       "verifiedAt": "2026-09-17"
     }
   ]
