@@ -450,6 +450,36 @@ test("applies verified institution-specific title conventions as a last resort",
   );
 });
 
+test("recognizes ATS structural metadata (hourly salary, labeled non-tenure Job Type) as a non-tenure signal", () => {
+  // NEOGOV/schooljobs.com-style descriptions concatenate labeled fields
+  // verbatim -- an hourly rate (rather than an annual salary schedule) is
+  // definitional of part-time/adjunct employment, never tenure-track.
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      title: "French (Foreign Languages) Instructor Applicant Pool",
+      description:
+        "French (Foreign Languages) Instructor Applicant Pool Salary $89.24 Hourly Location Santa Clarita, CA Job Type Part-Time Faculty",
+    }),
+    { value: false, evidence: "description-job-type" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      title: "Noncredit Business (Non-Vocational) Instructor Applicant Pool",
+      description: "Salary $89.24 Hourly Location Santa Clarita, CA Job Type Non-Credit Instructor",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ description: "Salary $62.16 - $71.40 Hourly Job Type Staff Part Time" }),
+    false
+  );
+  // A real tenure-track salary schedule (annual, not hourly) is unaffected.
+  assert.equal(
+    classifyTenureTrack({ description: "Salary $75,000.00 - $95,000.00 Annually Job Type Full-Time Faculty" }),
+    null
+  );
+});
+
 test("leaves conflicting appointment language unclassified", () => {
   assert.equal(classifyTenureTrack({
     description: "Depending on qualifications, appointment may be eligible for tenure or without tenure.",

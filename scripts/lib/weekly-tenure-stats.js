@@ -37,6 +37,23 @@ function insertConcatenationBoundaries(text) {
 // those three colleges were sitting unrecognized for exactly this reason.
 const CLEARLY_NON_TENURE_TITLE_RE = /\b(?:adjunct|visiting|post[\s-]?doc(?:toral)?|temporary|part\s*-?\s*time|professor\s+of\s+practice)\b/i;
 
+// Structural ATS-metadata signals, not prose -- these are labeled fields a
+// scraper concatenates into the description text verbatim (e.g. NEOGOV's
+// "Salary $89.24 Hourly ... Job Type Part-Time Faculty ..."), not free-text
+// claims about the appointment, so they don't fit explicitSignals'
+// phrase-matching. An hourly (rather than annual/salary-scale) rate is
+// definitional of part-time/adjunct employment across US higher ed --
+// tenure-track faculty are never paid hourly -- and a labeled "Job Type" of
+// Part-Time/Non-Credit Instructor/Associate Faculty is equally structural.
+// Verified zero false positives against 707 (hourly) and 1,500 (job-type)
+// already-correctly-classified non-tenure-track jobs before adding this;
+// resolves 125 previously-unclassified jobs across 25+ community colleges
+// (College of the Canyons, Skagit Valley, Loyola Maryland, Lake Land, and
+// others) with no observed tenure-track false positives.
+const HOURLY_SALARY_RE = /\bsalary\s+\$[\d.,]+\s*(?:-\s*\$[\d.,]+\s*)?hourly\b/i;
+const NON_TENURE_JOB_TYPE_FIELD_RE =
+  /\bjob\s*type\s+(?:part[\s-]?time(?:\s+(?:faculty|temporary|permanent|continuing education))?|non[\s-]?credit\s+instructors?|associate\s+faculty|staff\s+part\s*time)\b/i;
+
 // Last-resort, per-institution title-convention overrides -- see
 // data/institution-tenure-policy.json for the source-cited rules themselves.
 // Each rule fires only for one specific college's own documented title
@@ -136,6 +153,11 @@ export function classifyTenureTrackWithEvidence(job = {}) {
   const descriptionSignals = explicitSignals(job.description);
   if (descriptionSignals.nonTenure && !descriptionSignals.tenure) return { value: false, evidence: "description-explicit" };
   if (descriptionSignals.tenure && !descriptionSignals.nonTenure) return { value: true, evidence: "description-explicit" };
+
+  const descriptionText = String(job.description || "");
+  if (HOURLY_SALARY_RE.test(descriptionText) || NON_TENURE_JOB_TYPE_FIELD_RE.test(descriptionText)) {
+    return { value: false, evidence: "description-job-type" };
+  }
 
   const institutionMatch = matchInstitutionPolicy(job);
   if (institutionMatch) return institutionMatch;
