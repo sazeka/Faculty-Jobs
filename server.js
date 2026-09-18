@@ -8794,6 +8794,23 @@ const COLLEGE_LOCATION_DEFAULTS = {
   "Furman University": "Greenville, SC",
   "Wofford College": "Spartanburg, SC",
   "Presbyterian College": "Clinton, SC",
+
+  // Reviewed aliases (issue #127): these institutions previously had no exact
+  // entry and were misattributed by the removed substring-fuzzy fallback to
+  // an unrelated institution that merely shared a generic word or token
+  // (e.g. "Azusa Pacific University" -> "Pacific University"). Each entry
+  // below is the exact college name used by its scraper source, mapped to
+  // its own verified campus city/state.
+  "Azusa Pacific University": "Azusa, CA",
+  "Fresno Pacific University": "Fresno, CA",
+  "Salem State University": "Salem, MA",
+  "Brigham Young University-Hawaii": "Laie, HI",
+  "Virginia State University": "Petersburg, VA",
+  "The University of the South": "Sewanee, TN",
+  "Methodist University": "Fayetteville, NC",
+  "Clark State College": "Springfield, OH",
+  "University of Mary Washington": "Fredericksburg, VA",
+  "St Lawrence University": "Canton, NY",
 };
 
 function toCollegeLocationKey(name) {
@@ -8813,30 +8830,23 @@ const COLLEGE_LOCATION_DEFAULTS_BY_KEY = new Map(
   Object.entries(COLLEGE_LOCATION_DEFAULTS).map(([college, location]) => [toCollegeLocationKey(college), location])
 );
 
-function getCollegeLocationFallback(collegeName) {
+export function getCollegeLocationFallback(collegeName) {
   const exact = COLLEGE_LOCATION_DEFAULTS[collegeName];
   if (exact) return exact;
 
   const key = toCollegeLocationKey(collegeName);
   if (!key) return null;
 
-  const direct = COLLEGE_LOCATION_DEFAULTS_BY_KEY.get(key);
-  if (direct) return direct;
-
-  // Last-resort fuzzy match for minor token drift in scraper college labels.
-  let best = null;
-  let bestLen = 0;
-  for (const [k, loc] of COLLEGE_LOCATION_DEFAULTS_BY_KEY.entries()) {
-    if (k === key) return loc;
-    if (k.includes(key) || key.includes(k)) {
-      const l = Math.min(k.length, key.length);
-      if (l > bestLen) {
-        best = loc;
-        bestLen = l;
-      }
-    }
-  }
-  return best || null;
+  // Only resolve on an exact normalized-name match. Institution names are
+  // compared as whole normalized strings (never substrings) so a lookup for
+  // "Azusa Pacific University" cannot resolve to "Pacific University", nor
+  // "Salem State University" to "Winston-Salem State University" — real,
+  // distinct institutions that merely share a generic word or a token. See
+  // https://github.com/sazeka/Faculty-Jobs/issues/127. When no exact match
+  // exists the location is left unknown rather than guessed from a partial
+  // match; add a reviewed entry to COLLEGE_LOCATION_DEFAULTS (or an alias
+  // key) instead of restoring substring matching.
+  return COLLEGE_LOCATION_DEFAULTS_BY_KEY.get(key) || null;
 }
 
 function isLikelyGeographicLocation(location) {
@@ -8880,7 +8890,7 @@ function normalizeUsLocation(location) {
   return null;
 }
 
-function normalizeLocationByCollege(job) {
+export function normalizeLocationByCollege(job) {
   const sourceToState = {
     NY: "NY", CT: "CT", NJ: "NJ",
     "CT State": "CT",
