@@ -178,12 +178,60 @@ function matchesTerm(hay, term) {
   return hay.includes(term)
 }
 
+// Issue #128: these terms describe a role/context modifier — HOW or WHERE
+// someone works — rather than WHAT academic subject they work in. Job titles
+// routinely pair one of these with an explicit subject a few words away
+// ("Assistant Teaching Professor - Psychology", "Clinical Psychology",
+// "Anesthesiology, Pain Management"). Because getDiscipline() used to stop at
+// the first rule with any matching term, and these generic terms often sit
+// earlier in DISCIPLINE_RULES (Education, Health & Medicine's general
+// medicine bucket, Business & Economics' management bucket) than the actual
+// subject's rule, the generic term was winning outright. They're still valid
+// signals — a title with ONLY "teaching" and nothing more specific should
+// still land in Education — but they must never outrank a real subject match
+// found anywhere else in the table.
+const GENERIC_CONTEXT_TERMS = new Set(['teaching', 'clinical', 'management'])
+
+// A match's specificity: a generic contextual term (see above) is weakest: it
+// only wins when nothing else in the table matched at all. Among the rest, a
+// multi-word phrase ("mental health", "clinical psychology", "public
+// policy") is more specific than a single bare word ("health", "psychology")
+// and should outrank it — this is what lets "Clinical Mental Health
+// Counseling" land on Psychology & Social Work's "mental health" instead of
+// Health & Medicine's bare "health".
+function termSpecificity(term) {
+  if (GENERIC_CONTEXT_TERMS.has(term)) return 0
+  return term.includes(' ') ? 2 : 1
+}
+
+// Scores every top-level rule by the single most specific term it matches
+// anywhere in `hay` (title + department), rather than returning the first
+// rule with any match at all (the issue #128 bug). Ties keep whichever rule
+// was found first — DISCIPLINE_RULES order is still a deliberate,
+// documented priority list for equally-specific matches (see e.g. the "art"
+// vs "history" case in "Lecturer in Art History": both are single-word
+// matches, and Arts & Music is intentionally checked before Humanities).
+function bestDisciplineMatch(hay) {
+  let best = null
+  for (const rule of DISCIPLINE_RULES) {
+    let ruleScore = -1
+    for (const sub of rule.subdisciplines) {
+      for (const term of sub.terms) {
+        if (!matchesTerm(hay, term)) continue
+        const score = termSpecificity(term)
+        if (score > ruleScore) ruleScore = score
+      }
+    }
+    if (ruleScore >= 0 && (!best || ruleScore > best.score)) {
+      best = { rule, score: ruleScore }
+    }
+  }
+  return best?.rule || null
+}
+
 export function getDiscipline(job) {
   const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
-  for (const rule of DISCIPLINE_RULES) {
-    if (rule.subdisciplines.some((sub) => sub.terms.some((t) => matchesTerm(hay, t)))) return rule.label
-  }
-  return 'Other'
+  return bestDisciplineMatch(hay)?.label || 'Other'
 }
 
 // Finds which sub-discipline within the job's already-determined discipline
