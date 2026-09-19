@@ -8123,6 +8123,34 @@ function clean(s) {
   return String(s || "").replace(/\s+/g, " ").trim();
 }
 
+// The 50 states + DC + the inhabited US territories, shared by every place
+// that needs to validate a trailing "XX" token really is a US state/territory
+// code rather than an arbitrary two-capital-letter abbreviation (issue #137).
+const US_STATE_CODES = new Set([
+  "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD",
+  "MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
+  "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC","AS","GU","MP","PR","VI",
+]);
+
+// A "City, ST" shaped candidate is only a plausible location when ST is a
+// real US state/territory code AND the city-like portion doesn't itself look
+// like credentials, ranks, instructions, or a roman-numeral list -- the exact
+// shape of the PageUp/"nau-search" location-extraction bug in issue #137
+// (e.g. "MD, DO", "Instructor I, II", "Submit a letter of interest, CV",
+// "PROFESSOR - CLINICAL, OB", "Film, TV").
+export function isPlausibleCityStateLocation(value) {
+  const raw = clean(value);
+  const match = raw.match(/^([A-Za-z .'-]{2,60}),\s*([A-Z]{2})$/);
+  if (!match) return false;
+  const city = match[1].trim();
+  const state = match[2];
+  if (!US_STATE_CODES.has(state)) return false;
+  if (/\b(?:I|II|III|IV|V|VI|VII|VIII|IX|X)$/.test(city)) return false;
+  if (/\b(?:professor|instructor|lecturer|assistant|associate|clinical|faculty|chair|dean)\b/i.test(city)) return false;
+  if (/\b(?:submit|letter of interest|resume|r[ée]sum[ée]|cv|apply|contact|qualifications?)\b/i.test(city)) return false;
+  return true;
+}
+
 // Title-case a SHOUTING (all-caps) title while preserving acronyms and codes.
 const TITLE_SMALL_WORDS = new Set(["a","an","and","as","at","but","by","for","from","in","nor","of","on","or","per","the","to","via","vs","with"]);
 const TITLE_ACRONYMS = new Set(["AI","ML","IT","HR","PR","STEM","STEAM","ESL","EFL","GIS","HCI","CS","EE","ECE","CMS","AMO","RF","OB","GYN","ENT","ICU","ER","UX","UI","PHD","MD","DO","RN","LPN","BSN","MSN","DNP","CRNA","JD","LLM","MBA","MFA","MPH","DVM","EDD","PSYD","DDS","US","USA","UK","EU","NYC","DC","UC","CSU","SUNY","CUNY","VA","NIH","NSF","WOT","HS","II","III","IV","VI","VII"]);
@@ -8140,9 +8168,20 @@ function titleCaseShout(str) {
   });
 }
 
+// Issue #138: a bot-challenge page ("Let's confirm you are human ...") or a
+// truncated description excerpt was captured as the title instead of the
+// real posting name on at least 17 records (University of Houston, TCU).
+// Once this prefix is stripped there's no reliable way to recover the actual
+// title from the remaining sentence fragment -- that repair happens per
+// record in the historical-data migration, sourced from each URL's own slug
+// -- but stripping the literal challenge text here at least keeps a fresh
+// scrape from ever storing it going forward.
+const BOT_CHALLENGE_TITLE_RE = /^\s*(?:let'?s\s+confirm\s+you(?:'re| are)\s+(?:a\s+)?human|please\s+verify\s+you(?:'re| are)\s+(?:a\s+)?human|verify\s+you(?:'re| are)\s+(?:a\s+)?(?:not\s+a\s+)?robot|are\s+you\s+a\s+robot)\b\s*[-–—:]*\s*/i;
+
 export function normalizeJobTitle(rawTitle) {
   let t = clean(rawTitle);
   if (!t) return t;
+  t = t.replace(BOT_CHALLENGE_TITLE_RE, "");
   // Some feeds leak HTML/media markup directly into title fields.
   t = stripHtmlToText(t);
   // Decode leftover HTML entities (e.g. "Dean&#39;s Office" → "Dean's Office",
@@ -8275,6 +8314,22 @@ export function normalizeJobTitle(rawTitle) {
   // Mechanical Engineering", "Family Medicine Family Medicine"). Only an exact
   // back-to-back repeat at the very end is collapsed, so non-repeats are safe.
   t = t.replace(/\b(\w+(?:[\s&/.-]+\w+){0,6})\s*[,;:–—-]?\s+\1\s*$/i, "$1");
+  // Issue #138: several feeds concatenate an ATS field label, description
+  // prose, the source domain, or a relative timestamp onto the end of the
+  // title instead of keeping it in its own field. Truncate at the first
+  // recognized marker rather than trying to strip each trailing token, since
+  // everything from the marker onward is metadata, not title text.
+  t = t.replace(/\s*\bPosition\s+Type\b[\s\S]*$/i, "");
+  t = t.replace(/\s*[|»→]?\s*View\s+position\s+and\s+apply\b[\s\S]*$/i, "");
+  t = t.replace(/\s*\|\s*Legal\s+Address\b[\s\S]*$/i, "");
+  t = t.replace(/\s*\bJob\s+Details\b\s*[→»]?\s*$/i, "");
+  // "<anything>.<tld> | N hour(s)/day(s)/... ago" -- a source-domain +
+  // relative-timestamp footer some feeds append after the real title text.
+  t = t.replace(/\s*\S+\.(?:com|org|net|edu|gov|io)\s*\|\s*\d+\s+\w+\s+ago\s*$/i, "");
+  // "Posted N hour(s)/day(s)/week(s)/month(s)/year(s) ago", optionally
+  // preceded by "Job Opening" -- a relative-timestamp footer some feeds
+  // append directly (no domain/pipe) after repeating the city/institution.
+  t = t.replace(/\s*(?:Job\s+Opening\s+)?Posted\s+\d+\s+(?:second|minute|hour|day|week|month|year)s?\s+ago\s*$/i, "");
   t = t.replace(/\s*\(\s*\)/g, "");          // drop empty parens "()" residue
   t = t.replace(/[\s\-–—|•:,]+$/, "");
   // Convert a fully-uppercase ("shouting") title to Title Case, preserving
@@ -8284,6 +8339,27 @@ export function normalizeJobTitle(rawTitle) {
     t = titleCaseShout(t);
   }
   return clean(t);
+}
+
+// Issue #138: some feeds glue the college name, department, and location
+// directly onto the end of the real title with no separator at all, e.g.
+// Luther College's "Assistant Professor of Biology (tenure-eligible)Luther
+// CollegeBiologyDecorah, IABenefits Eligible ASSISTANT PROFESSOR OF BIOLOGY
+// ..." (the real title is only the text before "Luther College"). Since the
+// job's own `college` value is known independently of its title, truncating
+// the title at the first place the college name appears -- unless it's
+// already the very first thing in the title, which is a normal "College X -
+// Position Y" shape, not this concatenation bug -- recovers the real title
+// without guessing at sentence boundaries in the description text that
+// follows it.
+export function truncateTitleAtEmbeddedCollegeName(title, college) {
+  const t = clean(title);
+  const collegeName = clean(college);
+  if (!t || !collegeName || collegeName.length < 4) return t;
+  const idx = t.toLowerCase().indexOf(collegeName.toLowerCase());
+  if (idx <= 0) return t;
+  const truncated = clean(t.slice(0, idx).replace(/[\s|\-–—:,]+$/, ""));
+  return truncated || t;
 }
 
 function inferAcademicFieldsFromTitle(title) {
@@ -18454,12 +18530,40 @@ async function scrapeNauSearch(context, startUrl, campusName, sourceName) {
             if (/^work location\b/i.test(t) && labeled[i + 1]) return labeled[i + 1];
           }
 
-          // Fallback: regex in card text
+          // Fallback: regex in card text. A bare "City, ST" pattern anywhere
+          // in the card's text used to be accepted on its first occurrence
+          // with no validation, so credential lists, ranks, and instructions
+          // that happen to end in two capital letters ("MD, DO", "Instructor
+          // I, II", "Submit a letter of interest, CV", "PROFESSOR - CLINICAL,
+          // OB", "Film, TV") were stored as the job's location (issue #137).
+          // Require ST to be a real US state/territory code and the
+          // city-like portion to not look like credentials/ranks/
+          // instructions, and consider every "X, YY" candidate in the card
+          // (not just the first) so a genuine address later in the text can
+          // still be found even when non-location text appears first.
           const txt = clean(card.innerText || "");
-          const m =
-            txt.match(/\b(?:Work\s+Location|Location)\s*:?\s*([^\n•|]{2,80})/i) ||
-            txt.match(/\b([A-Za-z .'-]+,\s*[A-Z]{2})\b/);
-          return m ? clean(m[1]) : null;
+          const labelMatch = txt.match(/\b(?:Work\s+Location|Location)\s*:?\s*([^\n•|]{2,80})/i);
+          if (labelMatch) return clean(labelMatch[1]);
+
+          const US_STATE_CODES = new Set([
+            "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD",
+            "MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
+            "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC","AS","GU","MP","PR","VI",
+          ]);
+          const isPlausibleCityState = (candidate) => {
+            const m = candidate.match(/^([A-Za-z .'-]{2,60}),\s*([A-Z]{2})$/);
+            if (!m) return false;
+            const city = m[1].trim();
+            const state = m[2];
+            if (!US_STATE_CODES.has(state)) return false;
+            if (/\b(?:I|II|III|IV|V|VI|VII|VIII|IX|X)$/.test(city)) return false;
+            if (/\b(?:professor|instructor|lecturer|assistant|associate|clinical|faculty|chair|dean)\b/i.test(city)) return false;
+            if (/\b(?:submit|letter of interest|resume|cv|apply|contact|qualifications?)\b/i.test(city)) return false;
+            return true;
+          };
+          const candidates = txt.match(/\b[A-Za-z .'-]+,\s*[A-Z]{2}\b/g) || [];
+          const valid = candidates.map((c) => clean(c)).find(isPlausibleCityState);
+          return valid || null;
         };
 
         const extractDept = (card) => {

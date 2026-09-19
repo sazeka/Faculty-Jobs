@@ -162,7 +162,30 @@ function explicitSignals(raw) {
 
 export function classifyTenureTrackWithEvidence(job = {}) {
   const value = job.tenureTrack;
-  if (value === true || value === false) {
+
+  // Explicit title language (and, failing that, a documented institution
+  // policy) is checked BEFORE trusting a stored boolean, so a stale/incorrect
+  // enrichment value can never silently outrank the source's own words. This
+  // was issue #145's root cause: 11 University of Washington "WOT" (without
+  // tenure) appointments were stuck at tenureTrack: true because the function
+  // returned the stored boolean immediately, before the title or the
+  // already-documented UW WOT policy rule ever got a chance to run. When the
+  // title/policy evidence is absent or agrees with the stored value, the
+  // stored value is returned exactly as before -- this only changes behavior
+  // when the two conflict.
+  const title = String(job.title || "");
+  const titleSignals = explicitSignals(title);
+  if (typeof value === "boolean") {
+    if (titleSignals.nonTenure && !titleSignals.tenure && value !== false) {
+      return { value: false, evidence: "title-explicit" };
+    }
+    if (titleSignals.tenure && !titleSignals.nonTenure && value !== true) {
+      return { value: true, evidence: "title-explicit" };
+    }
+    if (!(titleSignals.nonTenure || titleSignals.tenure)) {
+      const institutionMatch = matchInstitutionPolicy(job);
+      if (institutionMatch && institutionMatch.value !== value) return institutionMatch;
+    }
     return { value, evidence: job.tenureEvidence || "stored" };
   }
 
@@ -171,8 +194,6 @@ export function classifyTenureTrackWithEvidence(job = {}) {
   if (stored.nonTenure && !stored.tenure) return { value: false, evidence: job.tenureEvidence || "stored" };
   if (stored.tenure && !stored.nonTenure) return { value: true, evidence: job.tenureEvidence || "stored" };
 
-  const title = String(job.title || "");
-  const titleSignals = explicitSignals(title);
   if (titleSignals.nonTenure && !titleSignals.tenure) return { value: false, evidence: "title-explicit" };
   if (titleSignals.tenure && !titleSignals.nonTenure) return { value: true, evidence: "title-explicit" };
 

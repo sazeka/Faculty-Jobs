@@ -46,6 +46,56 @@ function isAtriumWorkdayUrl(value) {
   }
 }
 
+// Issue #143: a handful of institution-specific ATS tenants/hosts were being
+// absorbed by a neighboring institution's broader discovery pass (e.g. every
+// jobs.geneseo.edu posting landing on "Finger Lakes Community College"), or
+// misattributed by a broad text hint that a city token proves an institution
+// (a SUNY Erie Community College Workday posting whose location path segment
+// is "City-Campus---Downtown-Buffalo" was being read as evidence for
+// "University at Buffalo"). These host/path matches are authoritative for
+// source ownership -- unlike a location-derived fallback, the tenant a
+// posting was scraped from cannot lie about which institution owns it -- so
+// they apply even when the record already carries a different, wrong
+// `college` value.
+const NY_SOURCE_OWNERSHIP_RULES = [
+  {
+    test: (url) => /^jobs\.geneseo\.edu$/i.test(url.hostname),
+    college: "SUNY College at Geneseo",
+    location: "Geneseo, NY",
+  },
+  {
+    test: (url) => /(^|\.)schooljobs\.com$/i.test(url.hostname) && /^\/careers\/brockport(\/|$)/i.test(url.pathname),
+    college: "SUNY Brockport",
+    location: "Brockport, NY",
+  },
+  {
+    test: (url) => /^monroecc\.interviewexchange\.com$/i.test(url.hostname),
+    college: "Monroe Community College",
+    location: "Rochester, NY",
+  },
+  {
+    test: (url) => /^ecc\.wd\d+\.myworkdayjobs\.com$/i.test(url.hostname),
+    college: "Erie Community College",
+    location: "Buffalo, NY",
+  },
+];
+
+export function repairKnownSourceOwnership(job) {
+  if (!job?.url) return job;
+  let url;
+  try {
+    url = new URL(job.url);
+  } catch {
+    return job;
+  }
+  for (const rule of NY_SOURCE_OWNERSHIP_RULES) {
+    if (!rule.test(url)) continue;
+    if (job.college === rule.college && job.location === rule.location) return job;
+    return { ...job, college: rule.college, location: rule.location };
+  }
+  return job;
+}
+
 export function repairKnownInstitutionAttribution(job) {
   if (!job) return job
 
