@@ -1,36 +1,11 @@
 {
-  "generatedAt": "2026-09-17T10:14:52.535Z",
+  "generatedAt": "2026-09-19T09:48:56.589Z",
   "qualityVersion": 1,
   "reportOnly": true,
-  "count": 2,
+  "count": 3,
   "items": [
     {
-      "id": "bd0f061808a9658c1663",
-      "score": 77,
-      "status": "quarantine",
-      "title": "Associate Librarian or Librarian - Associate Dean, Research and Learning Services University Libraries",
-      "college": "University of Washington",
-      "source": "WA",
-      "url": "https://ap.washington.edu/ahr/position-details?job_id=191783",
-      "reasons": [
-        {
-          "code": "institution_title_conflict",
-          "severity": "error",
-          "dimension": "attribution",
-          "deduction": 100,
-          "detail": "Title names Research and Learning Services University, but the listing is attributed to University of Washington."
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        }
-      ]
-    },
-    {
-      "id": "9b2ffddf3c6240d41720",
+      "id": "251142e7f19fff82ce3e",
       "score": 65,
       "status": "quarantine",
       "title": "Fellow Athletic Trainer - Baseball",
@@ -44,6 +19,56 @@
           "dimension": "relevance",
           "deduction": 100,
           "detail": "Clearly nonacademic staff role."
+        }
+      ]
+    },
+    {
+      "id": "c84c258da70c13021b3d",
+      "score": 64,
+      "status": "quarantine",
+      "title": "Academic Leadership & Faculty",
+      "college": "Maine Maritime Academy",
+      "source": "ME",
+      "url": "https://mainemaritime.edu/academics/academic-leadership-and-faculty",
+      "reasons": [
+        {
+          "code": "resource_page_title",
+          "severity": "error",
+          "dimension": "relevance",
+          "deduction": 100,
+          "detail": "The title names a faculty resource, directory, or marketing page rather than an appointment."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ]
+    },
+    {
+      "id": "dce97fea5ab9a7625736",
+      "score": 80,
+      "status": "quarantine",
+      "title": "Associate Librarian or Librarian - Associate Dean, Research and Learning Services University Libraries",
+      "college": "University of Washington",
+      "source": "WA",
+      "url": "https://ap.washington.edu/ahr/position-details?job_id=191783",
+      "reasons": [
+        {
+          "code": "institution_title_conflict",
+          "severity": "error",
+          "dimension": "attribution",
+          "deduction": 100,
+          "detail": "Title names Research and Learning Services University, but the listing is attributed to University of Washington."
         }
       ]
     }
