@@ -11518,13 +11518,25 @@ async function scrapeNjAll(context) {
   return uniqByUrl([...publicJobs, ...privateJobs]);
 }
 
-function toNjJob(title, url, campusName, category = "Faculty") {
+// NOTE: despite the name (this helper originated in the NJ-only scraping
+// pipeline, where every caller's job really was NJ), scrapeFacultyHeadingPageAs
+// and scrapeFacultyTablePageAs below reuse this same builder for every state
+// that uses the "faculty-headings"/"faculty-table" scraper types -- not just
+// NJ. Those two callers pass their own state code positionally where this
+// used to default `category` to "Faculty" and always hardcode `source` to
+// the literal "NJ", so a Massachusetts/North Carolina/Virginia/Texas/
+// Mississippi record built this way got `source: "NJ"` (wrong -- always NJ)
+// and the real state landed in `category` instead (issue #165). `source` is
+// now an explicit parameter (defaulting to "NJ" so the original NJ-only call
+// sites, which never pass a 5th argument, keep their exact prior behavior),
+// and `category` stays a real job category, not a hidden state fallback.
+export function toNjJob(title, url, campusName, category = "Faculty", source = "NJ") {
   const normalizedTitle = normalizeJobTitle(title);
   const inferred = inferAcademicFieldsFromTitle(normalizedTitle);
   return {
     title: normalizedTitle,
     url,
-    source: "NJ",
+    source,
     category,
     college: campusName,
     location: null,
@@ -16762,6 +16774,58 @@ export async function scrapeQuincyFacultyAs(context, startUrl, campusName = "Qui
   }
 }
 
+// Generic academic-title words that carry no distinguishing information about
+// WHICH posting a link belongs to (every faculty posting's title includes
+// several of these), so they're excluded before comparing a heading's title
+// against a candidate link's own filename/path (issue #162).
+const FACULTY_HEADING_LINK_GENERIC_WORDS = new Set([
+  "the", "and", "for", "with", "academic",
+  "assistant", "associate", "professor", "position", "faculty", "department",
+  "office", "director", "visiting", "full", "time", "part", "adjunct", "clinical",
+  "research", "teaching", "lecturer", "instructor", "school", "college",
+  "university", "chair", "dean", "opening", "opportunity", "search",
+]);
+
+function significantHeadingWords(title) {
+  const words = String(title || "").toLowerCase().match(/[a-z]{4,}/g) || [];
+  return new Set(words.filter((w) => !FACULTY_HEADING_LINK_GENERIC_WORDS.has(w)));
+}
+
+// True when a candidate link's own path/filename shares at least one
+// distinctive word with the heading title, OR when there's nothing to check
+// (a link with no descriptive filename -- e.g. a numeric ATS id -- is trusted
+// as-is, since this heuristic has no signal either way for it). Used only to
+// gate the risky "nearby" link-selection fallback below, never a link found
+// directly on/inside the heading itself (DOM ownership already guarantees
+// that one belongs to this posting).
+export function linkPlausiblyMatchesHeading(title, url) {
+  let pathname;
+  try {
+    pathname = new URL(url).pathname;
+  } catch {
+    return true;
+  }
+  const filename = pathname.split("/").filter(Boolean).pop() || "";
+  const filenameWords = new Set(
+    (filename.toLowerCase().replace(/\.[a-z0-9]+$/i, "").match(/[a-z]{4,}/g) || [])
+      .filter((w) => !FACULTY_HEADING_LINK_GENERIC_WORDS.has(w))
+  );
+  if (!filenameWords.size) return true;
+  const titleWords = significantHeadingWords(title);
+  if (!titleWords.size) return true;
+  // Substring overlap (not exact-word) so an abbreviated filename word still
+  // counts as a match against the full title word (e.g. a filename's "prep"
+  // against a title's "Preparation") -- exact-only matching produced false
+  // rejections of genuinely-correct links whose filename merely abbreviates
+  // the title.
+  for (const word of titleWords) {
+    for (const filenameWord of filenameWords) {
+      if (filenameWord.includes(word) || word.includes(filenameWord)) return true;
+    }
+  }
+  return false;
+}
+
 export async function scrapeFacultyHeadingPageAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
@@ -16772,7 +16836,20 @@ export async function scrapeFacultyHeadingPageAs(context, startUrl, campusName, 
       return [...document.querySelectorAll("h2, h3, h4, h5, button")].map((node) => {
         const direct = node.closest("a[href]") || node.querySelector("a[href]");
         const nearby = node.parentElement?.querySelector("a[href]");
-        return { title: cleanText(node.textContent), url: direct?.href || nearby?.href || location.href };
+        // `direct` is a link that wraps or lives inside the heading itself --
+        // DOM structure guarantees it belongs to this specific posting.
+        // `nearby` is only "some link somewhere in the same parent element",
+        // which on a page listing several postings close together can belong
+        // to a completely different, adjacent posting (confirmed live: New
+        // England Law-Boston's "Visiting Assistant Professor of Academic
+        // Excellence..." heading picked up a neighboring "Digital Marketing
+        // Manager" PDF this way -- issue #162). Flag that case so the caller
+        // can validate it instead of trusting it outright.
+        return {
+          title: cleanText(node.textContent),
+          url: direct?.href || nearby?.href || location.href,
+          viaUnverifiedNearbyLink: !direct && !!nearby,
+        };
       });
     });
     const generic = /^(?:academics and )?faculty$|^(?:full-time|part-time|adjunct)?\s*faculty\s+(?:positions?|openings?|opportunities)$|^(?:view|learn more|apply)(?:\s+(?:faculty|adjunct).*)?$/i;
@@ -16789,7 +16866,16 @@ export async function scrapeFacultyHeadingPageAs(context, startUrl, campusName, 
         seen.add(key);
         return true;
       })
-      .map((row) => toNjJob(row.title, row.url || startUrl, campusName, sourceName));
+      // An unverified same-parent link with no distinctive word overlap with
+      // its own heading is more likely a mis-picked adjacent posting's link
+      // than this posting's real one -- fall back to the listing page itself
+      // (still navigable, unlike linking to a wrong unrelated document).
+      .map((row) => (
+        row.viaUnverifiedNearbyLink && !linkPlausiblyMatchesHeading(row.title, row.url)
+          ? { ...row, url: startUrl }
+          : row
+      ))
+      .map((row) => toNjJob(row.title, row.url || startUrl, campusName, "Faculty", sourceName));
     console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty headings)`);
     return jobs;
   } catch (error) {
@@ -16828,7 +16914,7 @@ export async function scrapeFacultyTablePageAs(context, startUrl, campusName, so
         seen.add(key);
         return true;
       })
-      .map((row) => toNjJob(normalizeJobTitle(row.title), row.url, campusName, sourceName));
+      .map((row) => toNjJob(normalizeJobTitle(row.title), row.url, campusName, "Faculty", sourceName));
     console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (faculty table)`);
     return jobs;
   } catch (error) {
