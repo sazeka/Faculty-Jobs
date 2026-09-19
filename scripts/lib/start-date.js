@@ -88,3 +88,32 @@ export function extractStartDate(text) {
   }
   return null;
 }
+
+// A concrete YYYY-MM-DD startDate that precedes datePosted by more than this
+// many days is not a plausible "anticipated start" (issue #156) -- it means
+// the source posting was recycled or left stale while only its posting/
+// opening date was refreshed, so the extractor's own text match (e.g.
+// "Desired Start Date") is accurate but the date itself is nonsensical
+// relative to when the listing was actually posted. 90 days is the exact
+// threshold confirmed against the live dataset: every one of the 18 records
+// the issue identifies (gaps of 93-688 days) exceeds it, and no other record
+// in the checked dataset falls between 90 and the smallest confirmed gap.
+export const IMPLAUSIBLE_START_DATE_TOLERANCE_DAYS = 90;
+
+// Returns true only when startDate is a full calendar date (a season/
+// month-year value like "Fall 2026" has no single day to compare and is left
+// alone per the issue's own acceptance criteria) AND datePosted is a
+// comparable calendar date AND startDate precedes it by more than
+// toleranceDays. Returns false (never "implausible") whenever either side is
+// missing or unparseable, so this never masks a genuinely-missing datePosted.
+export function isImplausibleStartDate(startDate, datePosted, toleranceDays = IMPLAUSIBLE_START_DATE_TOLERANCE_DAYS) {
+  const sd = String(startDate || "");
+  const dp = String(datePosted || "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(sd)) return false;
+  if (!/^\d{4}-\d{2}-\d{2}/.test(dp)) return false;
+  const start = Date.parse(`${sd}T00:00:00Z`);
+  const posted = Date.parse(`${dp.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(start) || Number.isNaN(posted)) return false;
+  const diffDays = (posted - start) / (24 * 60 * 60 * 1000);
+  return diffDays > toleranceDays;
+}

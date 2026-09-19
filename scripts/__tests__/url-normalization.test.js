@@ -68,6 +68,26 @@ test("canonicalizeUrl assumes https for bare hosts and rejects junk", () => {
   assert.equal(canonicalizeUrl("ftp://x.com"), null);
 });
 
+// Regression coverage for issue #157: a Clark Atlanta University record had
+// `https://https/jobdescription-...pdf` -- the hostname is literally the
+// scheme itself. `new URL()` accepts "https" as a syntactically valid
+// hostname (it doesn't do string concatenation -- this shape comes from
+// resolving a protocol-relative href like "//https/some-file.pdf", whose
+// first path segment after "//" becomes the authority/hostname per the
+// WHATWG URL algorithm, against any base URL), so canonicalizeUrl must
+// reject it explicitly.
+test("canonicalizeUrl rejects a hostname that is literally a protocol scheme word (issue #157)", () => {
+  assert.equal(
+    canonicalizeUrl("https://https/jobdescription-cyber-physical%20systems%20(2)%20(1).pdf"),
+    null
+  );
+  assert.equal(canonicalizeUrl("https://http/some-file.pdf"), null);
+  assert.equal(canonicalizeUrl("http://https/some-file.pdf"), null);
+  // A real hostname that merely contains "https" as a substring must still
+  // be accepted -- only an exact-match bare scheme word is rejected.
+  assert.equal(canonicalizeUrl("https://httpsjobs.example.com/x"), "https://httpsjobs.example.com/x");
+});
+
 test("inferPlatformFromUrl recognizes known ATS platforms", () => {
   assert.equal(inferPlatformFromUrl("https://abc.myworkdayjobs.com/x"), "workday");
   assert.equal(inferPlatformFromUrl("https://jobs.silkroad.com/x"), "generic");

@@ -6,35 +6,35 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { createHash } from "crypto";
 import { buildListingIndex } from "./lib/jobs-listing-index.js";
 import { buildFullTextSearchIndex } from "./lib/jobs-search-index.js";
 import { summarizeCatalog } from "../web-vue/src/lib/listingTrust.js";
+import { attachCanonicalIds } from "./lib/canonical-id.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
+// NOTE (issue #164): this used to keep its own independent, hand-rolled copy
+// of attachCanonicalIds() -- unlike scripts/sync-web-data-files.js, which has
+// always imported the shared implementation above. The two had quietly
+// drifted apart: the shared lib/canonical-id.js version always recomputes
+// canonicalGroupId/canonicalJobId fresh from a job's current fields (the
+// comment on its own attachCanonicalIds() is explicit about this), while the
+// old local copy here preserved whatever canonicalGroupId/canonicalJobId was
+// already stored on the job, if any. That meant a migration that edits a
+// job's url/source/title/college/department (its canonical-id inputs)
+// without also refreshing its cached canonicalGroupId/canonicalJobId would
+// rebuild perfectly consistent output via sync-web-data-files.js, but STALE,
+// mismatched ids via this script -- silently reintroducing exactly the kind
+// of id drift issue #164 reports, from a full from-scratch rebuild that
+// looked like it should have fixed it. Importing the one shared
+// implementation is what actually prevents that class of drift going
+// forward, not just running "the rebuild script" more often.
 function clean(v) { return String(v || "").replace(/\s+/g, " ").trim(); }
-function nk(v) { return clean(v).toLowerCase(); }
-function sha1Hex(v) { return createHash("sha1").update(String(v || "")).digest("hex"); }
 function slug(v) { return clean(v).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "unknown"; }
 function ensureDir(d) { fs.mkdirSync(d, { recursive: true }); }
 function writeJson(p, v) { ensureDir(path.dirname(p)); fs.writeFileSync(p, `${JSON.stringify(v, null, 2)}\n`, "utf8"); }
 function writeCompactJson(p, v) { ensureDir(path.dirname(p)); fs.writeFileSync(p, `${JSON.stringify(v)}\n`, "utf8"); }
-
-function attachCanonicalIds(jobs) {
-  return jobs.map((job) => {
-    const title = nk(job?.titleClean || job?.title || "");
-    const college = nk(job?.college || "");
-    const dept = nk(job?.department || "");
-    const state = nk(job?.state || job?.source || "");
-    const source = nk(job?.source || "");
-    const url = nk(job?.url || "");
-    const canonicalGroupId = clean(job?.canonicalGroupId) || `grp_${sha1Hex([title, college, dept, state].join("|")).slice(0, 16)}`;
-    const canonicalJobId = clean(job?.canonicalJobId) || `job_${sha1Hex([canonicalGroupId, source, url].join("|")).slice(0, 16)}`;
-    return { ...job, canonicalGroupId, canonicalJobId };
-  });
-}
 
 function buildJobsChunks(payload, outDir) {
   const jobs = attachCanonicalIds(Array.isArray(payload?.jobs) ? payload.jobs : []);
@@ -114,3 +114,4 @@ for (const dir of ["docs/data", "public/data", "web-vue/public/data"]) {
   writeJson(path.join(ROOT, dir, "site-stats.json"), siteStats);
   console.log(`Rebuilt ${dir}: ${r.sources} source chunks, ${r.totalJobs} jobs`);
 }
+console.log("\nNext: node scripts/verify-data-sync.js (confirms these now match public/jobs.json exactly -- issue #164)");

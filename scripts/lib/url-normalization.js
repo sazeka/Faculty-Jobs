@@ -112,6 +112,16 @@ export function hasDuplicateWorkdayJobSegments(input) {
   return matches.length > 1;
 }
 
+// A URL whose hostname is literally a bare protocol scheme word ("https",
+// "http") is unusable, even though `new URL()` accepts it as a syntactically
+// valid hostname (issue #157). This shape shows up when a source page
+// authors a protocol-relative href with a garbled/templated authority
+// segment (e.g. "//https/some-file.pdf") -- resolving that against any base
+// URL takes "https" as the hostname per the WHATWG URL algorithm, producing
+// exactly "https://https/...". Doubled-scheme hosts like "http" behave the
+// same way and are rejected for the same reason.
+const PROTOCOL_TOKEN_HOSTNAME_RE = /^https?$/i;
+
 export function canonicalizeUrl(input, { stripQuery = true } = {}) {
   const raw = clean(input);
   if (!raw) return null;
@@ -129,6 +139,7 @@ export function canonicalizeUrl(input, { stripQuery = true } = {}) {
   }
 
   if (!/^https?:$/i.test(parsed.protocol)) return null;
+  if (PROTOCOL_TOKEN_HOSTNAME_RE.test(parsed.hostname)) return null;
 
   parsed.protocol = "https:";
   parsed = resolvePeopleAdminBookmarkUrl(parsed);
