@@ -193,6 +193,7 @@ function applyPostQualityGates(data) {
     resource_page_url: 0,
     administrative_staff_title: 0,
     student_service_title: 0,
+    filled_compliance_notice: 0,
   };
 
   for (const job of data.jobs) {

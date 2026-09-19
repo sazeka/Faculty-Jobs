@@ -16,6 +16,17 @@ const SEARCH_PAGE_CHROME_TITLE_RE = /^(?:faculty (?:&|and|\+) staff(?: jobs| res
 // a real posting that happens to also mention e.g. a video interview isn't
 // caught.
 const FACULTY_RESOURCE_KEYWORD_RE = /\b(?:faculty|academic)\b[^.!?]*\b(?:directory|directories|biograph(?:y|ies)|overview|videos?)\b/i
+// Explicit appointment-form prefixes that name a real role being recruited
+// take precedence over FACULTY_RESOURCE_KEYWORD_RE, even though the rest of
+// the title may include a word ("Video", "Overview") the resource-keyword
+// heuristic would otherwise treat as directory/marketing-page evidence
+// (issue #149 -- e.g. "Adjunct Faculty, Film and Video" or "Adjunct Faculty,
+// Online Course (SPAC 500 - Overview of the Space Ecosystem...)"). Narrowly
+// scoped to these two well-established posting-title conventions (see
+// STRONG_ACADEMIC_TITLE_RE / EVERGREEN_POOL_RE for the "Applicant Pool"
+// convention already recognized elsewhere in this codebase) so it doesn't
+// blanket-exempt every title starting with the word "faculty".
+const EXPLICIT_ADJUNCT_APPOINTMENT_RE = /^(?:adjunct faculty\b|applicant pool for adjunct faculty\b)/i
 // Informational "how to apply" / applicant-guidance pages name faculty
 // applicants as an audience, not a specific position (issue #129 -- St.
 // John's College "Information for Santa Fe Faculty Applicants"). Restricted
@@ -73,6 +84,41 @@ const AGE_FRESHNESS_TIERS = [
   { years: 1, code: 'aging_posting_no_evergreen_signal', severity: 'info', deduction: 10 },
 ]
 const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000
+// A Department of Labor / OFLC "Notice of Filing" is a mandatory compliance
+// posting for a position that has already been filled -- not an open
+// vacancy (issue #150). The title phrase alone is decisive (it's a specific,
+// fixed regulatory-artifact label that doesn't occur in real appointment
+// titles). At least one confirmed example (a UW-Eau Claire orchestra
+// director posting) omits the phrase from its title entirely, so the same
+// signal is also recognized from the description's own boilerplate: the
+// combination of "position has been filled" with either "posting is
+// mandatory" or an explicit Department of Labor reference. Requiring both
+// halves of that combination (rather than "position has been filled" alone)
+// keeps this scoped to the specific compliance-notice pattern the issue
+// describes, not any closed/filled posting in general.
+const NOTICE_OF_FILING_TITLE_RE = /\bnotice of filing\b/i
+// Deliberately "has been filled" only, not "is filled" -- ordinary open
+// postings routinely say applications will be reviewed "until the position
+// is filled" (a still-open, ongoing search), which is the opposite meaning
+// of the compliance notice's "please do not apply ... it has been filled."
+const FILLED_COMPLIANCE_NOTICE_RE = /\bposition\s+(?:as\s+it\s+)?has\s+been\s+filled\b/i
+const MANDATORY_COMPLIANCE_LANGUAGE_RE = /\bposting\s+is\s+mandatory\b|\brequired?\s+by\s+(?:the\s+)?(?:u\.?s\.?\s+)?department\s+of\s+labor\b|\bmeet\s+a\s+(?:united\s+states\s+|u\.?s\.?\s+)?department\s+of\s+labor\s+requirement\b/i
+// "Faculty & Staff" / "Faculty and Staff" / "Faculty + Staff" page titles are
+// almost always directories, portals, handbooks, benefits pages, or rosters
+// -- not a specific role being recruited (issue #153). An explicit
+// appointment/hiring term in the title (or an already-recognized strong
+// academic title) overrides this: it means the title is a real posting that
+// merely uses inclusive "faculty and staff" audience language (e.g. benefits
+// eligibility), matching the issue's own audit methodology, which excluded
+// titles containing "professor, lecturer, instructor, position, job,
+// employment, opening" from its confirmed false-positive count.
+const FACULTY_STAFF_RESOURCE_TITLE_RE = /\bfaculty\s*(?:&|and|\+)\s*staff\b/i
+const FACULTY_STAFF_APPOINTMENT_OVERRIDE_RE = /\b(?:professors?|lecturers?|instructors?|positions?|jobs?|employment|openings?|appointments?|adjuncts?|vacanc(?:y|ies)|hiring|tenure(?:d|[- ]track)?)\b/i
+
+function isFilledComplianceNotice(title, description) {
+  if (NOTICE_OF_FILING_TITLE_RE.test(title)) return true
+  return FILLED_COMPLIANCE_NOTICE_RE.test(description) && MANDATORY_COMPLIANCE_LANGUAGE_RE.test(description)
+}
 
 function hasDeanAppointmentTitle(title) {
   return DEAN_TITLE_RE.test(title) && !DEAN_REPORTING_RELATIONSHIP_RE.test(title)
@@ -233,18 +279,28 @@ export function scorePost(job, { today = new Date() } = {}) {
   }
 
   const hasStrongAcademicTitle = STRONG_ACADEMIC_TITLE_RE.test(title) || hasDeanAppointmentTitle(title)
+  const isExplicitAdjunctAppointment = EXPLICIT_ADJUNCT_APPOINTMENT_RE.test(title)
+  const isFacultyStaffResourcePage =
+    FACULTY_STAFF_RESOURCE_TITLE_RE.test(title)
+    && !hasStrongAcademicTitle
+    && !FACULTY_STAFF_APPOINTMENT_OVERRIDE_RE.test(title)
   const isFacultyResourceOrMarketingTitle =
     RESOURCE_TITLE_RE.test(title)
     || (SEARCH_PAGE_CHROME_TITLE_RE.test(title) && classifyLink(url) === 'search-page')
-    || (FACULTY_RESOURCE_KEYWORD_RE.test(title) && !hasStrongAcademicTitle)
+    || (FACULTY_RESOURCE_KEYWORD_RE.test(title) && !hasStrongAcademicTitle && !isExplicitAdjunctAppointment)
     || APPLICANT_INFORMATION_PAGE_RE.test(title)
     || CAMPUS_VISIT_MARKETING_RE.test(title)
+    || isFacultyStaffResourcePage
   if (isFacultyResourceOrMarketingTitle) {
     addReason(reasons, dimensions, 'resource_page_title', 'error', 'relevance', 100, 'The title names a faculty resource, directory, or marketing page rather than an appointment.')
     hardQuarantine = true
   }
   if (TEST_OR_PLACEHOLDER_TITLE_RE.test(title)) {
     addReason(reasons, dimensions, 'test_or_placeholder_posting', 'error', 'relevance', 100, 'The title indicates a test record or explicitly instructs applicants not to apply.')
+    hardQuarantine = true
+  }
+  if (isFilledComplianceNotice(title, description)) {
+    addReason(reasons, dimensions, 'filled_compliance_notice', 'error', 'relevance', 100, 'The posting is a mandatory Department of Labor compliance notice for a position that has already been filled.')
     hardQuarantine = true
   }
   if (reviewedFalsePositive) {
@@ -385,6 +441,7 @@ export function confirmedNonFacultyReason(job, options = {}) {
   const codes = new Set(quality.reasons.map((reason) => reason.code))
   if (codes.has('resource_page_title')) return 'resource_page_title'
   if (codes.has('test_or_placeholder_posting')) return 'test_or_placeholder_posting'
+  if (codes.has('filled_compliance_notice')) return 'filled_compliance_notice'
   if (codes.has('administrative_staff_title')) return 'administrative_staff_title'
   if (codes.has('student_service_title')) return 'student_service_title'
   if (codes.has('resource_page_url') && !quality.academicAppointment) return 'resource_page_url'
