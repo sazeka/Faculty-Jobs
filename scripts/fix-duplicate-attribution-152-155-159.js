@@ -96,6 +96,17 @@ function requisitionIdFromUrl(url) {
   return m ? m[1].toUpperCase() : null;
 }
 
+// The Workday URL path segment right after "/job/" is the tenant's own
+// location slug for that requisition (e.g. "Philadelphia---Hawk-Hill",
+// "Lancaster"), independent of whichever regional source scraped it or what
+// label that source assigned. Two copies of the same requisition sharing an
+// identical slug are provably the same real-world location, regardless of
+// what their `location`/`college` fields say.
+function urlLocationSlug(url) {
+  const m = clean(url).match(/\/job\/([^/]+)\//);
+  return m ? m[1] : null;
+}
+
 const source = JSON.parse(fs.readFileSync(path.join(ROOT, TARGETS[0]), "utf8"));
 let jobs = source.jobs;
 const before = jobs.length;
@@ -177,6 +188,26 @@ for (const group of sjuGroups.values()) {
   const real = group.filter((j) => !isSelfReferentialLocation(j.location, j.college));
   const placeholders = group.filter((j) => isSelfReferentialLocation(j.location, j.college));
   if (real.length !== 1 || placeholders.length !== group.length - 1) {
+    // Fallback: a locale-duplicate pair (canonical vs. "/en-US/" URL) whose
+    // Lancaster-labeled copy's placeholder location is a bare city string
+    // (e.g. "Lancaster, PA") rather than the fully self-referential
+    // "<college name>, ST" this migration was originally built against --
+    // both scraped variants surface under different location-string shapes
+    // depending on when they were captured. Detectable independently of
+    // either copy's `location` field: both copies share the exact same
+    // Workday URL location slug (the true, page-derived location), and that
+    // slug itself says nothing about Lancaster -- so the Lancaster label is
+    // provably wrong, not just unverified.
+    if (group.length === 2) {
+      const phil = group.find((j) => j.college === SJU_PHILADELPHIA);
+      const lanc = group.find((j) => j.college === SJU_LANCASTER);
+      const philSlug = phil && urlLocationSlug(phil.url);
+      const lancSlug = lanc && urlLocationSlug(lanc.url);
+      if (phil && lanc && philSlug && philSlug === lancSlug && !/lancaster/i.test(philSlug)) {
+        sjuJobsToDrop.add(lanc);
+        continue;
+      }
+    }
     sjuAmbiguousGroups.push(group.map((j) => ({ url: j.url, title: clean(j.title), college: j.college, location: clean(j.location) })));
     continue;
   }
