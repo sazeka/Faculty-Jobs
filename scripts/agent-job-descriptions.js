@@ -20,7 +20,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { chromium } from "playwright";
-import { extractStartDate } from "./lib/start-date.js";
+import { extractStartDate, isImplausibleStartDate } from "./lib/start-date.js";
 import {
   DESCRIPTION_FETCH_VERSION,
   DESCRIPTION_MAX_LENGTH,
@@ -233,6 +233,7 @@ async function main() {
   let deadlineFilled = 0;
   let rollingFilled = 0;
   let startFilled = 0;
+  let staleStartDateSkipped = 0;
   let attempted = 0;
   let nextIdx = 0;
   let sinceSave = 0;
@@ -489,9 +490,16 @@ async function main() {
         target.descriptionFetchVersion = DESCRIPTION_FETCH_VERSION;
       }
       // Soft "anticipated start date" parsed from the posting body (free text).
+      // Compare against whichever datePosted will actually apply to this
+      // record (an already-stored one wins; otherwise the value this same
+      // pass is about to fill in below) so a recycled/stale posting whose
+      // "Desired Start Date" predates when it was actually posted never gets
+      // written as a bogus future "Anticipated start" (issue #156).
       if (!target.startDate) {
         const sd = extractStartDate(desc || target.description || "");
-        if (sd) { target.startDate = sd; startFilled++; }
+        const effectiveDatePosted = target.datePosted || normalizeDate(datePosted) || "";
+        if (sd && !isImplausibleStartDate(sd, effectiveDatePosted)) { target.startDate = sd; startFilled++; }
+        else if (sd) { staleStartDateSkipped++; }
       }
       if (datePosted && !target.datePosted) {
         const nd = normalizeDate(datePosted);
@@ -549,6 +557,7 @@ async function main() {
     datePostedFilledThisRun: datedFilled,
     openDateFilledThisRun: openDateFilled,
     startDateFilledThisRun: startFilled,
+    staleStartDateSkippedThisRun: staleStartDateSkipped,
     totalWithStartDate: payload.jobs.filter((j) => j.startDate).length,
     deadlineFilledThisRun: deadlineFilled,
     rollingFilledThisRun: rollingFilled,
@@ -567,7 +576,7 @@ async function main() {
   console.log(`  Filled this run    : ${filled} (${attempted ? ((filled / attempted) * 100).toFixed(0) : 0}%)`);
   console.log(`  datePosted found   : ${datedFilled} (${attempted ? ((datedFilled / attempted) * 100).toFixed(0) : 0}%)  [${openDateFilled} via labeled Open Date]`);
   console.log(`  deadlines found    : ${deadlineFilled} (${attempted ? ((deadlineFilled / attempted) * 100).toFixed(0) : 0}%)  [+${rollingFilled} rolling/until-filled]`);
-  console.log(`  start dates found  : ${startFilled} (${attempted ? ((startFilled / attempted) * 100).toFixed(0) : 0}%)`);
+  console.log(`  start dates found  : ${startFilled} (${attempted ? ((startFilled / attempted) * 100).toFixed(0) : 0}%)  [${staleStartDateSkipped} rejected as stale/implausible]`);
   console.log(`  Total w/ description: ${totalWithDescription.toLocaleString()} / ${payload.jobs.length.toLocaleString()}`);
   console.log(`  Remaining missing  : ${remaining.toLocaleString()}`);
   console.log(`  Eligible next run  : ${eligibleRemaining.toLocaleString()}`);

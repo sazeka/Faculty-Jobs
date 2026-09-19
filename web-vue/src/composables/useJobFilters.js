@@ -8,6 +8,7 @@ import { normalizeSearchText } from '../../../scripts/lib/jobs-search-index.js'
 import { deriveCandidateFields } from '../../../scripts/lib/job-candidate-fields.js'
 import { cleanDepartment } from '../../../scripts/lib/department-clean.js'
 import { isChallengeDescription } from '../../../scripts/lib/description-quality.js'
+import { isImplausibleStartDate } from '../../../scripts/lib/start-date.js'
 
 export { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
 
@@ -427,7 +428,12 @@ function normalizeJob(job) {
     openUntilFilled: Boolean(job?.openUntilFilled),
     closeDateRaw: job?.closeDateRaw || null,
     closeDate: job?.closeDate || null,
-    startDate: job?.startDate || null,
+    // A stale/recycled posting's "Anticipated start" can predate when it was
+    // actually posted by months or years (issue #156) -- suppress displaying
+    // it as a valid future start date rather than trusting the stored value
+    // outright, as a display-layer backstop alongside the write-time guard in
+    // scripts/agent-job-descriptions.js and scripts/backfill-start-dates.js.
+    startDate: isImplausibleStartDate(job?.startDate, datePosted) ? null : (job?.startDate || null),
     // Closed = a real close date in the past, and not an open-until-filled
     // (rolling) posting. Used to default-hide expired listings.
     isClosed: Boolean(job?.closeDate && !job?.openUntilFilled && String(job.closeDate) < TODAY_ISO),
