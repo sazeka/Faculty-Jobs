@@ -110,9 +110,11 @@ function save(payload) {
 }
 
 async function main() {
+  const { isMissingDiscipline } = await import('./lib/discipline-normalize.js');
+
   const payload = JSON.parse(fs.readFileSync(PUBLIC_JOBS, 'utf8'));
   const jobs = payload.jobs;
-  const targets = jobs.filter(j => j.positionType === 'Other' || j.discipline === undefined);
+  const targets = jobs.filter(j => j.positionType === 'Other' || isMissingDiscipline(j.discipline));
   console.log(`Re-enrich targets: ${targets.length} (positionType=Other or never-enriched) of ${jobs.length}`);
 
   const stats = { batches: 0, ptRecovered: 0, ttRecovered: 0, items: 0, dropped: 0, errors: 0 };
@@ -137,14 +139,20 @@ async function main() {
       const r = results[i] || {};
       const newPT = coercePositionType(r.positionType);
       const newTT = coerceTenureTrack(r.tenureTrack);
+      const hadNoTenure = job.tenureTrack === null || job.tenureTrack === undefined || job.tenureTrack === 'unknown';
       if (job.positionType === 'Other' && newPT !== 'Other') stats.ptRecovered++;
-      if (job.tenureTrack === 'unknown' && newTT !== 'unknown') stats.ttRecovered++;
+      if (hadNoTenure && newTT !== 'unknown') stats.ttRecovered++;
       job.positionType = newPT;
-      job.tenureTrack = newTT;
+      // Write the canonical boolean/null public representation (issue #163)
+      // instead of the legacy "tenure-track"/"non-tenure-track"/"unknown"
+      // string enum.
+      job.tenureTrack = newTT === 'unknown' ? null : newTT === 'tenure-track';
       // Only overwrite discipline with a real value; never replace an existing
-      // discipline with null from a re-classification.
+      // discipline with null from a re-classification. isMissingDiscipline()
+      // (issue #148) also normalizes a lingering "null"/"Unknown"/"unknown"
+      // placeholder string to real null when no better value is available.
       if (r.discipline != null && String(r.discipline).length) job.discipline = r.discipline;
-      else if (job.discipline === undefined) job.discipline = null;
+      else if (isMissingDiscipline(job.discipline)) job.discipline = null;
       stats.items++;
     }
     stats.batches++;
