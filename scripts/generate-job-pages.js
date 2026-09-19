@@ -24,6 +24,7 @@ import { buildInstitutionIndex, lookupInstitution } from "./lib/institution-look
 import { MIN_STATE_JOBS, MIN_INSTITUTION_JOBS, DISCIPLINE_SKIP } from "./lib/hub-thresholds.js";
 import { getDiscipline, inferState, normalizeSystemCollege } from "../web-vue/src/composables/useJobFilters.js";
 import { derivePositionTypes, deriveTenureTrack, deriveEmploymentType } from "./lib/job-posting-classification.js";
+import { isMissingDiscipline, normalizeDisciplineValue } from "./lib/discipline-normalize.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -71,7 +72,10 @@ function tagList(job) {
   const tenureTrack = deriveTenureTrack(job);
   if (tenureTrack === true) tags.push("Tenure-Track");
   else if (tenureTrack === false) tags.push("Non-Tenure");
-  if (job.discipline) tags.push(job.discipline);
+  // Never surface a "null"/"Unknown" placeholder string as a real tag
+  // (issue #148) -- normalizeDisciplineValue() collapses those to null.
+  const discipline = normalizeDisciplineValue(job.discipline);
+  if (discipline) tags.push(discipline);
   return tags;
 }
 
@@ -258,7 +262,11 @@ function isRealPosting(j) {
   if (!j || !j.title || !j.url) return false;
   if (String(j.description || "").length < MIN_DESC) return false;
   if (NON_JOB_TITLE.test(j.title)) return false;
-  const unclassified = (j.discipline == null) && (!j.positionType || j.positionType === "Other");
+  // isMissingDiscipline() (issue #148) also treats "null"/"Unknown"/"unknown"
+  // placeholder strings as unclassified, not just real null/undefined --
+  // otherwise a job stuck with one of those strings would count as
+  // "classified" here and get a JobPosting page with a fake discipline tag.
+  const unclassified = isMissingDiscipline(j.discipline) && (!j.positionType || j.positionType === "Other");
   return !unclassified;
 }
 const jobs = allJobs.filter(isRealPosting).slice(0, LIMIT);

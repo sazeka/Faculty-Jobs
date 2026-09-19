@@ -1,12 +1,13 @@
+import { normalizeDisciplineValue } from "./discipline-normalize.js";
+
 // The scraped `discipline` field is either a specific value (e.g. "Nursing",
 // "Computer Science") or absent/placeholder for the ~80% of listings no
-// enrichment pass has classified yet. Treat both `null` and the literal
-// string "null" (seen from a handful of sources that serialize it that way)
-// as unclassified rather than as a discipline called "null".
+// enrichment pass has classified yet. Delegates to the shared missing-value
+// check (issue #148) so "null", "Unknown"/"unknown", and blank values are all
+// treated as unclassified here too, not just the literal string "null" this
+// function used to catch on its own.
 export function normalizeDiscipline(raw) {
-  const value = String(raw ?? "").trim();
-  if (!value || value.toLowerCase() === "null") return null;
-  return value;
+  return normalizeDisciplineValue(raw);
 }
 
 export function computeDisciplineBreakdown(jobs = []) {

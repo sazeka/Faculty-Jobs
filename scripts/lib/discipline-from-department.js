@@ -18,6 +18,8 @@
 // ever coincidentally equal a term the model has validated as an academic
 // field, so the false-positive surface collapses to near zero.
 
+import { isMissingDiscipline } from './discipline-normalize.js';
+
 // Values that occasionally leak into `discipline` from earlier AI passes but
 // are not actually academic fields -- excluded from the reuse vocabulary so
 // they're never propagated onto more jobs.
@@ -60,7 +62,11 @@ export function cleanDepartmentText(raw) {
 
 export function isKnownDisciplineValue(value) {
   const s = String(value || '').trim();
-  if (!s || s.length < 3 || s.toLowerCase() === 'null') return false;
+  // Delegates the "is this a missing-value placeholder?" check to the shared
+  // helper (issue #148) so "null", "Unknown"/"unknown", and "undefined" are
+  // all excluded from the reused vocabulary, not just the literal "null"
+  // this used to check on its own.
+  if (!s || s.length < 3 || isMissingDiscipline(s)) return false;
   return !NON_DISCIPLINE_VALUES.has(s.toLowerCase());
 }
 

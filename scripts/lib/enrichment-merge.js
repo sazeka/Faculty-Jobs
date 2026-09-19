@@ -10,6 +10,30 @@
 // so a still-posted job keeps its enrichment and only genuinely-new jobs need
 // the (local/periodic) enricher.
 
+import { isMissingDiscipline } from "./discipline-normalize.js";
+
+// A legacy "tenure-track"/"non-tenure-track" string sitting in a previous
+// snapshot must not be carried forward verbatim (issue #163) -- otherwise a
+// bad representation from before the write-path fix could persist across
+// scrapes indefinitely even after every code path that originally wrote it
+// has been fixed. Booleans and null pass through unchanged.
+function normalizeCarriedTenureTrack(value) {
+  if (value === "tenure-track") return true;
+  if (value === "non-tenure-track") return false;
+  return value;
+}
+
+// Per-field adjustment applied to the PREVIOUS snapshot's value before it is
+// considered for carry-forward. discipline: a "null"/"Unknown"/"unknown"
+// placeholder string (issue #148) is treated as if it were empty, so it is
+// never restored onto a fresh job -- that job stays genuinely missing a
+// discipline and remains eligible for the next enrichment pass, instead of
+// being stuck with the placeholder forever. tenureTrack: see above.
+const CARRY_TRANSFORMS = {
+  discipline: (value) => (isMissingDiscipline(value) ? undefined : value),
+  tenureTrack: normalizeCarriedTenureTrack,
+};
+
 export const ENRICHMENT_FIELDS = ["discipline", "tenureTrack", "positionType"];
 export const ENRICHMENT_METADATA_FIELDS = ["tenureEvidence"];
 export const DESCRIPTION_FIELDS = [
@@ -73,9 +97,11 @@ export function preserveEnrichment(newData, prevData, fields = CARRIED_FIELDS) {
     matched += 1;
     let next = job;
     for (const f of fields) {
-      if (isEmpty(job[f]) && !isEmpty(prev[f])) {
+      const transform = CARRY_TRANSFORMS[f];
+      const carriedValue = transform ? transform(prev[f]) : prev[f];
+      if (isEmpty(job[f]) && !isEmpty(carriedValue)) {
         if (next === job) next = { ...job }; // copy-on-write so unmatched jobs stay ===
-        next[f] = prev[f];
+        next[f] = carriedValue;
         restoredFields += 1;
       }
     }

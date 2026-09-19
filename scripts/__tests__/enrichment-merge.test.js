@@ -23,9 +23,11 @@ test("fills enrichment on a fresh job that matches by canonicalJobId", () => {
   assert.equal(r.matched, 1);
   assert.equal(r.jobsTouched, 1);
   assert.equal(r.restoredFields, 3);
+  // tenureTrack is normalized from the legacy "tenure-track" string to the
+  // canonical boolean as it is carried forward (issue #163).
   assert.deepEqual(
     ENRICHMENT_FIELDS.map((f) => r.data.jobs[0][f]),
-    ["Biology", "tenure-track", "Assistant Professor"]
+    ["Biology", true, "Assistant Professor"]
   );
 });
 
@@ -56,7 +58,25 @@ test("treats empty string / null as missing and fills them", () => {
   };
   const r = preserveEnrichment(fresh, prev);
   assert.equal(r.data.jobs[0].discipline, "Biology");
-  assert.equal(r.data.jobs[0].tenureTrack, "tenure-track");
+  assert.equal(r.data.jobs[0].tenureTrack, true);
+});
+
+test("normalizes a legacy non-tenure-track string to boolean false as it is carried forward", () => {
+  const prev = { jobs: [enriched({ tenureTrack: "non-tenure-track" })] };
+  const fresh = { jobs: [{ canonicalJobId: "job_aaa", url: "https://x/1" }] };
+  const r = preserveEnrichment(fresh, prev);
+  assert.equal(r.data.jobs[0].tenureTrack, false);
+});
+
+test("does not carry forward a 'null'/'Unknown' placeholder discipline string (issue #148)", () => {
+  const prev = { jobs: [enriched({ discipline: "null" })] };
+  const fresh = { jobs: [{ canonicalJobId: "job_aaa", url: "https://x/1" }] };
+  const r = preserveEnrichment(fresh, prev);
+  assert.equal(r.data.jobs[0].discipline, undefined, "left genuinely missing, not stuck with the placeholder");
+
+  const prevUnknown = { jobs: [enriched({ discipline: "Unknown" })] };
+  const rUnknown = preserveEnrichment(fresh, prevUnknown);
+  assert.equal(rUnknown.data.jobs[0].discipline, undefined);
 });
 
 test("leaves genuinely-new jobs (no match) untouched and identity-stable", () => {

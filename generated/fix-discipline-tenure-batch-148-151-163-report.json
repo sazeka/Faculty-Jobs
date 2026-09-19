@@ -1,0 +1,478 @@
+{
+  "generatedAt": "2026-09-19T14:53:38.192Z",
+  "dryRun": false,
+  "totalJobs": 22477,
+  "issue148": {
+    "description": "Literal null/Unknown/unknown discipline strings normalized to real null, then backfilled where a deterministic department-vocabulary match exists.",
+    "placeholderStringsNormalized": 1057,
+    "placeholderBreakdown": {
+      "null": 1004,
+      "Unknown": 15,
+      "unknown": 38
+    },
+    "deterministicallyBackfilled": 288,
+    "backfillSamples": [
+      {
+        "url": "https://www.iwu.edu/human-resources/job-openings/2027-28-assistant-professor-of-scenic-design.html",
+        "title": "Assistant Professor of Scenic Design",
+        "department": "Scenic Design",
+        "discipline": "Scenic Design"
+      },
+      {
+        "url": "https://yourfuture.sdbor.edu/postings/49810",
+        "title": "Accounting Assistant Professor or Assistant Professor of Practice",
+        "department": "Practice",
+        "discipline": "Practice"
+      },
+      {
+        "url": "https://www.schooljobs.com/careers/blueridgectc/jobs/2209819/adjunct-computer-application-specialist-program",
+        "title": "Adjunct - Computer Application Specialist Program",
+        "department": "Workforce Development & Engineering Technologies",
+        "discipline": "Workforce Development & Engineering Technologies"
+      },
+      {
+        "url": "https://southtexascollege.wd12.myworkdayjobs.com/STC/job/Pecan-Campus-McAllen-Texas/Adjunct---Computer-Science_JR101451",
+        "title": "Adjunct - Computer Science",
+        "department": "Computer Science",
+        "discipline": "Computer Science"
+      },
+      {
+        "url": "https://hc.edu/about-hcu/campus-resources/job-opportunities?marvel-activate=false&jobId=1adde18c-b5d1-6911-f15f-dbd8ab9093fd",
+        "title": "Adjunct - Electrical Engineering",
+        "department": "Electrical Engineering",
+        "discipline": "Electrical Engineering"
+      },
+      {
+        "url": "https://marymount.wd5.myworkdayjobs.com/Careers/job/Main-Campus/Adjunct---Political--Science_R3220",
+        "title": "Adjunct - Political Science",
+        "department": "Political Science",
+        "discipline": "Political Science"
+      },
+      {
+        "url": "https://www.schooljobs.com/careers/sbccd/jobs/4068407/adjunct-professor-culinary-arts",
+        "title": "Adjunct - Professor, Culinary Arts",
+        "department": "Culinary Arts",
+        "discipline": "Culinary Arts"
+      },
+      {
+        "url": "https://www.schooljobs.com/careers/sbccd/jobs/4068704/adjunct-professor-dance",
+        "title": "Adjunct - Professor, Dance",
+        "department": "Dance",
+        "discipline": "Dance"
+      },
+      {
+        "url": "https://www.schooljobs.com/careers/sbccd/jobs/4153072/adjunct-professor-human-services",
+        "title": "Adjunct - Professor, Human Services",
+        "department": "Social Science",
+        "discipline": "Social Science"
+      },
+      {
+        "url": "https://www.schooljobs.com/careers/sbccd/jobs/4068847/adjunct-professor-hvac-r",
+        "title": "Adjunct - Professor, HVAC/R",
+        "department": "Applied Technology",
+        "discipline": "Applied Technology"
+      },
+      {
+        "url": "https://www.schooljobs.com/careers/sbccd/jobs/4069187/adjunct-professor-sociology",
+        "title": "Adjunct - Professor, Sociology",
+        "department": "Social Science",
+        "discipline": "Social Science"
+      },
+      {
+        "url": "https://carthage.applicantpro.com/jobs/4168940",
+        "title": "Adjunct Assistant Professor, History",
+        "department": "History",
+        "discipline": "History"
+      },
+      {
+        "url": "https://ivytech.wd1.myworkdayjobs.com/Ivy_Tech_Careers/job/South-Bend-IN/Adjunct-Faculty---Anatomy---Physiology_JR0000109631",
+        "title": "Adjunct Faculty - Anatomy & Physiology",
+        "department": "Anatomy & Physiology",
+        "discipline": "Anatomy & Physiology"
+      },
+      {
+        "url": "https://ivytech.wd1.myworkdayjobs.com/Ivy_Tech_Careers/job/South-Bend-IN/Adjunct-Faculty---Building-Construction-Technology_JR0000108211",
+        "title": "Adjunct Faculty - Building Construction Technology",
+        "department": "Building Construction Technology",
+        "discipline": "Building Construction Technology"
+      },
+      {
+        "url": "https://espf.fa.ocs.oraclegovcloud2.com/hcmUI/CandidateExperience/en/sites/CX_1/job/84",
+        "title": "Adjunct Faculty - Cyber Security",
+        "department": "Cyber Security",
+        "discipline": "Cyber Security"
+      },
+      {
+        "url": "https://www.schooljobs.com/careers/tulsacc/jobs/5171779/adjunct-faculty-cybersecurity",
+        "title": "Adjunct Faculty - Cybersecurity",
+        "department": "Workforce Development",
+        "discipline": "Workforce Development"
+      },
+      {
+        "url": "https://www.schooljobs.com/careers/tulsacc/jobs/5171786/adjunct-faculty-data-analytics",
+        "title": "Adjunct Faculty - Data Analytics",
+        "department": "Workforce Development",
+        "discipline": "Workforce Development"
+      },
+      {
+        "url": "https://jobs.jmu.edu/jobs/adjunct-faculty-department-of-biology-harrisonburg-virginia-united-states",
+        "title": "Adjunct Faculty - Department of Biology",
+        "department": "Department of Biology",
+        "discipline": "Biology"
+      },
+      {
+        "url": "https://webber.edu/wp-content/uploads/2023/03/Academics-Adjunct-English-From-Dr.-Fowler-2023-02-23-Website-Version.pdf",
+        "title": "Adjunct Faculty - English",
+        "department": "English",
+        "discipline": "English"
+      },
+      {
+        "url": "https://ivytech.wd1.myworkdayjobs.com/Ivy_Tech_Careers/job/Indianapolis-IN/Adjunct-Faculty---ESOL_JR0000108201",
+        "title": "Adjunct Faculty - ESOL",
+        "department": "ESOL",
+        "discipline": "ESOL"
+      },
+      {
+        "url": "https://careers.tbr.edu/jobs/adjunct-faculty-graphic-design-cleveland-tennessee-united-states-f6e6fb40-e896-4d1d-834c-7aab94aba354",
+        "title": "Adjunct Faculty - Graphic Design",
+        "department": "Graphic Design",
+        "discipline": "Graphic Design"
+      },
+      {
+        "url": "https://ivytech.wd1.myworkdayjobs.com/Ivy_Tech_Careers/job/Indianapolis-IN/Adjunct-Faculty---History_JR0000108110-1",
+        "title": "Adjunct Faculty - History",
+        "department": "History",
+        "discipline": "History"
+      },
+      {
+        "url": "https://spchrs.spcollege.edu/psc/GUEST/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=1000345&PostingSeq=1",
+        "title": "Adjunct Faculty - History",
+        "department": "History",
+        "discipline": "History"
+      },
+      {
+        "url": "https://ivytech.wd1.myworkdayjobs.com/Ivy_Tech_Careers/job/Indianapolis-IN/Adjunct-Faculty---Homeland-Security-Public-Safety_JR0000108092",
+        "title": "Adjunct Faculty - Homeland Security/Public Safety",
+        "department": "Homeland Security/Public Safety",
+        "discipline": "Homeland Security/Public Safety"
+      },
+      {
+        "url": "https://ivytech.wd1.myworkdayjobs.com/Ivy_Tech_Careers/job/Marion-IN/Adjunct-Faculty---Industrial-Technology_JR0000108780",
+        "title": "Adjunct Faculty - Industrial Technology",
+        "department": "Industrial Technology",
+        "discipline": "Industrial Technology"
+      }
+    ],
+    "disciplineMissingAfterThisPass": 3481,
+    "note": "Records without a department-vocabulary match remain null -- still missing a discipline, but now genuinely null (not a placeholder string), so they are correctly picked up by the next AI enrichment run."
+  },
+  "issue151": {
+    "description": "Seven confirmed contradictory-discipline records corrected by re-deriving from title/department evidence.",
+    "corrected": [
+      {
+        "found": true,
+        "url": "https://www.schooljobs.com/careers/fdtc/jobs/4989325/adjunct-biology-instructor-25-26",
+        "title": "Adjunct Biology Instructor",
+        "before": "Business",
+        "expectedBefore": "Business",
+        "matchedExpected": true,
+        "after": "Biology",
+        "evidence": "Title is Biology; description says \"Department Biology\" and requires graduate Biology coursework."
+      },
+      {
+        "found": true,
+        "url": "https://ivytech.wd1.myworkdayjobs.com/Ivy_Tech_Careers/job/Indianapolis-IN/Adjunct-Faculty---Economics_JR0000108099",
+        "title": "Adjunct Faculty - Economics",
+        "before": "Earth Science",
+        "expectedBefore": "Earth Science",
+        "matchedExpected": true,
+        "after": "Economics",
+        "evidence": "Title, department, specialization, and description all say Economics."
+      },
+      {
+        "found": true,
+        "url": "https://cdn.wou.edu/hr/files/2025/12/PF2513-Job-Announcment.pdf",
+        "title": "Adjunct Faculty – Sociology",
+        "before": "Spanish",
+        "expectedBefore": "Spanish",
+        "matchedExpected": true,
+        "after": "Sociology",
+        "evidence": "Title and stored department both say Sociology."
+      },
+      {
+        "found": true,
+        "url": "https://uscjobs.sc.edu/postings/161443",
+        "title": "Adjunct Faculty in Art Education/Art History",
+        "before": "Computer Science",
+        "expectedBefore": "Computer Science",
+        "matchedExpected": true,
+        "after": "Art History",
+        "evidence": "Title, department, and source page say Art Education/Art History."
+      },
+      {
+        "found": true,
+        "url": "https://aims.wd1.myworkdayjobs.com/Jobs/job/Greeley-CO/Adjunct-Faculty--Chemistry_R1606-2",
+        "title": "Adjunct Faculty: Chemistry",
+        "before": "Computer Information Systems",
+        "expectedBefore": "Computer Information Systems",
+        "matchedExpected": true,
+        "after": "Chemistry",
+        "evidence": "The single-subject title and Workday requisition path both say Chemistry."
+      },
+      {
+        "found": true,
+        "url": "https://aims.wd1.myworkdayjobs.com/Jobs/job/Greeley-CO/Adjunct-Faculty--Economics_R1670-2",
+        "title": "Adjunct Faculty: Economics",
+        "before": "Computer Science",
+        "expectedBefore": "Computer Science",
+        "matchedExpected": true,
+        "after": "Economics",
+        "evidence": "The single-subject title and Workday requisition path both say Economics."
+      },
+      {
+        "found": true,
+        "url": "https://indiana.peopleadmin.com/postings/32497",
+        "title": "Postdoctoral Fellow in Quantum Physics",
+        "before": "Psychology",
+        "expectedBefore": "Psychology",
+        "matchedExpected": true,
+        "after": "Physics",
+        "evidence": "Title, department, and description all say Quantum Physics."
+      }
+    ],
+    "advisoryAuditFindings": {
+      "description": "Broader scripts/lib/discipline-consistency-audit.js scan of the full dataset, for manual review only -- NOT auto-applied. See module comment for the false-positive risk on longer/compound titles.",
+      "count": 24,
+      "findings": [
+        {
+          "title": "Adjunct Faculty - Accounting",
+          "storedDiscipline": "Business & Information Technology",
+          "suggestedDisciplines": [
+            "Accounting"
+          ],
+          "url": "https://www.schooljobs.com/careers/tulsacc/jobs/4067995/adjunct-faculty-accounting",
+          "college": "Tulsa Community College"
+        },
+        {
+          "title": "Adjunct Faculty - College of Natural Sciences and Mathematics , Anatomy and Physiology",
+          "storedDiscipline": "Anatomy and Physiology",
+          "suggestedDisciplines": [
+            "Mathematics"
+          ],
+          "url": "https://www.lr.edu/work-at-lr/adjunct-anatomy-and-physiology-college-natural-sciences-and-mathematics",
+          "college": "Lenoir-Rhyne University"
+        },
+        {
+          "title": "Adjunct Faculty - Department of Computer Science, Engineering, Mathematics, Physics, and Statistics",
+          "storedDiscipline": "Engineering",
+          "suggestedDisciplines": [
+            "Mathematics",
+            "Physics"
+          ],
+          "url": "https://jobs.apu.edu/job-detail.cfm?id=1037",
+          "college": "Azusa Pacific University"
+        },
+        {
+          "title": "Adjunct Faculty - Ethics/Philosophy",
+          "storedDiscipline": "Computer Science",
+          "suggestedDisciplines": [
+            "Philosophy"
+          ],
+          "url": "https://careers.tbr.edu/jobs/adjunct-faculty-ethics-philosophy-cleveland-tennessee-united-states-ef6f8f93-c072-4595-917f-282e32d5d9fc",
+          "college": "Cleveland State Community College"
+        },
+        {
+          "title": "Adjunct Faculty - Leung School of Accounting and Finance",
+          "storedDiscipline": "Accounting",
+          "suggestedDisciplines": [
+            "Finance"
+          ],
+          "url": "https://jobs.apu.edu/job-detail.cfm?id=1085",
+          "college": "Azusa Pacific University"
+        },
+        {
+          "title": "Adjunct Faculty - Physical Sciences, Chemistry and Physics",
+          "storedDiscipline": "Physical Sciences",
+          "suggestedDisciplines": [
+            "Chemistry",
+            "Physics"
+          ],
+          "url": "https://ivytech.wd1.myworkdayjobs.com/Ivy_Tech_Careers/job/Lafayette-IN/Adjunct-Faculty---Physical-Sciences--Chemistry-and-Physics_JR0000108233",
+          "college": "Ivy Tech Community College"
+        },
+        {
+          "title": "Adjunct Faculty – Economics",
+          "storedDiscipline": "Business",
+          "suggestedDisciplines": [
+            "Economics"
+          ],
+          "url": "https://careers.lctcs.edu/jobs/495380/adjunct-faculty-economics",
+          "college": "Baton Rouge Community College"
+        },
+        {
+          "title": "Adjunct Faculty – Spanish",
+          "storedDiscipline": "Teacher Education Generalist",
+          "suggestedDisciplines": [
+            "Spanish"
+          ],
+          "url": "https://cdn.wou.edu/hr/files/2025/10/PF2510-Job-Announcment.pdf",
+          "college": "Western Oregon University"
+        },
+        {
+          "title": "Adjunct Faculty in Agriculture/Biology/Chemistry/Computer Science/Physics",
+          "storedDiscipline": "Agriculture",
+          "suggestedDisciplines": [
+            "Biology",
+            "Chemistry",
+            "Computer Science",
+            "Physics"
+          ],
+          "url": "https://www.cofo.edu/Portals/0/Accolades/a3883ee5-135e-4cb7-8caf-c9f4146ff953.pdf?ver=T36jCjetNKamvxeZnkgA9Q%3d%3d",
+          "college": "College of the Ozarks"
+        },
+        {
+          "title": "Adjunct Faculty in Philosophy and Religious Studies",
+          "storedDiscipline": "Nursing",
+          "suggestedDisciplines": [
+            "Philosophy"
+          ],
+          "url": "https://jobs.odu.edu/postings/26839",
+          "college": "Old Dominion University"
+        },
+        {
+          "title": "Adjunct Faculty in Political Science, Geography, and International Studies",
+          "storedDiscipline": "Geography",
+          "suggestedDisciplines": [
+            "Political Science"
+          ],
+          "url": "https://jobs.odu.edu/postings/26250",
+          "college": "Old Dominion University"
+        },
+        {
+          "title": "Adjunct Faculty-Biology",
+          "storedDiscipline": "Biological Science",
+          "suggestedDisciplines": [
+            "Biology"
+          ],
+          "url": "https://uasys.wd5.myworkdayjobs.com/UASYS/job/UAFS--University-of-Arkansas-Fort-Smith/Adjunct-Faculty-Biology_R0074673",
+          "college": "University of Arkansas System Office"
+        },
+        {
+          "title": "Adjunct Instructor - Cybersecurity and AI - Division of Computing, Analytics and Mathematics, UMKC School of Science & Engineering",
+          "storedDiscipline": "Computer Science",
+          "suggestedDisciplines": [
+            "Mathematics"
+          ],
+          "url": "https://erecruit.umsystem.edu/psc/tamext/KCITY/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=8&JobOpeningId=59655&PostingSeq=1",
+          "college": "University of Missouri-Kansas City"
+        },
+        {
+          "title": "Adjunct Instructor - Department of Political Science and Philosophy, School of Humanities and Social Sciences (Continuous Job Posting)",
+          "storedDiscipline": "Political Science",
+          "suggestedDisciplines": [
+            "Philosophy"
+          ],
+          "url": "https://erecruit.umsystem.edu/psc/tamext/KCITY/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=8&JobOpeningId=57850&PostingSeq=1",
+          "college": "University of Missouri-Kansas City"
+        },
+        {
+          "title": "Adjunct Instructor - Educational Leadership, Policy and Foundations - UMKC School of Education, Social Work, and Psychological Sciences (Continuous Posting)",
+          "storedDiscipline": "Educational Leadership, Policy and Foundations",
+          "suggestedDisciplines": [
+            "Social Work"
+          ],
+          "url": "https://erecruit.umsystem.edu/psc/tamext/KCITY/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=8&JobOpeningId=58530&PostingSeq=1",
+          "college": "University of Missouri-Kansas City"
+        },
+        {
+          "title": "Adjunct Instructor - Philosophy",
+          "storedDiscipline": "Phlebotomy (Syracus EOC)",
+          "suggestedDisciplines": [
+            "Philosophy"
+          ],
+          "url": "https://oldwestbury.interviewexchange.com/jobofferdetails.jsp?JOBID=154929",
+          "college": "SUNY Old Westbury"
+        },
+        {
+          "title": "Adjunct Instructor - Pol. Sci., History, Geography",
+          "storedDiscipline": "Political Science",
+          "suggestedDisciplines": [
+            "History"
+          ],
+          "url": "https://portal.flsouthern.edu/ICS/Employment_App#pg0%24V%24psSearch%24gvPositions%24ctl22%24ctl00",
+          "college": "Florida Southern College"
+        },
+        {
+          "title": "Adjunct Instructor - Psychology",
+          "storedDiscipline": "Sociology",
+          "suggestedDisciplines": [
+            "Psychology"
+          ],
+          "url": "https://oldwestbury.interviewexchange.com/jobofferdetails.jsp?JOBID=133326",
+          "college": "SUNY Old Westbury"
+        },
+        {
+          "title": "Adjunct Instructor – Business, Accounting, Economics, Human Resources, and Entrepreneurship",
+          "storedDiscipline": "Business",
+          "suggestedDisciplines": [
+            "Accounting",
+            "Economics"
+          ],
+          "url": "https://www.lccc.edu/about/employment/adjunct-instructor-business-accounting-economics-human-resources-and-entrepreneurship",
+          "college": "Lehigh Carbon Community College"
+        },
+        {
+          "title": "Adjunct Instructor- Nursing",
+          "storedDiscipline": "Psychology",
+          "suggestedDisciplines": [
+            "Nursing"
+          ],
+          "url": "https://www.schooljobs.com/careers/sunyjcc/jobs/5245547",
+          "college": "Jamestown Community College"
+        },
+        {
+          "title": "Adjunct Instructor- Psychology",
+          "storedDiscipline": "Computer Science",
+          "suggestedDisciplines": [
+            "Psychology"
+          ],
+          "url": "https://www.schooljobs.com/careers/sunyjcc/jobs/5309715",
+          "college": "Jamestown Community College"
+        },
+        {
+          "title": "Lecturer in Biology",
+          "storedDiscipline": "Computer Science",
+          "suggestedDisciplines": [
+            "Biology"
+          ],
+          "url": "https://indiana.peopleadmin.com/postings/33718",
+          "college": "Indiana University-South Bend"
+        },
+        {
+          "title": "Adjunct Faculty – American Government / Political Science",
+          "storedDiscipline": "American Government",
+          "suggestedDisciplines": [
+            "Political Science"
+          ],
+          "url": "https://flpoly.wd1.myworkdayjobs.com/External-Faculty/job/JD-Alexander-Florida-Polytechnic-Main-Campus/Adjunct-Faculty---American-Government---Political-Science_R2548",
+          "college": "Florida Polytechnic University"
+        },
+        {
+          "title": "Adjunct Faculty – Business, Economics, and Logistics & Supply Chain Management",
+          "storedDiscipline": "Business",
+          "suggestedDisciplines": [
+            "Economics"
+          ],
+          "url": "https://flpoly.wd1.myworkdayjobs.com/External-Faculty/job/JD-Alexander-Florida-Polytechnic-Main-Campus/Adjunct-Faculty---Business-Analytics--Logistics---Supply-Chain-Management--and-General-Business_R2557",
+          "college": "Florida Polytechnic University"
+        }
+      ]
+    }
+  },
+  "issue163": {
+    "description": "Legacy \"tenure-track\"/\"non-tenure-track\" string values converted to boolean in public/jobs.json + docs/jobs.json.",
+    "jobsJsonStringsConvertedByThisPass": 0,
+    "jobsJsonConversions": [],
+    "note": "public/jobs.json and docs/jobs.json already had zero string-valued tenureTrack records by the time this migration ran (the periodic agent-job-presence.js normalization pass -- scripts/agent-job-presence.js:258 -- had already cleaned them up); the 636 records referenced in the issue were found in the derived public/data/jobs-index.json, its per-state chunks, and the web-vue mirror, which were stale relative to public/jobs.json. This migration fixes the code (scripts/lib/jobs-listing-index.js compactListingJob()) that generates those files; run `node scripts/rebuild-data-chunks-all.js` after this script to regenerate them from the now-clean public/jobs.json and eliminate the stale strings."
+  }
+}

@@ -125,9 +125,15 @@ function save(payload) {
 }
 
 async function main() {
+  const { isMissingDiscipline } = await import('./lib/discipline-normalize.js');
+  // The public tenureTrack field is boolean/null (issue #163); "unknown" is
+  // kept here only to still recognize a stray legacy string sentinel from
+  // old data.
+  const tenureIsMissing = (v) => v === null || v === undefined || v === 'unknown';
+
   const payload = JSON.parse(fs.readFileSync(PUBLIC_JOBS, 'utf8'));
   const jobs = payload.jobs;
-  const needs = (j) => (j.tenureTrack === 'unknown' || j.discipline === null || j.discipline === undefined);
+  const needs = (j) => (tenureIsMissing(j.tenureTrack) || isMissingDiscipline(j.discipline));
   const hasDesc = (j) => String(j.description || '').trim().length > 100;
   const targets = jobs.filter(j => needs(j) && hasDesc(j));
   console.log(`Description-aware re-enrich targets: ${targets.length} (need help + have description) of ${jobs.length}`);
@@ -152,16 +158,18 @@ async function main() {
     for (let i = 0; i < n; i++) {
       const job = batch[i];
       const r = results[i] || {};
-      // tenureTrack: improve only when currently unknown.
-      if (job.tenureTrack === 'unknown') {
+      // tenureTrack: improve only when currently missing, and write the
+      // canonical boolean (issue #163) rather than the legacy string enum.
+      if (tenureIsMissing(job.tenureTrack)) {
         const newTT = coerceTenureTrack(r.tenureTrack);
-        if (newTT !== 'unknown') { job.tenureTrack = newTT; stats.ttRecovered++; }
+        if (newTT !== 'unknown') { job.tenureTrack = newTT === 'tenure-track'; stats.ttRecovered++; }
       }
-      // discipline: backfill only when currently missing and the model returned
-      // a real field (not an "unknown"/"n/a" sentinel).
-      if ((job.discipline === null || job.discipline === undefined) && isRealDiscipline(r.discipline)) {
+      // discipline: backfill only when currently missing (real null/undefined
+      // OR a "null"/"Unknown"/"unknown" placeholder string -- issue #148) and
+      // the model returned a real field (not an "unknown"/"n/a" sentinel).
+      if (isMissingDiscipline(job.discipline) && isRealDiscipline(r.discipline)) {
         job.discipline = String(r.discipline).trim(); stats.discBackfilled++;
-      } else if (job.discipline === undefined) {
+      } else if (isMissingDiscipline(job.discipline)) {
         job.discipline = null;
       }
       // positionType: recover only when currently Other.

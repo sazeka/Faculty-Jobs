@@ -4,7 +4,11 @@
  *
  * Enriches job records with AI-extracted fields:
  *   - discipline:   academic field (e.g., "Computer Science", "Nursing")
- *   - tenureTrack:  "tenure-track" | "non-tenure-track" | "unknown"
+ *   - tenureTrack:  the AI/rules classifier speaks "tenure-track" |
+ *                   "non-tenure-track" | "unknown", but the PERSISTED public
+ *                   field is always boolean/null (true/false/null) -- see
+ *                   issue #163. Coerce to boolean at the point of writing
+ *                   job.tenureTrack, never store the string enum.
  *   - positionType: normalized category (e.g., "Assistant Professor", "Adjunct")
  *
  * Only processes jobs missing the `discipline` field. Batches 25 jobs per
@@ -34,6 +38,7 @@ import {
   buildKnownDisciplineVocabulary,
   deriveDisciplineFromDepartment,
 } from './lib/discipline-from-department.js';
+import { isMissingDiscipline } from './lib/discipline-normalize.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -353,7 +358,11 @@ async function main() {
     if (inferred.value === null) continue;
     deterministicTenureCount++;
     if (!DRY_RUN) {
-      job.tenureTrack = inferred.value ? 'tenure-track' : 'non-tenure-track';
+      // Write the canonical boolean/null public representation directly
+      // (issue #163) -- inferred.value is already true/false here (the
+      // null case was skipped above), so there is no reason to round-trip
+      // through the legacy "tenure-track"/"non-tenure-track" string enum.
+      job.tenureTrack = inferred.value;
       job.tenureEvidence = inferred.evidence;
     }
   }
@@ -365,14 +374,18 @@ async function main() {
   const disciplineVocabulary = buildKnownDisciplineVocabulary(payload.jobs);
   let deterministicDisciplineCount = 0;
   for (const job of payload.jobs) {
-    if (job.discipline !== undefined) continue;
+    // isMissingDiscipline() (issue #148) also recognizes the placeholder
+    // strings "null"/"Unknown"/"unknown" as missing, not just real
+    // null/undefined, so records stuck with those placeholders are eligible
+    // for this free, deterministic backfill instead of being skipped forever.
+    if (!isMissingDiscipline(job.discipline)) continue;
     const derived = deriveDisciplineFromDepartment(job.department, disciplineVocabulary);
     if (!derived) continue;
     deterministicDisciplineCount++;
     if (!DRY_RUN) job.discipline = derived;
   }
 
-  const needsDiscipline = job => job.discipline === undefined;
+  const needsDiscipline = job => isMissingDiscipline(job.discipline);
   const needsTenure = job => classifyTenureTrack(job) === null;
   const candidates = payload.jobs
     .filter(job => needsDiscipline(job) || needsTenure(job))
@@ -407,7 +420,7 @@ async function main() {
       writeJson(PUBLIC_JOBS, payload);
       if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
     }
-    const totalEnriched = payload.jobs.filter(j => j.discipline !== undefined).length;
+    const totalEnriched = payload.jobs.filter(j => !isMissingDiscipline(j.discipline)).length;
     writeJson(REPORT_PATH, {
       generatedAt: new Date().toISOString(),
       backend: 'rules-only',
@@ -437,7 +450,7 @@ async function main() {
       writeJson(PUBLIC_JOBS, payload);
       if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
     }
-    const totalEnriched = payload.jobs.filter(j => j.discipline !== undefined).length;
+    const totalEnriched = payload.jobs.filter(j => !isMissingDiscipline(j.discipline)).length;
     writeJson(REPORT_PATH, {
       generatedAt: new Date().toISOString(),
       totalJobs: payload.jobs.length,
@@ -530,7 +543,7 @@ async function main() {
       if (!job || !result) continue;
       const norm = normalizeResult(result);
       if (
-        job.discipline === undefined &&
+        isMissingDiscipline(job.discipline) &&
         typeof norm.discipline === 'string' &&
         norm.discipline.trim()
       ) {
@@ -539,7 +552,11 @@ async function main() {
       if (classifyTenureTrack(job) === null) {
         const evidence = validateAiTenureEvidence(norm.tenureTrack, result.tenureEvidence, job);
         if (evidence) {
-          job.tenureTrack = norm.tenureTrack;
+          // validateAiTenureEvidence only accepts 'tenure-track' or
+          // 'non-tenure-track', so this is a safe boolean conversion -- write
+          // the canonical public boolean representation directly rather than
+          // the legacy string enum (issue #163).
+          job.tenureTrack = norm.tenureTrack === 'tenure-track';
           job.tenureEvidence = 'ai-quoted';
           aiTenureCount++;
         }
@@ -570,7 +587,7 @@ async function main() {
   // Launch CONCURRENCY workers in parallel
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
-  const totalEnriched = payload.jobs.filter(j => j.discipline !== undefined).length;
+  const totalEnriched = payload.jobs.filter(j => !isMissingDiscipline(j.discipline)).length;
 
   writeJson(REPORT_PATH, {
     generatedAt:     new Date().toISOString(),
