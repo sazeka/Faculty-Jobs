@@ -8231,6 +8231,49 @@ export function isPlausibleCityStateLocation(value) {
   return true;
 }
 
+// A related-but-distinct bug from the one above: these locations DO end in a
+// real, correct "City, ST" -- but a job-label or employment-status fragment
+// was glued onto the front with no separator (HACC's "MATH Faculty Exempt
+// Gettysburg, PA", "Instructor - GED Staff Non exempt Harrisburg, PA";
+// University of Toledo's "Full Professor Health Science Campus College
+// Toledo, OH"). isPlausibleCityStateLocation() correctly rejects the whole
+// string (the prefix trips its instructor/faculty/staff reject-list) but has
+// no way to recover the real trailing city on its own. This strips one of a
+// small set of unambiguous HR/ATS status markers -- terms that are
+// institutional jargon and never part of a real city name -- and accepts
+// what remains only once it independently passes isPlausibleCityStateLocation.
+//
+// Deliberately does NOT include a bare "Faculty"/"Staff" marker: those
+// precede both real cities (Kenyon's "Tenure-track Biology Faculty Gambier,
+// OH") and non-place fragments (UWF's "Tenured and Tenure-Track Faculty Usha
+// Kundu, MD", where "Usha Kundu" is a campus building name and "MD" is being
+// misread as Maryland the same way "MD, DO" was upstream) -- too ambiguous to
+// strip by a general rule, so those are hand-verified per record instead (see
+// scripts/fix-label-prefixed-locations.js).
+const LABEL_PREFIX_MARKERS = [
+  /non[- ]?exempt/gi,
+  /\bexempt\b/gi,
+  /health science campus college/gi,
+  /full[- ]?time/gi,
+  /part[- ]?time/gi,
+];
+
+export function recoverLabelPrefixedLocation(value) {
+  const raw = clean(value);
+  if (!raw || isPlausibleCityStateLocation(raw)) return null;
+  if (!/^[A-Za-z .'-]{2,60},\s*[A-Z]{2}$/.test(raw)) return null;
+  for (const marker of LABEL_PREFIX_MARKERS) {
+    marker.lastIndex = 0;
+    let match;
+    let lastMatch = null;
+    while ((match = marker.exec(raw))) lastMatch = match;
+    if (!lastMatch) continue;
+    const candidate = raw.slice(lastMatch.index + lastMatch[0].length).trim();
+    if (isPlausibleCityStateLocation(candidate)) return candidate;
+  }
+  return null;
+}
+
 // Title-case a SHOUTING (all-caps) title while preserving acronyms and codes.
 const TITLE_SMALL_WORDS = new Set(["a","an","and","as","at","but","by","for","from","in","nor","of","on","or","per","the","to","via","vs","with"]);
 const TITLE_ACRONYMS = new Set(["AI","ML","IT","HR","PR","STEM","STEAM","ESL","EFL","GIS","HCI","CS","EE","ECE","CMS","AMO","RF","OB","GYN","ENT","ICU","ER","UX","UI","PHD","MD","DO","RN","LPN","BSN","MSN","DNP","CRNA","JD","LLM","MBA","MFA","MPH","DVM","EDD","PSYD","DDS","US","USA","UK","EU","NYC","DC","UC","CSU","SUNY","CUNY","VA","NIH","NSF","WOT","HS","II","III","IV","VI","VII"]);
@@ -9122,6 +9165,10 @@ export function normalizeLocationByCollege(job) {
 
   const normalized = normalizeUsLocation(job.location);
   if (normalized) {
+    if (!isPlausibleCityStateLocation(normalized)) {
+      const recovered = recoverLabelPrefixedLocation(normalized);
+      if (recovered) return { ...job, location: recovered };
+    }
     return { ...job, location: normalized };
   }
 
