@@ -441,6 +441,101 @@ test("freshness age penalties are graduated and a recent posting is unaffected (
   assert.ok(stale.reasons.some((reason) => reason.code === "stale_posting_no_evergreen_signal" && reason.severity === "warning"));
 });
 
+// --- Issue #149: explicit adjunct-appointment titles must not be caught by
+// the directory/biography/overview/video resource-keyword heuristic ---
+
+test("genuine adjunct Video/Overview appointments are not caught by the resource-keyword heuristic (issue #149)", () => {
+  for (const title of [
+    "Adjunct Faculty - Video Production I",
+    "Adjunct Faculty – Computer Graphics – Digital Video",
+    "Adjunct Faculty, Film and Video",
+    "Applicant Pool for Adjunct Faculty, Broadcasting/Video Production",
+    "Applicant Pool for Adjunct Faculty, Lab Assistant, Broadcasting/Video Production",
+    "Adjunct Faculty, Online Course (SPAC 500- Overview of the Space Ecosystem, College of Aviation, Worldwide Campus)",
+  ]) {
+    const quality = scorePost(job({ title }), { today: TODAY });
+    assert.notEqual(quality.status, "quarantine", title);
+    assert.ok(!quality.reasons.some((reason) => reason.code === "resource_page_title"), title);
+    assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), null, title);
+  }
+});
+
+test("actual faculty directory/overview/video resource pages are still quarantined (issue #149 regression guard)", () => {
+  for (const title of ["Faculty Overview", "Faculty Videos", "Faculty Directory", "Academic Overview"]) {
+    assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
+  }
+});
+
+// --- Issue #150: DOL/OFLC "Notice of Filing" compliance notices for
+// already-filled positions must not pass as open jobs ---
+
+test("a title containing 'Notice of Filing' is a confirmed non-posting (issue #150)", () => {
+  const quality = scorePost(job({
+    title: "Associate Professor Notice of Filing",
+    college: "UW-Madison",
+    description: "NOTICE OF FILING - Please do not apply to this position as it has been filled. This posting is mandatory to meet a United States Department of Labor requirement.",
+  }), { today: TODAY });
+  assert.equal(quality.status, "quarantine");
+  assert.ok(quality.reasons.some((reason) => reason.code === "filled_compliance_notice"));
+  assert.equal(confirmedNonFacultyReason(job({ title: "Associate Professor Notice of Filing" }), { today: TODAY }), "filled_compliance_notice");
+});
+
+test("a title that omits 'Notice of Filing' is still caught from decisive description language (issue #150)", () => {
+  const quality = scorePost(job({
+    title: "Music and Theatre Arts: Assistant Professor as Orchestra Director",
+    college: "University of Wisconsin-Eau Claire",
+    description: "NOTICE OF FILING - Please do not apply to this position as it has been filled. This posting is mandatory to meet a United States Department of Labor requirement. See the job posting for more details.",
+  }), { today: TODAY });
+  assert.equal(quality.status, "quarantine");
+  assert.ok(quality.reasons.some((reason) => reason.code === "filled_compliance_notice"));
+  assert.equal(confirmedNonFacultyReason(job({
+    title: "Music and Theatre Arts: Assistant Professor as Orchestra Director",
+    description: "NOTICE OF FILING - Please do not apply to this position as it has been filled. This posting is mandatory to meet a United States Department of Labor requirement.",
+  }), { today: TODAY }), "filled_compliance_notice");
+});
+
+test("ordinary 'until the position is filled' review language is not mistaken for a filled-compliance notice (issue #150 regression guard)", () => {
+  const quality = scorePost(job({
+    description: "Review of applications will begin immediately and continue until the position is filled. Salary is set as mandated by a U.S. Department of Labor prevailing wage determination.",
+  }), { today: TODAY });
+  assert.notEqual(quality.status, "quarantine");
+  assert.ok(!quality.reasons.some((reason) => reason.code === "filled_compliance_notice"));
+});
+
+// --- Issue #153: "Faculty & Staff" / "Faculty and Staff" / "Faculty + Staff"
+// resource/roster pages must not pass as open jobs, while genuine postings
+// that merely mention the phrase remain eligible ---
+
+test("faculty/staff directories, portals, handbooks, benefits, and departmental rosters are quarantined (issue #153)", () => {
+  for (const title of [
+    "Faculty & Staff Email",
+    "Faculty & Staff Benefits",
+    "Faculty & Staff Handbook",
+    "Faculty and Staff Intranet",
+    "Faculty and Staff-Student Non-Fraternization Policy",
+    "Biology Faculty and Staff",
+    "Faculty and Staff Profiles",
+    "Faculty and Staff Parking",
+    "Directory (Faculty & Staff)",
+    "Faculty + Staff Directory",
+    "AFAM Faculty and Staff",
+  ]) {
+    assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
+  }
+});
+
+test("a genuine posting that merely mentions 'faculty and staff' in passing remains eligible (issue #153)", () => {
+  for (const title of [
+    "Faculty & Staff Employment",
+    "Faculty + Staff Open Positions",
+    "Faculty and Staff Dining Room Attendant (Casual Position)",
+    "Faculty and Staff Employment Opportunities",
+    "Faculty and Staff Fitness Instructor Pool – Spring, Summer and Fall 2026: Aquatics",
+  ]) {
+    assert.notEqual(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
+  }
+});
+
 test("human labels produce a precision summary and ignore unfinished labels", () => {
   assert.deepEqual(summarizeHumanLabels([
     { label: "valid" }, { label: "invalid" }, { label: "valid" }, { label: null },
