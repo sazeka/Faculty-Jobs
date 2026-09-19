@@ -11,8 +11,9 @@ import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 import { filterExpiredDeadlineCache } from "./lib/post-expiration.js";
 import { confirmedNonFacultyReason } from "./lib/post-quality.js";
 import { loadReviewedExclusions, reviewedExclusionReason } from "./lib/post-quality-exclusions.js";
-import { consolidateSystemUmbrellaDuplicates } from "./lib/duplicate-url-consolidation.js";
+import { consolidateSystemUmbrellaDuplicates, consolidateWorkdayRequisitionDuplicates } from "./lib/duplicate-url-consolidation.js";
 import { attachCanonicalIds } from "./lib/canonical-id.js";
+import { repairMinnStateCollegeFromDescription } from "./lib/institution-attribution.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -61,6 +62,22 @@ function normalizeJobTitles(data) {
     return job;
   });
   return { data: { ...data, jobs }, changed };
+}
+
+// Issue #152: correct Minnesota State's shared-tenant `college` misattribution
+// from each job's own scraped `Institution:` field BEFORE canonical IDs are
+// assigned, so a stale, city-guessed college can never get baked into a
+// canonicalGroupId (title|college|dept|state) that downstream consolidation
+// and the frontend then treat as stable identity.
+function repairMinnStateAttribution(data) {
+  if (!data || !Array.isArray(data.jobs)) return { data, repaired: 0 };
+  let repaired = 0;
+  const jobs = data.jobs.map((job) => {
+    const after = repairMinnStateCollegeFromDescription(job);
+    if (after !== job) repaired += 1;
+    return after;
+  });
+  return { data: { ...data, jobs }, repaired };
 }
 
 // Canonical-ID hash formula lives in ./lib/canonical-id.js (issue #135) --
@@ -315,6 +332,16 @@ function canonicalizeJobUrls(data) {
     console.log(`✂️  Normalized ${titled.changed} job titles`);
   }
 
+  // Correct Minnesota State's shared-tenant college misattribution from each
+  // job's own description BEFORE canonical IDs are assigned (issue #152) --
+  // same reasoning as normalizeJobTitles above: canonicalGroupId includes
+  // `college`, so a stale, city-guessed college must never get baked in.
+  const minnStateRepair = repairMinnStateAttribution(data);
+  data = minnStateRepair.data;
+  if (minnStateRepair.repaired > 0) {
+    console.log(`🏫 Repaired ${minnStateRepair.repaired} Minnesota State college misattribution(s) from description (issue #152)`);
+  }
+
   // Drop system/umbrella-labeled copies that are the exact same posting
   // (same URL, same title) as a specific-campus record, BEFORE canonical
   // IDs are assigned -- otherwise the two copies get different
@@ -324,6 +351,17 @@ function canonicalizeJobUrls(data) {
   if (umbrellaDedup.dropped.length > 0) {
     data = { ...data, jobs: umbrellaDedup.jobs, count: umbrellaDedup.jobs.length };
     console.log(`🏛️  Consolidated ${umbrellaDedup.dropped.length} system/umbrella-label duplicate URL(s) (issue #119)`);
+  }
+
+  // Drop system/umbrella-labeled copies of the SAME Workday requisition that
+  // are exposed at a different site path (e.g. Arkansas System Office vs.
+  // Fayetteville/UAMS) rather than an identical URL -- also BEFORE canonical
+  // IDs are assigned, for the same reason as the umbrella-URL dedup above
+  // (issue #159).
+  const workdayReqDedup = consolidateWorkdayRequisitionDuplicates(data.jobs);
+  if (workdayReqDedup.dropped.length > 0) {
+    data = { ...data, jobs: workdayReqDedup.jobs, count: workdayReqDedup.jobs.length };
+    console.log(`🏛️  Consolidated ${workdayReqDedup.dropped.length} system/umbrella-label duplicate Workday requisition(s) (issue #159)`);
   }
 
   const canonicalIds = addCanonicalIds(data);

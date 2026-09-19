@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { repairKnownInstitutionAttribution, repairKnownSourceOwnership } from '../lib/institution-attribution.js'
+import {
+  repairKnownInstitutionAttribution,
+  repairKnownSourceOwnership,
+  parseMinnStateInstitutionFromDescription,
+  repairMinnStateCollegeFromDescription,
+  findMinnStateInstitutionConflicts,
+} from '../lib/institution-attribution.js'
 
 test('repairs Wake Forest medical faculty pulled through the Atrium board', () => {
   const job = repairKnownInstitutionAttribution({
@@ -113,4 +119,124 @@ test('repairKnownSourceOwnership leaves unrelated hosts and already-correct reco
     url: 'https://jobs.geneseo.edu/postings/5637',
   }
   assert.equal(repairKnownSourceOwnership(alreadyCorrect), alreadyCorrect)
+})
+
+// Issue #152: the shared minnstate.wd115.myworkdayjobs.com tenant covers 33
+// Minnesota State institutions, several of which share a city (St. Paul:
+// Saint Paul College AND Metropolitan State University; Brainerd: only
+// Central Lakes College, but the stored college was a synthetic
+// "Minnesota State (Brainerd)" label). The scraped description always
+// carries the authoritative "Institution: <name>" field.
+const SAINT_PAUL_URL =
+  'https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/St-Paul/Community-Faculty---Computer-Science-and-Cybersecurity_JR0000005746'
+const SAINT_PAUL_DESCRIPTION =
+  'Working Title: Community Faculty - Computer Science and Cybersecurity Institution: Metropolitan State University Classification Title: Community Faculty Bargaining Unit: MSCF City: St. Paul FLSA: Exempt Full Time'
+
+const BRAINERD_URL =
+  'https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/Brainerd/Nursing-AD---Faculty_JR0000005722'
+const BRAINERD_DESCRIPTION =
+  'Working Title: Nursing AD - Faculty Institution: Central Lakes College Classification Title: Community Faculty Bargaining Unit: MSCF City: Brainerd FLSA: Exempt'
+
+test('parseMinnStateInstitutionFromDescription extracts the structured Institution field', () => {
+  assert.equal(parseMinnStateInstitutionFromDescription(SAINT_PAUL_DESCRIPTION), 'Metropolitan State University')
+  assert.equal(parseMinnStateInstitutionFromDescription(BRAINERD_DESCRIPTION), 'Central Lakes College')
+  assert.equal(parseMinnStateInstitutionFromDescription(''), null)
+  assert.equal(parseMinnStateInstitutionFromDescription(null), null)
+  assert.equal(parseMinnStateInstitutionFromDescription('No structured fields here.'), null)
+})
+
+test('repairMinnStateCollegeFromDescription corrects the Saint Paul College / Metropolitan State conflict (issue #152)', () => {
+  const job = {
+    title: 'Community Faculty - Computer Science and Cybersecurity',
+    college: 'Saint Paul College',
+    location: 'Saint Paul College, MN',
+    url: SAINT_PAUL_URL,
+    description: SAINT_PAUL_DESCRIPTION,
+  }
+  const repaired = repairMinnStateCollegeFromDescription(job)
+  assert.equal(repaired.college, 'Metropolitan State University')
+  assert.equal(repaired.location, 'St. Paul, MN')
+  assert.notEqual(repaired, job)
+})
+
+test('repairMinnStateCollegeFromDescription corrects the synthetic Minnesota State (Brainerd) label (issue #152)', () => {
+  const job = {
+    title: 'Nursing AD - Faculty',
+    college: 'Minnesota State (Brainerd)',
+    location: 'Minnesota State (Brainerd), MN',
+    url: BRAINERD_URL,
+    description: BRAINERD_DESCRIPTION,
+  }
+  const repaired = repairMinnStateCollegeFromDescription(job)
+  assert.equal(repaired.college, 'Central Lakes College')
+  assert.equal(repaired.location, 'Brainerd, MN')
+})
+
+test('repairMinnStateCollegeFromDescription is a no-op when the stored college already matches, or evidence is missing', () => {
+  const alreadyCorrect = {
+    title: 'Community Faculty - Computer Science and Cybersecurity',
+    college: 'Metropolitan State University',
+    url: SAINT_PAUL_URL,
+    description: SAINT_PAUL_DESCRIPTION,
+  }
+  assert.equal(repairMinnStateCollegeFromDescription(alreadyCorrect), alreadyCorrect)
+
+  const noDescriptionYet = {
+    title: 'Community Faculty - Computer Science and Cybersecurity',
+    college: 'Saint Paul College',
+    url: SAINT_PAUL_URL,
+    description: null,
+  }
+  assert.equal(repairMinnStateCollegeFromDescription(noDescriptionYet), noDescriptionYet)
+
+  const nonMinnStateJob = {
+    title: 'Assistant Professor',
+    college: 'Saint Paul College',
+    url: 'https://example.edu/postings/1',
+    description: SAINT_PAUL_DESCRIPTION,
+  }
+  assert.equal(repairMinnStateCollegeFromDescription(nonMinnStateJob), nonMinnStateJob)
+
+  assert.equal(repairMinnStateCollegeFromDescription(null), null)
+})
+
+test('repairKnownInstitutionAttribution applies the Minnesota State description repair first', () => {
+  const repaired = repairKnownInstitutionAttribution({
+    title: 'Community Faculty - Computer Science and Cybersecurity',
+    college: 'Saint Paul College',
+    location: 'Saint Paul College, MN',
+    url: SAINT_PAUL_URL,
+    description: SAINT_PAUL_DESCRIPTION,
+  })
+  assert.equal(repaired.college, 'Metropolitan State University')
+})
+
+test('findMinnStateInstitutionConflicts reports only Minnesota State records that disagree with their own description', () => {
+  const jobs = [
+    {
+      title: 'Community Faculty - Computer Science and Cybersecurity',
+      college: 'Saint Paul College',
+      location: 'Saint Paul College, MN',
+      url: SAINT_PAUL_URL,
+      description: SAINT_PAUL_DESCRIPTION,
+    },
+    {
+      title: 'Nursing AD - Faculty',
+      college: 'Central Lakes College',
+      location: 'Brainerd, MN',
+      url: BRAINERD_URL,
+      description: BRAINERD_DESCRIPTION,
+    },
+    {
+      title: 'Assistant Professor',
+      college: 'Some Other College',
+      url: 'https://example.edu/postings/1',
+      description: 'Institution: Some Other College',
+    },
+  ]
+  const conflicts = findMinnStateInstitutionConflicts(jobs)
+  assert.equal(conflicts.length, 1)
+  assert.equal(conflicts[0].storedCollege, 'Saint Paul College')
+  assert.equal(conflicts[0].descriptionInstitution, 'Metropolitan State University')
+  assert.equal(conflicts[0].url, SAINT_PAUL_URL)
 })

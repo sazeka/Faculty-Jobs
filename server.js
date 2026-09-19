@@ -1729,7 +1729,23 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Muhlenberg College", type: "workday", url: "https://muhlenberg.wd1.myworkdayjobs.com/MuhlenbergCareers" },
   { campus: "Thomas Jefferson University", type: "workday", url: "https://jeffersonhealth.wd5.myworkdayjobs.com/ThomasJeffersonExternal", titleFilter: "\\b(?:faculty|professor|instructor|lecturer|dean)\\b" },
   { campus: "Westminster College (PA)", type: "generic", url: "https://my.westminster.edu/ICS/Campus_Life/Campus_Groups/Human_Resources__Employment/Employment_Opportunities.jnz" },
-  { campus: "Saint Joseph's University - Philadelphia", type: "generic", url: "https://www.sju.edu/offices/human-resources/working-at-sju" },
+  // Issue #155: was a generic https://www.sju.edu/... page whose ATS
+  // hand-off lands on the unscoped "sju" Workday tenant with no location
+  // scoping -- combined with the Lancaster source below (which reached the
+  // SAME unscoped tenant via a different URL, jobs.sju.edu), every
+  // requisition was scraped and blanket-labeled twice, once per config (9
+  // reqs / 18 records). Scoped directly to the tenant's own `locations`
+  // facet ids (verified live via
+  // https://sju.wd1.myworkdayjobs.com/wday/cxs/sju/sju/jobs) for every
+  // non-Lancaster location -- Philadelphia - Hawk Hill, Philadelphia -
+  // University City, Hawk Hill Lower Merion Side, Merion Hall, and Remote --
+  // so this and the Lancaster source below now partition the tenant's
+  // postings by their own real location instead of duplicating it whole.
+  {
+    campus: "Saint Joseph's University - Philadelphia",
+    type: "workday",
+    url: "https://sju.wd1.myworkdayjobs.com/sju?locations=afc02508c75e10020821e49f7d2f0000&locations=ff9c43d1f199100208aaf671fdfd0000&locations=472b9d1120ec0100bab9128fd0e30000&locations=472b9d1120ec0100bab90219306d0000&locations=ff9c43d1f199100208b622ddc6ba0000",
+  },
   { campus: "Peirce College", type: "generic", url: "https://www.peirce.edu/about-peirce/additional-resources/careers-at-peirce/", excludeTitleFilter: "\\bsupplemental instructor\\b" },
   { campus: "Messiah University", type: "peopleadmin", url: "https://careers.messiah.edu/postings/search?668%5B%5D=2&commit=Search&query=&query_v0_posted_at_date=&utf8=%E2%9C%93" },
   { campus: "Harrisburg University of Science and Technology", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?ccId=19000101_000001&cid=d7d41d6e-e9f2-43e0-af0f-ac2146083d4f&lang=en_US" },
@@ -1797,11 +1813,18 @@ const PA_PRIVATE_CAMPUSES = [
   { campus: "Eastern University", type: "schooljobs", url: "https://www.schooljobs.com/careers/easternpa" },
   { campus: "Geisinger Commonwealth School of Medicine", type: "generic", url: "https://www.geisinger.edu/education" },
   { campus: "Harcum College", type: "generic", url: "https://www.harcum.edu/s/1044/edu/start.aspx" },
-  // jobs.sju.edu canonicalizes to a raw Workday tenant with 0 static anchors — a
-  // pure JS SPA shell "generic" can't read. Using the direct myworkdayjobs.com
-  // URL (rather than the custom domain) lets scrapeWorkdayApi's own URL-pattern
-  // match hit its API path instead of falling back to the slower browser scrape.
-  { campus: "Saint Joseph's University - Lancaster", type: "generic", url: "https://jobs.sju.edu/" },
+  // Was jobs.sju.edu -- canonicalizes to the SAME unscoped "sju" Workday
+  // tenant as the Philadelphia source above (via a "/en-US/" locale-prefixed
+  // URL variant), so every requisition got scraped and blanket-labeled
+  // "Lancaster" too, duplicating the Philadelphia copy under a different
+  // college with a placeholder location that overwrote the real one (issue
+  // #155). Scoped directly to the tenant's own Workday-tagged "Lancaster"
+  // locations facet id instead, matching the Philadelphia source's approach.
+  {
+    campus: "Saint Joseph's University - Lancaster",
+    type: "workday",
+    url: "https://sju.wd1.myworkdayjobs.com/sju?locations=afc02508c75e100208166fcd76bb0000",
+  },
   { campus: "University of Pittsburgh-Titusville", type: "generic", url: "https://www.titusville.pitt.edu/home" },
   // Was pointing at the school's own info page (no jobs content). Per the
   // hospital-system-board caveat (Hospital Sisters Health System/St. John's
@@ -4122,9 +4145,14 @@ const MN_CAMPUSES = [
     type: "umn",
     url: "https://hr.myu.umn.edu/psc/hrprd/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&ACTION=U&FOCUS=Applicant&SiteId=1",
   },
+  // Unscoped catch-all for the shared 33-college/university Minnesota State
+  // Workday tenant. Uses scrapeMinnStateWorkdayAs (not the plain workday
+  // dispatch) so each posting is attributed from Workday's own per-job
+  // institution field rather than a city guess -- see issue #152 and
+  // extractMinnStateInstitutionHint()/splitMinnStateSystemCollege() below.
   {
     campus: "Minnesota State System",
-    type: "workday",
+    type: "minnstate-workday",
     url: "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers",
   },
   {
@@ -4983,8 +5011,35 @@ const OH_CAMPUSES = [
   { campus: "Kent State University at Stark", type: "pageup", url: "https://jobs.kent.edu/jobs/search?query=Stark" },
   { campus: "Kent State University at Trumbull", type: "generic", url: "https://www.kent.edu/trumbull" },
   { campus: "Kent State University at Tuscarawas", type: "pageup", url: "https://jobs.kent.edu/jobs/search?query=Tuscarawas" },
-  { campus: "Miami University-Hamilton", type: "generic", url: "https://miamioh.edu/human-resources/jobs-and-careers" },
-  { campus: "Miami University-Middletown", type: "generic", url: "https://miamioh.edu/human-resources/jobs-and-careers" },
+  // Issue #155: both of these previously pointed at the same unscoped
+  // https://miamioh.edu/human-resources/jobs-and-careers page, whose ATS
+  // hand-off lands on the SAME shared "miamioh-faculty" Workday tenant with
+  // no facet scoping -- each config then blanket-labeled every result it
+  // found with its own static campus name, duplicating requisitions (28
+  // reqs / 56 records) under both regional labels while overwriting the
+  // real location. Verified live against the tenant's own Workday
+  // locations facet (https://miamioh.wd5.myworkdayjobs.com/wday/cxs/miamioh/
+  // miamioh-faculty/jobs): the tenant covers Oxford (main campus, id
+  // c79d26910af9100520a8fb35e1440000, 38 postings), Hamilton Campus (id
+  // c79d26910af9100520aac2b74d840000, 5 postings), and Middletown Campus
+  // (id c79d26910af9100520aa3ae7d3080000, 1 posting) as genuinely distinct,
+  // Workday-tagged locations on ONE tenant -- e.g. JR104678 "Assistant
+  // Teaching Professor" (issue's own example) is tagged "Laws Hall" +
+  // "Oxford Campus", not Hamilton or Middletown at all. Scoped each
+  // regional campus to its own `locations` facet id (same pattern as the
+  // Minnesota State `?Institution=<id>` fixes) so only its own genuinely
+  // location-tagged postings are attributed here; see "Miami
+  // University-Oxford" below for the main-campus counterpart.
+  {
+    campus: "Miami University-Hamilton",
+    type: "workday",
+    url: "https://miamioh.wd5.myworkdayjobs.com/miamioh-faculty?locations=c79d26910af9100520aac2b74d840000",
+  },
+  {
+    campus: "Miami University-Middletown",
+    type: "workday",
+    url: "https://miamioh.wd5.myworkdayjobs.com/miamioh-faculty?locations=c79d26910af9100520aa3ae7d3080000",
+  },
   { campus: "Ohio University-Chillicothe Campus", type: "generic", url: "https://www.ohio.edu/chillicothe/" },
   // Eastern/Southern/Zanesville each pointed at their own bare campus
   // homepage; Lancaster already pointed at the shared ohiouniversityjobs.com
@@ -5102,7 +5157,14 @@ const OH_CAMPUSES = [
   { campus: "Tiffin University", type: "generic", url: "https://www.tiffin.edu/about/offices-departments/human-resources/join-our-team/" },
   { campus: "Wilmington College", type: "generic", url: "https://www.wilmington.edu/about/employment" },
   { campus: "Marietta College", type: "interviewexchange", url: "https://marietta.interviewexchange.com/static/clients/465MCM1/index.jsp" },
-  { campus: "Miami University-Oxford", type: "workday", url: "https://miamioh.wd5.myworkdayjobs.com/miamioh-staff", excludeTitleFilter: "\\b(?:student|youth)\\b" },
+  // Was pointed at "miamioh-staff" -- a different, non-faculty Workday
+  // tenant (0 results for any faculty requisition ID; confirmed live).
+  // Miami's actual faculty postings live on "miamioh-faculty" (see issue
+  // #155 above); scoped to that tenant's own "Oxford Campus" locations
+  // facet id so this stays the main-campus-only counterpart to the
+  // Hamilton/Middletown regional-campus sources above, rather than
+  // reintroducing the same unscoped-tenant duplication this issue fixed.
+  { campus: "Miami University-Oxford", type: "workday", url: "https://miamioh.wd5.myworkdayjobs.com/miamioh-faculty?locations=c79d26910af9100520a8fb35e1440000", excludeTitleFilter: "\\b(?:student|youth)\\b" },
   { campus: "Northeast Ohio Medical University", type: "peopleadmin", url: "https://neomed.peopleadmin.com/" },
   { campus: "University of Mount Union", type: "schooljobs", url: "https://www.schooljobs.com/careers/mountunion/faculty" },
   { campus: "Ohio Northern University", type: "workday", url: "https://onu.wd501.myworkdayjobs.com/ONU" },
@@ -7223,7 +7285,25 @@ const AR_CAMPUSES = [
   { campus: "South Arkansas College", type: "generic", url: "https://www.southark.edu/page/employment-at-southark" },
   { campus: "Southeast Arkansas College", type: "generic", url: "https://www.seark.edu/careers" },
   { campus: "University of Arkansas at Monticello", type: "generic", url: "https://www.uamont.edu/jobs/" },
-  { campus: "University of Arkansas System Office", type: "generic", url: "https://uasys.edu/system-office/jobs/" },
+  // Issue #159: was a generic https://uasys.edu/system-office/jobs/ page
+  // whose ATS hand-off lands on the unscoped "/UASYS" Workday tenant --
+  // the same tenant Fayetteville and UAMS's own dedicated sources below
+  // scope with `hiringCompany=<id>`. Left unscoped, every requisition on
+  // the tenant (including Fayetteville's and UAMS's own) got scraped again
+  // and blanket-labeled "System Office", duplicating 63 requisitions (126
+  // records) under a generic umbrella label that overwrote the real
+  // institution. Scoped to the tenant's own "University of Arkansas
+  // System" hiringCompany facet id (verified live via
+  // https://uasys.wd5.myworkdayjobs.com/wday/cxs/uasys/UASYS/jobs --
+  // distinct from "University of Arkansas, Fayetteville" and "University
+  // of Arkansas for Medical Sciences" in the same facet list) so this
+  // source now only returns requisitions genuinely owned by the System
+  // Office itself.
+  {
+    campus: "University of Arkansas System Office",
+    type: "workday",
+    url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf2401d8bfff0b59c4016906",
+  },
   { campus: "University of the Ozarks", type: "generic", url: "https://ozarks.edu/about/employment/" },
   { campus: "Williams Baptist University", type: "generic", url: "https://williamsbaptistuniversity.com/careers/" },
   { campus: "University of Arkansas Grantham", type: "generic", url: "https://www.uagrantham.edu/careers/" },
@@ -11568,7 +11648,7 @@ async function scrapeNjTaleo(context, startUrl, campusName, sourceLabel = "NJ") 
 }
 
 // Fast API-based Workday scraper (replaces slow browser scraping)
-async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ", { requireApi = false } = {}) {
+async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ", { requireApi = false, captureBulletFields = false } = {}) {
   try {
     let apiUrl = null;
     // Parse Workday URLs to extract company+site:
@@ -11670,6 +11750,7 @@ async function scrapeWorkdayApi(context, startUrl, campusName, sourceLabel = "NJ
           college: campusName,
           location: job.locationsText || null,
           description: null,
+          ...(captureBulletFields ? { bulletFields: Array.isArray(job.bulletFields) ? job.bulletFields : null } : {}),
         });
       }
 
@@ -12949,6 +13030,39 @@ export async function scrapeWorkdayAs(context, startUrl, campusName, sourceName)
 export async function scrapeWorkdayRequiredFacetsAs(context, startUrl, campusName, sourceName) {
   const items = await scrapeWorkdayApi(context, startUrl, campusName, sourceName, { requireApi: true });
   return items.map((j) => ({ ...j, source: sourceName, college: campusName }));
+}
+
+// Issue #152: the shared minnstate.wd115.myworkdayjobs.com tenant covers 33
+// Minnesota State colleges/universities on one unscoped board, so a
+// city-derived guess (splitMinnStateSystemCollege below) can't tell apart
+// institutions that share a city (e.g. St. Paul: Saint Paul College AND
+// Metropolitan State University). Workday's own per-posting search-result
+// row already names the real hiring institution as the LAST entry of
+// `bulletFields` -- verified live against the actual API (e.g.
+// bulletFields: ["JR0000005746", "2027-01-04", "Metropolitan State
+// University"], or just ["JR0000004802", "Hennepin Technical College"] when
+// there's no close date) -- so prefer that over any city guess. Falls back
+// to campusName (which downstream splitMinnStateSystemCollege() then
+// resolves by city, same as before this fix) when a job's bulletFields
+// don't look like they end in an institution name.
+function extractMinnStateInstitutionHint(bulletFields) {
+  if (!Array.isArray(bulletFields) || bulletFields.length < 2) return null;
+  const last = clean(bulletFields[bulletFields.length - 1]);
+  if (!last) return null;
+  // A requisition ID or an ISO-ish date would mean the row doesn't carry an
+  // institution name at all (unexpected shape) -- don't misread it as one.
+  if (/^JR\d+$/i.test(last)) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(last)) return null;
+  return last;
+}
+
+export async function scrapeMinnStateWorkdayAs(context, startUrl, campusName, sourceName) {
+  const items = await scrapeWorkdayApi(context, startUrl, campusName, sourceName, { captureBulletFields: true });
+  return items.map((j) => {
+    const institution = extractMinnStateInstitutionHint(j.bulletFields);
+    const { bulletFields, ...rest } = j;
+    return { ...rest, source: sourceName, college: institution || campusName };
+  });
 }
 
 function inferSdborCampusFromDetail(html, title = "") {
@@ -19223,6 +19337,7 @@ async function scrapeMnAll(context) {
       try {
         if (type === "umn") return await scrapePeopleSoftHrsBasic(context, url, campus, "MN");
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "MN");
+        if (type === "minnstate-workday") return await scrapeMinnStateWorkdayAs(context, url, campus, "MN");
         if (type === "icims") return await scrapeIcimsAs(context, url, campus, "MN");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "MN");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "MN");

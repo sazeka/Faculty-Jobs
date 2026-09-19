@@ -43,6 +43,19 @@
 //  - "University of Connecticut" (the bare label, distinct from
 //    "University of Connecticut-Avery Point"): homepage_url is a
 //    pageuppeople.com job-listing link, not uconn.edu.
+//  - "University of Arkansas System Office" (issue #159): homepage_url is a
+//    uasys.edu/system-office/jobs/ page whose ATS hand-off lands on the
+//    unscoped "/UASYS" Workday tenant that Fayetteville ("University of
+//    Arkansas") and UAMS ("University of Arkansas for Medical Sciences")
+//    also each have their own hiringCompany-scoped source on. Verified live
+//    against that tenant's own hiringCompany facet: the genuine "University
+//    of Arkansas System" hiringCompany has exactly 1 non-faculty posting of
+//    its own, while every "System Office"-labeled FACULTY posting duplicates
+//    a requisition ID already correctly attributed to Fayetteville or UAMS
+//    (see consolidateWorkdayRequisitionDuplicates() in
+//    duplicate-url-consolidation.js, needed here because the duplicate and
+//    the original are exposed at different Workday site paths with a
+//    terminal "-1"/"-2" copy suffix, not an identical URL).
 //
 // Deliberately EXCLUDED, and must stay excluded:
 //  - "Crafton Hills College" / "San Bernardino Valley College": both are
@@ -69,6 +82,7 @@ const SYSTEM_UMBRELLA_COLLEGES = new Set(
     "University of Alaska System",
     "Indiana University",
     "University of Connecticut",
+    "University of Arkansas System Office",
   ].map(key)
 );
 
