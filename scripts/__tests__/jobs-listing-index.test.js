@@ -18,7 +18,10 @@ test("listing index keeps card/filter evidence but omits full descriptions", () 
   });
 
   assert.equal(compact.title, "Assistant Professor of Biology");
-  assert.equal(compact.tenureTrack, "tenure-track");
+  // The legacy string enum is normalized to the canonical public boolean at
+  // this write boundary (issue #163) -- jobs-index.json/chunks must never
+  // re-leak "tenure-track"/"non-tenure-track" strings to the web client.
+  assert.equal(compact.tenureTrack, true);
   assert.equal("tenureEvidence" in compact, false);
   assert.equal(compact.hasDescription, true);
   assert.equal(compact.employmentType, "Full-time");
@@ -27,6 +30,13 @@ test("listing index keeps card/filter evidence but omits full descriptions", () 
   assert.equal(compact.searchText, "assistant professor of biology example university biology");
   assert.equal("description" in compact, false);
   assert.equal("summary" in compact, false);
+});
+
+test("compactListingJob normalizes legacy tenureTrack strings to boolean/null (issue #163)", () => {
+  assert.equal(compactListingJob({ title: "Lecturer", tenureTrack: "non-tenure-track" }).tenureTrack, false);
+  assert.equal(compactListingJob({ title: "Lecturer", tenureTrack: true }).tenureTrack, true);
+  assert.equal(compactListingJob({ title: "Lecturer", tenureTrack: false }).tenureTrack, false);
+  assert.equal("tenureTrack" in compactListingJob({ title: "Lecturer", tenureTrack: null }), false);
 });
 
 test("listing index preserves scrape metadata and record count", () => {
