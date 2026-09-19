@@ -703,6 +703,22 @@ test("positionType 'Other' is treated as absence of evidence, not positive evide
   assert.ok(!real.reasons.some((reason) => reason.code === "weak_academic_evidence"));
 });
 
+test("tenureTrack: false is a real classification, not absent evidence (clean() falsy-boolean regression)", () => {
+  // `clean(value)` is `String(value || '').trim()` -- `false || ''`
+  // short-circuits to '' because `false` is itself falsy, so
+  // `clean(false)` and `clean(null)` were indistinguishable. A job with an
+  // explicit `tenureTrack: false` (non-tenure-track) classification must not
+  // be treated the same as one with no tenureTrack data at all.
+  const nonTenureTrack = scorePost(job({ title: "Assessment Support", description: "", tenureTrack: false }), { today: TODAY });
+  assert.ok(!nonTenureTrack.reasons.some((reason) => reason.code === "weak_academic_evidence"));
+
+  const tenureTrack = scorePost(job({ title: "Assessment Support", description: "", tenureTrack: true }), { today: TODAY });
+  assert.ok(!tenureTrack.reasons.some((reason) => reason.code === "weak_academic_evidence"));
+
+  const missing = scorePost(job({ title: "Assessment Support", description: "", tenureTrack: null }), { today: TODAY });
+  assert.ok(missing.reasons.some((reason) => reason.code === "weak_academic_evidence"));
+});
+
 // --- Issue #130: completeness/badges must reject malformed metadata ---
 
 test("a malformed department (scraper noise) does not earn completeness credit (issue #130)", () => {
