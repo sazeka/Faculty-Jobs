@@ -80,6 +80,24 @@ function collapseDuplicateWorkdayJobSegments(parsed) {
   return rewritten;
 }
 
+// Workday tenants optionally expose every posting a second time behind an
+// otherwise-identical URL with a locale segment inserted right after the
+// tenant/site path ("/sju/job/..." vs "/en-US/sju/job/..."), which
+// canonicalizeUrl previously left untouched -- so the same requisition
+// scraped both ways looked like two distinct URLs and never got deduped by
+// the exact-URL collapse in scrape-to-json.js's canonicalizeJobUrls() (issue
+// #155). The locale prefix carries no identity of its own (both resolve to
+// the same posting), so drop it uniformly.
+function stripWorkdayLocalePrefix(parsed) {
+  const host = parsed.hostname.toLowerCase();
+  if (!/myworkdayjobs\.com$|myworkdaysite\.com$/i.test(host)) return parsed;
+  const m = parsed.pathname.match(/^(\/[a-z]{2}-[A-Z]{2})(\/.*)$/);
+  if (!m) return parsed;
+  const rewritten = new URL(parsed.toString());
+  rewritten.pathname = m[2];
+  return rewritten;
+}
+
 // True when a Workday URL still carries more than one "/job/" path segment
 // (see collapseDuplicateWorkdayJobSegments above) -- exported as a standalone
 // invariant check for tests and data audits.
@@ -115,6 +133,7 @@ export function canonicalizeUrl(input, { stripQuery = true } = {}) {
   parsed.protocol = "https:";
   parsed = resolvePeopleAdminBookmarkUrl(parsed);
   parsed = collapseDuplicateWorkdayJobSegments(parsed);
+  parsed = stripWorkdayLocalePrefix(parsed);
   const fragment = parsed.hash.replace(/^#/, "").toLowerCase();
   if (!fragment || BENIGN_HASH_FRAGMENTS.has(fragment)) {
     parsed.hash = "";

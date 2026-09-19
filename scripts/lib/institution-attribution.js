@@ -46,6 +46,115 @@ function isAtriumWorkdayUrl(value) {
   }
 }
 
+function clean(value) {
+  return String(value || '').replace(/\s+/g, ' ').trim()
+}
+
+function key(value) {
+  return clean(value).toLowerCase()
+}
+
+// Issue #152: the shared minnstate.wd115.myworkdayjobs.com Workday tenant
+// (33 Minnesota State colleges/universities on one board) was being
+// attributed by the city in job.location/URL alone. Several Minnesota State
+// institutions share a city (St. Paul: Saint Paul College AND Metropolitan
+// State University; St. Cloud: St. Cloud State University AND St. Cloud
+// Technical and Community College; Brooklyn Park: North Hennepin Community
+// College AND Hennepin Technical College's Brooklyn Park campus; etc.), so a
+// city is not a unique campus identifier on this tenant. Every posting's own
+// scraped description carries a structured "Institution: <name>" field
+// (confirmed live: this is the actual hiring institution, not boilerplate)
+// that is authoritative where a city guess is not. See also
+// scrapeMinnStateWorkdayAs() in server.js, which now prefers the same
+// Institution value straight from Workday's own per-posting bulletFields at
+// scrape time -- this description-based repair is the fallback/backstop for
+// records whose description was only backfilled after the initial scrape
+// (agent-job-descriptions.js), or that predate that scrape-time fix.
+function isMinnStateWorkdayUrl(value) {
+  try {
+    return /^minnstate\.wd\d+\.myworkdayjobs\.com$/i.test(new URL(String(value || '')).hostname)
+  } catch {
+    return false
+  }
+}
+
+// Known city for each Minnesota State institution seen conflicting with a
+// city-derived guess on this tenant (issue #152's confirmed table). Not
+// exhaustive of all 33 Minnesota State institutions -- only the ones this
+// resolver has had to correct a location for. Institutions not listed here
+// keep whatever location the job already carries.
+const MINN_STATE_INSTITUTION_LOCATIONS = new Map(
+  [
+    ['Metropolitan State University', 'St. Paul, MN'],
+    ['Minnesota State College Southeast', 'Winona, MN'],
+    ['Hennepin Technical College', 'Brooklyn Park, MN'],
+    ['Northland Community and Technical College', 'Thief River Falls, MN'],
+    ['North Hennepin Community College', 'Brooklyn Park, MN'],
+    ['St. Cloud Technical and Community College', 'St. Cloud, MN'],
+    ['Central Lakes College', 'Brainerd, MN'],
+    ['Rochester Community and Technical College', 'Rochester, MN'],
+    ['Minnesota State Community and Technical College', 'Fergus Falls, MN'],
+    ['Saint Paul College', 'St. Paul, MN'],
+    ['St. Cloud State University', 'St. Cloud, MN'],
+  ].map(([name, location]) => [key(name), location])
+)
+
+// Extracts the structured "Institution: <name>" field from a Minnesota State
+// Workday posting description. The field always sits between the posting's
+// "Working Title:" and "Classification Title:" (or, on shorter descriptions,
+// whichever labeled field comes next -- "Bargaining Unit", "City:", "FLSA:",
+// etc.), so anchor on that label set rather than assuming a fixed shape.
+export function parseMinnStateInstitutionFromDescription(description) {
+  const text = clean(description)
+  if (!text) return null
+  const m = text.match(
+    /\bInstitution:\s*([A-Z][A-Za-z&.,'\- ]+?)(?=\s+Classification Title:|\s+Bargaining Unit|\s+City:|\s+FLSA:|\s+Full Time|\s+Employment Condition:|\s+Salary Range:|\s+Job Description:|$)/
+  )
+  return m ? clean(m[1]) : null
+}
+
+// Reports every Minnesota State Workday-tenant job whose stored `college`
+// disagrees with a structured `Institution:` value parsed from its own
+// description -- the post-scrape invariant issue #152 asks for. Returns an
+// empty array when everything agrees (or no description is available yet).
+export function findMinnStateInstitutionConflicts(jobs) {
+  if (!Array.isArray(jobs)) return []
+  const conflicts = []
+  for (const job of jobs) {
+    if (!isMinnStateWorkdayUrl(job?.url)) continue
+    const institution = parseMinnStateInstitutionFromDescription(job?.description)
+    if (!institution) continue
+    if (key(job?.college) === key(institution)) continue
+    conflicts.push({
+      url: job.url,
+      storedCollege: clean(job.college),
+      descriptionInstitution: institution,
+      location: clean(job.location) || null,
+    })
+  }
+  return conflicts
+}
+
+// Corrects `college` (and, where known, `location`) on a Minnesota State
+// Workday-tenant job from its own description's structured `Institution:`
+// field when it disagrees with the stored college. A no-op for every other
+// job, and a no-op when no description is available yet (descriptions are
+// often backfilled well after the initial scrape -- see
+// agent-job-descriptions.js) or when the parsed name already matches.
+export function repairMinnStateCollegeFromDescription(job) {
+  if (!job || !isMinnStateWorkdayUrl(job.url)) return job
+  const institution = parseMinnStateInstitutionFromDescription(job.description)
+  if (!institution) return job
+  if (key(job.college) === key(institution)) return job
+
+  const location = MINN_STATE_INSTITUTION_LOCATIONS.get(key(institution))
+  return {
+    ...job,
+    college: institution,
+    ...(location ? { location } : {}),
+  }
+}
+
 // Issue #143: a handful of institution-specific ATS tenants/hosts were being
 // absorbed by a neighboring institution's broader discovery pass (e.g. every
 // jobs.geneseo.edu posting landing on "Finger Lakes Community College"), or
@@ -98,6 +207,9 @@ export function repairKnownSourceOwnership(job) {
 
 export function repairKnownInstitutionAttribution(job) {
   if (!job) return job
+
+  const minnStateRepaired = repairMinnStateCollegeFromDescription(job)
+  if (minnStateRepaired !== job) return minnStateRepaired
 
   if (job.source === 'CSU' && !String(job.college || '').trim()) {
     const descriptionLocation = String(job.description || '').match(/\bLocation:\s*(Cal Poly - (?:San Luis Obispo|Solano) Campus(?:\s*\(Vallejo\))?)/i)?.[1]

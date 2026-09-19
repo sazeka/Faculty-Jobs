@@ -142,3 +142,22 @@ test("canonicalizeUrl collapses doubled Workday /job/ segments to the final job 
     "https://uni.wd5.myworkdayjobs.com/uni/job/Main-Campus/Assistant-Professor-of-Instruction----Applied-Ethics_JR1260"
   );
 });
+
+// Issue #155: some Workday tenants expose every posting a second time behind
+// an "/en-US/" (or other locale) segment inserted right after the origin —
+// e.g. Saint Joseph's University's shared sju.wd1.myworkdayjobs.com tenant,
+// reached once via "/sju/job/..." and once via "/en-US/sju/job/..." for the
+// exact same requisition. The locale prefix carries no identity of its own,
+// so both must canonicalize identically for the existing exact-URL collapse
+// in scrape-to-json.js to dedupe them.
+test("canonicalizeUrl strips a Workday locale prefix so both URL shapes match (issue #155)", () => {
+  const withLocale =
+    "https://sju.wd1.myworkdayjobs.com/en-US/sju/job/Philadelphia---Hawk-Hill/Adjunct----Chemistry-and-Biochemistry_JR101224";
+  const withoutLocale =
+    "https://sju.wd1.myworkdayjobs.com/sju/job/Philadelphia---Hawk-Hill/Adjunct----Chemistry-and-Biochemistry_JR101224";
+  assert.equal(canonicalizeUrl(withLocale), withoutLocale);
+  assert.equal(canonicalizeUrl(withLocale), canonicalizeUrl(withoutLocale));
+  // A non-Workday host with a similarly-shaped path segment must be left
+  // alone — this is a Workday-specific quirk, not a general locale-prefix rule.
+  assert.equal(canonicalizeUrl("https://example.com/en-US/jobs/123"), "https://example.com/en-US/jobs/123");
+});

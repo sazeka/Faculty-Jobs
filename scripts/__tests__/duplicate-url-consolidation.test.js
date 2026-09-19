@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { consolidateSystemUmbrellaDuplicates } from "../lib/duplicate-url-consolidation.js";
+import { consolidateSystemUmbrellaDuplicates, consolidateWorkdayRequisitionDuplicates } from "../lib/duplicate-url-consolidation.js";
 import { isSystemUmbrellaCollege } from "../lib/system-umbrella-institutions.js";
 
 function job(overrides) {
@@ -156,5 +156,101 @@ test("does not merge across genuinely different titles at the same URL", () => {
 
   const { jobs: result, dropped } = consolidateSystemUmbrellaDuplicates(jobs);
   assert.equal(result.length, 2);
+  assert.equal(dropped.length, 0);
+});
+
+// Issue #159: University of Arkansas's shared uasys.wd5.myworkdayjobs.com
+// tenant exposes the SAME requisition through the institution-specific site
+// path (Fayetteville's /UAF_External_Career_Site, UAMS's /UAMS_All_Careers)
+// and again through the unscoped /UASYS site, with a terminal "-1" copy
+// suffix Workday appends to the second exposure -- a different URL from the
+// original, so consolidateSystemUmbrellaDuplicates's exact-URL match can't
+// catch it. consolidateWorkdayRequisitionDuplicates matches by (tenant host,
+// base requisition id) instead.
+test("drops the University of Arkansas System Office copy of a Fayetteville requisition (issue #159)", () => {
+  const jobs = [
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site/job/Fayetteville/Assistant-Professor-in-Computational-Methods-in-Math_R0091502",
+      title: "Assistant Professor in Computational Methods in Math",
+      college: "University of Arkansas",
+      location: "Fayetteville, AR",
+    }),
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UASYS/job/Fayetteville/Assistant-Professor-in-Computational-Methods-in-Math_R0091502-1",
+      title: "Assistant Professor in Computational Methods in Math",
+      college: "University of Arkansas System Office",
+      location: "Fayetteville, AR",
+    }),
+  ];
+
+  const { jobs: result, dropped } = consolidateWorkdayRequisitionDuplicates(jobs);
+  assert.equal(result.length, 1);
+  assert.equal(result[0].college, "University of Arkansas");
+  assert.equal(dropped.length, 1);
+  assert.equal(dropped[0].college, "University of Arkansas System Office");
+});
+
+test("drops the University of Arkansas System Office copy of a UAMS requisition (issue #159)", () => {
+  const jobs = [
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UAMS_All_Careers/job/UAMS/Adult-Gerontology-Acute-Care-Professor_R0091228",
+      title: "Adult-Gerontology Acute Care Professor/Assistant Professor or Associate Professor",
+      college: "University of Arkansas for Medical Sciences",
+      location: "UAMS, AR",
+    }),
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UASYS/job/UAMS/Adult-Gerontology-Acute-Care-Professor_R0091228-1",
+      title: "Adult-Gerontology Acute Care Professor/Assistant Professor or Associate Professor",
+      college: "University of Arkansas System Office",
+      location: "UAMS, AR",
+    }),
+  ];
+
+  const { jobs: result, dropped } = consolidateWorkdayRequisitionDuplicates(jobs);
+  assert.equal(result.length, 1);
+  assert.equal(result[0].college, "University of Arkansas for Medical Sciences");
+  assert.equal(dropped.length, 1);
+});
+
+test("consolidateWorkdayRequisitionDuplicates leaves non-Workday hosts, single copies, and genuinely different requisitions untouched", () => {
+  const jobs = [
+    job({ url: "https://example.edu/postings/R0091502", college: "University of Arkansas System Office" }),
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site/job/Fayetteville/Only-Copy_R0099999",
+      college: "University of Arkansas",
+    }),
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site/job/Fayetteville/Different-Req_R0011111",
+      college: "University of Arkansas",
+    }),
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UASYS/job/Fayetteville/Different-Req_R0022222-1",
+      college: "University of Arkansas System Office",
+    }),
+  ];
+
+  const { jobs: result, dropped } = consolidateWorkdayRequisitionDuplicates(jobs);
+  assert.equal(result.length, jobs.length);
+  assert.equal(dropped.length, 0);
+});
+
+test("does not drop a System Office copy when two DIFFERENT specific campuses share the base requisition id", () => {
+  const jobs = [
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site/job/Fayetteville/Ambiguous_R0000001",
+      college: "University of Arkansas",
+    }),
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UAMS_All_Careers/job/UAMS/Ambiguous_R0000001-2",
+      college: "University of Arkansas for Medical Sciences",
+    }),
+    job({
+      url: "https://uasys.wd5.myworkdayjobs.com/UASYS/job/Fayetteville/Ambiguous_R0000001-1",
+      college: "University of Arkansas System Office",
+    }),
+  ];
+
+  const { jobs: result, dropped } = consolidateWorkdayRequisitionDuplicates(jobs);
+  assert.equal(result.length, 3);
   assert.equal(dropped.length, 0);
 });
