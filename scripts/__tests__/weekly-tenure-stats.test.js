@@ -348,6 +348,50 @@ test("applies verified institution-specific title conventions as a last resort",
   }
   assert.equal(classifyTenureTrack({ college: uwCollege, title: "Assistant Professor in Physics" }), null);
 
+  // Issue #145: the check above only exercises the no-stored-value path.
+  // Eleven live University of Washington WOT records were stuck at
+  // tenureTrack: true because classifyTenureTrackWithEvidence() used to
+  // return a stored boolean immediately, before ever consulting the title or
+  // the institution-policy rule just verified above -- so a stale/incorrect
+  // `true` silently outranked the source's own "WOT" title language. This
+  // reproduces the actual production failure state: a WOT title combined
+  // with a contradictory stored `true`.
+  for (const title of [
+    "Assistant Professor WOT – Department of Laboratory Medicine and Pathology, Neuropathology",
+    "Assistant or Associate Professor (WOT) in Radiology, Emergency and Trauma",
+    "Assistant, Associate or Full Professor (WOT) - Foot & Ankle Surgeon - Orthopaedic Surgery & Sports Medicine",
+    "Assistant, Associate, or Full Professor (WOT) in Radiology, Cardiothoracic Imaging",
+    "Professor WOT, Division of Hematology and Oncology (Leukemia Program Head)",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: uwCollege, title, tenureTrack: true }),
+      { value: false, evidence: "institution-policy" },
+      title
+    );
+  }
+  // "without tenure" (spelled out, not the "WOT" abbreviation) is recognized
+  // directly as explicit non-tenure title language -- it doesn't need the
+  // institution-policy fallback at all.
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: uwCollege,
+      title: "Assistant, Associate or Full Professor without tenure - UW Pediatrics - Gastroenterology & Hepatology",
+      tenureTrack: true,
+    }),
+    { value: false, evidence: "title-explicit" }
+  );
+  // A stored `true` that agrees with a plain (non-WOT) UW title is untouched.
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ college: uwCollege, title: "Assistant Professor in Physics", tenureTrack: true }),
+    { value: true, evidence: "stored" }
+  );
+  // Explicit title language still wins even when it contradicts a stored
+  // non-tenure value in the other direction.
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ title: "Tenure-Track Assistant Professor", tenureTrack: false }),
+    { value: true, evidence: "title-explicit" }
+  );
+
   // University of South Florida: the Provost's office confirms the
   // "Professor of Instruction Series" and "Instructor Series" are both
   // explicitly non-tenure "instructional faculty".

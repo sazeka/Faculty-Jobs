@@ -2,7 +2,6 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { createHash } from "crypto";
 import { scrapeAllJobsStandalone, callLocalSummarizer, getSystemGroup, normalizeJobTitle } from "../server.js";
 import { canonicalizeUrl, inferPlatformFromUrl } from "./lib/url-normalization.js";
 import { shouldBlockOverwrite, healCrateredSources, isConfirmedDeadUrl } from "./lib/scrape-guard.js";
@@ -13,6 +12,7 @@ import { filterExpiredDeadlineCache } from "./lib/post-expiration.js";
 import { confirmedNonFacultyReason } from "./lib/post-quality.js";
 import { loadReviewedExclusions, reviewedExclusionReason } from "./lib/post-quality-exclusions.js";
 import { consolidateSystemUmbrellaDuplicates } from "./lib/duplicate-url-consolidation.js";
+import { attachCanonicalIds } from "./lib/canonical-id.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,14 +36,6 @@ function filterConfirmedDeadUrls(data, deadConfirm = 2) {
 
 function clean(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
-}
-
-function normalizeKeyPart(value) {
-  return clean(value).toLowerCase();
-}
-
-function sha1Hex(value) {
-  return createHash("sha1").update(String(value || "")).digest("hex");
 }
 
 // Central title-cleaning choke point. Many DOM scrapers push a raw `title` and
@@ -71,32 +63,14 @@ function normalizeJobTitles(data) {
   return { data: { ...data, jobs }, changed };
 }
 
+// Canonical-ID hash formula lives in ./lib/canonical-id.js (issue #135) --
+// shared with scripts/sync-web-data-files.js so the two never drift apart.
 function addCanonicalIds(data) {
   if (!data || !Array.isArray(data.jobs)) return { data, assigned: 0 };
-
-  let assigned = 0;
-  const jobs = data.jobs.map((job) => {
-    const title = normalizeKeyPart(job?.titleClean || job?.title || "");
-    const college = normalizeKeyPart(job?.college || "");
-    const dept = normalizeKeyPart(job?.department || "");
-    const state = normalizeKeyPart(job?.state || job?.source || "");
-    const source = normalizeKeyPart(job?.source || "");
-    const url = normalizeKeyPart(job?.url || "");
-
-    const canonicalGroupId = `grp_${sha1Hex([title, college, dept, state].join("|")).slice(0, 16)}`;
-    const canonicalJobId = `job_${sha1Hex([canonicalGroupId, source, url].join("|")).slice(0, 16)}`;
-
-    assigned += 1;
-    return {
-      ...job,
-      canonicalGroupId,
-      canonicalJobId,
-    };
-  });
-
+  const jobs = attachCanonicalIds(data.jobs);
   return {
     data: { ...data, jobs },
-    assigned,
+    assigned: jobs.length,
   };
 }
 
@@ -134,6 +108,14 @@ function isLikelyJobUrl(url) {
   const u = String(url || "");
   if (!/^https?:\/\//i.test(u)) return false;
   if (/^(?:tel|mailto|sms):/i.test(u)) return false;
+  // A bare origin with no path at all ("https://example.edu/", with nothing
+  // after the host) is a site homepage, never an individual job posting --
+  // confirmed live for a Christopher Newport University record whose scraped
+  // "url" was literally "https://cofvirginia.peopleadmin.com/" with an
+  // institutional marketing paragraph stored as the title (issue #138).
+  try {
+    if (new URL(u).pathname.replace(/\/+$/, "") === "" && !new URL(u).search) return false;
+  } catch {}
   // Known ATS platforms (Workday, Taleo, PeopleAdmin, ...) legitimately use "/faculty"
   // as a category or site-slug segment (e.g. Taleo's "/careersection/faculty/jobsearch.ftl",
   // a Workday site literally named ".../faculty") — the counter-check below requires an

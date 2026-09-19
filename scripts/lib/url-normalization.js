@@ -25,6 +25,75 @@ const BENIGN_HASH_FRAGMENTS = new Set([
   "top", "main", "content", "main-content", "header", "footer", "nav", "navigation", "skip", "skip-to-content", "body",
 ]);
 
+// PeopleAdmin's "/bookmarks?posting_id=N" is a session-dependent account
+// action (save-this-posting-to-my-account), not a stable job-detail page --
+// every one of these renders a "session expired, please log in" page for a
+// logged-out visitor. Detect it by shape (path + query param) rather than by
+// hostname allowlist, since it's the same PeopleAdmin platform feature across
+// every tenant that uses it (see issue #139).
+export function isPeopleAdminBookmarkUrl(input) {
+  let parsed;
+  try {
+    parsed = new URL(String(input || ""));
+  } catch {
+    return false;
+  }
+  if (!/\/bookmarks\/?$/i.test(parsed.pathname)) return false;
+  return /^\d+$/.test(parsed.searchParams.get("posting_id") || "");
+}
+
+// Rewrites a PeopleAdmin bookmark action URL to that tenant's stable
+// "/postings/{id}" job-detail path (same origin), so it can never be treated
+// as a distinct, permanent job page. If a genuine "/postings/{id}" copy of
+// the same job was also scraped, they now canonicalize to the identical URL
+// and the existing duplicate-URL collapse in canonicalizeJobUrls() (which
+// keeps the first-seen record) removes the extra copy automatically. If no
+// such copy exists, this still turns a session-dependent action link into the
+// tenant's normal, stable posting URL shape instead of a login page.
+function resolvePeopleAdminBookmarkUrl(parsed) {
+  if (!isPeopleAdminBookmarkUrl(parsed.toString())) return parsed;
+  const postingId = parsed.searchParams.get("posting_id");
+  const rewritten = new URL(parsed.toString());
+  rewritten.pathname = parsed.pathname.replace(/\/bookmarks\/?$/i, `/postings/${postingId}`);
+  rewritten.search = "";
+  rewritten.hash = "";
+  return rewritten;
+}
+
+// Some Workday tenants' search-API responses have produced a stored URL with
+// two "/job/" path segments -- a stale seed posting's "/job/{location}/{id}"
+// immediately followed by the real one, e.g.
+// ".../job/Leadville-CO/Adjunct-Faculty..._JR100940/job/Colorado-Mountain-College-Online/Adjunct-Faculty--Accounting_JR101035-1".
+// Workday's client-side router 200s on this and renders a "Sign In" / "There
+// are 1 error(s)" page instead of the intended posting (issue #144). The
+// final "/job/{...}" segment always identifies the intended posting; collapse
+// everything between the site root and that final segment.
+function collapseDuplicateWorkdayJobSegments(parsed) {
+  const host = parsed.hostname.toLowerCase();
+  if (!/myworkdayjobs\.com$|myworkdaysite\.com$/i.test(host)) return parsed;
+  const path = parsed.pathname;
+  const firstJob = path.toLowerCase().indexOf("/job/");
+  const lastJob = path.toLowerCase().lastIndexOf("/job/");
+  if (firstJob === -1 || firstJob === lastJob) return parsed;
+  const rewritten = new URL(parsed.toString());
+  rewritten.pathname = `${path.slice(0, firstJob)}${path.slice(lastJob)}`;
+  return rewritten;
+}
+
+// True when a Workday URL still carries more than one "/job/" path segment
+// (see collapseDuplicateWorkdayJobSegments above) -- exported as a standalone
+// invariant check for tests and data audits.
+export function hasDuplicateWorkdayJobSegments(input) {
+  let parsed;
+  try {
+    parsed = new URL(String(input || ""));
+  } catch {
+    return false;
+  }
+  const matches = parsed.pathname.match(/\/job\//gi) || [];
+  return matches.length > 1;
+}
+
 export function canonicalizeUrl(input, { stripQuery = true } = {}) {
   const raw = clean(input);
   if (!raw) return null;
@@ -44,6 +113,8 @@ export function canonicalizeUrl(input, { stripQuery = true } = {}) {
   if (!/^https?:$/i.test(parsed.protocol)) return null;
 
   parsed.protocol = "https:";
+  parsed = resolvePeopleAdminBookmarkUrl(parsed);
+  parsed = collapseDuplicateWorkdayJobSegments(parsed);
   const fragment = parsed.hash.replace(/^#/, "").toLowerCase();
   if (!fragment || BENIGN_HASH_FRAGMENTS.has(fragment)) {
     parsed.hash = "";
