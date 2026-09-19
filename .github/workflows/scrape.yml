@@ -85,6 +85,13 @@ jobs:
           node scripts/generate-sitemap.js
           node scripts/inject-og-meta.js
 
+      - name: Verify web data chunks/index match public/jobs.json exactly
+        # Issue #164: catches drift between public/jobs.json and the derived
+        # index/chunk artifacts (missing OR extra canonicalJobIds) before it
+        # ever reaches a commit, instead of only being noticed later by a
+        # manual audit against the deployed site.
+        run: npm run verify:data-sync
+
       - name: Validate job posting URLs (sample per source)
         run: npm run verify:job-urls -- --sample-per-source 8 --concurrency 8
         continue-on-error: true
