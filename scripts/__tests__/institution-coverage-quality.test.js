@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { classifyInstitutionCoverage } from "../lib/institution-coverage-quality.js";
+import {
+  classifyInstitutionCoverage,
+  institutionExtractionWarnings,
+} from "../lib/institution-coverage-quality.js";
 
 test("classifies verified hiring source types", () => {
   assert.equal(classifyInstitutionCoverage({ coverage_status: "covered", name: "A", career_url: "https://a.edu/jobs", platform_type: "workday" }), "direct_job_board");
@@ -28,4 +31,25 @@ test("keeps no-public-source and inactive exclusions distinct", () => {
 
 test("does not treat a covered record without a source as verified quality", () => {
   assert.equal(classifyInstitutionCoverage({ coverage_status: "covered" }), "unresolved");
+});
+
+test("warns when covered sources extract zero jobs or point to one posting", () => {
+  assert.deepEqual(
+    institutionExtractionWarnings({
+      coverage_status: "covered",
+      last_seen_job_count: 0,
+      job_presence_status: "no_jobs_found",
+      career_url: "https://example.edu/jobs/assistant-professor-of-economics",
+    }),
+    ["covered_zero_jobs", "single_posting_source"]
+  );
+  assert.deepEqual(
+    institutionExtractionWarnings({
+      coverage_status: "covered",
+      last_seen_job_count: 12,
+      job_presence_status: "jobs_found",
+      career_url: "https://example.edu/jobs",
+    }),
+    []
+  );
 });

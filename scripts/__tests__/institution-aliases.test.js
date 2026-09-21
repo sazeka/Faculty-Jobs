@@ -6,6 +6,9 @@ test("canonicalizes known IPEDS identity aliases", () => {
   assert.equal(canonicalInstitutionName("Columbia University"), "Columbia University in the City of New York");
   assert.equal(canonicalInstitutionName(" franklin AND marshall college "), "Franklin & Marshall College");
   assert.equal(canonicalInstitutionName("Hunter College"), "CUNY Hunter College");
+  assert.equal(canonicalInstitutionName("Tennessee Tech University"), "Tennessee Technological University");
+  assert.equal(canonicalInstitutionName("University of California, Berkeley"), "UC Berkeley");
+  assert.equal(canonicalInstitutionName("University of Wisconsin, Madison"), "UW-Madison");
 });
 
 test("leaves canonical and unknown names unchanged", () => {

@@ -5,6 +5,12 @@ const ALIASES = new Map(
   [
     ["Cal Poly Humboldt", "California State Polytechnic University-Humboldt"],
     ["Columbia University", "Columbia University in the City of New York"],
+    ["Tennessee Tech University", "Tennessee Technological University"],
+    ["University of California, Berkeley", "UC Berkeley"],
+    ["University of California, Davis", "UC Davis"],
+    ["University of California, Riverside", "UC Riverside"],
+    ["University of Wisconsin, Madison", "UW-Madison"],
+    ["University of Wisconsin-Madison", "UW-Madison"],
     ["Baruch College", "CUNY Bernard M Baruch College"],
     ["Bronx Community College", "CUNY Bronx Community College"],
     ["Brooklyn College", "CUNY Brooklyn College"],

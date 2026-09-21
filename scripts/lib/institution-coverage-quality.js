@@ -70,3 +70,33 @@ export function classifyInstitutionCoverage(inst, exclusion = null) {
   if (key(inst?.platform_type) === "generic") return "official_employment_page";
   return "direct_job_board";
 }
+
+function looksLikeSinglePostingUrl(value) {
+  try {
+    const url = new URL(clean(value));
+    return (
+      /\/(?:jobs?|postings?|positions?)\/(?:\d+|[^/?#]{12,})\/?$/i.test(url.pathname) ||
+      /[?&](?:job(?:Id|OpeningId)?|listingId|requisitionId)=\w+/i.test(url.search)
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function institutionExtractionWarnings(inst) {
+  const warnings = [];
+  if (key(inst?.coverage_status) !== "covered") return warnings;
+
+  if (
+    Number(inst?.last_seen_job_count || 0) === 0 &&
+    ["no_jobs_found", "jobs_expected"].includes(key(inst?.job_presence_status))
+  ) {
+    warnings.push("covered_zero_jobs");
+  }
+
+  if (looksLikeSinglePostingUrl(inst?.career_url)) {
+    warnings.push("single_posting_source");
+  }
+
+  return warnings;
+}

@@ -719,7 +719,7 @@ const MA_PRIVATE_CAMPUSES = [
   {
     campus: "Williams College",
     type: "generic",
-    url: "https://www.williams.edu/admin/human-resources/employment/",
+    url: "https://employment.williams.edu/faculty-positions/",
   },
   {
     campus: "Smith College",
@@ -1557,7 +1557,8 @@ const NJ_CAMPUSES = [
 
 const NJ_PRIVATE_CAMPUSES = [
   { campus: "Princeton Theological Seminary", type: "faculty-headings", url: "https://ptsem.edu/employment/" },
-  { campus: "Princeton University", type: "princeton", url: "https://puwebp.princeton.edu/AcadHire/apply/" },
+  // Princeton moved academic hiring from AHIRE to Interfolio on 2026-01-07.
+  { campus: "Princeton University", type: "interfolio-inst", url: "https://apply.interfolio.com/14427/positions" },
   { campus: "Seton Hall University", type: "pageup", url: "https://jobs.shu.edu/cw/en-us/listing" },
   { campus: "Stevens Institute of Technology", type: "workday", url: "https://stevens.wd5.myworkdayjobs.com/External" },
   { campus: "Fairleigh Dickinson University", type: "peopleadmin", url: "https://jobs.fdu.edu/postings/search" },
@@ -3255,6 +3256,18 @@ const NY_PRIVATE_CAMPUSES = [
     campus: "Cornell University",
     type: "workday",
     url: "https://cornell.wd1.myworkdayjobs.com/CornellPositions?jobFamilyGroup=2fce81649158445ea3f611bcbfd8a8b7&jobFamilyGroup=6a4f0b31b53b1000fe90ca34682a0000",
+  },
+  // Cornell also publishes faculty searches that never enter the Workday
+  // job-family feed. AcademicJobsOnline's Cornell board is institution-scoped.
+  {
+    campus: "Cornell University",
+    type: "academicjobsonline",
+    url: "https://academicjobsonline.org/ajo/Cornell",
+  },
+  {
+    campus: "Cornell University",
+    type: "academicjobsonline",
+    url: "https://academicjobsonline.org/ajo/Cornell/Economics",
   },
   {
     campus: "Syracuse University",
@@ -5550,8 +5563,8 @@ const IL_CAMPUSES = [
   },
   {
     campus: "University of Chicago",
-    type: "generic",
-    url: "https://www.uchicago.edu/careers",
+    type: "uchicago-academic",
+    url: "https://academicjobs.uchicago.edu/positions",
   },
   {
     campus: "Chicago State University",
@@ -6103,8 +6116,8 @@ const TX_CAMPUSES = [
   { campus: "Ranger College", type: "generic", url: "https://www.rangercollege.edu/about-us/human-resources/index.php" },
   {
     campus: "University of Texas at Austin",
-    type: "workday",
-    url: "https://utaustin.wd1.myworkdayjobs.com/UTstaff",
+    type: "ut-austin-faculty",
+    url: "https://faculty.utexas.edu/career",
   },
   {
     campus: "Texas A&M University",
@@ -11497,6 +11510,7 @@ async function scrapeNjPrivate(context) {
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "NJ");
         if (type === "paycom") return await scrapePaycomAs(context, url, campus, "NJ");
         if (type === "faculty-headings") return await scrapeFacultyHeadingPageAs(context, url, campus, "NJ");
+        if (type === "interfolio-inst") return await scrapeInterfolioInstitution(context, url, campus, "NJ");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "NJ");
         return [];
       } catch (e) {
@@ -14010,6 +14024,58 @@ async function scrapePeopleAdminWithDept(context, startUrl, campusName, sourceNa
 
 
 
+// University of Chicago's public academic-jobs site is backed by a Solr JSON
+// endpoint. The generic browser scraper only sees the first ten rendered rows;
+// requesting the documented result payload directly captures the full board
+// without brittle pagination clicks.
+export async function scrapeUChicagoAcademicAs(context, startUrl, campusName, sourceName) {
+  try {
+    const base = new URL(startUrl);
+    const apiUrl = `${base.origin}/api/index.php/solr/select/?q=*&start=0&rows=1000`;
+    const response = await context.request.get(apiUrl, { timeout: 45_000 });
+    if (!response.ok()) throw new Error(`HTTP ${response.status()} for ${apiUrl}`);
+    const payload = await response.json();
+    const rows = Array.isArray(payload?.response?.docs) ? payload.response.docs : [];
+
+    const toYmd = (value) => {
+      const date = new Date(String(value || ""));
+      return Number.isNaN(date.getTime()) ? null : date.toISOString().slice(0, 10);
+    };
+
+    const jobs = rows
+      .filter((row) => (row.position_type_fct || []).includes("Faculty") || looksFacultyish(row.name))
+      .map((row) => {
+        const title = normalizeJobTitle(row.name);
+        const description = stripHtmlToText(
+          [row.description, row.qualifications, row.instructions].filter(Boolean).join(" ")
+        );
+        const job = {
+          title,
+          url: `${base.origin}/positions/${row.id}`,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: clean(row.location) || "Chicago, IL",
+          description: description || null,
+          department: clean(row.unit_name) || null,
+          specialization: clean(row.unit_name) || null,
+        };
+        const datePosted = toYmd(row.open_date);
+        const closeDate = toYmd(row.deadline);
+        if (datePosted) job.datePosted = datePosted;
+        if (closeDate) job.closeDate = closeDate;
+        return job;
+      })
+      .filter((job) => !omitAdjunct(job.title));
+
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (academic jobs API)`);
+    return uniqByUrl(jobs);
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} academic jobs API scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 /* ============================== IL ============================== */
 
 async function scrapeIlAll(context) {
@@ -14052,6 +14118,7 @@ async function scrapeIlAll(context) {
             : jobs;
         }
         if (type === "peoplesoft-fluid") return await scrapePeopleSoftFluidAs(context, url, campus, "IL");
+        if (type === "uchicago-academic") return await scrapeUChicagoAcademicAs(context, url, campus, "IL");
         // No existing IL dispatch case for "workday" (function scrapeWorkdayAs
         // already exists and is dispatched elsewhere, e.g. CA) -- added for
         // St. John's College-Department of Nursing (shared HSHS Workday tenant).
@@ -21560,6 +21627,79 @@ async function scrapeSwtxEmploymentAs(startUrl, campusName, sourceName = "TX") {
   }
 }
 
+// UT Austin maintains a dedicated faculty board separate from its Workday
+// staff board. The Angular listing uses a stable `p` query parameter; read the
+// title from each card heading so deadline and department text do not pollute it.
+export async function scrapeUtAustinFacultyAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    const jobs = [];
+    const seen = new Set();
+
+    for (let pageNumber = 1; pageNumber <= 100; pageNumber++) {
+      const pageUrl = new URL(startUrl);
+      pageUrl.searchParams.set("p", String(pageNumber));
+      await gotoWithRetry(page, pageUrl.toString(), { waitUntil: "domcontentloaded", timeout: 60_000 });
+      await page.waitForSelector('a.search-hit[href*="/career/"]', { timeout: 12_000 }).catch(() => {});
+
+      const batch = await safeEvaluate(page, () => {
+        const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+        const out = [];
+        for (const anchor of document.querySelectorAll('a.search-hit[href*="/career/"]')) {
+          const title = cleanText(anchor.querySelector("h4")?.textContent);
+          if (!title) continue;
+          let url;
+          try {
+            url = new URL(anchor.getAttribute("href"), location.href).toString();
+          } catch {
+            continue;
+          }
+          const meta = cleanText(anchor.querySelector("p")?.textContent);
+          const department = cleanText(anchor.querySelector("p ais-highlight")?.textContent) || null;
+          const deadline = meta.match(/Apply by\s+(.+?)(?:\s+[·•]|$)/i)?.[1] || null;
+          out.push({ title, url, department, deadline });
+        }
+        return out;
+      });
+
+      let added = 0;
+      for (const row of batch || []) {
+        if (!row.url || seen.has(row.url)) continue;
+        seen.add(row.url);
+        const inferred = inferAcademicFieldsFromTitle(row.title);
+        const job = {
+          title: normalizeJobTitle(row.title),
+          url: row.url,
+          source: sourceName,
+          category: "Faculty",
+          college: campusName,
+          location: "Austin, TX",
+          description: null,
+          department: row.department || inferred.department,
+          specialization: row.department || inferred.specialization,
+        };
+        if (row.deadline) {
+          const date = new Date(row.deadline);
+          if (!Number.isNaN(date.getTime())) job.closeDate = date.toISOString().slice(0, 10);
+        }
+        jobs.push(job);
+        added += 1;
+      }
+
+      if ((batch || []).length === 0 || added === 0) break;
+    }
+
+    const filtered = jobs.filter((job) => !omitAdjunct(job.title));
+    console.log(`${campusName} ${sourceName} listings scraped: ${filtered.length} (faculty careers)`);
+    return filtered;
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} faculty careers scrape failed:`, e?.message || e);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 async function scrapeTxAll(context) {
   const results = await mapWithConcurrency(
     TX_CAMPUSES,
@@ -21621,6 +21761,7 @@ async function scrapeTxAll(context) {
             preferDeptKeys: ["college", "department", "organization", "unit", "school"],
           });
         }
+        if (type === "ut-austin-faculty") return await scrapeUtAustinFacultyAs(context, url, campus, "TX");
         if (type === "generic") {
           const jobs = await scrapeGenericJobPage(context, url, campus, "TX");
           return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || "")) : jobs;
@@ -21876,7 +22017,7 @@ async function scrapeCuBoulder(context, startUrl, campusName, sourceName) {
 }
 
 // Interfolio Institution-specific positions page scraper
-async function scrapeInterfolioInstitution(context, startUrl, campusName, sourceName) {
+export async function scrapeInterfolioInstitution(context, startUrl, campusName, sourceName) {
   // Extract institution ID from URL like https://apply.interfolio.com/16224/positions
   const instMatch = startUrl.match(/interfolio\.com\/(\d+)/);
   if (!instMatch) {

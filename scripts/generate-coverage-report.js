@@ -6,6 +6,7 @@ import { attachUniversityCoverage } from "./lib/site-coverage.js";
 import {
   COVERAGE_QUALITY_LEVELS,
   classifyInstitutionCoverage,
+  institutionExtractionWarnings,
 } from "./lib/institution-coverage-quality.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -89,6 +90,7 @@ function main() {
       missing: 0,
       excluded_policy: 0,
       pending_review: 0,
+      extraction_warnings: 0,
     },
     percentages: {},
     byState: {},
@@ -100,6 +102,7 @@ function main() {
       percentages: {},
     },
     qualityExceptions: [],
+    extractionWarnings: [],
   };
 
   for (const inst of eligible) {
@@ -127,6 +130,17 @@ function main() {
         reason: exclusion?.reason || inst.coverage_resolution_reason || null,
       });
     }
+
+    for (const warning of institutionExtractionWarnings(inst)) {
+      report.extractionWarnings.push({
+        name: inst.name,
+        state: inst.state || null,
+        warning,
+        last_seen_job_count: Number(inst.last_seen_job_count || 0),
+        job_presence_status: inst.job_presence_status || null,
+        career_url: inst.career_url || null,
+      });
+    }
   }
 
   const denom = report.totals.eligible_universe || 1;
@@ -137,6 +151,8 @@ function main() {
     report.qualityLevels.percentages[level] = Number(((report.qualityLevels.totals[level] / denom) * 100).toFixed(2));
   }
   report.qualityExceptions.sort((a, b) => a.coverage_quality.localeCompare(b.coverage_quality) || a.name.localeCompare(b.name));
+  report.extractionWarnings.sort((a, b) => a.warning.localeCompare(b.warning) || a.name.localeCompare(b.name));
+  report.totals.extraction_warnings = report.extractionWarnings.length;
 
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
   fs.writeFileSync(OUT_PATH, JSON.stringify(report, null, 2) + "\n", "utf8");
