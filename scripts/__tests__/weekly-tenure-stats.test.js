@@ -37,6 +37,14 @@ test("source titles and verified institution policies override stale stored valu
   );
   assert.deepEqual(
     classifyTenureTrackWithEvidence({
+      college: "SUNY Upstate Medical University",
+      title: "Psychiatry Instructor/Assistant Professor (Adult or Child Psych)",
+      description: "Board Eligible or Board Certified psychiatrist sought for a Clinical Instructor or Clinical Assistant Professor position.",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
       college: "University of Washington",
       title: "Assistant or Associate Professor (WOT) - Pediatric Epileptologist",
       tenureTrack: true,
