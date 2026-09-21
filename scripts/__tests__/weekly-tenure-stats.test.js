@@ -2991,6 +2991,41 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
     }),
     null
   );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Transylvania University",
+      title: "Assistant Professor of Biology",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Transylvania University",
+      title: "Assistant Professor of Business Administration - Finance",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Transylvania University",
+      title: "Assistant Professor of Business Administration - Management",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Transylvania University",
+      title: "Assistant Professor of Political Science (Methods and American Politics)",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Transylvania University",
+      title: "Assistant Professor of Chemistry",
+    }),
+    null
+  );
 });
 
 test("uses College of Southern Maryland's ten-month tenure-track faculty convention", () => {
