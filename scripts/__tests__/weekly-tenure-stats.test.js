@@ -3483,6 +3483,81 @@ test("separates exact appointments published together on shared college jobs pag
   );
 });
 
+test("matches Foothill's president-approved tenure-track searches by exact title", () => {
+  for (const title of [
+    "Faculty Coordinator of Pride Center and Sociology Instructor",
+    "Instructor, Veterinary Technology (RVT)",
+    "Program Director/Instructor, Dental Hygiene",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Foothill College", title }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Foothill College", title: "Part-Time Faculty, Sociology" }),
+    false
+  );
+});
+
+test("uses exact current contract and genetic-counseling appointment evidence", () => {
+  assert.equal(
+    classifyTenureTrack({
+      college: "Toccoa Falls College",
+      title: "Clinical Instructor, School of Nursing",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of California College of the Law-San Francisco",
+      title: "Library Director (Faculty) Recruitment Information",
+    }),
+    false
+  );
+  for (const title of [
+    "Assistant Professor of Genetic Counseling - Women's Genetics",
+    "Assistant Professor of Genetics Counseling (in Medical Humanities and Ethics)",
+  ]) {
+    assert.equal(
+      classifyTenureTrack({ college: "Columbia University in the City of New York", title }),
+      false,
+      title
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "Columbia University in the City of New York",
+      title: "Assistant Professor of Medical Psychology",
+    }),
+    null
+  );
+});
+
+test("uses exact live titles only when IPEDS reports every offered rank on one track", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Cisco College",
+      title: "Government Professor (Cisco Campus)",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of Kansas",
+      title: "Instructor - Pharmacy Law",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Cisco College",
+      title: "Future Professor Search",
+    }),
+    null
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([

@@ -185,6 +185,7 @@ function structuredAppointmentSignal(raw) {
 // convention, and only after every explicit signal above has come up empty.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const INSTITUTION_POLICY_PATH = path.resolve(__dirname, "..", "..", "data", "institution-tenure-policy.json");
+const IPEDS_RANK_POLICY_PATH = path.resolve(__dirname, "..", "..", "data", "ipeds-rank-tenure-policy.json");
 
 function loadInstitutionPolicyRules() {
   const byCollege = new Map();
@@ -234,6 +235,23 @@ function loadInstitutionPolicyRules() {
 const { byCollege: INSTITUTION_POLICY_RULES, patternRules: INSTITUTION_POLICY_PATTERN_RULES } =
   loadInstitutionPolicyRules();
 
+function loadIpedsRankPolicyRules() {
+  const rules = new Map();
+  try {
+    const raw = JSON.parse(fs.readFileSync(IPEDS_RANK_POLICY_PATH, "utf8"));
+    for (const entry of Array.isArray(raw?.entries) ? raw.entries : []) {
+      if (!entry?.college || !entry?.title || typeof entry.value !== "boolean") continue;
+      rules.set(`${entry.college}\u0000${entry.title}`, entry.value);
+    }
+  } catch {
+    // The classifier remains usable in stripped-down environments that omit
+    // optional policy data; explicit posting language still takes precedence.
+  }
+  return rules;
+}
+
+const IPEDS_RANK_POLICY_RULES = loadIpedsRankPolicyRules();
+
 function matchInstitutionPolicy(job) {
   const title = String(job?.title || "");
   const description = String(job?.description || "");
@@ -254,6 +272,10 @@ function matchInstitutionPolicy(job) {
     ) {
       return { value: rule.value, evidence: "institution-policy" };
     }
+  }
+  const ipedsValue = IPEDS_RANK_POLICY_RULES.get(`${college}\u0000${title}`);
+  if (typeof ipedsValue === "boolean") {
+    return { value: ipedsValue, evidence: "institution-policy" };
   }
   return null;
 }
