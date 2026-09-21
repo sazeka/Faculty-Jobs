@@ -1547,6 +1547,7 @@ test("uses documented Missouri State, Austin Peay, and USF rank taxonomies", () 
     ["Austin Peay State University", "Assistant Professor, Teaching & Learning"],
     ["University of South Florida", "Assistant-Associate Professor/School of Social Work"],
     ["University of South Florida", "Professor, Chair, Biostatistics and Data Science"],
+    ["University of South Florida", "Advanced Assistant Professor of Marketing, Fall 2027"],
   ]) {
     assert.deepEqual(
       classifyTenureTrackWithEvidence({ college, title }),
@@ -1562,6 +1563,13 @@ test("uses documented Missouri State, Austin Peay, and USF rank taxonomies", () 
   ]) {
     assert.notEqual(classifyTenureTrack({ college, title }), true, `${college}: ${title}`);
   }
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of South Florida",
+      title: "Open Rank Faculty (Research)",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
   assert.deepEqual(
     classifyTenureTrackWithEvidence({ college: "Austin Peay State University", title: "Instructor - Chemistry" }),
     { value: false, evidence: "institution-policy" }
