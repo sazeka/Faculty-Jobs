@@ -52,10 +52,44 @@ test("generic faculty handbooks, careers indexes, and staff portals are quaranti
   }
 });
 
+test("faculty navigation, governance, awards, and news labels are quarantined", () => {
+  for (const title of [
+    "Current Faculty",
+    "Faculty Bylaws",
+    "Faculty Hard Copy Grades and Attendance Submission",
+    "Faculty Learning Communities",
+    "Faculty Roster",
+    "Faculty Sabbaticals",
+    "Faculty and Course Profiles",
+    "Faculty Members",
+    "Faculty Retirement Transition Leave",
+    "Featured Faculty",
+    "Staff/Faculty Webmail",
+    "Welcoming Seven New Faculty Members",
+  ]) {
+    assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
+  }
+  assert.equal(confirmedNonFacultyReason(job({ title: "Faculty, Nursing" }), { today: TODAY }), null);
+});
+
 test("faculty affairs staff roles are quarantined", () => {
   const quality = scorePost(job({ title: "Faculty Affairs Coordinator" }), { today: TODAY });
   assert.equal(quality.status, "quarantine");
   assert.ok(quality.reasons.some((reason) => reason.code === "administrative_staff_title"));
+});
+
+test("unambiguous student-services, administration, and recreation roles are quarantined", () => {
+  for (const title of [
+    "Assistant Dean of Student Affairs",
+    "Associate Director for Faculty and Research Communications",
+    "Dean of Enrollment Management",
+    "Research Professional 2 - Chemical Engineering - Professor Bruggeman",
+    "Swim Instructor",
+    "Yoga Instructor, FitWell Group Exercise",
+  ]) {
+    assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "nonacademic_staff_title", title);
+  }
+  assert.equal(confirmedNonFacultyReason(job({ title: "Assistant Professor of Physical Education" }), { today: TODAY }), null);
 });
 
 test("academic program names containing staff-role words remain eligible", () => {

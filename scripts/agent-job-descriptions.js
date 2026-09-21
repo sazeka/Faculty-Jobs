@@ -36,6 +36,7 @@ import { createDescriptionFetchReport } from "./lib/description-fetch-report.js"
 import { buildWorkdayCxsUrl, fetchWorkdayPosting } from "./lib/workday-description.js";
 import { fetchPaycomPosting, parsePaycomJobUrl } from "./lib/paycom-description.js";
 import { fetchAdpPosting, parseAdpJobUrl } from "./lib/adp-description.js";
+import { fetchSelectMindsPosting, isSelectMindsJobUrl } from "./lib/selectminds-description.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -62,6 +63,7 @@ const args = parseArgs(process.argv.slice(2));
 const DRY_RUN = Boolean(args["dry-run"]);
 const PLATFORM = String(args.platform || process.env.DESC_PLATFORM || "").trim().toLowerCase();
 const HOST = String(args.host || process.env.DESC_HOST || "").trim().toLowerCase();
+const COLLEGE = String(args.college || process.env.DESC_COLLEGE || "").trim();
 if (PLATFORM && !/^[a-z0-9-]+$/.test(PLATFORM)) {
   throw new Error(`Invalid description platform: ${PLATFORM}`);
 }
@@ -80,6 +82,8 @@ const RECLOSE = Boolean(args["reclose"]);
 // would otherwise wait 14 days. Attempt limits and unsupported-host exclusions
 // still apply, so this cannot create an unbounded retry loop.
 const RETRY_NOW = Boolean(args["retry-now"]);
+const FORCE = Boolean(args.force);
+if (FORCE && !HOST) throw new Error("--force requires a narrow --host filter");
 const MAX = Number(args["max"] || process.env.DESC_MAX || 300);
 const CONCURRENCY = Math.min(Number(args["concurrency"] || process.env.DESC_CONCURRENCY || 6), 12);
 const TIMEOUT_MS = Math.max(8000, Number(args["timeout-ms"] || 30000));
@@ -159,6 +163,13 @@ async function main() {
     ? payload.jobs.filter(
         (j) => !j.datePosted && j.descriptionFetchedAt !== undefined && /^https?:\/\//i.test(j.url || "") && matchesDescriptionPlatform(j, PLATFORM) && matchesDescriptionHost(j, HOST)
       )
+    : FORCE
+    ? payload.jobs.filter(
+        (j) => !String(j?.description || '').trim()
+          && /^https?:\/\//i.test(j?.url || '')
+          && matchesDescriptionHost(j, HOST)
+          && (!COLLEGE || j?.college === COLLEGE)
+      )
     : RETRY_NOW
     ? payload.jobs.filter(
         (j) => !String(j?.description || '').trim()
@@ -167,6 +178,7 @@ async function main() {
           && descriptionAttemptCount(j) < DESCRIPTION_MAX_ATTEMPTS
           && matchesDescriptionPlatform(j, PLATFORM)
           && matchesDescriptionHost(j, HOST)
+          && (!COLLEGE || j?.college === COLLEGE)
       )
     : prioritizeDescriptionCandidates(payload.jobs, Date.now(), { platform: PLATFORM, host: HOST });
   const toProcess = needs.slice(0, MAX);
@@ -175,12 +187,14 @@ async function main() {
   if (REDATE) console.log("\n  *** REDATE MODE — re-scanning fetched pages missing datePosted ***");
   if (RECLOSE) console.log("\n  *** RECLOSE MODE — re-scanning fetched pages missing a deadline ***");
   if (RETRY_NOW) console.log("\n  *** RETRY-NOW MODE — using remaining bounded retries immediately ***");
+  if (FORCE) console.log("\n  *** FORCE-HOST MODE — rechecking the explicitly selected host ***");
   console.log(`\n  Total jobs        : ${payload.jobs.length.toLocaleString()}`);
   console.log(`  With description  : ${haveDesc.toLocaleString()}`);
   console.log(`  Missing (unfetched): ${needs.length.toLocaleString()}`);
   console.log(`  To process now    : ${toProcess.length.toLocaleString()} (max ${MAX})`);
   if (PLATFORM) console.log(`  Platform filter   : ${PLATFORM}`);
   if (HOST) console.log(`  Host filter       : ${HOST}`);
+  if (COLLEGE) console.log(`  College filter    : ${COLLEGE}`);
   console.log(`  Concurrency       : ${CONCURRENCY}`);
 
   if (toProcess.length === 0) {
@@ -282,6 +296,15 @@ async function main() {
           // ADP Workforce Now exposes each public requisition as structured
           // JSON, including the complete description and exact post date.
           const result = await fetchAdpPosting(job.url, {
+            timeoutMs: TIMEOUT_MS,
+            minLen: Math.min(MIN_LEN, 80),
+            maxLen: MAX_LEN,
+          });
+          desc = result.desc;
+          datePosted = result.datePosted;
+          validThrough = result.validThrough;
+        } else if (isSelectMindsJobUrl(job.url)) {
+          const result = await fetchSelectMindsPosting(job.url, {
             timeoutMs: TIMEOUT_MS,
             minLen: Math.min(MIN_LEN, 80),
             maxLen: MAX_LEN,

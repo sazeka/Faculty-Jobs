@@ -160,6 +160,7 @@ const STRUCTURED_TENURE_RE = new RegExp(
     `|\\b(?:faculty\\s+)?tenure[\\s-]+track(?:\\s+status)?\\s*:?\\s*yes\\b` +
     `|\\btenure\\s+status\\s*:?\\s*tenure\\s+track\\b` +
     `|\\bappointment\\s+status\\s*:?\\s*tenure(?:\\s+track)?\\b` +
+    `|\\bappointment\\s+type\\s*:?\\s*tenured\\s*\\/\\s*tenure\\s+track\\b` +
     `|\\btype\\s+of\\s+position\\s*:?\\s*faculty\\s*-\\s*tenure(?:\\s*\\/\\s*tenure\\s+track)?\\b` +
     `|\\bgroup\\s*:?\\s*tenure\\s+system\\s+faculty\\b`,
   "i"
@@ -284,6 +285,8 @@ function explicitSignals(raw) {
 // conflict and it remains unknown.
 const DIRECT_APPOINTMENT_CLAIM_RE =
   /\b(?:invites?\s+applications?\s+for|this\s+is|these\s+are|the\s+(?:faculty\s+)?position\s+is)\b[^.]{0,180}\b(?:non[\s-]?tenured?(?:[\s-]?track)?|tenure[\s-]?(?:track|earning|eligible))\b[^.]{0,100}\b(?:positions?|appointments?)\b/gi;
+const DIRECT_THIS_TRACK_POSITION_RE =
+  /\bthis\s+(?:is\s+)?(?:an?\s+)?(?:non[\s-]?tenured?(?:[\s-]?track)?|tenure[\s-]?(?:track|earning|eligible)|fixed[\s-]?term|clinical[\s-]?track|professional[\s-]?track)\b[^.]{0,180}\b(?:positions?|appointments?)\b/gi;
 const DIRECT_ADJUNCT_ROLE_RE =
   /\b(?:this\s+is\s+(?:an?\s+)?|(?:college|university|department|program)\s+is\s+seeking\s+(?:(?:applications?\s+from|applicants?\s+for|qualified)\s+)?(?:an?\s+)?|we\s+are\s+seeking\s+(?:an?\s+)?)\s*(?:part[\s-]?time\s+)?adjunct\s+(?:faculty|instructor|lecturer|professor|appointment|position)\b/i;
 const DIRECT_PART_TIME_ROLE_RE =
@@ -299,7 +302,7 @@ function directDescriptionAppointmentSignal(raw) {
     if (!/\bfull[\s-]?time\s+or\s+part[\s-]?time\b/i.test(match[0])) return false;
   }
   let value = null;
-  for (const match of text.matchAll(DIRECT_APPOINTMENT_CLAIM_RE)) {
+  for (const match of text.matchAll(new RegExp(`${DIRECT_APPOINTMENT_CLAIM_RE.source}|${DIRECT_THIS_TRACK_POSITION_RE.source}`, "gi"))) {
     const signals = explicitSignals(match[0]);
     const current = signals.nonTenure === signals.tenure ? null : signals.tenure;
     if (current === null) continue;

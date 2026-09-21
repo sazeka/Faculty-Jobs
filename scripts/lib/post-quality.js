@@ -8,6 +8,11 @@ export const POST_QUALITY_VERSION = 1
 const PLACEHOLDER_TITLE_RE = /^(?:faculty|staff|faculty jobs|employment|careers?|view details|learn more|read more|click here)$/i
 const RESOURCE_TITLE_RE = /^(?:\/?\s*faculty\s*(?:\/|&|and)\s*staff(?:\s+(?:resources?|panel))?|faculty careers?|faculty handbook|faculty affairs|faculty support|faculty support services\b.*|faculty resources?|faculty development|academic affairs|human resources|office of faculty affairs(?:\s*&\s*strategic planning)?|contract faculty payroll calendar|staff,? faculty (?:&|and) student employment opportunities|view lecturer opportunities|access center resources for faculty|affiliate faculty resources|center for faculty excellence|faculty accompanying students(?: \(fas\))? grant|faculty awards|faculty employment handbook|faculty forms|faculty offer letter templates\b.*|faculty performance|faculty review|(?:msu denver )?faculty fellowships|recruiting excellent faculty workshops|academic leadership (?:&|and) faculty|faculty experience|faculty overview)$/i
 const SEARCH_PAGE_CHROME_TITLE_RE = /^(?:faculty (?:&|and|\+) staff(?: jobs| resources| employment)?|faculty and staff faqclick to open|faculty and staff human resources guide: employment|faculty employment|faculty stories|faculty, lecturer, and academic staff jobs|faculty\/staff resources|full-time faculty|prospective faculty & staff|regular faculty and staff|staff and faculty)$/i
+// Exact information-page labels observed in institution navigation and news
+// feeds. These pages discuss current faculty, policies, awards, resources, or
+// professional development; none names an open appointment. Keep this list
+// exact so genuine titles such as "Faculty, Nursing" remain eligible.
+const NON_POSTING_INFORMATION_TITLE_RE = /^(?:\/careers\/faculty\.php|2021 Faculty Appreciation Awards|AR Professor of the Year|ASL Faculty|Caring Faculty|Center for Institutional, Faculty, and Student Success|Current Faculty|Current Faculty\/Staff|Employee\/Faculty Handbooks|Exceptional Faculty|Expertise & Faculty Search|Faculty \(\d+\)|Faculty \((?:Business, Media & Writing|Education & Humanities|Equine|Fine Arts & Theatre|NHSB Sciences)\)|Faculty & Members|Faculty & Professor Page|Faculty & residents|Faculty & Students|Faculty Absences|Faculty Access|Faculty Advising Appointment Scheduling|Faculty Advisors|Faculty and Academic Deans|Faculty and Academics|Faculty and Course Profiles|Faculty Blogs|Faculty Bylaws|Faculty Campus Connect|Faculty Code|Faculty Compliance|Faculty Constitution|Faculty Credentials|Faculty CTL|Faculty Curricula Vitae|Faculty Distance Education Support|Faculty Diversity Internship Program \(FDIP\)|Faculty Emeriti\/ae|Faculty Emeritus|Faculty Exchange|Faculty Experts Hub|Faculty Finder|Faculty FlashPort|Faculty Funding and Support|Faculty Gateway|Faculty Handbooks|Faculty Hard Copy Grades and Attendance Submission|Faculty Inquiry Groups|Faculty Landing Page|Faculty Learning Communities|Faculty Led Travel|Faculty Life|Faculty Life & Development|Faculty Members|Faculty Mentoring|Faculty Mentorships|Faculty Misconduct|Faculty Office Hours|Faculty OLSIS|Faculty Online|Faculty or Staff Member|Faculty Positions & Hiring|Faculty Published Books|Faculty Remembrances|Faculty Researchers|Faculty Retirement Transition Leave|Faculty Roster|Faculty Sabbaticals|Faculty Speakers Bureau|Faculty Volunteer Early Retirement Incentive|Faculty-Student Mentors|Faculty\/Staff Dialogues|Faculty\/Staff Email|Faculty\/Staff J1 Web|Faculty\/Staff Member|Featured Faculty|For Faculty|Full Time Faculty Expectations|Get Support for Instructional Faculty Icon|Honors Faculty|Innovative Faculty|Instructional Faculty|Leadership & Faculty|Martin University Faculty|Mentored Faculty Programs|MQ’s for Faculty & Administrators|Music Faculty|Music Faculty Achievements|O'Leary Travel Grants for Faculty|Pontifical Faculty of Theology|Prospective Faculty|Sample Faculty Reference Letter|Sandburg faculty|Search Staff, Faculty, and Student Positions|Seminary Faculty|Staff & Faculty Committees|Staff and Faculty Orientation|Staff\/Faculty Webmail|Students, Faculty, and Staff|Through community and faculty mentorship, FLC students find purpose and support at FLC|Toggle Faculty Professional Development Menu|University Transfer Faculty|Welcoming Seven New Faculty Members|West Virginia Professor of the Year|YSU Faculty Syllabi)$/i
 // Directory/biography/overview/video pages ABOUT faculty as a group, not a
 // specific role being recruited (issue #129). Deliberately narrow: "director"
 // is excluded (only "directory"/"directories") because "Faculty Director of
@@ -54,6 +59,7 @@ const DEAN_REPORTING_RELATIONSHIP_RE = /\b(?:to|for|of|under)\s+(?:the\s+)?(?:as
 const STRONG_ACADEMIC_TITLE_RE = /\b(?:assistant|associate|full|distinguished|endowed|visiting|adjunct|clinical|research|teaching)?\s*professor\b|\bprofessor of\b|\blecturer\b|\binstructor\b|\bpost[- ]?doctoral\b|\bpost[- ]?doc\b|\bfaculty fellow\b|\bresearch (?:scientist|associate|fellow)\b|\bdepartment chair\b|\b(?:academic|assistant|associate|faculty) librarian\b/i
 const STAFF_ROLE_RE = /\b(?:faculty affairs|faculty development|faculty support|human resources|hr associate|hr business|coordinator|specialist|recruiter|talent acquisition|administrative assistant|executive assistant|office manager|program assistant|assistant director|associate director|operations manager|business manager)\b/i
 const CLEAR_NONACADEMIC_RE = /\b(?:custodian|groundskeeper|maintenance technician|police officer|security officer|bus driver|food service|payroll|accounts payable|facilities technician|electrician|plumber|carpenter|head coach|assistant coach|athletic trainer)\b/i
+const CLEAR_NON_APPOINTMENT_TITLE_RE = /^(?:Assistant Dean of Student Affairs|Assistant Dean of Student Success|Assistant Dean of Students for Reslife\/Wellness|Assistant Dean, Faculty Affairs and Professional Development \(Revised\)|Assistant Provost for Academic Budgets & Faculty Relations|Assistant to the Department Chair|Associate Dean of Campus Operations|Associate Dean of Equity and Special Programs|Associate Dean of Students|Associate Dean of Studies|Associate Dean of Workforce \(Abilene\)|Associate Director for Faculty and Research Communications|Dean of Enrollment Management|Dean of Enrollment Management, Systems, and Innovation|Dean of Experiential Learning, Career Development and Employer Partnerships|Dean of Students, Ashley Curry|FitWell Group Exercise Instructor|Fitness Instructor|Fitness-Group Exercise Instructor|Personal Trainer, Duke Faculty Club|Research Professional 2 - Chemical Engineering - Professor Bruggeman|Riding Instructor\/Eventing Coach|Senior Director Credentialing & Contracting \(Hybrid\) - Faculty Practice Plan|Student Affairs & Dean of Students|Swim Instructor|Swim Instructor \/ Coach|Vice President of Student Affairs & Dean of Students|VP\/Dean of Students|Yoga Instructor, FitWell Group Exercise)$/i
 const STUDENT_RESOURCE_RE = /\b(?:student services|career services|career center|disability services|office for students|student employment|academic advis(?:or|ing))\b/i
 const APPOINTMENT_CONTEXT_RE = /\b(?:12[- ]month|adjunct|clinical|core|ft|full[- ]time|instructional|non[- ]tenure|ntt|open[- ]rank|part[- ]time|professional|rank (?:doq|open|tbd)|research|teaching|tenure(?:d|[- ]track)?)\b/i
 const NON_APPOINTMENT_FACULTY_CONTEXT_RE = /\b(?:faculty affairs|faculty development|faculty recruitment|faculty shared services|faculty support|recruit(?:er|ing|ment))\b/i
@@ -286,6 +292,7 @@ export function scorePost(job, { today = new Date() } = {}) {
     && !FACULTY_STAFF_APPOINTMENT_OVERRIDE_RE.test(title)
   const isFacultyResourceOrMarketingTitle =
     RESOURCE_TITLE_RE.test(title)
+    || NON_POSTING_INFORMATION_TITLE_RE.test(title)
     || (SEARCH_PAGE_CHROME_TITLE_RE.test(title) && classifyLink(url) === 'search-page')
     || (FACULTY_RESOURCE_KEYWORD_RE.test(title) && !hasStrongAcademicTitle && !isExplicitAdjunctAppointment)
     || APPLICANT_INFORMATION_PAGE_RE.test(title)
@@ -297,6 +304,10 @@ export function scorePost(job, { today = new Date() } = {}) {
   }
   if (TEST_OR_PLACEHOLDER_TITLE_RE.test(title)) {
     addReason(reasons, dimensions, 'test_or_placeholder_posting', 'error', 'relevance', 100, 'The title indicates a test record or explicitly instructs applicants not to apply.')
+    hardQuarantine = true
+  }
+  if (CLEAR_NON_APPOINTMENT_TITLE_RE.test(title)) {
+    addReason(reasons, dimensions, 'nonacademic_staff_title', 'error', 'relevance', 100, 'The title is an administrative, student-services, or recreation role rather than a faculty appointment.')
     hardQuarantine = true
   }
   if (isFilledComplianceNotice(title, description)) {
@@ -443,6 +454,7 @@ export function confirmedNonFacultyReason(job, options = {}) {
   if (codes.has('test_or_placeholder_posting')) return 'test_or_placeholder_posting'
   if (codes.has('filled_compliance_notice')) return 'filled_compliance_notice'
   if (codes.has('administrative_staff_title')) return 'administrative_staff_title'
+  if (codes.has('nonacademic_staff_title')) return 'nonacademic_staff_title'
   if (codes.has('student_service_title')) return 'student_service_title'
   if (codes.has('resource_page_url') && !quality.academicAppointment) return 'resource_page_url'
   return null

@@ -849,6 +849,16 @@ test("gives a direct position claim precedence over later cross-track context", 
   );
 });
 
+test("recognizes a direct this-tenure-track-position claim before contextual track prose", () => {
+  assert.equal(
+    classifyTenureTrack({
+      title: "Open Rank Professor of Political Science",
+      description: "This tenure-track, open-rank position includes teaching and research. The department includes fixed-term faculty.",
+    }),
+    true
+  );
+});
+
 test("applies the CSU Fort Collins Instructor-rank institution policy", () => {
   for (const title of [
     "Applied Music Instructors - Open Pool",
@@ -1289,6 +1299,16 @@ test("recognizes additional labeled appointment-track fields without guessing mi
   assert.equal(
     classifyTenureTrack({ description: "Effective End Date (for Limited-Term postings) Job Posting Date 09/11/2026" }),
     null
+  );
+});
+
+test("recognizes a labeled tenured or tenure-track appointment type", () => {
+  assert.equal(
+    classifyTenureTrack({
+      title: "Open Rank Professor of Political Science",
+      description: "Appointment Type Tenured/Tenure Track Vacancy ID FAC0006107",
+    }),
+    true
   );
 });
 
@@ -2100,6 +2120,47 @@ test("uses UChicago's Other Academic Appointment rank names", () => {
     classifyTenureTrack({ college: "University of Chicago", title: "Assistant Professor in Astronomy & Astrophysics" }),
     null
   );
+  assert.equal(
+    classifyTenureTrack({ college: "University of Chicago", title: "Assistant Professor School of Medicine Track – Cancer Research" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Chicago",
+      title: "Faculty Scientist – Cellular Therapy",
+      description: "The successful candidate will be appointed on the School of Medicine track.",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Chicago",
+      title: "Faculty Scientist – Cellular Therapy",
+      description: "Academic rank and track will be determined by experience.",
+    }),
+    null
+  );
+});
+
+test("uses Columbia's explicitly term-limited Instructor and practice ranks", () => {
+  for (const title of [
+    "Instructor in Neurology",
+    "Optometrist (Instructor in Optometric Sciences)",
+    "Professor in the Practice of International and Public Affairs",
+  ]) {
+    assert.equal(
+      classifyTenureTrack({ college: "Columbia University in the City of New York", title }),
+      false,
+      title
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "Columbia University in the City of New York",
+      title: "Lecturer, Instructor, or Assistant Professor",
+    }),
+    null
+  );
 });
 
 test("uses Lamar Institute of Technology's current all-new-hires non-tenure policy", () => {
@@ -2328,6 +2389,39 @@ test("leaves conflicting appointment language unclassified", () => {
   assert.equal(classifyTenureTrack({
     description: "Depending on qualifications, appointment may be eligible for tenure or without tenure.",
   }), null);
+});
+
+test("classifies current Lamar State College-Port Arthur hires after tenure ended", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Lamar State College-Port Arthur",
+      title: "Instructor, Process Technology",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Lamar State College-Orange",
+      title: "Instructor, Process Technology",
+    }),
+    null
+  );
+});
+
+test("uses current ECSU, Daytona State, and SMSU appointment paths", () => {
+  assert.equal(classifyTenureTrack({ college: "Elizabeth City State University", title: "Assistant/Associate Professor" }), true);
+  assert.equal(classifyTenureTrack({ college: "Elizabeth City State University", title: "Visiting Assistant Professor" }), false);
+  assert.equal(classifyTenureTrack({ college: "Daytona State College", title: "Faculty, Nursing" }), true);
+  assert.equal(classifyTenureTrack({
+    college: "Southwest Minnesota State University",
+    title: "Assistant Professor of Accounting - State University Faculty",
+    description: "Employment Condition: Unclassified - Unlimited Academic",
+  }), true);
+  assert.equal(classifyTenureTrack({
+    college: "Southwest Minnesota State University",
+    title: "Assistant Professor of Accounting - State University Faculty",
+    description: "Employment Condition: Unclassified - Limited Academic (Fixed Term)",
+  }), false);
 });
 
 test("does not treat generic with-tenure policy boilerplate as appointment evidence", () => {

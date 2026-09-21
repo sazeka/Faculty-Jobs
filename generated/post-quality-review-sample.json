@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T15:45:43.225Z",
+  "generatedAt": "2026-09-21T17:12:12.778Z",
   "qualityVersion": 1,
   "sampleSize": 200,
   "instructions": "Set humanLabel to valid or invalid, add optional notes, then copy confirmed labels into data/post-quality-human-labels.json.",
@@ -268,28 +268,13 @@
     },
     {
       "id": "00273cceccf22e7451fa",
-      "score": 96,
+      "score": 100,
       "status": "pass",
       "title": "Assistant Professor in Climate Science",
       "college": "Stanford University",
       "source": "CA Private",
       "url": "https://facultypositions.stanford.edu/jobs/assistant-professor-in-climate-science-stanford-university-california-united-states",
-      "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
+      "reasons": [],
       "humanLabel": null,
       "notes": ""
     },
@@ -315,20 +300,13 @@
     },
     {
       "id": "0310846684e034669b74",
-      "score": 96,
+      "score": 100,
       "status": "pass",
       "title": "Professor of Practice, Regulatory Affairs, Henry E. Riggs School of Applied Life Sciences",
       "college": "Keck Graduate Institute",
       "source": "Claremont Colleges",
       "url": "https://theclaremontcolleges.wd1.myworkdayjobs.com/KGI_Careers/job/Building-535/Professor-of-Practice--Regulatory-Affairs--Henry-E-Riggs-School-of-Applied-Life-Sciences_REQ-5150",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -995,21 +973,14 @@
       "notes": ""
     },
     {
-      "id": "0104365776e9e81fbd28",
-      "score": 99,
+      "id": "01ac74ecf377fee9f807",
+      "score": 100,
       "status": "pass",
-      "title": "Faculty & Members",
-      "college": "Louisiana State University Health Sciences Center-Shreveport",
+      "title": "Instructor - American Sign Language Studies (ASLS)",
+      "college": "Baton Rouge Community College",
       "source": "LA",
-      "url": "https://www.lsuhs.edu/centers/louisiana-addiction-research-center/faculty-members",
+      "url": "https://careers.lctcs.edu/jobs/495037/instructor-american-sign-language-studies-asls",
       "reasons": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -1354,21 +1325,14 @@
       "notes": ""
     },
     {
-      "id": "00fb72d4ade3b99e3419",
-      "score": 99,
+      "id": "01092b2482a33a1ee4d3",
+      "score": 100,
       "status": "pass",
-      "title": "Music Faculty",
-      "college": "Jefferson College",
+      "title": "Master Instructor in English",
+      "college": "Missouri Southern State University",
       "source": "MO",
-      "url": "https://www.jeffco.edu/music-faculty",
+      "url": "https://mssu.hrmdirect.com/employment/job-opening.php?req=3818682&req_loc=1478656&&#job",
       "reasons": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -1428,40 +1392,20 @@
       "notes": ""
     },
     {
-      "id": "251142e7f19fff82ce3e",
-      "score": 65,
-      "status": "quarantine",
-      "title": "Fellow Athletic Trainer - Baseball",
+      "id": "a02492dc7a2b9dbd6440",
+      "score": 89,
+      "status": "review",
+      "title": "Bulldog Club (Fellow)",
       "college": "Mississippi State University",
       "source": "MS",
-      "url": "https://explore.msujobs.msstate.edu/jobs/fellow-athletic-trainer-baseball-main-campus-starkville-ms-mississippi-united-states",
+      "url": "https://explore.msujobs.msstate.edu/jobs/bulldog-club-fellow-main-campus-starkville-ms-mississippi-united-states",
       "reasons": [
         {
-          "code": "nonacademic_staff_title",
-          "severity": "error",
-          "dimension": "relevance",
-          "deduction": 100,
-          "detail": "Clearly nonacademic staff role."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "24135ccef19852120416",
-      "score": 95,
-      "status": "review",
-      "title": "Flight Instructor (Multiple Positions)",
-      "college": "Delta State University",
-      "source": "MS",
-      "url": "https://deltastate.peopleadmin.com/postings/5074",
-      "reasons": [
-        {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 40,
-          "detail": "Posting date 2019-10-04 is more than 5 year(s) old with no evergreen/applicant-pool signal."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
         },
         {
           "code": "missing_department",
@@ -1541,40 +1485,6 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "e83c679e59effffa758f",
-      "score": 90,
-      "status": "review",
-      "title": "Leadership & Faculty",
-      "college": "Trinity Bible College and Graduate School",
-      "source": "ND",
-      "url": "https://trinitybiblecollege.edu/about/employment",
-      "reasons": [
-        {
-          "code": "search_page_url",
-          "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -1669,20 +1579,20 @@
       "notes": ""
     },
     {
-      "id": "20bac63c2311a50c5437",
+      "id": "14da3fb7bd8be972e81a",
       "score": 98,
       "status": "review",
-      "title": "Adjunct Faculty - CIS, Data Science, Cybersecurity & Health Informatics",
-      "college": "New England College",
+      "title": "Adjunct, Nursing Clinical Instructor",
+      "college": "Rivier University",
       "source": "NH",
-      "url": "https://nec.peopleadmin.com/postings/7486",
+      "url": "https://www.schooljobs.com/careers/rivieredu/jobs/4325232/adjunct-nursing-clinical-instructor",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2023-09-18 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "detail": "Posting date 2024-01-01 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         }
       ],
       "humanLabel": null,
@@ -2439,41 +2349,20 @@
       "notes": ""
     },
     {
-      "id": "3f54908d28c19c39ba94",
-      "score": 85,
+      "id": "d9972ba19a86b4a23b70",
+      "score": 96,
       "status": "review",
-      "title": "University Faculty Computational Chemistry",
-      "college": "Weber State University",
+      "title": "Assistant Coach/Physical Education Instructor Pool",
+      "college": "Snow College",
       "source": "UT",
-      "url": "https://jobs.weber.edu/postings/29327",
+      "url": "https://www.schooljobs.com/careers/snowcollege/jobs/2872339/assistant-coach-physical-education-instructor-pool",
       "reasons": [
         {
-          "code": "weak_academic_evidence",
+          "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "dimension": "freshness",
+          "deduction": 40,
+          "detail": "Posting date 2020-09-28 is more than 5 year(s) old with no evergreen/applicant-pool signal."
         }
       ],
       "humanLabel": null,
@@ -3045,20 +2934,13 @@
     },
     {
       "id": "0869942a557745a3b262",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Introduction to Bioprocessing, (Adjunct Pool), Henry E. Riggs School of Applied Life Sciences",
       "college": "Keck Graduate Institute",
       "source": "Claremont Colleges",
       "url": "https://theclaremontcolleges.wd1.myworkdayjobs.com/KGI_Careers/job/Building-535/Introduction-to-Bioprocessing---Adjunct-Pool---Henry-E-Riggs-School-of-Applied-Life-Sciences_REQ-6024",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
         {
           "code": "missing_department",
           "severity": "info",
@@ -3447,20 +3329,13 @@
     },
     {
       "id": "00dbbd9da321060a7240",
-      "score": 96,
+      "score": 100,
       "status": "pass",
       "title": "Adjunct Lecturer positions in the MBA: Artificial Intelligence program",
       "college": "Northwestern University",
       "source": "IL",
       "url": "https://careers.northwestern.edu/psc/hrnu_er/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=50321&PostingSeq=1",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -3662,13 +3537,13 @@
       "notes": ""
     },
     {
-      "id": "01ac74ecf377fee9f807",
+      "id": "020a7b7c55719706e8fe",
       "score": 100,
       "status": "pass",
-      "title": "Instructor - American Sign Language Studies (ASLS)",
-      "college": "Baton Rouge Community College",
+      "title": "Mathematics Instructor - Adjunct",
+      "college": "Nunez Community College",
       "source": "LA",
-      "url": "https://careers.lctcs.edu/jobs/495037/instructor-american-sign-language-studies-asls",
+      "url": "https://www.nunez.edu/human-resources/unclassified-employment-opportunities/mathematics-instructor-adjunct-part-time",
       "reasons": [
         {
           "code": "missing_deadline",
@@ -3874,47 +3749,13 @@
       "notes": ""
     },
     {
-      "id": "d0f22c78bcdcb0e4d703",
-      "score": 86,
-      "status": "review",
-      "title": "Diesel Mechanics Technology - Technical College Faculty",
-      "college": "Minnesota State (Mnor Hibbing Campus)",
-      "source": "MN",
-      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/MNOR---Hibbing-Campus/Diesel-Mechanics-Technology---Technical-College-Faculty_JR0000005768",
-      "reasons": [
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "01092b2482a33a1ee4d3",
+      "id": "011325cff77537ac10c6",
       "score": 100,
       "status": "pass",
-      "title": "Master Instructor in English",
-      "college": "Missouri Southern State University",
+      "title": "ASSISTANT/ASSOCIATE CLINICAL PROFESSOR of Acute Care/UMKC School of Dentistry/Restorative Clinical Services",
+      "college": "University of Missouri-Kansas City",
       "source": "MO",
-      "url": "https://mssu.hrmdirect.com/employment/job-opening.php?req=3818682&req_loc=1478656&&#job",
+      "url": "https://erecruit.umsystem.edu/psc/tamext/KCITY/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=8&JobOpeningId=60221&PostingSeq=1",
       "reasons": [
         {
           "code": "missing_deadline",
@@ -3970,33 +3811,6 @@
       "source": "MS",
       "url": "https://explore.msujobs.msstate.edu/jobs/assistant-associate-research-professor-main-campus-starkville-ms-mississippi-united-states",
       "reasons": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "a02492dc7a2b9dbd6440",
-      "score": 89,
-      "status": "review",
-      "title": "Bulldog Club (Fellow)",
-      "college": "Mississippi State University",
-      "source": "MS",
-      "url": "https://explore.msujobs.msstate.edu/jobs/bulldog-club-fellow-main-campus-starkville-ms-mississippi-united-states",
-      "reasons": [
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
         {
           "code": "missing_department",
           "severity": "info",
@@ -4150,34 +3964,20 @@
       "notes": ""
     },
     {
-      "id": "21c8fe34451fe2a058ca",
-      "score": 86,
+      "id": "1a49b7eab29b5156cd7c",
+      "score": 98,
       "status": "review",
-      "title": "Affiliated Faculty, Criminal Justice",
+      "title": "Adjunct, Counseling and Psychology - PsyD",
       "college": "Rivier University",
       "source": "NH",
-      "url": "https://www.schooljobs.com/careers/rivieredu/jobs/5336800/affiliated-faculty-criminal-justice",
+      "url": "https://www.schooljobs.com/careers/rivieredu/jobs/4487799/adjunct-counseling-and-psychology-psyd",
       "reasons": [
         {
-          "code": "weak_academic_evidence",
+          "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "dimension": "freshness",
+          "deduction": 25,
+          "detail": "Posting date 2024-04-28 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         }
       ],
       "humanLabel": null,
@@ -4715,20 +4515,13 @@
     },
     {
       "id": "006ada96a71b2be78fc6",
-      "score": 96,
+      "score": 100,
       "status": "pass",
       "title": "Assistant Professor of Clinical Practice, Internal Medicine-General Medicine",
       "college": "The University of Texas Medical Branch at Galveston",
       "source": "TX",
       "url": "https://applyjobs.utmb.edu/jobs/assistant-professor-of-clinical-practice-internal-medicine-general-medicine-34177",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -4884,6 +4677,100 @@
           "deduction": 35,
           "detail": "Description is missing."
         },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "047c45f53331945531f7",
+      "score": 99,
+      "status": "pass",
+      "title": "Mathematics FT Faculty, CFS Professional",
+      "college": "Brigham Young University",
+      "source": "UT",
+      "url": "https://byu.wd1.myworkdayjobs.com/faculty-careers/job/Provo-UT/Mathematics-FT-Faculty--CFS-Professional_JR-10874",
+      "reasons": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "00944de06ecbaa15a106",
+      "score": 99,
+      "status": "pass",
+      "title": "9-Month Restricted Faculty of Emergency Medical Services",
+      "college": "Laurel Ridge Community College",
+      "source": "VA",
+      "url": "https://jobs.vccs.edu/postings/101370",
+      "reasons": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "b7f1db23fc8a31ed41e9",
+      "score": 96,
+      "status": "review",
+      "title": "Adjunct Faculty in English",
+      "college": "Old Dominion University",
+      "source": "VA",
+      "url": "https://jobs.odu.edu/postings/25605",
+      "reasons": [
+        {
+          "code": "stale_posting_no_evergreen_signal",
+          "severity": "warning",
+          "dimension": "freshness",
+          "deduction": 25,
+          "detail": "Posting date 2024-07-24 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "0666595e07f1aa5b0878",
+      "score": 100,
+      "status": "pass",
+      "title": "Clinical Academic Diagnostic Radiologist Chief (Assistant, Associate, or Professor) - Radiology - New York",
+      "college": "University of Vermont",
+      "source": "VT",
+      "url": "https://www.uvmjobs.com/postings/86420",
+      "reasons": [
         {
           "code": "missing_deadline",
           "severity": "info",
