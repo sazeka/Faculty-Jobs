@@ -3352,6 +3352,23 @@ test("uses Florida Southern's exact Communication tenure-track search", () => {
   );
 });
 
+test("uses Jacksonville State's unmodified professorial-rank tenure policy", () => {
+  for (const title of [
+    "Assistant Professor, Counseling and Leadership",
+    "Assistant Professor, Sports Industry",
+    "Associate/Full Professor, Counseling and Instructional Support (Ed.D Program Chair)",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Jacksonville State University", title }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Jacksonville State University", title: "Faculty Member, Teacher Education" }),
+    null
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
