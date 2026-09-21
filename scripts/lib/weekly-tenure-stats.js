@@ -148,6 +148,7 @@ const STRUCTURED_NON_TENURE_RE = new RegExp(
     `|\\bposition\\s+category\\s*:?\\s*faculty\\s*-\\s*term\\s+appointment\\b` +
     `|\\bappointment\\s+type\\s*:?\\s*time[\\s-]?limited\\b` +
     `|\\bappointment\\s+type\\s*:?\\s*term\\s*[-–]\\s*\\d+\\s+years?\\b` +
+    `|\\bappointment\\s+term\\s*:?\\s*term\\b` +
     `|\\bemployment\\s+type\\s*:?\\s*terminal\\s*\\(\\s*fixed[\\s-]?term\\s*\\)` +
     `|\\bposition\\s+status\\s*:?\\s*limited[\\s-]?term\\b` +
     `|\\bjob\\s+type\\s*:?\\s*temporary\\b` +

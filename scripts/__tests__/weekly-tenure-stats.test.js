@@ -1279,6 +1279,7 @@ test("recognizes additional labeled appointment-track fields without guessing mi
     ["Faculty Tenure Track Yes", true],
     ["Tenure Track Status: Tenure-Track", true],
     ["Tenure Status Term", false],
+    ["Appointment Term Term", false],
     ["Tenure Status Tenure Track", true],
     ["Tenure: Ineligible", false],
     ["Appointment Status Tenure", true],
