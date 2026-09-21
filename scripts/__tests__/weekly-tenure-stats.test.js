@@ -1174,6 +1174,18 @@ test("applies additional verified institution-specific appointment-title policie
     }),
     false
   );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Fort Hays Tech North Central",
+      title: "Information Technology Instructor",
+      description: "Pay commensurate with qualifications, plus fringe benefits.",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Fort Hays Tech North Central", title: "Nursing Instructor" }),
+    null
+  );
 
   for (const [college, title] of [
     ["Binghamton University", "Assistant Professor in Applied Microeconomics"],
