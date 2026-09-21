@@ -1186,6 +1186,14 @@ test("applies additional verified institution-specific appointment-title policie
     classifyTenureTrack({ college: "Fort Hays Tech North Central", title: "Nursing Instructor" }),
     null
   );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Ohio State University",
+      title: "Community Music School Instructor",
+      description: "Community Music School Instructors will teach engaging and effective private lessons, classes, and/or ensembles.",
+    }),
+    false
+  );
 
   for (const [college, title] of [
     ["Binghamton University", "Assistant Professor in Applied Microeconomics"],
