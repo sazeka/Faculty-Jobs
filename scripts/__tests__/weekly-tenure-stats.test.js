@@ -1093,6 +1093,7 @@ test("applies additional verified institution-specific appointment-title policie
     ["William Rainey Harper College", "CE Instructor - Arabic Instructor – Levant Dialects"],
     ["William Rainey Harper College", "Community Education Instructor - Career Training"],
     ["William Rainey Harper College", "Vocational Skills Lecturer - Artificial Intelligence Instructor"],
+    ["Oakland University", "Special Instructor in Chemistry"],
     ["Tennessee Technological University", "Lecturer (3 Positions) - Computer Science"],
     ["East Tennessee State University", "9-Month Lecturer, Nursing Undergraduate Programs"],
     ["South Texas College", "Full-Time Lecturer Positions (Division of Liberal Arts)"],
@@ -1139,6 +1140,16 @@ test("applies additional verified institution-specific appointment-title policie
       `${college}: ${title}`
     );
   }
+
+  assert.equal(
+    classifyTenureTrack({
+      college: "Amarillo College",
+      title: "Faculty - Biology",
+      description: "Job Type Full-Time Job Number 202400782",
+    }),
+    true
+  );
+  assert.equal(classifyTenureTrack({ college: "Oakland University", title: "Assistant Professor of Accounting" }), true);
 
   for (const [college, title] of [
     ["Binghamton University", "Assistant Professor in Applied Microeconomics"],

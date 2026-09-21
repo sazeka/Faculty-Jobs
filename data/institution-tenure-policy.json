@@ -1110,6 +1110,31 @@
       "verifiedAt": "2026-09-21"
     },
     {
+      "college": "Amarillo College",
+      "titlePattern": "^Faculty\\s*-",
+      "descriptionPattern": "\\bJob Type\\s+Full-Time\\b",
+      "value": true,
+      "note": "Amarillo's current employee handbook classifies full-time faculty as either probationary faculty serving the minimum seven-year period before tenure or faculty already tenured by its Board. Because tenure eligibility requires seven years of full-time Amarillo employment, these current external full-time Faculty openings enter the probationary tenure path. The rule requires both the exact Faculty-title prefix and the posting's labeled Full-Time job type.",
+      "source": "https://www.actx.edu/hr/files/filecabinet/folder34/ac_employee_handbook_051225.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Oakland University",
+      "titlePattern": "^Assistant Professor(?:$|\\s+of\\b)",
+      "value": true,
+      "note": "Oakland's current faculty handbook lists Assistant Professor among its full-time tenured and tenure-track titles. The rule is restricted to an unqualified Assistant Professor title or Assistant Professor of [discipline], excluding named Visiting, Research, Practice, Clinical, and Special Instructor series.",
+      "source": "https://www.oakland.edu/cetl/facultyhandbook/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Oakland University",
+      "titlePattern": "^Special Instructor\\b",
+      "value": false,
+      "note": "Oakland's current faculty handbook identifies Special Instructor as a renewable job-security title separate from its tenured and tenure-track titles. Current Oakland postings likewise describe the series as teaching-focused and leading to job security equivalent to tenure, rather than tenure itself.",
+      "source": "https://www.oakland.edu/cetl/facultyhandbook/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
       "college": "Tennessee Technological University",
       "titlePattern": "\\b(?:Senior\\s+)?Lecturer\\b",
       "value": false,
