@@ -83,6 +83,14 @@ test("uses unambiguous descriptions and records classification evidence", () => 
     }),
     null
   );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Colorado Mesa University",
+      title: "Assistant or Associate Professor/Clinical Professor for Master of Science in Occupational Therapy",
+      tenureTrack: true,
+    }),
+    true
+  );
 });
 
 test("gives labeled appointment-track fields precedence over unrelated page prose", () => {

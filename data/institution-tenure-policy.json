@@ -3046,9 +3046,9 @@
     },
     {
       "college": "Colorado Mesa University",
-      "titlePattern": "\\bClinical (?:Instructor|Assistant Professor|Associate Professor|Professor)\\b",
+      "titlePattern": "^(?:Clinical Instructor|Clinical Assistant Professor|Clinical Associate Professor|Clinical Professor|Assistant Clinical Professor|Associate Clinical Professor)(?:\\b|$)",
       "value": false,
-      "note": "Colorado Mesa's Professional Personnel Employment Handbook defines Clinical Faculty as renewable-term appointments and explicitly enumerates Clinical Instructor, Clinical Assistant Professor, Clinical Associate Professor, and Clinical Professor as the titles in that category. The separate unmodified professorial ladder is not matched.",
+      "note": "Colorado Mesa's Professional Personnel Employment Handbook defines Clinical Faculty as renewable-term appointments and explicitly enumerates Clinical Instructor, Clinical Assistant Professor, Clinical Associate Professor, and Clinical Professor as the titles in that category. The rule is anchored to clinical-only title forms so mixed regular/clinical searches remain governed by their explicit posting evidence.",
       "source": "https://www.coloradomesa.edu/sponsored-programs/policies/institutional-resources/employment-handbook.pdf",
       "verifiedAt": "2026-09-21"
     },
