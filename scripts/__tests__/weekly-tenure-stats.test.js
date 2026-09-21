@@ -3285,6 +3285,23 @@ test("uses Columbia's unmodified Arts and Sciences tenure clock and Lamont resea
   );
 });
 
+test("uses Puget Sound's exact current tenure-line faculty searches", () => {
+  for (const title of [
+    "Assistant Professor - Biology",
+    "Assistant Professor - Chemistry",
+    "Assistant Professor - Mathematics",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "University of Puget Sound", title }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "University of Puget Sound", title: "Visiting Assistant Professor - Biology" }),
+    false
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
