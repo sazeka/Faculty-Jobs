@@ -3121,6 +3121,28 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
     }),
     null
   );
+  for (const title of [
+    "Assistant Professor of Architecture - AI/Machine Learning",
+    "Assistant Professor of Dance - Modern",
+    "Assistant Professor of Drama - Costume Technology",
+    "Assistant Professor of Educational Psychology - Professional Counseling",
+    "Assistant Professor of Electrical and Computer Engineering - High-Performance Computing",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({
+        college: "University of Oklahoma",
+        title,
+      }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of Oklahoma",
+      title: "Assistant Professor of Law - Clinical Legal Education - Criminal Defense Clinic",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
 });
 
 test("uses College of Southern Maryland's ten-month tenure-track faculty convention", () => {
