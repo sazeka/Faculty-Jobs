@@ -3369,6 +3369,23 @@ test("uses Jacksonville State's unmodified professorial-rank tenure policy", () 
   );
 });
 
+test("uses TCU's exact current tenure-track searches", () => {
+  for (const title of [
+    "Assistant Professor of Computer Science - of Science & Engineering",
+    "Assistant Professor of Counseling - of Education",
+    "Assistant Professor of Finance - of Finance at Texas Christian University invites applications",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Texas Christian University", title }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Texas Christian University", title: "Assistant Professor of Accounting - of Accounting at Texas Christian University invites applicati" }),
+    null
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
