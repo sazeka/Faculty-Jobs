@@ -4926,6 +4926,7 @@ const OH_CAMPUSES = [
     // PageUp (same URL pattern already used for Seton Hall/Rowan).
     type: "pageup",
     url: "https://careers.utoledo.edu/cw/en-us/listing/",
+    excludeTitleFilter: "^Group Fitness Instructor$",
   },
   {
     campus: "Ohio University",
@@ -6128,6 +6129,7 @@ const TX_CAMPUSES = [
     campus: "University of Houston",
     type: "nau-search",
     url: "https://careers.uh.edu/jobs/search",
+    excludeTitleFilter: "^(?:Program Manager [12] - (?:Graduate and Professional Programs|College of Education)|Systems Analyst 2 - College of Pharmacy)$",
   },
   {
     campus: "Texas Tech University",
@@ -9299,9 +9301,29 @@ export function looksFacultyish(title) {
   );
 }
 
-export function isGenericFacultyPageChromeTitle(title) {
+export function isGenericFacultyPageChromeTitle(title, url = "") {
   const value = clean(title);
-  return /^(?:[^a-z0-9]*application for faculty jobs|early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty employee opportunities|faculty and staff|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|faculty\s*&\s*staff careers|faculty and staff faqs|faculty\s*&\s*adjunct-faculty openings|faculty\s*\/\s*staff webmail|(?:\d{4}[–—-]\d{2,4}\s+)?faculty salary scales|adjunct instructor salary schedule|adjunct faculty application process|adjunct faculty resources|faculty credentialing manual|faculty documents and forms|message from the dean of students|cosmetology instructor training\s*\(short-term certificate\)|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value);
+  if (/^(?:[^a-z0-9]*application for faculty jobs|early alert form\s*[-–—:]?\s*faculty(?:\s*\/\s*staff)?|distinguished faculty|faculty employee opportunities|(?:.*\s+)?faculty employment opportunities|faculty and staff|faculty and advisory committee|faculty faqs|faculty services|faculty research|current faculty research|research appointments for faculty|new faculty experience|faculty cv\s*&\s*syllabi|staff\s*\/\s*faculty member|benefits:\s*(?:adjunct )?faculty|for faculty\s*&\s*staff|faculty\s*&\s*staff careers|faculty and staff faqs|faculty\s*&\s*adjunct-faculty openings|faculty\s*\/\s*staff webmail|(?:\d{4}[–—-]\d{2,4}\s+)?faculty salary scales|adjunct instructor salary schedule|adjunct faculty application process|adjunct faculty resources|faculty credentialing manual|faculty documents and forms|message from the dean of students|student affairs\s*[-–—:]\s*dean of students office|cosmetology instructor training\s*\(short-term certificate\)|(?:lgbtqia\s+)?faculty\s*&\s*staff liaison|faculty professional development|faculty diversity internship program|.*faculty\s*&\s*administration application(?:\s*\([^)]*\))?)$/i.test(value)) {
+    return true;
+  }
+
+  // Generic career pages often link through their global navigation to
+  // academic faculty rosters. A short title such as "Mathematics Faculty" is
+  // ambiguous by itself, but a matching directory-style URL under /academics
+  // (and outside a jobs/careers/employment path) is conclusive page chrome.
+  // Keeping the URL condition narrow preserves real vacancies with titles
+  // such as "Nursing Faculty" on hiring pages.
+  try {
+    const parsed = new URL(url);
+    const pathname = parsed.pathname.toLowerCase().replace(/\/+$/, "");
+    const isHiringPath = /\b(?:jobs?|careers?|employment|openings?|positions?)\b/.test(pathname.replace(/[-_/]+/g, " "));
+    const isDirectoryPath = /\/[^/]*faculty$|\/faculty-(?:research|and-staff)$|\/(?:current-)?faculty-research$|\/(?:facultyfaqs|facultyservices|facultyandadvisorycommittee|researchappointmentsforfaculty)$/.test(pathname);
+    if (!isHiringPath && isDirectoryPath && /\bfaculty\b/i.test(value)) return true;
+  } catch {
+    // A malformed or absent URL simply cannot provide directory evidence.
+  }
+
+  return false;
 }
 
 /* ============================== CUNY ============================== */
@@ -17539,7 +17561,7 @@ export async function scrapeGenericJobPage(context, startUrl, campusName, source
       // link labelled "Faculty Experts" beside its real openings. It contains
       // a faculty keyword but is not a vacancy.
       .filter((j) => clean(j.title).toLowerCase() !== "faculty experts")
-      .filter((j) => !isGenericFacultyPageChromeTitle(j.title))
+      .filter((j) => !isGenericFacultyPageChromeTitle(j.title, j.url))
       .filter((j) => !isBareAtsBoardRoot(j.url));
 
     // Fallback only: if no inline jobs were found, the page likely hands off to an
@@ -20247,7 +20269,10 @@ async function scrapeOhAll(context) {
         }
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "OH");
         if (type === "peopleadmin") return await scrapePeopleAdminAs(context, url, campus, "OH");
-        if (type === "pageup") return await scrapePageUpAs(context, url, campus, "OH");
+        if (type === "pageup") {
+          const jobs = await scrapePageUpAs(context, url, campus, "OH");
+          return excludeTitleFilter ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title)) : jobs;
+        }
         if (type === "adp") return await scrapeAdpAs(context, url, campus, "OH");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "OH");
         if (type === "dayforce") return await scrapeDayforceApi(url, campus, "OH");
@@ -21763,10 +21788,13 @@ async function scrapeTxAll(context) {
         if (type === "faculty-headings") return await scrapeFacultyHeadingPageAs(context, url, campus, "TX");
         if (type === "nau-search") {
           const base = await scrapeNauSearch(context, url, campus, "TX");
-          return await enrichEnUsJobCardsFromDetails(context, base, {
+          const jobs = await enrichEnUsJobCardsFromDetails(context, base, {
             titleDeptSeparator: " - ",
             preferDeptKeys: ["college", "department", "organization", "unit", "school"],
           });
+          return excludeTitleFilter
+            ? jobs.filter((job) => !new RegExp(excludeTitleFilter, "i").test(job.title || ""))
+            : jobs;
         }
         if (type === "ut-austin-faculty") return await scrapeUtAustinFacultyAs(context, url, campus, "TX");
         if (type === "generic") {

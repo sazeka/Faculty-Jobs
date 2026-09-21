@@ -495,10 +495,10 @@ test("applies verified institution-specific title conventions as a last resort",
     classifyTenureTrack({ college: uthsaCollege, title: "Distinguished Chair Professor with Tenure Faculty Position" }),
     true
   );
-  // A plain title with no suffix (the actual Tenure Titles category) and the
-  // common "Open Rank Faculty ..." postings both correctly stay unclassified.
+  // A plain title with no suffix remains unresolved. The otherwise generic
+  // exact Open Rank title is a separately verified current tenure search.
   assert.equal(classifyTenureTrack({ college: uthsaCollege, title: "Assistant Professor" }), null);
-  assert.equal(classifyTenureTrack({ college: uthsaCollege, title: "Open Rank Faculty Position" }), null);
+  assert.equal(classifyTenureTrack({ college: uthsaCollege, title: "Open Rank Faculty Position" }), true);
 
   // Santa Rosa Junior College: SRJC's own live posting text states
   // "Associate assignments may be temporary, part-time and/or on-call" and
@@ -717,6 +717,11 @@ test("applies verified institution-specific title conventions as a last resort",
   // Tenure Pathway or Clinical Scholar Pathway -- identical titles) and
   // correctly stays unclassified.
   assert.equal(classifyTenureTrack({ college: uvmCollege, title: "Assistant/Associate/Professor Breast Surgical Oncology" }), null);
+  assert.equal(classifyTenureTrack({
+    college: uvmCollege,
+    title: "Assistant/Associate/Professor Breast Surgical Oncology",
+    description: "This is a full-time faculty appointment in the Clinical Scholar Pathway.",
+  }), false);
 
   // North Carolina public community colleges (collegePattern rule): the NC
   // State Board of Community Colleges Code -- the governing document for all
@@ -1302,6 +1307,13 @@ test("recognizes additional ATS fixed-duration fields", () => {
   }
 });
 
+test("recognizes an explicitly capped multi-year appointment term", () => {
+  assert.equal(classifyTenureTrack({
+    title: "L.E. Dickson Instructor",
+    description: "The initial appointment is for a term of up to three years.",
+  }), false);
+});
+
 test("uses documented unmodified professorial ladders without absorbing qualified ranks", () => {
   for (const [college, title] of [
     ["Southern Illinois University Edwardsville", "Assistant Professor in Painting and Digital Illustration"],
@@ -1745,7 +1757,7 @@ test("uses description-gated and no-tenure community-college policies", () => {
       college: "Lake Land College",
       title: "Correctional Automotive Technology Instructor at Graham Correctional Center",
     }),
-    null
+    false
   );
 });
 
@@ -2086,6 +2098,155 @@ test("uses UChicago's Other Academic Appointment rank names", () => {
   }
   assert.equal(
     classifyTenureTrack({ college: "University of Chicago", title: "Assistant Professor in Astronomy & Astrophysics" }),
+    null
+  );
+});
+
+test("uses Lamar Institute of Technology's current all-new-hires non-tenure policy", () => {
+  for (const title of [
+    "Accounting Instructor",
+    "Instructor, Electrical Technology",
+    "Speech Instructor",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Lamar Institute of Technology", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Lamar University", title: "Accounting Instructor" }),
+    null
+  );
+});
+
+test("uses Lake Land's correctional-faculty category without absorbing campus instructors", () => {
+  assert.equal(
+    classifyTenureTrack({ college: "Lake Land College", title: "Correctional Automotive Technology Instructor at Graham Correctional Center" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Lake Land College", title: "Nursing Instructor" }),
+    null
+  );
+});
+
+test("uses Monroe Community College's exact current appointment descriptions", () => {
+  assert.equal(
+    classifyTenureTrack({ college: "Monroe Community College", title: "Faculty, Full-Time - Nursing (Maternal & Neonatal)" }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Monroe Community College", title: "Faculty, Full-time, Electrical Engineering Technology" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Monroe Community College", title: "Coordinator II/Instructor, Healthcare Programs" }),
+    null
+  );
+});
+
+test("uses Ohio State's named fixed-term and associated faculty categories", () => {
+  for (const title of [
+    "Professional-Practice Assistant Professor in Journalism",
+    "Veterinary Clinical Sciences Instructor - Practice - LOCUM",
+    "Doctor of Nursing Practice and Master of Healthcare Innovation Faculty College of Nursing",
+    "Faculty Director of Academic Excellence",
+    "Veterinary Curriculum Instructors",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Ohio State University", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Ohio State University", title: "Physician - Open Rank/Track Faculty" }),
+    null
+  );
+});
+
+test("uses UT Austin's professional-track faculty title series", () => {
+  for (const title of [
+    "Assistant Professor of Instruction & Program Manager, Communication for Engineering Students",
+    "Clinical Assistant/Associate Professor in Psychology",
+    "Management Lecturer - Business Communication",
+    "Research Assistant/Research Associate Professor",
+    "Seismologist - Research Assistant Professor",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "University of Texas at Austin", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "University of Texas at Austin", title: "Assistant Professor - Sociology" }),
+    null
+  );
+});
+
+test("uses FAU Medicine's clinical tracks for exact current clinical searches", () => {
+  for (const title of [
+    "Cardiologist - Assistant/Associate/Full Professor",
+    "Gastroenterologist - Assistant/Associate/Full Professor",
+    "General Psychiatry (Assistant/Associate/Full Professor)",
+    "Orthopedic Surgeon - Assistant/Associate/Full Professor",
+    "Program Director, Psychiatry Residency (Associate Professor/Full Professor)",
+    "Surgery Clerkship Director (Assistant Professor/Associate Professor/Full Professor)",
+    "Urologist - Assistant/Associate/Full Professor",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Florida Atlantic University", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Florida Atlantic University", title: "Artificial Intelligence in Medicine – Assistant/ Associate/ Full Professor" }),
+    null
+  );
+});
+
+test("uses UAB's non-tenure Instructor rank and exact UTHSA appointment claims", () => {
+  for (const title of [
+    "Heersink School of Medicine-Clinical Instructor-Nephrology",
+    "School of Medicine- Instructor - Neurosurgery- (02)",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "University of Alabama at Birmingham", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "The University of Texas Health Science Center at San Antonio",
+      title: "Open Rank Research Nursing Faculty Position",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "The University of Texas Health Science Center at San Antonio",
+      title: "Open Rank Teaching Faculty",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "The University of Texas Health Science Center at San Antonio",
+      title: "Dept of Predoctoral Dental Education -Division of General Dentistry - Open Rank - (Clinical Assistant, Associate or Professor)",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "The University of Texas Health Science Center at San Antonio",
+      title: "Open Rank Faculty Position in Cancer Research",
+    }),
+    true
+  );
+  for (const title of [
+    "CPTAR - Open Rank (Assistant/Associate/Professor)",
+    "Center Director - Center for Regenerative Sciences - Open Rank (Associate Professor/Professor)",
+    "Chair - Associate Professor or Professor",
+    "Open Rank Faculty in Pediatric Cancer",
+    "Open Rank Faculty Position",
+    "Associate Professor & Chair",
+    "Associate Professor or Professor (Open Rank) and Vice Chair",
+  ]) {
+    assert.equal(
+      classifyTenureTrack({ college: "The University of Texas Health Science Center at San Antonio", title }),
+      true,
+      title
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "The University of Texas Health Science Center at San Antonio",
+      title: "Open Rank Faculty Position in Pharmacology",
+    }),
     null
   );
 });

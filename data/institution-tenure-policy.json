@@ -140,7 +140,7 @@
       "titlePattern": "\\bclinical\\s+(?:faculty|instructor|(?:assistant|associate)?\\s*professor)\\b|\\bresearch\\s+(?:faculty|(?:assistant|associate)?\\s*professor)\\b|\\bteaching\\s+(?:instructor|(?:assistant|associate)?\\s*professor)\\b|\\bprofessional\\s+practice\\s+(?:instructor|(?:assistant|associate)?\\s*professor)\\b|\\bprofessor\\s*[-–]\\s*practice\\b|\\b(?:senior\\s+)?lecturer\\b",
       "value": false,
       "note": "OSU's faculty appointments rules (trustees.osu.edu bylaws 3335-7) define Clinical, Teaching, Professional Practice, and Research faculty as fixed-term appointment series that do not entail tenure. The College of Medicine faculty-tracks page also defines Lecturer and Senior Lecturer as non-tenure Associated Faculty. Matches the formal ranked titles plus the literal Clinical Faculty and Research Faculty labels used in current postings. Deliberately does NOT match OSU's common 'Physician - ... (Open Rank/Track Faculty)' posting pattern: that wording leaves the appointment track undetermined and could resolve to tenure, Clinical, or Research faculty depending on the candidate.",
-      "source": "https://trustees.osu.edu/bylaws-and-rules/3335-7",
+      "source": "https://faculty.osu.edu/faculty-titles-contracts-and-renewals",
       "verifiedAt": "2026-09-09"
     },
     {
@@ -153,7 +153,7 @@
     },
     {
       "college": "The University of Texas Health Science Center at San Antonio",
-      "titlePattern": "\\b(?:professor|instructor)\\s*\\/\\s*(?:clinical|research)\\b|\\bclinical\\s+(?:instructor|(?:assistant|associate)?\\s*professor)\\b|\\bresearch\\s+faculty\\b|\\b(?:distinguished\\s+senior\\s+|senior\\s+)?lecturer\\b|\\binstructor\\b",
+      "titlePattern": "\\b(?:professor|instructor)\\s*\\/\\s*(?:clinical|research)\\b|\\bclinical\\s+(?:instructor|(?:assistant(?:,\\s*associate)?(?:\\s+or)?|associate(?:\\s+or)?)?\\s*professor)\\b|\\bresearch\\s+faculty\\b|\\b(?:distinguished\\s+senior\\s+|senior\\s+)?lecturer\\b|\\binstructor\\b",
       "value": false,
       "note": "UTHSA's IHOP policy (3.1.1 Academic Titles), quoted directly: 'Professor, Associate Professor, and Assistant Professor are the only academic titles in which faculty members may hold tenure or be on the tenure track.' Non-Tenure Titles are explicitly enumerated: 'Professor/Clinical ... or Professor/Research ...', 'Associate Professor/Clinical ... or Associate Professor/Research ...', 'Assistant Professor/Clinical ... or Assistant Professor/Research ...', 'Instructor/Clinical ... or Instructor/Research ...' (Section A.2.b) -- matching the '[Rank]/Clinical' and '[Rank]/Research' suffix convention seen throughout live posting titles. Section B separately lists 'Other Non-Tenure Titles' including the prefix form ('Clinical Professor, Clinical Associate Professor, Clinical Assistant Professor, Clinical Instructor...'), 'Lecturer'/'Senior Lecturer'/'Distinguished Senior Lecturer', and bare 'Instructor' ('This title denotes a probationary appointment...'). Deliberately does not match a plain 'Assistant Professor'/'Associate Professor'/'Professor' with no suffix, nor the very common 'Open Rank Faculty ...' postings -- both are the Tenure Titles category or genuinely undetermined, and stay correctly unclassified.",
       "source": "https://public.powerdms.com/UTHSA/documents/1590292",
@@ -232,6 +232,15 @@
       "note": "UVM Larner College of Medicine's Faculty Handbook defines one Tenure Pathway and four Non-Tenure, Ranked pathways (Clinical, Clinical Scholar, Education Scholar, Research Scholar) plus a Non-Salaried Volunteer pathway -- quoted directly, the four ranked non-tenure pathways 'are all salaried, promotable positions that do not lead to appointment with tenure.' The Clinical Pathway uses a distinct title prefix ('Clinical Instructor, Clinical Assistant Professor, Clinical Associate Professor, and Clinical Professor'). Critically, the Clinical Scholar Pathway's titles are the SAME plain 'Assistant Professor, Associate Professor, and Professor' as the Tenure Pathway -- the handbook gives no title-level way to tell them apart, so only postings that explicitly state 'Clinical Scholar Pathway' in the title (as UVM's own postings consistently do) are safely classifiable; a plain title with no pathway named stays correctly unclassified. Also matches 'Clinical Academic [Specialty]' and 'Clinical Radiologist' department-level labels seen on live Radiology postings -- not a named handbook pathway verbatim, but consistent with the 'Clinical' qualifier being this institution's one defining non-tenure signal everywhere else.",
       "source": "https://www.uvm.edu/d10-files/documents/2025-10/LCOM-Faculty-Handbook.pdf",
       "verifiedAt": "2026-09-10"
+    },
+    {
+      "college": "University of Vermont",
+      "titlePattern": "\\b(?:assistant|associate|full)?\\s*professor\\b",
+      "descriptionPattern": "\\bclinical scholar pathway\\b",
+      "value": false,
+      "note": "UVM Larner College of Medicine's April 2024 Faculty Handbook expressly lists the Clinical Scholar Pathway among its salaried non-tenure ranked pathways. This companion rule handles current postings whose plain title is shared with the Tenure Pathway but whose description explicitly assigns the appointment to the Clinical Scholar Pathway; it does not infer a pathway from a clinical specialty or plain professorial rank.",
+      "source": "https://www.uvm.edu/d10-files/documents/2024-08/LCOM_Faculty_Handbook_Apr24_FINAL.pdf",
+      "verifiedAt": "2026-09-21"
     },
     {
       "collegePattern": "^(?:Alamance Community College|Asheville-Buncombe Technical Community College|Beaufort County Community College|Bladen Community College|Blue Ridge Community College \\(NC\\)|Brunswick Community College|Caldwell Community College and Technical Institute|Cape Fear Community College|Carteret Community College|Catawba Valley Community College|Central Carolina Community College|Central Piedmont Community College|Cleveland Community College|Coastal Carolina Community College|College of the Albemarle|Craven Community College|Davidson-Davie Community College|Durham Technical Community College|Edgecombe Community College|Fayetteville Technical Community College|Forsyth Technical Community College|Gaston College|Guilford Technical Community College|Halifax Community College|Haywood Community College|Isothermal Community College|James Sprunt Community College|Johnston Community College|Lenoir Community College|Martin Community College|Mayland Community College|McDowell Technical Community College|Mitchell Community College|Montgomery Community College|Nash Community College|Pamlico Community College|Piedmont Community College|Pitt Community College|Randolph Community College|Richmond Community College|Roanoke-Chowan Community College|Robeson Community College|Rockingham Community College|Rowan-Cabarrus Community College|Sampson Community College|Sandhills Community College|South Piedmont Community College|Southeastern Community College \\(NC\\)|Southwestern Community College \\(NC\\)|Stanly Community College|Surry Community College|Tri-County Community College|Vance-Granville Community College|Wake Technical Community College|Wayne Community College|Western Piedmont Community College|Wilkes Community College|Wilson Community College)$",
@@ -363,11 +372,11 @@
     },
     {
       "college": "University of Alabama at Birmingham",
-      "titlePattern": "Credentialed\\s+Course\\s+Instructor",
+      "titlePattern": "\\bInstructor\\b",
       "value": false,
-      "note": "UAB's Faculty Handbook and Policies (August 2025) establishes this through three linked provisions. Table 2.5b ('Miscellaneous Definitions for Faculty Appointments'), quoted directly: 'Credentialed Course Instructor -- Term sometimes used for contingent faculty with rank of Instructor.' Section 2.5, quoted directly: 'Contingent faculty appointments ... are non-tenure-earning.' Section 2.6.1 ('Instructor'), quoted directly, independently confirms the same conclusion by a second route: 'Appointment as Instructor is non-tenure-earning and usually requires training beyond the baccalaureate degree.' UAB's own Faculty Hiring FAQ corroborates in practice, grouping Credentialed Course Instructor hiring under the same checklist as Adjunct Faculty. Matches both real posting formats seen in live data ('...Credentialed Course Instructor-World Languages & Literatures', '...Credentialed Course Instructor-African American Studies').",
+      "note": "UAB's Faculty Handbook and Policies (August 2025) states in Section 2.6.1 that appointment as Instructor is non-tenure-earning. Table 2.5b additionally identifies Credentialed Course Instructor as contingent faculty with the rank of Instructor, and Section 2.5 says contingent appointments are non-tenure-earning. This rule therefore covers every posting that expressly offers the Instructor rank, including current Clinical Instructor and Neurosurgery Instructor searches, while leaving all professorial ranks unresolved.",
       "source": "https://secure4.compliancebridge.com/uab/images/2208_section2/2025%20UAB%20Faculty%20Handbook.pdf",
-      "verifiedAt": "2026-09-15"
+      "verifiedAt": "2026-09-21"
     },
     {
       "college": "University of Minnesota",
@@ -727,6 +736,142 @@
       "value": false,
       "note": "UChicago classifies Instructional Professors, Research Professors, and Lecturers as Other Academic Appointments rather than the tenure-line faculty appointment series. Current official job pages also label Instructional Professor searches as Other Academic Appointee and fixed-term. This rule is limited to those expressly named appointment ranks.",
       "source": "https://socialsciences.uchicago.edu/2025-26-chairs-handbook",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Lamar Institute of Technology",
+      "titlePattern": "^",
+      "value": false,
+      "note": "LIT Policy 9.10 states that, as of Fall 2023, the institute only hires faculty members as non-tenure-track faculty. Every current LIT record is a faculty Instructor vacancy posted after that cutoff, so the institution-wide current-hire rule applies without inferring from rank alone.",
+      "source": "https://www.lit.edu/getattachment/1bf099f9-19a6-42b5-a00a-071f54efd72e/LIT-9-10-Tenure.pdf?lang=en-US",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Lake Land College",
+      "titlePattern": "^Correctional\\b",
+      "value": false,
+      "note": "Lake Land's official December 2025 personnel report separates newly hired campus instructors under 'Full-time Tenure Track' from Correctional instructors under the distinct 'Full-time' category. Its faculty agreement further identifies correctional-center faculty as grant-funded appointments governed by the Department of Corrections contract. The rule is limited to titles beginning Correctional and does not affect the college's regular tenure-track Instructor searches.",
+      "source": "https://www.lakelandcollege.edu/wp-content/laker-documents/laker/bot/Board%20Book%20January%202026.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Monroe Community College",
+      "titlePattern": "^Faculty, Full-Time - Nursing \\(Maternal & Neonatal\\)$",
+      "value": true,
+      "note": "The current official posting describes this exact Nursing appointment as a 10-month, full-time tenure-track faculty position. Exact-title scoping avoids extending that evidence to Monroe's separate temporary and coordinator appointments.",
+      "source": "https://monroecc.interviewexchange.com/jobofferdetails.jsp?JOBID=201811",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Monroe Community College",
+      "titlePattern": "^Faculty, Full-time, Electrical Engineering Technology$",
+      "value": false,
+      "note": "This current posting (JOBID 202203) says it is a temporary position renewable annually, contingent on budget and performance. Monroe separately advertises a different Electrical Engineering Technology search whose title and description explicitly say tenure track, so this exact-title rule preserves that distinction.",
+      "source": "https://monroecc.interviewexchange.com/jobofferdetails.jsp?JOBID=202203",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Ohio State University",
+      "titlePattern": "^(?:Professional-Practice Assistant Professor in Journalism|Veterinary Clinical Sciences Instructor - Practice - LOCUM|Doctor of Nursing Practice and Master of Healthcare Innovation Faculty College of Nursing|Faculty Director of Academic Excellence|Veterinary Curriculum Instructors)$",
+      "value": false,
+      "note": "Ohio State's Board rules define clinical/teaching/practice faculty as fixed-term appointments that do not entail tenure and define Lecturer as an associated-faculty title on term contracts. The current Journalism and locum titles explicitly name Professional Practice/Practice; the Nursing posting says 'associated track'; the Law posting specifies Lecturer; and the Veterinary Curriculum posting specifies full-time Lecturers. Exact-title scoping leaves the university's many mixed open-rank/open-track searches unresolved.",
+      "source": "https://faculty.osu.edu/faculty-titles-contracts-and-renewals",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Texas at Austin",
+      "titlePattern": "\\b(?:Assistant(?: or Associate)?|Associate|Full)?\\s*Professor of Instruction\\b|\\bClinical (?:Instructor|(?:Assistant(?:/Associate)?|Associate|Full)?\\s*Professor)\\b|\\bLecturer\\b|\\bResearch (?:Assistant(?:/Research Associate)?|Associate|Full)?\\s*Professor\\b",
+      "value": false,
+      "note": "UT Austin identifies the Instruction, Clinical, Lecturer, and Research title series as professional-track faculty appointments to which tenure may not be awarded. The rule requires one of those explicit qualified ranks and leaves unmodified Assistant/Associate/Full Professor titles unresolved.",
+      "source": "https://cloud.wikis.utexas.edu/wiki/spaces/coe/pages/79168030/Titles%2Band%2BRanks%2B-%2BProfessional%2BTrack%2BFaculty",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Florida Atlantic University",
+      "titlePattern": "^(?:Cardiologist - Assistant/Associate/Full Professor|Gastroenterologist - Assistant/Associate/Full Professor|General Psychiatry \\(Assistant/Associate/Full Professor\\)|Orthopedic Surgeon - Assistant/Associate/Full Professor|Program Director, Psychiatry Residency \\(Associate Professor/Full Professor\\)|Surgery Clerkship Director \\(Assistant Professor/Associate Professor/Full Professor\\)|Urologist - Assistant/Associate/Full Professor)$",
+      "value": false,
+      "note": "FAU's College of Medicine appointments policy defines its Clinical Educator and Clinical Practice tracks as non-tenure. Each exact current posting covered here describes the appointment as clinical faculty, primarily clinical, or a combined clinical/educator role. Exact-title scoping avoids treating every unqualified medical-school professorial rank as non-tenure because FAU also has a tenure-track Scientist and Clinician Scientist track.",
+      "source": "https://www.fau.edu/medicine/faculty-staff/policies/faculty-appointments/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Open Rank Research Nursing Faculty Position$",
+      "value": true,
+      "note": "The current official School of Nursing posting states that this exact opening is a full-time tenure-track or tenured Associate/Professor position. Exact-title scoping avoids treating unrelated research-faculty wording as tenure-track.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/open-rank-research-nursing-faculty-position-12968",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Open Rank Teaching Faculty$",
+      "value": false,
+      "note": "The current official Pharmacology posting explicitly describes this exact opening as a full-time non-tenure-track faculty position at Assistant, Associate, or Professor rank. Exact-title scoping prevents the generic words Teaching Faculty from overriding a different future appointment.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/open-rank-teaching-faculty-13157",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Open Rank Faculty Position in Cancer Research$",
+      "value": true,
+      "note": "The current official Cell Systems and Anatomy/Mays Cancer Center posting labels this exact opening 'Tenure-Track or Tenured Professor in Cancer Research.' Exact-title scoping leaves other generic open-rank research searches unresolved.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/open-rank-faculty-position-in-cancer-research-12892",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^CPTAR - Open Rank \\(Assistant/Associate/Professor\\)$",
+      "value": true,
+      "note": "The current official School of Dentistry posting describes this exact CPTAR opening as a full-time tenure-track/tenured faculty position at Assistant, Associate, or Professor rank.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/cptar-open-rank-assistant-associate-professor-13041",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Center Director - Center for Regenerative Sciences - Open Rank \\(Associate Professor/Professor\\)$",
+      "value": true,
+      "note": "The current official School of Dentistry posting describes this directorship as a full-time tenure-track/tenured Associate Professor or Professor appointment.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/center-director-center-for-regenerative-sciences-open-rank-associate-professor-professor-13043",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Chair - Associate Professor or Professor$",
+      "value": true,
+      "note": "The current official Communication Sciences and Disorders chair posting states that the selected candidate will have a full-time, twelve-month, tenured faculty appointment.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/chair-associate-professor-or-professor-13161",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Open Rank Faculty in Pediatric Cancer$",
+      "value": true,
+      "note": "The current official Greehey Children's Cancer Research Institute posting explicitly describes this exact opening as an open-rank tenure-track faculty position.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/open-rank-faculty-in-pediatric-cancer-10778",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Open Rank Faculty Position$",
+      "value": true,
+      "note": "The current official Greehey Children's Cancer Research Institute posting for this otherwise generic exact title states that the opening is tenure-track or tenured at Assistant, Associate, or Full Professor rank.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/open-rank-faculty-position-10802",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Associate Professor & Chair$",
+      "value": true,
+      "note": "The current official Respiratory Care chair posting states that the chair will hold a full-time, twelve-month, tenured faculty appointment and must qualify for appointment with tenure.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/associate-professor-chair-12884",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Associate Professor or Professor \\(Open Rank\\) and Vice Chair$",
+      "value": true,
+      "note": "The current official Psychiatry vice-chair posting requires the selected Associate Professor or Professor to be tenured or on the tenure track.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/associate-professor-or-professor-open-rank-and-vice-chair-5186",
       "verifiedAt": "2026-09-21"
     },
     {

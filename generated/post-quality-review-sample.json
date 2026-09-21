@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T14:29:53.181Z",
+  "generatedAt": "2026-09-21T15:45:43.225Z",
   "qualityVersion": 1,
   "sampleSize": 200,
   "instructions": "Set humanLabel to valid or invalid, add optional notes, then copy confirmed labels into data/post-quality-human-labels.json.",
@@ -213,13 +213,13 @@
       "notes": ""
     },
     {
-      "id": "00ac2d653ca712de8574",
+      "id": "01dfbe31fd8efe72c32f",
       "score": 100,
       "status": "pass",
-      "title": "Associate Faculty - Forestry/Natural Resources (Natural Resources MGT)",
+      "title": "Associate Faculty - Music (Applied Music)",
       "college": "Santa Rosa Junior College",
       "source": "CA CC",
-      "url": "https://www.communitycollegecareerconnect.com/jobs/cmp324gii003801qrwzbic74r",
+      "url": "https://www.communitycollegecareerconnect.com/jobs/cmp324kpr003h01nzoxy9cnct",
       "reasons": [
         {
           "code": "missing_deadline",
@@ -1137,20 +1137,20 @@
       "notes": ""
     },
     {
-      "id": "0a7bbcbcb0a69e33b15a",
-      "score": 89,
+      "id": "1751434f98ca3585cb94",
+      "score": 96,
       "status": "review",
-      "title": "Assistant to the Dean",
-      "college": "Morgan State University",
+      "title": "ABE/GED Instructor & ESOL Instructor",
+      "college": "Cecil College",
       "source": "MD",
-      "url": "https://morgan.peopleadmin.com/postings/8937",
+      "url": "https://careers.jobscore.com/careers/cecilcollege/jobs/abe-ged-instructor-esol-instructor-dGI8FDcL5pw7S3_dPNzHaH?ref=rss&sid=68",
       "reasons": [
         {
-          "code": "weak_academic_evidence",
+          "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+          "dimension": "freshness",
+          "deduction": 25,
+          "detail": "Posting date 2023-08-09 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_department",
@@ -1158,6 +1158,13 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -1822,13 +1829,13 @@
       "notes": ""
     },
     {
-      "id": "0304a99d9f80de8031c9",
+      "id": "01e6a2362e4820ce2232",
       "score": 96,
       "status": "review",
-      "title": "Adjunct Lecturer-Western Humanities",
+      "title": "Adjunct Lecturer - Music",
       "college": "SUNY College at Geneseo",
       "source": "NY",
-      "url": "https://jobs.geneseo.edu/postings/5083",
+      "url": "https://jobs.geneseo.edu/postings/5061",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -1910,20 +1917,27 @@
       "notes": ""
     },
     {
-      "id": "006fb4f4f056b8c85570",
+      "id": "001733915caf671cf5e4",
       "score": 99,
       "status": "pass",
-      "title": "Adjunct Professor of Automotive Technology",
-      "college": "Oklahoma City Community College",
+      "title": "Researcher - Associate Professor or Assistant Professor - Rehabilitation Sciences - Tenure Track",
+      "college": "University of Oklahoma Health Sciences Center",
       "source": "OK",
-      "url": "https://www.occcjobs.com/postings/24504",
+      "url": "https://apply.interfolio.com/176432",
       "reasons": [
         {
-          "code": "aging_posting_no_evergreen_signal",
+          "code": "missing_department",
           "severity": "info",
-          "dimension": "freshness",
+          "dimension": "completeness",
           "deduction": 10,
-          "detail": "Posting date 2025-07-14 is more than 1 year(s) old with no evergreen/applicant-pool signal."
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -2642,40 +2656,6 @@
       "source": "WI",
       "url": "https://wisconsin.wd1.myworkdayjobs.com/UW_Comprehensives/job/La-Crosse-WI/Instructor-Pool---SUSTAINABLITY---ENVIROMENTAL-STUDIES_JR10007132",
       "reasons": [
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "9520fabd4e1a7120417c",
-      "score": 64,
-      "status": "quarantine",
-      "title": "Music and Theatre Arts: Assistant Professor as Orchestra Director",
-      "college": "University of Wisconsin-Eau Claire",
-      "source": "WI",
-      "url": "https://wisconsin.wd1.myworkdayjobs.com/UW_Comprehensives/job/Eau-Claire-WI/Music-and-Theatre-Arts--Assistant-Professor-as-Orchestra-Director_JR10009364",
-      "reasons": [
-        {
-          "code": "filled_compliance_notice",
-          "severity": "error",
-          "dimension": "relevance",
-          "deduction": 100,
-          "detail": "The posting is a mandatory Department of Labor compliance notice for a position that has already been filled."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -3788,20 +3768,20 @@
       "notes": ""
     },
     {
-      "id": "1751434f98ca3585cb94",
-      "score": 96,
+      "id": "21a28888018cb7e95d5f",
+      "score": 97,
       "status": "review",
-      "title": "ABE/GED Instructor & ESOL Instructor",
-      "college": "Cecil College",
+      "title": "Engineering and Technology Adjunct Faculty Pool",
+      "college": "Howard Community College",
       "source": "MD",
-      "url": "https://careers.jobscore.com/careers/cecilcollege/jobs/abe-ged-instructor-esol-instructor-dGI8FDcL5pw7S3_dPNzHaH?ref=rss&sid=68",
+      "url": "https://howardcc.peopleadmin.com/postings/4676",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2023-08-09 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "detail": "Posting date 2024-05-31 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_department",
@@ -3809,13 +3789,6 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -4150,33 +4123,6 @@
       "notes": ""
     },
     {
-      "id": "a5cf4befe75d97088ac9",
-      "score": 89,
-      "status": "review",
-      "title": "Assistant to the Dean",
-      "college": "University of Nebraska-Lincoln",
-      "source": "NE",
-      "url": "https://employment.unl.edu/postings/101953",
-      "reasons": [
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
       "id": "037768ce151760189177",
       "score": 99,
       "status": "pass",
@@ -4414,20 +4360,20 @@
       "notes": ""
     },
     {
-      "id": "0353e92ea98b5f3b9aaf",
+      "id": "03592759358609b9a9fd",
       "score": 96,
       "status": "review",
-      "title": "Adjunct Lecturer - European History",
+      "title": "Adjunct Lecturer - Chemistry",
       "college": "SUNY College at Geneseo",
       "source": "NY",
-      "url": "https://jobs.geneseo.edu/postings/5062",
+      "url": "https://jobs.geneseo.edu/postings/5093",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2024-01-11 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "detail": "Posting date 2024-01-10 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_department",
@@ -4495,20 +4441,20 @@
       "notes": ""
     },
     {
-      "id": "0160102886496944e854",
-      "score": 100,
+      "id": "006fb4f4f056b8c85570",
+      "score": 99,
       "status": "pass",
-      "title": "Adjunct Faculty - English Composition I & II",
-      "college": "Tulsa Community College",
+      "title": "Adjunct Professor of Automotive Technology",
+      "college": "Oklahoma City Community College",
       "source": "OK",
-      "url": "https://www.schooljobs.com/careers/tulsacc/jobs/4889805/adjunct-faculty-english-composition-i-ii",
+      "url": "https://www.occcjobs.com/postings/24504",
       "reasons": [
         {
-          "code": "missing_deadline",
+          "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "dimension": "freshness",
+          "deduction": 10,
+          "detail": "Posting date 2025-07-14 is more than 1 year(s) old with no evergreen/applicant-pool signal."
         }
       ],
       "humanLabel": null,
@@ -4535,13 +4481,13 @@
       "notes": ""
     },
     {
-      "id": "0064ce72625550ec4783",
+      "id": "01eeed5a10f04994ba1e",
       "score": 99,
       "status": "pass",
-      "title": "University Studies New Adjunct Faculty Pool — 222700 - UGE Univ Studies-General Ed",
-      "college": "Portland State University",
+      "title": "Adjunct Instructor/Humanities including English Studies, Spanish & American Sign Language, and Philosophy",
+      "college": "Southern Oregon University",
       "source": "OR",
-      "url": "https://jobs.hrc.pdx.edu/postings/49354",
+      "url": "https://sou.wd1.myworkdayjobs.com/Southern_Oregon_University/job/Adjunct-Instructor-Humanities-including-English-Studies--Spanish---American-Sign-Language--and-Philosophy_R0000115",
       "reasons": [
         {
           "code": "missing_department",
@@ -4883,6 +4829,67 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "001b64b75c098fb1f006",
+      "score": 96,
+      "status": "pass",
+      "title": "Lecturer of Spanish",
+      "college": "Georgia College & State University",
+      "source": "USG",
+      "url": "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U#jobId=303514",
+      "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "f7f3547079214b7091ec",
+      "score": 86,
+      "status": "review",
+      "title": "Limited Term Faculty- Forensic Science",
+      "college": "Albany State University",
+      "source": "USG",
+      "url": "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U#jobId=303728",
+      "reasons": [
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
