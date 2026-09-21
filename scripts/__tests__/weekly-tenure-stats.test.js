@@ -27,6 +27,32 @@ test("classifies stored and explicitly titled tenure status", () => {
   assert.equal(classifyTenureTrack({ title: "Assistant Professor" }), null);
 });
 
+test("source titles and verified institution policies override stale stored values", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      title: "Adjunct Assistant Professor of Mathematics",
+      tenureTrack: true,
+    }),
+    { value: false, evidence: "title-rank" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of Washington",
+      title: "Assistant or Associate Professor (WOT) - Pediatric Epileptologist",
+      tenureTrack: true,
+    }),
+    { value: false, evidence: "title-rank" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of Nevada, Las Vegas",
+      title: "Assistant Professor-in-Residence, Criminal Justice",
+      tenureTrack: true,
+    }),
+    { value: false, evidence: "title-rank" }
+  );
+});
+
 test("uses unambiguous descriptions and records classification evidence", () => {
   assert.deepEqual(
     classifyTenureTrackWithEvidence({
@@ -51,6 +77,43 @@ test("uses unambiguous descriptions and records classification evidence", () => 
   );
 });
 
+test("gives labeled appointment-track fields precedence over unrelated page prose", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      description:
+        "Tenure Track Status Non-Tenure Track Required Education MD. Faculty follow the university tenure and promotion policy.",
+    }),
+    { value: false, evidence: "description-structured-field" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      description:
+        "Is this position tenure track or non-tenure track? Tenure Track. The college also employs non-tenure-track lecturers.",
+    }),
+    { value: true, evidence: "description-structured-field" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      description: "Type of Position: Faculty - Non-Tenure (Research). Promotion and tenure policies are available online.",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      description: "Group: Tenure System Faculty. The department also includes non-tenure-track instructors.",
+    }),
+    true
+  );
+  // Mixed free-form language is still ambiguous; only a source field receives
+  // precedence.
+  assert.equal(
+    classifyTenureTrack({
+      description: "Appointment may be tenure-track or non-tenure-track depending on qualifications.",
+    }),
+    null
+  );
+});
+
 test("recognizes additional explicit tenure appointment phrases", () => {
   for (const description of [
     "This is a tenure-earning faculty appointment.",
@@ -61,6 +124,11 @@ test("recognizes additional explicit tenure appointment phrases", () => {
   ]) {
     assert.equal(classifyTenureTrack({ description }), true, description);
   }
+
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ title: "Associate or Full Professor (with Tenure)" }),
+    { value: true, evidence: "title-explicit" }
+  );
 });
 
 test("recognizes additional explicit non-tenure appointment phrases", () => {
@@ -70,9 +138,118 @@ test("recognizes additional explicit non-tenure appointment phrases", () => {
     "This is a non-tenure-accruing appointment.",
     "This is not a tenure-track appointment.",
     "This position is not eligible for tenure.",
+    "This is a full‑time, 12‑month, non‑tenure‑track faculty position.",
+    "This is a one-year faculty appointment with possible renewal.",
+    "The position will be a two-year term, with renewal based on performance.",
   ]) {
     assert.equal(classifyTenureTrack({ description }), false, description);
   }
+});
+
+test("recognizes appointment-title qualifiers that are definitionally outside a tenure line", () => {
+  for (const title of [
+    "Affiliate Faculty for Professional Doctoral Programs",
+    "Per Diem Nursing Lab Instructor",
+    "Non-Compensated Clinical Faculty Open Rank",
+    "Contract Faculty - Department of Physics",
+    "Psychology: Contract Instructor-College Credit",
+    "Acting Assistant Professor of Management",
+    "Adult Basic Education Substitute Instructor",
+    "9-Month Restricted Faculty of Emergency Medical Services",
+    "Assistant Professor Term",
+    "Associate Professor, Term",
+    "Term Assistant Professor in Applied Physics",
+    "Full Time Instructor 3 Term - Cybersecurity",
+    "Affiliate Instructor, Communication",
+    "On-Call Culinary Instructor",
+    "Hourly Nursing Instructor",
+    "Skilled Trades Non-Credit Instructor",
+    "Phlebotomy Instructor, Non-Credit",
+    "Adj. Instructor, Culinary Arts",
+    "Lecturer - Creating a Pool - School of Communication",
+    "Arts Administration On-Campus Instructors (POOL POSTING)",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ title }),
+      { value: false, evidence: "title-rank" },
+      title
+    );
+  }
+});
+
+test("recognizes substitute instructors when a discipline appears inside the title", () => {
+  assert.equal(classifyTenureTrack({ title: "Substitute Cosmetology Instructor" }), false);
+  assert.equal(classifyTenureTrack({ title: "Substitute Professor of Economics" }), null);
+});
+
+test("recognizes direct adjunct-role statements without using incidental adjunct mentions", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      title: "Clinical Faculty",
+      description: "This is an adjunct faculty appointment. Clinical teaching is paid hourly.",
+    }),
+    { value: false, evidence: "description-direct-claim" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      title: "English Instructor",
+      description: "Menlo College is seeking an adjunct instructor to teach English language learners.",
+    }),
+    { value: false, evidence: "description-direct-claim" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      title: "Assistant Professor",
+      description: "The successful candidate will help recruit and mentor adjunct faculty.",
+    }),
+    null
+  );
+});
+
+test("recognizes direct part-time role statements but not flexible full-or-part-time workloads", () => {
+  for (const description of [
+    "Summary: Part-time faculty position supporting the nursing program.",
+    "The Center is seeking part-time contract instructors for workforce training.",
+    "This is a part-time/contract instructional position for the spring term.",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ title: "Instructor", description }),
+      { value: false, evidence: "description-direct-claim" },
+      description
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({
+      title: "Assistant Professor",
+      description: "This position is full-time or part-time faculty position at 80%-100% effort.",
+    }),
+    null
+  );
+});
+
+test("recognizes P/T faculty title abbreviations without treating mixed F/T or P/T roles as part-time", () => {
+  assert.equal(classifyTenureTrack({ title: "GED/HSE Instructor P/T" }), false);
+  assert.equal(classifyTenureTrack({ title: "Workforce Training Instructor (P / T)" }), false);
+  assert.equal(classifyTenureTrack({ title: "Instructor - Engineering Technology (F/T or P/T)" }), null);
+});
+
+test("classifies Fellow ranks as non-tenure without confusing fellowship-program leadership", () => {
+  for (const title of [
+    "AIRC Research Fellow",
+    "Faculty Fellow in Business",
+    "Fellow-in-Residence — Faculty of Arts and Sciences",
+    "Physician Assistant Fellow - Pediatrics: Neonatal Critical Care",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ title }),
+      { value: false, evidence: "title-rank" },
+      title
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ title: "Professor and Program Director, Thoracic Radiology Fellowship" }),
+    null
+  );
 });
 
 test("does not treat generic 'contingent upon' funding/background-check language as a non-tenure signal", () => {
@@ -98,6 +275,23 @@ test("recognizes genuine contingent-faculty language as a non-tenure signal", ()
   assert.equal(
     classifyTenureTrack({ description: "This is a contingent faculty appointment." }),
     false
+  );
+});
+
+test("recognizes a temporary replacement appointment without treating generic temporary prose as track evidence", () => {
+  assert.equal(
+    classifyTenureTrack({
+      title: "Instructor, Biology",
+      description: "This position is a temporary replacement for faculty members on sabbatical leave.",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      title: "Assistant Professor of Biology",
+      description: "The search committee has established a temporary review schedule.",
+    }),
+    null
   );
 });
 
@@ -182,7 +376,7 @@ test("applies verified institution-specific title conventions as a last resort",
   );
   assert.equal(
     classifyTenureTrack({ college: "University of Rochester", title: "Instructor" }),
-    null
+    false
   );
 
   // SUNY (collegePattern rule): system-wide HR policy defines "Qualified
@@ -205,21 +399,19 @@ test("applies verified institution-specific title conventions as a last resort",
     }),
     false
   );
-  // A plain title at a SUNY state-operated campus is unaffected (not "clinical"
-  // or "lecturer") and stays unclassified like everywhere else.
+  // SUNY HR explicitly identifies the unqualified academic ranks as tenure
+  // track at state-operated campuses.
   assert.equal(
     classifyTenureTrack({ college: "Stony Brook University", title: "Assistant Professor" }),
-    null
+    true
   );
-  // A plain multi-rank slash chain with no "Clinical" qualifier also stays
-  // unclassified -- genuinely ambiguous, matches most of Stony Brook's
-  // remaining unclassified postings.
+  // The same applies to an unqualified multi-rank slash chain.
   assert.equal(
     classifyTenureTrack({
       college: "Stony Brook University",
       title: "Cardiologist, Assistant/Associate/Full Professor, Internal Medicine, Heart Failure",
     }),
-    null
+    true
   );
   // SUNY's separately-governed community colleges are deliberately excluded
   // from the collegePattern (different governance, not confirmed to share this
@@ -258,6 +450,9 @@ test("applies verified institution-specific title conventions as a last resort",
     "Assistant Clinical Professor",
     "Teaching Professor of Mathematics",
     "Assistant Professor - Practice",
+    "Physician – Clinical Faculty, Radiation Oncologist-GU (Open Rank/Track Faculty)",
+    "Research Faculty - Division of Surgical Oncology - (Associate Professor or Professor)",
+    "Research Professor",
     "Lecturer",
     "Senior Lecturer, Applied Trumpet (9M)",
   ]) {
@@ -326,7 +521,7 @@ test("applies verified institution-specific title conventions as a last resort",
     assert.equal(classifyTenureTrack({ college: "Central Washington University", title }), false, title);
   }
   assert.equal(
-    classifyTenureTrack({ college: "Central Washington University", title: "Assistant Professor - Mathematics" }),
+    classifyTenureTrack({ college: "Central Washington University", title: "Assistant Professor - Economics" }),
     null
   );
 
@@ -361,7 +556,7 @@ test("applies verified institution-specific title conventions as a last resort",
   ]) {
     assert.equal(classifyTenureTrack({ college: usfCollege, title }), false, title);
   }
-  assert.equal(classifyTenureTrack({ college: usfCollege, title: "Assistant Professor" }), null);
+  assert.equal(classifyTenureTrack({ college: usfCollege, title: "Assistant Professor" }), true);
 
   // Texas State Technical College: no explicit tenure policy was found, but
   // every posting ever scraped from this employer uses "Instructor" -- zero
@@ -391,6 +586,74 @@ test("applies verified institution-specific title conventions as a last resort",
   // A plain title with no track qualifier -- including outside the medical
   // school entirely -- correctly stays unclassified.
   assert.equal(classifyTenureTrack({ college: madisonCollege, title: "Assistant Professor of Political Science" }), null);
+  assert.equal(
+    classifyTenureTrack({
+      college: madisonCollege,
+      title: "Assistant Professor of Political Science",
+      description: "Job Category: Faculty Employment Type: Regular Job Profile: Assistant Professor Job Summary: Research and teaching.",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: madisonCollege,
+      title: "Comprehensive Ophthalmology Faculty",
+      description: "Job Category: Academic Staff Employment Type: Regular Job Profile: Assistant Professor (CHS) Job Summary: Patient care.",
+    }),
+    false
+  );
+  // The category alone is insufficient, and a CHS profile must never be
+  // mistaken for the plain tenure-track Faculty profile.
+  assert.equal(
+    classifyTenureTrack({ college: madisonCollege, title: "Assistant Professor", description: "Job Category: Faculty" }),
+    null
+  );
+
+  for (const title of [
+    "Assistant/Associate Teaching Professor in Geospatial Analytics",
+    "Professor of the Practice in Media Arts and Production",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "NC State University", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "University of Maryland, College Park", title: "Faculty Specialist" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Maryland, College Park",
+      title: "Senior/Principal Faculty Specialist OR Associate Professor/Professor OR Senior/Principal Agent",
+    }),
+    null
+  );
+  for (const title of [
+    "Clinical Instructor of Radiology (Practitioner)",
+    "Assistant or Associate Professor of Clinical Otolaryngology Head and Neck Surgery-CHLA",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "University of Southern California", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "University of New Orleans", title: "Assistant Professor of Professional Practice - Healthcare Management" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "University of Nebraska at Omaha", title: "Instructor - Early Literacy" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "University of Nebraska at Omaha", title: "Assistant/Associate Professor, DSW Director Appointment" }),
+    null
+  );
+  for (const title of ["Lecturer, Business Law", "Practicum Director/Clinical Assistant Professor"]) {
+    assert.equal(classifyTenureTrack({ college: "St Bonaventure University", title }), false, title);
+  }
+  for (const title of [
+    "Workforce Development and Continuing Education Art Instructor",
+    "Workforce Development and Continuing Education- English as a Second Language Instructor",
+    "Allied Health Care Training Instructor",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Schenectady County Community College", title }), false, title);
+  }
 
   // University of Vermont: the Larner College of Medicine Faculty Handbook
   // confirms four non-tenure "Ranked" pathways (Clinical, Clinical Scholar,
@@ -489,6 +752,54 @@ test("does not treat a department-overview faculty headcount as a position-track
   );
 });
 
+test("ignores group-of faculty headcounts before reading the opening's teaching track", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      title: "Full-Time",
+      description:
+        "Full-Time, Teaching-Track Faculty Position in Biology. The candidate will join a group of 12 tenured/tenure-track, teaching, and research core faculty members.",
+    }),
+    { value: false, evidence: "description-explicit" }
+  );
+});
+
+test("ignores visa-sponsorship track boilerplate before reading the opening's track", () => {
+  assert.equal(
+    classifyTenureTrack({
+      title: "Assistant Professor of Criminology",
+      description:
+        "CCU rarely sponsors part-time, temporary, staff or non-tenure-track roles and will not sponsor H-1B petitions when the required fee applies. The Department invites applications for a Tenure-Track Assistant Professor of Criminology.",
+    }),
+    true
+  );
+});
+
+test("gives a direct position claim precedence over later cross-track context", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      title: "Assistant Professor of Finance",
+      description:
+        "The department invites applications for a tenure-track faculty position in Finance. Our faculty include lecturers on non-tenure-track appointments.",
+    }),
+    { value: true, evidence: "description-direct-claim" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      title: "Lecturer",
+      description:
+        "This is a ranked non-tenure-track faculty position. Tenure-track faculty participate in a separate review process.",
+    }),
+    { value: false, evidence: "description-direct-claim" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      title: "Open Rank Professor",
+      description: "The position is a full-time tenure-track or non-tenure-track faculty position.",
+    }),
+    null
+  );
+});
+
 test("applies the CSU Fort Collins Instructor-rank institution policy", () => {
   for (const title of [
     "Applied Music Instructors - Open Pool",
@@ -550,18 +861,19 @@ test("applies Colorado State, Morgan State, Northeastern, and Ball State institu
     assert.equal(classifyTenureTrack({ college: "Northeastern University", title }), false, title);
   }
   // A plain title with no qualifier is Northeastern's tenure-line series and
-  // stays unclassified, as does an unranked "Research Fellow" title.
+  // stays unclassified; the separate Fellow-rank rule handles fixed-term
+  // research fellow appointments.
   assert.equal(
     classifyTenureTrack({ college: "Northeastern University", title: "Assistant Professor, Modern Korean History" }),
     null
   );
   assert.equal(
     classifyTenureTrack({ college: "Northeastern University", title: "Distinguished Research Fellow, Khoury College of Computer Sciences" }),
-    null
+    false
   );
 
-  // Ball State: Faculty and Professional Personnel Handbook Sec.
-  // 16.1.4.1.1 names Lecturer directly as "non-tenure-line."
+  // Ball State's current Faculty Resources page lists both the Lecturer and
+  // Teaching Professor ladders under "Non-Tenure Line Titles and Promotions."
   assert.equal(
     classifyTenureTrack({
       college: "Ball State University",
@@ -569,16 +881,20 @@ test("applies Colorado State, Morgan State, Northeastern, and Ball State institu
     }),
     false
   );
-  // The compound "Lecturer/...Teaching Professor" form stays unclassified --
-  // Ball State's Teaching Professor series isn't independently confirmed
-  // non-tenure in this handbook edition, unlike Lecturer.
   assert.equal(
     classifyTenureTrack({
       college: "Ball State University",
       title: "Assistant Lecturer/Assistant Teaching Professor of Entrepreneurship",
     }),
-    null
+    false
   );
+  assert.equal(
+    classifyTenureTrack({ college: "Ball State University", title: "Assistant Teaching Professor" }),
+    false
+  );
+  // Ball State's legacy Instructor rank was moved into its non-tenure-line
+  // structure and retitled within the Lecturer/Teaching Professor ladder.
+  assert.equal(classifyTenureTrack({ college: "Ball State University", title: "Instructor of Nursing" }), false);
 });
 
 test("applies USG, UNLV, Virginia Tech, and Florida institution-specific conventions", () => {
@@ -589,10 +905,10 @@ test("applies USG, UNLV, Virginia Tech, and Florida institution-specific convent
   for (const college of ["University of North Georgia", "Georgia College & State University", "Fort Valley State University"]) {
     assert.equal(classifyTenureTrack({ college, title: "Lecturer of Psychology" }), false, college);
   }
-  // A plain title at a USG institution stays unclassified, same as UGA.
+  // USG defines the unqualified academic-rank ladder as tenure track.
   assert.equal(
     classifyTenureTrack({ college: "University of North Georgia", title: "Assistant Professor of Biology" }),
-    null
+    true
   );
   // The compound "Lecturer/[Assistant/Associate] Professor" form is genuinely
   // ambiguous (mixes a non-tenure rank with a potentially tenure-track one)
@@ -619,8 +935,8 @@ test("applies USG, UNLV, Virginia Tech, and Florida institution-specific convent
     null
   );
 
-  // UNLV: University Bylaws Ch. III name "faculty in residence" as
-  // non-tenure-track in the same breath as tenure-track faculty.
+  // UNLV: University Bylaws define Rank 0 appointments as non-tenure-track
+  // and unqualified Rank II-IV professorial appointments as the tenure line.
   assert.equal(
     classifyTenureTrack({
       college: "University of Nevada, Las Vegas",
@@ -628,14 +944,16 @@ test("applies USG, UNLV, Virginia Tech, and Florida institution-specific convent
     }),
     false
   );
-  // A plain title with no "in Residence"/"Clinical"/"Research"/"Lecturer"
-  // qualifier (common on UNLV med-school postings) stays unclassified.
   assert.equal(
     classifyTenureTrack({
       college: "University of Nevada, Las Vegas",
       title: "Geriatrics, Assistant/Associate/Professor, Internal Medicine",
     }),
-    null
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "University of Nevada, Las Vegas", title: "Clinical Assistant Professor of Medicine" }),
+    false
   );
 
   // Virginia Tech: Faculty Handbook Ch. 5/6 define Clinical, Collegiate,
@@ -666,8 +984,145 @@ test("applies USG, UNLV, Virginia Tech, and Florida institution-specific convent
   );
   assert.equal(
     classifyTenureTrack({ college: "University of Florida", title: "Assistant Professor in American Politics" }),
-    null
+    true
   );
+});
+
+test("applies additional verified institution-specific appointment-title policies", () => {
+  const nonTenureCases = [
+    ["Columbia University in the City of New York", "Assistant Professor at CUIMC"],
+    ["Columbia University in the City of New York", "Assistant Professor at the Columbia University Medical Center"],
+    ["University of Miami", "Clinical Faculty, Open Rank - Diagnostic Radiology"],
+    ["University of Miami", "Anesthesiology- Research Asst. Professor"],
+    ["Yeshiva University", "Clinical & Preclinical Instructor"],
+    ["Yeshiva University", "Clinical Assistant/Associate Professor and Director"],
+    ["Georgia Institute of Technology-Main Campus", "Lecturer / Sr. Lecturer (open rank)"],
+    ["The University of Texas Health Science Center at Houston", "Instructor, Undergraduate Studies"],
+    ["University of Notre Dame", "Associate/Full Research Professor"],
+    ["Florida International University", "Open Rank Research Professor Pool in the Institute of Environment"],
+    ["Stony Brook University", "AI Innovation Research Assistant Professor"],
+    ["Samuel Merritt University", "Annual Faculty - Medical / Surgical Nursing"],
+    ["Harrisburg Area Community College", "Workforce Development (WFD) Instructor - Automotive Technology"],
+    ["William Rainey Harper College", "CE Instructor - Arabic Instructor – Levant Dialects"],
+    ["Tennessee Technological University", "Lecturer (3 Positions) - Computer Science"],
+    ["East Tennessee State University", "9-Month Lecturer, Nursing Undergraduate Programs"],
+    ["South Texas College", "Full-Time Lecturer Positions (Division of Liberal Arts)"],
+    ["University of Wyoming", "Lecturer, Assistant - Energy & Petroleum Engineering"],
+    ["Southern Illinois University Edwardsville", "FA26-036: Lecturer"],
+    ["University of New Hampshire System", "Clinical Assistant Professor of Nursing"],
+    ["University of New Hampshire-Franklin Pierce School of Law", "Assistant Director of Legal Residencies (Lecturer)"],
+    ["Boise State University", "Lecturer - Chemistry"],
+    ["The Catholic University of America", "Clinical Assistant/Associate Professor / Conway Mentor"],
+    ["Wayne State University", "Assistant Professor, Clinical - Department of Neurology"],
+    ["Northern Illinois University", "Instructor, Biological Sciences"],
+    ["Cabrillo College", "Communication Studies - Associate Instructor"],
+    ["University of Maryland, Baltimore County", "Assistant Teaching Professor"],
+    ["University of Maryland, Baltimore County", "Faculty Research Assistant"],
+    ["Medical College of Wisconsin", "Faculty Instructor II - Cardiology/Advanced Imaging"],
+    ["Austin Community College District", "Faculty, Nursing"],
+    ["University of Miami", "Instructor - Ophthalmology"],
+    ["Binghamton University", "Lecturers in Economics"],
+    ["Oral Roberts University", "Open Rank Professor of Nursing"],
+    ["Liberty University", "Assistant Professor - Social Work"],
+    ["Hampton University", "Research Assistant Professor of Machine Learning and Control"],
+    ["Hampton University", "Lead Welding Instructor- Virginia Workforce Innovation & Entrepreneurship Center"],
+    ["University of Rochester", "Clinical/Executive Professor of Strategy and Consulting (Full-time)"],
+    ["University of Rochester", "GI Pathology - Instructor-1"],
+    ["College of the Mainland", "Faculty - English"],
+    ["University of North Texas Health Science Center", "Instructor - HSC-Texas Coll of Osteopathic Med"],
+    ["Barry University", "Assistant/Associate Professor Physician Assistant Program"],
+    ["Barry University", "Assistant Professor of Psychology"],
+    ["University of Minnesota", "Faculty Position in Pathology (Academic/Clinician Track)"],
+    ["Wayne State University", "Assistant Professor, Clinician Educator - Dept. of Psychiatry"],
+    ["UCLA", "Family Medicine Faculty - Health Sciences Clinical Series"],
+    ["UC San Francisco", "Health Sciences Assistant/Associate/Full Clinical Professor"],
+    ["UCLA", "Head and Neck Surgeon - HS Assistant, Associate or Full Clinical Professor"],
+    ["University of New Mexico", "Open Rank Lecturer in Psychiatry, First Episode Psychosis"],
+    ["Baptist Health Sciences University", "Instructor/Clinical Coordinator for Medical Radiography Program"],
+    ["University of Georgia", "Clinical Assistant, Associate, or Full Professor"],
+    ["University of Georgia", "Public Service Faculty - Economic Development Training"],
+  ];
+
+  for (const [college, title] of nonTenureCases) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: false, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+
+  for (const [college, title] of [
+    ["Binghamton University", "Assistant Professor in Applied Microeconomics"],
+    ["SUNY Polytechnic Institute", "Assistant, Associate, or Full Professor of Robotics"],
+    ["Oklahoma Baptist University", "Assistant or Associate Professor of Accounting"],
+    ["Rice University", "Assistant Professor of Bioengineering"],
+    ["University of Notre Dame", "Assistant Professor in Archaeology"],
+    ["The Pennsylvania State University", "Professor in Neurobiology of Insect Chemical Ecology"],
+    ["Clemson University", "Assistant Professor - Psychology"],
+    ["University of Georgia", "Assistant Professor - Social Studies Education"],
+    ["University of Florida", "Assistant/Associate/Full Professor - Pulmonary/Critical Care"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: true, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of North Texas Health Science Center",
+      title: "Assistant Professor - Pharmacology & Neuroscience",
+    }),
+    { value: null, evidence: null }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ college: "Barry University", title: "Assistant Professor of Law" }),
+    { value: null, evidence: null }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Oklahoma Baptist University",
+      title: "Core Faculty Member - Doctor of Physical Therapy Program",
+    }),
+    { value: null, evidence: null }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ college: "Rice University", title: "Clinical Professor of Medicine" }),
+    { value: null, evidence: null }
+  );
+
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "The University of Texas Health Science Center at Houston",
+      title: "Assistant Professor (TT); Center for Health Equity",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+
+  // Institution rules stay narrow: the same schools' unqualified ranks can
+  // occur on more than one appointment track and must not be guessed.
+  for (const college of [
+    "Columbia University in the City of New York",
+    "University of Miami",
+    "Yeshiva University",
+    "The University of Texas Health Science Center at Houston",
+    "Florida International University",
+    "Harrisburg Area Community College",
+    "William Rainey Harper College",
+    "East Tennessee State University",
+    "University of New Hampshire System",
+    "University of New Hampshire-Franklin Pierce School of Law",
+    "Boise State University",
+    "The Catholic University of America",
+    "Wayne State University",
+    "Lane Community College",
+    "Cabrillo College",
+    "University of Maryland, Baltimore County",
+    "Medical College of Wisconsin",
+  ]) {
+    assert.equal(classifyTenureTrack({ college, title: "Assistant Professor of Biology" }), null, college);
+  }
 });
 
 test("recognizes ATS structural metadata (hourly salary, labeled non-tenure Job Type) as a non-tenure signal", () => {
@@ -676,12 +1131,28 @@ test("recognizes ATS structural metadata (hourly salary, labeled non-tenure Job 
   // definitional of part-time/adjunct employment, never tenure-track.
   assert.deepEqual(
     classifyTenureTrackWithEvidence({
-      title: "French (Foreign Languages) Instructor Applicant Pool",
+      title: "French (Foreign Languages) Instructor",
       description:
         "French (Foreign Languages) Instructor Applicant Pool Salary $89.24 Hourly Location Santa Clarita, CA Job Type Part-Time Faculty",
     }),
     { value: false, evidence: "description-job-type" }
   );
+  for (const description of [
+    "Employee category: Part-Time Staff Department: Adult and Continuing Education",
+    "Job Category Non-Employee Instructor FVTC Worksite Wisconsin",
+    "Work type: Part time Location: Virginia Beach Categories: Faculty & Adjunct",
+    "Appointment Type: Part-Time Faculty Position—Humanities",
+    "EMPLOYMENT CATEGORY: Seasonal Nursing Lab Instructor",
+    "Regular/TemporaryTemporary Position Type Faculty",
+    "Compensation is $45 - $60 per hour for teaching assignments",
+    "Salary range: $3,000-$3,600 per course",
+    "Compensation is $1,420 per credit",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ title: "Instructor", description }),
+      { value: false, evidence: "description-job-type" }
+    );
+  }
   assert.equal(
     classifyTenureTrack({
       title: "Noncredit Business (Non-Vocational) Instructor Applicant Pool",
@@ -693,10 +1164,887 @@ test("recognizes ATS structural metadata (hourly salary, labeled non-tenure Job 
     classifyTenureTrack({ description: "Salary $62.16 - $71.40 Hourly Job Type Staff Part Time" }),
     false
   );
+  for (const description of [
+    "FT/PT Part Time Hours Per Week 20",
+    "Full/Part Time: Part-Time Work Schedule evenings",
+    "Full Time/Part Time: Part time Union: SEIU",
+    "Position Time Status Part-Time Required Education MD",
+    "Job Status: Part time Employee Type: Faculty",
+    "Position Type Part-Time Department Continuing Education",
+    "Time Type: Part time Location Main Campus",
+    "Expected Hourly Rate: $23.72 Faculty Regular",
+    "FLSA Status: Non-Exempt Pay Basis: Hourly Hiring Range: $23.00",
+    "Full or Part-time Part-Time Appointment Type Temporary",
+    "Position Type: Seasonal Location: Bemidji, Minnesota",
+    "Language VillagesPosition Type:SeasonalLocation:Bemidji, Minnesota",
+    "Employment Type Temporary Job Category Instructor Months 3 month",
+    "Classification Temporary Minimum Pay $0",
+    "Position Type Contracted Part-Time Faculty",
+    "Position Type Adjunct Faculty Department Business and Technology",
+    "Work type: Adjunct Faculty Location: Denver Categories: Faculty",
+    "Work type: Temporary Grant-P14, Full-Time Location: Orangeburg Categories: Faculty",
+    "Position Type: PT Hours Per Week 15",
+    "Job Type: Part-Time Staff Term: Staff Faculty Term: Fall Semester",
+    "Job Type Faculty - Part Time, Exempt, Contract based",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ title: "Instructor", description }),
+      { value: false, evidence: "description-job-type" },
+      description
+    );
+  }
   // A real tenure-track salary schedule (annual, not hourly) is unaffected.
   assert.equal(
     classifyTenureTrack({ description: "Salary $75,000.00 - $95,000.00 Annually Job Type Full-Time Faculty" }),
     null
+  );
+});
+
+test("recognizes additional labeled appointment-track fields without guessing mixed-track openings", () => {
+  const cases = [
+    ["Tenure Track Status: No", false],
+    ["Faculty Tenure Track Yes", true],
+    ["Tenure Track Status: Tenure-Track", true],
+    ["Tenure Status Term", false],
+    ["Tenure Status Tenure Track", true],
+    ["Tenure: Ineligible", false],
+    ["Appointment Status Tenure", true],
+    ["Faculty Type of Position: Term", false],
+    ["Position Category: Faculty - Term Appointment", false],
+    ["Appointment Type Time limited", false],
+    ["Time Limited Position: Yes", false],
+    ["Tenure Track or Non Tenure Track Non Tenure Track", false],
+    ["Tenure Track or Non Tenure Track Tenure Track", true],
+  ];
+
+  for (const [description, value] of cases) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ description }),
+      { value, evidence: "description-structured-field" },
+      description
+    );
+  }
+
+  assert.equal(
+    classifyTenureTrack({ description: "This is a career-track teaching appointment with a path for promotion." }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ description: "This may be a tenure or career track faculty position depending on qualifications." }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ description: "Eligible for application and receipt of continuing appointment (tenure) and promotion." }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({ description: "Effective End Date (for Limited-Term postings) Job Posting Date 09/11/2026" }),
+    null
+  );
+});
+
+test("recognizes additional ATS fixed-duration fields", () => {
+  for (const description of [
+    "Employment Type: Terminal (Fixed Term) Job Profile: Lecturer",
+    "Position Status: Limited Term If Limited Term (End Date of Assignment) 06/30/2031",
+    "Appointment type Term - 2 Years. This is a term position.",
+    "Job Type: Temporary Department: Music",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ title: "Instructor", description }),
+      { value: false, evidence: "description-structured-field" },
+      description
+    );
+  }
+});
+
+test("uses documented unmodified professorial ladders without absorbing qualified ranks", () => {
+  for (const [college, title] of [
+    ["Southern Illinois University Edwardsville", "Assistant Professor in Painting and Digital Illustration"],
+    ["Southern Illinois University Edwardsville", "Assistant/Associate Professor"],
+    ["Northern Illinois University", "Associate Professor/Professor and MSW Program Director"],
+    ["Mississippi State University", "Assistant/Associate/Professor"],
+    ["University of Wyoming", "Asst/Assoc Professor - Communication Disorders"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: true, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+
+  for (const [college, title] of [
+    ["Southern Illinois University Edwardsville", "Assistant Professor / Clinical Assistant Professor"],
+    ["Northern Illinois University", "Assistant Professor of Legal Practice"],
+    ["Mississippi State University", "Assistant Research Professor"],
+    ["University of Wyoming", "Assistant Librarian - Faculty Support Librarian"],
+  ]) {
+    assert.equal(classifyTenureTrack({ college, title }), null, `${college}: ${title}`);
+  }
+});
+
+test("applies SUNY's system-wide academic-rank distinction at state-operated campuses", () => {
+  for (const [college, title] of [
+    ["University at Albany", "Assistant Professor - School of Criminal Justice"],
+    ["Stony Brook University", "Cardiologist, Assistant/Associate/Full Professor, Internal Medicine"],
+    ["SUNY Downstate Health Sciences University", "Assistant/Associate Professor (HS), Anatomic Pathology"],
+    ["University at Buffalo", "Academic Scholar - Assistant or Associate Professor, Memory Disorders"],
+    ["SUNY Oneonta", "Associate Professor and Director: Master of Social Work Program"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: true, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+
+  for (const [college, title] of [
+    ["Stony Brook University", "Research Assistant Professor of Biology"],
+    ["University at Buffalo", "Clinical Assistant Professor GFT"],
+  ]) {
+    assert.equal(classifyTenureTrack({ college, title }), false, `${college}: ${title}`);
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "SUNY Old Westbury",
+      title: "Assistant Professor - Instructor - Literacy Education",
+    }),
+    null
+  );
+});
+
+test("uses Tennessee Tech's rank taxonomy and Clark Atlanta's explicit current searches", () => {
+  for (const title of [
+    "Assistant or Associate Professor of Accounting",
+    "Assistant/Associate/Full Professor - Computer Science",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Tennessee Technological University", title }),
+      { value: true, evidence: "institution-policy" },
+      title
+    );
+  }
+  for (const title of ["Instructor", "Research Assistant Professor", "Clinical Professor"]) {
+    assert.notEqual(classifyTenureTrack({ college: "Tennessee Technological University", title }), true, title);
+  }
+
+  for (const title of [
+    "Assistant Professor: Mathematical Sciences(075-26)",
+    "Assistant Professor: School of Social Work(089-26)",
+    "Assistant/Associate Professor: Curriculum and Instruction(113-26)",
+    "Associate Professor, Social and Behavioral Scientist 003-26",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Clark Atlanta University", title }),
+      { value: true, evidence: "institution-policy" },
+      title
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Clark Atlanta University", title: "Assistant Professor: Film and Digital Media Studies" }),
+    null
+  );
+});
+
+test("uses documented Missouri State, Austin Peay, and USF rank taxonomies", () => {
+  for (const [college, title] of [
+    ["Missouri State University", "Assistant Professor (Early American History) - 9 month appointment"],
+    ["Missouri State University", "Assistant Professor, Library (E-Resource & Serials) 12-month appointment"],
+    ["Austin Peay State University", "Assistant Professor - Engineering Technology"],
+    ["Austin Peay State University", "Assistant Professor, Teaching & Learning"],
+    ["University of South Florida", "Assistant-Associate Professor/School of Social Work"],
+    ["University of South Florida", "Professor, Chair, Biostatistics and Data Science"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: true, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+
+  for (const [college, title] of [
+    ["Missouri State University", "Clinical Assistant Professor of Financial Planning"],
+    ["University of South Florida", "Research Assistant Professor"],
+    ["University of South Florida", "Advanced Assistant Professor of Marketing"],
+  ]) {
+    assert.notEqual(classifyTenureTrack({ college, title }), true, `${college}: ${title}`);
+  }
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ college: "Austin Peay State University", title: "Instructor - Chemistry" }),
+    { value: false, evidence: "institution-policy" }
+  );
+});
+
+test("uses WSCO's current openings categories instead of legacy PDF headings", () => {
+  for (const title of [
+    "Full-Time Faculty",
+    "Advanced Manufacturing and Integration Faculty",
+    "Process Engineering Faculty",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Washington State College of Ohio", title }),
+      { value: false, evidence: "institution-policy" },
+      title
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Washington State College of Ohio", title: "Electrical Engineering Faculty" }),
+    false
+  );
+});
+
+test("uses newly verified institution-specific appointment policies", () => {
+  for (const title of [
+    "Assistant Professor of Psychology",
+    "Assistant/Associate Professor of Speech-Language Pathology",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Nevada State University", title }), true, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Nevada State University", title: "Lecturer of Human Health Sciences" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Radford University", title: "Instructor, Special Purpose - Nursing" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Oklahoma State University Center for Health Sciences",
+      title: "Clinical Assistant Professor - Emergency Medicine",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Western Oregon University", title: "Instructional Faculty, Linguistics" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Louisiana Tech University", title: "Lecturer, Chemistry" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "St. Mary's College of Maryland", title: "Assistant Professor of Economics" }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "University of Connecticut-Avery Point", title: "Instructor in Residence - Stamford" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "UC Irvine", title: "Assistant Professor of Teaching" }),
+    true
+  );
+});
+
+test("uses Menlo's explicitly fixed three-year searches", () => {
+  for (const title of [
+    "Assistant Professor of Biology",
+    "Assistant Professor of Entrepreneurship and International Business",
+    "Assistant Professor of Latino Studies",
+    "Assistant Professor of Sports Management",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Menlo College", title }),
+      { value: false, evidence: "institution-policy" },
+      title
+    );
+  }
+  assert.equal(classifyTenureTrack({ college: "Menlo College", title: "Assistant Professor of Chemistry" }), null);
+});
+
+test("uses Syracuse, Northwestern Law, and Divine Word appointment policies", () => {
+  assert.equal(
+    classifyTenureTrack({ college: "Syracuse University", title: "Assistant Professor of Supply Chain Management" }),
+    true
+  );
+  for (const title of [
+    "Assistant Teaching Professor- School Psychology",
+    "Associate Teaching Professor; Clinic Director - Low Income Taxpayer Clinic",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Syracuse University", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Northwestern University", title: "Open-rank Clinical Professor of Law" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Northwestern University", title: "Assistant Professor, Finance" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Divine Word College", title: "Assistant Professor of Theology" }),
+    false
+  );
+});
+
+test("uses documented teaching-faculty ladders at NKU, ECU, and Marquette", () => {
+  for (const [college, title] of [
+    ["Northern Kentucky University", "Assistant Teaching Professor - APRN Core"],
+    ["East Carolina University", "Teaching Instructor, Senior Teaching Instructor, Master Teaching Instructor, Teaching Assistant Professor, Teaching Associate Professor, or Teaching Professor"],
+    ["Marquette University", "Teaching Assistant Professor - Psychology"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: false, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+});
+
+test("uses exact Marquette and NCCU senior searches plus NCCU's clinical ladder", () => {
+  assert.equal(
+    classifyTenureTrack({ college: "Marquette University", title: "Schneider Endowed Distinguished Professor- Psychology" }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "North Carolina Central University", title: "Clinical Assistant/Associate Professor" }),
+    false
+  );
+  for (const title of ["Director of JLC-BBRI/Professor", "Professor"]) {
+    assert.equal(classifyTenureTrack({ college: "North Carolina Central University", title }), true, title);
+  }
+});
+
+test("uses description-gated and no-tenure community-college policies", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Kansas City Kansas Community College",
+      title: "Automation Engineer Technology Instructor",
+      description: "Department:Automation Engineer TechnologyType:Full-Time FacultyLocation:Main Campus",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  for (const description of [
+    "Department:Adult Education Type:Full-Time StaffLocation:Main Campus",
+    "Department:Music Type:Adjunct FacultyLocation:Main Campus",
+    "",
+  ]) {
+    assert.equal(
+      classifyTenureTrack({
+        college: "Kansas City Kansas Community College",
+        title: "Program Instructor",
+        description,
+      }),
+      null,
+      description
+    );
+  }
+
+  assert.equal(
+    classifyTenureTrack({ college: "Saint Louis Community College", title: "Faculty - CIT Cybersecurity" }),
+    false
+  );
+  assert.equal(classifyTenureTrack({ college: "Odessa College", title: "Biology Faculty" }), false);
+  for (const college of [
+    "Kansas City University",
+    "Johnson & Wales University-Providence",
+    "Charles R Drew University of Medicine and Science",
+    "Savannah College of Art and Design",
+    "Excelsior University",
+    "BridgeValley Community & Technical College",
+    "J Sargeant Reynolds Community College",
+    "Northern Virginia Community College",
+    "Paris Junior College",
+    "East Arkansas Community College",
+    "Wiregrass Georgia Technical College",
+    "Baltimore City Community College",
+    "Azusa Pacific University",
+    "Tusculum University",
+    "Rust College",
+    "Wayland Baptist University",
+    "Baptist Health Sciences University",
+    "Samuel Merritt University",
+    "Navajo Technical University",
+    "Central Texas College",
+    "Oconee Fall Line Technical College",
+    "Texas Southmost College",
+    "Highland Community College (KS)",
+    "North Georgia Technical College",
+    "Harrisburg University of Science and Technology",
+    "Arizona Western College",
+    "Howard Community College",
+    "Southern Arkansas University Tech",
+    "NorthWest Arkansas Community College",
+    "Butler Community College",
+    "Houston Christian University",
+    "University of Mary",
+    "Blinn College District",
+    "Oklahoma State University Institute of Technology",
+    "William Carey University",
+    "Grace College and Theological Seminary",
+    "Palm Beach Atlantic University",
+    "Brenau University",
+    "Northwest Indian College",
+    "Lynn University",
+    "North Central State College",
+    "Central Pennsylvania Institute of Science and Technology",
+    "Thomas University",
+    "Franklin Pierce University",
+    "Lees-McRae College",
+    "Webber International University",
+    "Navarro College",
+    "Columbus Technical College",
+    "Culinary Institute of America",
+    "Dine College",
+    "American Musical and Dramatic Academy",
+    "Ogeechee Technical College",
+    "Southern Crescent Technical College",
+    "Nebraska Methodist College of Nursing & Allied Health",
+    "Tyler Junior College",
+    "Central Baptist College",
+    "Paul D Camp Community College",
+    "Genesee Community College",
+    "William R Moore College of Technology",
+    "Aaniiih Nakoda College",
+    "A T Still University of Health Sciences",
+    "Trine University",
+    "Hazelden Betty Ford Graduate School",
+    "Felician University",
+    "Husson University",
+    "California University of Science and Medicine",
+    "Keck Graduate Institute",
+    "Lindenwood University",
+    "Ilisagvik College",
+    "Gogebic Community College",
+    "West Georgia Technical College",
+    "Bob Jones University",
+    "Nueta Hidatsa Sahnish College",
+    "Sitting Bull College",
+    "Southeastern Technical College",
+    "Central Wyoming College",
+    "Eastern Maine Community College",
+    "Columbia International University",
+    "Northeast College of Health Sciences",
+    "University of Valley Forge",
+    "Keweenaw Bay Ojibwa Community College",
+    "Mott Community College",
+    "Arkansas State University Mid-South",
+    "Clark State College",
+    "Clarkson College",
+    "Tidewater Community College",
+    "Central Arizona College",
+    "Lehigh Carbon Community College",
+    "Bryant & Stratton College-Online",
+    "Western Governors University",
+    "Ave Maria University",
+    "Tulsa Community College",
+    "Heritage University",
+    "Roseman University of Health Sciences",
+    "Pfeiffer University",
+    "Southern Nazarene University",
+    "River Valley Community College",
+    "Adler University",
+    "Alabama College of Osteopathic Medicine",
+    "Clarendon College",
+    "Hinds Community College",
+    "Northeast Wisconsin Technical College",
+    "Kansas Health Science University",
+    "Hawkeye Community College",
+    "Geisinger Commonwealth School of Medicine",
+    "Northeast Community College",
+    "Southeast Technical College",
+    "Shorter College",
+    "Northcentral Technical College",
+    "Washington County Community College",
+    "Lee College",
+    "Herzing University-Minneapolis",
+    "Central Community College",
+    "Villa Maria College",
+    "Albizu University-Miami",
+    "Eastern Iowa Community College District",
+    "MGH Institute of Health Professions",
+    "Franciscan Missionaries of Our Lady University",
+    "Luna Community College",
+    "Bushnell University",
+    "Northwest State Community College",
+    "University of Northwestern Ohio",
+    "Gwinnett Technical College",
+    "Northwood University",
+    "Coahoma Community College",
+    "Seward County Community College",
+    "Virginia Western Community College",
+    "Southwest Wisconsin Technical College",
+    "Cleveland Institute of Music",
+    "Westminster University (Utah)",
+    "Endicott College",
+    "College of the Ozarks",
+    "Gateway Community and Technical College",
+    "Pomeroy College of Nursing at Crouse Hospital",
+    "Clovis Community College (NM)",
+    "San Juan College",
+    "Trinity Valley Community College",
+    "The Master's University and Seminary",
+    "Haskell Indian Nations University",
+    "Umpqua Community College",
+    "Blue Ridge Community College",
+    "Oklahoma Wesleyan University",
+    "National Park College",
+    "Hannibal-LaGrange University",
+    "Oklahoma City Community College",
+    "Hackensack Meridian School of Medicine",
+    "Clinton College",
+    "Goldey-Beacom College",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title: "Assistant Professor or Instructor" }),
+      { value: false, evidence: "institution-policy" },
+      college
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Lake Land College", title: "Medical Coding/Health Information Instructor" }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Lake Land College",
+      title: "Correctional Automotive Technology Instructor at Graham Correctional Center",
+    }),
+    null
+  );
+});
+
+test("uses current Ohio, Georgia, and Mississippi named non-tenure series", () => {
+  for (const title of [
+    "Open Rank- Clinical Faculty in Pediatric Cardiology",
+    "Open Rank- Clinical Faculty in Radiology and Imaging",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Augusta University", title }), false, title);
+  }
+
+  for (const college of ["Miami University-Hamilton", "Miami University-Middletown"]) {
+    assert.equal(classifyTenureTrack({ college, title: "Assistant Teaching Professor" }), false, college);
+    assert.equal(classifyTenureTrack({ college, title: "Assistant Professor - Finance" }), null, college);
+  }
+
+  for (const title of [
+    "Instructor of Nursing",
+    "Assistant Teaching Professor or Instructor of Forensic Science",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "University of Southern Mississippi", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "University of Southern Mississippi", title: "Assistant Professor of Biology" }),
+    null
+  );
+
+  for (const title of [
+    "Clinical Faculty, Doctoral Program in Clinical Psychology (Psy.D.)",
+    "Clinical Instructional Faculty - Physician Assistant Program",
+    "Lecturer, Department of Information Systems and Analytics",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Bryant University", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Bryant University", title: "Assistant Professor, Global Supply Chain Management" }),
+    null
+  );
+
+  assert.equal(
+    classifyTenureTrack({
+      college: "The University of Texas Health Science Center at Houston",
+      title: "Psychiatrist- Outpatient Adult (Clinical Faculty)",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "The University of Texas Health Science Center at San Antonio",
+      title: "Research Faculty Position",
+    }),
+    false
+  );
+
+  assert.equal(
+    classifyTenureTrack({ college: "UMass Dartmouth", title: "Assistant Teaching Professor & Director of Bar Success" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Georgetown University", title: "Assistant Teaching Professor of Spanish" }),
+    false
+  );
+  for (const title of [
+    "Assistant or Associate Clinical Professor - Simulation Faculty",
+    "Assistant, Associate, or Full Teaching Professor of Health Sciences",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Drexel University", title }), false, title);
+  }
+  for (const title of [
+    "Assistant Teaching Professor of Electrical and Computer Engineering",
+    "Head Coach of Baseball/WPE Instructor",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Worcester Polytechnic Institute", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Worcester Polytechnic Institute", title: "Assistant Professor of Teaching" }),
+    null
+  );
+
+  for (const title of [
+    "Assistant or Associate Professor - Criminal Justice",
+    "Assistant/Associate Professor - Criminal Justice",
+    "Associate Professor or Professor and Chair - Psychology",
+    "Associate Professor/Professor & Chairperson - Visual & Performing Arts",
+    "Associate Professor/Professor and Graduate Program Director for Criminal Justice",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "North Carolina A&T State University", title }), true, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "North Carolina A&T State University", title: "News and Record-Janice Byrant Howroyd Endowed Professor" }),
+    null
+  );
+
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Nebraska Medical Center",
+      title: "Retina/Uveitis Specialist - Faculty Rank DOQ",
+      description: "Appointment Type P1 - REG HLTH FAC SAL Salary Range Salary Commensurate with Experience",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Nebraska Medical Center",
+      title: "Academic EM Physician/Faculty Rank DOQ",
+      description: "Appointment Type DOQ - DEPENDS ON QUALS Salary Range Salary Commensurate with Experience",
+    }),
+    null
+  );
+
+  assert.equal(
+    classifyTenureTrack({
+      college: "Troy University",
+      title: "Lecturer/Assistant/Associate Professor",
+      description: "Job Summary The Lecturer/Assistant/Associate Professor position in the Department of Counseling is a tenure-track faculty position.",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Troy University",
+      title: "Lecturer/Assistant/Associate Professor",
+      description: "Job Summary The Lecturer in Counselor Education is a non tenure track instructional faculty position with primary responsibility for teaching.",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Troy University",
+      title: "Lecturer/Assistant/Associate Professor",
+      description: "Is this position tenure track or non-tenure track? Dependent on selected rank.",
+    }),
+    null
+  );
+
+  assert.equal(
+    classifyTenureTrack({ college: "Mississippi State University", title: "Instructor I, II, or III" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "UMass Amherst", title: "Lecturer in Public Relations (100%)" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "UMass Boston",
+      title: "Department Chair and Associate/Full Professor EHS",
+      description: "The college invites qualified individuals to apply for a tenure-system Associate or Full Professor to serve as Chair.",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "UMass Boston", title: "Simulation Lab Faculty A" }),
+    null
+  );
+
+  for (const title of [
+    "Biology (Assistant Professor - two positions) posted",
+    "Counseling and Instructional Sciences (Assistant Professor of Counseling) posted",
+    "Health, Kinesiology and Sport (Assistant or Associate Professor of Exercise Science - 2 positions) posted",
+    "History (Assistant Professor of Early U.S./Public History) posted",
+    "Leadership and Teacher Education (Assistant or Associate Professor of Educational Leadership (Higher Education Leadership) posted",
+    "Physical Therapy (Assistant or Associate Professor) posted",
+    "Speech Pathology and Audiology (Assistant Professor of Speech-Language Pathology) posted",
+    "Theatre and Dance (Assistant Professor of Theatre) posted",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "University of South Alabama", title }), true, title);
+  }
+  for (const title of [
+    "Counseling and Instructional Sciences (Assistant or Associate Professor of Instructional Design and Development) posted",
+    "Leadership and Teacher Education (Department Chair & Associate Professor or Full Professor) posted",
+    "Mathematics and Statistics (Assistant Professor of Mathematics) posted",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "University of South Alabama", title }), null, title);
+  }
+});
+
+test("uses Auburn's published tenure-track and non-tenure title map", () => {
+  for (const title of [
+    "Assistant Professor, Public History (U.S.)",
+    "Professor, Associate Professor, Assistant Professor - Industrial and Systems Engineering",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Auburn University", title }), true, title);
+  }
+  for (const title of ["Clinical Assistant Professor", "Research Associate Professor", "Lecturer of Mathematics"]) {
+    assert.equal(classifyTenureTrack({ college: "Auburn University", title }), false, title);
+  }
+});
+
+test("uses AUM's explicit current postings and clinical-faculty policy", () => {
+  for (const title of ["Assistant or Associate Professor in Accounting", "Assistant Professor, Biology"]) {
+    assert.equal(classifyTenureTrack({ college: "Auburn University at Montgomery", title }), true, title);
+  }
+  for (const title of [
+    "Assistant Clinical/Associate Clinical Professor",
+    "Clinical Assistant Professor of Social Work",
+    "Mathematics Lecturer",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Auburn University at Montgomery", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "Auburn University at Montgomery",
+      title: "Assistant/Associate Professor or Assistant Clinical/Associate Clinical Professor",
+    }),
+    null
+  );
+});
+
+test("uses Georgia Tech's published academic-rank split", () => {
+  for (const title of [
+    "Assistant Professor",
+    "Associate/Full Professor-Cybersecurity Policy",
+    "Professor (Endowed Chair & GRA Eminent Scholar)",
+    "Professor - Biomedical Engineering, Georgia Research Alliance (GRA) Eminent Scholar",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Georgia Institute of Technology-Main Campus", title }), true, title);
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "Georgia Institute of Technology-Main Campus",
+      title: "Executive Director, IRIM - Open Rank/Title Academic/Research Faculty",
+    }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Georgia Institute of Technology-Main Campus", title: "Principal Lecturer" }),
+    false
+  );
+});
+
+test("uses Harding's fixed-term new-faculty appointment system", () => {
+  for (const title of [
+    "College of Arts and Sciences - Department of Computer Science (Computer Science Faculty)",
+    "College of Business Administration - Accounting Faculty",
+    "College of Allied Health - Physician Assistant Program Faculty",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Harding University", title }), false, title);
+  }
+});
+
+test("uses Columbia's named non-tenure series and Hampton's exact research-only term search", () => {
+  for (const title of [
+    "Lecturer in Hebrew",
+    "Faculty All Ranks - Clinical: Instructor/Assistant Professor/Associate Professor",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Columbia University in the City of New York", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "Columbia University in the City of New York",
+      title: "Lecturer, Instructor, or Assistant Professor",
+    }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Hampton University", title: "Faculty Position in Climate Science" }),
+    false
+  );
+  assert.equal(classifyTenureTrack({ college: "Hampton University", title: "Assistant Professor of Psychology" }), null);
+});
+
+test("uses Bowling Green's qualified-rank taxonomy and TTIC's research-faculty definition", () => {
+  assert.equal(
+    classifyTenureTrack({ college: "Bowling Green State University-Main Campus", title: "Assistant Teaching Professor" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Toyota Technological Institute at Chicago", title: "Research faculty" }),
+    false
+  );
+});
+
+test("uses South Alabama's separate Instructor Track without guessing professorial ranks", () => {
+  assert.equal(
+    classifyTenureTrack({ college: "University of South Alabama", title: "Instructor in UTeach" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "University of South Alabama", title: "Assistant Professor of Mathematics" }),
+    null
+  );
+});
+
+test("uses current institution vacancy pages for exact tenure-track searches", () => {
+  for (const title of [
+    "Department of Chinese - Assistant Professor",
+    "Department of Studio Art - Assistant Professor",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Middlebury College", title }), true, title);
+  }
+
+  for (const title of [
+    "Assistant Professor - Child Development and Family Science",
+    "Assistant Professor Biochemistry",
+    "Assistant Professor of Information Technology Management",
+    "Associate Professor or Full Professor/ Department Chair - Engagement and Outreach Librarian",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Central Washington University", title }), true, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Central Washington University", title: "Lecturer Pool - Accounting" }),
+    false
+  );
+
+  for (const title of [
+    "Assistant Professor of Biology",
+    "Assistant Professor of Politics",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Whitman College", title }), true, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Whitman College", title: "Visiting Assistant Professor of Economics" }),
+    false
+  );
+});
+
+test("uses explicit appointment qualifiers in the direct posting filename as a final fallback", () => {
+  const cases = [
+    ["https://example.edu/jobs/Assistant-Professor--Non-tenure-Track_R0007906", false],
+    ["https://example.edu/files/Adjunct%20Music%20Instructors%2006.26.pdf", false],
+    ["https://example.edu/files/English_Instructor_PT_07.26.pdf", false],
+    ["https://example.edu/files/Nursing_Instructor_FT_Temp_08.26.pdf", false],
+    ["https://example.edu/jobs/new-testament-biblical-studies-tenure-track-faculty/85013131", true],
+  ];
+
+  for (const [url, value] of cases) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ title: "Faculty", url }),
+      { value, evidence: "source-url-explicit" },
+      url
+    );
+  }
+
+  // Parent directories, fragments, and query parameters are not posting-title
+  // evidence, and a direct description always outranks a possibly stale slug.
+  assert.equal(classifyTenureTrack({ url: "https://adjunct.example.edu/part-time/jobs/123?type=adjunct#tenure-track" }), null);
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      description: "This is a tenure-track appointment.",
+      url: "https://example.edu/jobs/old-adjunct-faculty-slug",
+    }),
+    { value: true, evidence: "description-explicit" }
   );
 });
 
