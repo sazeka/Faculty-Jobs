@@ -3137,6 +3137,26 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
     );
   }
   for (const title of [
+    "Assistant Professor — AAH CHHS Human Dev and Family Sci",
+    "Assistant Professor — AAH Marketing and Supply Chain Mgmt",
+    "Assistant Professor / Associate Professor — AAH Finance",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({
+        college: "East Carolina University",
+        title,
+      }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "East Carolina University",
+      title: "Family Medicine - Geriatrics Physician (Faculty) — EHH BSOM FM Geriatrics",
+    }),
+    null
+  );
+  for (const title of [
     "Assistant Professor of Architecture - AI/Machine Learning",
     "Assistant Professor of Dance - Modern",
     "Assistant Professor of Drama - Costume Technology",
