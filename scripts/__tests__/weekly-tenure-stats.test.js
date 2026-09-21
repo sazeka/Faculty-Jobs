@@ -1150,6 +1150,30 @@ test("applies additional verified institution-specific appointment-title policie
     true
   );
   assert.equal(classifyTenureTrack({ college: "Oakland University", title: "Assistant Professor of Accounting" }), true);
+  assert.equal(
+    classifyTenureTrack({
+      college: "Northampton County Area Community College",
+      title: "Fab Lab Instructor",
+      description: "The number of adjunct instructors hired varies from semester to semester.",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Northampton County Area Community College",
+      title: "Lineworker Instructor",
+      description: "Part-time hands-on adjunct Instructors for the Lineworker Trainee Program.",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Northampton County Area Community College",
+      title: "Youth Instructor",
+      description: "Applicants will be placed into a pool for future consideration. The number hired varies from semester to semester.",
+    }),
+    false
+  );
 
   for (const [college, title] of [
     ["Binghamton University", "Assistant Professor in Applied Microeconomics"],
