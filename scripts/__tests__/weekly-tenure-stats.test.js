@@ -2746,6 +2746,41 @@ test("uses South Carolina State's non-tenure Instructor rank without guessing pr
   );
 });
 
+test("uses full-time tenure and continuing-contract paths at Holyoke and Saint Johns River", () => {
+  assert.equal(
+    classifyTenureTrack({
+      college: "Holyoke Community College",
+      title: "Accounting Faculty Member",
+      description: "Job Type Full-time Job Number F-00028",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Holyoke Community College",
+      title: "Accounting Faculty Member",
+      description: "Job Type Part-time",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Saint Johns River State College",
+      title: "Anatomy & Physiology Instructor (FT - OPC)",
+      description: "Job Type Full-Time Department Biological Science",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Saint Johns River State College",
+      title: "Anatomy & Physiology Instructor (PT - OPC)",
+      description: "Job Type Part-Time",
+    }),
+    false
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([

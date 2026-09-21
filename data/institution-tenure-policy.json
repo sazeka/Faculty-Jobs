@@ -3070,6 +3070,24 @@
       "verifiedAt": "2026-09-21"
     },
     {
+      "college": "Holyoke Community College",
+      "titlePattern": "Faculty Member$",
+      "descriptionPattern": "Job Type\\s*Full-time",
+      "value": true,
+      "note": "The current Massachusetts Board of Higher Education–MCCC agreement governs regular full-time community-college faculty appointments through annual reappointment and tenure consideration, with tenure eligibility after six full years of service. These current Holyoke searches are explicitly labeled Job Type Full-time and use the regular Faculty Member title; the description gate excludes adjunct and other part-time teaching appointments.",
+      "source": "https://www.mass.edu/shared/collbargaining/2025-2026-MCCC-Day-CBA-Final.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Saint Johns River State College",
+      "titlePattern": "(?:Faculty|Instructor).*\\(FT(?:[ -]|\\))",
+      "descriptionPattern": "(?:Job Type|Class and Grade)\\s*Full-Time",
+      "value": true,
+      "note": "Saint Johns River State College's current collective agreement defines a five-year sequence of full-time annual faculty contracts followed by eligibility to apply for a Continuing Contract, which provides continued full-time employment without annual renomination. This rule requires both an FT-marked faculty/instructor title and the posting's Full-Time classification, leaving part-time, adjunct, and temporary appointments outside the rule.",
+      "source": "https://www.sjrstate.edu/pdfs/SJR-State-CBA-Final.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
       "college": "Colorado Mesa University",
       "titlePattern": "^(?:Clinical Instructor|Clinical Assistant Professor|Clinical Associate Professor|Clinical Professor|Assistant Clinical Professor|Associate Clinical Professor)(?:\\b|$)",
       "value": false,
