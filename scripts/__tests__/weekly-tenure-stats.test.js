@@ -2596,6 +2596,9 @@ test("uses verified teaching-professor and lecturer appointment structures", () 
     ["Hollins University", "CHEMISTRY: Assistant Teaching Professor of Chemistry"],
     ["Lee University", "Lecturer in Graphic Design and Illustration"],
     ["Saint Peter's University", "Clinical Assistant Professor of Nursing"],
+    ["Oklahoma State University", "Instructor of Professional Practice 22154"],
+    ["Oklahoma State University", "Professor of Professional Practice & Laboratory Director AF7850"],
+    ["University of Nevada, Reno", "(Nursing Scientist) Assistant / Associate Professor"],
   ]) {
     assert.deepEqual(
       classifyTenureTrackWithEvidence({ college, title }),
