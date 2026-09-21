@@ -2701,6 +2701,121 @@
       "verifiedAt": "2026-09-21"
     },
     {
+      "college": "Columbia University in the City of New York",
+      "titlePattern": "\\bof\\s+(?:the\\s+)?CUMC\\b",
+      "value": false,
+      "note": "Columbia's current Faculty Handbook defines the 'at CUMC' professorial series as renewable stated-term appointments, and CUIMC identifies that series as its non-tenure track. This companion rule covers the single current posting that renders the same modifier as 'of the CUMC' in its title and department field; it does not classify unmodified Columbia ranks.",
+      "source": "https://facultyhandbook.columbia.edu/content/officers-instruction/officers-instruction-titles",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Missouri-Kansas City",
+      "titlePattern": "^(?!.*\\b(?:TT|tenure[ -]?track)\\b).*(?:\\b(?:Assistant|Associate|Full)?\\s*Clinical Professor\\b|\\bClinical Instructor\\b)",
+      "value": false,
+      "note": "UMKC Human Resources lists Clinical Professor, Clinical Associate Professor, Clinical Assistant Professor, and Clinical Instructor among its non-tenure-track titles. The negative lookahead deliberately leaves the current mixed 'Clinical Professor or TT Assistant Professor' search unresolved.",
+      "source": "https://www.umkc.edu/hr/supervisors/recruitment/academic-hiring.html",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Minnesota",
+      "titlePattern": "\\bClinical (?:Instructor|Assistant(?: or Associate)? Professor|Associate Professor|Professor)\\b",
+      "value": false,
+      "note": "The University's current Academic Appointment Category Details places the Clinical Professor title series in the adjunct/clinical category, separate from Category 1 regular tenured and tenure-track faculty; the School of Nursing constitution further states that clinical faculty hold annual or multi-year renewable term appointments.",
+      "source": "https://policy.umn.edu/hr/teaching-appa",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Montana",
+      "titlePattern": "\\bClinical (?:Instructor|Assistant(?: or Associate)? Professor|Associate Professor|Professor)\\b",
+      "value": false,
+      "note": "University of Montana's current faculty-evaluation guidance explicitly identifies clinical faculty as non-tenurable, and Policy 350 governs lecturers and clinical faculty as non-tenurable academic appointments.",
+      "source": "https://www.umt.edu/provost/faculty/faceval/overview.php",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Seattle University",
+      "titlePattern": "\\b(?:Assistant|Associate)?\\s*Clinical Professor\\b",
+      "value": false,
+      "note": "Seattle University's current Faculty Handbook places the Clinical Professor series under Term Faculty and states that Clinical Professor positions are not eligible for conversion to tenure-line positions.",
+      "source": "https://www.seattleu.edu/media/seattle-university/faculty-resources/documents/Faculty-Handbook.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Moravian University",
+      "titlePattern": "\\b(?:Assistant|Associate)?\\s*Clinical Professor\\b",
+      "value": false,
+      "note": "Moravian's current Faculty Handbook separates Clinical Professor appointments from tenured and probationary tenure-track appointments and places them immediately before its expressly labeled other non-tenure-eligible faculty category. This rule is limited to the formal Clinical Professor series titles used by the two current searches.",
+      "source": "https://www.moravian.edu/sites/default/files/pdf/2024-25%20Faculty%20Handbook%20May%202025_0.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Chicago",
+      "titlePattern": "\\bClinical (?:Instructor|Assistant Professor|Associate Professor|Professor)s?\\b|\\bResearch (?:Assistant(?:/Associate)?|Associate|Full)?\\s*Professor\\b",
+      "value": false,
+      "note": "UChicago's current academic-appointment guidance defines Clinical Instructor and Clinical Professor appointments as renewable stated-term appointments and identifies Research Professors as other academic appointees rather than faculty tenure-line appointments. The rule is limited to the expressly modified Clinical and Research title series.",
+      "source": "https://provost.uchicago.edu/sites/default/files/GuidanceAcademicAppointmentsPromotionsHiring.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "High Point University",
+      "titlePattern": "^Open Rank Faculty Position in Multimedia Journalism and Sports Media$",
+      "descriptionPattern": "nine month renewable contract appointment",
+      "value": false,
+      "note": "The current posting expressly defines this opening as a nine-month renewable contract appointment. The rule is exact-title and exact-description scoped because other High Point open-rank searches do not state the same appointment terms.",
+      "source": "https://highpoint.wd503.myworkdayjobs.com/Highpoint-Faculty/job/High-Point-University/Open-Rank-Faculty-Position-in-Multimedia-Journalism-and-Sports-Media_R0008846",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Northern Arizona University",
+      "titlePattern": "\\b(?:Assistant|Associate|Full)?\\s*Clinical Professor\\b",
+      "value": false,
+      "note": "NAU's Conditions of Faculty Service states that clinical faculty are non-tenured, non-tenure eligible appointments and defines the Clinical Assistant Professor, Clinical Associate Professor, and Clinical Professor ranks. This rule is limited to that formal title series.",
+      "source": "https://legacy.nau.edu/wp-content/uploads/sites/26/NAU-Conditions-of-Faculty-Service-DOCUMENT.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Georgia State University",
+      "titlePattern": "\\b(?:Clinical (?:Assistant|Associate|Full)?\\s*Professor|(?:Senior )?Lecturer)\\b",
+      "value": false,
+      "note": "Georgia State's current Faculty Handbook identifies the unmodified Assistant Professor, Associate Professor, and Professor ranks as tenure-track or tenured and separately places Clinical Professor and Lecturer ranks among non-tenure-track faculty appointments. The rule is limited to those explicitly qualified titles.",
+      "source": "https://faculty.gsu.edu/faculty-handbook/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Rhode Island",
+      "titlePattern": "\\bClinical (?:Assistant|Associate|Full)?\\s*Professor\\b",
+      "value": false,
+      "note": "The University Manual's current appointment provisions define Clinical Assistant Professor, Clinical Associate Professor, and Clinical Professor as non-tenure-track ranks not eligible for tenure or permanent status. The rule is limited to that formal clinical series.",
+      "source": "https://web.uri.edu/manual/chapter-7/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Idaho State University",
+      "titlePattern": "\\bClinical (?:Instructor|Assistant Professor|Associate Professor|Professor)\\b",
+      "value": false,
+      "note": "Idaho State's Kasiska Division of Health Sciences promotion policy states that clinical faculty hold non-tenure-track appointments and defines Clinical Instructor and the Clinical Assistant/Associate/Professor ranks. Requiring Clinical at the start of the rank avoids the distinct current Assistant Professor of Clinical Psychology search.",
+      "source": "https://www.isu.edu/media/libraries/division-of-health-sciences/FINAL-KDHS-Promotion-of-Clinical-Faculty-5-15-19.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "St Petersburg College",
+      "titlePattern": "\\bFaculty\\b",
+      "descriptionPattern": "Full/Part TimeFull-Time Regular/TemporaryRegular",
+      "value": true,
+      "note": "SPC's current Board rules maintain a continuing-contract pathway for full-time instructional personnel, and the College describes continuing contract as its version of tenure. This rule requires the exact current ATS fields Full-Time and Regular, so adjunct, percent-of-load, temporary, and other appointments do not inherit the classification.",
+      "source": "https://web.spcollege.edu/BOTRules/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "CUNY Graduate School and University Center",
+      "titlePattern": "^Associate Professor - Ph\\.D\\. Program in (?:Philosophy|Theatre and Performance)$",
+      "descriptionPattern": "seeks (?:a scholar at the level of |an )Associate Professor with tenure",
+      "value": true,
+      "note": "Each of these two current Graduate Center searches directly states that it seeks an Associate Professor with tenure. Exact titles plus that direct sentence are required because other CUNY senior searches may only require a candidate to qualify for tenure rather than offer it with the appointment.",
+      "source": "https://cuny.jobs/new-york-ny/associate-professor-phd-program-in-philosophy/5330DB14CFAB4C02BC0CD8C1FE75AF6D/job",
+      "verifiedAt": "2026-09-21"
+    },
+    {
       "collegePattern": "^(?:Albany Technical College|Alder Graduate School of Education|Alpena Community College|Ana G\\. Mendez University|Arkansas Northeastern College|Augusta Technical College|Baker College|Baptist University of the Americas|Bellin College|Benjamin Franklin Cummings Institute of Technology|Berklee College of Music|Brightpoint Community College|Bryant & Stratton College-Greece|Bryant & Stratton College-Syracuse North|Bryant & Stratton College-Wauwatosa|California Institute of the Arts|Carolina University|Central Georgia Technical College|Chattahoochee Technical College|Chemeketa Community College|Chesapeake College|Clatsop Community College|Cleary University|College of Biblical Studies-Houston|College of the Atlantic|Colorado Mountain College|Concordia University-Wisconsin|Copiah-Lincoln Community College|Cossatot Community College of the University of Arkansas|Crowder College|Cumberland University|Dallas Institute of Funeral Service|Des Moines Area Community College|East Central Community College|East Mississippi Community College|Emmaus Bible College|Ensign College|Faith Baptist Bible College and Theological Seminary|Flint Hills Technical College|Franklin W Olin College of Engineering|Frontier Nursing University|Hallmark University|Herzing University-Birmingham|Herzing University-Madison|Herzing University-New Orleans|Herzing University-Tampa|Hill College|James A\\. Rhodes State College|Johnson University|Klamath Community College|Lanier Technical College|Lansing Community College|Laurel Ridge Community College|Lesley University|Maine Maritime Academy|Manchester Community College|Marion Technical College|Maryland Institute College of Art|Meridian Community College|Mid-Atlantic Christian University|Missouri Baptist University|Moore College of Art and Design|Morris College|NHTI-Concord's Community College|Nashua Community College|National University|New River Community College|North Greenville University|Northeast Iowa Community College|Northwest Mississippi Community College|Oblate School of Theology|Pacific Oaks College|Panola College|Parker University|Paul Quinn College|Paul Smiths College of Arts and Science|Pearl River Community College|Piedmont Virginia Community College|Randall University|Rappahannock Community College|Remington College-Fort Worth Campus|Remington College-Lafayette Campus|Remington College-Nashville Campus|Santa Fe Community College|Schoolcraft Community College District|South Florida Bible College and Theological Seminary|South Texas College|Southcentral Kentucky Community and Technical College|Southeast Arkansas College|Southeast Missouri Hospital College of Nursing and Health Sciences|Southern Maine Community College|Southern Regional Technical College|Southern Virginia University|Southwest Virginia Community College|Southwestern Michigan College|St\\. Joseph's College of Nursing|State Fair Community College|Stone Child College|The Chicago School at Dallas|The Chicago School at Los Angeles|The Chicago School at Washington DC|The Southwestern Baptist Theological Seminary|Trinity College of Florida|Trinity College of Nursing & Health Sciences|Ultimate Medical Academy|University of Charleston|University of Jamestown|Virginia Peninsula Community College|Washington State College of Ohio|Waukesha County Technical College|Wayne County Community College District|Weatherford College|Webb Institute|Western Seminary|Western Technical College|Wharton County Junior College|White Mountains Community College|William James College|Wisconsin Lutheran College)$",
       "titlePattern": "^",
       "value": false,

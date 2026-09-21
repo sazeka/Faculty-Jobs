@@ -985,13 +985,19 @@ test("applies USG, UNLV, Virginia Tech, and Florida institution-specific convent
     classifyTenureTrack({ college: "University of North Georgia", title: "Lecturer/Senior Lecturer of Nursing, BSN" }),
     false
   );
-  // Georgia State University is deliberately excluded from the collegePattern
-  // (a live Perimeter College "Clinical" posting resolved tenure-track via an
-  // explicit description signal, showing GSU doesn't reliably follow the
-  // system-wide convention), so the same title there stays unclassified.
+  // Georgia State's own handbook now supplies the narrower institution rule;
+  // direct appointment language still outranks the title convention.
   assert.equal(
     classifyTenureTrack({ college: "Georgia State University", title: "Clinical Assistant Professor of Radiology" }),
-    null
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Georgia State University",
+      title: "Clinical Assistant Professor of Radiology",
+      description: "This is a tenure-track appointment.",
+    }),
+    true
   );
 
   // UNLV: University Bylaws define Rank 0 appointments as non-tenure-track
@@ -2448,6 +2454,81 @@ test("uses current ECSU, Daytona State, and Minnesota State appointment paths", 
     college: "Normandale Community College",
     title: "Instructor - Chemistry",
   }), null);
+});
+
+test("uses verified clinical and research title series at current institutions", () => {
+  for (const [college, title] of [
+    ["Columbia University in the City of New York", "Assistant/Associate Professor of Medicine of the CUMC"],
+    ["University of Missouri-Kansas City", "ASSISTANT/ASSOCIATE CLINICAL PROFESSOR of Acute Care"],
+    ["University of Missouri-Kansas City", "CLINICAL INSTRUCTOR Dental Hygiene"],
+    ["University of Minnesota", "Clinical Assistant or Associate Professor"],
+    ["University of Montana", "Clinical Assistant or Associate Professor of Medicine"],
+    ["Seattle University", "Assistant Clinical Professor, Counseling"],
+    ["Moravian University", "Assistant Clinical Professor, Maternal and Child Health"],
+    ["University of Chicago", "Clinical Instructors, Neurological Surgery"],
+    ["University of Chicago", "Research Assistant/Associate Professor in Nuclear Medicine Instrumentation"],
+    ["Northern Arizona University", "Assistant Clinical Professor, Occupational Therapy"],
+    ["Georgia State University", "Clinical Assistant Professor of Audiology"],
+    ["Georgia State University", "Lecturer or Senior Lecturer - Computer Science"],
+    ["University of Rhode Island", "Clinical Assistant Professor of Clinical Practice — Psychology"],
+    ["Idaho State University", "Clinical Assistant Professor, Audiology Program"],
+    ["Idaho State University", "Clinical Instructor, Computer Aided Design Drafting"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: false, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+
+  assert.equal(classifyTenureTrack({
+    college: "University of Missouri-Kansas City",
+    title: "ASSISTANT/ASSOCIATE CLINICAL PROFESSOR or TT ASSISTANT PROFESSOR",
+  }), null);
+  assert.equal(classifyTenureTrack({
+    college: "High Point University",
+    title: "Open Rank Faculty Position in Multimedia Journalism and Sports Media",
+    description: "This is a nine month renewable contract appointment.",
+  }), false);
+  assert.equal(classifyTenureTrack({
+    college: "High Point University",
+    title: "Open Rank Professor of Mechanical Engineering",
+  }), null);
+  assert.equal(classifyTenureTrack({
+    college: "Idaho State University",
+    title: "Assistant Professor of Clinical Psychology, PsyD Program",
+  }), null);
+});
+
+test("treats summer-only instructor searches as non-tenure appointments", () => {
+  assert.equal(classifyTenureTrack({ title: "Primary Instructor for 2026 Summer Language Institute" }), false);
+  assert.equal(classifyTenureTrack({ title: "Summer 2026 Primary Instructors" }), false);
+});
+
+test("uses continuing-contract and exact with-tenure posting evidence", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "St Petersburg College",
+      title: "Nursing Faculty",
+      description: "Full/Part TimeFull-Time Regular/TemporaryRegular",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(classifyTenureTrack({
+    college: "St Petersburg College",
+    title: "Adjunct Nursing Faculty",
+    description: "Full/Part TimePart-Time Regular/TemporaryTemporary",
+  }), false);
+
+  for (const [title, description] of [
+    ["Associate Professor - Ph.D. Program in Philosophy", "The program seeks a scholar at the level of Associate Professor with tenure."],
+    ["Associate Professor - Ph.D. Program in Theatre and Performance", "The Graduate Center seeks an Associate Professor with tenure to begin in Fall 2027."],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "CUNY Graduate School and University Center", title, description }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
 });
 
 test("does not treat generic with-tenure policy boilerplate as appointment evidence", () => {

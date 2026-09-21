@@ -72,6 +72,7 @@ test("faculty navigation, governance, awards, and news labels are quarantined", 
     "Stony Brook Faculty Positions",
     "Academic Affairs Available Faculty Positions",
     "Cypress College Professor Foster Stanback Named 2027 Orange County Teacher of the Year Nominee",
+    "No Days Off: Aviation Faculty Member Runs Summer Camp for Small Pilots",
   ]) {
     assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
   }
