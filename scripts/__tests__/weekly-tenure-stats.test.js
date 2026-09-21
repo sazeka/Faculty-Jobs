@@ -1194,6 +1194,15 @@ test("applies additional verified institution-specific appointment-title policie
     }),
     false
   );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Bard College",
+      title: "Full-time Faculty in Theater",
+      description: "Bard High School Early College Bronx. Compensation follows the United Federation of Teacher salary scale.",
+    }),
+    false
+  );
+  assert.equal(classifyTenureTrack({ college: "Bard College", title: "Assistant Professor in Art History" }), null);
 
   for (const [college, title] of [
     ["Binghamton University", "Assistant Professor in Applied Microeconomics"],
