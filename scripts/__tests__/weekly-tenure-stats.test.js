@@ -1203,6 +1203,14 @@ test("applies additional verified institution-specific appointment-title policie
     false
   );
   assert.equal(classifyTenureTrack({ college: "Bard College", title: "Assistant Professor in Art History" }), null);
+  assert.equal(
+    classifyTenureTrack({
+      college: "The College of the Florida Keys",
+      title: "Faculty, English (Key West)",
+      description: "Job Type Full Time. The Faculty, English position is a full-time, 10-month Faculty position.",
+    }),
+    true
+  );
 
   for (const [college, title] of [
     ["Binghamton University", "Assistant Professor in Applied Microeconomics"],
