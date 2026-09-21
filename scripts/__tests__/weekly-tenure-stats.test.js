@@ -2705,6 +2705,47 @@ test("uses Owens' full-time faculty tenure-track policy without absorbing tempor
   );
 });
 
+test("uses TTUHSC's named clinical non-tenure ranks without guessing unmodified professors", () => {
+  assert.equal(
+    classifyTenureTrack({
+      college: "Texas Tech University Health Sciences Center",
+      title: "Clinical Asst Professor HSC - Psychiatry",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Texas Tech University Health Sciences Center",
+      title: "Clinical Professor HSC - Endocrinology",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Texas Tech University Health Sciences Center",
+      title: "Asst/Assoc Professor, Cardiology",
+    }),
+    null
+  );
+});
+
+test("uses South Carolina State's non-tenure Instructor rank without guessing professors", () => {
+  assert.equal(
+    classifyTenureTrack({
+      college: "South Carolina State University",
+      title: "Criminal Justice Instructor",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "South Carolina State University",
+      title: "Assistant Professor of Sociology",
+    }),
+    null
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
