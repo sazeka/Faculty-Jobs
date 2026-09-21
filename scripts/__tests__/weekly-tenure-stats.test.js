@@ -2820,7 +2820,7 @@ test("uses South Carolina State's non-tenure Instructor rank without guessing pr
   );
 });
 
-test("uses full-time tenure and continuing-contract paths at Holyoke, Saint Johns River, Pasco-Hernando, HACC, Eastern Oklahoma, and Galveston", () => {
+test("uses full-time tenure and continuing-contract paths at Holyoke, Saint Johns River, Pasco-Hernando, HACC, Eastern Oklahoma, Galveston, and CCRI", () => {
   assert.equal(
     classifyTenureTrack({
       college: "Holyoke Community College",
@@ -2916,6 +2916,22 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
       description: "POSITION AVAILABLE: 6/9/26",
     }),
     null
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Community College of Rhode Island",
+      title: "Assistant Professor, Management",
+      description: "The successful candidate will teach business courses and contribute to curriculum development, assessment, and student success initiatives.",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Community College of Rhode Island",
+      title: "Medical Assistant Instructor",
+      description: "Workforce Development. This position is scheduled based on employer and program demand and may include day, evening, and weekend hours.",
+    }),
+    { value: false, evidence: "institution-policy" }
   );
 });
 
