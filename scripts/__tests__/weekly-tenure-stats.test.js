@@ -142,6 +142,10 @@ test("recognizes additional explicit non-tenure appointment phrases", () => {
     "This is a one-year faculty appointment with possible renewal.",
     "The department is seeking applications for one-year lecturer positions.",
     "This is a one-year instructor appointment with possible renewal.",
+    "This is a full-time temporary position (not to exceed 2 years).",
+    "The initial Clinical/Applied contract is 1-2 years and subsequent contracts depend on review.",
+    "This is a term position; length of the term will be discussed during the interview process.",
+    "The department invites applications for a one-year full-time Teaching Professor position.",
     "The position will be a two-year term, with renewal based on performance.",
   ]) {
     assert.equal(classifyTenureTrack({ description }), false, description);
@@ -2583,6 +2587,15 @@ test("uses verified teaching-professor and lecturer appointment structures", () 
     ["Bentley University", "Lecturer, Accounting"],
     ["Miami University-Oxford", "Assistant Teaching Professor"],
     ["Miami University-Oxford", "Assistant/Associate Teaching Professor or Associate Lecturer - Paper Science and Engineering"],
+    ["Auburn University at Montgomery", "Lecturer of Theatre"],
+    ["Texas Christian University", "Assistant Professor of Professional Practice in Counseling - of Education"],
+    ["Texas Christian University", "Director of the Institute of Ranch Management and Associate Professor of Professional Practice in Ranch Management - of Science & Engineering"],
+    ["Texas Christian University", "Instructor of Entrepreneurship and Innovation - of Entrepreneurship and Innovation at Texas Christian Univers"],
+    ["Colorado State University Pueblo", "Lecturer of Nursing"],
+    ["The University of Texas Permian Basin", "Lecturer, Department of Counseling"],
+    ["Hollins University", "CHEMISTRY: Assistant Teaching Professor of Chemistry"],
+    ["Lee University", "Lecturer in Graphic Design and Illustration"],
+    ["Saint Peter's University", "Clinical Assistant Professor of Nursing"],
   ]) {
     assert.deepEqual(
       classifyTenureTrackWithEvidence({ college, title }),
@@ -2598,12 +2611,30 @@ test("uses verified teaching-professor and lecturer appointment structures", () 
     }),
     { value: false, evidence: "institution-policy" }
   );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Texas Christian University",
+      title: "Assistant/Associate Professor or Assistant/Associate Professor of Professional Practice - Occupational Therapy - of Nursing & Health Sciences",
+    }),
+    null
+  );
 });
 
 test("does not treat generic with-tenure policy boilerplate as appointment evidence", () => {
   assert.equal(classifyTenureTrack({
     description: "Before a conditional offer of employment with tenure is finalized, disclosures are required.",
   }), null);
+});
+
+test("uses Larkin University's certified no-tenure-system response", () => {
+  assert.equal(
+    classifyTenureTrack({ college: "Larkin University", title: "Assistant or Associate Professor and Director of Preclinical Education" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Larkin University", title: "Faculty (Rank TBD)" }),
+    false
+  );
 });
 
 test("reports counts and percentages only across classified positions", () => {

@@ -92,7 +92,8 @@
     { "college": "Purdue University Global", "unitId": "489779", "source": "https://nces.ed.gov/ipeds/reported-data/html/489779?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
     { "college": "The King's University", "unitId": "439701", "source": "https://nces.ed.gov/ipeds/reported-data/html/439701?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
     { "college": "Colorado Christian University", "unitId": "126669", "source": "https://nces.ed.gov/ipeds/reported-data/html/126669?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
-    { "college": "Alaska Pacific University", "unitId": "102669", "source": "https://nces.ed.gov/ipeds/reported-data/html/102669?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" }
+    { "college": "Alaska Pacific University", "unitId": "102669", "source": "https://nces.ed.gov/ipeds/reported-data/html/102669?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Larkin University", "unitId": "498234", "source": "https://nces.ed.gov/ipeds/reported-data/html/498234?year=2022&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" }
   ],
   "rules": [
     {
@@ -1438,9 +1439,9 @@
     },
     {
       "college": "Auburn University at Montgomery",
-      "titlePattern": "^(?:Assistant Clinical/Associate Clinical Professor|Clinical Assistant Professor of Social Work|Mathematics Lecturer)$",
+      "titlePattern": "^(?:Assistant Clinical/Associate Clinical Professor|Clinical Assistant Professor of Social Work|Mathematics Lecturer|Lecturer of Theatre)$",
       "value": false,
-      "note": "AUM's Faculty Handbook places the clinical-faculty ranks in its non-tenure-track appointment guidelines, and the current Mathematics Lecturer posting explicitly calls the appointment non-tenure-track and renewable. Exact titles avoid collapsing the live mixed professorial/clinical nursing search into one track.",
+      "note": "AUM's Faculty Handbook places the clinical-faculty ranks and annual renewable appointments in its non-tenure-track guidelines, and AUM's current Lecturer posting explicitly calls the title a non-tenure-track, renewable appointment. Exact current titles avoid collapsing the live mixed professorial/clinical nursing search into one track.",
       "source": "https://www.aum.edu/wp-content/uploads/2022/08/AUM-Faculty-Handbook-Final-TOC-fixed-9-29-21-without-track-changes.pdf",
       "verifiedAt": "2026-09-20"
     },
@@ -2929,6 +2930,14 @@
       "verifiedAt": "2026-09-21"
     },
     {
+      "college": "Texas Christian University",
+      "titlePattern": "^(?:Assistant Professor of Professional Practice in Counseling - of Education|Director of the Institute of Ranch Management and Associate Professor of Professional Practice in Ranch Management - of Science & Engineering|Instructor of Entrepreneurship and Innovation - of Entrepreneurship and Innovation at Texas Christian Univers)$",
+      "value": false,
+      "note": "TCU's current faculty materials identify Professional Practice Faculty and Instructors as its non-tenure-track title categories, and its college policy states that Professors of Professional Practice are not eligible for tenure. Exact-title scoping leaves the live search offering either a regular professor or professional-practice rank unresolved.",
+      "source": "https://provost.tcu.edu/initiatives/programs/promotion-and-tenure-policies-review/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
       "college": "Bentley University",
       "titlePattern": "\\b(?:Distinguished |Senior )?Lecturer\\b",
       "value": false,
@@ -2951,6 +2960,46 @@
       "value": false,
       "note": "Manchester's current official posting identifies this exact Lecturer of Physical Therapy opening in its position description as an Adjunct Lecturer. Both the exact title and direct description phrase are required; the separate full-time nursing lecturer is not inferred from it.",
       "source": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=c01330c8-9bdc-4d7b-b355-90630c559bae&ccId=19000101_000001&jobId=9201173003756_1&lang=en_US&source=CC2",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Colorado State University Pueblo",
+      "titlePattern": "\\b(?:Senior )?Lecturer\\b",
+      "value": false,
+      "note": "CSU Pueblo's current Faculty Handbook states that faculty contracted as Lecturers are not eligible for tenure and defines Lecturer and Senior Lecturer as renewable one-academic-year appointments. The rule is limited to that formal title series.",
+      "source": "https://www.csupueblo.edu/faculty-senate/_doc/faculty-handbook-revised-summer-2024.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Permian Basin",
+      "titlePattern": "\\bLecturer\\b",
+      "value": false,
+      "note": "UT Permian Basin's Handbook of Operating Procedures lists Lecturer among its Non-tenured Academic Titles and states that tenure may not be awarded to holders of those titles. The rule is limited to the formal Lecturer rank.",
+      "source": "https://www.utpb.edu/university-offices/operating-procedures/docs/part_i.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Hollins University",
+      "titlePattern": "^CHEMISTRY: Assistant Teaching Professor of Chemistry$",
+      "value": false,
+      "note": "Hollins' official current vacancy page calls this exact opening a full-time, on-campus, non-tenure-track position and a renewable three-year appointment. Exact-title scoping avoids inferring a university-wide rule from one search.",
+      "source": "https://www.hollins.edu/about-hollins/jobs/faculty-positions/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Lee University",
+      "titlePattern": "^Lecturer in Graphic Design and Illustration$",
+      "value": false,
+      "note": "Lee's official current description identifies this exact opening as a full-time Visiting Lecturer. The Faculty Handbook defines Visiting Lecturer appointments as terminal appointments for a special session, semester, or up to one year. Exact-title scoping avoids treating Lee's ordinary Lecturer rank, which may progress toward tenure, as non-tenure.",
+      "source": "https://www.leeuniversity.edu/wp-content/uploads/2025-2026_Faculty-Handbook_10.29.25-ACB.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Saint Peter's University",
+      "titlePattern": "^Clinical Assistant Professor of Nursing$",
+      "value": false,
+      "note": "Saint Peter's official institutional Fact Book identifies full-time Nursing faculty holding the Clinical Assistant Professor and Clinical Associate Professor titles as Non-Tenure Track, while separately identifying the unmodified Assistant Professor title as Tenure Track. This rule is limited to the exact current clinical-rank opening.",
+      "source": "https://www.saintpeters.edu/wp-content/uploads/blogs.dir/83/files/2021/09/FactBook-2020-21.pdf",
       "verifiedAt": "2026-09-21"
     },
     {
