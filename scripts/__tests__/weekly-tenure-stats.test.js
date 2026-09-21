@@ -2781,6 +2781,52 @@ test("uses full-time tenure and continuing-contract paths at Holyoke and Saint J
   );
 });
 
+test("uses College of Southern Maryland's ten-month tenure-track faculty convention", () => {
+  assert.equal(
+    classifyTenureTrack({
+      college: "College of Southern Maryland",
+      title: "10-Month Faculty - Pediatric Nursing",
+      description: "Job Type Faculty Job Number FY26-90",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "College of Southern Maryland",
+      title: "10-Month Full-Time Economics Faculty",
+      description: "Job Type Faculty Job Number FY26-52",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "College of Southern Maryland",
+      title: "Adjunct Faculty - Nursing",
+      description: "Job Type Adjunct Faculty",
+    }),
+    false
+  );
+});
+
+test("uses Shasta's full-time tenure-track convention while excluding temporary faculty", () => {
+  assert.equal(
+    classifyTenureTrack({
+      college: "Shasta College",
+      title: "(Full-time) Ethnic Studies Instructor",
+      description: "Job Type: Faculty Full-Time Department: Instruction",
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Shasta College",
+      title: "(Full-time) Agriculture Business Instructor (Temporary, Grant Funded, Non-Tenure Track)",
+      description: "Job Type: Faculty Full-Time Department: Instruction",
+    }),
+    false
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([

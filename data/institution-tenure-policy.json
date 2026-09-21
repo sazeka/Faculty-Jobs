@@ -3088,6 +3088,24 @@
       "verifiedAt": "2026-09-21"
     },
     {
+      "college": "College of Southern Maryland",
+      "titlePattern": "^10-Month (?=.*Faculty)(?!.*Adjunct).*$",
+      "descriptionPattern": "Job Type\\s*Faculty\\b",
+      "value": true,
+      "note": "College of Southern Maryland's official employment FAQ identifies its ranked full-time faculty openings as Tenure Track Faculty positions, and its Faculty Handbook states that benefited ten-month faculty have access to rank and tenure. This rule requires both the current 10-Month Faculty title convention and the ATS Job Type Faculty field, excluding the college's numerous Adjunct Faculty and temporary instructor pools.",
+      "source": "https://www.csmd.edu/employment/frequently-asked-questions/index.html",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Shasta College",
+      "titlePattern": "^\\(Full-time\\)(?!.*\\b(?:Temporary|Grant Funded|Non-Tenure)\\b).+Instructor",
+      "descriptionPattern": "Job Type:\\s*Faculty Full-Time",
+      "value": true,
+      "note": "Shasta's Board policy and faculty agreement identify its ordinary full-time faculty hiring process as Full-Time Tenure-Track and define probationary faculty as tenure-track faculty. Shasta separately labels exceptions in the vacancy title as Temporary, Grant Funded, Non-Tenure Track. This rule therefore requires the current '(Full-time)' Instructor convention, the structured Faculty Full-Time job type, and the absence of every temporary/non-tenure qualifier.",
+      "source": "https://www.shastacollege.edu/about/leadership-organization/board-of-trustees/board-policies-administrative-procedures/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
       "college": "Colorado Mesa University",
       "titlePattern": "^(?:Clinical Instructor|Clinical Assistant Professor|Clinical Associate Professor|Clinical Professor|Assistant Clinical Professor|Associate Clinical Professor)(?:\\b|$)",
       "value": false,
