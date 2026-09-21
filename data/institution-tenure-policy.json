@@ -1383,10 +1383,18 @@
     },
     {
       "college": "Clark Atlanta University",
-      "titlePattern": "^Assistant Professor:\\s*(?:Mathematical Sciences|School of Social Work)\\b|^Assistant/Associate Professor:\\s*Curriculum and Instruction\\b|^Associate Professor(?:,|:)\\s*Social and Behavio(?:u)?ral Scientist\\b",
+      "titlePattern": "^Assistant Professor:\\s*(?:Mathematical Sciences|School of Social Work)\\b|^Assistant/Associate Professor:\\s*Curriculum and Instruction\\b|^Assistant/Associate Professor of (?:Finance|Marketing)\\b|^Assistant/Associate Professor:\\s*Public Administration\\b|^Associate Professor(?:,|:)\\s*Social and Behavio(?:u)?(?:ral|r) Scientist\\b|^Department Chair:\\s*Physics\\b",
       "value": true,
-      "note": "Clark Atlanta's current vacancy PDFs explicitly call each matched search a full-time tenure-track appointment: Mathematical Sciences, School of Social Work, Curriculum and Instruction, and the Center for Cancer Research and Therapeutic Development's Associate Professor of Social and Behavioral Science search. This deliberately exact rule does not extrapolate to CAU's other unqualified professor titles, some of whose current PDFs omit appointment-track language.",
+      "note": "Clark Atlanta's current vacancy PDFs explicitly call each matched search a tenure-track or tenured appointment: Mathematical Sciences, School of Social Work, Curriculum and Instruction, Finance, Marketing, Public Administration, the Center for Cancer Research and Therapeutic Development's Associate Professor search, and the Physics chair. This deliberately exact rule does not extrapolate to CAU's other unqualified professor titles, some of whose current PDFs omit appointment-track language.",
       "source": "https://www.cau.edu/sites/default/files/2026-06/Assistant-Associate-Professor-Curriculum-and-Instruction-Job-Description.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Clark Atlanta University",
+      "titlePattern": "^Assistant Professor of Research Methods\\(129-25\\)$",
+      "value": false,
+      "note": "Clark Atlanta's official PDF describes this exact Research Methods search as a Visiting Assistant Professor appointment. Visiting appointments are temporary rather than tenure-line positions; the exact title constraint avoids extending that status to other Assistant Professor searches.",
+      "source": "https://dev-cau.pantheonsite.io/wp-content/uploads/2025/06/Assistant-Professor-of-Research-Methods.pdf",
       "verifiedAt": "2026-09-21"
     },
     {
@@ -3292,6 +3300,46 @@
       "value": true,
       "note": "Transylvania's official current Recruiterbox records explicitly describe each of these four searches as a nine-month tenure-track position beginning August 25, 2027. The exact-title list is intentionally limited to the verified openings and does not infer a track for other Assistant Professor titles.",
       "source": "https://www.transy.edu/employment-opportunities/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Union Commonwealth University",
+      "titlePattern": "^Assistant Professor of (?:History|Management)$",
+      "value": true,
+      "note": "Union Commonwealth's current official PDFs label History a full-time tenure-track position and state that Management is eligible for tenure-track appointment for qualified individuals; the Management search requires a terminal degree, satisfying its stated appointment qualification. The exact-title rule excludes Biology, whose posting explicitly allows either tenure-track or non-tenure-track appointment depending on the selected candidate's degree.",
+      "source": "https://www.unionky.edu/about/employment-opportunities",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Union Commonwealth University",
+      "titlePattern": "^Assistant Professor of Health Sciences$",
+      "value": false,
+      "note": "Union Commonwealth's current official posting is headed 'Full-Time Non-Tenure Track Position' and directly describes this Assistant Professor of Health Sciences appointment as full-time and non-tenure-track. The rule is restricted to the exact verified title.",
+      "source": "https://irp.cdn-website.com/62fe7d2a/files/uploaded/Assistant+Professor+of+Health+Sciences-cda459b9.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Andrew College",
+      "titlePattern": "^Nursing Clinicals Instructor$",
+      "value": false,
+      "note": "Andrew College's current official posting classifies this exact Nursing Clinicals Instructor opening as part-time/hourly faculty with an ongoing per-semester start. The exact-title rule does not infer a track for the college's separate full-time professorial searches, because its faculty handbook permits both tenure and non-tenure full-time appointments.",
+      "source": "https://andrewcolleprd.wpenginepowered.com/wp-content/uploads/2026/05/2026-Nursing-Clinicals-Instructor.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Cedarville University",
+      "titlePattern": "^Faculty: School of Pharmacy - Instructor of Pharmacy Practice - Pharmacy Innovation Fellowship$",
+      "value": false,
+      "note": "Cedarville's current official posting explicitly identifies this exact opening as a full-time, two-year Pharmacy Innovation Fellowship at the Instructor rank. Its fixed two-year fellowship term is outside a continuing tenure-line appointment; the exact-title rule leaves Cedarville's ordinary professorial searches unresolved.",
+      "source": "https://jobs.dayforcehcm.com/en-US/cedarville/FACULTY/jobs/2549",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Graceland University-Lamoni",
+      "titlePattern": "^(?:Assistant Professor Math|Assistant Professor of Physical Education)$",
+      "value": true,
+      "note": "Graceland's official current Oracle records explicitly identify the Mathematics search as a full-time nine-month tenure-track Assistant Professor position and the Physical Education search as a nine-month tenure-track Assistant Professor position. The exact-title list leaves Chemistry, whose posting makes the track candidate-dependent, and other clinical or nursing faculty searches unresolved.",
+      "source": "https://www.graceland.edu/about/employment/",
       "verifiedAt": "2026-09-21"
     },
     {

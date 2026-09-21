@@ -1514,6 +1514,11 @@ test("uses Tennessee Tech's rank taxonomy and Clark Atlanta's explicit current s
     "Assistant Professor: School of Social Work(089-26)",
     "Assistant/Associate Professor: Curriculum and Instruction(113-26)",
     "Associate Professor, Social and Behavioral Scientist 003-26",
+    "Assistant/Associate Professor of Finance(103-26)",
+    "Assistant/Associate Professor of Marketing(108-26)",
+    "Assistant/Associate Professor: Public Administration(140-24)",
+    "Associate Professor: Social and Behavior Scientist(001-26)",
+    "Department Chair: Physics(078-26)",
   ]) {
     assert.deepEqual(
       classifyTenureTrackWithEvidence({ college: "Clark Atlanta University", title }),
@@ -1524,6 +1529,13 @@ test("uses Tennessee Tech's rank taxonomy and Clark Atlanta's explicit current s
   assert.equal(
     classifyTenureTrack({ college: "Clark Atlanta University", title: "Assistant Professor: Film and Digital Media Studies" }),
     null
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Clark Atlanta University",
+      title: "Assistant Professor of Research Methods(129-25)",
+    }),
+    { value: false, evidence: "institution-policy" }
   );
 });
 
@@ -3022,6 +3034,69 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
   assert.equal(
     classifyTenureTrack({
       college: "Transylvania University",
+      title: "Assistant Professor of Chemistry",
+    }),
+    null
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Union Commonwealth University",
+      title: "Assistant Professor of History",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Union Commonwealth University",
+      title: "Assistant Professor of Management",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Union Commonwealth University",
+      title: "Assistant Professor of Health Sciences",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Union Commonwealth University",
+      title: "Assistant Professor of Biology",
+    }),
+    null
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Andrew College",
+      title: "Nursing Clinicals Instructor",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Cedarville University",
+      title: "Faculty: School of Pharmacy - Instructor of Pharmacy Practice - Pharmacy Innovation Fellowship",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Graceland University-Lamoni",
+      title: "Assistant Professor Math",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Graceland University-Lamoni",
+      title: "Assistant Professor of Physical Education",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Graceland University-Lamoni",
       title: "Assistant Professor of Chemistry",
     }),
     null
