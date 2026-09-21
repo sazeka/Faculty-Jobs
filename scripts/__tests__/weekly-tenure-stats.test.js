@@ -2667,6 +2667,44 @@ test("uses Larkin University's certified no-tenure-system response", () => {
   );
 });
 
+test("uses Owens' full-time faculty tenure-track policy without absorbing temporary instructors", () => {
+  const fullTimeContract =
+    "Union Position: Owens Faculty Association Job Classification: Faculty Duty Days: 173 Days Work Schedule: Monday-Friday Pay Basis: Salary";
+
+  assert.equal(
+    classifyTenureTrack({
+      college: "Owens Community College",
+      title: "Instructor, Nursing",
+      description: fullTimeContract,
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Owens Community College",
+      title: "Clinical Teaching Faculty",
+      description: "The position has a 40 hour per week requirement. " + fullTimeContract,
+    }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Owens Community College",
+      title: "Temporary Instructor, Nursing",
+      description: fullTimeContract,
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Owens Community College",
+      title: "Instructor, Nursing",
+      description: "Part-time temporary faculty appointment",
+    }),
+    null
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
