@@ -3302,6 +3302,23 @@ test("uses Puget Sound's exact current tenure-line faculty searches", () => {
   );
 });
 
+test("uses Wheaton's exact current tenure-track searches", () => {
+  for (const title of [
+    "Assistant Professor - New Testament",
+    "Assistant Professor-Biological and Health Sciences",
+    "Assistant Professor-School of PCFT-Doctoral Program",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Wheaton College", title }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Wheaton College", title: "Visiting Assistant Professor" }),
+    false
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
