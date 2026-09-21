@@ -3122,6 +3122,21 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
     null
   );
   for (const title of [
+    "Assistant Professor of Clinical Psychology",
+    "Assistant Professor of Counseling Psychology",
+    "Assistant Professor of Nutrition – Nutritional Science",
+    "Assistant Professor Pediatric Audiology",
+    "Assistant/Associate Professor of Microbiology",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({
+        college: "University of North Texas",
+        title,
+      }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  for (const title of [
     "Assistant Professor of Architecture - AI/Machine Learning",
     "Assistant Professor of Dance - Modern",
     "Assistant Professor of Drama - Costume Technology",
