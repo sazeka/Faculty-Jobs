@@ -2820,7 +2820,7 @@ test("uses South Carolina State's non-tenure Instructor rank without guessing pr
   );
 });
 
-test("uses full-time tenure and continuing-contract paths at Holyoke and Saint Johns River", () => {
+test("uses full-time tenure and continuing-contract paths at Holyoke, Saint Johns River, and Pasco-Hernando", () => {
   assert.equal(
     classifyTenureTrack({
       college: "Holyoke Community College",
@@ -2850,6 +2850,22 @@ test("uses full-time tenure and continuing-contract paths at Holyoke and Saint J
       college: "Saint Johns River State College",
       title: "Anatomy & Physiology Instructor (PT - OPC)",
       description: "Job Type Part-Time",
+    }),
+    false
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Pasco-Hernando State College",
+      title: "Instructor, Nursing RN Programs (Full-Time Faculty)",
+      description: "Job Type Full-Time Job Number 202600141 Department Nursing Programs FLSA Exempt Bargaining Unit Faculty",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Pasco-Hernando State College",
+      title: "Adjunct Faculty, Nursing",
+      description: "Job Type Part-Time Bargaining Unit Adjunct Faculty",
     }),
     false
   );
