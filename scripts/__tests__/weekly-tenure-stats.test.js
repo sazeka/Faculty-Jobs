@@ -2599,6 +2599,7 @@ test("uses verified teaching-professor and lecturer appointment structures", () 
     ["Oklahoma State University", "Instructor of Professional Practice 22154"],
     ["Oklahoma State University", "Professor of Professional Practice & Laboratory Director AF7850"],
     ["University of Nevada, Reno", "(Nursing Scientist) Assistant / Associate Professor"],
+    ["University of South Dakota", "Clinical Instructor of Dental Hygiene"],
   ]) {
     assert.deepEqual(
       classifyTenureTrackWithEvidence({ college, title }),
