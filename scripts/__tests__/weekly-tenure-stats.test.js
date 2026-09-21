@@ -3254,6 +3254,37 @@ test("uses Shasta's full-time tenure-track convention while excluding temporary 
   );
 });
 
+test("uses Columbia's unmodified Arts and Sciences tenure clock and Lamont research series", () => {
+  for (const description of [
+    "Columbia University’s Department of Political Science invites applications for an Assistant Professor position.",
+    "The Columbia University Department of Psychology invites applications for two assistant professor positions.",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({
+        college: "Columbia University in the City of New York",
+        title: "Assistant Professor",
+        description,
+      }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Columbia University in the City of New York",
+      title: "Open Rank - Lamont Research Assistant, Associate, or Professor",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Columbia University in the City of New York",
+      title: "Assistant Professor",
+      description: "The Department of Psychiatry is seeking a psychologist for a full-time clinical position.",
+    }),
+    null
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
