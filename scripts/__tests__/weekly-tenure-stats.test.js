@@ -2933,6 +2933,27 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
     }),
     { value: false, evidence: "institution-policy" }
   );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Carthage College",
+      title: "Assistant Professor, Biology",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Carthage College",
+      title: "Assistant Professor of Education - Secondary Education",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Carthage College",
+      title: "Assistant Professor of Nursing (Mental Health)",
+    }),
+    null
+  );
 });
 
 test("uses College of Southern Maryland's ten-month tenure-track faculty convention", () => {

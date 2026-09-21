@@ -3246,6 +3246,22 @@
       "verifiedAt": "2026-09-21"
     },
     {
+      "college": "Carthage College",
+      "titlePattern": "^Assistant Professor, (?:Biology|Chemistry)$",
+      "value": true,
+      "note": "Carthage's current official Faculty Positions page explicitly describes both the Assistant Professor, Biology and Assistant Professor, Chemistry searches as tenure-track appointments. The exact-title rule does not extend to Nursing or any other unqualified Assistant Professor search.",
+      "source": "https://www.carthage.edu/about/offices-services/human-resources/careers-at-carthage/faculty-positions/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Carthage College",
+      "titlePattern": "^Assistant Professor of Education - (?:CCSEE, Bilingual, or Early Childhood|Secondary Education)$",
+      "value": false,
+      "note": "Carthage's current official Faculty Positions page explicitly identifies both Education searches as full-time, benefits-eligible contract (non-tenure) positions. The exact-title rule leaves other Assistant Professor ranks untouched.",
+      "source": "https://www.carthage.edu/about/offices-services/human-resources/careers-at-carthage/faculty-positions/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
       "college": "College of Southern Maryland",
       "titlePattern": "^10-Month (?=.*Faculty)(?!.*Adjunct).*$",
       "descriptionPattern": "Job Type\\s*Faculty\\b",
