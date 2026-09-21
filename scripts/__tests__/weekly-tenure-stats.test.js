@@ -140,6 +140,8 @@ test("recognizes additional explicit non-tenure appointment phrases", () => {
     "This position is not eligible for tenure.",
     "This is a full‑time, 12‑month, non‑tenure‑track faculty position.",
     "This is a one-year faculty appointment with possible renewal.",
+    "The department is seeking applications for one-year lecturer positions.",
+    "This is a one-year instructor appointment with possible renewal.",
     "The position will be a two-year term, with renewal based on performance.",
   ]) {
     assert.equal(classifyTenureTrack({ description }), false, description);
@@ -2529,6 +2531,73 @@ test("uses continuing-contract and exact with-tenure posting evidence", () => {
       { value: true, evidence: "institution-policy" }
     );
   }
+});
+
+test("uses additional verified clinical-faculty ladders", () => {
+  for (const [college, title] of [
+    ["University of Evansville", "Clinical Assistant Professor of Nursing"],
+    ["Keene State College", "Clinical Assistant Professor, Safety and Construction Sciences"],
+    ["Howard University", "Clinical Associate Professor"],
+    ["University of Missouri", "Clinical Instructor, Emergency Veterinary Medicine"],
+    ["Northeastern State University", "F99593 Clinical Assistant Professor Occupational Therapy"],
+    ["University of Texas Southwestern Medical Center", "Clinical Assistant Professor - Department of Physical Medicine & Rehabilitation"],
+    ["Icahn School of Medicine at Mount Sinai", "Clinical Assistant Professor - Mount Sinai Phillips School of Nursing"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: false, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+});
+
+test("recognizes a labeled temporary status and UNE's structured clinical track", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      title: "Research Professor, Arctic Studies",
+      description: "Temporary or Permanent: Temporary Relocation Authorized: No",
+    }),
+    { value: false, evidence: "description-job-type" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of New England",
+      title: "Associate Dean, Academic Affairs",
+      description: "Position Type Faculty Faculty Track Clinical Position Title Associate Dean, Academic Affairs",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+});
+
+test("uses verified teaching-professor and lecturer appointment structures", () => {
+  for (const [college, title] of [
+    ["University of Wisconsin-Green Bay", "Assistant Teaching Professor of Human Biology"],
+    ["University of Wisconsin-Stevens Point", "Teaching Professor with Assistant Rank: Media Studies"],
+    ["University of Wisconsin-Superior", "Teaching Assistant Professor of Social Work"],
+    ["Iowa State University", "Assistant Teaching Professor in Art Education"],
+    ["University of Missouri", "Assistant/Associate/Full Teaching Professor – Radiochemical Manufacturing"],
+    ["Brandeis University", "Lecturer in History (Modern European History)"],
+    ["Texas Tech University", "Lecturer - 9 mo appt - Interior Design"],
+    ["Drexel University", "Open Rank Teaching Faculty"],
+    ["St. Mary's College of Maryland", "Lecturer of Art History and Museum Studies"],
+    ["Bentley University", "Lecturer, Accounting"],
+    ["Miami University-Oxford", "Assistant Teaching Professor"],
+    ["Miami University-Oxford", "Assistant/Associate Teaching Professor or Associate Lecturer - Paper Science and Engineering"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: false, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Manchester University",
+      title: "Lecturer of Physical Therapy",
+      description: "The Doctorate of Physical Therapy Adjunct Lecturer will teach assigned courses.",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
 });
 
 test("does not treat generic with-tenure policy boilerplate as appointment evidence", () => {

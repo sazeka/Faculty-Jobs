@@ -2271,9 +2271,9 @@
     },
     {
       "college": "Drexel University",
-      "titlePattern": "\\b(?:assistant|associate|full)(?:(?:\\s*,\\s*|\\s*(?:/|or)\\s*)(?:or\\s+)?(?:assistant|associate|full))*\\s+(?:teaching|clinical)\\s+professor\\b",
+      "titlePattern": "\\b(?:assistant|associate|full)(?:(?:\\s*,\\s*|\\s*(?:/|or)\\s*)(?:or\\s+)?(?:assistant|associate|full))*\\s+(?:teaching|clinical)\\s+professor\\b|\\bopen rank teaching faculty\\b",
       "value": false,
-      "note": "Drexel's current Non-Tenure-Track Faculty Policy governs its Teaching Faculty and Research Faculty, and the university's title guidance identifies Teaching and Clinical Professor ranks as approved non-tenure-track titles. This rule is limited to explicitly qualified Teaching or Clinical Professor titles.",
+      "note": "Drexel's current Non-Tenure-Track Faculty Policy governs its Teaching Faculty and Research Faculty, and the university's title guidance identifies Teaching and Clinical Professor ranks as approved non-tenure-track titles. This rule is limited to explicitly qualified Teaching or Clinical Professor titles and the current posting's exact Open Rank Teaching Faculty label.",
       "source": "https://drexel.edu/facultyadvancement/resources/faculty-policies/",
       "verifiedAt": "2026-09-20"
     },
@@ -2579,6 +2579,14 @@
       "verifiedAt": "2026-09-20"
     },
     {
+      "college": "St. Mary's College of Maryland",
+      "titlePattern": "\\b(?:Senior |Master )?Lecturer\\b",
+      "value": false,
+      "note": "St. Mary's Board of Trustees academic-affairs materials expressly state that Lecturer positions are neither tenured nor tenure-track and describe their renewable contract and promotion ladder. This companion rule covers only that formal Lecturer series.",
+      "source": "https://www.smcm.edu/board/wp-content/uploads/sites/61/2022/05/Academic-Affairs.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
       "college": "Ball State University",
       "titlePattern": "^Instructors? of |^Instructor(?:-| of |,|$)",
       "value": false,
@@ -2767,7 +2775,7 @@
     },
     {
       "college": "Northern Arizona University",
-      "titlePattern": "\\b(?:Assistant|Associate|Full)?\\s*Clinical Professor\\b",
+      "titlePattern": "\\b(?:(?:Assistant|Associate|Full) Clinical Professor|Clinical (?:Assistant|Associate|Full)?\\s*Professor)\\b",
       "value": false,
       "note": "NAU's Conditions of Faculty Service states that clinical faculty are non-tenured, non-tenure eligible appointments and defines the Clinical Assistant Professor, Clinical Associate Professor, and Clinical Professor ranks. This rule is limited to that formal title series.",
       "source": "https://legacy.nau.edu/wp-content/uploads/sites/26/NAU-Conditions-of-Faculty-Service-DOCUMENT.pdf",
@@ -2813,6 +2821,136 @@
       "value": true,
       "note": "Each of these two current Graduate Center searches directly states that it seeks an Associate Professor with tenure. Exact titles plus that direct sentence are required because other CUNY senior searches may only require a candidate to qualify for tenure rather than offer it with the appointment.",
       "source": "https://cuny.jobs/new-york-ny/associate-professor-phd-program-in-philosophy/5330DB14CFAB4C02BC0CD8C1FE75AF6D/job",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Evansville",
+      "titlePattern": "\\bClinical (?:Assistant|Associate) Professor\\b",
+      "value": false,
+      "note": "The current University of Evansville Faculty Manual expressly lists clinical faculty under Non Tenurial Appointments and states that the clinical designation is not on the tenure track. The rule is limited to the Clinical Assistant and Clinical Associate ranks defined there.",
+      "source": "https://www.evansville.edu/offices/academicaffairs/downloads/faculty-manual-2024-2025.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Keene State College",
+      "titlePattern": "\\b(?:(?:Assistant|Associate|Full) Clinical Professor|Clinical (?:Assistant|Associate|Full)?\\s*Professor)\\b",
+      "value": false,
+      "note": "Keene State's current faculty agreement defines a separate Clinical Faculty ladder, caps those positions relative to tenure-track faculty, and applies distinct promotion standards to Clinical Instructor through Clinical Professor. The College's current materials consistently enumerate tenure-track and clinical faculty as separate appointment classes.",
+      "source": "https://www.keene.edu/administration/academic-affairs/assets/documents/kscea-contract/download/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Howard University",
+      "titlePattern": "\\bClinical (?:Instructor|Assistant Professor|Associate Professor|Professor)\\b",
+      "value": false,
+      "note": "Howard's Faculty Handbook defines Clinical Instructor and the Clinical Assistant/Associate/Professor ladder as the Clinical Educator Track, with one- to five-year terms, and contrasts its requirements with probationary tenure-track faculty. This rule is limited to the formal clinical ranks.",
+      "source": "https://coas.howard.edu/sites/coas.howard.edu/files/2021-02/HUFacultyHandbook2019.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Missouri",
+      "titlePattern": "\\bClinical Instructor\\b",
+      "value": false,
+      "note": "The University of Missouri School of Medicine's clinical-track guidance labels the Clinical Instructor promotion path Non Tenure - Clinical Track and incorporates the UM System non-tenure-track policy. The current College of Veterinary Medicine vacancy uses that exact formal rank.",
+      "source": "https://medicine.missouri.edu/sites/default/files/som_pdf_archive/faculty_affairs/SOM_Non-Regular_Clinical_Track_Req_5August2016.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Northeastern State University",
+      "titlePattern": "\\bClinical (?:Assistant|Associate) Professor\\b",
+      "value": false,
+      "note": "Northeastern State's current Faculty Handbook states directly that clinical faculty are non-tenure track and defines promotion from Clinical Assistant Professor to Clinical Associate Professor. The rule is limited to those clinical ranks.",
+      "source": "https://academicaffairs.nsuok.edu/_resources/documents/faculty-handbook-2025-final.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Texas Southwestern Medical Center",
+      "titlePattern": "\\bClinical (?:Assistant|Associate|Full)?\\s*Professor\\b",
+      "value": false,
+      "note": "UT Southwestern's current faculty-development materials place the Clinical Professor title series on the Clinician academic track, which is separately enumerated from the Tenure-Accruing/Tenure Track. The rule is limited to titles explicitly using the Clinical modifier.",
+      "source": "https://www.utsouthwestern.edu/education/provost/faculty-affairs-career-development/faculty-development/educators/promotion-tenure.html",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Icahn School of Medicine at Mount Sinai",
+      "titlePattern": "\\b(?:Assistant Clinical Professor|Clinical Assistant Professor)\\b",
+      "value": false,
+      "note": "Icahn's faculty track materials define Assistant Clinical Professor as a renewable stated-term clinical appointment, separate from its tenure-track and tenured professorial searches. The rule is limited to the junior clinical title used by the current nursing search.",
+      "source": "https://icahn.mssm.edu/about/faculty-resources/handbook/table-contents",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of New England",
+      "titlePattern": "^Associate Dean, Academic Affairs$",
+      "descriptionPattern": "Faculty Track Clinical",
+      "value": false,
+      "note": "UNE's current Faculty Handbook expressly defines its Clinical Track as non-tenure, while the current Associate Dean posting carries the structured ATS field Faculty Track Clinical. Both the exact title and field are required so other administrative appointments are not inferred from their duties.",
+      "source": "https://www.une.edu/sites/default/files/2025-11/UNE%20Faculty%20Handbook%20Effective_July_1_2025_June30_2026.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "collegePattern": "^University of Wisconsin-(?:Green Bay|Stevens Point|Superior)$",
+      "titlePattern": "\\b(?:(?:Assistant|Associate|Full) Teaching Professor|Teaching (?:Assistant|Associate|Full)?\\s*Professor|Teaching Professor with Assistant Rank)\\b",
+      "value": false,
+      "note": "UW System classifies its Teaching Professor title series as instructional academic staff rather than faculty tenure appointments; system materials state that these titles do not have tenure and normally carry renewable academic-staff appointments. This rule covers the three non-Madison campuses with current searches and only the expressly modified Teaching Professor series.",
+      "source": "https://www.wisconsin.edu/uw-policies/uw-system-administrative-policies/appointment-terms-and-designation-of-positions/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Iowa State University",
+      "titlePattern": "\\b(?:Assistant|Associate|Full)?\\s*Teaching Professor\\b",
+      "value": false,
+      "note": "Iowa State's current Faculty Appointment Types guidance places Lecturer and the Assistant/Associate/Teaching Professor ladder under Term Appointments, separate from tenured and tenure-eligible appointments. The rule is limited to the formal Teaching Professor series.",
+      "source": "https://www.provost.iastate.edu/faculty-success/recruitment/appointment-types",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Missouri",
+      "titlePattern": "\\b(?:Assistant|Associate|Full)?\\s*Teaching Professor\\b",
+      "value": false,
+      "note": "The University of Missouri's current HR academic-title table places Assistant Teaching Professor, Associate Teaching Professor, and Teaching Professor in its Ranked, Non-Regular; Non-Tenure Track category, distinct from the unmodified tenure-track ranks.",
+      "source": "https://hr.missouri.edu/node/119",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Brandeis University",
+      "titlePattern": "\\b(?:Senior )?Lecturer\\b",
+      "value": false,
+      "note": "Brandeis's current Faculty Handbook places Lecturer and Senior Lecturer under Ranks Outside the Tenure Structure and defines them as renewable fixed-term appointments of up to five years. The rule is limited to those exact ranks.",
+      "source": "https://www.brandeis.edu/provost/faculty-affairs/faculty-resources/current/pdfs/faculty-handbook-2025-0429.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Texas Tech University",
+      "titlePattern": "\\b(?:Senior )?Lecturer\\b",
+      "value": false,
+      "note": "Texas Tech operating policy OP 32.17 expressly lists Lecturer and Senior Lecturer among its non-tenure-acquiring faculty titles and defines Lecturer as a full-time, non-tenure-acquiring appointment. The rule is limited to those formal ranks.",
+      "source": "https://www.depts.ttu.edu/opmanual/OP32.17.php",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Bentley University",
+      "titlePattern": "\\b(?:Distinguished |Senior )?Lecturer\\b",
+      "value": false,
+      "note": "Bentley's current Faculty Manual expressly defines Lecturer, Senior Lecturer, and Distinguished Lecturer appointments as non-tenure-track. The rule is limited to those formal ranks.",
+      "source": "https://bentleydownloads.s3.amazonaws.com/general/2024-25-Faculty-Manual.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Miami University-Oxford",
+      "titlePattern": "\\b(?:Assistant|Associate|Full)?\\s*(?:Teaching|Clinical) Professor\\b|\\b(?:Assistant|Associate|Senior)?\\s*(?:Clinical )?Lecturer\\b",
+      "value": false,
+      "note": "Miami University identifies Teaching and Clinical Professors and Lecturers (TCPLs) as promotable but non-tenurable positions, separate from its tenured and tenure-track faculty. The rule is limited to the named TCPL title families.",
+      "source": "https://miamioh.edu/policy-library/employees/faculty/employment-of-faculty/employment-of-persons-holding-miami-doctorate.html",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Manchester University",
+      "titlePattern": "^Lecturer of Physical Therapy$",
+      "descriptionPattern": "Doctorate of Physical Therapy Adjunct Lecturer",
+      "value": false,
+      "note": "Manchester's current official posting identifies this exact Lecturer of Physical Therapy opening in its position description as an Adjunct Lecturer. Both the exact title and direct description phrase are required; the separate full-time nursing lecturer is not inferred from it.",
+      "source": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=c01330c8-9bdc-4d7b-b355-90630c559bae&ccId=19000101_000001&jobId=9201173003756_1&lang=en_US&source=CC2",
       "verifiedAt": "2026-09-21"
     },
     {
