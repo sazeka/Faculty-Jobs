@@ -2969,6 +2969,28 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
     }),
     null
   );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Northwestern College",
+      title: "Biology Faculty",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Northwestern College",
+      title: "Physician Assistant Faculty",
+      description: "Northwestern College invites applications for a 0.82 FTE professor of practice position in the physician assistant program.",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Northwestern College",
+      title: "Civil Engineering Faculty",
+    }),
+    null
+  );
 });
 
 test("uses College of Southern Maryland's ten-month tenure-track faculty convention", () => {
