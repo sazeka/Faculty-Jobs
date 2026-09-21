@@ -983,11 +983,19 @@
     },
     {
       "college": "Virginia Tech",
-      "titlePattern": "^(?:(?:Advanced\\s+|Senior\\s+)?Instructor)\\b|\\b(?:Collegiate|Clinical)\\s+(?:Assistant\\s+|Associate\\s+)?Professor\\b|\\bResearch\\s+(?:Assistant\\s+|Associate\\s+)?Professor\\b|\\bResearch\\s+Faculty\\b",
+      "titlePattern": "^(?:(?:Advanced\\s+|Senior\\s+)?Instructor)\\b|\\b(?:Collegiate|Clinical)\\s+(?:Assistant\\s+|Associate\\s+)?Professor\\b|\\bResearch\\s+(?:Assistant\\s+|Associate\\s+)?Professor\\b|\\bResearch\\s+(?:Faculty|Professorial)\\b",
       "value": false,
       "note": "Virginia Tech's Faculty Handbook Chapter Five ('Non-Tenure-Track Instructional Faculty') defines three ranked series: Clinical Faculty (Clinical Instructor/Assistant/Associate/Professor), Collegiate Faculty (Collegiate Assistant/Associate/Professor), and Instructor (Instructor, Advanced Instructor, Senior Instructor) -- quoted directly, '5.0 ... Not Eligible for Tenure. Tenure cannot be awarded to individuals with non-tenure-track [titles].' Chapter Six ('Research Faculty') separately defines the Research Professor ranks (Research Assistant/Associate/Professor) as a distinct non-tenure-track series. Matches both the specific ranked titles and the generic 'Research Faculty' label used on live 'Open Rank - Research Faculty' postings. Deliberately does not match a plain 'Assistant Professor'/'Associate Professor'/'Professor' with no Clinical/Collegiate/Research qualifier (Chapter Three's tenure-track ranks use the identical unmodified names), which stays correctly unclassified.",
       "source": "https://faculty.vt.edu/content/dam/faculty_vt_edu/files/Virginia%20Tech%20Faculty%20Handbook.pdf",
       "verifiedAt": "2026-09-17"
+    },
+    {
+      "college": "Virginia Tech",
+      "titlePattern": "^(?:Assistant Professor in Criminology|Assistant/Associate Professor of Distribution Packaging)$",
+      "value": true,
+      "note": "Virginia Tech's official current vacancy records explicitly identify both exact openings as tenure-track: Criminology is a tenure-track Assistant Professor position and Distribution Packaging is a tenure-track Assistant/Associate Professor search. Exact-title scoping leaves other unmodified professorial searches unresolved unless their appointment track is independently stated.",
+      "source": "https://jobs.apply.vt.edu/jobs/search/search-page-faculty",
+      "verifiedAt": "2026-09-21"
     },
     {
       "college": "University of Florida",

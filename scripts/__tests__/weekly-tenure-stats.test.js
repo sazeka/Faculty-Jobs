@@ -2703,6 +2703,7 @@ test("uses verified teaching-professor and lecturer appointment structures", () 
     ["Oklahoma State University", "Professor of Professional Practice & Laboratory Director AF7850"],
     ["University of Nevada, Reno", "(Nursing Scientist) Assistant / Associate Professor"],
     ["University of Nevada, Reno", "Lecturer/Teaching Assistant Professor, Criminal Justice"],
+    ["Virginia Tech", "Research Professorial Open Rank, AI Test and Evaluation"],
     ["University of South Dakota", "Clinical Instructor of Dental Hygiene"],
     ["Colorado Mesa University", "Assistant Clinical Professor of Nursing"],
   ]) {
@@ -3153,6 +3154,25 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
     classifyTenureTrack({
       college: "East Carolina University",
       title: "Family Medicine - Geriatrics Physician (Faculty) — EHH BSOM FM Geriatrics",
+    }),
+    null
+  );
+  for (const title of [
+    "Assistant Professor in Criminology",
+    "Assistant/Associate Professor of Distribution Packaging",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({
+        college: "Virginia Tech",
+        title,
+      }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "Virginia Tech",
+      title: "Assistant Professor, Associate Professor, or Professor",
     }),
     null
   );
