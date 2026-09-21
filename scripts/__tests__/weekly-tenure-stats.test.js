@@ -2820,7 +2820,7 @@ test("uses South Carolina State's non-tenure Instructor rank without guessing pr
   );
 });
 
-test("uses full-time tenure and continuing-contract paths at Holyoke, Saint Johns River, Pasco-Hernando, HACC, and Eastern Oklahoma", () => {
+test("uses full-time tenure and continuing-contract paths at Holyoke, Saint Johns River, Pasco-Hernando, HACC, Eastern Oklahoma, and Galveston", () => {
   assert.equal(
     classifyTenureTrack({
       college: "Holyoke Community College",
@@ -2900,6 +2900,22 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
       description: "Part-time appointment",
     }),
     false
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Galveston College",
+      title: "Nursing Faculty",
+      description: "POSITION : Nursing Faculty POSITION AVAILABLE: Full time JOB SUMMARY: Faculty Job Description",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Galveston College",
+      title: "Program Director/Instructor-Law Enforcement",
+      description: "POSITION AVAILABLE: 6/9/26",
+    }),
+    null
   );
 });
 
