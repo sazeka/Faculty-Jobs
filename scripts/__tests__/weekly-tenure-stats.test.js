@@ -2614,6 +2614,14 @@ test("uses verified teaching-professor and lecturer appointment structures", () 
     }),
     { value: false, evidence: "institution-policy" }
   );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Washington State University",
+      title: "Internal Medicine Residency Program Core Faculty | College of Medicine",
+      description: "Job Classification: Clinical Assistant Professor - Career, Clinical Associate Professor - Career, Clinical Professor - Career",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
   assert.equal(
     classifyTenureTrack({
       college: "Texas Christian University",
