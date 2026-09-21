@@ -1,33 +1,18 @@
 {
-  "generatedAt": "2026-09-19T09:48:56.589Z",
+  "generatedAt": "2026-09-21T10:34:44.421Z",
   "qualityVersion": 1,
   "sampleSize": 200,
   "instructions": "Set humanLabel to valid or invalid, add optional notes, then copy confirmed labels into data/post-quality-human-labels.json.",
   "items": [
     {
       "id": "04dc12a50f58d23d7c3c",
-      "score": 96,
+      "score": 100,
       "status": "pass",
       "title": "Assistant Professor of Business Analytics",
       "college": "University of Alaska Anchorage",
       "source": "AK",
       "url": "https://careers.alaska.edu/jobs/assistant-professor-of-business-analytics-anchorage-alaska-united-states",
-      "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
+      "reasons": [],
       "humanLabel": null,
       "notes": ""
     },
@@ -127,20 +112,20 @@
       "notes": ""
     },
     {
-      "id": "006e4f9298b49d610e73",
-      "score": 100,
+      "id": "015fea701c4aac79e065",
+      "score": 99,
       "status": "pass",
-      "title": "Assistant Professor of Clinical Psychology",
-      "college": "University of Arkansas System Office",
+      "title": "Teaching Assistant Professor",
+      "college": "University of Arkansas",
       "source": "AR",
-      "url": "https://uasys.wd5.myworkdayjobs.com/UASYS/job/Fayetteville/Assistant-Professor-of-Clinical-Psychology_R0091197-1",
+      "url": "https://uasys.wd5.myworkdayjobs.com/UAF_External_Career_Site/job/Fayetteville-AR/Teaching-Assistant-Professor_R0091495",
       "reasons": [
         {
-          "code": "missing_deadline",
+          "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         }
       ],
       "humanLabel": null,
@@ -282,14 +267,21 @@
       "notes": ""
     },
     {
-      "id": "00b68e3e8a89b72d8948",
-      "score": 100,
+      "id": "00273cceccf22e7451fa",
+      "score": 96,
       "status": "pass",
-      "title": "Spanish (Foreign Languages) Adjunct Instructor Applicant Pool",
-      "college": "College of the Canyons",
+      "title": "Assistant Professor in Climate Science",
+      "college": "Stanford University",
       "source": "CA Private",
-      "url": "https://www.schooljobs.com/careers/canyons/academic/jobs/4293890/spanish-foreign-languages-adjunct-instructor-applicant-pool",
+      "url": "https://facultypositions.stanford.edu/jobs/assistant-professor-in-climate-science-stanford-university-california-united-states",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -322,14 +314,21 @@
       "notes": ""
     },
     {
-      "id": "063c6066b91637b65fb5",
-      "score": 100,
+      "id": "0310846684e034669b74",
+      "score": 96,
       "status": "pass",
-      "title": "Assistant/Associate Professor of Pharmacy Informatics or Healthcare Management",
+      "title": "Professor of Practice, Regulatory Affairs, Henry E. Riggs School of Applied Life Sciences",
       "college": "Keck Graduate Institute",
       "source": "Claremont Colleges",
-      "url": "https://theclaremontcolleges.wd1.myworkdayjobs.com/en-US/KGI_Careers/job/215-York-Building---LC72000/Assistant-Associate-Professor-of-Pharmacy-Informatics-or-Healthcare-Management_REQ-8380",
+      "url": "https://theclaremontcolleges.wd1.myworkdayjobs.com/KGI_Careers/job/Building-535/Professor-of-Practice--Regulatory-Affairs--Henry-E-Riggs-School-of-Applied-Life-Sciences_REQ-5150",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -1192,40 +1191,6 @@
       "notes": ""
     },
     {
-      "id": "c84c258da70c13021b3d",
-      "score": 64,
-      "status": "quarantine",
-      "title": "Academic Leadership & Faculty",
-      "college": "Maine Maritime Academy",
-      "source": "ME",
-      "url": "https://mainemaritime.edu/academics/academic-leadership-and-faculty",
-      "reasons": [
-        {
-          "code": "resource_page_title",
-          "severity": "error",
-          "dimension": "relevance",
-          "deduction": 100,
-          "detail": "The title names a faculty resource, directory, or marketing page rather than an appointment."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
       "id": "0f2e69431289100a322c",
       "score": 90,
       "status": "review",
@@ -1535,41 +1500,20 @@
       "notes": ""
     },
     {
-      "id": "07df04145a1368a8af88",
-      "score": 85,
+      "id": "083c5f2b1815aa4462bf",
+      "score": 98,
       "status": "review",
-      "title": "RN-BSN Nursing Faculty",
-      "college": "Winston-Salem State University",
+      "title": "Mechanical Engineering Technology Instructor (Adjunct)",
+      "college": "Central Carolina Community College",
       "source": "NC",
-      "url": "https://jobs.wssu.edu/postings/32895",
+      "url": "https://www.schooljobs.com/careers/ccccedu/jobs/3435470/mechanical-engineering-technology-instructor-adjunct",
       "reasons": [
         {
-          "code": "weak_academic_evidence",
+          "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "dimension": "freshness",
+          "deduction": 25,
+          "detail": "Posting date 2022-06-19 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         }
       ],
       "humanLabel": null,
@@ -1878,13 +1822,13 @@
       "notes": ""
     },
     {
-      "id": "01e6a2362e4820ce2232",
+      "id": "0304a99d9f80de8031c9",
       "score": 96,
       "status": "review",
-      "title": "Adjunct Lecturer - Music",
+      "title": "Adjunct Lecturer-Western Humanities",
       "college": "SUNY College at Geneseo",
       "source": "NY",
-      "url": "https://jobs.geneseo.edu/postings/5061",
+      "url": "https://jobs.geneseo.edu/postings/5083",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -1966,20 +1910,20 @@
       "notes": ""
     },
     {
-      "id": "000e805044a90e1e765f",
-      "score": 100,
+      "id": "006fb4f4f056b8c85570",
+      "score": 99,
       "status": "pass",
-      "title": "Assistant Professor of Management Information Systems - Tenure Track",
-      "college": "University of Oklahoma",
+      "title": "Adjunct Professor of Automotive Technology",
+      "college": "Oklahoma City Community College",
       "source": "OK",
-      "url": "https://apply.interfolio.com/171749",
+      "url": "https://www.occcjobs.com/postings/24504",
       "reasons": [
         {
-          "code": "missing_deadline",
+          "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "dimension": "freshness",
+          "deduction": 10,
+          "detail": "Posting date 2025-07-14 is more than 1 year(s) old with no evergreen/applicant-pool signal."
         }
       ],
       "humanLabel": null,
@@ -2115,7 +2059,7 @@
     },
     {
       "id": "0044a20cb1adafeec49e",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Adjunct Faculty, English (Future Opportunities)",
       "college": "Community College of Rhode Island",
@@ -2123,25 +2067,11 @@
       "url": "https://jobs.ccri.edu/jobs/702854-adjunct-faculty-english-future-opportunities",
       "reasons": [
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -2196,20 +2126,13 @@
     },
     {
       "id": "0322f577ba0f497bdac2",
-      "score": 96,
+      "score": 100,
       "status": "pass",
       "title": "Assistant/Associate Clinical Professor of Education",
       "college": "Augustana University",
       "source": "SD",
       "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=026eaaee-2102-4004-840c-8e8ad42d78b1&ccId=19000101_000001&jobId=9201839214530_1&lang=en_US&source=CC2",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -2344,7 +2267,7 @@
     },
     {
       "id": "010f912d0f0d82d1e1df",
-      "score": 85,
+      "score": 89,
       "status": "review",
       "title": "Program Director 3 - College of Pharmacy",
       "college": "University of Houston",
@@ -2359,25 +2282,11 @@
           "detail": "No strong academic appointment signal appears in the title or normalized metadata."
         },
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -2516,20 +2425,41 @@
       "notes": ""
     },
     {
-      "id": "d9972ba19a86b4a23b70",
-      "score": 96,
+      "id": "3f54908d28c19c39ba94",
+      "score": 85,
       "status": "review",
-      "title": "Assistant Coach/Physical Education Instructor Pool",
-      "college": "Snow College",
+      "title": "University Faculty Computational Chemistry",
+      "college": "Weber State University",
       "source": "UT",
-      "url": "https://www.schooljobs.com/careers/snowcollege/jobs/2872339/assistant-coach-physical-education-instructor-pool",
+      "url": "https://jobs.weber.edu/postings/29327",
       "reasons": [
         {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 40,
-          "detail": "Posting date 2020-09-28 is more than 5 year(s) old with no evergreen/applicant-pool signal."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -2584,7 +2514,7 @@
     },
     {
       "id": "0117acff9344484c49d2",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Business Instructor (# req545)",
       "college": "Community College of Vermont",
@@ -2592,25 +2522,11 @@
       "url": "https://www.communitycollegejobs.com/jobdetail-440243-business-instructor-req545",
       "reasons": [
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -2738,6 +2654,40 @@
       "notes": ""
     },
     {
+      "id": "9520fabd4e1a7120417c",
+      "score": 64,
+      "status": "quarantine",
+      "title": "Music and Theatre Arts: Assistant Professor as Orchestra Director",
+      "college": "University of Wisconsin-Eau Claire",
+      "source": "WI",
+      "url": "https://wisconsin.wd1.myworkdayjobs.com/UW_Comprehensives/job/Eau-Claire-WI/Music-and-Theatre-Arts--Assistant-Professor-as-Orchestra-Director_JR10009364",
+      "reasons": [
+        {
+          "code": "filled_compliance_notice",
+          "severity": "error",
+          "dimension": "relevance",
+          "deduction": 100,
+          "detail": "The posting is a mandatory Department of Labor compliance notice for a position that has already been filled."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
       "id": "602db626dd1f53c0f941",
       "score": 96,
       "status": "review",
@@ -2820,20 +2770,13 @@
     },
     {
       "id": "02c17e82ff7c639ffffc",
-      "score": 96,
+      "score": 100,
       "status": "pass",
       "title": "Assistant Instructional Professor of Finance",
       "college": "University of Wyoming",
       "source": "WY",
       "url": "https://eeik.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/262706",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -2966,14 +2909,21 @@
       "notes": ""
     },
     {
-      "id": "006ed14e89f0da3a65fd",
-      "score": 100,
+      "id": "01ae865b0a6111e9166d",
+      "score": 96,
       "status": "pass",
-      "title": "Assistant Professor of Education Policy",
-      "college": "University of Arkansas System Office",
+      "title": "Assistant Professor of Psychology",
+      "college": "University of Arkansas at Pine Bluff",
       "source": "AR",
-      "url": "https://uasys.wd5.myworkdayjobs.com/UASYS/job/Fayetteville/Assistant-Professor-of-Education-Policy_R0090179-1",
+      "url": "https://uasys.wd5.myworkdayjobs.com/UASYS/job/Fayetteville/Assistant-Professor-of-Psychology_R0091192",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -3067,14 +3017,22 @@
       "notes": ""
     },
     {
-      "id": "00e3d8ffd6908f41de1c",
+      "id": "00b68e3e8a89b72d8948",
       "score": 100,
       "status": "pass",
-      "title": "Adjunct - Professor, History",
-      "college": "Crafton Hills College",
+      "title": "Spanish (Foreign Languages) Adjunct Instructor Applicant Pool",
+      "college": "College of the Canyons",
       "source": "CA Private",
-      "url": "https://www.schooljobs.com/careers/sbccd/jobs/4067135/adjunct-professor-history",
-      "reasons": [],
+      "url": "https://www.schooljobs.com/careers/canyons/academic/jobs/4293890/spanish-foreign-languages-adjunct-instructor-applicant-pool",
+      "reasons": [
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
       "humanLabel": null,
       "notes": ""
     },
@@ -3106,14 +3064,21 @@
       "notes": ""
     },
     {
-      "id": "066f4983b76736637d07",
-      "score": 99,
+      "id": "0869942a557745a3b262",
+      "score": 95,
       "status": "pass",
-      "title": "Adjunct Faculty, Advanced Regulatory Topics for Biologics, Henry E. Riggs School of Applied Life Sciences",
+      "title": "Introduction to Bioprocessing, (Adjunct Pool), Henry E. Riggs School of Applied Life Sciences",
       "college": "Keck Graduate Institute",
       "source": "Claremont Colleges",
-      "url": "https://theclaremontcolleges.wd1.myworkdayjobs.com/en-US/KGI_Careers/job/Building-535/Adjunct-Faculty--Advanced-Regulatory-Topics-for-Biologics--Henry-E-Riggs-School-of-Applied-Life-Sciences_REQ-6146",
+      "url": "https://theclaremontcolleges.wd1.myworkdayjobs.com/KGI_Careers/job/Building-535/Introduction-to-Bioprocessing---Adjunct-Pool---Henry-E-Riggs-School-of-Applied-Life-Sciences_REQ-6024",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_department",
           "severity": "info",
@@ -3206,28 +3171,13 @@
     },
     {
       "id": "0200581048b524508dc6",
-      "score": 96,
+      "score": 100,
       "status": "pass",
       "title": "Professor of Accounting",
       "college": "Yale University",
       "source": "CT",
       "url": "https://apply.interfolio.com/193781",
-      "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
+      "reasons": [],
       "humanLabel": null,
       "notes": ""
     },
@@ -3516,14 +3466,21 @@
       "notes": ""
     },
     {
-      "id": "00bdc94dd4bac48bf415",
-      "score": 100,
+      "id": "00dbbd9da321060a7240",
+      "score": 96,
       "status": "pass",
-      "title": "Assistant Professor of Law",
+      "title": "Adjunct Lecturer positions in the MBA: Artificial Intelligence program",
       "college": "Northwestern University",
       "source": "IL",
-      "url": "https://careers.northwestern.edu/psc/hrnu_er/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=54417&PostingSeq=1",
+      "url": "https://careers.northwestern.edu/psc/hrnu_er/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=50321&PostingSeq=1",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -3944,13 +3901,13 @@
       "notes": ""
     },
     {
-      "id": "b9498abd2a67f74aa822",
+      "id": "d0f22c78bcdcb0e4d703",
       "score": 86,
       "status": "review",
-      "title": "Community Faculty - Accounting",
-      "college": "Saint Paul College",
+      "title": "Diesel Mechanics Technology - Technical College Faculty",
+      "college": "Minnesota State (Mnor Hibbing Campus)",
       "source": "MN",
-      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/St-Paul/Community-Faculty---Accounting_JR0000005699-1",
+      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/MNOR---Hibbing-Campus/Diesel-Mechanics-Technology---Technical-College-Faculty_JR0000005768",
       "reasons": [
         {
           "code": "weak_academic_evidence",
@@ -3979,20 +3936,13 @@
     },
     {
       "id": "01092b2482a33a1ee4d3",
-      "score": 96,
+      "score": 100,
       "status": "pass",
       "title": "Master Instructor in English",
       "college": "Missouri Southern State University",
       "source": "MO",
       "url": "https://mssu.hrmdirect.com/employment/job-opening.php?req=3818682&req_loc=1478656&&#job",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -4133,20 +4083,20 @@
       "notes": ""
     },
     {
-      "id": "083c5f2b1815aa4462bf",
+      "id": "08b25a5a78610a20ca5c",
       "score": 98,
       "status": "review",
-      "title": "Mechanical Engineering Technology Instructor (Adjunct)",
-      "college": "Central Carolina Community College",
+      "title": "Clinical Instructor — Emergency Medicine - 411201",
+      "college": "University of North Carolina at Chapel Hill",
       "source": "NC",
-      "url": "https://www.schooljobs.com/careers/ccccedu/jobs/3435470/mechanical-engineering-technology-instructor-adjunct",
+      "url": "https://unc.peopleadmin.com/postings/318517",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2022-06-19 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "detail": "Posting date 2024-04-26 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         }
       ],
       "humanLabel": null,
@@ -4154,7 +4104,7 @@
     },
     {
       "id": "0ebc0b11a732fb38ab82",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Engineering Instructor – Closes October 1, 2026 at 5:00pm",
       "college": "United Tribes Technical College",
@@ -4162,25 +4112,11 @@
       "url": "https://uttc.edu/2026/06/23/engineering-instructor-closes-august-19-2026-at-500pm",
       "reasons": [
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -4268,6 +4204,40 @@
       "notes": ""
     },
     {
+      "id": "21c8fe34451fe2a058ca",
+      "score": 86,
+      "status": "review",
+      "title": "Affiliated Faculty, Criminal Justice",
+      "college": "Rivier University",
+      "source": "NH",
+      "url": "https://www.schooljobs.com/careers/rivieredu/jobs/5336800/affiliated-faculty-criminal-justice",
+      "reasons": [
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
       "id": "00d25a6a81770aaaffe8",
       "score": 100,
       "status": "pass",
@@ -4288,27 +4258,20 @@
       "notes": ""
     },
     {
-      "id": "0d244e5982f22a27515e",
-      "score": 97,
+      "id": "06ef415e7570d3d2d7b3",
+      "score": 90,
       "status": "review",
-      "title": "Adjunct Faculty, Aviation",
-      "college": "Mercer County Community College",
+      "title": "Visiting Fellow - Program in Latin American Studies",
+      "college": "Princeton University",
       "source": "NJ",
-      "url": "https://www.schooljobs.com/careers/mcccedu/jobs/4430786/adjunct-faculty-aviation",
+      "url": "https://apply.interfolio.com/185423",
       "reasons": [
         {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2024-03-13 is more than 2 year(s) old with no evergreen/applicant-pool signal."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
         }
       ],
       "humanLabel": null,
@@ -4451,13 +4414,13 @@
       "notes": ""
     },
     {
-      "id": "0304a99d9f80de8031c9",
+      "id": "0353e92ea98b5f3b9aaf",
       "score": 96,
       "status": "review",
-      "title": "Adjunct Lecturer-Western Humanities",
+      "title": "Adjunct Lecturer - European History",
       "college": "SUNY College at Geneseo",
       "source": "NY",
-      "url": "https://jobs.geneseo.edu/postings/5083",
+      "url": "https://jobs.geneseo.edu/postings/5062",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -4532,20 +4495,20 @@
       "notes": ""
     },
     {
-      "id": "006fb4f4f056b8c85570",
-      "score": 99,
+      "id": "0160102886496944e854",
+      "score": 100,
       "status": "pass",
-      "title": "Adjunct Professor of Automotive Technology",
-      "college": "Oklahoma City Community College",
+      "title": "Adjunct Faculty - English Composition I & II",
+      "college": "Tulsa Community College",
       "source": "OK",
-      "url": "https://www.occcjobs.com/postings/24504",
+      "url": "https://www.schooljobs.com/careers/tulsacc/jobs/4889805/adjunct-faculty-english-composition-i-ii",
       "reasons": [
         {
-          "code": "aging_posting_no_evergreen_signal",
+          "code": "missing_deadline",
           "severity": "info",
-          "dimension": "freshness",
-          "deduction": 10,
-          "detail": "Posting date 2025-07-14 is more than 1 year(s) old with no evergreen/applicant-pool signal."
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -4920,33 +4883,6 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "001b64b75c098fb1f006",
-      "score": 96,
-      "status": "pass",
-      "title": "Lecturer of Spanish",
-      "college": "Georgia College & State University",
-      "source": "USG",
-      "url": "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U#jobId=303514",
-      "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
