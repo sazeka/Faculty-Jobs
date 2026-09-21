@@ -2954,6 +2954,21 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
     }),
     null
   );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Dallas Theological Seminary",
+      title: "Missiology and Intercultural Ministries Faculty‍",
+      description: "Faculty Development and Participation: Actively make progress toward tenure and promotions as outlined in the Faculty Handbook.",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Dallas Theological Seminary",
+      title: "Assistant Professor of Old Testament Studies Faculty‍",
+    }),
+    null
+  );
 });
 
 test("uses College of Southern Maryland's ten-month tenure-track faculty convention", () => {
