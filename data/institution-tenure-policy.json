@@ -1,6 +1,7 @@
 {
   "_comment": "Curated, evidence-backed appointment-policy overrides used ONLY as a last resort by classifyTenureTrackWithEvidence, after every explicit tenure/non-tenure phrase check (stored field, title, description) has come up empty. noTenureInstitutions contains institutions whose certified IPEDS response explicitly says they have no tenure system. rules contains institution-specific title conventions and other narrowly sourced policies.",
   "noTenureInstitutions": [
+    { "college": "Delaware Technical Community College", "unitId": "130907", "source": "https://nces.ed.gov/ipeds/institution-profile/130907", "verifiedAt": "2026-09-21", "note": "Current listings are aggregated under the collegewide Delaware Technical Community College label; NCES identifies the reporting institution as Delaware Technical Community College-Terry, which reports no tenure system and all instructional staff outside a tenure track." },
     { "college": "Bryant & Stratton College-Online", "unitId": "480091", "source": "https://nces.ed.gov/ipeds/reported-data/html/480091?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-20" },
     { "college": "Western Governors University", "unitId": "433387", "source": "https://nces.ed.gov/ipeds/reported-data/html/433387?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-20" },
     { "college": "Ave Maria University", "unitId": "446048", "source": "https://nces.ed.gov/ipeds/reported-data/html/446048?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-20" },
@@ -3666,6 +3667,113 @@
       "value": false,
       "note": "The current Pathways announcement expressly limits the Instructor appointment to two years initially and four years total. UChicago's appointment guidance treats this BSD pathway as a time-limited academic appointment rather than the tenure track. The rule is confined to this exact search and term sentence.",
       "source": "https://academicjobs.uchicago.edu/positions/176891",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Arkansas State University-Beebe",
+      "titlePattern": "^Instructor of (?:Nursing(?: - \\(Regional Career Center\\))?|Welding)$",
+      "value": false,
+      "note": "ASU-Beebe's current Faculty Handbook states that basic Instructors may not apply for tenure; academic-transfer faculty must first be promoted to Assistant Professor and technical/occupational faculty to Senior Instructor before receiving a pre-tenure contract. Exact-title scoping excludes the current MLT search that may instead appoint at Assistant Professor rank.",
+      "source": "https://www.asub.edu/images/uploads/20240612/2024-2025-faculty-handbook-72088.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Nicholls State University",
+      "titlePattern": "^Instructor of Nursing$",
+      "value": false,
+      "note": "Nicholls' official promotion and tenure policy identifies Instructor as a fixed-term, non-tenure-track annual appointment and limits tenure consideration to full-time faculty at Assistant Professor rank or above. Exact-title scoping leaves the two current Instructor/Assistant/Associate searches unresolved because their eventual rank is candidate-dependent.",
+      "source": "https://www.nicholls.edu/policy-procedure-manual/2-faculty-personnel-policies/2-9-promotion-and-tenure-policies/2-9-3-criteria-and-procedures-for-university-appointment-reappointment-promotion-and-tenure/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Indiana State University",
+      "titlePattern": "^Instructor and BSW Program Director$",
+      "value": false,
+      "note": "Indiana State's Board-approved Policy 305 defines initial Instructor appointments as regular non-tenure-track faculty, normally on three-year appointments; tenure-track appointments begin at Assistant Professor or higher. The exact-title rule excludes current searches offering either Instructor or Assistant Professor rank.",
+      "source": "https://cms.indstate.edu/policy-library/faculty-appointment-promotion-tenure-and-evaluation",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Angelo State University",
+      "titlePattern": "^Instructor of (?:Art, Video Game Art and Animation|Commercial Aviation / Air Traffic Operations|Exercise Science)$",
+      "value": false,
+      "note": "Angelo State separates its Instructor/Senior Instructor evaluation and promotion process from tenure-eligible professorial ranks; its official faculty materials identify the Instructor ladder as non-tenure-track. This rule is limited to the three current searches carrying the unmodified Instructor rank.",
+      "source": "https://www.angelo.edu/faculty-and-staff/faculty-senate/operating-policies-under-review.php",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "collegePattern": "^(?:Ashland|Elizabethtown|Madisonville) Community and Technical College$",
+      "titlePattern": "^(?:Dual Credit Instructors|Nurse Aide Instructor|Pharmacy Technician Prep Course Instructor|Aviation Maintenance Technology Instructor)$",
+      "descriptionPattern": "(?:Temporary Temporary|Adjunct Faculty Part-time)",
+      "value": false,
+      "note": "These exact current KCTCS records expose their appointment category and time status in the official ATS header as either Temporary/Temporary or Adjunct Faculty/Part-time. Both structured combinations are outside the tenure path; exact college, title, and header-value scoping prevents a generic inference from the Instructor rank.",
+      "source": "https://careers.kctcs.edu/jobs/search",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Louisiana State University Health Sciences Center-New Orleans",
+      "titlePattern": "^Assistant Professor/ Associate Professor/ Professor - Instruction Track (?:Chsp|Epph)$",
+      "value": false,
+      "note": "LSU Health New Orleans' two current searches explicitly name the Instruction Track. The institution's faculty appointment framework distinguishes that renewable instructional appointment path from tenure-track faculty; the rule is confined to the exact current titles.",
+      "source": "https://www.lsuhsc.edu/administration/academic/otm/docs/FacultyHandbook.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Ohio State University",
+      "titlePattern": "^Physician - (?:PCC, Sleep Medicine|Pulmonology, Pulmonary, Critical Care) \\(Open Rank/ ?Track Faculty\\)$",
+      "descriptionPattern": "Clinical faculty members are not eligible for tenure and are appointed for terms of three to five years",
+      "value": false,
+      "note": "These two current physician searches directly state that the clinical faculty appointment is ineligible for tenure and lasts three to five years. Both the exact current title and appointment sentence are required because Ohio State's other Open Rank/Track searches may select a tenure-track candidate.",
+      "source": "https://hr.osu.edu/careers/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Columbia University in the City of New York",
+      "titlePattern": "^Assistant Professor of Reproductive Sciences$",
+      "descriptionPattern": "Assistant Professor of Research",
+      "value": false,
+      "note": "The two current Suh Lab records state the formal appointment as Assistant Professor of Research in their official descriptions. Columbia's appointment taxonomy places research-rank faculty outside the tenure ladder; the visible-title and formal-rank requirements prevent a broader inference from the word research.",
+      "source": "https://facultyhandbook.columbia.edu/content/officers-research",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Wayne State University",
+      "titlePattern": "^Faculty, Rank To Be Determined, Clinical - Department of Pathology$",
+      "value": false,
+      "note": "Wayne State School of Medicine's official appointment taxonomy identifies Clinical faculty as voluntary appointments outside the tenure-eligible payroll tracks. This rule is limited to the one current search that explicitly carries the Clinical designation.",
+      "source": "https://facaffairs.med.wayne.edu/appointments",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Peninsula College",
+      "titlePattern": "^(?:Marine Technology Instructor \\(Full-Time Faculty, Port Angeles Campus\\)|Mobile Welding Instructor \\(Full-Time Faculty, Port Angeles Campus\\))$",
+      "value": true,
+      "note": "Peninsula College's current official employment page identifies both exact openings as full-time tenure-track appointments beginning in Fall 2026. Exact-title scoping resolves the shared-page scrape, which also contains a separate temporary corrections-faculty opening.",
+      "source": "https://pencol.edu/human-resources",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Peninsula College",
+      "titlePattern": "^Pastry & Specialty Baking Instructor \\(Full-time Faculty, Clallam Bay Corrections Center\\)$",
+      "value": false,
+      "note": "Peninsula College's current official employment page identifies this exact corrections-education opening as full-time temporary faculty funded through a grant. Exact-title scoping prevents the tenure-track language for two other openings on the same scraped page from controlling this record.",
+      "source": "https://pencol.edu/human-resources",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Treasure Valley Community College",
+      "titlePattern": "^Nursing Instructor - Clinical$",
+      "value": false,
+      "note": "Treasure Valley's current official jobs page lists this exact opening under Part-Time Positions and describes it as part-time clinical instruction. The same page separately labels a Surgical Technologist Faculty opening tenure-track, so exact-title scoping is required.",
+      "source": "https://www.treasurevalleycc.edu/hr/jobs.cfm",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "North Florida College",
+      "titlePattern": "^EMS Lead Instructor$",
+      "value": false,
+      "note": "North Florida College's current official employment page labels this exact opening part-time and hourly. Exact-title scoping leaves its two full-time Instructor openings unresolved because the page does not state their appointment track.",
+      "source": "https://www.nfc.edu/about/employment-opportunities/employment-openings",
       "verifiedAt": "2026-09-21"
     },
     {

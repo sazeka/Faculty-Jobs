@@ -3386,6 +3386,103 @@ test("uses TCU's exact current tenure-track searches", () => {
   );
 });
 
+test("uses documented non-tenure Instructor ranks without absorbing mixed-rank searches", () => {
+  for (const [college, title] of [
+    ["Arkansas State University-Beebe", "Instructor of Nursing"],
+    ["Arkansas State University-Beebe", "Instructor of Nursing - (Regional Career Center)"],
+    ["Arkansas State University-Beebe", "Instructor of Welding"],
+    ["Nicholls State University", "Instructor of Nursing"],
+    ["Indiana State University", "Instructor and BSW Program Director"],
+    ["Angelo State University", "Instructor of Art, Video Game Art and Animation"],
+    ["Angelo State University", "Instructor of Commercial Aviation / Air Traffic Operations"],
+    ["Angelo State University", "Instructor of Exercise Science"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: false, evidence: "institution-policy" }
+    );
+  }
+  for (const [college, title] of [
+    ["Arkansas State University-Beebe", "Director of Medical Laboratory Technology/Instructor or Assistant Professor of MLT"],
+    ["Nicholls State University", "Instructor/Assistant/Associate Professor of Management"],
+    ["Indiana State University", "Instructor/Assistant Professor of Aviation"],
+  ]) {
+    assert.equal(classifyTenureTrack({ college, title }), null);
+  }
+});
+
+test("uses exact structured and formal-rank evidence in current appointment searches", () => {
+  for (const job of [
+    {
+      college: "Elizabethtown Community and Technical College",
+      title: "Nurse Aide Instructor",
+      description: "Elizabethtown Temporary Temporary",
+    },
+    {
+      college: "Ashland Community and Technical College",
+      title: "Pharmacy Technician Prep Course Instructor",
+      description: "Ashland Adjunct Faculty Part-time",
+    },
+    {
+      college: "Louisiana State University Health Sciences Center-New Orleans",
+      title: "Assistant Professor/ Associate Professor/ Professor - Instruction Track Chsp",
+    },
+    {
+      college: "Ohio State University",
+      title: "Physician - PCC, Sleep Medicine (Open Rank/Track Faculty)",
+      description: "Clinical faculty members are not eligible for tenure and are appointed for terms of three to five years.",
+    },
+    {
+      college: "Columbia University in the City of New York",
+      title: "Assistant Professor of Reproductive Sciences",
+      description: "The lab is seeking an Assistant Professor of Research.",
+    },
+    {
+      college: "Wayne State University",
+      title: "Faculty, Rank To Be Determined, Clinical - Department of Pathology",
+    },
+  ]) {
+    assert.equal(classifyTenureTrackWithEvidence(job).value, false);
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "Ohio State University",
+      title: "Physician - Department of Radiology, Neuroradiologist - Onsite (Open Rank/Track Faculty)",
+    }),
+    null
+  );
+});
+
+test("maps Delaware Tech's collegewide listings to its no-tenure NCES reporting institution", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Delaware Technical Community College",
+      title: "Instructor (Dental Hygiene)",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+});
+
+test("separates exact appointments published together on shared college jobs pages", () => {
+  for (const title of [
+    "Marine Technology Instructor (Full-Time Faculty, Port Angeles Campus)",
+    "Mobile Welding Instructor (Full-Time Faculty, Port Angeles Campus)",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Peninsula College", title }), true);
+  }
+  for (const [college, title] of [
+    ["Peninsula College", "Pastry & Specialty Baking Instructor (Full-time Faculty, Clallam Bay Corrections Center)"],
+    ["Treasure Valley Community College", "Nursing Instructor - Clinical"],
+    ["North Florida College", "EMS Lead Instructor"],
+  ]) {
+    assert.equal(classifyTenureTrack({ college, title }), false);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "North Florida College", title: "Nursing Instructor" }),
+    null
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
