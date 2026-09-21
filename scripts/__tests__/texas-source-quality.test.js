@@ -11,6 +11,10 @@ test("University of Houston excludes known staff roles from its academic feed", 
   );
   assert.match(
     source,
+    /Program Director 3 - College of Pharmacy/
+  );
+  assert.match(
+    source,
     /if \(type === "nau-search"\) \{[\s\S]{0,520}excludeTitleFilter\s*\?\s*jobs\.filter/
   );
 });

@@ -6129,7 +6129,7 @@ const TX_CAMPUSES = [
     campus: "University of Houston",
     type: "nau-search",
     url: "https://careers.uh.edu/jobs/search",
-    excludeTitleFilter: "^(?:Program Manager [12] - (?:Graduate and Professional Programs|College of Education)|Systems Analyst 2 - College of Pharmacy)$",
+    excludeTitleFilter: "^(?:Program Manager [12] - (?:Graduate and Professional Programs|College of Education)|Program Director 3 - College of Pharmacy|Systems Analyst 2 - College of Pharmacy)$",
   },
   {
     campus: "Texas Tech University",
