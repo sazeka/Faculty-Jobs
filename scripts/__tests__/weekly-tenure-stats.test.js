@@ -2702,6 +2702,7 @@ test("uses verified teaching-professor and lecturer appointment structures", () 
     ["Oklahoma State University", "Instructor of Professional Practice 22154"],
     ["Oklahoma State University", "Professor of Professional Practice & Laboratory Director AF7850"],
     ["University of Nevada, Reno", "(Nursing Scientist) Assistant / Associate Professor"],
+    ["University of Nevada, Reno", "Lecturer/Teaching Assistant Professor, Criminal Justice"],
     ["University of South Dakota", "Clinical Instructor of Dental Hygiene"],
     ["Colorado Mesa University", "Assistant Clinical Professor of Nursing"],
   ]) {
@@ -3098,6 +3099,25 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
     classifyTenureTrack({
       college: "Graceland University-Lamoni",
       title: "Assistant Professor of Chemistry",
+    }),
+    null
+  );
+  for (const title of [
+    "Assistant Professor of Educational Studies (Instructional Design, Technology, and Quantitative Methods Focus)",
+    "Assistant Professor, English",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({
+        college: "University of Nevada, Reno",
+        title,
+      }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Nevada, Reno",
+      title: "Lecturer II / Teaching Assistant Professor / Assistant Professor, Commercial Horticulture Specialist (Clark County, NV)",
     }),
     null
   );
