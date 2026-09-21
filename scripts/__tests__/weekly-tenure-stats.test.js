@@ -3335,6 +3335,23 @@ test("uses Augustana's exact current tenure-track searches", () => {
   );
 });
 
+test("uses Florida Southern's exact Communication tenure-track search", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Florida Southern College",
+      title: "Assistant Professor of Communications",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Florida Southern College",
+      title: "Assistant Professor of Voice and Opera Theater",
+    }),
+    null
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
