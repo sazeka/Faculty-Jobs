@@ -2019,6 +2019,77 @@ test("uses Bowling Green's qualified-rank taxonomy and TTIC's research-faculty d
   );
 });
 
+test("uses Princeton's official ladder and lecturer rank taxonomy", () => {
+  for (const title of [
+    "Assistant Professor",
+    "Assistant Professor, Associate Professor",
+    "Associate Professor or Professor",
+    "Professor in Plasma Physics",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Princeton University", title }), true, title);
+  }
+
+  for (const title of ["Lecturer", "Lecturer in English", "University Lecturer"]) {
+    assert.equal(classifyTenureTrack({ college: "Princeton University", title }), false, title);
+  }
+
+  assert.equal(
+    classifyTenureTrack({ college: "Princeton University", title: "Visiting Assistant Professor" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Princeton University", title: "Research Assistant Professor" }),
+    null
+  );
+});
+
+test("uses the University of Hawai‘i non-tenure Lecturer category at Windward CC", () => {
+  for (const title of [
+    "Lecturer CC (Pacific Studies) - Fall2024/Spring 2025/Summer 2025",
+    "Lecturer, CC (Astronomy) - Fall2024/Spring 2025/Summer2025",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Windward Community College", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Windward Community College", title: "Assistant Professor of Biology" }),
+    null
+  );
+});
+
+test("uses Stanford's explicitly named non-tenure faculty lines without guessing mixed medical searches", () => {
+  for (const title of [
+    "Assistant Professor, University Medical Line, Dept of Cardiothoracic Surgery",
+    "Clinical Assistant Professor, Stanford Dermatology",
+    "Pediatrics CVICU Hospitalist Clinical Instructor or Clinical Assistant Professor",
+    "Assistant, Associate or Full Professor of Ophthalmology (Research)",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Stanford University", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Stanford University", title: "Pediatric Radiology Faculty Position" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Stanford University", title: "Clinician Scientist - Assistant Professor" }),
+    null
+  );
+});
+
+test("uses UChicago's Other Academic Appointment rank names", () => {
+  for (const title of [
+    "Assistant Instructional Professor, Fundamentals: Issues & Texts",
+    "Research Assistant Professors – Hematology/Oncology",
+    "Research Associate Professor – Pediatric Genetics",
+    "Lecturer, Graham School",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "University of Chicago", title }), false, title);
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "University of Chicago", title: "Assistant Professor in Astronomy & Astrophysics" }),
+    null
+  );
+});
+
 test("uses South Alabama's separate Instructor Track without guessing professorial ranks", () => {
   assert.equal(
     classifyTenureTrack({ college: "University of South Alabama", title: "Instructor in UTeach" }),

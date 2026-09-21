@@ -7329,7 +7329,14 @@ const AR_CAMPUSES = [
   { campus: "University of Arkansas Community College-Batesville", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf24011c8d3b2559c401cf06" },
   { campus: "University of Arkansas Community College-Morrilton", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf24019adc09f758c4011306" },
   { campus: "University of Arkansas-Pulaski Technical College", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf24017c59cf3b59c4010b07" },
-  { campus: "University of Arkansas at Pine Bluff", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS" },
+  // The bare /UASYS tenant is system-wide and previously mislabeled 114
+  // Fayetteville/UAMS/other-campus jobs as Pine Bluff. Workday's official
+  // Institution facet identifies UAPB with this stable hiring-company id.
+  {
+    campus: "University of Arkansas at Pine Bluff",
+    type: "workday",
+    url: "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf2401021f9b3859c401ff06",
+  },
   { campus: "University of Arkansas-Fort Smith", type: "workday", url: "https://uasys.wd5.myworkdayjobs.com/UASYS?locations=764b2d014314010f624ed3006e08cec1" },
   { campus: "Jefferson Regional School of Nursing", type: "adp", url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=542f7b59-1156-4a17-a729-f8cd9337acf6&ccId=19000101_000001&lang=en_US" },
 ];

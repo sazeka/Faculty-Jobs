@@ -44,10 +44,21 @@ test("all verified sources are wired and all exclusions are persisted", () => {
   const institutionMap = new Map(master.institutions.map((row) => [row.name, row]));
 
   for (const row of report.verified) {
-    assert.equal(overrideMap.get(row.name)?.career_url, row.career_url, row.name);
+    // The closeout report is a historical discovery artifact. UAPB's bare
+    // shared-tenant URL was subsequently replaced with the verified
+    // institution facet after it was shown to return other UA campuses.
+    if (row.name === "University of Arkansas at Pine Bluff") {
+      assert.equal(
+        overrideMap.get(row.name)?.career_url,
+        "https://uasys.wd5.myworkdayjobs.com/UASYS?hiringCompany=720b21cbdf2401021f9b3859c401ff06",
+        row.name
+      );
+    } else {
+      assert.equal(overrideMap.get(row.name)?.career_url, row.career_url, row.name);
+    }
     assert.equal(institutionMap.get(row.name)?.coverage_status, "covered", row.name);
     const escaped = row.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    assert.match(server, new RegExp(`^\\s*\\{ campus: "${escaped}"`, "m"), row.name);
+    assert.match(server, new RegExp(`\\{\\s*campus:\\s*"${escaped}"`, "m"), row.name);
   }
   for (const row of report.excluded) {
     assert.equal(rules.institutionOverrides[row.name]?.action, "exclude", row.name);

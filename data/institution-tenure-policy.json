@@ -682,6 +682,54 @@
       "verifiedAt": "2026-09-17"
     },
     {
+      "college": "Princeton University",
+      "titlePattern": "\\bLecturer\\b",
+      "value": false,
+      "note": "Princeton's Office of the Dean of the Faculty places Lecturer, Senior Lecturer, University Lecturer, and Lecturer with the rank of Professor in its Non-Tenure Track Faculty category. This rule is deliberately limited to titles containing the explicit Lecturer rank.",
+      "source": "https://faculty.princeton.edu/faculty/faculty-ranks-appointment-advancement",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Princeton University",
+      "titlePattern": "^(?!.*\\b(?:Lecturer|Instructor|Visiting|Research|Practice)\\b)(?=.*\\b(?:Assistant Professor|Associate Professor|Professor)\\b).*$",
+      "value": true,
+      "note": "Princeton's official faculty-ranks page lists the unmodified Professor, Associate Professor, and Assistant Professor ranks under Tenured & Tenure-Track Faculty. Qualified non-ladder ranks are excluded from this rule.",
+      "source": "https://faculty.princeton.edu/faculty/faculty-ranks-appointment-advancement",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Windward Community College",
+      "titlePattern": "\\bLecturer(?:,?\\s*CC)?\\b",
+      "value": false,
+      "note": "University of Hawai‘i Executive Policy 5.221 lists Lecturer (L) among the system's non-tenure-eligible faculty categories. The current Windward searches all use the Lecturer or Lecturer CC rank and are scoped to that explicit rank only.",
+      "source": "https://www.hawaii.edu/policy/?action=viewPolicy&policyChapter=5&policyNumber=221&policySection=ep",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Stanford University",
+      "titlePattern": "\\bUniversity Medical Line\\b|\\bClinical (?:Instructor|Assistant Professor|Associate Professor|Professor)\\b",
+      "value": false,
+      "note": "Stanford's Faculty Handbook states that University Medical Line faculty are outside the Tenure Line, and Stanford Medicine defines Clinical Instructor/Assistant Professor/Associate Professor/Professor as Clinician Educator ranks rather than Tenure Line ranks. The rule requires one of those explicit line or rank labels and leaves generic medical-faculty titles unresolved.",
+      "source": "https://facultyhandbook.stanford.edu/index/chapter-2-appointments-reappointments-and-promotions-professoriate",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Stanford University",
+      "titlePattern": "\\bProfessor\\b.{0,60}(?:\\(Research\\)|,\\s*Research\\b)",
+      "value": false,
+      "note": "Stanford Medicine identifies its Research professoriate as the Non-Tenure Line - Research. This narrow rule only matches postings whose professorial title itself carries the parenthetical or comma Research line designation.",
+      "source": "https://med.stanford.edu/academicaffairs/faculty/facultylines.html",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Chicago",
+      "titlePattern": "\\b(?:Instructional Professors?|Research (?:Assistant|Associate|Full)?\\s*Professors?|Lecturer)\\b",
+      "value": false,
+      "note": "UChicago classifies Instructional Professors, Research Professors, and Lecturers as Other Academic Appointments rather than the tenure-line faculty appointment series. Current official job pages also label Instructional Professor searches as Other Academic Appointee and fixed-term. This rule is limited to those expressly named appointment ranks.",
+      "source": "https://socialsciences.uchicago.edu/2025-26-chairs-handbook",
+      "verifiedAt": "2026-09-21"
+    },
+    {
       "college": "Ball State University",
       "titlePattern": "\\b(?:(?:Assistant|Associate|Senior)\\s+)?Lecturer\\b|\\b(?:Assistant|Associate)\\s+Teaching Professor\\b",
       "value": false,
