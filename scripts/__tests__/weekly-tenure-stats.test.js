@@ -1243,6 +1243,7 @@ test("recognizes ATS structural metadata (hourly salary, labeled non-tenure Job 
     "Work type: Adjunct Faculty Location: Denver Categories: Faculty",
     "Work type: Temporary Grant-P14, Full-Time Location: Orangeburg Categories: Faculty",
     "Position Type: PT Hours Per Week 15",
+    "Work Schedule: part-time/9-months Department: Arts and Sciences",
     "Job Type: Part-Time Staff Term: Staff Faculty Term: Fall Semester",
     "Job Type Faculty - Part Time, Exempt, Contract based",
   ]) {
@@ -1252,6 +1253,7 @@ test("recognizes ATS structural metadata (hourly salary, labeled non-tenure Job 
       description
     );
   }
+  assert.equal(classifyTenureTrack({ title: "Faculty Half-Time- UG Healthcare Administration" }), false);
   // A real tenure-track salary schedule (annual, not hourly) is unaffected.
   assert.equal(
     classifyTenureTrack({ description: "Salary $75,000.00 - $95,000.00 Annually Job Type Full-Time Faculty" }),
@@ -2105,6 +2107,16 @@ test("uses Stanford's explicitly named non-tenure faculty lines without guessing
     classifyTenureTrack({ college: "Stanford University", title: "Clinician Scientist - Assistant Professor" }),
     null
   );
+  assert.equal(classifyTenureTrack({
+    college: "Stanford University",
+    title: "Faculty Position in Early Learning: Mechanisms and Interventions",
+    description: "Stanford University University Tenure Line Opening at: Aug 11 2026",
+  }), true);
+  assert.equal(classifyTenureTrack({
+    college: "Stanford University",
+    title: "Mixed-Line Faculty Search",
+    description: "Stanford University Non-Tenure Line (Research) University Medical Line University Tenure Line Opening at: Aug 11 2026",
+  }), null);
 });
 
 test("uses UChicago's Other Academic Appointment rank names", () => {
@@ -2408,7 +2420,7 @@ test("classifies current Lamar State College-Port Arthur hires after tenure ende
   );
 });
 
-test("uses current ECSU, Daytona State, and SMSU appointment paths", () => {
+test("uses current ECSU, Daytona State, and Minnesota State appointment paths", () => {
   assert.equal(classifyTenureTrack({ college: "Elizabeth City State University", title: "Assistant/Associate Professor" }), true);
   assert.equal(classifyTenureTrack({ college: "Elizabeth City State University", title: "Visiting Assistant Professor" }), false);
   assert.equal(classifyTenureTrack({ college: "Daytona State College", title: "Faculty, Nursing" }), true);
@@ -2422,6 +2434,20 @@ test("uses current ECSU, Daytona State, and SMSU appointment paths", () => {
     title: "Assistant Professor of Accounting - State University Faculty",
     description: "Employment Condition: Unclassified - Limited Academic (Fixed Term)",
   }), false);
+  assert.equal(classifyTenureTrack({
+    college: "Normandale Community College",
+    title: "Instructor - Chemistry",
+    description: "Employment Condition: Unclassified - Unlimited Academic",
+  }), true);
+  assert.equal(classifyTenureTrack({
+    college: "Normandale Community College",
+    title: "Instructor - Chemistry",
+    description: "Employment Condition: Unclassified - Limited Academic (Fixed Term)",
+  }), false);
+  assert.equal(classifyTenureTrack({
+    college: "Normandale Community College",
+    title: "Instructor - Chemistry",
+  }), null);
 });
 
 test("does not treat generic with-tenure policy boilerplate as appointment evidence", () => {

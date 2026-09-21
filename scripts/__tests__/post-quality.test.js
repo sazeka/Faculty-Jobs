@@ -66,6 +66,12 @@ test("faculty navigation, governance, awards, and news labels are quarantined", 
     "Featured Faculty",
     "Staff/Faculty Webmail",
     "Welcoming Seven New Faculty Members",
+    "Faculty and Providers",
+    "Faculty Home",
+    "My Faculty Jobs",
+    "Stony Brook Faculty Positions",
+    "Academic Affairs Available Faculty Positions",
+    "Cypress College Professor Foster Stanback Named 2027 Orange County Teacher of the Year Nominee",
   ]) {
     assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
   }
@@ -84,6 +90,8 @@ test("unambiguous student-services, administration, and recreation roles are qua
     "Associate Director for Faculty and Research Communications",
     "Dean of Enrollment Management",
     "Research Professional 2 - Chemical Engineering - Professor Bruggeman",
+    "Climbing Wall Student Instructor",
+    "Staff Instructor IV - Workforce",
     "Swim Instructor",
     "Yoga Instructor, FitWell Group Exercise",
   ]) {

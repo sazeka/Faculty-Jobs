@@ -81,7 +81,18 @@
     { "college": "University System of Maryland", "unitId": "164146", "source": "https://nces.ed.gov/ipeds/reported-data/html/164146?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
     { "college": "University of Arkansas-Pulaski Technical College", "unitId": "107664", "source": "https://nces.ed.gov/ipeds/reported-data/html/107664?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
     { "college": "Coastal Bend College", "unitId": "223320", "source": "https://nces.ed.gov/ipeds/reported-data/html/223320?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
-    { "college": "Allen College", "unitId": "152798", "source": "https://nces.ed.gov/ipeds/reported-data/html/152798?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" }
+    { "college": "Allen College", "unitId": "152798", "source": "https://nces.ed.gov/ipeds/reported-data/html/152798?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Colorado State University Global", "unitId": "476975", "source": "https://nces.ed.gov/ipeds/reported-data/html/476975?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Sanford Burnham Prebys Medical Discovery Institute", "unitId": "481535", "source": "https://nces.ed.gov/ipeds/reported-data/html/481535?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Frederick Community College", "unitId": "162557", "source": "https://nces.ed.gov/ipeds/reported-data/html/162557?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Dallas College", "unitId": "224615", "source": "https://nces.ed.gov/ipeds/reported-data/html/224615?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Southwestern Community College", "unitId": "154396", "source": "https://nces.ed.gov/ipeds/reported-data/html/154396?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "St Joseph School of Nursing", "unitId": "183248", "source": "https://nces.ed.gov/ipeds/reported-data/html/183248?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Bay Mills Community College", "unitId": "380359", "source": "https://nces.ed.gov/ipeds/reported-data/html/380359?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Purdue University Global", "unitId": "489779", "source": "https://nces.ed.gov/ipeds/reported-data/html/489779?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "The King's University", "unitId": "439701", "source": "https://nces.ed.gov/ipeds/reported-data/html/439701?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Colorado Christian University", "unitId": "126669", "source": "https://nces.ed.gov/ipeds/reported-data/html/126669?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" },
+    { "college": "Alaska Pacific University", "unitId": "102669", "source": "https://nces.ed.gov/ipeds/reported-data/html/102669?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-21" }
   ],
   "rules": [
     {
@@ -741,6 +752,15 @@
       "value": false,
       "note": "University of Hawai‘i Executive Policy 5.221 lists Lecturer (L) among the system's non-tenure-eligible faculty categories. The current Windward searches all use the Lecturer or Lecturer CC rank and are scoped to that explicit rank only.",
       "source": "https://www.hawaii.edu/policy/?action=viewPolicy&policyChapter=5&policyNumber=221&policySection=ep",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Stanford University",
+      "titlePattern": "^",
+      "descriptionPattern": "^(?!.*(?:University Medical Line|Non-Tenure Line)).*Stanford University University Tenure Line Opening at:",
+      "value": true,
+      "note": "Stanford's official Faculty Positions pages place appointment-line labels in the scraped page header. This rule classifies only pages whose header names University Tenure Line and does not also offer the University Medical Line or Non-Tenure Line; mixed-line searches remain unresolved. Stanford's Faculty Handbook identifies the University Tenure Line as its tenure-line professoriate.",
+      "source": "https://facultyhandbook.stanford.edu/index/chapter-2-appointments-reappointments-and-promotions-professoriate",
       "verifiedAt": "2026-09-21"
     },
     {
@@ -2655,12 +2675,29 @@
       "verifiedAt": "2026-09-21"
     },
     {
-      "college": "Southwest Minnesota State University",
-      "titlePattern": "^Assistant Professor of (?:Accounting|Nursing & Prelicensure BSN Program Coordinator) - State University Faculty$",
+      "collegePattern": "^(?:Metropolitan State University|Southwest Minnesota State University|Winona State University)$",
+      "titlePattern": "^",
       "descriptionPattern": "Employment Condition:\\s*Unclassified - Unlimited Academic",
       "value": true,
-      "note": "The current Minnesota State postings label these Assistant Professor appointments Unclassified - Unlimited Academic rather than Limited Academic (Fixed Term). SMSU's official faculty records distinguish unlimited probationary faculty from fixed-term faculty, with probationary faculty progressing through the IFO tenure system.",
-      "source": "https://www.smsu.edu/administration/humanresources/union/ifo-seniority-roster.html",
+      "note": "Minnesota State's current university postings distinguish Unclassified - Unlimited Academic appointments from Limited Academic (Fixed Term) appointments. The 2025-27 IFO agreement defines fixed-term appointments as temporary and separately places regular faculty into probationary appointments leading to tenure. This rule requires the posting's exact Unlimited Academic field and is limited to the three universities represented in the current unresolved data.",
+      "source": "https://www.minnstate.edu/system/working/docs/contracts/ifo-contract.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "collegePattern": "^(?:Anoka Technical College|Hennepin Technical College|Minnesota State \\(Grand Rapids\\)|Minnesota State \\(Mnor Hibbing Campus\\)|Normandale Community College|Northland Community and Technical College|Riverland Community College|Saint Paul College|South Central College)$",
+      "titlePattern": "^",
+      "descriptionPattern": "Employment Condition:\\s*Unclassified - Unlimited Academic",
+      "value": true,
+      "note": "Minnesota State's current college postings expressly label these vacancies Unclassified - Unlimited Academic. The current MSCF agreement defines an unlimited full-time appointment as continuing employment following a three-year probationary appointment, the two-year-college analogue to tenure, and contrasts it with temporary full-time and adjunct appointments. This rule requires the exact Unlimited Academic field and does not infer status from rank alone.",
+      "source": "https://www.minnstate.edu/system/working/docs/contracts/mscf-contract.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Graceland University-Lamoni",
+      "titlePattern": "^Faculty Associate - Nursing$",
+      "value": false,
+      "note": "Graceland's current graduate catalog separates Faculty Associates from its ranked graduate faculty and lists the Faculty Associate category alongside explicit adjunct appointments. This rule is limited to the exact current Faculty Associate vacancy and does not classify Graceland's regular professorial searches.",
+      "source": "https://www.graceland.edu/academics/academic-catalogs/graduate-catalog-home/faculty-and-administration/",
       "verifiedAt": "2026-09-21"
     },
     {
