@@ -3319,6 +3319,22 @@ test("uses Wheaton's exact current tenure-track searches", () => {
   );
 });
 
+test("uses Augustana's exact current tenure-track searches", () => {
+  for (const title of [
+    "Assistant Professor, Computer Science & Software Engineering",
+    "Assistant Professor, Psychology - Clinical, Counseling or Open",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Augustana University", title }),
+      { value: true, evidence: "institution-policy" }
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Augustana University", title: "Assistant Professor, Social Work" }),
+    null
+  );
+});
+
 test("reports counts and percentages only across classified positions", () => {
   assert.deepEqual(
     computeTenureTrackBreakdown([
