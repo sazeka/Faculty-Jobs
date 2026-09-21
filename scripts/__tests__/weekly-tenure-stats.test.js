@@ -2820,7 +2820,7 @@ test("uses South Carolina State's non-tenure Instructor rank without guessing pr
   );
 });
 
-test("uses full-time tenure and continuing-contract paths at Holyoke, Saint Johns River, Pasco-Hernando, and HACC", () => {
+test("uses full-time tenure and continuing-contract paths at Holyoke, Saint Johns River, Pasco-Hernando, HACC, and Eastern Oklahoma", () => {
   assert.equal(
     classifyTenureTrack({
       college: "Holyoke Community College",
@@ -2882,6 +2882,22 @@ test("uses full-time tenure and continuing-contract paths at Holyoke, Saint John
       college: "Harrisburg Area Community College",
       title: "Adjunct Faculty, Dental Hygiene",
       description: "Job Type: Adjunct",
+    }),
+    false
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Eastern Oklahoma State College",
+      title: "Faculty: Instructor of Political Science",
+      description: "Responsibilities include teaching 15 credits each semester, developing curriculum, advising, and institutional service.",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Eastern Oklahoma State College",
+      title: "Adjunct Instructor of Political Science",
+      description: "Part-time appointment",
     }),
     false
   );
