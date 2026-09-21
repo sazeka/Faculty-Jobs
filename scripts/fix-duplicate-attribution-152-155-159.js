@@ -285,6 +285,27 @@ jobs = jobs.map((job) => {
 const arkansasDedup = consolidateWorkdayRequisitionDuplicates(jobs);
 jobs = arkansasDedup.jobs;
 
+// Relabeling two copies from different erroneous campus labels to the same
+// verified campus can expose an exact duplicate that did not exist before the
+// correction (same canonical URL, title, and college). Collapse only that
+// fully identical identity tuple; genuine multi-campus postings remain
+// distinct because `college` is part of the key.
+const exactDuplicateDrops = [];
+const seenExactJobs = new Set();
+jobs = jobs.filter((job) => {
+  const key = [
+    canonicalizeUrl(job.url),
+    clean(job.title).toLowerCase(),
+    clean(job.college).toLowerCase(),
+  ].join("|");
+  if (!seenExactJobs.has(key)) {
+    seenExactJobs.add(key);
+    return true;
+  }
+  exactDuplicateDrops.push({ url: job.url, title: clean(job.title), college: job.college });
+  return false;
+});
+
 // ---------------------------------------------------------------------------
 // Recompute canonical ids last, once, over the fully-corrected data.
 // ---------------------------------------------------------------------------
@@ -324,6 +345,11 @@ const report = {
     droppedCount: arkansasDedup.dropped.length,
     dropped: arkansasDedup.dropped,
   },
+  exactDuplicatesAfterRelabeling: {
+    description: "Exact URL/title/college duplicates exposed after verified campus relabeling",
+    droppedCount: exactDuplicateDrops.length,
+    dropped: exactDuplicateDrops,
+  },
   canonicalIds: {
     recordCount: jobs.length,
     groupCountBefore,
@@ -337,6 +363,7 @@ console.log(JSON.stringify({
   issue155SaintJosephs: { ...report.issue155SaintJosephs, dropped: `${sjuDropped.length} entries (see report file)`, relabeled: `${sjuRelabeled.length} entries (see report file)`, ambiguousGroups: `${sjuAmbiguousGroups.length} groups (see report file)` },
   issue155MiamiUniversity: { ...report.issue155MiamiUniversity, relabeled: `${miamiRelabeled.length} entries (see report file)`, unverifiable: `${miamiUnverifiable.length} entries (see report file)` },
   issue159Arkansas: { ...report.issue159Arkansas, dropped: `${arkansasDedup.dropped.length} entries (see report file)` },
+  exactDuplicatesAfterRelabeling: { ...report.exactDuplicatesAfterRelabeling, dropped: `${exactDuplicateDrops.length} entries (see report file)` },
 }, null, 2));
 
 fs.mkdirSync(path.dirname(REPORT_PATH), { recursive: true });

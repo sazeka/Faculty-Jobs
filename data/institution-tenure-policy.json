@@ -3506,6 +3506,169 @@
       "verifiedAt": "2026-09-21"
     },
     {
+      "college": "Morgan State University",
+      "titlePattern": "\\b(?:Assistant|Associate|Full)?\\s*Professor\\b",
+      "value": true,
+      "note": "Morgan State's current Appointment, Promotion and Tenure Policy states categorically: 'There shall be three tenure-track faculty ranks: Assistant Professor, Associate Professor, and Professor.' The rule is restricted to those literal rank words and therefore does not classify the current rank-unspecified Chemistry Chair or Physical Scientist searches.",
+      "source": "https://www.morgan.edu/faculty-handbook/section-2",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Texas Southern University",
+      "titlePattern": "\\b(?:Assistant|Associate|Full)\\s*Professor\\b",
+      "value": true,
+      "note": "Texas Southern's Faculty Manual states that Instructor is non-tenure-track and that an appointment must be made directly to a tenure-track rank; its regular full-time ranks are Instructor, Assistant Professor, Associate Professor, and Professor. This positive rule therefore covers only the unmodified Assistant/Associate/Full Professor ranks and excludes the rank-unspecified chair search.",
+      "source": "https://www.tsu.edu/faculty-senate/images/faculty-manual.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Texas Southern University",
+      "titlePattern": "^Instructor(?:\\b|[–—-])",
+      "value": false,
+      "note": "Texas Southern's Faculty Manual explicitly states: 'The rank of instructor, being non-tenure track, does not allow for promotion.' The rule is anchored to titles beginning with Instructor.",
+      "source": "https://www.tsu.edu/faculty-senate/images/faculty-manual.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Pittsburg State University",
+      "titlePattern": "\\b(?:Assistant|Associate|Full)?\\s*Instructional Professor\\b",
+      "value": false,
+      "note": "Pittsburg State's current Unclassified Employee Handbook places Assistant Instructional Professor, Associate Instructional Professor, and Instructional Professor under the heading 'Non-Tenure Earning Academic Ranks.' The rule is limited to that expressly named title series.",
+      "source": "https://www.pittstate.edu/hr/_files/documents/unclassified-handbooks/unclassified-handbook-2024.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Pittsburg State University",
+      "titlePattern": "^Assistant or Associate Professor of Economics$",
+      "value": true,
+      "note": "Pittsburg State's current handbook separates the tenure-earning Assistant Professor and Associate Professor ranks from its expressly non-tenure-earning Instructional Professor series. The current Economics search uses only the unmodified tenure-earning ranks; exact-title scoping avoids applying that conclusion to any future qualified title.",
+      "source": "https://www.pittstate.edu/hr/_files/documents/unclassified-handbooks/unclassified-handbook-2024.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Georgetown University",
+      "titlePattern": "\\bEducator Track\\b",
+      "value": false,
+      "note": "Georgetown's Office of Faculty and Academic Affairs states directly that full-time and part-time appointments on the Educator Track are not tenure eligible. The rule requires that formal track name in the posting title.",
+      "source": "https://ofaa.gumc.georgetown.edu/appointments-and-promotions/step-2-identify-your-appropriate-line-and-rank/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Stanford University",
+      "titlePattern": "^",
+      "descriptionPattern": "Stanford University CE - Clinician Educator University Medical Line Opening at:",
+      "value": false,
+      "note": "Stanford's official Faculty Positions pages place the formal appointment line in the scraped page header. Stanford's Faculty Handbook identifies the University Medical Line as outside the University Tenure Line, and Stanford Medicine identifies CE as the Clinician Educator line. This rule fires only when that complete official header appears and therefore does not classify postings that offer UTL, UML, and NTL-R as alternatives.",
+      "source": "https://facultyhandbook.stanford.edu/index/chapter-2-appointments-reappointments-and-promotions-professoriate",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Wayne State University",
+      "titlePattern": "^Faculty - Rank to be Determined, Neurology$",
+      "descriptionPattern": "faculty position on the Clinician-Educator Track",
+      "value": false,
+      "note": "The current Neurology announcement explicitly states that the appointment is on Wayne State's Clinician-Educator Track. Wayne's School of Medicine identifies that track as non-tenure-track; the exact title and description pair prevents unrelated generic Faculty searches from matching.",
+      "source": "https://bog.wayne.edu/code/2-51-01",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Minnesota",
+      "titlePattern": "^Associate Professor$",
+      "descriptionPattern": "Track:\\s*Clinician Track",
+      "value": false,
+      "note": "The current posting carries the structured field 'Track: Clinician Track.' The Medical School's Faculty Annual Reviews guidance explicitly groups the Clinician Track under Non-Tenure Track Faculty. Both exact title and structured field are required.",
+      "source": "https://med.umn.edu/facultyaffairs/promotion-tenure/facultyannualreviews",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Chicago",
+      "titlePattern": "^(?:Assistant Professor – Quantum Science & Engineering \\(Experimental\\)|Assistant Professor – Quantum Science & Engineering \\(Theoretical\\)|Assistant Professor in Astronomy & Astrophysics|Assistant Professor of Political Science, American Politics|Associate Professor in Astronomy & Astrophysics|Associate Professor in Astronomy & Astrophysics \\(Origins of Life\\)|Professor, Catholic Studies)$",
+      "value": true,
+      "note": "UChicago's current appointment materials list the unmodified Assistant Professor, Associate Professor, and Professor ranks on the Tenure Track, while BSD Clinical Scholar and Academic Clinician tracks and qualified Clinical/Instructional/Research titles are separately identified. These seven exact current searches are in non-clinical academic units and use only the unmodified tenure-line ranks; exact-title scoping deliberately excludes BSD medical searches, where the same bare rank can belong to a non-tenure clinical track.",
+      "source": "https://provost.uchicago.edu/sites/default/files/EducationalAssistancePlan.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of the Pacific",
+      "titlePattern": "^Assistant Professor of Law, Legal Practice$",
+      "descriptionPattern": "offered based initially on term contracts but on a track to lead to an indefinite-term contract",
+      "value": false,
+      "note": "The current McGeorge Legal Practice announcement states that the appointment begins on term contracts and leads to an indefinite-term contract, rather than the law school's tenure line. Requiring the exact title and verbatim appointment sentence avoids applying this to Pacific's separate constitutional-law and property-law professor searches.",
+      "source": "https://pacific.peopleadmin.com/postings/31945",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of the Pacific",
+      "titlePattern": "^Pre-Clinical / Clinical Faculty - Preventive and Restorative Dentistry \\(Evergreen position\\)$",
+      "descriptionPattern": "part-time, teacher-clinician; up to 2 days per week",
+      "value": false,
+      "note": "The current Dugoni posting explicitly defines this as a part-time teacher-clinician appointment. Pacific's dental handbook states that no faculty member on the teacher-clinician track is eligible for tenure. Exact title and description scoping avoid inferring from the generic word clinical alone.",
+      "source": "https://pacific.peopleadmin.com/postings/31206",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "State College of Florida-Manatee-Sarasota",
+      "titlePattern": "^Instructional Faculty, Anatomy & Physiology \\(Grant Funded\\)-Multiple Openings$",
+      "descriptionPattern": "Continuing Contract Eligible - Faculty Only No",
+      "value": false,
+      "note": "The current official posting's structured appointment field states 'Continuing Contract Eligible - Faculty Only: No.' The rule is exact-title and exact-field scoped and does not affect SCF's separate continuing-contract-eligible Computer Science search.",
+      "source": "https://www.schooljobs.com/careers/scf/jobs/4958526/instructional-faculty-anatomy-physiology-grant-funded-multiple-openings",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "Stanford University",
+      "titlePattern": "^",
+      "descriptionPattern": "^(?!.*(?:Non-Tenure Line \\(Research\\)|University Tenure Line)).{0,300}(?:University Medical Line|CE - Clinician Educator)(?: Opening at:|\\b)",
+      "value": false,
+      "note": "Stanford's official posting header is decisive when it offers only the University Medical Line or Clinician Educator line. Stanford's Faculty Handbook places both outside the University Tenure Line. The anchored negative lookahead intentionally leaves every search that also lists UTL or NTL-R unresolved because the selected candidate's line is not determined in advance.",
+      "source": "https://facultyhandbook.stanford.edu/index/chapter-2-appointments-reappointments-and-promotions-professoriate",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Rochester",
+      "titlePattern": "^(?:Assistant Professor|Assistant Professor - Cognitive Behavioral Neurology|Assistant Professor - General Urology|Pediatric Dental Faculty FT)$",
+      "descriptionPattern": "(?:Professor of Clinical\\s*(?:/|&nbsp;|Associate|Assistant)|Assistant Professor of Clinical (?:Neurology|Urology)|Professor of Clinical Dentistry)",
+      "value": false,
+      "note": "Rochester's official academic-job-code table marks its professional Clinical professor families as not tenure eligible. These five current records state the formal 'Professor of Clinical [discipline]' appointment inside the official description even though the visible search title is shortened. Exact visible-title and formal-rank description requirements exclude the separate Neuropalliative search, which explicitly offers either a tenure-eligible Assistant Professor or an Assistant Professor of Clinical Neurology appointment.",
+      "source": "https://www.rochester.edu/provost/faculty-support/academic-job-codes/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Rochester",
+      "titlePattern": "^Assistant Professor Macroeconomics - 21SAS-ECO- FY$",
+      "value": true,
+      "note": "Rochester's official academic-job-code table identifies the unqualified Assistant Professor family as tenure eligible and separately marks Clinical, Research, teaching/service, and specialty families ineligible. This exact Arts & Sciences Economics search uses the unmodified Assistant Professor rank and has no alternative qualified appointment family.",
+      "source": "https://www.rochester.edu/provost/faculty-support/academic-job-codes/",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "The University of Texas Medical Branch at Galveston",
+      "titlePattern": "^(?:Assistant Professor, Internal Medicine-Gastroent|Associate Professor - Internal Medicine Gastroent)$",
+      "descriptionPattern": "Professor of Clinical Practice",
+      "value": false,
+      "note": "UTMB's two current Gastroenterology announcements state the formal ranks Assistant Professor of Clinical Practice and Associate Professor of Clinical Practice in their descriptions. UTMB's faculty-titles policy defines the Clinical Practice mission designation as a non-tenure track. Exact-title scoping avoids inference for UTMB postings that omit the mission designation.",
+      "source": "https://www.utmb.edu/facultyaffairs/faculty-appointments-(apt)/faculty-titles---appointments",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Miami",
+      "titlePattern": "^(?:Neurology- Assoc\\. Professor|Professor of Research - Dermatology)$",
+      "descriptionPattern": "(?:Research Associate Professor|Research Professor position)",
+      "value": false,
+      "note": "The current Miami descriptions identify these formal appointments as Research Associate Professor and Research Professor. Miami's Faculty Manual places the Research Professor series outside the tenure-earning regular faculty ranks. Both the exact visible title and formal description rank are required.",
+      "source": "https://faculty.miami.edu/_assets/pdf/faculty-manual.pdf",
+      "verifiedAt": "2026-09-21"
+    },
+    {
+      "college": "University of Chicago",
+      "titlePattern": "^Biological Sciences Division Pathways to Independence Instructor Appointments BSD006f$",
+      "descriptionPattern": "faculty rank of Instructor for up to two years for the initial appointment and for no more than four years total",
+      "value": false,
+      "note": "The current Pathways announcement expressly limits the Instructor appointment to two years initially and four years total. UChicago's appointment guidance treats this BSD pathway as a time-limited academic appointment rather than the tenure track. The rule is confined to this exact search and term sentence.",
+      "source": "https://academicjobs.uchicago.edu/positions/176891",
+      "verifiedAt": "2026-09-21"
+    },
+    {
       "collegePattern": "^(?:Albany Technical College|Alder Graduate School of Education|Alpena Community College|Ana G\\. Mendez University|Arkansas Northeastern College|Augusta Technical College|Baker College|Baptist University of the Americas|Bellin College|Benjamin Franklin Cummings Institute of Technology|Berklee College of Music|Brightpoint Community College|Bryant & Stratton College-Greece|Bryant & Stratton College-Syracuse North|Bryant & Stratton College-Wauwatosa|California Institute of the Arts|Carolina University|Central Georgia Technical College|Chattahoochee Technical College|Chemeketa Community College|Chesapeake College|Clatsop Community College|Cleary University|College of Biblical Studies-Houston|College of the Atlantic|Colorado Mountain College|Concordia University-Wisconsin|Copiah-Lincoln Community College|Cossatot Community College of the University of Arkansas|Crowder College|Cumberland University|Dallas Institute of Funeral Service|Des Moines Area Community College|East Central Community College|East Mississippi Community College|Emmaus Bible College|Ensign College|Faith Baptist Bible College and Theological Seminary|Flint Hills Technical College|Franklin W Olin College of Engineering|Frontier Nursing University|Hallmark University|Herzing University-Birmingham|Herzing University-Madison|Herzing University-New Orleans|Herzing University-Tampa|Hill College|James A\\. Rhodes State College|Johnson University|Klamath Community College|Lanier Technical College|Lansing Community College|Laurel Ridge Community College|Lesley University|Maine Maritime Academy|Manchester Community College|Marion Technical College|Maryland Institute College of Art|Meridian Community College|Mid-Atlantic Christian University|Missouri Baptist University|Moore College of Art and Design|Morris College|NHTI-Concord's Community College|Nashua Community College|National University|New River Community College|North Greenville University|Northeast Iowa Community College|Northwest Mississippi Community College|Oblate School of Theology|Pacific Oaks College|Panola College|Parker University|Paul Quinn College|Paul Smiths College of Arts and Science|Pearl River Community College|Piedmont Virginia Community College|Randall University|Rappahannock Community College|Remington College-Fort Worth Campus|Remington College-Lafayette Campus|Remington College-Nashville Campus|Santa Fe Community College|Schoolcraft Community College District|South Florida Bible College and Theological Seminary|South Texas College|Southcentral Kentucky Community and Technical College|Southeast Arkansas College|Southeast Missouri Hospital College of Nursing and Health Sciences|Southern Maine Community College|Southern Regional Technical College|Southern Virginia University|Southwest Virginia Community College|Southwestern Michigan College|St\\. Joseph's College of Nursing|State Fair Community College|Stone Child College|The Chicago School at Dallas|The Chicago School at Los Angeles|The Chicago School at Washington DC|The Southwestern Baptist Theological Seminary|Trinity College of Florida|Trinity College of Nursing & Health Sciences|Ultimate Medical Academy|University of Charleston|University of Jamestown|Virginia Peninsula Community College|Washington State College of Ohio|Waukesha County Technical College|Wayne County Community College District|Weatherford College|Webb Institute|Western Seminary|Western Technical College|Wharton County Junior College|White Mountains Community College|William James College|Wisconsin Lutheran College)$",
       "titlePattern": "^",
       "value": false,

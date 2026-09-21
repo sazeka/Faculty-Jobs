@@ -2253,7 +2253,7 @@ test("uses UChicago's Other Academic Appointment rank names", () => {
   }
   assert.equal(
     classifyTenureTrack({ college: "University of Chicago", title: "Assistant Professor in Astronomy & Astrophysics" }),
-    null
+    true
   );
   assert.equal(
     classifyTenureTrack({ college: "University of Chicago", title: "Assistant Professor School of Medicine Track – Cancer Research" }),
