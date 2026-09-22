@@ -4300,3 +4300,44 @@ test("applies exact Oracle-posting appointment evidence", () => {
   assert.equal(classifyTenureTrack({ college: "Wagner College", title: "Evelyn L. Sprio School of Nursing - Associated Clinical Faculty of Practice", url: "https://example.edu/job/342" }), null);
   assert.equal(classifyVariableAppointmentTrack({ college: "Moravian University", title: "Assistant Professor of History" }), false);
 });
+
+test("applies exact Denison, Boston College, and James Madison posting evidence", () => {
+  const tenureCases = [
+    {
+      college: "Denison University",
+      title: "Assistant or Associate Professor of Sustainability & Environmental Studies",
+      url: "https://apply.interfolio.com/192590",
+    },
+    {
+      college: "Boston College",
+      title: "Assistant Professor in American Public Law",
+      url: "https://apply.interfolio.com/189250",
+    },
+    {
+      college: "James Madison University",
+      title: "Assistant Professor, Organizational Behavior - Department of Management",
+      url: "https://jobs.jmu.edu/jobs/assistant-professor-organizational-behavior-department-of-management-harrisonburg-virginia-united-states",
+    },
+  ];
+
+  for (const job of tenureCases) {
+    assert.deepEqual(classifyTenureTrackWithEvidence(job), { value: true, evidence: "institution-policy" }, job.title);
+  }
+
+  assert.equal(
+    classifyTenureTrack({
+      college: "Boston College",
+      title: "Assistant Professor in American Public Law",
+      url: "https://apply.interfolio.com/another-search",
+    }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "James Madison University",
+      title: "Assistant Professor, Organizational Behavior - Department of Management",
+      url: "https://jobs.jmu.edu/jobs/another-search",
+    }),
+    null
+  );
+});
