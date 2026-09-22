@@ -4462,3 +4462,99 @@ test("applies exact UAMS appointment-track evidence", () => {
   assert.equal(classifyVariableAppointmentTrack({ ...variableJob, url: "https://uasys.wd5.myworkdayjobs.com/UAMS_All_Careers/job/UAMS/another-search" }), false);
   assert.equal(classifyTenureTrack({ ...clinicalJob, description: "A faculty member will coordinate the second year." }), null);
 });
+
+test("applies the next exact institution-policy appointment-track batch", () => {
+  const tenureJobs = [
+    {
+      college: "Western Carolina University",
+      title: "Assistant/Associate Professor - Civil Engineering— Civil Engineering and Construction",
+      url: "https://jobs.wcu.edu/postings/34874",
+    },
+    {
+      college: "Western Carolina University",
+      title: "Assistant/Associate Professor – Electrical/Computer Engineering— Electrical and Computer Engineering",
+      url: "https://jobs.wcu.edu/postings/35457",
+    },
+  ];
+  for (const job of tenureJobs) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence(job),
+      { value: true, evidence: "institution-policy" },
+      job.title
+    );
+  }
+
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of Notre Dame",
+      title: "Assistant Professor of the Practice in Musical Theatre Writing",
+      url: "https://apply.interfolio.com/188580",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+
+  const variableJobs = [
+    {
+      college: "Auburn University at Montgomery",
+      title: "Assistant/Associate Professor or Assistant Clinical/Associate Clinical Professor",
+      url: "https://jobs.aum.edu/aum-careers-home/jobs/9729?lang=en-us",
+    },
+    {
+      college: "Southern Illinois University Edwardsville",
+      title: "FA26-013: Assistant/Associate Professor / Clinical Assistant/Associate Professor (depending on qualifications)",
+      url: "https://apply.interfolio.com/173155",
+    },
+    {
+      college: "Middle Georgia State University",
+      title: "Lecturer/Assistant Professor of Aviation & Air Traffic Control Specialist (Eastman Campus)",
+      url: "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U#jobId=301790",
+    },
+    {
+      college: "University of Nevada, Reno",
+      title: "Lecturer II / Teaching Assistant Professor / Assistant Professor, Statewide Natural Resources Specialist, Extension - Winnemucca, Nevada",
+      url: "https://nshe.wd1.myworkdayjobs.com/UNR-external/job/Extension-Humboldt---University-of-Nevada-Reno/Lecturer-II---Teaching-Assistant-Professor---Assistant-Professor--Statewide-Natural-Resources-Specialist--Extension---Winnemucca--Nevada_R0151168-1",
+    },
+    {
+      college: "Indiana State University",
+      title: "Instructor/Assistant Professor of Aviation",
+      url: "https://jobs.indstate.edu/postings/57781",
+    },
+    {
+      college: "Indiana State University",
+      title: "Instructor/Assistant Professor of Construction Management",
+      url: "https://jobs.indstate.edu/postings/57780",
+    },
+  ];
+
+  for (const job of variableJobs) {
+    assert.equal(classifyTenureTrack(job), null, job.title);
+    assert.equal(classifyVariableAppointmentTrack(job), true, job.title);
+  }
+});
+
+test("keeps exact posting evidence confined to the verified searches", () => {
+  assert.equal(
+    classifyTenureTrack({
+      college: "Western Carolina University",
+      title: "Assistant/Associate Professor - Civil Engineering— Civil Engineering and Construction",
+      url: "https://jobs.wcu.edu/postings/another-search",
+    }),
+    null
+  );
+  assert.equal(
+    classifyVariableAppointmentTrack({
+      college: "Indiana State University",
+      title: "Instructor/Assistant Professor of Aviation",
+      url: "https://jobs.indstate.edu/postings/another-search",
+    }),
+    false
+  );
+  assert.equal(
+    classifyVariableAppointmentTrack({
+      college: "University of Nevada, Reno",
+      title: "Lecturer II / Teaching Assistant Professor / Assistant Professor, Statewide Natural Resources Specialist, Extension - Winnemucca, Nevada",
+      url: "https://nshe.wd1.myworkdayjobs.com/UNR-external/job/another-search",
+    }),
+    false
+  );
+});
