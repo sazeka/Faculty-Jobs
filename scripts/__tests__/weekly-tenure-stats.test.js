@@ -3555,7 +3555,7 @@ test("separates exact appointments published together on shared college jobs pag
   }
   assert.equal(
     classifyTenureTrack({ college: "North Florida College", title: "Nursing Instructor" }),
-    null
+    true
   );
 });
 
@@ -4184,4 +4184,32 @@ test("applies exact Missouri Southern, Baker, and Northwestern appointment evide
 
   assert.equal(classifyTenureTrack({ college: "Missouri Southern State University", title: "Assistant Professor of Biology" }), null);
   assert.equal(classifyVariableAppointmentTrack({ college: "Northwestern College", title: "Biology Faculty" }), false);
+});
+
+test("applies the final exact Alaska, CUNY, Walsh, North Florida, and St Charles reviews", () => {
+  const tenureCases = [
+    ["University of Alaska Anchorage", "Assistant or Associate Professor of Anthropology"],
+    ["University of Alaska Anchorage", "Assistant or Associate Professor of Special Education"],
+    ["CUNY School of Professional Studies", "Anatomist - Med Faculty Open Rank"],
+    ["CUNY School of Professional Studies", "Biostatistician - Med Faculty Open Rank"],
+    ["CUNY School of Professional Studies", "Research Data Librarian (Medical Asst Professor)"],
+    ["North Florida College", "Commercial Vehicle Driving Instructor"],
+    ["North Florida College", "Nursing Instructor"],
+  ];
+  for (const [college, title] of tenureCases) {
+    assert.deepEqual(classifyTenureTrackWithEvidence({ college, title }), { value: true, evidence: "institution-policy" }, title);
+  }
+
+  const nonTenureCases = [
+    ["Walsh University", "Coordinator of Clinical and Laboratory Experiences/Clinical Assistant/Associate Professor of Nursing"],
+    ["Walsh University", "Doctoral Capstone Coordinator/Clinical Assistant/Associate Professor of Occupational Therapy"],
+    ["St Charles Community College", "Adult Education (AEL) Instructor – Project based -79900"],
+  ];
+  for (const [college, title] of nonTenureCases) {
+    assert.deepEqual(classifyTenureTrackWithEvidence({ college, title }), { value: false, evidence: "institution-policy" }, title);
+  }
+
+  assert.equal(classifyTenureTrack({ college: "Walsh University", title: "Assistant/Associate Professor of Physical Therapy" }), null);
+  assert.equal(classifyTenureTrack({ college: "North Florida College", title: "Adjunct Faculty Pool" }), false);
+  assert.equal(classifyTenureTrack({ college: "St Charles Community College", title: "Full-Time Faculty: Mathematics - 83464" }), null);
 });
