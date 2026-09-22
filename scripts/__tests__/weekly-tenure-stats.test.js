@@ -4341,3 +4341,33 @@ test("applies exact Denison, Boston College, and James Madison posting evidence"
     null
   );
 });
+
+test("applies exact University of Minnesota tenure-track posting evidence", () => {
+  const tenureCases = [
+    ["Assistant Professor - Cognitive and Brain Sciences", "375565"],
+    ["Assistant Professor in Developmental Psychopathology", "375608"],
+    ["Assistant Professor of Political Science (International Relations & Methodology", "375762"],
+    ["Sport & Exercise Psychology Assistant/Associate Professor - Kinesiology", "375786"],
+  ];
+
+  for (const [title, jobId] of tenureCases) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({
+        college: "University of Minnesota",
+        title,
+        url: `https://hr.myu.umn.edu/psc/hrprd/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?JobOpeningId=${jobId}`,
+      }),
+      { value: true, evidence: "institution-policy" },
+      title
+    );
+  }
+
+  assert.equal(
+    classifyTenureTrack({
+      college: "University of Minnesota",
+      title: "Assistant Professor - Cognitive and Brain Sciences",
+      url: "https://hr.myu.umn.edu/jobs/ext/another-search",
+    }),
+    null
+  );
+});
