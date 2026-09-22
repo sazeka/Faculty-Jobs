@@ -2077,7 +2077,7 @@ test("uses current Ohio, Georgia, and Mississippi named non-tenure series", () =
     "Leadership and Teacher Education (Department Chair & Associate Professor or Full Professor) posted",
     "Mathematics and Statistics (Assistant Professor of Mathematics) posted",
   ]) {
-    assert.equal(classifyTenureTrack({ college: "University of South Alabama", title }), null, title);
+    assert.equal(classifyTenureTrack({ college: "University of South Alabama", title }), true, title);
   }
 });
 
@@ -4123,4 +4123,65 @@ test("applies the September 22 hidden-detail and structured-track reviews", () =
     classifyVariableAppointmentTrack({ college: "University of Nebraska Medical Center", title: "Faculty Rank DOQ", description: "Appointment Type P1 - REG HLTH FAC SAL" }),
     false
   );
+});
+
+test("applies the September 22 official posting and institution-policy reviews", () => {
+  const tenureCases = [
+    ["The College of Idaho", "Art, Assistant Professor -Ceramics"],
+    ["Macalester College", "Assistant Professor – Behavioral Economics"],
+    ["Erskine College", "Assistant Professor of Biology: Anatomy and Physiology"],
+    ["Cottey College", "Assistant Professor of Business Administration"],
+    ["Cottey College", "Assistant Professor of Psychology"],
+    ["Princeton Theological Seminary", "Assistant Professor of Pastoral Theology, Care, and Counseling"],
+    ["Gordon College", "Assistant, Associate, or Full Professor of Language and Literacy Education"],
+    ["Belhaven University", "Assistant/Associate Professor of Counseling"],
+    ["Fulton-Montgomery Community College", "Chemistry Instructor"],
+    ["Fulton-Montgomery Community College", "Radiology Technology Faculty"],
+    ["University of South Alabama", "Counseling and Instructional Sciences (Assistant or Associate Professor of Instructional Design and Development) posted"],
+    ["University of South Alabama", "Leadership and Teacher Education (Department Chair & Associate Professor or Full Professor) posted"],
+    ["University of South Alabama", "Mathematics and Statistics (Assistant Professor of Mathematics) posted"],
+    ["Frontier Community College", "Nursing Instructor"],
+    ["Florida College", "Professor of Mechanical Engineering"],
+    ["Southwestern College (KS)", "Director of Clinical Education/Principal Faculty - Physician Associate Program"],
+  ];
+  for (const [college, title] of tenureCases) {
+    assert.deepEqual(classifyTenureTrackWithEvidence({ college, title }), { value: true, evidence: "institution-policy" }, title);
+  }
+
+  const nonTenureCases = [
+    ["University of South Alabama", "Stokes School of Marine and Environmental Sciences (Assistant Professor of Marine and Environmental Sciences) posted", ""],
+    ["University of Minnesota", "Assistant/Associate/Full Professor- General and Transplant IDIM", "Academic Clinical emphasis track"],
+    ["University of Minnesota", "Faculty Position - Pediatric Cardiology, Division Director", "Academic or Clinician track"],
+  ];
+  for (const [college, title, description] of nonTenureCases) {
+    assert.deepEqual(classifyTenureTrackWithEvidence({ college, title, description }), { value: false, evidence: "institution-policy" }, title);
+  }
+
+  const variableCase = { college: "Union Commonwealth University", title: "Assistant Professor of Biology" };
+  assert.equal(classifyTenureTrack(variableCase), null);
+  assert.equal(classifyVariableAppointmentTrack(variableCase), true);
+
+  assert.equal(classifyTenureTrack({ college: "Cottey College", title: "Assistant Professor of English" }), null);
+  assert.equal(classifyTenureTrack({ college: "University of Minnesota", title: "Faculty Position - Pediatric Cardiology, Division Director", description: "Tenure Track" }), true);
+});
+
+test("applies exact Missouri Southern, Baker, and Northwestern appointment evidence", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ college: "Missouri Southern State University", title: "Assistant Professor of English" }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ college: "Missouri Southern State University", title: "Master Instructor in English" }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ college: "Baker University", title: "Baker Academy for SPGS Faculty" }),
+    { value: false, evidence: "institution-policy" }
+  );
+  const variableCase = { college: "Northwestern College", title: "Civil Engineering Faculty" };
+  assert.equal(classifyTenureTrack(variableCase), null);
+  assert.equal(classifyVariableAppointmentTrack(variableCase), true);
+
+  assert.equal(classifyTenureTrack({ college: "Missouri Southern State University", title: "Assistant Professor of Biology" }), null);
+  assert.equal(classifyVariableAppointmentTrack({ college: "Northwestern College", title: "Biology Faculty" }), false);
 });
