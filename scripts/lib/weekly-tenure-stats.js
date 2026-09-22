@@ -399,15 +399,80 @@ export function classifyTenureTrack(job = {}) {
   return classifyTenureTrackWithEvidence(job).value;
 }
 
+// Some searches explicitly leave the eventual appointment track open: they
+// offer tenure and non-tenure alternatives, label the field "Open Tenure", or
+// say the track will be selected from the candidate's rank/qualifications.
+// Those records are not missing evidence and should not inflate the truly
+// unclassified count, but they also must not enter the binary percentages.
+const VARIABLE_TRACK_RE = new RegExp(
+  [
+    "\\b(?:this|the|these)\\s+(?:faculty\\s+)?(?:position|appointment)s?\\b[^.]{0,180}\\btenure[\\s-]?track\\b[^.]{0,80}\\b(?:or|and)\\b[^.]{0,80}\\bnon[\\s-]?tenure(?:[\\s-]?track)?\\b",
+    "\\b(?:this|the|these)\\s+(?:faculty\\s+)?(?:position|appointment)s?\\b[^.]{0,180}\\bnon[\\s-]?tenure(?:[\\s-]?track)?\\b[^.]{0,80}\\b(?:or|and)\\b[^.]{0,80}\\btenure[\\s-]?track\\b",
+    "\\b(?:rank\\s+and\\s+)?tenure[\\s-]+status\\b[^.]{0,180}\\b(?:depend|dependent|depends|determined|negotiable|negotibale|commensurate)\\b[^.]{0,180}\\b(?:qualifications?|credentials?|experience)\\b",
+    "\\btenure\\s+eligibility\\b[^.]{0,120}\\b(?:dependent|depends|determined|negotiable|commensurate)\\b[^.]{0,120}\\b(?:qualifications?|credentials?|experience)\\b",
+    "\\bacademic\\s+rank,?\\s+track,?\\s+tenure\\s+status\\b[^.]{0,100}\\b(?:depend|dependent|depends)\\b[^.]{0,80}\\bqualifications?\\b",
+    "\\b(?:academic\\s+)?rank\\s+and\\s+(?:academic\\s+|appointment\\s+)?track\\b[^.]{0,100}\\b(?:will\\s+be\\s+)?(?:dependent|depends|determined|negotiable|commensurate)\\b[^.]{0,100}\\b(?:qualifications?|credentials?|experience|record)\\b",
+    "\\b(?:please\\s+)?include\\s+the\\s+rank\\s+and\\s+track\\s+you\\s+are\\s+applying\\s+for\\b",
+    "\\b(?:fixed[\\s-]?term|variable\\s+track)\\b[^.]{0,100}\\btenure(?:d|[\\s-]?track)\\b",
+    "\\btenure(?:d|[\\s-]?track)\\b[^.]{0,100}\\b(?:fixed[\\s-]?term|variable\\s+track)\\b",
+    "\\b(?:may|can|could)\\s+be\\s+(?:filled|offered|appointed)\\b[^.]{0,120}\\b(?:tenure(?:d|[\\s-]?track)|non[\\s-]?tenure(?:[\\s-]?track)?|clinical\\s+track)\\b[^.]{0,80}\\b(?:or|and)\\b[^.]{0,80}\\b(?:tenure(?:d|[\\s-]?track)|non[\\s-]?tenure(?:[\\s-]?track)?|clinical\\s+track)\\b",
+    "\\btenure\\s+and\\s+non[\\s-]?tenure\\s+track\\s+will\\s+be\\s+considered\\b",
+    "\\b(?:may|can|could|will)\\s+be\\s+(?:tenure|tenure[\\s-]?track|clinical[\\s-]?track)\\b[^.]{0,80}\\b(?:or|and)\\b[^.]{0,80}\\b(?:tenure|tenure[\\s-]?track|clinical[\\s-]?track)\\b",
+    "\\btenure\\s+or\\s+career[\\s-]?track\\s+faculty\\s+position\\b",
+    "\\b(?:traditional|clinician[\\s-]?educator|clinician\\s+investigator)(?:\\s+track)?\\b[^.]{0,80}\\b(?:or|and)\\b[^.]{0,80}\\b(?:traditional|clinician[\\s-]?educator|clinician\\s+investigator)\\s+track\\b",
+    "\\btenure\\s+(?:is\\s+)?preferred\\s+but\\s+not\\s+required\\b",
+    "\\brank\\s+and\\s+tenure\\b[^.]{0,80}\\b(?:can|may|will)\\s+be\\s+(?:further\\s+)?(?:considered|determined)\\b[^.]{0,100}\\bqualified\\s+candidates?\\b",
+    "\\btenure[\\s-]?eligibility,?\\s+and\\s+rank\\b[^.]{0,100}\\bcommensurate\\s+with\\s+experience\\b",
+    "\\blecturer\\b[^.]{0,120}\\bnon[\\s-]?tenure\\s+track\\b[^.]{0,220}\\bassistant\\s+professor\\b[^.]{0,120}\\btenure\\s+track\\b",
+    "\\b(?:open\\s+rank\\s+)?positions?\\s+(?:is|are)\\s+for\\s+either\\b[^.]{0,80}\\bnon[\\s-]?tenure\\s+track\\b[^.]{0,80}\\bor\\b[^.]{0,80}\\btenure\\s+track\\b",
+    "\\bcandidates?\\b[^.]{0,300}\\beligible\\s+for\\s+appointment\\s+to\\s+a\\s+tenure[\\s-]?track\\s+position\\b[\\s\\S]{0,800}\\bcandidates?\\b[^.]{0,300}\\bnon[\\s-]?tenure[\\s-]?track\\s+appointment\\b",
+    "\\bopen\\s+faculty\\s+search\\s*-\\s*small\\s+animal\\s+soft\\s+tissue\\s+surgery\\b[\\s\\S]{0,1800}\\btenure[\\s-]?track\\s+candidates?\\b[\\s\\S]{0,1800}\\bclinical\\s+track\\s+faculty\\b",
+    "\\bassistant\\s+professor,?\\s+school\\s+of\\s+medicine,?\\s+neurosurgery\\b[\\s\\S]{0,1200}\\bfor\\s+tenure\\s+eligibility\\s+at\\s+the\\s+assistant\\s+professor\\s+rank\\b",
+    "\\btracks?\\s*:?\\s*tenure[\\s-]?track,?\\s+tenured,?\\s+or\\s+non[\\s-]?tenure[\\s-]?track\\b",
+    "\\beither\\s+(?:the\\s+)?tenure\\s+or\\s+clinical\\s+track\\b",
+    "\\b(?:tenure|clinical)[\\s-]?track\\s*(?:/|or)\\s*(?:tenure|clinical)[\\s-]?track\\b[^.]{0,100}\\bfaculty\\s+position",
+    "\\btenure\\s+or\\s+clinical\\s+track\\s+faculty\\s+positions?\\b",
+    "\\bprofessional[\\s-]?track\\b[^.]{0,80}\\bor\\b[^.]{0,80}\\btenure[\\s-]?track\\b[^.]{0,100}\\bfaculty\\s+position\\b",
+    "\\b(?:academic|clinician)\\s+track\\b[^.]{0,60}\\b(?:or|depending)\\b[^.]{0,60}\\b(?:academic|clinician)\\s+track\\b",
+    "\\bopen\\s+track\\s*\\/\\s*open\\s+rank\\b[^.]{0,140}\\bappropriate\\s+track\\s+and\\s+rank\\s+will\\s+be\\s+determined\\b",
+    "\\boffers\\s+both\\s+tenure\\s+track\\s+and\\s+term\\s+faculty\\s+contracts\\b[^.]{0,160}\\bdetermined\\s+based\\s+on\\s+the\\s+candidate",
+    "\\b(?:position|appointment|applicants?|candidates?|ranked)\\b[^.]{0,160}\\btenure[\\s-]?track\\b[^.]{0,100}\\b(?:or|and)\\b[^.]{0,100}\\bnon[\\s-]?tenure(?:[\\s-]?track)?\\b",
+    "\\b(?:position|appointment|applicants?|candidates?|ranked)\\b[^.]{0,160}\\bnon[\\s-]?tenure(?:[\\s-]?track)?\\b[^.]{0,100}\\b(?:or|and)\\b[^.]{0,100}\\btenure[\\s-]?track\\b",
+  ].join("|"),
+  "i"
+);
+const VARIABLE_TRACK_TITLE_RE =
+  /\bopen\s+rank\s*\/\s*(?:open\s+)?(?:tenure|track)\b|\bopen\s+rank\s*\/\s*track\s+faculty\b|\btenure\s+or\s+career[\s-]?track\b|\bopen\s+rank\s+faculty\s*-\s*variable\s+track\b|\bopen\s+rank,?\s+tenure\s+or\s+clinical\s+professor\b|\bopen\s+rank\s+tenure\s+or\s+clinical\s+faculty\b|\bopen\s+track\s*:\s*.+\bprofessor\b.+\/\s*.+\bprofessor\s+of\s+professional\s+practice\b/i;
+const VARIABLE_TRACK_STRUCTURED_RE =
+  /\bis\s+this\s+position\s+tenure\s+track\s+or\s+non[\s-]?tenure\s+track\??\s*:?[\s\S]{0,60}\bdependent\s+on\s+selected\s+rank\b|\btenure\s+status\s*:?\s*open\s+tenure\b|\btenure\s*:\s*open\b/i;
+const STANFORD_MULTI_LINE_RE =
+  /\bStanford University\s+Non[\s-]?Tenure Line\b[\s\S]{0,180}\bUniversity Medical Line\b[\s\S]{0,180}\bUniversity Tenure Line\b/i;
+
+export function classifyVariableAppointmentTrack(job = {}) {
+  if (classifyTenureTrack(job) !== null) return false;
+  const title = insertConcatenationBoundaries(String(job?.title || ""));
+  const description = insertConcatenationBoundaries(String(job?.description || ""))
+    .replace(AGGREGATE_FACULTY_COUNT_RE, " ")
+    .replace(VISA_SPONSORSHIP_TRACK_BOILERPLATE_RE, " ");
+  return (
+    VARIABLE_TRACK_TITLE_RE.test(title) ||
+    VARIABLE_TRACK_STRUCTURED_RE.test(description) ||
+    STANFORD_MULTI_LINE_RE.test(description) ||
+    VARIABLE_TRACK_RE.test(`${title} ${description}`)
+  );
+}
+
 export function computeTenureTrackBreakdown(jobs = []) {
   let tenureTrack = 0;
   let nonTenureTrack = 0;
+  let variableTrack = 0;
   let unknown = 0;
 
   for (const job of jobs) {
     const classification = classifyTenureTrack(job);
     if (classification === true) tenureTrack++;
     else if (classification === false) nonTenureTrack++;
+    else if (classifyVariableAppointmentTrack(job)) variableTrack++;
     else unknown++;
   }
 
@@ -415,8 +480,10 @@ export function computeTenureTrackBreakdown(jobs = []) {
   return {
     tenureTrack,
     nonTenureTrack,
+    variableTrack,
     unknown,
     classified,
+    known: classified + variableTrack,
     tenureTrackPct: classified ? Number(((tenureTrack / classified) * 100).toFixed(1)) : 0,
     nonTenureTrackPct: classified ? Number(((nonTenureTrack / classified) * 100).toFixed(1)) : 0,
   };

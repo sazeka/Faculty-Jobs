@@ -223,7 +223,8 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
           <span><i class="tenure-key tenure-key-ntt"></i>Non-tenure-track</span>
         </div>
         <div class="fa-meta tenure-note">
-          Based on {{ fmt(tenureStats.classified) }} listings with a known appointment track.
+          Based on {{ fmt(tenureStats.classified) }} listings resolved to tenure-track or non-tenure-track.
+          {{ fmt(tenureStats.variableTrack || 0) }} additional searches explicitly offer multiple tracks or determine the track from the selected candidate; they are known variable-track searches and excluded from the binary percentages.
           {{ fmt(tenureStats.unknown) }} additional listings are unclassified and excluded from the percentages.
           <button type="button" class="tenure-methods-link" @click="emit('open-methodology')">How this is classified</button>
         </div>

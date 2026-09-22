@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   classifyTenureTrack,
   classifyTenureTrackWithEvidence,
+  classifyVariableAppointmentTrack,
   computeTenureTrackBreakdown,
 } from "../lib/weekly-tenure-stats.js";
 
@@ -941,12 +942,12 @@ test("applies Colorado State, Morgan State, Northeastern, and Ball State institu
   ]) {
     assert.equal(classifyTenureTrack({ college: "Northeastern University", title }), false, title);
   }
-  // A plain title with no qualifier is Northeastern's tenure-line series and
-  // stays unclassified; the separate Fellow-rank rule handles fixed-term
-  // research fellow appointments.
+  // The exact current Korean History posting explicitly says tenure-track;
+  // plain titles are not generalized beyond that verified search. The
+  // separate Fellow-rank rule handles fixed-term research fellow appointments.
   assert.equal(
     classifyTenureTrack({ college: "Northeastern University", title: "Assistant Professor, Modern Korean History" }),
-    null
+    true
   );
   assert.equal(
     classifyTenureTrack({ college: "Northeastern University", title: "Distinguished Research Fellow, Khoury College of Computer Sciences" }),
@@ -3534,6 +3535,93 @@ test("uses exact current contract and genetic-counseling appointment evidence", 
   );
 });
 
+test("uses narrowly scoped official appointment policies for current live searches", () => {
+  for (const title of [
+    "Director and Full-Time Faculty - Online Business Programs",
+    "Program Director and Assistant Professor - MS Educational Psychology",
+  ]) {
+    assert.equal(
+      classifyTenureTrack({ college: "Abilene Christian University-Undergraduate Online", title }),
+      false,
+      title
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({
+      college: "Abilene Christian University-Undergraduate Online",
+      title: "Professor - Dance Theatre (Open Rank)",
+    }),
+    null
+  );
+
+  for (const title of [
+    "Instructor - Automotive with Ford Specialty (Reg FT, 12-month)",
+    "Instructor - Biology (FT 10-month)",
+    "Instructor - HVAC and Building Controls (Reg FT 10-month)",
+    "Instructor - Nursing (FT, 10 Month)",
+    "Program Director and Instructor for Medical Laboratory Technician Program (Reg FT, 10-month) — Director and Instructor for Medical Laboratory Technician Program (Reg FT, 10-month) 5/15/",
+  ]) {
+    assert.equal(
+      classifyTenureTrack({ college: "Community College of Allegheny County", title }),
+      true,
+      title
+    );
+  }
+
+  for (const [college, title] of [
+    ["Adams State University", "Counselor Education - Clinical Faculty"],
+    ["Monmouth University", "Clinical Faculty Supervisor"],
+    ["D'Youville University", "College of Osteopathic Medicine – Clinical Faculty in OMM"],
+    ["William Penn University", "Nursing Clinical Instructor"],
+    ["North Idaho College", "Assistant Professor - HVAC"],
+  ]) {
+    assert.equal(classifyTenureTrack({ college, title }), false, `${college}: ${title}`);
+  }
+
+  for (const [college, title] of [
+    ["University at Albany", "Assistant Professor - Educational Theory & Practice"],
+    ["Binghamton University", "Assistant Professor of Clinical Psychology"],
+    ["Northeastern University", "Assistant Professor, Modern Korean History"],
+    ["Farmingdale State College", "Assistant Professor - Horticulture"],
+    ["SUNY Broome Community College", "Assistant Professor (Computer Science) PRODiG+Community College"],
+    ["Andrews University", "Faculty-Mathematics"],
+    ["Baylor University", "Associate Professor or Professor, Virginia and Tom Williams Endowed Chair of American Literature, Department of English"],
+    ["University of Louisiana at Lafayette", "Associate Professor/Professor (Director for School of Kinesiology)"],
+    ["Texas State University", "Chair, Department of Psychology"],
+    ["University of Texas at Austin", "Assistant/Associate Professor in Integrative Shellfish Biology"],
+    ["University of Toledo", "Assistant, Associate, or Full Professor (American political thought; American constitutionalism; American history)"],
+  ]) {
+    assert.equal(classifyTenureTrack({ college, title }), true, `${college}: ${title}`);
+  }
+
+  for (const title of [
+    "Assistant Professor of Mathematics, College of Humanities and Sciences, Thomas Jefferson University, East Falls Campus",
+    "Undergraduate Med-Surg Faculty Position, Jefferson College of Nursing, Thomas Jefferson University, Lehigh Valley Campus",
+    "Undergraduate Obstetrics (OB) Faculty Position, Jefferson College of Nursing, Thomas Jefferson University, Lehigh Valley Campus",
+    "Undergraduate Pediatrics Faculty Position, Jefferson College of Nursing, Thomas Jefferson University, Lehigh Valley Campus",
+    "Undergraduate Psych Mental Health Faculty Position, Jefferson College of Nursing, Thomas Jefferson University, Lehigh Valley Campus",
+  ]) {
+    assert.equal(classifyTenureTrack({ college: "Thomas Jefferson University", title }), false, title);
+  }
+
+  assert.equal(
+    classifyTenureTrack({ college: "Andrews University", title: "Faculty-Architecture" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Thomas Jefferson University", title: "Assistant Professor of Biology" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "UC San Francisco", title: "Division of General Internal Medicine - Clinical Educator Faculty" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "UC San Francisco", title: "Academic Hospital Medicine Faculty" }),
+    null
+  );
+});
+
 test("uses exact live titles only when IPEDS reports every offered rank on one track", () => {
   assert.deepEqual(
     classifyTenureTrackWithEvidence({
@@ -3564,15 +3652,86 @@ test("reports counts and percentages only across classified positions", () => {
       { tenureTrack: true },
       { tenureTrack: "tenured" },
       { tenureTrack: false },
+      {
+        title: "Open Rank/Track Faculty",
+        description: "Academic rank and track are commensurate with the candidate's qualifications.",
+      },
       { title: "Lecturer" },
     ]),
     {
       tenureTrack: 2,
       nonTenureTrack: 1,
+      variableTrack: 1,
       unknown: 1,
       classified: 3,
+      known: 4,
       tenureTrackPct: 66.7,
       nonTenureTrackPct: 33.3,
     }
+  );
+});
+
+test("separates explicitly variable searches from genuinely unclassified listings", () => {
+  for (const job of [
+    {
+      title: "Lecturer/Assistant/Associate Professor",
+      description:
+        "Is this position tenure track or non-tenure track? Dependent on selected rank.",
+    },
+    {
+      title: "Open Rank/Track Faculty",
+      description: "Academic rank and track are commensurate with academic record and experience.",
+    },
+    {
+      title: "Assistant or Associate Professor",
+      description: "The rank and tenure status are negotiable based on qualifications.",
+    },
+    {
+      title: "Open Rank Faculty",
+      description:
+        "This appointment may be offered as a fixed-term, variable-track, or tenure-track faculty appointment.",
+    },
+    {
+      title: "School of Medicine Faculty",
+      description: "Assignment Category Full-Time Rank Open Rank Tenure Status Open Tenure Payroll Status Faculty 12",
+    },
+    { title: "Open Rank, Tenure or Clinical Professor", description: "Full-time faculty position." },
+    {
+      title: "Open Rank Tenure or Clinical Faculty - Large Animal & Ambulatory Services",
+      description: "Full-time faculty position.",
+    },
+    {
+      title: "Open Track: Endowed Professor / Professor of Professional Practice",
+      description: "Applications are invited from scholars and practitioners.",
+    },
+    {
+      title: "Assistant Professor of Biology",
+      description:
+        "Candidates holding an earned PhD are eligible for appointment to a tenure-track position. Candidates with a master's degree may be considered for a full-time, non-tenure-track appointment.",
+    },
+    {
+      title: "Family Medicine Clinical Research - Associate Professor/Professor",
+      description: "This is a full-time, Clinician Investigator or Traditional track position.",
+    },
+    {
+      title: "Open Faculty Search - Small Animal Soft Tissue Surgery",
+      description:
+        "An advanced degree is desirable for tenure-track candidates. Sponsored research is not required for clinical track faculty.",
+    },
+    {
+      title: "Assistant Professor, School of Medicine, Neurosurgery",
+      description:
+        "For tenure eligibility at the Assistant Professor rank, an established research agenda and clear potential for external funding are required.",
+    },
+  ]) {
+    assert.equal(classifyTenureTrack(job), null);
+    assert.equal(classifyVariableAppointmentTrack(job), true, job.title);
+  }
+  assert.equal(
+    classifyVariableAppointmentTrack({
+      title: "Assistant Professor",
+      description: "The department includes both clinical and tenure-track faculty.",
+    }),
+    false
   );
 });

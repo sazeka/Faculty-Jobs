@@ -307,6 +307,7 @@ async function main() {
       totalJobs: h.totalJobs,
       tenureTrack: h.tenureTrackBreakdown?.tenureTrack ?? null,
       nonTenureTrack: h.tenureTrackBreakdown?.nonTenureTrack ?? null,
+      variableTrack: h.tenureTrackBreakdown?.variableTrack ?? null,
       tenureTrackPct: h.tenureTrackBreakdown?.tenureTrackPct ?? null,
       nonTenureTrackPct: h.tenureTrackBreakdown?.nonTenureTrackPct ?? null,
       publicJobs: h.institutionControlBreakdown?.public ?? null,

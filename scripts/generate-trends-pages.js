@@ -212,6 +212,7 @@ function renderWeekPage(entry, prevEntry, nextEntry) {
     <table>
       <tr><td>Tenure-track</td><td class="n">${tenure.tenureTrack.toLocaleString()} · ${tenure.tenureTrackPct}% of classified</td></tr>
       <tr><td>Non-tenure-track</td><td class="n">${tenure.nonTenureTrack.toLocaleString()} · ${tenure.nonTenureTrackPct}% of classified</td></tr>
+      <tr><td>Variable / candidate-dependent track</td><td class="n">${(tenure.variableTrack || 0).toLocaleString()}</td></tr>
       <tr><td>Unclassified</td><td class="n">${tenure.unknown.toLocaleString()}</td></tr>
     </table>`
     : "";
