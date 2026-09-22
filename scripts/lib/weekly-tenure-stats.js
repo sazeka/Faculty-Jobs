@@ -474,6 +474,8 @@ const VARIABLE_TRACK_RE = new RegExp(
     "\\boffers\\s+both\\s+tenure\\s+track\\s+and\\s+term\\s+faculty\\s+contracts\\b[^.]{0,160}\\bdetermined\\s+based\\s+on\\s+the\\s+candidate",
     "\\b(?:position|appointment|applicants?|candidates?|ranked)\\b[^.]{0,160}\\btenure[\\s-]?track\\b[^.]{0,100}\\b(?:or|and)\\b[^.]{0,100}\\bnon[\\s-]?tenure(?:[\\s-]?track)?\\b",
     "\\b(?:position|appointment|applicants?|candidates?|ranked)\\b[^.]{0,160}\\bnon[\\s-]?tenure(?:[\\s-]?track)?\\b[^.]{0,100}\\b(?:or|and)\\b[^.]{0,100}\\btenure[\\s-]?track\\b",
+    "\\bnon[\\s-]?tenure[\\s-]?earning\\b[^.]{0,80}\\bor\\b[^.]{0,80}\\btenure[\\s-]?earning\\b",
+    "\\btenure[\\s-]?earning\\b[^.]{0,80}\\bor\\b[^.]{0,80}\\bnon[\\s-]?tenure[\\s-]?earning\\b",
   ].join("|"),
   "i"
 );
