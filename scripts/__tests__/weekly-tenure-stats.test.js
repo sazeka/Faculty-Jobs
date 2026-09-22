@@ -4558,3 +4558,49 @@ test("keeps exact posting evidence confined to the verified searches", () => {
     false
   );
 });
+
+test("applies the final safe CUNY, Richmond Law, and Kennesaw distinctions", () => {
+  const tenureJobs = [
+    {
+      college: "CUNY City College",
+      title: "Doctoral Lecturer- Anthropology",
+      url: "https://cuny.jobs/new-york-ny/doctoral-lecturer-anthropology/8FB25EA07A07401FBD10965D5A41F1BA/job",
+    },
+    {
+      college: "Kennesaw State University",
+      title: "Assistant Professor of Psychology (Clinical/Counseling)",
+      url: "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U#jobId=303176",
+    },
+  ];
+
+  for (const job of tenureJobs) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence(job),
+      { value: true, evidence: "institution-policy" },
+      job.title
+    );
+  }
+
+  const richmondJob = {
+    college: "University of Richmond",
+    title: "Legal Writing Faculty (Open Rank)",
+    url: "https://richmond.wd5.myworkdayjobs.com/staff_faculty/job/UR-Main-Campus/Legal-Writing-Faculty--Open-Rank-_JR101509",
+  };
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence(richmondJob),
+    { value: false, evidence: "institution-policy" }
+  );
+
+  assert.equal(
+    classifyTenureTrack({ ...tenureJobs[0], url: "https://cuny.jobs/new-york-ny/another-search/job" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ ...tenureJobs[1], url: "https://careers.hprod.onehcm.usg.edu/#jobId=another" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ ...richmondJob, url: "https://richmond.wd5.myworkdayjobs.com/another-search" }),
+    null
+  );
+});
