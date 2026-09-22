@@ -3824,6 +3824,11 @@ test("separates explicitly variable searches from genuinely unclassified listing
         "Candidates holding an earned PhD are eligible for appointment to a tenure-track position. Candidates with a master's degree may be considered for a full-time, non-tenure-track appointment.",
     },
     {
+      title: "Assistant Professor of Biology",
+      description:
+        "Applicants with a terminal degree are eligible for appointment to a tenure-track position. Candidates with a master's degree may receive a non-tenure-track appointment.",
+    },
+    {
       title: "Family Medicine Clinical Research - Associate Professor/Professor",
       description: "This is a full-time, Clinician Investigator or Traditional track position.",
     },
@@ -3848,4 +3853,34 @@ test("separates explicitly variable searches from genuinely unclassified listing
     }),
     false
   );
+});
+
+test("recognizes PeopleAdmin Position Type appointment fields", () => {
+  assert.equal(
+    classifyTenureTrack({ description: "Position Type: Tenured/Tenure-Track Faculty" }),
+    true
+  );
+  assert.equal(
+    classifyTenureTrack({ description: "Position Type: Non-Tenure Track Faculty" }),
+    false
+  );
+});
+
+test("applies the September 22 exact institution-policy reviews", () => {
+  const cases = [
+    ["Broward College", "Assistant Professor, Nursing (Multiple Vacancies) Central Campus", "The college invites applications for a full-time contract eligible teaching position in Nursing.", true],
+    ["Grambling State University", "Assistant Professor of Nursing", "Job Type Full-Tme Faculty", true],
+    ["Soka University of America", "Apply for the Assistant Professor of Economics position", "", true],
+    ["NC State University", "Assistant Professor of Population Medicine and Career Success", "", true],
+    ["Northern Illinois University", "Assistant Professor of Legal Practice for Legal Writing/Academic Success Program", "", false],
+    ["University of Richmond", "Assistant Professor of Physics", "", true],
+    ["The University of Texas Health Science Center at Houston", "Assistant Professor, Breast Imaging - Diagnostic and Interventional Imaging, McGovern Medical School", "seeking an Assistant Professor-Clinical", false],
+  ];
+  for (const [college, title, description, expected] of cases) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title, description }),
+      { value: expected, evidence: "institution-policy" },
+      title
+    );
+  }
 });

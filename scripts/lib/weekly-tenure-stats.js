@@ -153,7 +153,8 @@ const STRUCTURED_NON_TENURE_RE = new RegExp(
     `|\\bposition\\s+status\\s*:?\\s*limited[\\s-]?term\\b` +
     `|\\bjob\\s+type\\s*:?\\s*temporary\\b` +
     `|\\btime[\\s-]?limited\\s+position\\s*:?\\s*yes\\b` +
-    `|\\btype\\s+of\\s+position\\s*:?\\s*faculty\\s*-\\s*non[\\s-]?tenure\\b`,
+    `|\\btype\\s+of\\s+position\\s*:?\\s*faculty\\s*-\\s*non[\\s-]?tenure\\b` +
+    `|\\bposition\\s+type\\s*:?\\s*non[\\s-]?tenure[\\s-]?track\\s+faculty\\b`,
   "i"
 );
 const STRUCTURED_TENURE_RE = new RegExp(
@@ -163,7 +164,8 @@ const STRUCTURED_TENURE_RE = new RegExp(
     `|\\bappointment\\s+status\\s*:?\\s*tenure(?:\\s+track)?\\b` +
     `|\\bappointment\\s+type\\s*:?\\s*tenured\\s*\\/\\s*tenure\\s+track\\b` +
     `|\\btype\\s+of\\s+position\\s*:?\\s*faculty\\s*-\\s*tenure(?:\\s*\\/\\s*tenure\\s+track)?\\b` +
-    `|\\bgroup\\s*:?\\s*tenure\\s+system\\s+faculty\\b`,
+    `|\\bgroup\\s*:?\\s*tenure\\s+system\\s+faculty\\b` +
+    `|\\bposition\\s+type\\s*:?\\s*tenured\\s*\\/\\s*tenure[\\s-]?track\\s+faculty\\b`,
   "i"
 );
 
@@ -425,7 +427,7 @@ const VARIABLE_TRACK_RE = new RegExp(
     "\\btenure[\\s-]?eligibility,?\\s+and\\s+rank\\b[^.]{0,100}\\bcommensurate\\s+with\\s+experience\\b",
     "\\blecturer\\b[^.]{0,120}\\bnon[\\s-]?tenure\\s+track\\b[^.]{0,220}\\bassistant\\s+professor\\b[^.]{0,120}\\btenure\\s+track\\b",
     "\\b(?:open\\s+rank\\s+)?positions?\\s+(?:is|are)\\s+for\\s+either\\b[^.]{0,80}\\bnon[\\s-]?tenure\\s+track\\b[^.]{0,80}\\bor\\b[^.]{0,80}\\btenure\\s+track\\b",
-    "\\bcandidates?\\b[^.]{0,300}\\beligible\\s+for\\s+appointment\\s+to\\s+a\\s+tenure[\\s-]?track\\s+position\\b[\\s\\S]{0,800}\\bcandidates?\\b[^.]{0,300}\\bnon[\\s-]?tenure[\\s-]?track\\s+appointment\\b",
+    "\\b(?:applicants?|candidates?)\\b[\\s\\S]{0,400}\\beligible\\s+for\\s+appointment\\s+to\\s+a\\s+tenure[\\s-]?track\\s+position\\b[\\s\\S]{0,800}\\bcandidates?\\b[^.]{0,300}\\bnon[\\s-]?tenure[\\s-]?track\\s+appointment\\b",
     "\\bopen\\s+faculty\\s+search\\s*-\\s*small\\s+animal\\s+soft\\s+tissue\\s+surgery\\b[\\s\\S]{0,1800}\\btenure[\\s-]?track\\s+candidates?\\b[\\s\\S]{0,1800}\\bclinical\\s+track\\s+faculty\\b",
     "\\bassistant\\s+professor,?\\s+school\\s+of\\s+medicine,?\\s+neurosurgery\\b[\\s\\S]{0,1200}\\bfor\\s+tenure\\s+eligibility\\s+at\\s+the\\s+assistant\\s+professor\\s+rank\\b",
     "\\btracks?\\s*:?\\s*tenure[\\s-]?track,?\\s+tenured,?\\s+or\\s+non[\\s-]?tenure[\\s-]?track\\b",

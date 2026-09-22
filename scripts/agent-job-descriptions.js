@@ -448,6 +448,15 @@ async function main() {
               }
               return best.length >= minLen ? best.slice(0, maxLen) : "";
             };
+            // PeopleAdmin often renders the decisive appointment type in a
+            // trailing Position Details table outside the first description
+            // element. Preserve only the two tightly defined faculty values;
+            // broader page text remains untouched.
+            const findStructuredAppointmentField = () => {
+              const body = clean(document.body && document.body.innerText ? document.body.innerText : "");
+              const m = /\bPosition\s+Type\s*:?\s*(Tenured\s*\/\s*Tenure[-\s]?Track\s+Faculty|Non[-\s]?Tenure[-\s]?Track\s+Faculty)\b/i.exec(body);
+              return m ? `Position Type: ${m[1]}` : "";
+            };
             // Application DEADLINE from a labeled field, when JSON-LD validThrough
             // is absent: PeopleAdmin "Close Date", PageUp "Applications Close",
             // also "Application Deadline" / "Deadline to Apply" / "Apply By". The
@@ -466,7 +475,12 @@ async function main() {
               const m = new RegExp("\\b" + LBL + "\\s*[:\\-]?\\s*" + D, "i").exec(body);
               return m ? { date: m[1] } : {};
             };
-            return { desc: findDesc(), ...findJobDates(), openDate: findLabeledOpenDate(), close: findLabeledCloseDate() };
+            const rawDesc = findDesc();
+            const appointmentField = findStructuredAppointmentField();
+            const desc = appointmentField && !rawDesc.toLowerCase().includes(appointmentField.toLowerCase())
+              ? `${rawDesc.slice(0, Math.max(0, maxLen - appointmentField.length - 1))} ${appointmentField}`.trim()
+              : rawDesc;
+            return { desc, ...findJobDates(), openDate: findLabeledOpenDate(), close: findLabeledCloseDate() };
           },
           [MIN_LEN, MAX_LEN]
           ),
