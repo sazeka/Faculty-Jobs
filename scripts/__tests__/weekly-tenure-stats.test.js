@@ -4371,3 +4371,29 @@ test("applies exact University of Minnesota tenure-track posting evidence", () =
     null
   );
 });
+
+test("applies exact University of Toledo medical posting evidence", () => {
+  const pathology = {
+    college: "University of Toledo",
+    title: "Assistant, Associate, or Full Professor - Department of Pathology; Surgical Pathologist/Cytopathologist",
+    url: "https://careers.utoledo.edu/jobs/assistant-associate-or-full-professor-department-of-pathology-surgical-pathologist-cytopathologist-health-science-campus-college-toledo-oh-ohio-united-states",
+  };
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence(pathology),
+    { value: true, evidence: "institution-policy" }
+  );
+
+  const endocrinology = {
+    college: "University of Toledo",
+    title: "Assistant, Associate, or Full Professor - Department of Medicine, Endocrinology",
+    url: "https://careers.utoledo.edu/jobs/assistant-associate-or-full-professor-department-of-medicine-endocrinology-health-science-campus-college-toledo-oh-ohio-united-states",
+  };
+  assert.equal(classifyTenureTrack(endocrinology), null);
+  assert.equal(classifyVariableAppointmentTrack(endocrinology), true);
+
+  assert.equal(classifyTenureTrack({ ...pathology, url: "https://careers.utoledo.edu/jobs/another-search" }), null);
+  assert.equal(
+    classifyVariableAppointmentTrack({ ...endocrinology, url: "https://careers.utoledo.edu/jobs/another-search" }),
+    false
+  );
+});
