@@ -4747,6 +4747,38 @@
       "note": "The college's current official jobs directory classifies this exact Adult Education opening as project-based, part-time staff rather than its full-time faculty category. The exact-title rule avoids generalizing to St. Charles full-time faculty searches.",
       "source": "https://stchas.aaimtrack.com/jobsandemployment/location/",
       "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Yale University",
+      "titlePattern": "^Assistant or Associate Professor of Accounting$",
+      "value": true,
+      "note": "Yale School of Management's current official faculty-openings page explicitly identifies this Assistant or Associate Professor of Accounting search as full-time tenure-track and states that appointment at Associate Professor is tenure-track. The rule is restricted to the exact current search.",
+      "source": "https://som.yale.edu/faculty-research/faculty-openings",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Yale University",
+      "titlePattern": "^Assistant/Associate/Full Professor, Applied Data Science$",
+      "value": "variable",
+      "note": "Yale Statistics and Data Science's current official posting says applicants may seek appointment without tenure or with tenure. Because the eventual appointment track is not fixed by the listing, it is classified as variable rather than forced into either binary category.",
+      "source": "https://statistics.yale.edu/assistantassociatefull-professor-applied-data-science",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Idaho State University",
+      "titlePattern": "^Assistant or Associate Professor, School Psychology Program \\(3341\\)$",
+      "value": true,
+      "note": "Idaho State's current official applicant-tracking page explicitly labels this exact opening 'Faculty Tenure Track.' The exact-title rule avoids generalizing that metadata to other ISU faculty searches.",
+      "source": "https://isu.csod.com/ux/ats/careersite/5/home/requisition/2821?c=isu",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "New York Law School",
+      "titlePattern": "^Full-Time Faculty Position Nonprofit and Small Business Clinic$",
+      "value": false,
+      "note": "The current official posting explicitly describes this opening as a long-term contract-track faculty position and directs inquiries to the Long-Term Contract Track Faculty Appointment Chair. The exact-title rule avoids extending that evidence to other NYLS faculty searches.",
+      "source": "https://www.nyls.edu/wp-content/uploads/2026/07/HR-Job-Posting-Nonprofit-and-Small-Business-Clinic-Faculty-Position-0726-v1r1.pdf",
+      "verifiedAt": "2026-09-22"
     }
   ]
 }

@@ -4213,3 +4213,26 @@ test("applies the final exact Alaska, CUNY, Walsh, North Florida, and St Charles
   assert.equal(classifyTenureTrack({ college: "North Florida College", title: "Adjunct Faculty Pool" }), false);
   assert.equal(classifyTenureTrack({ college: "St Charles Community College", title: "Full-Time Faculty: Mathematics - 83464" }), null);
 });
+
+test("applies exact Yale, Idaho State, and New York Law School appointment evidence", () => {
+  const tenureCases = [
+    ["Yale University", "Assistant or Associate Professor of Accounting"],
+    ["Idaho State University", "Assistant or Associate Professor, School Psychology Program (3341)"],
+  ];
+  for (const [college, title] of tenureCases) {
+    assert.deepEqual(classifyTenureTrackWithEvidence({ college, title }), { value: true, evidence: "institution-policy" }, title);
+  }
+
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ college: "New York Law School", title: "Full-Time Faculty Position Nonprofit and Small Business Clinic" }),
+    { value: false, evidence: "institution-policy" }
+  );
+
+  const variableCase = { college: "Yale University", title: "Assistant/Associate/Full Professor, Applied Data Science" };
+  assert.equal(classifyTenureTrack(variableCase), null);
+  assert.equal(classifyVariableAppointmentTrack(variableCase), true);
+
+  assert.equal(classifyTenureTrack({ college: "Yale University", title: "Assistant Professor, Computational Biophysics and Biochemistry" }), null);
+  assert.equal(classifyTenureTrack({ college: "Idaho State University", title: "Assistant Professor of Psychology" }), null);
+  assert.equal(classifyTenureTrack({ college: "New York Law School", title: "Full-Time Faculty Position" }), null);
+});
