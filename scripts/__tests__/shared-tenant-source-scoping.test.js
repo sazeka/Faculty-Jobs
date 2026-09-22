@@ -61,6 +61,21 @@ test("University of Arkansas System Office is scoped to its own hiringCompany fa
   assert.doesNotMatch(systemOffice, /type:\s*"generic"/);
 });
 
+test("University of Arkansas at Pine Bluff uses its own hiringCompany facet instead of the system-wide tenant", () => {
+  const pineBluff = sourceEntry("University of Arkansas at Pine Bluff");
+  assert.ok(pineBluff, "University of Arkansas at Pine Bluff source not found");
+  assert.match(
+    pineBluff,
+    /uasys\.wd5\.myworkdayjobs\.com\/UASYS\?hiringCompany=720b21cbdf2401021f9b3859c401ff06/
+  );
+
+  const systemOffice = sourceEntry("University of Arkansas System Office");
+  assert.notEqual(
+    pineBluff.match(/hiringCompany=([a-f0-9]+)/)?.[1],
+    systemOffice.match(/hiringCompany=([a-f0-9]+)/)?.[1]
+  );
+});
+
 test("Minnesota State System dispatches through the description/bulletFields-aware scraper, not the plain workday one (issue #152)", () => {
   const entry = sourceEntry("Minnesota State System");
   assert.ok(entry, "Minnesota State System source not found");

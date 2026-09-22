@@ -25,6 +25,16 @@ test("generic career scraping rejects faculty-themed page chrome", () => {
   assert.equal(isGenericFacultyPageChromeTitle("Cosmetology Instructor Training (Short-Term Certificate)"), true);
   assert.equal(isGenericFacultyPageChromeTitle("Northeast Faculty & Administration Application (PDF, 0.2 MB)"), true);
   assert.equal(isGenericFacultyPageChromeTitle(":: Application For FACULTY jobs"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Faculty Employment Opportunities"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("CBT Faculty Employment Opportunities"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Faculty and Advisory Committee"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Faculty FAQs"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Faculty Services"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Current Faculty Research"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Research Appointments for Faculty"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Student Affairs-Dean of Students Office"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Mathematics Faculty", "https://example.edu/academics/mathematics/mathematics-faculty"), true);
+  assert.equal(isGenericFacultyPageChromeTitle("Nursing Faculty", "https://example.edu/employment/jobs/nursing-faculty"), false);
   assert.equal(isGenericFacultyPageChromeTitle("Faculty - Biology"), false);
   assert.equal(isGenericFacultyPageChromeTitle("Distinguished Faculty Fellow"), false);
   assert.equal(isGenericFacultyPageChromeTitle("Adjunct Faculty Position Description (PDF)"), false);

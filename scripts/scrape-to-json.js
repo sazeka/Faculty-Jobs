@@ -13,6 +13,7 @@ import { confirmedNonFacultyReason } from "./lib/post-quality.js";
 import { loadReviewedExclusions, reviewedExclusionReason } from "./lib/post-quality-exclusions.js";
 import { consolidateSystemUmbrellaDuplicates, consolidateWorkdayRequisitionDuplicates } from "./lib/duplicate-url-consolidation.js";
 import { attachCanonicalIds } from "./lib/canonical-id.js";
+import { dedupeExactListings } from "./lib/exact-job-dedup.js";
 import { repairMinnStateCollegeFromDescription } from "./lib/institution-attribution.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -490,6 +491,16 @@ function canonicalizeJobUrls(data) {
   data = compactedDescriptions.data;
   if (compactedDescriptions.truncated > 0) {
     console.log(`📦 Compacted ${compactedDescriptions.truncated} long descriptions at the publish boundary`);
+  }
+
+  // Final write boundary: retain only one richest copy when a downstream pass
+  // has reintroduced the exact same institution/title/URL tuple. Shared-system
+  // records attributed to different campuses remain distinct here and are
+  // handled by their own evidence-aware consolidation rules.
+  const exactDedup = dedupeExactListings(data.jobs);
+  if (exactDedup.removed > 0) {
+    data = { ...data, jobs: exactDedup.jobs };
+    console.log(`🧬 Final safeguard removed ${exactDedup.removed} exact duplicate listing copy/copies`);
   }
 
   // Final write boundary: downstream passes may replace or filter the job array,
