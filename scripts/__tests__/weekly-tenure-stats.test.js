@@ -1459,10 +1459,14 @@ test("uses documented unmodified professorial ladders without absorbing qualifie
     ["Southern Illinois University Edwardsville", "Assistant Professor / Clinical Assistant Professor"],
     ["Northern Illinois University", "Assistant Professor of Legal Practice"],
     ["Mississippi State University", "Assistant Research Professor"],
-    ["University of Wyoming", "Assistant Librarian - Faculty Support Librarian"],
   ]) {
     assert.equal(classifyTenureTrack({ college, title }), null, `${college}: ${title}`);
   }
+
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({ college: "University of Wyoming", title: "Assistant Librarian - Faculty Support Librarian" }),
+    { value: false, evidence: "institution-policy" }
+  );
 });
 
 test("applies SUNY's system-wide academic-rank distinction at state-operated campuses", () => {
@@ -4272,6 +4276,10 @@ test("applies exact Oracle-posting appointment evidence", () => {
   const nonTenureCases = [
     ["Tennessee Technological University", "Instructor", "https://fa-eygi-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/25666"],
     ["East Tennessee State University", "Assistant Professor", "https://fa-evyu-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/1180"],
+    ["Loma Linda University", "Assistant Professor", "https://egln.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX/job/16867"],
+    ["East Tennessee State University", "Assistant Professor - Pathology", "https://fa-evyu-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/699"],
+    ["Wagner College", "Evelyn L. Sprio School of Nursing - Associated Clinical Faculty of Practice", "https://fa-exad-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/341"],
+    ["University of Texas Southwestern Medical Center", "FACULTY ASSOCIATE - Sports Medicine Orthopaedic Surgery", ""],
   ];
   for (const [college, title, url] of nonTenureCases) {
     assert.deepEqual(classifyTenureTrackWithEvidence({ college, title, url }), { value: false, evidence: "institution-policy" }, title);
@@ -4280,6 +4288,7 @@ test("applies exact Oracle-posting appointment evidence", () => {
   for (const variableCase of [
     { college: "Graceland University-Lamoni", title: "Assistant Professor of Chemistry" },
     { college: "Moravian University", title: "Assistant/Associate Professor, Master of Social Work" },
+    { college: "East Tennessee State University", title: "Assistant/Associate Professor, RHSC", url: "https://fa-evyu-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/1174" },
   ]) {
     assert.equal(classifyTenureTrack(variableCase), null, variableCase.title);
     assert.equal(classifyVariableAppointmentTrack(variableCase), true, variableCase.title);
@@ -4287,5 +4296,7 @@ test("applies exact Oracle-posting appointment evidence", () => {
 
   assert.equal(classifyTenureTrack({ college: "Tennessee Technological University", title: "Instructor", url: "https://example.edu/job/25667" }), null);
   assert.equal(classifyTenureTrack({ college: "East Tennessee State University", title: "Assistant Professor", url: "https://example.edu/job/1181" }), null);
+  assert.equal(classifyTenureTrack({ college: "Loma Linda University", title: "Assistant Professor", url: "https://example.edu/job/16868" }), null);
+  assert.equal(classifyTenureTrack({ college: "Wagner College", title: "Evelyn L. Sprio School of Nursing - Associated Clinical Faculty of Practice", url: "https://example.edu/job/342" }), null);
   assert.equal(classifyVariableAppointmentTrack({ college: "Moravian University", title: "Assistant Professor of History" }), false);
 });
