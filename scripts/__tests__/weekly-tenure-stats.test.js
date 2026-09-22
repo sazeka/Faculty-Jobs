@@ -3365,8 +3365,83 @@ test("uses Jacksonville State's unmodified professorial-rank tenure policy", () 
     );
   }
   assert.equal(
+    classifyVariableAppointmentTrack({
+      college: "Jacksonville State University",
+      title: "Faculty Member, Teacher Education",
+      description: "The position may be filled as Instructor or Assistant Professor.",
+    }),
+    true
+  );
+  assert.equal(
     classifyTenureTrack({ college: "Jacksonville State University", title: "Faculty Member, Teacher Education" }),
     null
+  );
+});
+
+test("uses exact appointment-policy evidence for NMSU Psychology and UCSF Imaging", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "New Mexico State University",
+      title: "Assistant Professor",
+      description: "College/Division: Arts and Sciences College Department: 331600-PSYCHOLOGY Location: Las Cruces",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "New Mexico State University", title: "Assistant Professor" }),
+    null
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "UC San Francisco",
+      title: "Imaging Scientist Faculty in Molecular Imaging and Theranostics",
+      description: "The selected candidate will be appointed in the In Residence or Adjunct series depending on qualifications.",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+});
+
+test("uses FSU's faculty categories and Butler County's direct part-time posting evidence", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Florida State University",
+      title: "Assistant Professor, 9 Month Salaried (Cognitive Neuroscience)",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Florida State University",
+      title: "Research Faculty III, ICR Instrumentation (NHMFL)",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Butler County Community College",
+      title: "Credit Instructor Openings",
+      description: "Butler County Community College is currently accepting applications for Part-time Credit Instructors.",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+});
+
+test("uses Providence's Ordinary Faculty tenure-line category", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "Providence College",
+      title: "Assistant Professor of Philosophy",
+      description: "Job Type Ordinary Faculty Job Number PC00302",
+    }),
+    { value: true, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Providence College",
+      title: "Assistant Professor of Philosophy",
+      description: "Job Type Term Faculty",
+    }),
+    false
   );
 });
 
@@ -3804,6 +3879,10 @@ test("separates explicitly variable searches from genuinely unclassified listing
       title: "Open Rank Faculty",
       description:
         "This appointment may be offered as a fixed-term, variable-track, or tenure-track faculty appointment.",
+    },
+    {
+      title: "Associate Dean for Students and Associate Professor or Professor of Medicine",
+      description: "This is a non-tenure earning or tenure-earning position.",
     },
     {
       title: "School of Medicine Faculty",
