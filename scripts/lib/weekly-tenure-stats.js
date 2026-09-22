@@ -237,6 +237,38 @@ function loadInstitutionPolicyRules() {
 const { byCollege: INSTITUTION_POLICY_RULES, patternRules: INSTITUTION_POLICY_PATTERN_RULES } =
   loadInstitutionPolicyRules();
 
+function loadInstitutionVariablePolicyRules() {
+  const rules = [];
+  try {
+    const raw = JSON.parse(fs.readFileSync(INSTITUTION_POLICY_PATH, "utf8"));
+    for (const rule of Array.isArray(raw?.rules) ? raw.rules : []) {
+      if (rule?.value !== "variable" || !rule?.titlePattern) continue;
+      const titleRe = new RegExp(rule.titlePattern, "i");
+      const descriptionRe = rule.descriptionPattern ? new RegExp(rule.descriptionPattern, "i") : null;
+      const collegeRe = rule.collegePattern ? new RegExp(rule.collegePattern) : null;
+      rules.push({ college: rule.college || null, collegeRe, titleRe, descriptionRe });
+    }
+  } catch {
+    // Explicit prose patterns below remain available if optional policy data
+    // is omitted or malformed in a stripped-down environment.
+  }
+  return rules;
+}
+
+const INSTITUTION_VARIABLE_POLICY_RULES = loadInstitutionVariablePolicyRules();
+
+function matchesInstitutionVariablePolicy(job) {
+  const college = String(job?.college || "");
+  const title = String(job?.title || "");
+  const description = String(job?.description || "");
+  return INSTITUTION_VARIABLE_POLICY_RULES.some(
+    (rule) =>
+      (rule.college ? college === rule.college : rule.collegeRe?.test(college)) &&
+      rule.titleRe.test(title) &&
+      (!rule.descriptionRe || rule.descriptionRe.test(description))
+  );
+}
+
 function loadIpedsRankPolicyRules() {
   const rules = new Map();
   try {
@@ -421,6 +453,8 @@ const VARIABLE_TRACK_RE = new RegExp(
     "\\btenure\\s+and\\s+non[\\s-]?tenure\\s+track\\s+will\\s+be\\s+considered\\b",
     "\\b(?:may|can|could|will)\\s+be\\s+(?:tenure|tenure[\\s-]?track|clinical[\\s-]?track)\\b[^.]{0,80}\\b(?:or|and)\\b[^.]{0,80}\\b(?:tenure|tenure[\\s-]?track|clinical[\\s-]?track)\\b",
     "\\btenure\\s+or\\s+career[\\s-]?track\\s+faculty\\s+position\\b",
+    "\\bfull[\\s-]?time,?\\s+clinical[\\s-]?track\\s+or\\s+tenure[\\s-]?track\\s+faculty\\s+position\\b",
+    "\\bLadder\\s+or\\s+combined\\s+Ladder\\s*\\/\\s*In[\\s-]?Residence\\s+Professor\\s+series\\b",
     "\\b(?:traditional|clinician[\\s-]?educator|clinician\\s+investigator)(?:\\s+track)?\\b[^.]{0,80}\\b(?:or|and)\\b[^.]{0,80}\\b(?:traditional|clinician[\\s-]?educator|clinician\\s+investigator)\\s+track\\b",
     "\\btenure\\s+(?:is\\s+)?preferred\\s+but\\s+not\\s+required\\b",
     "\\brank\\s+and\\s+tenure\\b[^.]{0,80}\\b(?:can|may|will)\\s+be\\s+(?:further\\s+)?(?:considered|determined)\\b[^.]{0,100}\\bqualified\\s+candidates?\\b",
@@ -452,6 +486,7 @@ const STANFORD_MULTI_LINE_RE =
 
 export function classifyVariableAppointmentTrack(job = {}) {
   if (classifyTenureTrack(job) !== null) return false;
+  if (matchesInstitutionVariablePolicy(job)) return true;
   const title = insertConcatenationBoundaries(String(job?.title || ""));
   const description = insertConcatenationBoundaries(String(job?.description || ""))
     .replace(AGGREGATE_FACULTY_COUNT_RE, " ")

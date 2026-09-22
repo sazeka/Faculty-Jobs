@@ -1,5 +1,5 @@
 {
-  "_comment": "Curated, evidence-backed appointment-policy overrides used ONLY as a last resort by classifyTenureTrackWithEvidence, after every explicit tenure/non-tenure phrase check (stored field, title, description) has come up empty. noTenureInstitutions contains institutions whose certified IPEDS response explicitly says they have no tenure system. rules contains institution-specific title conventions and other narrowly sourced policies.",
+  "_comment": "Curated, evidence-backed appointment-policy overrides used ONLY as a last resort after every explicit appointment-track phrase check (stored field, title, description) has come up empty. noTenureInstitutions contains institutions whose certified IPEDS response explicitly says they have no tenure system. rules contains institution-specific title conventions and other narrowly sourced binary or explicitly variable policies.",
   "noTenureInstitutions": [
     { "college": "Delaware Technical Community College", "unitId": "130907", "source": "https://nces.ed.gov/ipeds/institution-profile/130907", "verifiedAt": "2026-09-21", "note": "Current listings are aggregated under the collegewide Delaware Technical Community College label; NCES identifies the reporting institution as Delaware Technical Community College-Terry, which reports no tenure system and all instructional staff outside a tenure track." },
     { "college": "Bryant & Stratton College-Online", "unitId": "480091", "source": "https://nces.ed.gov/ipeds/reported-data/html/480091?year=2024&surveyNumber=9&viewmode=print", "verifiedAt": "2026-09-20" },
@@ -4164,6 +4164,71 @@
       "value": false,
       "note": "These exact postings designate the appointment Assistant Professor-Clinical. McGovern Medical School's official faculty-track policy defines its Clinical Track as non-tenure-track.",
       "source": "https://med.uth.edu/administration/faculty-tracks/",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "University of Connecticut-Avery Point",
+      "titlePattern": "^(?:Assistant Professor, Public/Nonprofit Management|Assistant, Associate, or Full Professor - Addictions and Behavioral Health Focus)$",
+      "value": true,
+      "note": "The two exact current official PageUp records are categorized Faculty Tenure Track and describe the appointments as tenure-track or tenure-line. Exact-title scoping avoids extending that posting field to unrelated UConn searches.",
+      "source": "https://careers.pageuppeople.com/967/cw/en-us/job/499820/assistant-professor-publicnonprofit-management",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "University of Alabama",
+      "titlePattern": "^BCAS - Assistant Professor of Microbiology in Biological Sciences - 530532$",
+      "value": true,
+      "note": "The official current posting categorizes this exact cluster hire as Tenure/Tenure-Track Faculty and states that both Assistant Professor positions are tenure-track.",
+      "source": "https://careers.ua.edu/jobs/bcas-assistant-professor-of-microbiology-in-biological-sciences-530532-tuscaloosa-alabama-united-states",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Gordon-Conwell Theological Seminary",
+      "titlePattern": "^Professor of Preaching \\(Open Rank\\)$",
+      "descriptionPattern": "continuing-status track appointment",
+      "value": true,
+      "note": "The current posting expressly places this appointment on Gordon-Conwell's continuing-status track. The seminary's official faculty postings define continuing-status track as its term for tenure.",
+      "source": "https://www.gordonconwell.edu/employment/wp-content/uploads/sites/23/2021/02/Updated-JD-Coleman-M-Mockler-Professor-of-Christian-Ethics.pdf",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "UC Berkeley",
+      "titlePattern": "^(?:Assistant Professor - Cell Engineering and Regenerative Medicine - Department of Bioengineering|Assistant Professor - Human-Computer Interaction \\(HCI\\) - School of Information)$",
+      "value": true,
+      "note": "These exact current AP Recruit searches use the unmodified Assistant Professor title in UC's regular-ranks Professor series. UC APM 220 defines that series as the tenure-eligible ladder and distinguishes it from the qualified clinical, adjunct, in-residence, visiting, and teaching series.",
+      "source": "https://www.ucop.edu/academic-personnel-programs/_files/apm/apm-220.pdf",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "UC Santa Barbara",
+      "titlePattern": "^Assistant Professor School Psychology, Department of Counseling, Clinical, and School Psychology$",
+      "value": true,
+      "note": "The exact current AP Recruit search lists the unmodified Assistant Professor title in UC's regular-ranks Professor series. UC APM 220 defines that series as the tenure-eligible ladder; Clinical in this title names the department, not a clinical-rank modifier.",
+      "source": "https://www.ucop.edu/academic-personnel-programs/_files/apm/apm-220.pdf",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "UC Irvine",
+      "titlePattern": "^(?:Open Rank Faculty Position for Department of Informatics in Human-Computer Interaction|Professor of English - Fiction \\(Open Rank\\))$",
+      "value": true,
+      "note": "These exact current AP Recruit searches use UC's regular Professor ranks; the Informatics posting also references the Professor of Teaching series. APM 220 makes the regular Professor series tenure-eligible, while APM 285 grants the Professor of Teaching series security of employment, the UC tenure equivalent used by this site.",
+      "source": "https://www.ucop.edu/academic-personnel-programs/_files/apm/apm-220.pdf",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Georgia State University",
+      "titlePattern": "^Assistant Professor of World Languages Education$",
+      "value": true,
+      "note": "Georgia State's current Faculty Handbook identifies the unmodified Assistant Professor rank as tenure-track and separately names qualified Clinical Professor and Lecturer ranks as non-tenure-track. This rule is limited to the exact current unmodified-rank search.",
+      "source": "https://faculty.gsu.edu/faculty-handbook/",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Long Island University",
+      "titlePattern": "^Assistant Professor - Animal Nutrition$",
+      "value": "variable",
+      "note": "The exact current official posting says this full-time faculty position may be filled on either the clinical track or tenure track. The eventual appointment track is candidate-dependent rather than missing.",
+      "source": "https://jobs.liu.edu/job_details/4993",
       "verifiedAt": "2026-09-22"
     }
   ]

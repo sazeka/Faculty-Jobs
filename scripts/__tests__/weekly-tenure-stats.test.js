@@ -3833,6 +3833,19 @@ test("separates explicitly variable searches from genuinely unclassified listing
       description: "This is a full-time, Clinician Investigator or Traditional track position.",
     },
     {
+      title: "Assistant Professor - Animal Nutrition",
+      description: "This is a full-time, clinical-track or tenure-track faculty position.",
+    },
+    {
+      college: "Long Island University",
+      title: "Assistant Professor - Animal Nutrition",
+      description: "",
+    },
+    {
+      title: "Assistant/Associate Professor- Cell Biology & Human Anatomy",
+      description: "The appointment may be in the Ladder or combined Ladder/in-Residence Professor series.",
+    },
+    {
       title: "Open Faculty Search - Small Animal Soft Tissue Surgery",
       description:
         "An advanced degree is desirable for tenure-track candidates. Sponsored research is not required for clinical track faculty.",
@@ -3883,4 +3896,27 @@ test("applies the September 22 exact institution-policy reviews", () => {
       title
     );
   }
+});
+
+test("applies the final direct-posting and regular-rank reviews", () => {
+  const cases = [
+    ["University of Connecticut-Avery Point", "Assistant Professor, Public/Nonprofit Management", "", true],
+    ["University of Alabama", "BCAS - Assistant Professor of Microbiology in Biological Sciences - 530532", "", true],
+    ["Gordon-Conwell Theological Seminary", "Professor of Preaching (Open Rank)", "This is a continuing-status track appointment.", true],
+    ["UC Berkeley", "Assistant Professor - Human-Computer Interaction (HCI) - School of Information", "", true],
+    ["UC Santa Barbara", "Assistant Professor School Psychology, Department of Counseling, Clinical, and School Psychology", "", true],
+    ["UC Irvine", "Professor of English - Fiction (Open Rank)", "", true],
+    ["Georgia State University", "Assistant Professor of World Languages Education", "", true],
+  ];
+  for (const [college, title, description, expected] of cases) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title, description }),
+      { value: expected, evidence: "institution-policy" },
+      title
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Georgia State University", title: "Open Rank Faculty" }),
+    null
+  );
 });
