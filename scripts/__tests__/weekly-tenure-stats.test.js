@@ -1994,7 +1994,7 @@ test("uses current Ohio, Georgia, and Mississippi named non-tenure series", () =
   }
   assert.equal(
     classifyTenureTrack({ college: "North Carolina A&T State University", title: "News and Record-Janice Byrant Howroyd Endowed Professor" }),
-    null
+    true
   );
 
   assert.equal(
@@ -4046,5 +4046,81 @@ test("applies the September 22 PDF-posting appointment reviews", () => {
   assert.equal(
     classifyTenureTrack({ college: "Southwest Texas College", title: "Patient Care Technician Instructor" }),
     null
+  );
+});
+
+test("applies the September 22 hidden-detail and structured-track reviews", () => {
+  const tenureCases = [
+    ["University of North Carolina at Chapel Hill", "Open Rank - Assistant/Associate/Full Professor — Data Sci and Society - 371210", ""],
+    ["University of North Carolina at Chapel Hill", "Open Rank - Neuroengineering Cluster- Assistant/Associate/Full Professor — Data Sci and Society - 371210", ""],
+    ["North Carolina A&T State University", "News and Record-Janice Byrant Howroyd Endowed Professor", ""],
+    ["West Shore Community College", "English Composition Faculty", "This position has the potential for continuing appointment and full professor rank."],
+    ["Daemen University", "Assistant Professor", ""],
+    ["Lewis-Clark State College", "Assistant Professor", ""],
+    ["Wilkes University", "Assistant Professor of Accounting", ""],
+    ["Wilkes University", "Assistant Professor of Sports Management", ""],
+    ["De Anza College", "Faculty Director, Student Activities", ""],
+    ["Saint Martin's University", "Assistant Professor of Mathematics", ""],
+    ["Aquinas College", "Assistant Professor, Political Science (Fall 2027)", ""],
+    ["Texas State University", "Assistant Professor of Educational and Community Leadership", "Job Posting Number 2027015TTL"],
+    ["University of Arkansas", "Assistant/Associate/Full Professor of Law (Open Rank)", ""],
+    ["University of Arkansas", "Assistant/Associate/Full Professor of Law (Open Rank) – Legal Research & Writing", ""],
+  ];
+  for (const [college, title, description] of tenureCases) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title, description }),
+      { value: true, evidence: "institution-policy" },
+      title
+    );
+  }
+
+  const nonTenureCases = [
+    ["University of New Mexico", "Assistant Professor of Molecular Genetics & Microbiology", "Faculty TypeFlex Track"],
+    ["Carthage College", "Assistant Professor of Education – Secondary Education", ""],
+    ["Fort Valley State University", "Research Assistant Professor- Animal Nutrition", ""],
+    ["Iona University", "FNP Nursing Program Director and Senior Clinical Lecturer", ""],
+  ];
+  for (const [college, title, description] of nonTenureCases) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title, description }),
+      { value: false, evidence: "institution-policy" },
+      title
+    );
+  }
+
+  for (const variableCase of [
+    {
+      college: "University of Nebraska Medical Center",
+      title: "Academic EM Physician/Faculty Rank DOQ",
+      description: "Appointment Type DOQ - DEPENDS ON QUALS",
+    },
+    {
+      college: "Cedarville University",
+      title: "Faculty: School of Engineering and Computer Science - Asst./Assoc. Professor of Computer Science",
+    },
+    {
+      college: "Cedarville University",
+      title: "Faculty: School of Engineering and Computer Science - Asst./Assoc. Professor of Mechanical Engineering (General)",
+    },
+    {
+      college: "University of Nevada, Reno",
+      title: "Lecturer II / Teaching Assistant Professor / Assistant Professor, Commercial Horticulture Specialist (Clark County, NV)",
+    },
+  ]) {
+    assert.equal(classifyTenureTrack(variableCase), null, variableCase.title);
+    assert.equal(classifyVariableAppointmentTrack(variableCase), true, variableCase.title);
+  }
+
+  assert.equal(
+    classifyTenureTrack({ college: "University of New Mexico", title: "Open Rank - Assistant/Associate Professor of Political Science, International Relations", description: "Faculty TypeOpen Rank" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Carthage College", title: "Assistant Professor of Nursing (Mental Health)" }),
+    null
+  );
+  assert.equal(
+    classifyVariableAppointmentTrack({ college: "University of Nebraska Medical Center", title: "Faculty Rank DOQ", description: "Appointment Type P1 - REG HLTH FAC SAL" }),
+    false
   );
 });
