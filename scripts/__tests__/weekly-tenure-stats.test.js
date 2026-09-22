@@ -4397,3 +4397,68 @@ test("applies exact University of Toledo medical posting evidence", () => {
     false
   );
 });
+
+test("applies exact UT Health San Antonio medical and public-health posting evidence", () => {
+  const tenureJob = {
+    college: "The University of Texas Health Science Center at San Antonio",
+    title: "MD or MD/PhD Neurologist Assistant Professor",
+    url: "https://uthscsa.referrals.selectminds.com/faculty/jobs/md-or-md-phd-neurologist-assistant-professor-13134",
+  };
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence(tenureJob),
+    { value: true, evidence: "institution-policy" }
+  );
+
+  const variableJobs = [
+    ["Community Behavioral Health - Faculty Position (Open Rank)", "community-behavioral-health-faculty-position-open-rank-6105"],
+    ["Open Rank Faculty Position- Biostatistician", "open-rank-faculty-position-biostatistician-6106"],
+    ["Open Rank Faculty – Department of Environmental and Occupational Health", "open-rank-faculty-%E2%80%93-department-of-environmental-and-occupational-health-12977"],
+    ["Open Rank Faculty – Department of Health Policy and Health Services Administration", "open-rank-faculty-%E2%80%93-department-of-health-policy-and-health-services-administration-12978"],
+    ["Open Rank Faculty – Department of Quantitative and Qualitative Health Sciences", "open-rank-faculty-%E2%80%93-department-of-quantitative-and-qualitative-health-sciences-12979"],
+    ["Open Rank Faculty – Department of Health, Behavior, and Society", "open-rank-faculty-%E2%80%93-department-of-health-behavior-and-society-13186"],
+  ];
+
+  for (const [title, path] of variableJobs) {
+    const job = {
+      college: "The University of Texas Health Science Center at San Antonio",
+      title,
+      url: `https://uthscsa.referrals.selectminds.com/faculty/jobs/${path}`,
+    };
+    assert.equal(classifyTenureTrack(job), null, title);
+    assert.equal(classifyVariableAppointmentTrack(job), true, title);
+  }
+
+  assert.equal(classifyTenureTrack({ ...tenureJob, url: "https://uthscsa.referrals.selectminds.com/faculty/jobs/another-search" }), null);
+  assert.equal(
+    classifyVariableAppointmentTrack({
+      college: "The University of Texas Health Science Center at San Antonio",
+      title: variableJobs[0][0],
+      url: "https://uthscsa.referrals.selectminds.com/faculty/jobs/another-search",
+    }),
+    false
+  );
+});
+
+test("applies exact UAMS appointment-track evidence", () => {
+  const variableJob = {
+    college: "University of Arkansas for Medical Sciences",
+    title: "Adult-Gerontology Acute Care (AGAC) Professor/Assistant Professor or Associate Professor",
+    url: "https://uasys.wd5.myworkdayjobs.com/UAMS_All_Careers/job/UAMS/Adult-Gerontology-Acute-Care--AGAC--Professor-Assistant-Professor-or-Associate-Professor_R0091228",
+  };
+  assert.equal(classifyTenureTrack(variableJob), null);
+  assert.equal(classifyVariableAppointmentTrack(variableJob), true);
+
+  const clinicalJob = {
+    college: "University of Arkansas for Medical Sciences",
+    title: "Assistant or Associate Professor, Second-Year Clinical Coordinator, CHP Audiology",
+    description: "UAMS seeks a collaborative, innovative clinical faculty member to serve as the Second-Year Clinical Coordinator.",
+    url: "https://uasys.wd5.myworkdayjobs.com/UAMS_All_Careers/job/UAMS/Assistant-or-Associate-Professor--Second-Year-Clinical-Coordinator--CHP-Audiology_R0088760",
+  };
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence(clinicalJob),
+    { value: false, evidence: "institution-policy" }
+  );
+
+  assert.equal(classifyVariableAppointmentTrack({ ...variableJob, url: "https://uasys.wd5.myworkdayjobs.com/UAMS_All_Careers/job/UAMS/another-search" }), false);
+  assert.equal(classifyTenureTrack({ ...clinicalJob, description: "A faculty member will coordinate the second year." }), null);
+});

@@ -5011,6 +5011,52 @@
       "note": "The University of Minnesota College of Education and Human Development's current official jobs page identifies this search as a tenure-track Sport and Exercise Psychology position. The exact title and job ID gates confine the rule to this search.",
       "source": "https://www.cehd.umn.edu/jobs",
       "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^MD or MD/PhD Neurologist Assistant Professor$",
+      "urlPattern": "/md-or-md-phd-neurologist-assistant-professor-13134$",
+      "value": true,
+      "note": "UT Health San Antonio's current official posting explicitly identifies this exact Neurology opening as a tenure-track Assistant Professor faculty position. The title and posting URL gates confine the rule to this search.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/md-or-md-phd-neurologist-assistant-professor-13134",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^(?:Community Behavioral Health - Faculty Position \\(Open Rank\\)|Open Rank Faculty Position- Biostatistician)$",
+      "urlPattern": "-(?:6105|6106)$",
+      "value": "variable",
+      "note": "UT Health San Antonio's current official postings state that these exact open-rank searches may be filled on either the tenure or non-tenure track, with the Biostatistics search specifying that the track will be determined from the candidate's experience and potential. The exact titles and posting IDs confine the rule to these searches.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/open-rank-faculty-position-biostatistician-6106",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "The University of Texas Health Science Center at San Antonio",
+      "titlePattern": "^Open Rank Faculty – Department of (?:Environmental and Occupational Health|Health Policy and Health Services Administration|Quantitative and Qualitative Health Sciences|Health, Behavior, and Society)$",
+      "urlPattern": "-(?:12977|12978|12979|13186)$",
+      "value": "variable",
+      "note": "The four current Kate Marmion School of Public Health postings explicitly invite applications at all ranks and on tenure-track, tenured, or non-tenure-track appointments, and ask applicants to name their requested rank and track. The department titles and posting IDs confine the rule to those searches.",
+      "source": "https://uthscsa.referrals.selectminds.com/faculty/jobs/open-rank-faculty-%E2%80%93-department-of-environmental-and-occupational-health-12977",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "University of Arkansas for Medical Sciences",
+      "titlePattern": "^Adult-Gerontology Acute Care \\(AGAC\\) Professor/Assistant Professor or Associate Professor$",
+      "urlPattern": "R0091228$",
+      "value": "variable",
+      "note": "UAMS's current official posting states that this exact full-time, 12-month faculty appointment may be tenure-track or non-tenure-track. The exact title and Workday requisition ID confine the rule to this search.",
+      "source": "https://uasys.wd5.myworkdayjobs.com/UAMS_All_Careers/job/UAMS/Adult-Gerontology-Acute-Care--AGAC--Professor-Assistant-Professor-or-Associate-Professor_R0091228",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "University of Arkansas for Medical Sciences",
+      "titlePattern": "^Assistant or Associate Professor, Second-Year Clinical Coordinator, CHP Audiology$",
+      "descriptionPattern": "\\bclinical faculty member\\b",
+      "urlPattern": "R0088760$",
+      "value": false,
+      "note": "The current UAMS posting expressly identifies this exact Audiology opening as a clinical faculty appointment. The College of Health Professions' approved promotion and tenure guidelines state that clinical faculty titles and other positions designated as clinical are ineligible for tenure. Exact title, description, and requisition gates prevent the rule from extending to other Audiology appointments.",
+      "source": "https://healthprofessions.uams.edu/faculty/wp-content/uploads/sites/17/2025/01/College-of-Health-Professions-Promotion-Tenure-Guidelines-2017-revised-APPROVED-2024-5-3.pdf",
+      "verifiedAt": "2026-09-22"
     }
   ]
 }
