@@ -3622,6 +3622,120 @@ test("uses narrowly scoped official appointment policies for current live search
   );
 });
 
+test("uses exact posting and continuing-appointment evidence for the final reviewed instructor cohort", () => {
+  for (const [college, title] of [
+    ["Harford Community College", "Driver Education Instructor - MVA Licensed and Certified"],
+    ["Columbia State Community College", "Open Enrollment Instructor- Workforce and Continuing Education"],
+    ["Weber State University", "Community Education ESL Instructor"],
+    ["Stevens Institute of Technology", "Art Harper Saturday Academy Instructor"],
+    ["Cornell College", "Cornell College Lecturer Position at Beihua University in Jilin, China"],
+    ["Simmons University", "DSW, SocialWork@Simmons - Section Instructor"],
+    ["Simmons University", "School of Social Work MSW Program SocialWork@Simmons - Section Instructor"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title }),
+      { value: false, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+
+  for (const [college, title, description] of [
+    ["Chipola College", "Instructor - Chemistry", ""],
+    ["Chipola College", "Instructor - Physics", ""],
+    ["Minnesota North College", "Diesel Mechanics Technology - Technical College Faculty", "Employment Condition: Unclassified - Unlimited Academic"],
+    ["Minnesota North College", "Machine Tool Technology/Machinist - Technical College Faculty", "Employment Condition: Unclassified - Unlimited Academic"],
+    ["State College of Florida-Manatee-Sarasota", "Instructional Faculty, Computer Science", "Continuing Contract Eligible - Faculty Only Yes"],
+    ["Macomb Community College", "Instructor and Program Coordinator of Fire Science", "Job Type Faculty Instructor Bargaining Unit MCCFO"],
+    ["Macomb Community College", "Instructor of Emergency Medical Services/Clinical Coordinator", "Job Type Faculty Instructor Bargaining Unit MCCFO"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title, description }),
+      { value: true, evidence: "institution-policy" },
+      `${college}: ${title}`
+    );
+  }
+
+  for (const job of [
+    { college: "Harford Community College", title: "Nursing Instructor" },
+    { college: "Cornell College", title: "Lecturer in Mathematics" },
+    { college: "Simmons University", title: "Instructor of Practice" },
+    { college: "Chipola College", title: "Instructor - Biology" },
+    { college: "Minnesota North College", title: "Diesel Mechanics Technology - Technical College Faculty", description: "Full time" },
+    { college: "State College of Florida-Manatee-Sarasota", title: "Instructional Faculty, Computer Science", description: "Continuing Contract Eligible - Faculty Only No" },
+    { college: "Macomb Community College", title: "Instructor of Mathematics", description: "Job Type Faculty Instructor" },
+  ]) {
+    assert.equal(classifyTenureTrack(job), null, `${job.college}: ${job.title}`);
+  }
+});
+
+test("uses exact Palomar postings and Northeastern State rank eligibility", () => {
+  for (const title of [
+    "Assistant Professor, Architecture/Building Performance and Environmental Design",
+    "Assistant Professor, Emergency Medical Technologies",
+    "Assistant Professor, Fire Technology",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Palomar College", title }),
+      { value: true, evidence: "institution-policy" },
+      title
+    );
+  }
+  for (const title of [
+    "F99591 Instructor of Biology",
+    "X99952 E-Resource Management Librarian/Instructor of Library Services",
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college: "Northeastern State University", title }),
+      { value: false, evidence: "institution-policy" },
+      title
+    );
+  }
+  assert.equal(
+    classifyTenureTrack({ college: "Palomar College", title: "Assistant Professor, Biology" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Northeastern State University", title: "F99911 Assistant Professor of English" }),
+    null
+  );
+});
+
+test("uses exact current posting fields for the final California tenure-track cohort", () => {
+  for (const job of [
+    { college: "Fullerton College", title: "Anthropology Instructor" },
+    { college: "Glendale Community College", title: "Real Estate Instructor" },
+    { college: "Los Rios CCD", title: "English Assistant Professor (2 Positions)" },
+    { college: "Los Rios CCD", title: "Kinesiology Assistant Professor/Football Head Coach" },
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence(job),
+      { value: true, evidence: "institution-policy" },
+      `${job.college}: ${job.title}`
+    );
+  }
+  for (const job of [
+    { college: "Fullerton College", title: "Psychology Instructor" },
+    { college: "Glendale Community College", title: "ESL Instructor" },
+    { college: "Los Rios CCD", title: "Biology Assistant Professor" },
+  ]) {
+    assert.equal(classifyTenureTrack(job), null, `${job.college}: ${job.title}`);
+  }
+});
+
+test("uses Michigan's research-faculty track definition for the exact combined-rank search", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of Michigan",
+      title: "Research Investigator-Research Assistant Professor",
+    }),
+    { value: false, evidence: "institution-policy" }
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "University of Michigan", title: "Research Investigator" }),
+    null
+  );
+});
+
 test("uses exact live titles only when IPEDS reports every offered rank on one track", () => {
   assert.deepEqual(
     classifyTenureTrackWithEvidence({
