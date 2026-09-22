@@ -3999,3 +3999,52 @@ test("applies the final direct-posting and regular-rank reviews", () => {
     null
   );
 });
+
+test("applies the September 22 PDF-posting appointment reviews", () => {
+  const tenureCases = [
+    ["University of Louisiana at Monroe", "Assistant Professor of Biology", "Job Type Full-Time 9-month Faculty"],
+    ["University of the Ozarks", "Assistant Professor of Health Promotion", ""],
+    ["University of the Ozarks", "Assistant Professor of Information Science", ""],
+    ["University of the Ozarks", "Assistant Professor of Religion", ""],
+    ["Brescia University", "Assistant Professor of Speech-Language Pathology", ""],
+    ["Brescia University", "Assistant-Associate Professor Clinical Mental Health Counseling", ""],
+    ["Brescia University", "Assistant-Associate Professor of Philosophy", ""],
+    ["St. Francis College", "Assistant or Associate Professor Nursing OB Peds", ""],
+    ["Milligan University", "Assistant/Associate Professor of Economics", ""],
+    ["Milligan University", "Assistant/Associate Professor of Economics Milligan, TN Milligan", ""],
+  ];
+  for (const [college, title, description] of tenureCases) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title, description }),
+      { value: true, evidence: "institution-policy" },
+      title
+    );
+  }
+
+  for (const [college, title, description] of [
+    ["Southwest Texas College", "Government Instructor", ""],
+    ["University of North Texas Health Science Center", "Assistant Professor - HSC-CHP-Office of the Dean", "seeking a part-time (0.5 FTE) faculty member"],
+  ]) {
+    assert.deepEqual(
+      classifyTenureTrackWithEvidence({ college, title, description }),
+      { value: false, evidence: "institution-policy" },
+      title
+    );
+  }
+
+  const variableNursing = {
+    college: "St. Francis College",
+    title: "Department of Nursing, Full-time Faculty (Assistant Professor or Associate Professor or Clinical Lecturer)",
+  };
+  assert.equal(classifyTenureTrack(variableNursing), null);
+  assert.equal(classifyVariableAppointmentTrack(variableNursing), true);
+
+  assert.equal(
+    classifyTenureTrack({ college: "University of Louisiana at Monroe", title: "Instructor/Assistant/Associate Professor Nursing", description: "Job Type Full-Time 9-month Faculty" }),
+    null
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Southwest Texas College", title: "Patient Care Technician Instructor" }),
+    null
+  );
+});
