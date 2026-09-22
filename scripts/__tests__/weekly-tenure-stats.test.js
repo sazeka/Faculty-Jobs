@@ -4236,3 +4236,56 @@ test("applies exact Yale, Idaho State, and New York Law School appointment evide
   assert.equal(classifyTenureTrack({ college: "Idaho State University", title: "Assistant Professor of Psychology" }), null);
   assert.equal(classifyTenureTrack({ college: "New York Law School", title: "Full-Time Faculty Position" }), null);
 });
+
+test("applies exact CUNY, Rice, and Boston University appointment evidence", () => {
+  const tenureCases = [
+    ["CUNY Bernard M Baruch College", "Assistant Professor - Sociology of Gender and Sexuality", ""],
+    ["CUNY Bronx Community College", "Assistant Professor of Political Science - Specialization in American Politics", ""],
+    ["CUNY City College", "Associate or Full Professor – Computational Materials Science", ""],
+    ["CUNY Bernard M Baruch College", "Lecturer Doctoral Schedule - Mathematics", ""],
+    ["Rice University", "Assistant Faculty Position – Geoscience Innovation with AI", ""],
+    ["Boston University", "Assistant Professor, College of Arts and Sciences", "The successful candidate will specialize in the intersection of artificial intelligence and politics."],
+  ];
+  for (const [college, title, description] of tenureCases) {
+    assert.deepEqual(classifyTenureTrackWithEvidence({ college, title, description }), { value: true, evidence: "institution-policy" }, title);
+  }
+
+  const variableCase = { college: "CUNY LaGuardia Community College", title: "Instructor or Assistant Professor - Library" };
+  assert.equal(classifyTenureTrack(variableCase), null);
+  assert.equal(classifyVariableAppointmentTrack(variableCase), true);
+
+  assert.equal(classifyTenureTrack({ college: "CUNY City College", title: "Doctoral Lecturer- Anthropology" }), null);
+  assert.equal(classifyTenureTrack({ college: "Rice University", title: "Assistant Faculty Position" }), null);
+  assert.equal(classifyTenureTrack({ college: "Boston University", title: "Assistant Professor, College of Arts and Sciences", description: "Department of Biology" }), null);
+});
+
+test("applies exact Oracle-posting appointment evidence", () => {
+  const tenureCases = [
+    ["University of Maine at Presque Isle", "Assistant or Associate Professor of Psychology (Search Re-opened)", ""],
+    ["Davidson College", "Assistant Professor of Computer Science", ""],
+    ["Wagner College", "Nicolais School of Business - Assistant Professor", ""],
+  ];
+  for (const [college, title, description] of tenureCases) {
+    assert.deepEqual(classifyTenureTrackWithEvidence({ college, title, description }), { value: true, evidence: "institution-policy" }, title);
+  }
+
+  const nonTenureCases = [
+    ["Tennessee Technological University", "Instructor", "https://fa-eygi-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/25666"],
+    ["East Tennessee State University", "Assistant Professor", "https://fa-evyu-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/1180"],
+  ];
+  for (const [college, title, url] of nonTenureCases) {
+    assert.deepEqual(classifyTenureTrackWithEvidence({ college, title, url }), { value: false, evidence: "institution-policy" }, title);
+  }
+
+  for (const variableCase of [
+    { college: "Graceland University-Lamoni", title: "Assistant Professor of Chemistry" },
+    { college: "Moravian University", title: "Assistant/Associate Professor, Master of Social Work" },
+  ]) {
+    assert.equal(classifyTenureTrack(variableCase), null, variableCase.title);
+    assert.equal(classifyVariableAppointmentTrack(variableCase), true, variableCase.title);
+  }
+
+  assert.equal(classifyTenureTrack({ college: "Tennessee Technological University", title: "Instructor", url: "https://example.edu/job/25667" }), null);
+  assert.equal(classifyTenureTrack({ college: "East Tennessee State University", title: "Assistant Professor", url: "https://example.edu/job/1181" }), null);
+  assert.equal(classifyVariableAppointmentTrack({ college: "Moravian University", title: "Assistant Professor of History" }), false);
+});

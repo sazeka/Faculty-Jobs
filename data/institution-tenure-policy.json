@@ -4779,6 +4779,105 @@
       "note": "The current official posting explicitly describes this opening as a long-term contract-track faculty position and directs inquiries to the Long-Term Contract Track Faculty Appointment Chair. The exact-title rule avoids extending that evidence to other NYLS faculty searches.",
       "source": "https://www.nyls.edu/wp-content/uploads/2026/07/HR-Job-Posting-Nonprofit-and-Small-Business-Clinic-Faculty-Position-0726-v1r1.pdf",
       "verifiedAt": "2026-09-22"
+    },
+    {
+      "collegePattern": "^(?:CUNY Bernard M Baruch College|CUNY Bronx Community College|CUNY City College)$",
+      "titlePattern": "^(?:Assistant Professor - Sociology of Gender and Sexuality|Assistant Professor of Political Science - Specialization in American Politics|Associate or Full Professor – Computational Materials Science)$",
+      "value": true,
+      "note": "CUNY's current Board of Trustees Bylaws explicitly place full-time annual-salary Professor, Associate Professor, and Assistant Professor appointments on the seven-year tenure path. This rule is restricted to the three exact current CUNY searches and does not absorb qualified, visiting, adjunct, clinical, or research titles.",
+      "source": "https://policy.cuny.edu/bylaws/text/",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "CUNY Bernard M Baruch College",
+      "titlePattern": "^Lecturer Doctoral Schedule - Mathematics$",
+      "value": true,
+      "note": "The governing PSC-CUNY agreement explicitly defines the full-time Lecturer title as tenure-bearing through a Certificate of Continuous Employment. 'Doctoral Schedule' is the salary schedule attached to this exact Lecturer opening, not a separate Doctoral Lecturer title.",
+      "source": "https://psc-cuny.org/contract/article-11-classification-titles/",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "CUNY LaGuardia Community College",
+      "titlePattern": "^Instructor or Assistant Professor - Library$",
+      "value": "variable",
+      "note": "CUNY's current bylaws place Assistant Professor appointments on the tenure path but do not include the ordinary Instructor title among post-2006 tenure-bearing professorial ranks. Because this exact search may be filled at either rank, its eventual appointment track depends on the selected rank and is classified as variable.",
+      "source": "https://policy.cuny.edu/bylaws/text/",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Rice University",
+      "titlePattern": "^Assistant Faculty Position – Geoscience Innovation with AI$",
+      "value": true,
+      "note": "Rice's current official Earth, Environmental and Planetary Sciences hiring page explicitly identifies this exact Geoscience Innovation with AI opening as a tenure-track Assistant Professor position.",
+      "source": "https://eeps.rice.edu/eeps-job-opportunities-tenure-track-faculty",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Boston University",
+      "titlePattern": "^Assistant Professor, College of Arts and Sciences$",
+      "descriptionPattern": "intersection of artificial intelligence and politics",
+      "value": true,
+      "note": "The current Boston University Political Science posting is published as a tenured/tenure-track faculty search. The description gate ties the generic scraped title to the exact AI-and-politics search and prevents the rule from spilling into other College of Arts and Sciences openings with the same display title.",
+      "source": "https://academicjobsonline.org/ajo/jobs/32578",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "University of Maine at Presque Isle",
+      "titlePattern": "^Assistant or Associate Professor of Psychology \\(Search Re-opened\\)$",
+      "value": true,
+      "note": "The University of Maine System's current official Oracle posting explicitly describes this exact UMPI Psychology opening as an on-campus tenure-track Assistant or Associate Professor appointment.",
+      "source": "https://fa-ewca-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/2266",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Davidson College",
+      "titlePattern": "^Assistant Professor of Computer Science$",
+      "value": true,
+      "note": "Davidson's current official Oracle posting explicitly identifies this exact Computer Science opening as a tenure-track appointment at the rank of Assistant Professor.",
+      "source": "https://fa-exci-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/job/1027",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Graceland University-Lamoni",
+      "titlePattern": "^Assistant Professor of Chemistry$",
+      "value": "variable",
+      "note": "Graceland's current official posting says a doctorate-qualified hire enters the tenure-track Assistant Professor position while a master's-qualified hire may receive a non-tenure-track Assistant Professor term appointment. The eventual track therefore depends on the selected candidate's qualifications.",
+      "source": "https://ibqcjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/297",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Moravian University",
+      "titlePattern": "^Assistant/Associate Professor, Master of Social Work$",
+      "value": "variable",
+      "note": "Moravian's current official posting explicitly offers this exact twelve-month appointment as either tenure-track or clinical non-tenure-track. The listing does not predetermine which track the successful candidate will receive.",
+      "source": "https://ibtsjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/job/284",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Wagner College",
+      "titlePattern": "^Nicolais School of Business - Assistant Professor$",
+      "value": true,
+      "note": "Wagner's current official Oracle posting explicitly identifies this exact Management opening as a full-time tenure-track Assistant Professor position beginning in Spring 2027.",
+      "source": "https://fa-exad-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/343",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "Tennessee Technological University",
+      "titlePattern": "^Instructor$",
+      "urlPattern": "/job/25666$",
+      "value": false,
+      "note": "Tennessee Tech's current official posting identifies this exact Fine Arts opening as a one-year Interim Instructor appointment. The description gate prevents the generic scraped title from affecting any unrelated Instructor search.",
+      "source": "https://fa-eygi-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/25666",
+      "verifiedAt": "2026-09-22"
+    },
+    {
+      "college": "East Tennessee State University",
+      "titlePattern": "^Assistant Professor$",
+      "urlPattern": "/job/1180$",
+      "value": false,
+      "note": "The current official posting states that its formal rank is Research Assistant Professor. ETSU's official research policy explicitly classifies full, associate, and assistant research professors as non-tenure-track research faculty; both the generic display title and formal description are required.",
+      "source": "https://www.etsu.edu/research/orspa/documents/ug_pi_eligibility_policy.pdf",
+      "verifiedAt": "2026-09-22"
     }
   ]
 }

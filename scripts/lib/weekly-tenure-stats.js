@@ -201,16 +201,18 @@ function loadInstitutionPolicyRules() {
   for (const policy of Array.isArray(raw?.noTenureInstitutions) ? raw.noTenureInstitutions : []) {
     if (!policy?.college) continue;
     const list = byCollege.get(policy.college) || [];
-    list.push({ value: false, titleRe: /^/, descriptionRe: null });
+    list.push({ value: false, titleRe: /^/, descriptionRe: null, urlRe: null });
     byCollege.set(policy.college, list);
   }
   for (const rule of Array.isArray(raw?.rules) ? raw.rules : []) {
     if (!rule?.titlePattern || typeof rule.value !== "boolean") continue;
     let titleRe;
     let descriptionRe = null;
+    let urlRe = null;
     try {
       titleRe = new RegExp(rule.titlePattern, "i");
       if (rule.descriptionPattern) descriptionRe = new RegExp(rule.descriptionPattern, "i");
+      if (rule.urlPattern) urlRe = new RegExp(rule.urlPattern, "i");
     } catch {
       continue;
     }
@@ -219,7 +221,7 @@ function loadInstitutionPolicyRules() {
     // state-operated campuses) -- never both.
     if (rule.college) {
       const list = byCollege.get(rule.college) || [];
-      list.push({ value: rule.value, titleRe, descriptionRe });
+      list.push({ value: rule.value, titleRe, descriptionRe, urlRe });
       byCollege.set(rule.college, list);
     } else if (rule.collegePattern) {
       let collegeRe;
@@ -228,7 +230,7 @@ function loadInstitutionPolicyRules() {
       } catch {
         continue;
       }
-      patternRules.push({ value: rule.value, titleRe, descriptionRe, collegeRe });
+      patternRules.push({ value: rule.value, titleRe, descriptionRe, urlRe, collegeRe });
     }
   }
   return { byCollege, patternRules };
@@ -245,8 +247,9 @@ function loadInstitutionVariablePolicyRules() {
       if (rule?.value !== "variable" || !rule?.titlePattern) continue;
       const titleRe = new RegExp(rule.titlePattern, "i");
       const descriptionRe = rule.descriptionPattern ? new RegExp(rule.descriptionPattern, "i") : null;
+      const urlRe = rule.urlPattern ? new RegExp(rule.urlPattern, "i") : null;
       const collegeRe = rule.collegePattern ? new RegExp(rule.collegePattern) : null;
-      rules.push({ college: rule.college || null, collegeRe, titleRe, descriptionRe });
+      rules.push({ college: rule.college || null, collegeRe, titleRe, descriptionRe, urlRe });
     }
   } catch {
     // Explicit prose patterns below remain available if optional policy data
@@ -261,11 +264,13 @@ function matchesInstitutionVariablePolicy(job) {
   const college = String(job?.college || "");
   const title = String(job?.title || "");
   const description = String(job?.description || "");
+  const url = String(job?.url || "");
   return INSTITUTION_VARIABLE_POLICY_RULES.some(
     (rule) =>
       (rule.college ? college === rule.college : rule.collegeRe?.test(college)) &&
       rule.titleRe.test(title) &&
-      (!rule.descriptionRe || rule.descriptionRe.test(description))
+      (!rule.descriptionRe || rule.descriptionRe.test(description)) &&
+      (!rule.urlRe || rule.urlRe.test(url))
   );
 }
 
@@ -289,10 +294,15 @@ const IPEDS_RANK_POLICY_RULES = loadIpedsRankPolicyRules();
 function matchInstitutionPolicy(job) {
   const title = String(job?.title || "");
   const description = String(job?.description || "");
+  const url = String(job?.url || "");
   const exactRules = INSTITUTION_POLICY_RULES.get(job?.college);
   if (exactRules) {
     for (const rule of exactRules) {
-      if (rule.titleRe.test(title) && (!rule.descriptionRe || rule.descriptionRe.test(description))) {
+      if (
+        rule.titleRe.test(title) &&
+        (!rule.descriptionRe || rule.descriptionRe.test(description)) &&
+        (!rule.urlRe || rule.urlRe.test(url))
+      ) {
         return { value: rule.value, evidence: "institution-policy" };
       }
     }
@@ -302,7 +312,8 @@ function matchInstitutionPolicy(job) {
     if (
       rule.collegeRe.test(college) &&
       rule.titleRe.test(title) &&
-      (!rule.descriptionRe || rule.descriptionRe.test(description))
+      (!rule.descriptionRe || rule.descriptionRe.test(description)) &&
+      (!rule.urlRe || rule.urlRe.test(url))
     ) {
       return { value: rule.value, evidence: "institution-policy" };
     }
