@@ -41,10 +41,10 @@ const maxTypeCount = computed(() => sortedPositionTypes.value[0]?.count || 1)
 const tenureStats = computed(() => trends.value?.stats?.tenureTrackBreakdown || null)
 const tenureHistory = computed(() => {
   const items = appointmentTrackHistory(trends.value?.history || [])
-  const max = Math.max(1, ...items.map(w => w.classified))
+  const max = Math.max(1, ...items.map(w => w.total))
   return items.map(w => ({
     ...w,
-    heightPct: Math.max(6, Math.round((w.classified / max) * 100)),
+    heightPct: Math.max(6, Math.round((w.total / max) * 100)),
   }))
 })
 const aiStats = computed(() => trends.value?.stats?.aiHiringBreakdown || null)
@@ -192,11 +192,21 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
             <div class="fa-display tenure-metric-value">{{ fmt(tenureStats.nonTenureTrack) }}</div>
             <div class="fa-num tenure-metric-share">{{ tenureStats.nonTenureTrackPct }}% of classified</div>
           </div>
+          <div class="tenure-metric">
+            <div class="fa-meta">Variable track</div>
+            <div class="fa-display tenure-metric-value">{{ fmt(tenureStats.variableTrack || 0) }}</div>
+            <div class="fa-num tenure-metric-share">Known mixed or candidate-dependent track</div>
+          </div>
+          <div class="tenure-metric">
+            <div class="fa-meta">Unclassified</div>
+            <div class="fa-display tenure-metric-value">{{ fmt(tenureStats.unknown) }}</div>
+            <div class="fa-num tenure-metric-share">Track not yet resolved</div>
+          </div>
         </div>
         <div
           v-if="tenureHistory.length"
           class="tenure-history"
-          aria-label="Weekly share of classified tenure-track and non-tenure-track job listings"
+          aria-label="Weekly appointment-track composition of all job listings"
         >
           <div
             v-for="week in tenureHistory"
@@ -204,11 +214,13 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
             class="tenure-week"
             tabindex="0"
             :style="{ height: `${week.heightPct}%` }"
-            :aria-label="`${fmtWeek(week.weekEnd)}: ${fmt(week.tenureTrack)} tenure-track (${week.tenureTrackPct}%) and ${fmt(week.nonTenureTrack)} non-tenure-track (${week.nonTenureTrackPct}%), out of ${fmt(week.classified)} classified`"
-            :data-tooltip="`${fmtWeek(week.weekEnd)} · Tenure ${fmt(week.tenureTrack)} (${week.tenureTrackPct}%) · Non-tenure ${fmt(week.nonTenureTrack)} (${week.nonTenureTrackPct}%)`"
+            :aria-label="`${fmtWeek(week.weekEnd)}: ${fmt(week.tenureTrack)} tenure-track, ${fmt(week.nonTenureTrack)} non-tenure-track, ${fmt(week.variableTrack)} variable-track, and ${fmt(week.unknown)} unclassified, out of ${fmt(week.total)} listings`"
+            :data-tooltip="`${fmtWeek(week.weekEnd)} · Tenure ${fmt(week.tenureTrack)} · Non-tenure ${fmt(week.nonTenureTrack)} · Variable ${fmt(week.variableTrack)} · Unclassified ${fmt(week.unknown)}`"
           >
-            <div class="tenure-week-ntt" :style="{ height: `${week.nonTenureTrackPct}%` }"></div>
-            <div class="tenure-week-tt" :style="{ height: `${week.tenureTrackPct}%` }"></div>
+            <div class="tenure-week-unknown" :style="{ height: `${week.unknownPct}%` }"></div>
+            <div class="tenure-week-variable" :style="{ height: `${week.variableTrackPct}%` }"></div>
+            <div class="tenure-week-ntt" :style="{ height: `${week.nonTenureTrackTotalPct}%` }"></div>
+            <div class="tenure-week-tt" :style="{ height: `${week.tenureTrackTotalPct}%` }"></div>
           </div>
         </div>
         <div v-if="tenureHistory.length" class="trends-spark-labels fa-meta">
@@ -221,6 +233,8 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
         <div v-if="tenureHistory.length" class="tenure-legend fa-meta">
           <span><i class="tenure-key tenure-key-tt"></i>Tenure-track</span>
           <span><i class="tenure-key tenure-key-ntt"></i>Non-tenure-track</span>
+          <span><i class="tenure-key tenure-key-variable"></i>Variable track</span>
+          <span><i class="tenure-key tenure-key-unknown"></i>Unclassified</span>
         </div>
         <div class="fa-meta tenure-note">
           Based on {{ fmt(tenureStats.classified) }} listings resolved to tenure-track or non-tenure-track.
@@ -482,11 +496,15 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 .tenure-week:focus-visible { box-shadow: 0 0 0 2px var(--ink); }
 .tenure-week-tt { background: var(--sage); }
 .tenure-week-ntt { background: var(--accent); }
-.tenure-legend { display: flex; gap: 18px; margin-top: 12px; font-size: 10px; }
+.tenure-week-variable { background: var(--ocean); }
+.tenure-week-unknown { background: var(--rule-2); }
+.tenure-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: 10px; }
 .tenure-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .tenure-key { display: inline-block; width: 9px; height: 9px; }
 .tenure-key-tt { background: var(--sage); }
 .tenure-key-ntt { background: var(--accent); }
+.tenure-key-variable { background: var(--ocean); }
+.tenure-key-unknown { background: var(--rule-2); border: 1px solid var(--ink-4); }
 .tenure-start-note { color: var(--ink-3); line-height: 1.5; margin-top: 10px; }
 .tenure-note {
   color: var(--ink-4);

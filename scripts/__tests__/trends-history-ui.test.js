@@ -11,11 +11,18 @@ test("appointment-track history ignores weeks recorded before classification beg
 
   assert.deepEqual(history, [{
     weekEnd: "2026-08-23",
+    total: 100,
     tenureTrack: 20,
     nonTenureTrack: 80,
+    variableTrack: 0,
+    unknown: 0,
     classified: 100,
     tenureTrackPct: 20,
     nonTenureTrackPct: 80,
+    tenureTrackTotalPct: 20,
+    nonTenureTrackTotalPct: 80,
+    variableTrackPct: 0,
+    unknownPct: 0,
   }]);
 });
 
@@ -32,4 +39,44 @@ test("appointment-track history calculates missing percentages and keeps the lat
   assert.equal(history[11].weekEnd, "week-14");
   assert.equal(history[0].tenureTrackPct, 25);
   assert.equal(history[0].nonTenureTrackPct, 75);
+});
+
+test("appointment-track history includes variable and unclassified listings in every bar", () => {
+  const history = appointmentTrackHistory([{
+    weekEnd: "2026-09-27",
+    totalJobs: 1000,
+    tenureTrack: 200,
+    nonTenureTrack: 650,
+    variableTrack: 50,
+  }]);
+
+  assert.deepEqual(history[0], {
+    weekEnd: "2026-09-27",
+    total: 1000,
+    tenureTrack: 200,
+    nonTenureTrack: 650,
+    variableTrack: 50,
+    unknown: 100,
+    classified: 850,
+    tenureTrackPct: 23.5,
+    nonTenureTrackPct: 76.5,
+    tenureTrackTotalPct: 20,
+    nonTenureTrackTotalPct: 65,
+    variableTrackPct: 5,
+    unknownPct: 10,
+  });
+});
+
+test("appointment-track history treats pre-variable history remainder as unclassified", () => {
+  const [week] = appointmentTrackHistory([{
+    weekEnd: "2026-09-20",
+    totalJobs: 125,
+    tenureTrack: 20,
+    nonTenureTrack: 80,
+    variableTrack: null,
+  }]);
+
+  assert.equal(week.variableTrack, 0);
+  assert.equal(week.unknown, 25);
+  assert.equal(week.unknownPct, 20);
 });
