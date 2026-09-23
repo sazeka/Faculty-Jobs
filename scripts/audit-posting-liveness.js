@@ -37,7 +37,9 @@
  *   --presence <path>      scrape presence ledger (default generated/job-presence.json)
  */
 import fs from "fs";
+import os from "os";
 import path from "path";
+import { execFileSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -174,8 +176,10 @@ async function fetchWithTimeout(url, opts = {}) {
       ...opts,
     });
     const contentType = res.headers.get("content-type") || "";
-    const body = /pdf|msword|officedocument/i.test(contentType) ? "" : await res.text();
-    return { status: res.status, finalUrl: res.url, body, contentType, lastModified: res.headers.get("last-modified") || "" };
+    const isDoc = /pdf|msword|officedocument/i.test(contentType);
+    const docBuffer = isDoc ? Buffer.from(await res.arrayBuffer()) : null;
+    const body = isDoc ? "" : await res.text();
+    return { status: res.status, finalUrl: res.url, body, contentType, docBuffer, lastModified: res.headers.get("last-modified") || "" };
   } finally {
     clearTimeout(timer);
   }
@@ -311,7 +315,81 @@ function documentAge(url, lastModified) {
   return null;
 }
 
-function classifyPage(job, { status, finalUrl, body, contentType = "", lastModified = "" }) {
+// ── PDF/Word postings: read the document for its deadline or start term ─────
+
+// Text of a PDF (pdftotext) or .docx (unzip); "" when the tools are missing
+// or the file is scanned/unreadable.
+function documentText(buffer, contentType) {
+  if (!buffer?.length) return "";
+  const tmp = path.join(os.tmpdir(), `liveness-${process.pid}-${Math.random().toString(36).slice(2)}`);
+  try {
+    fs.writeFileSync(tmp, buffer);
+    if (/pdf/i.test(contentType) || buffer.subarray(0, 4).toString() === "%PDF") {
+      return execFileSync("pdftotext", ["-layout", tmp, "-"], { maxBuffer: 2e7, timeout: 30000, stdio: ["ignore", "pipe", "ignore"] }).toString();
+    }
+    if (/officedocument/i.test(contentType)) {
+      return execFileSync("unzip", ["-p", tmp, "word/document.xml"], { maxBuffer: 2e7, timeout: 30000, stdio: ["ignore", "pipe", "ignore"] }).toString().replace(/<[^>]+>/g, " ");
+    }
+    return "";
+  } catch {
+    return "";
+  } finally {
+    fs.rmSync(tmp, { force: true });
+  }
+}
+
+const MON = "(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\\.?";
+const DOC_DATE = `(?:${MON}\\s+\\d{1,2}(?:st|nd|rd|th)?,?\\s+\\d{4}|\\d{1,2}\\s+${MON},?\\s+\\d{4}|\\d{1,2}/\\d{1,2}/\\d{2,4}|\\d{4}-\\d{2}-\\d{2})`;
+// "Application deadline: March 1, 2026", "Apply by ...", "Closing date ...".
+// The gap before the date may not cross a start/begin phrase, so "Posting End
+// Date: Until Filled  Projected Start Date: August 24" is not read as a deadline.
+const DOC_DEADLINE_RE = new RegExp(
+  `(?:application\\s+deadline|deadline(?:\\s+(?:to|for)\\s+appl\\w+)?|closing\\s+date|posting\\s+(?:closes?|close\\s+date|end\\s+date|expires?)|applications?\\s+(?:are\\s+)?(?:due|must\\s+be\\s+(?:received|submitted)|will\\s+be\\s+accepted\\s+(?:until|through)|accepted\\s+(?:until|through))|apply\\s+(?:by|no\\s+later\\s+than))(?:(?!start|begin|until\\s+filled)[^.\\n]){0,40}?(${DOC_DATE})`, "gi");
+// A start term stated as such ("to start in the Fall 2025 term", "Start Date:
+// Spring 2026", "beginning Spring 2026") -- not program history ("launched in Fall 2024").
+const DOC_START_TERM_RE = /(?:start(?:ing|s)?(?:\s+date)?|begin(?:ning|s)?|commenc\w+|effective)\s*:?\s*(?:in\s+|with\s+)?(?:the\s+)?(fall|spring|summer|winter)\s+(?:semester\s+|term\s+|quarter\s+)?(20\d{2})\b|(?:during|for)\s+the\s+(fall|spring|summer|winter)\s+(20\d{2})\s+(?:semester|term)/gi;
+
+function parseDocDate(raw) {
+  const s = raw.replace(/(\d)(st|nd|rd|th)/, "$1").replace(/\./g, "");
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if (m) return new Date(Date.UTC(+m[3] < 100 ? +m[3] + 2000 : +m[3], +m[1] - 1, +m[2]));
+  const d = new Date(`${s} 12:00 UTC`);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+const TERM_MONTH = { spring: 0, summer: 4, fall: 7, winter: 11 };
+
+function documentDateSignals(text) {
+  const flat = String(text).replace(/\s+/g, " ");
+  const deadlines = [...flat.matchAll(DOC_DEADLINE_RE)].map((m) => ({ raw: m[0], date: parseDocDate(m[1]) })).filter((d) => d.date);
+  const terms = [...flat.matchAll(DOC_START_TERM_RE)].map((m) => {
+    const term = (m[1] || m[3]).toLowerCase(), year = +(m[2] || m[4]);
+    return { label: `${term} ${year}`, start: new Date(Date.UTC(year, TERM_MONTH[term], 15)) };
+  });
+  const latest = (arr, key) => arr.reduce((a, b) => (!a || b[key] > a[key] ? b : a), null);
+  return { deadline: latest(deadlines, "date"), startTerm: latest(terms, "start") };
+}
+
+function classifyDocument(job, { status, finalUrl, contentType, docBuffer, lastModified }) {
+  const age = documentAge(finalUrl || job.url, lastModified);
+  if (age && age.ms > STALE_DOC_MS) return { verdict: "stale", httpCode: status, finalUrl, note: `static document, ${age.source}` };
+  const text = documentText(docBuffer, contentType);
+  if (text.replace(/\s+/g, "").length > 200) {
+    const { deadline, startTerm } = documentDateSignals(text);
+    const graceMs = 7 * 24 * 3600 * 1000;
+    if (deadline && deadline.date.getTime() + graceMs < Date.now()) {
+      return { verdict: "expired", httpCode: status, finalUrl, note: `document deadline ${deadline.date.toISOString().slice(0, 10)}: ${clean(deadline.raw).slice(0, 80)}` };
+    }
+    // A stated start term more than a term ago (e.g. "start Fall 2025" in Sept 2026)
+    if (startTerm && startTerm.start.getTime() + 120 * 24 * 3600 * 1000 < Date.now()) {
+      return { verdict: "expired", httpCode: status, finalUrl, note: `document start term ${startTerm.label} has passed` };
+    }
+    if (deadline) return { verdict: "open", httpCode: status, finalUrl, note: `document deadline ${deadline.date.toISOString().slice(0, 10)}` };
+  }
+  return { verdict: "unverifiable", httpCode: status, finalUrl, note: age ? `static document, ${age.source}` : "static document (PDF/Word) - can't tell if still open" };
+}
+
+function classifyPage(job, { status, finalUrl, body, contentType = "", lastModified = "", docBuffer = null }) {
   if (status === 404 || status === 410) return { verdict: "dead", httpCode: status };
   if (/<title>\s*Just a moment\.\.\.\s*<\/title>|cf-chl-|challenge-platform/i.test(String(body).slice(0, 20000))) return { verdict: "unverifiable", httpCode: status, note: "bot challenge" };
   if (status === 403 || status === 401 || status === 429 || status >= 500) return { verdict: "unverifiable", httpCode: status, note: `HTTP ${status}` };
@@ -324,11 +402,7 @@ function classifyPage(job, { status, finalUrl, body, contentType = "", lastModif
   if (/\b404\b|page not found/i.test(pageTitle)) return { verdict: "dead", httpCode: status, finalUrl, note: `soft 404: ${clean(pageTitle).slice(0, 60)}` };
   if (finalUrl && isHomepageRedirect(job.url, finalUrl)) return { verdict: "dead", httpCode: status, finalUrl, note: "redirected away from posting" };
 
-  if (/pdf|msword|officedocument/i.test(contentType)) {
-    const age = documentAge(finalUrl || job.url, lastModified);
-    if (age && age.ms > STALE_DOC_MS) return { verdict: "stale", httpCode: status, finalUrl, note: `static document, ${age.source}` };
-    return { verdict: "unverifiable", httpCode: status, finalUrl, note: age ? `static document, ${age.source}` : "static document (PDF/Word) - can't tell if still open" };
-  }
+  if (/pdf|msword|officedocument/i.test(contentType)) return classifyDocument(job, { status, finalUrl, contentType, docBuffer, lastModified });
   // Phenom career sites (careers.*/us/en/job/...) embed the job's status as data
   // and ship a hidden "no longer available" template on every page, open or not.
   const phenom = String(body).match(/"jobDetail":\{"status":(\d{3})/);
