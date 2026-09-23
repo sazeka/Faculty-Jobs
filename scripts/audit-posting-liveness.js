@@ -349,6 +349,17 @@ const DOC_DEADLINE_RE = new RegExp(
 // Spring 2026", "beginning Spring 2026") -- not program history ("launched in Fall 2024").
 const DOC_START_TERM_RE = /(?:start(?:ing|s)?(?:\s+date)?|begin(?:ning|s)?|commenc\w+|effective)\s*:?\s*(?:in\s+|with\s+)?(?:the\s+)?(fall|spring|summer|winter)\s+(?:semester\s+|term\s+|quarter\s+)?(20\d{2})\b|(?:during|for)\s+the\s+(fall|spring|summer|winter)\s+(20\d{2})\s+(?:semester|term)/gi;
 
+// "beginning in August 2025", "to begin teaching August 2025", "start January 2026"
+const DOC_START_MONTH_RE = new RegExp(`(?:start(?:ing|s)?|begin(?:ning|s)?|teaching|commenc\\w+)\\s+(?:teaching\\s+)?(?:in\\s+|on\\s+)?(${MON})\\s+(20\\d{2})\\b`, "gi");
+// "Posting date June 24, 2025", "Date posted: 10/10/2025", "DATE: February 2024"
+// (a bare "DATE:" header only in capitals, so "Start date: ..." is never read as posted)
+const DOC_POSTED_RES = [
+  new RegExp(`(?:posting\\s+date|date\\s+posted|posted(?:\\s+on)?)\\s*:?\\s*(${DOC_DATE}|${MON}\\s+20\\d{2})`, "gi"),
+  new RegExp(`\\bDATE:\\s*(${DOC_DATE.replace(/\(\?:jan/, "(?:[Jj]an")}|[A-Z][a-z]+\\s+20\\d{2})`, "g"),
+];
+// Evergreen language: keeps an old document from being treated as stale.
+const DOC_ONGOING_RE = /open\s+until\s+(?:the\s+position\s+is\s+)?filled|until\s+(?:the\s+)?position\s+is\s+filled|rolling\s+basis|on-?going|continuous(?:ly)?\s+(?:open|accept|recruit)|\[?\bpool\b\]?|as\s+needed/i;
+
 function parseDocDate(raw) {
   const s = raw.replace(/(\d)(st|nd|rd|th)/, "$1").replace(/\./g, "");
   const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
@@ -366,8 +377,21 @@ function documentDateSignals(text) {
     const term = (m[1] || m[3]).toLowerCase(), year = +(m[2] || m[4]);
     return { label: `${term} ${year}`, start: new Date(Date.UTC(year, TERM_MONTH[term], 15)) };
   });
+  for (const m of flat.matchAll(DOC_START_MONTH_RE)) {
+    const d = parseDocDate(`${m[1]} 1, ${m[2]}`);
+    if (d) terms.push({ label: `${m[1]} ${m[2]}`, start: d });
+  }
+  // "begin January 2026, if possible or August 2026": the later alternative counts
+  for (const m of flat.matchAll(/(?:start|begin|teaching|commenc)\w*[^.]{0,60}?\bor\s+(?:(?:in|by)\s+)?(?:the\s+)?(\w+)\s+(20\d{2})\b/gi)) {
+    const word = m[1].toLowerCase();
+    const d = word in TERM_MONTH ? new Date(Date.UTC(+m[2], TERM_MONTH[word], 15)) : parseDocDate(`${m[1]} 1, ${m[2]}`);
+    if (d) terms.push({ label: `${m[1]} ${m[2]}`, start: d });
+  }
+  const posted = DOC_POSTED_RES.flatMap((re) => [...flat.matchAll(re)])
+    .map((m) => ({ raw: m[0], date: parseDocDate(/^\S+\s+20\d{2}$/.test(m[1].trim()) ? m[1].replace(/\s+(20\d{2})$/, " 1, $1") : m[1]) }))
+    .filter((d) => d.date);
   const latest = (arr, key) => arr.reduce((a, b) => (!a || b[key] > a[key] ? b : a), null);
-  return { deadline: latest(deadlines, "date"), startTerm: latest(terms, "start") };
+  return { deadline: latest(deadlines, "date"), startTerm: latest(terms, "start"), posted: latest(posted, "date"), ongoing: DOC_ONGOING_RE.test(flat) };
 }
 
 function classifyDocument(job, { status, finalUrl, contentType, docBuffer, lastModified }) {
@@ -375,7 +399,7 @@ function classifyDocument(job, { status, finalUrl, contentType, docBuffer, lastM
   if (age && age.ms > STALE_DOC_MS) return { verdict: "stale", httpCode: status, finalUrl, note: `static document, ${age.source}` };
   const text = documentText(docBuffer, contentType);
   if (text.replace(/\s+/g, "").length > 200) {
-    const { deadline, startTerm } = documentDateSignals(text);
+    const { deadline, startTerm, posted, ongoing } = documentDateSignals(text);
     const graceMs = 7 * 24 * 3600 * 1000;
     if (deadline && deadline.date.getTime() + graceMs < Date.now()) {
       return { verdict: "expired", httpCode: status, finalUrl, note: `document deadline ${deadline.date.toISOString().slice(0, 10)}: ${clean(deadline.raw).slice(0, 80)}` };
@@ -385,6 +409,10 @@ function classifyDocument(job, { status, finalUrl, contentType, docBuffer, lastM
       return { verdict: "expired", httpCode: status, finalUrl, note: `document start term ${startTerm.label} has passed` };
     }
     if (deadline) return { verdict: "open", httpCode: status, finalUrl, note: `document deadline ${deadline.date.toISOString().slice(0, 10)}` };
+    // Posted over a year ago with nothing saying it's an ongoing pool/rolling search
+    if (posted && !ongoing && posted.date.getTime() + STALE_DOC_MS < Date.now()) {
+      return { verdict: "stale", httpCode: status, finalUrl, note: `document posted ${posted.date.toISOString().slice(0, 10)}: ${clean(posted.raw).slice(0, 60)}` };
+    }
   }
   return { verdict: "unverifiable", httpCode: status, finalUrl, note: age ? `static document, ${age.source}` : "static document (PDF/Word) - can't tell if still open" };
 }
