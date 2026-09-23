@@ -33,6 +33,8 @@
  *   --limit <n>            only audit the first n jobs (for testing)
  *   --browser              re-check unverifiable/mismatch/closed/404 results in headless Chromium
  *   --browser-concurrency  parallel browser pages (default 4)
+ *   --browser-all          with --browser, also re-render pages the plain fetch called "open"
+ *                          (for career SPAs whose 404 page only appears after rendering)
  *   --fresh                ignore the resume cache
  *   --presence <path>      scrape presence ledger (default generated/job-presence.json)
  */
@@ -68,6 +70,7 @@ const TIMEOUT_MS = Math.max(3000, Number(args["timeout-ms"] || 20000));
 const LIMIT = args.limit ? Number(args.limit) : Infinity;
 const USE_BROWSER = Boolean(args.browser);
 const BROWSER_CONCURRENCY = Math.max(1, Number(args["browser-concurrency"] || 4));
+const BROWSER_ALL = Boolean(args["browser-all"]);
 const FRESH = Boolean(args.fresh);
 const PRESENCE_PATH = path.resolve(args.presence || path.join(ROOT, "generated", "job-presence.json"));
 const LISTED_WITHIN_DAYS = 2;
@@ -609,7 +612,8 @@ async function main() {
       // Documents can't render, bot challenges won't pass, and the API-backed
       // platforms already gave an exact answer.
       const noBrowser = /^(Workday|Phenom|ADP|static document|bot challenge)/.test(c?.note || "");
-      return c && (["unverifiable", "mismatch", "closed"].includes(c.verdict) || flakyDead) && c.via !== "browser" && !noBrowser;
+      const recheckOpen = BROWSER_ALL && c?.verdict === "open";
+      return c && (["unverifiable", "mismatch", "closed"].includes(c.verdict) || flakyDead || recheckOpen) && c.via !== "browser" && !noBrowser;
     });
     console.log(`\nRe-checking ${retry.length} unverifiable/mismatch/closed/404 pages in headless Chromium...`);
     if (retry.length) await browserRecheck(retry, cache);
