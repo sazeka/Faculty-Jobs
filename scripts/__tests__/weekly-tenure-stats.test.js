@@ -625,12 +625,15 @@ test("applies verified institution-specific title conventions as a last resort",
   }
   assert.equal(classifyTenureTrack({ college: usfCollege, title: "Assistant Professor" }), true);
 
-  // Texas State Technical College: no explicit tenure policy was found, but
-  // every posting ever scraped from this employer uses "Instructor" -- zero
-  // "Professor" titles exist at all -- consistent with a technical/
-  // vocational college with no professorial tenure ladder.
+  // Texas State Technical College's certified 2024-25 IPEDS Human Resources
+  // response says the institution has no tenure system. The policy therefore
+  // applies institution-wide rather than depending on an Instructor keyword.
   assert.equal(
     classifyTenureTrack({ college: "Texas State Technical College", title: "Welding - Instructor (Trade Experience)" }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({ college: "Texas State Technical College", title: "Professor of Industrial Systems" }),
     false
   );
   // The same bare-"Instructor" title elsewhere is not affected.
