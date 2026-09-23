@@ -1761,7 +1761,8 @@ const PA_PRIVATE_CAMPUSES = [
   {
     campus: "Carnegie Mellon University",
     type: "workday",
-    url: "https://cmu.wd5.myworkdayjobs.com/CMU",
+    // Moved from cmu.wd5 in 2026; the old host returns 500 for every page.
+    url: "https://cmu.wd115.myworkdayjobs.com/CMU",
   },
   {
     campus: "Drexel University",

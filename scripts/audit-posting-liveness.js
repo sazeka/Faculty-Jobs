@@ -14,9 +14,12 @@
  *   stale        PDF/Word posting whose file is over a year old (Last-Modified,
  *                or a year in the URL path like /uploads/2023/03/)
  *   mismatch     page loaded but the job title isn't on it (possibly wrong URL)
+ *   listed       page is behind a bot challenge, but the daily scrape saw the posting on
+ *                the school's listing within the last 2 days (generated/job-presence.json)
  *   unverifiable blocked, timeout, or JS-only page (use --browser to retry these)
  *
- * Workday URLs are checked through Workday's JSON job API, which is exact.
+ * Workday URLs are checked through Workday's JSON job API, and ADP Workforce
+ * Now URLs against the employer's list of open requisitions; both are exact.
  *
  * Usage:
  *   node scripts/audit-posting-liveness.js [options]
@@ -31,6 +34,7 @@
  *   --browser              re-check unverifiable/mismatch/closed/404 results in headless Chromium
  *   --browser-concurrency  parallel browser pages (default 4)
  *   --fresh                ignore the resume cache
+ *   --presence <path>      scrape presence ledger (default generated/job-presence.json)
  */
 import fs from "fs";
 import path from "path";
@@ -63,6 +67,8 @@ const LIMIT = args.limit ? Number(args.limit) : Infinity;
 const USE_BROWSER = Boolean(args.browser);
 const BROWSER_CONCURRENCY = Math.max(1, Number(args["browser-concurrency"] || 4));
 const FRESH = Boolean(args.fresh);
+const PRESENCE_PATH = path.resolve(args.presence || path.join(ROOT, "generated", "job-presence.json"));
+const LISTED_WITHIN_DAYS = 2;
 
 const CACHE_PATH = path.join(OUT_DIR, "posting-liveness-cache.json");
 const REPORT_PATH = path.join(OUT_DIR, "posting-liveness-report.json");
@@ -195,6 +201,23 @@ function workdayApiUrl(url) {
   } catch { return null; }
 }
 
+const WORKDAY_HEALTH = new Map();
+function workdaySiteHealth(apiUrl) {
+  // /wday/cxs/<tenant>/<site>/job/... -> POST /wday/cxs/<tenant>/<site>/jobs
+  const base = apiUrl.replace(/\/job\/.*$/, "");
+  if (!WORKDAY_HEALTH.has(base)) {
+    WORKDAY_HEALTH.set(base, fetchWithTimeout(`${base}/jobs`, {
+      method: "POST",
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify({ limit: 1, offset: 0, searchText: "", appliedFacets: {} }),
+    }).then((res) => {
+      if (res.status !== 200) return `unavailable (HTTP ${res.status})`;
+      try { return JSON.parse(res.body).total > 0 ? "ok" : "empty"; } catch { return "unavailable"; }
+    }).catch(() => "unavailable"));
+  }
+  return WORKDAY_HEALTH.get(base);
+}
+
 async function checkWorkday(job, apiUrl) {
   let r;
   // Workday rate-limits bursts (429); back off rather than giving up.
@@ -204,7 +227,18 @@ async function checkWorkday(job, apiUrl) {
     await new Promise((res) => setTimeout(res, 2000 * 2 ** attempt + Math.random() * 1000));
   }
   if (r.status === 404 || r.status === 410) return { verdict: "dead", httpCode: r.status, note: "Workday API: job not found" };
-  if (r.status !== 200) return { verdict: "unverifiable", httpCode: r.status, note: `Workday API HTTP ${r.status}` };
+  // S22 "permission denied" is what Workday returns for a posting that is no
+  // longer public -- but only trust it when the same career site is serving
+  // other jobs, so a tenant-wide block can't read as mass closure.
+  if (r.status === 403 && /"errorCode":"S22"/.test(r.body)) {
+    const health = await workdaySiteHealth(apiUrl);
+    if (health === "ok") return { verdict: "closed", httpCode: 403, note: "Workday: posting no longer public (S22)" };
+    return { verdict: "unverifiable", httpCode: 403, note: `Workday S22, career site ${health}` };
+  }
+  if (r.status !== 200) {
+    const health = await workdaySiteHealth(apiUrl);
+    return { verdict: "unverifiable", httpCode: r.status, note: health === "ok" ? `Workday API HTTP ${r.status}` : `Workday career site ${health} (moved or down?)` };
+  }
   let data;
   try { data = JSON.parse(r.body); } catch { return { verdict: "unverifiable", httpCode: 200, note: "Workday API non-JSON" }; }
   const info = data?.jobPostingInfo;
@@ -213,6 +247,51 @@ async function checkWorkday(job, apiUrl) {
   const ratio = titleMatchRatio(job.title, clean(info.title));
   if (ratio < 0.5) return { verdict: "mismatch", httpCode: 200, titleMatch: ratio, note: `Workday title: ${clean(info.title).slice(0, 100)}` };
   return { verdict: "open", httpCode: 200, titleMatch: ratio };
+}
+
+// ── ADP Workforce Now: membership in the employer's open-requisition list ────
+
+const ADP_LISTS = new Map();
+function adpOpenRequisitions(cid, ccId) {
+  const key = `${cid}|${ccId}`;
+  if (!ADP_LISTS.has(key)) {
+    ADP_LISTS.set(key, (async () => {
+      const base = "https://workforcenow.adp.com/mascsr/default/careercenter/public/events/staffing/v1/job-requisitions";
+      const ids = new Map();
+      let seen = 0;
+      for (let skip = 0; skip < 2000; skip += 20) {
+        const r = await fetchWithTimeout(`${base}?cid=${encodeURIComponent(cid)}&ccId=${encodeURIComponent(ccId)}&lang=en_US&locale=en_US&$top=20&$skip=${skip}`, { headers: { Accept: "application/json" } });
+        if (r.status !== 200) return ids.size ? ids : null;
+        const data = JSON.parse(r.body);
+        const page = data.jobRequisitions || [];
+        // Career-center links use either the internal itemID or the employer's
+        // ExternalJobID (e.g. jobId=578080), so index each requisition by both.
+        for (const req of page) {
+          const title = clean(req.requisitionTitle);
+          seen++;
+          ids.set(String(req.itemID), title);
+          for (const f of req.customFieldGroup?.stringFields || []) {
+            if (f?.nameCode?.codeValue === "ExternalJobID" && clean(f.stringValue)) ids.set(clean(f.stringValue), title);
+          }
+        }
+        if (!page.length || seen >= (data.meta?.totalNumber ?? Infinity)) break;
+      }
+      return ids;
+    })().catch(() => null));
+  }
+  return ADP_LISTS.get(key);
+}
+
+async function checkAdp(job, url) {
+  const u = new URL(url);
+  const cid = u.searchParams.get("cid"), jobId = u.searchParams.get("jobId");
+  if (!cid || !jobId) return { verdict: "unverifiable", note: "ADP link without cid/jobId" };
+  const open = await adpOpenRequisitions(cid, u.searchParams.get("ccId") || "19000101_000001");
+  if (!open) return { verdict: "unverifiable", note: "ADP requisition list unavailable" };
+  if (!open.size) return { verdict: "unverifiable", note: "ADP requisition list empty" };
+  if (!open.has(jobId)) return { verdict: "closed", note: "ADP: not among employer's open requisitions" };
+  const ratio = titleMatchRatio(job.title, open.get(jobId));
+  return ratio < 0.5 ? { verdict: "mismatch", titleMatch: ratio, note: `ADP title: ${open.get(jobId).slice(0, 100)}` } : { verdict: "open", titleMatch: ratio };
 }
 
 // ── Generic HTML check ────────────────────────────────────────────────────────
@@ -234,6 +313,7 @@ function documentAge(url, lastModified) {
 
 function classifyPage(job, { status, finalUrl, body, contentType = "", lastModified = "" }) {
   if (status === 404 || status === 410) return { verdict: "dead", httpCode: status };
+  if (/<title>\s*Just a moment\.\.\.\s*<\/title>|cf-chl-|challenge-platform/i.test(String(body).slice(0, 20000))) return { verdict: "unverifiable", httpCode: status, note: "bot challenge" };
   if (status === 403 || status === 401 || status === 429 || status >= 500) return { verdict: "unverifiable", httpCode: status, note: `HTTP ${status}` };
   if (status < 200 || status >= 400) return { verdict: "unverifiable", httpCode: status, note: `HTTP ${status}` };
   // Cookie/login walls (e.g. PeopleSoft "errorPg=ckreq") aren't evidence the posting is gone
@@ -287,7 +367,9 @@ async function checkJob(job) {
   let result;
   try {
     const wd = workdayApiUrl(url);
-    result = wd ? await checkWorkday(job, wd) : classifyPage(job, await fetchWithTimeout(url));
+    if (wd) result = await checkWorkday(job, wd);
+    else if (/^workforcenow(\.cloud)?\.adp\.com$/i.test(new URL(url).hostname)) result = await checkAdp(job, url);
+    else result = classifyPage(job, await fetchWithTimeout(url));
   } catch (err) {
     const msg = String(err?.cause?.code || err?.name || err?.message || err);
     // EAI_AGAIN is a temporary resolver failure, not a missing domain
@@ -412,12 +494,30 @@ async function main() {
       // Plain-fetch 404s are re-confirmed too: some career sites (jobs.<school>.edu/jobs/<slug>)
       // return 404 to fetchers at random while serving the posting to browsers.
       const flakyDead = c?.verdict === "dead" && c.httpCode === 404;
-      return c && (["unverifiable", "mismatch", "closed"].includes(c.verdict) || flakyDead) && c.via !== "browser" && !/^(Workday|Phenom)/.test(c.note || "");
+      // Documents can't render, bot challenges won't pass, and the API-backed
+      // platforms already gave an exact answer.
+      const noBrowser = /^(Workday|Phenom|ADP|static document|bot challenge)/.test(c?.note || "");
+      return c && (["unverifiable", "mismatch", "closed"].includes(c.verdict) || flakyDead) && c.via !== "browser" && !noBrowser;
     });
     console.log(`\nRe-checking ${retry.length} unverifiable/mismatch/closed/404 pages in headless Chromium...`);
     if (retry.length) await browserRecheck(retry, cache);
     writeJson(CACHE_PATH, cache);
   }
+
+  // Bot-challenged pages can't be read, but the daily scrape still sees each
+  // posting on its school's listing; recent presence there is the best
+  // available evidence it is up (the presence agent purges it once it drops off).
+  const presence = readJsonOrNull(PRESENCE_PATH)?.jobs || {};
+  const cutoff = Date.now() - LISTED_WITHIN_DAYS * 24 * 3600 * 1000;
+  for (const job of allJobs) {
+    const c = cache[clean(job.url)];
+    if (!c || c.verdict !== "unverifiable" || !/bot challenge/.test(c.note || "")) continue;
+    const seen = presence[job.canonicalJobId]?.lastSeen;
+    if (seen && new Date(`${seen}T23:59:59Z`).getTime() >= cutoff) {
+      cache[clean(job.url)] = { ...c, verdict: "listed", note: `bot challenge; on school's listing ${seen}` };
+    }
+  }
+  writeJson(CACHE_PATH, cache);
 
   // Report
   const counts = {};
@@ -431,7 +531,7 @@ async function main() {
     bySource[src] ||= { total: 0 };
     bySource[src].total++;
     bySource[src][c.verdict] = (bySource[src][c.verdict] || 0) + 1;
-    if (c.verdict !== "open") {
+    if (c.verdict !== "open" && c.verdict !== "listed") {
       problems.push({ verdict: c.verdict, college: clean(job.college), title: clean(job.title), source: src, url: clean(job.url), httpCode: c.httpCode ?? "", note: c.note || "", closeDate: job.closeDate || "", canonicalJobId: job.canonicalJobId || "" });
     }
   }
@@ -445,7 +545,7 @@ async function main() {
 
   const pct = (n) => `${((n / allJobs.length) * 100).toFixed(1)}%`;
   console.log("\n── Results ──");
-  for (const k of ["open", ...order]) console.log(`  ${k.padEnd(13)} ${String(counts[k] || 0).padStart(6)}  ${pct(counts[k] || 0)}`);
+  for (const k of ["open", "listed", ...order]) console.log(`  ${k.padEnd(13)} ${String(counts[k] || 0).padStart(6)}  ${pct(counts[k] || 0)}`);
   console.log(`\n  Report : ${REPORT_PATH}\n  CSV    : ${CSV_PATH}\n`);
 }
 
