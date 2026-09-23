@@ -62,6 +62,7 @@ npm test
 ## Researcher access
 
 - Research guide: `docs/researchers.md`
+- Benchmarking register: `BENCHMARKING.md`
 - Data dictionary: `data/data-dictionary.md`
 - JSON schema: `data/schema.json`
 - Citation metadata: `CITATION.cff`
