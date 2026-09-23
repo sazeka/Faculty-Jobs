@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { readJobsFile } from "./lib/jobs-file.js";
 import {
   POST_QUALITY_VERSION,
   deterministicStratifiedSample,
@@ -226,7 +227,7 @@ async function main() {
   };
   const sampleSize = Math.max(0, Number(args["sample-size"] ?? 200));
   const previous = readJsonOrNull(REPORT_PATH);
-  const payload = JSON.parse(fs.readFileSync(JOBS_PATH, "utf8"));
+  const payload = readJobsFile(JOBS_PATH);
   const jobs = Array.isArray(payload?.jobs) ? payload.jobs : [];
   const scoredRows = scoreCatalog(jobs);
   const overall = summarizeRows(jobs);

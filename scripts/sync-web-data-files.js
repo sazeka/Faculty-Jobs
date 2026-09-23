@@ -5,13 +5,16 @@ import { fileURLToPath } from "url";
 import { buildListingIndex } from "./lib/jobs-listing-index.js";
 import { buildFullTextSearchIndex } from "./lib/jobs-search-index.js";
 import { attachCanonicalIds } from "./lib/canonical-id.js";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, "..");
 
+// public/jobs.json is not copied into the site: the frontend reads the listing
+// index + chunks built below, and a full copy would be re-published as a ~90 MB
+// docs/jobs.json by copy-dist (see lib/jobs-file.js).
 const SOURCES = [
-  ["public/jobs.json", "web-vue/public/jobs.json"],
   ["public/college-coords.json", "web-vue/public/college-coords.json"],
   ["public/data/site-stats.json", "web-vue/public/data/site-stats.json"],
 ];
@@ -46,7 +49,7 @@ function writeCompactJson(filePath, value) {
 
 function buildJobsChunks(sourcePath, outDir) {
   if (!fs.existsSync(sourcePath)) return;
-  const payload = JSON.parse(fs.readFileSync(sourcePath, "utf8"));
+  const payload = readJobsFile(sourcePath);
   const jobsRaw = Array.isArray(payload?.jobs) ? payload.jobs : [];
   const jobs = attachCanonicalIds(jobsRaw);
 
@@ -97,15 +100,13 @@ for (const [srcRel, dstRel] of SOURCES) {
     continue;
   }
   ensureDir(path.dirname(dst));
-  if (srcRel === "public/jobs.json" && dstRel === "web-vue/public/jobs.json") {
-    const payload = JSON.parse(fs.readFileSync(src, "utf8"));
-    const jobsRaw = Array.isArray(payload?.jobs) ? payload.jobs : [];
-    const jobs = attachCanonicalIds(jobsRaw);
-    writeJson(dst, { ...payload, jobs, count: jobs.length });
-  } else {
-    fs.copyFileSync(src, dst);
-  }
+  fs.copyFileSync(src, dst);
   console.log(`Synced ${srcRel} -> ${dstRel}`);
+}
+
+// Remove copies left by the old sync, so vite can't ship one into dist/.
+for (const stale of ["web-vue/public/jobs.json", "docs/jobs.json"]) {
+  fs.rmSync(path.join(ROOT, stale), { force: true });
 }
 
 const jobsSource = path.join(ROOT, "public", "jobs.json");

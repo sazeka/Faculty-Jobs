@@ -39,12 +39,12 @@ import {
   deriveDisciplineFromDepartment,
 } from './lib/discipline-from-department.js';
 import { isMissingDiscipline } from './lib/discipline-normalize.js';
+import { readJobsFileOrNull, writeJobsFile } from './lib/jobs-file.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
 const PUBLIC_JOBS = path.join(ROOT, 'public', 'jobs.json');
-const DOCS_JOBS   = path.join(ROOT, 'docs',   'jobs.json');
 const REPORT_PATH = path.join(ROOT, 'generated', 'enrichment-report.json');
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
@@ -340,7 +340,7 @@ async function main() {
 
   const enrichBatch = callOllama;
 
-  const payload = readJson(PUBLIC_JOBS);
+  const payload = readJobsFileOrNull(PUBLIC_JOBS);
   if (!payload?.jobs?.length) {
     console.error('  Cannot read public/jobs.json');
     process.exit(1);
@@ -417,8 +417,7 @@ async function main() {
       return;
     }
     if (deterministicTenureCount || deterministicDisciplineCount) {
-      writeJson(PUBLIC_JOBS, payload);
-      if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+      writeJobsFile(PUBLIC_JOBS, payload);
     }
     const totalEnriched = payload.jobs.filter(j => !isMissingDiscipline(j.discipline)).length;
     writeJson(REPORT_PATH, {
@@ -447,8 +446,7 @@ async function main() {
       ? '\n  All jobs already enriched. Nothing to do.'
       : `\n  Nothing to process this run (max ${MAX}); ${candidates.length.toLocaleString()} candidates remain.`);
     if (!DRY_RUN && (deterministicTenureCount || deterministicDisciplineCount)) {
-      writeJson(PUBLIC_JOBS, payload);
-      if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+      writeJobsFile(PUBLIC_JOBS, payload);
     }
     const totalEnriched = payload.jobs.filter(j => !isMissingDiscipline(j.discipline)).length;
     writeJson(REPORT_PATH, {
@@ -478,8 +476,7 @@ async function main() {
   // or expired API credential must not throw away thousands of rule-based
   // classifications discovered earlier in this run.
   if (deterministicTenureCount || deterministicDisciplineCount) {
-    writeJson(PUBLIC_JOBS, payload);
-    if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+    writeJobsFile(PUBLIC_JOBS, payload);
     console.log(`\n  Saved ${deterministicTenureCount.toLocaleString()} rule-based tenure classifications and ${deterministicDisciplineCount.toLocaleString()} dept-derived disciplines before AI enrichment.`);
   }
 
@@ -567,8 +564,7 @@ async function main() {
     }
 
     // Save after each successful (sub)batch — partial progress is never lost
-    writeJson(PUBLIC_JOBS, payload);
-    if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+    writeJobsFile(PUBLIC_JOBS, payload);
 
     console.log(`${label}... done (+${batchEnriched})`);
     return batchEnriched;

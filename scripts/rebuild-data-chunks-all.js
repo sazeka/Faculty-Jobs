@@ -10,6 +10,7 @@ import { buildListingIndex } from "./lib/jobs-listing-index.js";
 import { buildFullTextSearchIndex } from "./lib/jobs-search-index.js";
 import { summarizeCatalog } from "../web-vue/src/lib/listingTrust.js";
 import { attachCanonicalIds } from "./lib/canonical-id.js";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -103,7 +104,7 @@ function buildSiteStats(payload, previous = {}) {
   };
 }
 
-const payload = JSON.parse(fs.readFileSync(path.join(ROOT, "public", "jobs.json"), "utf8"));
+const payload = readJobsFile(path.join(ROOT, "public", "jobs.json"));
 const previousSiteStatsPath = path.join(ROOT, "public", "data", "site-stats.json");
 const previousSiteStats = fs.existsSync(previousSiteStatsPath)
   ? JSON.parse(fs.readFileSync(previousSiteStatsPath, "utf8"))

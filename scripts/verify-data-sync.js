@@ -27,6 +27,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { attachCanonicalIds } from "./lib/canonical-id.js";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_DIRS = ["public/data", "web-vue/public/data", "docs/data"];
@@ -75,7 +76,8 @@ function readChunkPayloads(chunksDir) {
 }
 
 export function verifyDataSync({ root = ROOT, dirs = DEFAULT_DIRS } = {}) {
-  const jobsPayload = readJson(path.join(root, "public/jobs.json"));
+  // Canonical-id grouping compares descriptions, so read the reassembled dataset.
+  const jobsPayload = readJobsFile(path.join(root, "public/jobs.json"));
   const sourceIds = computeSourceCanonicalIds(jobsPayload);
 
   const results = [];

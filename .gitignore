@@ -31,3 +31,8 @@ generated/automation-logs/
 # build:frontend), so the committed copy was never actually read by anything —
 # just a ~97MB duplicate of public/jobs.json re-added on every scrape commit.
 web-vue/public/jobs.json
+
+# The full dataset is public/jobs.json + public/job-descriptions/ (see
+# scripts/lib/jobs-file.js). The site reads data/ chunks, so a published copy is
+# only a ~90 MB file that pushes the repo toward GitHub's 100 MB limit.
+docs/jobs.json

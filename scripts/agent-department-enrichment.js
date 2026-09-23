@@ -33,12 +33,12 @@ import http from 'http';
 import { fileURLToPath } from 'url';
 import { alignEnrichmentResults } from './lib/enrichment-response.js';
 import { validateAiDepartmentEvidence } from './lib/department-inference.js';
+import { readJobsFileOrNull, writeJobsFile } from './lib/jobs-file.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
 const PUBLIC_JOBS = path.join(ROOT, 'public', 'jobs.json');
-const DOCS_JOBS = path.join(ROOT, 'docs', 'jobs.json');
 const REPORT_PATH = path.join(ROOT, 'generated', 'department-ai-enrichment-report.json');
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
@@ -172,7 +172,7 @@ async function main() {
   if (DRY_RUN) console.log('  *** DRY RUN ***');
   console.log(`  Backend: Ollama (${OLLAMA_MODEL} @ ${OLLAMA_HOST})`);
 
-  const payload = readJson(PUBLIC_JOBS);
+  const payload = readJobsFileOrNull(PUBLIC_JOBS);
   if (!payload?.jobs?.length) {
     console.error('  Cannot read public/jobs.json');
     process.exit(1);
@@ -267,8 +267,7 @@ async function main() {
     }
 
     // Save after each successful (sub)batch -- partial progress is never lost.
-    writeJson(PUBLIC_JOBS, payload);
-    if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+    writeJobsFile(PUBLIC_JOBS, payload);
 
     console.log(`${label}... done (+${batchFilled}/${batch.length})`);
     return batchFilled;

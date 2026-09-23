@@ -3,11 +3,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { inferDepartmentFromTitle } from './lib/department-inference.js'
+import { readJobsFile, writeJobsFile } from './lib/jobs-file.js'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const TARGETS = ['public/jobs.json', 'docs/jobs.json', 'web-vue/public/jobs.json']
+const JOBS_PATH = path.join(ROOT, 'public/jobs.json')
 const REPORT_PATH = path.join(ROOT, 'generated', 'department-backfill-report.json')
-const source = JSON.parse(fs.readFileSync(path.join(ROOT, TARGETS[0]), 'utf8'))
+const source = readJobsFile(JOBS_PATH)
 
 let filled = 0
 
@@ -20,11 +21,7 @@ const jobs = source.jobs.map((job) => {
 })
 
 const output = { ...source, count: jobs.length, jobs }
-for (const relative of TARGETS) {
-  const filePath = path.join(ROOT, relative)
-  if (!fs.existsSync(filePath)) continue
-  fs.writeFileSync(filePath, `${JSON.stringify(output, null, 2)}\n`)
-}
+writeJobsFile(JOBS_PATH, output)
 
 const report = { generatedAt: new Date().toISOString(), totalJobs: jobs.length, filledFromTitle: filled }
 fs.writeFileSync(REPORT_PATH, `${JSON.stringify(report, null, 2)}\n`)

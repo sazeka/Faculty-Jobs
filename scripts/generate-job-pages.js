@@ -25,6 +25,7 @@ import { MIN_STATE_JOBS, MIN_INSTITUTION_JOBS, DISCIPLINE_SKIP } from "./lib/hub
 import { getDiscipline, inferState, normalizeSystemCollege } from "../web-vue/src/composables/useJobFilters.js";
 import { derivePositionTypes, deriveTenureTrack, deriveEmploymentType } from "./lib/job-posting-classification.js";
 import { isMissingDiscipline, normalizeDisciplineValue } from "./lib/discipline-normalize.js";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -248,7 +249,7 @@ function renderPage(job, groupCounts, institutionIndex) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-const payload = JSON.parse(fs.readFileSync(path.join(ROOT, "public", "jobs.json"), "utf8"));
+const payload = readJobsFile(path.join(ROOT, "public", "jobs.json"));
 const allJobs = payload.jobs || [];
 // A page (with JobPosting schema) is only worth emitting for a real, classified
 // faculty posting with enough content. Skip when BOTH classifiers failed —

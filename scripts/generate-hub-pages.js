@@ -28,6 +28,7 @@ import { jobSlug, kebab } from "./lib/job-slug.js";
 import { buildInstitutionIndex, lookupInstitution } from "./lib/institution-lookup.js";
 import { MIN_STATE_JOBS, MIN_INSTITUTION_JOBS, DISCIPLINE_SKIP } from "./lib/hub-thresholds.js";
 import { getDiscipline, inferState, normalizeSystemCollege } from "../web-vue/src/composables/useJobFilters.js";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -279,7 +280,7 @@ function renderHubPage(section, entry, institutionIndex) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-const payload = JSON.parse(fs.readFileSync(path.join(ROOT, "public", "jobs.json"), "utf8"));
+const payload = readJobsFile(path.join(ROOT, "public", "jobs.json"));
 const allJobs = payload.jobs || [];
 const jobs = allJobs.filter((j) => isRealPosting(j) && isOpen(j));
 

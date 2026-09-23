@@ -16,6 +16,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -23,7 +24,7 @@ const ROOT = path.resolve(__dirname, "..");
 // ── Read stats from public/jobs.json ─────────────────────────────────────────
 
 const jobsPath = path.join(ROOT, "public", "jobs.json");
-const jobsPayload = JSON.parse(fs.readFileSync(jobsPath, "utf8"));
+const jobsPayload = readJobsFile(jobsPath);
 const jobs = jobsPayload.jobs ?? [];
 
 const jobCount = jobs.length;

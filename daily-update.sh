@@ -150,6 +150,9 @@ if [[ $SCRAPED -eq 1 ]]; then
             # data) or the working tree stays dirty and the rebase -X theirs
             # recovery below aborts with "commit your changes or stash them",
             # silently stranding the push.
+            # Keep descriptions in public/job-descriptions/ (GitHub rejects files
+            # over 100 MB; see scripts/lib/jobs-file.js).
+            invoke_step "Normalize jobs dataset" "$NPM_CMD" run --silent jobs:normalize || true
             invoke_step "git add" "$GIT_CMD" add -A \
                 docs/ public/ generated/ web-vue/public/ \
                 data/institutions-master.json || true

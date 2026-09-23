@@ -2,6 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -98,7 +99,7 @@ function main() {
     throw new Error(`Input file not found: ${inputRel}`);
   }
 
-  const payload = readJson(inputPath);
+  const payload = readJobsFile(inputPath);
   const jobs = Array.isArray(payload?.jobs) ? payload.jobs : [];
   const headers = [
     "title",

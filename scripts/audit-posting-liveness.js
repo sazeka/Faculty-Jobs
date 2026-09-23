@@ -43,6 +43,7 @@ import os from "os";
 import path from "path";
 import { execFileSync } from "child_process";
 import { fileURLToPath } from "url";
+import { readJobsFileOrNull } from "./lib/jobs-file.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -647,7 +648,7 @@ async function hostAwarePool(items, fn) {
 // ── main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
-  const payload = readJsonOrNull(JOBS_PATH);
+  const payload = readJobsFileOrNull(JOBS_PATH);
   const allJobs = (Array.isArray(payload?.jobs) ? payload.jobs : Array.isArray(payload) ? payload : []).slice(0, LIMIT);
   if (!allJobs.length) { console.error(`No jobs in ${JOBS_PATH}`); process.exit(1); }
 

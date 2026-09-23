@@ -61,7 +61,8 @@ jobs:
           for batch in 1 2 3 4; do
             echo "Running description batch ${batch}/4"
             npm run agent:descriptions -- --max 400 --concurrency 8
-            git add public/jobs.json docs/jobs.json generated/job-descriptions-report.json
+            npm run --silent jobs:normalize && npm run --silent jobs:check
+            git add public/jobs.json public/job-descriptions generated/job-descriptions-report.json
             if ! git diff --cached --quiet; then
               git commit -m "Description backfill checkpoint ${batch}/4"
             fi
@@ -75,7 +76,8 @@ jobs:
 
           # Preserve a partially completed batch too: the script atomically
           # saves every 25 attempts, including when the preceding step times out.
-          git add public/jobs.json docs/jobs.json generated/job-descriptions-report.json
+          npm run --silent jobs:normalize && npm run --silent jobs:check
+          git add public/jobs.json public/job-descriptions generated/job-descriptions-report.json
           if ! git diff --cached --quiet; then
             git commit -m "Description backfill partial checkpoint"
           fi
@@ -123,9 +125,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          npm run --silent jobs:normalize && npm run --silent jobs:check
           git add \
             public/jobs.json \
-            docs/jobs.json \
+            public/job-descriptions \
             docs/index.html \
             public/index.html \
             docs/data/ \

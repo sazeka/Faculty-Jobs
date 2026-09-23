@@ -16,6 +16,7 @@ import { consolidateSystemUmbrellaDuplicates, consolidateWorkdayRequisitionDupli
 import { attachCanonicalIds } from "./lib/canonical-id.js";
 import { dedupeExactListings } from "./lib/exact-job-dedup.js";
 import { repairMinnStateCollegeFromDescription } from "./lib/institution-attribution.js";
+import { readJobsFile, writeJobsFile } from "./lib/jobs-file.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -401,17 +402,15 @@ function canonicalizeJobUrls(data) {
     console.log(`⚰️  Filtered ${deadFilter.removed} confirmed-dead URL(s) from scrape`);
   }
 
-  const targets = [
-    path.join(__dirname, "..", "docs", "jobs.json"),
-    path.join(__dirname, "..", "public", "jobs.json"),
-    path.join(__dirname, "..", "web-vue", "public", "jobs.json"),
-  ];
+  // Descriptions live in public/job-descriptions/ (see lib/jobs-file.js); the
+  // site reads the chunked data, so docs/ and web-vue/ get no jobs.json copy.
+  const targets = [path.join(__dirname, "..", "public", "jobs.json")];
 
   const previousPath = path.join(__dirname, "..", "public", "jobs.json");
   let previousData = null;
   try {
     if (fs.existsSync(previousPath)) {
-      previousData = JSON.parse(fs.readFileSync(previousPath, "utf-8"));
+      previousData = readJobsFile(previousPath);
     }
   } catch (e) {
     console.warn(`⚠️  Failed to read previous snapshot: ${e?.message || e}`);
@@ -521,7 +520,7 @@ function canonicalizeJobUrls(data) {
   data = synchronizeJobCount(data);
 
   for (const outPath of targets) {
-    fs.writeFileSync(outPath, JSON.stringify(data, null, 2));
+    writeJobsFile(outPath, data);
     console.log(`✅ Wrote ${outPath} (${data.count} jobs)`);
   }
 })();

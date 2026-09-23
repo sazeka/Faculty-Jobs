@@ -37,12 +37,12 @@ import { buildWorkdayCxsUrl, fetchWorkdayPosting } from "./lib/workday-descripti
 import { fetchPaycomPosting, parsePaycomJobUrl } from "./lib/paycom-description.js";
 import { fetchAdpPosting, parseAdpJobUrl } from "./lib/adp-description.js";
 import { fetchSelectMindsPosting, isSelectMindsJobUrl } from "./lib/selectminds-description.js";
+import { readJobsFileOrNull, writeJobsFile } from "./lib/jobs-file.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const PUBLIC_JOBS = path.join(ROOT, "public", "jobs.json");
-const DOCS_JOBS = path.join(ROOT, "docs", "jobs.json");
 const REPORT_PATH = path.join(ROOT, "generated", "job-descriptions-report.json");
 
 function parseArgs(argv) {
@@ -136,7 +136,7 @@ function normalizeDate(raw) {
 }
 
 async function main() {
-  const payload = readJson(PUBLIC_JOBS);
+  const payload = readJobsFileOrNull(PUBLIC_JOBS);
   if (!payload?.jobs?.length) {
     console.error("  Cannot read public/jobs.json");
     process.exit(1);
@@ -200,8 +200,7 @@ async function main() {
   if (toProcess.length === 0) {
     console.log("\n  Nothing to do.");
     if (!DRY_RUN && availabilityMarked > 0) {
-      writeJson(PUBLIC_JOBS, payload);
-      if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+      writeJobsFile(PUBLIC_JOBS, payload);
       console.log(`  Marked availability: ${availabilityMarked}`);
     }
     writeJson(REPORT_PATH, {
@@ -561,8 +560,7 @@ async function main() {
 
       // Persist periodically so a long run's progress survives interruption.
       if (++sinceSave >= 25) {
-        writeJson(PUBLIC_JOBS, payload);
-        if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+        writeJobsFile(PUBLIC_JOBS, payload);
         sinceSave = 0;
       }
       if (attempted % 25 === 0) console.log(`  ...attempted ${attempted}/${toProcess.length} (filled ${filled})`);
@@ -573,8 +571,7 @@ async function main() {
   if (context) await withTimeout(context.close(), 10000, "context.close").catch(() => {});
   if (browser) await withTimeout(browser.close(), 10000, "browser.close").catch(() => {});
 
-  writeJson(PUBLIC_JOBS, payload);
-  if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, payload);
+  writeJobsFile(PUBLIC_JOBS, payload);
 
   const totalWithDescription = payload.jobs.filter((j) => j.description && String(j.description).trim()).length;
   const remaining = payload.jobs.filter(

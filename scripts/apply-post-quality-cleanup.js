@@ -4,14 +4,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { confirmedNonFacultyReason } from "./lib/post-quality.js";
 import { loadReviewedExclusions, reviewedExclusionReason } from "./lib/post-quality-exclusions.js";
+import { readJobsFile, writeJobsFile } from "./lib/jobs-file.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const ROOT = path.resolve(path.dirname(__filename), "..");
-const TARGETS = [
-  "public/jobs.json",
-  "docs/jobs.json",
-  "web-vue/public/jobs.json",
-];
+const JOBS_PATH = path.join(ROOT, "public", "jobs.json");
 const REPORT_PATH = path.join(ROOT, "generated", "post-quality-cleanup-report.json");
 const REVIEWED_EXCLUSIONS = loadReviewedExclusions(path.join(ROOT, "data", "post-quality-exclusions.json"));
 
@@ -19,12 +16,7 @@ function clean(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
 
-function readPayload(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
-}
-
-const primaryPath = path.join(ROOT, TARGETS[0]);
-const payload = readPayload(primaryPath);
+const payload = readJobsFile(JOBS_PATH);
 const jobs = Array.isArray(payload?.jobs) ? payload.jobs : [];
 const kept = [];
 const removed = [];
@@ -47,11 +39,8 @@ for (const job of jobs) {
 }
 
 const nextPayload = { ...payload, jobs: kept, count: kept.length };
-for (const relativePath of TARGETS) {
-  const filePath = path.join(ROOT, relativePath);
-  fs.writeFileSync(filePath, `${JSON.stringify(nextPayload, null, 2)}\n`, "utf8");
-  console.log(`Wrote ${relativePath} (${kept.length} jobs)`);
-}
+writeJobsFile(JOBS_PATH, nextPayload);
+console.log(`Wrote public/jobs.json (${kept.length} jobs)`);
 
 const report = {
   generatedAt: new Date().toISOString(),

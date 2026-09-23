@@ -36,6 +36,8 @@
     "verify:policy:pre": "node scripts/verify-policy-integrity.js --skip-jobs-check",
     "sync:policy-exclusions": "node scripts/sync-policy-exclusions-web.js",
     "sync:web-data": "node scripts/sync-web-data-files.js",
+    "jobs:normalize": "node scripts/jobs-store.js normalize",
+    "jobs:check": "node scripts/jobs-store.js check",
     "rebuild:data-chunks": "node scripts/rebuild-data-chunks-all.js",
     "verify:data-sync": "node scripts/verify-data-sync.js",
     "import:ipeds": "node scripts/import-ipeds-csv.js",

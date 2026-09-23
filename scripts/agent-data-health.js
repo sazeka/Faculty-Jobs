@@ -3,7 +3,7 @@
  * agent-data-health.js
  *
  * Backend data-health agent. Runs after verify-job-urls.js and:
- *   1. Removes confirmed-dead job URLs from public/jobs.json (and docs/jobs.json).
+ *   1. Removes confirmed-dead job URLs from public/jobs.json.
  *   2. Compares per-source job counts to a rolling baseline; flags anomalous drops.
  *   3. Strips raw HTML tags from job title fields, trims stray leading
  *      "-" list-markers, and de-shouts ALL-CAPS titles (preserving
@@ -21,12 +21,12 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { synchronizeJobCount } from "./lib/dataset-invariants.js";
+import { readJobsFileOrNull, writeJobsFile } from "./lib/jobs-file.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const PUBLIC_JOBS   = path.join(ROOT, "public", "jobs.json");
-const DOCS_JOBS     = path.join(ROOT, "docs",   "jobs.json");
 const DEAD_LIST     = path.join(ROOT, "generated", "job-url-dead.json");
 const BASELINE_PATH = path.join(ROOT, "generated", "source-count-baseline.json");
 const REPORT_PATH   = path.join(ROOT, "generated", "data-health-report.json");
@@ -140,7 +140,7 @@ function normalizeTitle(title) {
 
 // ── 1. Load inputs ────────────────────────────────────────────────────────────
 
-const payload = readJson(PUBLIC_JOBS);
+const payload = readJobsFileOrNull(PUBLIC_JOBS);
 if (!payload || !Array.isArray(payload.jobs)) {
   console.error("Could not load public/jobs.json");
   process.exit(1);
@@ -247,9 +247,8 @@ const report = {
 if (!DRY_RUN) {
   if (removedCount > 0 || htmlFixed > 0 || titlesNormalized > 0) {
     const updated = synchronizeJobCount({ ...payload, jobs: cleanedJobs });
-    writeJson(PUBLIC_JOBS, updated);
+    writeJobsFile(PUBLIC_JOBS, updated);
     // Mirror to docs/ if it exists
-    if (fs.existsSync(DOCS_JOBS)) writeJson(DOCS_JOBS, updated);
     console.log("\n  public/jobs.json updated.");
   } else {
     console.log("\n  No changes needed in jobs.json.");

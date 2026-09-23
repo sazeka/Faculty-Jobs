@@ -3,9 +3,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { scorePost, isPlaceholderLocation } from './lib/post-quality.js'
+import { readJobsFile } from './lib/jobs-file.js'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const jobsPayload = JSON.parse(fs.readFileSync(path.join(ROOT, 'public', 'jobs.json'), 'utf8'))
+const jobsPayload = readJobsFile(path.join(ROOT, 'public', 'jobs.json'))
 const exclusionPayload = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'post-quality-exclusions.json'), 'utf8'))
 const jobs = jobsPayload.jobs || []
 

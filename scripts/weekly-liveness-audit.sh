@@ -107,6 +107,8 @@ for attempt in 1 2 3; do
     log "No new exclusions (all already excluded). Done."
     exit 0
   fi
+  npm run --silent jobs:normalize
+  npm run --silent jobs:check
   # Same paths daily-update.sh stages, plus the exclusion ledger
   git add -A docs/ public/ generated/ web-vue/public/ data/institutions-master.json data/post-quality-exclusions.json
   ADDED="$(git diff --cached -U0 data/post-quality-exclusions.json | grep -c '^+ *"reason"' || true)"
@@ -126,7 +128,7 @@ EOF
     log "Pushed: removed $ADDED postings"
     exit 0
   fi
-  # The Jetson's daily scrape (or CI) pushed in between. Rebuilding on the new
+  # The daily scrape workflow (or another CI job) pushed in between. Rebuilding on the new
   # origin/main is cheaper and safer than merging generated files.
   log "Push rejected (attempt $attempt); rebuilding on latest origin/main"
   sync_to_origin

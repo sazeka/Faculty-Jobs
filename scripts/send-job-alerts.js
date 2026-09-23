@@ -24,6 +24,7 @@ import { fileURLToPath } from "url";
 import { useJobFilters } from "../web-vue/src/composables/useJobFilters.js";
 import { createDefaultFilters } from "../web-vue/src/config/appConfig.js";
 import { jobPath } from "./lib/job-slug.js";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 // useJobFilters() only ever reads `.value` here (this script runs once, no
 // need to react to changes), so a plain box is enough — no need to pull in
@@ -116,7 +117,7 @@ async function main() {
     process.exit(1);
   }
 
-  const payload = JSON.parse(fs.readFileSync(path.join(ROOT, "public", "jobs.json"), "utf8"));
+  const payload = readJobsFile(path.join(ROOT, "public", "jobs.json"));
   const allJobs = payload.jobs || [];
   const jobsRef = ref(allJobs);
 

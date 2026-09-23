@@ -13,10 +13,10 @@
  *      (firstSeen=today if new, lastSeen=today and consecutiveMisses=0 always)
  *   5. For every tracked job NOT in today's scrape: increment consecutiveMisses
  *   6. Any job with consecutiveMisses >= EXPIRY_DAYS is purged from
- *      public/jobs.json (and docs/jobs.json if it exists)
+ *      public/jobs.json
  *   7. Remove purged entries from presence history
  *   8. Save updated presence history to generated/job-presence.json
- *   9. Save updated jobs to public/jobs.json (and docs/jobs.json if present)
+ *   9. Save updated jobs to public/jobs.json
  *
  * Usage:
  *   node scripts/agent-job-presence.js [--dry-run] [--expiry-days N]
@@ -36,6 +36,7 @@ import { computeInstitutionOpeningStats } from "./lib/institution-opening-stats.
 import { partitionExpiredJobs } from "./lib/post-expiration.js";
 import { repairKnownInstitutionAttribution, repairKnownSourceOwnership } from "./lib/institution-attribution.js";
 import { normalizeTenureTrack } from "../web-vue/src/lib/jobClassification.js";
+import { readJobsFileOrNull, writeJobsFile } from "./lib/jobs-file.js";
 import {
   classifySourceLink,
   institutionTitleConflict,
@@ -47,7 +48,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 const PUBLIC_JOBS    = path.join(ROOT, "public",    "jobs.json");
-const DOCS_JOBS      = path.join(ROOT, "docs",      "jobs.json");
 const PRESENCE_PATH  = path.join(ROOT, "generated", "job-presence.json");
 const REPORT_PATH    = path.join(ROOT, "generated", "job-presence-report.json");
 const COVERAGE_PATH  = path.join(ROOT, "generated", "coverage-report.json");
@@ -117,7 +117,7 @@ function daysAgoDateString(n) {
 
 // ── 1. Load public/jobs.json ──────────────────────────────────────────────────
 
-const payload = readJson(PUBLIC_JOBS);
+const payload = readJobsFileOrNull(PUBLIC_JOBS);
 if (!payload || !Array.isArray(payload.jobs)) {
   console.error("ERROR: Could not load public/jobs.json or jobs array is missing.");
   process.exit(1);
@@ -391,13 +391,8 @@ const report = {
 if (!DRY_RUN) {
   // Update public/jobs.json
   const updatedPayload = synchronizeJobCount({ ...payload, jobs: cleanedJobs });
-  writeJson(PUBLIC_JOBS, updatedPayload);
+  writeJobsFile(PUBLIC_JOBS, updatedPayload);
 
-  // Mirror to docs/ if the file already exists there
-  if (fs.existsSync(DOCS_JOBS)) {
-    writeJson(DOCS_JOBS, updatedPayload);
-    console.log("\n  docs/jobs.json updated.");
-  }
 
   // Persist presence history
   writeJson(PRESENCE_PATH, presence);
@@ -420,7 +415,6 @@ if (!DRY_RUN) {
 } else {
   console.log("\n  DRY RUN: no files written.");
   console.log("  Would write: public/jobs.json");
-  if (fs.existsSync(DOCS_JOBS)) console.log("  Would write: docs/jobs.json");
   console.log("  Would write: generated/job-presence.json");
   console.log("  Would write: generated/job-presence-report.json");
 }

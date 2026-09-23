@@ -27,6 +27,7 @@ import { fileURLToPath } from "url";
 import { jobSlug, jobPath, kebab } from "./lib/job-slug.js";
 import { MIN_STATE_JOBS, DISCIPLINE_SKIP } from "./lib/hub-thresholds.js";
 import { getDiscipline, inferState } from "../web-vue/src/composables/useJobFilters.js";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -129,7 +130,7 @@ function writeFeed(relPath, feedXml) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-const payload = JSON.parse(fs.readFileSync(path.join(ROOT, "public", "jobs.json"), "utf8"));
+const payload = readJobsFile(path.join(ROOT, "public", "jobs.json"));
 const allJobs = payload.jobs || [];
 const jobs = allJobs.filter((j) => isRealPosting(j) && isOpen(j));
 

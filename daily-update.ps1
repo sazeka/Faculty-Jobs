@@ -146,6 +146,9 @@ if ($scraped) {
                 # working tree dirty, and the merge -X ours recovery below aborts
                 # with "commit your changes or stash them before you merge",
                 # silently stranding the push (this caused 6 days of stale data).
+                # Keep descriptions in public/job-descriptions/ (GitHub rejects files
+                # over 100 MB; see scripts/lib/jobs-file.js).
+                Invoke-Step "Normalize jobs dataset" $NpmCmd @("run", "--silent", "jobs:normalize") | Out-Null
                 Invoke-Step "git add" $GitCmd @(
                     "add", "-A",
                     "docs/", "public/", "generated/", "web-vue/public/",
