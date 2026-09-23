@@ -4,77 +4,77 @@
 <style>
 :root{color-scheme:light;--ink:#152439;--muted:#607086;--line:#dbe3ec;--panel:#f6f9fc;--blue:#1f5f99;--red:#9b2c2c;--green:#17643c}*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{width:min(1180px,calc(100% - 32px));margin:36px auto 64px}h1{font-size:clamp(30px,5vw,48px);line-height:1.05;margin:0 0 8px}h2{margin:34px 0 12px}.muted,.meta{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:22px 0}.card{border:1px solid var(--line);border-radius:14px;padding:15px;background:var(--panel)}.label{text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-size:11px;font-weight:700}.value{font-size:28px;font-weight:750}.value.small{font-size:22px}.ok,.alert{border-radius:10px;padding:12px 15px;margin:18px 0}.ok{background:#edf8f1;color:var(--green)}.alert{background:#fff0f0;color:var(--red)}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;min-width:720px}th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#eef3f8;font-size:12px}tr:last-child td{border-bottom:0}a{color:var(--blue)}code{font-size:12px}.note{border-left:4px solid var(--blue);padding:4px 14px;color:var(--muted)}
 </style></head><body><main class="wrap">
-<h1>Post quality dashboard</h1><p class="meta">Generated 2026-09-22T18:39:06.520Z · scoring model v1</p>
+<h1>Post quality dashboard</h1><p class="meta">Generated 2026-09-23T01:36:31.574Z · scoring model v1</p>
 <p class="note">This is a report-only audit. Quarantined posts remain in the public catalog until a person confirms that they should be excluded.</p>
 <div class="grid">
-<div class="card"><div class="label">Average score</div><div class="value">99.1</div></div>
-<div class="card"><div class="label">Pass</div><div class="value">20811</div><div class="muted">92.83%</div></div>
-<div class="card"><div class="label">Review</div><div class="value">1593</div><div class="muted">7.11%</div></div>
-<div class="card"><div class="label">Quarantine</div><div class="value">14</div><div class="muted">0.06%</div></div>
+<div class="card"><div class="label">Average score</div><div class="value">99.12</div></div>
+<div class="card"><div class="label">Pass</div><div class="value">20544</div><div class="muted">92.88%</div></div>
+<div class="card"><div class="label">Review</div><div class="value">1572</div><div class="muted">7.11%</div></div>
+<div class="card"><div class="label">Quarantine</div><div class="value">2</div><div class="muted">0.01%</div></div>
 <div class="card"><div class="label">Reviewed precision</div><div class="value small">100%</div><div class="muted">1 labels</div></div>
-<div class="card"><div class="label">Missing descriptions</div><div class="value small">1478</div><div class="muted">6.59%</div></div>
+<div class="card"><div class="label">Missing descriptions</div><div class="value small">1380</div><div class="muted">6.24%</div></div>
 </div><div class="ok">All configured automated thresholds passed.</div>
-<h2>Dimension averages</h2><div class="grid"><div class="card"><div class="label">relevance</div><div class="value small">99.9</div></div>
+<h2>Dimension averages</h2><div class="grid"><div class="card"><div class="label">relevance</div><div class="value small">99.91</div></div>
 <div class="card"><div class="label">attribution</div><div class="value small">100</div></div>
 <div class="card"><div class="label">link</div><div class="value small">99.98</div></div>
-<div class="card"><div class="label">freshness</div><div class="value small">97.39</div></div>
-<div class="card"><div class="label">completeness</div><div class="value small">91.19</div></div>
+<div class="card"><div class="label">freshness</div><div class="value small">97.43</div></div>
+<div class="card"><div class="label">completeness</div><div class="value small">91.34</div></div>
 <div class="card"><div class="label">duplication</div><div class="value small">100</div></div></div>
-<h2>Most common reason codes</h2><div class="table-wrap"><table><thead><tr><th>Reason</th><th>Severity</th><th>Dimension</th><th>Posts</th></tr></thead><tbody><tr><td><code>missing_deadline</code></td><td>info</td><td>completeness</td><td>14114</td></tr>
-<tr><td><code>missing_department</code></td><td>info</td><td>completeness</td><td>7402</td></tr>
-<tr><td><code>aging_posting_no_evergreen_signal</code></td><td>info</td><td>freshness</td><td>1573</td></tr>
-<tr><td><code>stale_posting_no_evergreen_signal</code></td><td>warning</td><td>freshness</td><td>1510</td></tr>
-<tr><td><code>missing_description</code></td><td>info</td><td>completeness</td><td>1478</td></tr>
-<tr><td><code>weak_academic_evidence</code></td><td>warning</td><td>relevance</td><td>72</td></tr>
+<h2>Most common reason codes</h2><div class="table-wrap"><table><thead><tr><th>Reason</th><th>Severity</th><th>Dimension</th><th>Posts</th></tr></thead><tbody><tr><td><code>missing_deadline</code></td><td>info</td><td>completeness</td><td>13931</td></tr>
+<tr><td><code>missing_department</code></td><td>info</td><td>completeness</td><td>7247</td></tr>
+<tr><td><code>aging_posting_no_evergreen_signal</code></td><td>info</td><td>freshness</td><td>1576</td></tr>
+<tr><td><code>stale_posting_no_evergreen_signal</code></td><td>warning</td><td>freshness</td><td>1493</td></tr>
+<tr><td><code>missing_description</code></td><td>info</td><td>completeness</td><td>1380</td></tr>
 <tr><td><code>placeholder_location</code></td><td>info</td><td>completeness</td><td>71</td></tr>
-<tr><td><code>expired_posting</code></td><td>error</td><td>freshness</td><td>13</td></tr>
+<tr><td><code>weak_academic_evidence</code></td><td>warning</td><td>relevance</td><td>68</td></tr>
 <tr><td><code>search_page_url</code></td><td>warning</td><td>link</td><td>11</td></tr>
+<tr><td><code>expired_posting</code></td><td>error</td><td>freshness</td><td>1</td></tr>
 <tr><td><code>institution_title_conflict</code></td><td>error</td><td>attribution</td><td>1</td></tr>
 <tr><td><code>thin_description</code></td><td>info</td><td>completeness</td><td>1</td></tr></tbody></table></div>
-<h2>Quality by source</h2><div class="table-wrap"><table><thead><tr><th>Source</th><th>Posts</th><th>Score</th><th>Pass</th><th>Review</th><th>Quarantine</th><th>Top reasons</th></tr></thead><tbody><tr><td>UC</td><td>279</td><td>99.03</td><td>265</td><td>7</td><td>7 (2.51%)</td><td>missing_department (131), expired_posting (7), weak_academic_evidence (7)</td></tr>
-<tr><td>CSU</td><td>150</td><td>99.83</td><td>148</td><td>0</td><td>2 (1.33%)</td><td>missing_deadline (119), missing_department (6), expired_posting (2)</td></tr>
-<tr><td>NY</td><td>2145</td><td>98</td><td>2020</td><td>121</td><td>4 (0.19%)</td><td>missing_deadline (1796), missing_department (1274), missing_description (569)</td></tr>
-<tr><td>WA</td><td>538</td><td>99.27</td><td>520</td><td>17</td><td>1 (0.19%)</td><td>missing_department (220), missing_deadline (148), aging_posting_no_evergreen_signal (49)</td></tr>
-<tr><td>TX</td><td>2297</td><td>98.9</td><td>2043</td><td>254</td><td>0 (0%)</td><td>missing_deadline (1393), missing_department (644), missing_description (263)</td></tr>
-<tr><td>NC</td><td>1082</td><td>99.32</td><td>964</td><td>118</td><td>0 (0%)</td><td>missing_deadline (460), missing_department (270), stale_posting_no_evergreen_signal (116)</td></tr>
-<tr><td>FL</td><td>1072</td><td>99.43</td><td>1037</td><td>35</td><td>0 (0%)</td><td>missing_deadline (806), missing_department (215), aging_posting_no_evergreen_signal (154)</td></tr>
-<tr><td>OH</td><td>964</td><td>99.28</td><td>922</td><td>42</td><td>0 (0%)</td><td>missing_deadline (761), missing_department (307), aging_posting_no_evergreen_signal (77)</td></tr>
-<tr><td>CA Private</td><td>883</td><td>99.39</td><td>811</td><td>72</td><td>0 (0%)</td><td>missing_deadline (493), missing_department (259), stale_posting_no_evergreen_signal (70)</td></tr>
-<tr><td>PA</td><td>836</td><td>98.95</td><td>696</td><td>140</td><td>0 (0%)</td><td>missing_deadline (725), missing_department (320), stale_posting_no_evergreen_signal (138)</td></tr>
-<tr><td>IL</td><td>827</td><td>99.38</td><td>786</td><td>41</td><td>0 (0%)</td><td>missing_deadline (575), missing_department (209), aging_posting_no_evergreen_signal (75)</td></tr>
-<tr><td>NJ</td><td>732</td><td>99.13</td><td>664</td><td>68</td><td>0 (0%)</td><td>missing_deadline (431), missing_department (284), aging_posting_no_evergreen_signal (60)</td></tr>
-<tr><td>VA</td><td>647</td><td>99.52</td><td>643</td><td>4</td><td>0 (0%)</td><td>missing_deadline (285), missing_department (212), aging_posting_no_evergreen_signal (33)</td></tr>
-<tr><td>IN</td><td>624</td><td>99.65</td><td>614</td><td>10</td><td>0 (0%)</td><td>missing_deadline (597), missing_department (155), aging_posting_no_evergreen_signal (19)</td></tr>
-<tr><td>MA</td><td>546</td><td>99.5</td><td>536</td><td>10</td><td>0 (0%)</td><td>missing_deadline (493), missing_department (142), aging_posting_no_evergreen_signal (12)</td></tr>
-<tr><td>WI</td><td>524</td><td>99.6</td><td>523</td><td>1</td><td>0 (0%)</td><td>missing_deadline (483), missing_department (156), aging_posting_no_evergreen_signal (13)</td></tr>
-<tr><td>AL</td><td>452</td><td>98.63</td><td>350</td><td>102</td><td>0 (0%)</td><td>missing_deadline (209), missing_department (146), stale_posting_no_evergreen_signal (102)</td></tr>
-<tr><td>MI</td><td>447</td><td>98.99</td><td>367</td><td>80</td><td>0 (0%)</td><td>missing_deadline (218), missing_department (90), stale_posting_no_evergreen_signal (80)</td></tr>
-<tr><td>MO</td><td>440</td><td>99.5</td><td>419</td><td>21</td><td>0 (0%)</td><td>missing_deadline (414), missing_department (74), stale_posting_no_evergreen_signal (20)</td></tr>
-<tr><td>SC</td><td>435</td><td>98.99</td><td>369</td><td>66</td><td>0 (0%)</td><td>missing_deadline (194), missing_department (73), stale_posting_no_evergreen_signal (60)</td></tr>
-<tr><td>MD</td><td>422</td><td>99.49</td><td>414</td><td>8</td><td>0 (0%)</td><td>missing_deadline (209), missing_department (151), aging_posting_no_evergreen_signal (34)</td></tr>
-<tr><td>GA</td><td>418</td><td>98.57</td><td>405</td><td>13</td><td>0 (0%)</td><td>missing_deadline (265), missing_department (193), missing_description (86)</td></tr>
-<tr><td>KY</td><td>378</td><td>99.39</td><td>337</td><td>41</td><td>0 (0%)</td><td>missing_deadline (68), missing_department (64), stale_posting_no_evergreen_signal (41)</td></tr>
-<tr><td>CO</td><td>359</td><td>99.19</td><td>348</td><td>11</td><td>0 (0%)</td><td>missing_deadline (190), missing_department (163), weak_academic_evidence (11)</td></tr>
-<tr><td>LA</td><td>356</td><td>99.5</td><td>331</td><td>25</td><td>0 (0%)</td><td>missing_deadline (185), missing_department (49), stale_posting_no_evergreen_signal (25)</td></tr>
-<tr><td>OK</td><td>337</td><td>99.14</td><td>295</td><td>42</td><td>0 (0%)</td><td>missing_deadline (160), aging_posting_no_evergreen_signal (60), missing_department (57)</td></tr>
-<tr><td>TN</td><td>318</td><td>99.42</td><td>311</td><td>7</td><td>0 (0%)</td><td>missing_deadline (228), missing_department (115), aging_posting_no_evergreen_signal (7)</td></tr>
-<tr><td>OR</td><td>302</td><td>98.91</td><td>301</td><td>1</td><td>0 (0%)</td><td>missing_deadline (164), missing_department (109), aging_posting_no_evergreen_signal (73)</td></tr>
-<tr><td>AR</td><td>248</td><td>98.98</td><td>218</td><td>30</td><td>0 (0%)</td><td>missing_deadline (210), missing_department (61), stale_posting_no_evergreen_signal (29)</td></tr>
-<tr><td>NH</td><td>216</td><td>99.64</td><td>213</td><td>3</td><td>0 (0%)</td><td>missing_deadline (187), missing_department (62), aging_posting_no_evergreen_signal (10)</td></tr>
+<h2>Quality by source</h2><div class="table-wrap"><table><thead><tr><th>Source</th><th>Posts</th><th>Score</th><th>Pass</th><th>Review</th><th>Quarantine</th><th>Top reasons</th></tr></thead><tbody><tr><td>OR</td><td>291</td><td>98.99</td><td>289</td><td>1</td><td>1 (0.34%)</td><td>missing_deadline (153), missing_department (108), aging_posting_no_evergreen_signal (73)</td></tr>
+<tr><td>WA</td><td>536</td><td>99.29</td><td>518</td><td>17</td><td>1 (0.19%)</td><td>missing_department (218), missing_deadline (146), aging_posting_no_evergreen_signal (49)</td></tr>
+<tr><td>TX</td><td>2287</td><td>98.9</td><td>2034</td><td>253</td><td>0 (0%)</td><td>missing_deadline (1387), missing_department (641), missing_description (261)</td></tr>
+<tr><td>NY</td><td>2095</td><td>98.04</td><td>1977</td><td>118</td><td>0 (0%)</td><td>missing_deadline (1753), missing_department (1244), missing_description (545)</td></tr>
+<tr><td>NC</td><td>1062</td><td>99.37</td><td>944</td><td>118</td><td>0 (0%)</td><td>missing_deadline (446), missing_department (255), stale_posting_no_evergreen_signal (116)</td></tr>
+<tr><td>FL</td><td>1056</td><td>99.48</td><td>1021</td><td>35</td><td>0 (0%)</td><td>missing_deadline (790), missing_department (213), aging_posting_no_evergreen_signal (154)</td></tr>
+<tr><td>OH</td><td>961</td><td>99.29</td><td>919</td><td>42</td><td>0 (0%)</td><td>missing_deadline (758), missing_department (304), aging_posting_no_evergreen_signal (77)</td></tr>
+<tr><td>CA Private</td><td>875</td><td>99.4</td><td>803</td><td>72</td><td>0 (0%)</td><td>missing_deadline (485), missing_department (253), stale_posting_no_evergreen_signal (70)</td></tr>
+<tr><td>PA</td><td>831</td><td>98.96</td><td>691</td><td>140</td><td>0 (0%)</td><td>missing_deadline (721), missing_department (316), stale_posting_no_evergreen_signal (138)</td></tr>
+<tr><td>IL</td><td>824</td><td>99.38</td><td>783</td><td>41</td><td>0 (0%)</td><td>missing_deadline (572), missing_department (207), aging_posting_no_evergreen_signal (75)</td></tr>
+<tr><td>NJ</td><td>730</td><td>99.13</td><td>662</td><td>68</td><td>0 (0%)</td><td>missing_deadline (431), missing_department (284), aging_posting_no_evergreen_signal (60)</td></tr>
+<tr><td>VA</td><td>642</td><td>99.53</td><td>638</td><td>4</td><td>0 (0%)</td><td>missing_deadline (284), missing_department (211), aging_posting_no_evergreen_signal (33)</td></tr>
+<tr><td>IN</td><td>615</td><td>99.65</td><td>605</td><td>10</td><td>0 (0%)</td><td>missing_deadline (589), missing_department (150), aging_posting_no_evergreen_signal (19)</td></tr>
+<tr><td>MA</td><td>538</td><td>99.49</td><td>528</td><td>10</td><td>0 (0%)</td><td>missing_deadline (489), missing_department (141), aging_posting_no_evergreen_signal (12)</td></tr>
+<tr><td>WI</td><td>521</td><td>99.59</td><td>520</td><td>1</td><td>0 (0%)</td><td>missing_deadline (480), missing_department (156), aging_posting_no_evergreen_signal (13)</td></tr>
+<tr><td>AL</td><td>446</td><td>98.67</td><td>346</td><td>100</td><td>0 (0%)</td><td>missing_deadline (205), missing_department (140), stale_posting_no_evergreen_signal (100)</td></tr>
+<tr><td>MO</td><td>439</td><td>99.5</td><td>418</td><td>21</td><td>0 (0%)</td><td>missing_deadline (413), missing_department (73), stale_posting_no_evergreen_signal (20)</td></tr>
+<tr><td>MI</td><td>439</td><td>99.02</td><td>359</td><td>80</td><td>0 (0%)</td><td>missing_deadline (213), missing_department (86), stale_posting_no_evergreen_signal (80)</td></tr>
+<tr><td>SC</td><td>426</td><td>99.06</td><td>360</td><td>66</td><td>0 (0%)</td><td>missing_deadline (186), missing_department (67), stale_posting_no_evergreen_signal (60)</td></tr>
+<tr><td>GA</td><td>413</td><td>98.58</td><td>400</td><td>13</td><td>0 (0%)</td><td>missing_deadline (261), missing_department (189), missing_description (84)</td></tr>
+<tr><td>MD</td><td>412</td><td>99.49</td><td>406</td><td>6</td><td>0 (0%)</td><td>missing_deadline (201), missing_department (149), aging_posting_no_evergreen_signal (35)</td></tr>
+<tr><td>KY</td><td>377</td><td>99.39</td><td>336</td><td>41</td><td>0 (0%)</td><td>missing_deadline (68), missing_department (63), stale_posting_no_evergreen_signal (41)</td></tr>
+<tr><td>CO</td><td>358</td><td>99.22</td><td>348</td><td>10</td><td>0 (0%)</td><td>missing_deadline (190), missing_department (162), weak_academic_evidence (10)</td></tr>
+<tr><td>LA</td><td>355</td><td>99.51</td><td>330</td><td>25</td><td>0 (0%)</td><td>missing_deadline (184), missing_department (48), stale_posting_no_evergreen_signal (25)</td></tr>
+<tr><td>OK</td><td>335</td><td>99.15</td><td>293</td><td>42</td><td>0 (0%)</td><td>missing_deadline (159), aging_posting_no_evergreen_signal (60), missing_department (56)</td></tr>
+<tr><td>TN</td><td>303</td><td>99.4</td><td>296</td><td>7</td><td>0 (0%)</td><td>missing_deadline (214), missing_department (110), aging_posting_no_evergreen_signal (8)</td></tr>
+<tr><td>AR</td><td>247</td><td>99.02</td><td>218</td><td>29</td><td>0 (0%)</td><td>missing_deadline (210), missing_department (61), stale_posting_no_evergreen_signal (29)</td></tr>
+<tr><td>UC</td><td>241</td><td>99.26</td><td>234</td><td>7</td><td>0 (0%)</td><td>missing_department (109), weak_academic_evidence (7)</td></tr>
 <tr><td>MS</td><td>214</td><td>99.19</td><td>213</td><td>1</td><td>0 (0%)</td><td>missing_department (112), missing_deadline (69), aging_posting_no_evergreen_signal (15)</td></tr>
-<tr><td>DC</td><td>212</td><td>98.33</td><td>140</td><td>72</td><td>0 (0%)</td><td>missing_department (90), stale_posting_no_evergreen_signal (71), missing_deadline (66)</td></tr>
-<tr><td>HI</td><td>210</td><td>99.66</td><td>193</td><td>17</td><td>0 (0%)</td><td>missing_department (29), missing_deadline (21), stale_posting_no_evergreen_signal (17)</td></tr>
-<tr><td>MN</td><td>207</td><td>99.35</td><td>206</td><td>1</td><td>0 (0%)</td><td>missing_deadline (109), missing_department (109), missing_description (4)</td></tr>
+<tr><td>NH</td><td>212</td><td>99.64</td><td>209</td><td>3</td><td>0 (0%)</td><td>missing_deadline (183), missing_department (60), aging_posting_no_evergreen_signal (10)</td></tr>
+<tr><td>HI</td><td>209</td><td>99.66</td><td>192</td><td>17</td><td>0 (0%)</td><td>missing_department (29), missing_deadline (21), stale_posting_no_evergreen_signal (17)</td></tr>
+<tr><td>MN</td><td>205</td><td>99.34</td><td>204</td><td>1</td><td>0 (0%)</td><td>missing_deadline (109), missing_department (109), missing_description (4)</td></tr>
+<tr><td>DC</td><td>199</td><td>98.49</td><td>138</td><td>61</td><td>0 (0%)</td><td>missing_department (81), missing_deadline (66), stale_posting_no_evergreen_signal (60)</td></tr>
 <tr><td>NV</td><td>183</td><td>99.75</td><td>183</td><td>0</td><td>0 (0%)</td><td>missing_deadline (60), missing_department (41), aging_posting_no_evergreen_signal (1)</td></tr>
-<tr><td>IA</td><td>182</td><td>99.24</td><td>167</td><td>15</td><td>0 (0%)</td><td>missing_deadline (105), missing_department (76), stale_posting_no_evergreen_signal (15)</td></tr>
-<tr><td>CA CC</td><td>177</td><td>99.55</td><td>176</td><td>1</td><td>0 (0%)</td><td>missing_deadline (136), missing_department (67), aging_posting_no_evergreen_signal (10)</td></tr>
-<tr><td>KS</td><td>161</td><td>99.04</td><td>153</td><td>8</td><td>0 (0%)</td><td>missing_deadline (135), missing_department (69), missing_description (12)</td></tr>
-<tr><td>NE</td><td>150</td><td>99.16</td><td>149</td><td>1</td><td>0 (0%)</td><td>missing_deadline (113), missing_department (90), aging_posting_no_evergreen_signal (26)</td></tr>
-<tr><td>WV</td><td>148</td><td>98.65</td><td>108</td><td>40</td><td>0 (0%)</td><td>missing_deadline (84), missing_department (51), stale_posting_no_evergreen_signal (40)</td></tr>
-<tr><td>UT</td><td>126</td><td>99.63</td><td>125</td><td>1</td><td>0 (0%)</td><td>missing_department (43), missing_deadline (14), stale_posting_no_evergreen_signal (1)</td></tr>
+<tr><td>IA</td><td>180</td><td>99.23</td><td>165</td><td>15</td><td>0 (0%)</td><td>missing_deadline (104), missing_department (76), stale_posting_no_evergreen_signal (15)</td></tr>
+<tr><td>CA CC</td><td>175</td><td>99.54</td><td>174</td><td>1</td><td>0 (0%)</td><td>missing_deadline (136), missing_department (67), aging_posting_no_evergreen_signal (10)</td></tr>
+<tr><td>KS</td><td>158</td><td>99.11</td><td>150</td><td>8</td><td>0 (0%)</td><td>missing_deadline (132), missing_department (67), missing_description (9)</td></tr>
+<tr><td>NE</td><td>148</td><td>99.16</td><td>147</td><td>1</td><td>0 (0%)</td><td>missing_deadline (112), missing_department (89), aging_posting_no_evergreen_signal (26)</td></tr>
+<tr><td>CSU</td><td>147</td><td>99.96</td><td>147</td><td>0</td><td>0 (0%)</td><td>missing_deadline (119), missing_department (6)</td></tr>
+<tr><td>WV</td><td>144</td><td>98.69</td><td>104</td><td>40</td><td>0 (0%)</td><td>missing_deadline (82), missing_department (47), stale_posting_no_evergreen_signal (40)</td></tr>
+<tr><td>UT</td><td>125</td><td>99.62</td><td>124</td><td>1</td><td>0 (0%)</td><td>missing_department (43), missing_deadline (14), stale_posting_no_evergreen_signal (1)</td></tr>
 <tr><td>MT</td><td>121</td><td>99.18</td><td>121</td><td>0</td><td>0 (0%)</td><td>missing_deadline (114), missing_department (75), missing_description (6)</td></tr>
-<tr><td>NM</td><td>118</td><td>98.84</td><td>96</td><td>22</td><td>0 (0%)</td><td>missing_deadline (83), missing_department (25), aging_posting_no_evergreen_signal (20)</td></tr>
-<tr><td>CT</td><td>114</td><td>99.11</td><td>113</td><td>1</td><td>0 (0%)</td><td>missing_department (56), missing_deadline (53), missing_description (10)</td></tr>
+<tr><td>NM</td><td>117</td><td>98.84</td><td>95</td><td>22</td><td>0 (0%)</td><td>missing_deadline (83), missing_department (24), aging_posting_no_evergreen_signal (20)</td></tr>
+<tr><td>CT</td><td>109</td><td>99.1</td><td>108</td><td>1</td><td>0 (0%)</td><td>missing_deadline (53), missing_department (52), missing_description (10)</td></tr>
 <tr><td>USG</td><td>108</td><td>95.76</td><td>106</td><td>2</td><td>0 (0%)</td><td>missing_deadline (108), missing_description (106), missing_department (14)</td></tr>
 <tr><td>AZ</td><td>106</td><td>99.45</td><td>105</td><td>1</td><td>0 (0%)</td><td>missing_deadline (68), missing_department (50), aging_posting_no_evergreen_signal (2)</td></tr>
 <tr><td>ME</td><td>88</td><td>99.56</td><td>87</td><td>1</td><td>0 (0%)</td><td>missing_deadline (56), missing_department (18), missing_description (3)</td></tr>
@@ -83,27 +83,15 @@
 <tr><td>VT</td><td>60</td><td>98.93</td><td>50</td><td>10</td><td>0 (0%)</td><td>missing_deadline (52), missing_department (27), stale_posting_no_evergreen_signal (10)</td></tr>
 <tr><td>Claremont Colleges</td><td>53</td><td>99.49</td><td>53</td><td>0</td><td>0 (0%)</td><td>missing_deadline (51), missing_department (27)</td></tr>
 <tr><td>DE</td><td>49</td><td>99.2</td><td>44</td><td>5</td><td>0 (0%)</td><td>missing_department (17), aging_posting_no_evergreen_signal (12), stale_posting_no_evergreen_signal (5)</td></tr>
-<tr><td>SD</td><td>40</td><td>99.55</td><td>39</td><td>1</td><td>0 (0%)</td><td>missing_deadline (14), missing_department (11), aging_posting_no_evergreen_signal (3)</td></tr>
 <tr><td>UMass</td><td>40</td><td>99.92</td><td>40</td><td>0</td><td>0 (0%)</td><td>missing_deadline (21), missing_department (3)</td></tr>
+<tr><td>SD</td><td>39</td><td>99.54</td><td>38</td><td>1</td><td>0 (0%)</td><td>missing_deadline (14), missing_department (11), aging_posting_no_evergreen_signal (3)</td></tr>
 <tr><td>AK</td><td>36</td><td>99.72</td><td>34</td><td>2</td><td>0 (0%)</td><td>missing_deadline (8), missing_department (5), stale_posting_no_evergreen_signal (2)</td></tr>
 <tr><td>ND</td><td>29</td><td>98.48</td><td>29</td><td>0</td><td>0 (0%)</td><td>missing_department (22), missing_deadline (10), missing_description (5)</td></tr>
 <tr><td>WY</td><td>28</td><td>99.71</td><td>27</td><td>1</td><td>0 (0%)</td><td>missing_deadline (28), missing_department (5), stale_posting_no_evergreen_signal (1)</td></tr>
-<tr><td>CT State</td><td>17</td><td>99.29</td><td>17</td><td>0</td><td>0 (0%)</td><td>missing_department (12)</td></tr>
+<tr><td>CT State</td><td>14</td><td>99.36</td><td>14</td><td>0</td><td>0 (0%)</td><td>missing_department (9)</td></tr>
 <tr><td>TCSG</td><td>14</td><td>98.79</td><td>14</td><td>0</td><td>0 (0%)</td><td>missing_department (12), missing_deadline (10), aging_posting_no_evergreen_signal (1)</td></tr>
 <tr><td>Herzing</td><td>6</td><td>100</td><td>6</td><td>0</td><td>0 (0%)</td><td>missing_deadline (6)</td></tr></tbody></table></div>
-<h2>Quarantine preview</h2><p class="muted">First 100 candidates. The complete machine-readable list is generated as <code>post-quality-quarantine.json</code>.</p><div class="table-wrap"><table><thead><tr><th>Score</th><th>Post</th><th>Source</th><th>Error reasons</th></tr></thead><tbody><tr><td>89</td><td><a href="https://jobs.cortland.edu/postings/10580" target="_blank" rel="noopener">Adjunct Faculty - Psychology</a><div class="muted">SUNY Cortland</div></td><td>NY</td><td>expired_posting</td></tr>
-<tr><td>89</td><td><a href="https://jobs.cortland.edu/postings/11313" target="_blank" rel="noopener">Adjunct Faculty</a><div class="muted">SUNY Cortland</div></td><td>NY</td><td>expired_posting</td></tr>
-<tr><td>89</td><td><a href="https://jobs.cortland.edu/postings/11314" target="_blank" rel="noopener">Adjunct Lecturer - Adolescence Education</a><div class="muted">SUNY Cortland</div></td><td>NY</td><td>expired_posting</td></tr>
-<tr><td>89</td><td><a href="https://jobs.cortland.edu/postings/10485" target="_blank" rel="noopener">Adjunct Lecturer</a><div class="muted">SUNY Cortland</div></td><td>NY</td><td>expired_posting</td></tr>
-<tr><td>89</td><td><a href="https://apol-recruit.ucsd.edu/JPF04598" target="_blank" rel="noopener">Assistant, Associate, or Full Professor (HS Clin, Clin X) Academic Transfusion Medicine Physicians</a><div class="muted">University of California-San Diego</div></td><td>UC</td><td>expired_posting</td></tr>
-<tr><td>89</td><td><a href="https://apol-recruit.ucsd.edu/JPF04610" target="_blank" rel="noopener">Assistant, Associate, or Full Professor (HS Clinical, Clinical X, In-Residence, Adjunct) Body Imaging</a><div class="muted">University of California-San Diego</div></td><td>UC</td><td>expired_posting</td></tr>
-<tr><td>89</td><td><a href="https://apol-recruit.ucsd.edu/JPF04611" target="_blank" rel="noopener">Assistant, Associate, or Full Professor (HS Clinical, Clinical X, In-Residence, Adjunct) Endocrinology &amp; Metabolism (MED)</a><div class="muted">University of California-San Diego</div></td><td>UC</td><td>expired_posting</td></tr>
-<tr><td>80</td><td><a href="https://ap.washington.edu/ahr/position-details?job_id=191783" target="_blank" rel="noopener">Associate Librarian or Librarian - Associate Dean, Research and Learning Services University Libraries</a><div class="muted">University of Washington</div></td><td>WA</td><td>institution_title_conflict</td></tr>
-<tr><td>89</td><td><a href="https://apol-recruit.ucsd.edu/JPF04612" target="_blank" rel="noopener">Associate or Full Professor (Ladder Rank) Immunology Faculty</a><div class="muted">University of California-San Diego</div></td><td>UC</td><td>expired_posting</td></tr>
-<tr><td>89</td><td><a href="https://apol-recruit.ucsd.edu/JPF04617" target="_blank" rel="noopener">Associate or Full Professor (Ladder/In-Residence) Chief of Pediatric Endocrinology</a><div class="muted">University of California-San Diego</div></td><td>UC</td><td>expired_posting</td></tr>
-<tr><td>89</td><td><a href="https://recruit.ap.ucsb.edu/JPF03136" target="_blank" rel="noopener">Postdoctoral Scholar: Curiosity &amp; Character Development, Schooler META Lab, Department of Psychological &amp; Brain Sciences</a><div class="muted">UC Santa Barbara</div></td><td>UC</td><td>expired_posting</td></tr>
-<tr><td>90</td><td><a href="https://recruit.ap.uci.edu/JPF10368" target="_blank" rel="noopener">UCI Interim Postdoctoral Scholar in Environmental Epidemiology</a><div class="muted">UC Irvine</div></td><td>UC</td><td>expired_posting</td></tr>
-<tr><td>90</td><td><a href="https://csucareers.calstate.edu/en-us/job/559169/architecture-assistant-professor" target="_blank" rel="noopener">Architecture, Assistant Professor</a><div class="muted">California State Polytechnic University-Pomona</div></td><td>CSU</td><td>expired_posting</td></tr>
-<tr><td>90</td><td><a href="https://csucareers.calstate.edu/en-us/job/560170/theater-and-new-dance-assistant-professor-deadline-extended" target="_blank" rel="noopener">Theater and New Dance, Assistant Professor **Deadline Extended**</a><div class="muted">California State Polytechnic University-Pomona</div></td><td>CSU</td><td>expired_posting</td></tr></tbody></table></div>
+<h2>Quarantine preview</h2><p class="muted">First 100 candidates. The complete machine-readable list is generated as <code>post-quality-quarantine.json</code>.</p><div class="table-wrap"><table><thead><tr><th>Score</th><th>Post</th><th>Source</th><th>Error reasons</th></tr></thead><tbody><tr><td>90</td><td><a href="https://careers.uoregon.edu/en-us/job/536790/assistant-professor-of-accounting" target="_blank" rel="noopener">Assistant Professor of Accounting</a><div class="muted">University of Oregon</div></td><td>OR</td><td>expired_posting</td></tr>
+<tr><td>80</td><td><a href="https://ap.washington.edu/ahr/position-details?job_id=191783" target="_blank" rel="noopener">Associate Librarian or Librarian - Associate Dean, Research and Learning Services University Libraries</a><div class="muted">University of Washington</div></td><td>WA</td><td>institution_title_conflict</td></tr></tbody></table></div>
 <h2>How it works</h2><p class="muted">Every post receives scores for relevance, institution attribution, link quality, freshness, completeness, and duplicate grouping. Conservative error rules nominate likely false positives for quarantine; warnings route ambiguous records to review. A deterministic source-and-status sample supports repeatable human precision checks.</p>
 </main></body></html>
