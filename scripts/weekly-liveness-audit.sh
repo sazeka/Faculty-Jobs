@@ -28,7 +28,8 @@ exec > >(tee -a "$RUN_DIR/run.log") 2>&1
 
 # One run at a time
 exec 9>"$RUNS/.lock"
-flock -n 9 || { echo "Another liveness run is in progress; exiting."; exit 0; }
+# Shares the clone with daily-enrichment.sh; wait up to 3h rather than skip a week.
+flock -w 10800 9 || { echo "Clone busy for 3h; skipping this week's audit."; exit 0; }
 
 log() { echo "[$(date '+%F %T')] $*"; }
 
