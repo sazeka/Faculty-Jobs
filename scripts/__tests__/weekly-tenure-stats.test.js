@@ -4607,3 +4607,125 @@ test("applies the final safe CUNY, Richmond Law, and Kennesaw distinctions", () 
     null
   );
 });
+
+test("applies the September 23 evidence-backed appointment-track batch", () => {
+  const tenureJobs = [
+    {
+      college: "California State University-San Marcos",
+      title: "Director/Professor of Nursing",
+      url: "https://csucareers.calstate.edu/en-us/job/559096/directorprofessor-of-nursing",
+    },
+    {
+      college: "CUNY City College",
+      title: "Assistant Professor of Literacy and Early Childhood Education",
+      url: "https://cuny.jobs/new-york-ny/assistant-professor-of-literacy-and-early-childhood-education/42EB8434962F4FB6BB6047378D3C7403/job",
+    },
+  ];
+  for (const job of tenureJobs) {
+    assert.deepEqual(classifyTenureTrackWithEvidence(job), { value: true, evidence: "institution-policy" });
+  }
+
+  const nonTenureJobs = [
+    {
+      college: "University of Alabama",
+      title: "Assistant Professor/Associate Professor in Organizational Leadership – Renewable Contract - 530642",
+      url: "https://careers.ua.edu/jobs/assistant-professor-associate-professor-in-organizational-leadership-renewable-contract-530642-tuscaloosa-alabama-united-states",
+    },
+    {
+      college: "University of Alabama",
+      title: "Assistant Professor/Associate Professor in Public Policy – Renewable Contract- 530643",
+      url: "https://careers.ua.edu/jobs/assistant-professor-associate-professor-in-public-policy-renewable-contract-530643-alabama-united-states",
+    },
+    {
+      college: "University of Arizona",
+      title: "Senior Lecturer, Marketing (Career-Track) (Updated)",
+      url: "https://arizona.csod.com/ux/ats/careersite/4/home/requisition/27083?c=arizona",
+    },
+    {
+      college: "Kansas City Art Institute",
+      title: "Lecturer (Graphic Design) - 3 Courses SP 2027",
+      url: "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?jobId=9201857014994_1",
+    },
+    {
+      college: "Alaska Christian College",
+      title: "Faculty - Assistant Professor, Christian Formation",
+      url: "https://alaskacc.bamboohr.com/careers/237",
+      description: "STATUS: Part-time, exempt (0.8 FTE, 4-part faculty workload)",
+    },
+    {
+      college: "Alaska Christian College",
+      title: "Faculty - Assistant Professor, General Studies Chair",
+      url: "https://alaskacc.bamboohr.com/careers/238",
+      description: "STATUS: Part-time, exempt (0.8 FTE, 4-part faculty workload)",
+    },
+    {
+      college: "Columbia University in the City of New York",
+      title: "Lecturer in Japanese Language",
+      url: "https://apply.interfolio.com/193541",
+    },
+    {
+      college: "UW-Madison",
+      title: "Lecturer in Social Work- SW636 (Renewable)",
+      url: "https://wisconsin.wd1.myworkdayjobs.com/UW_Madison/job/Madison-WI/Lecturer-in-Social-Work--SW636--Renewable-_JR10014945",
+      description: "Job Category: Academic Staff Employment Type: Regular Job Profile: Lecturer Job Summary:",
+    },
+    {
+      college: "University of North Carolina at Chapel Hill",
+      title: "Teaching Assistant Professor — Asian & Middle Eastern Studies - 315500",
+      url: "https://unc.peopleadmin.com/postings/325765",
+    },
+    {
+      college: "Virginia Commonwealth University",
+      title: "Assistant Professor of Research - School of Social Work",
+      url: "https://vcujobs.com/jobs/assistant-professor-of-research-school-of-social-work-vcu-main-campus-virginia-united-states",
+    },
+  ];
+  for (const job of nonTenureJobs) {
+    assert.deepEqual(classifyTenureTrackWithEvidence(job), { value: false, evidence: "institution-policy" }, job.title);
+  }
+
+  const variableJobs = [
+    {
+      college: "Rockhurst University",
+      title: "Assistant Professor of Architecture and Program Director",
+      url: "https://www.paycomonline.net/v4/ats/web.php/portal/76B960DE16E1EABF6B6D63157F84F11F/jobs/476583",
+    },
+    {
+      college: "Medical University of South Carolina",
+      title: "UNIV - Assistant Professor, Division of Biomedical Informatics and AI - Department of PHS",
+      url: "https://musc.wd1.myworkdayjobs.com/MUSC/job/Charleston/UNIV---Assistant-Professor--Division-of-Biomedical-Informatics-and-AI---Department-of-PHS_R-0000068398",
+    },
+  ];
+  for (const job of variableJobs) {
+    assert.equal(classifyTenureTrack(job), null, job.title);
+    assert.equal(classifyVariableAppointmentTrack(job), true, job.title);
+  }
+});
+
+test("confines the September 23 exact-posting evidence", () => {
+  assert.equal(
+    classifyTenureTrack({
+      college: "California State University-San Marcos",
+      title: "Director/Professor of Nursing",
+      url: "https://csucareers.calstate.edu/en-us/job/another/directorprofessor-of-nursing",
+    }),
+    null
+  );
+  assert.equal(
+    classifyVariableAppointmentTrack({
+      college: "Rockhurst University",
+      title: "Assistant Professor of Architecture and Program Director",
+      url: "https://www.paycomonline.net/v4/ats/web.php/jobs/another",
+    }),
+    false
+  );
+  assert.equal(
+    classifyTenureTrack({
+      college: "Alaska Christian College",
+      title: "Faculty - Assistant Professor, Christian Formation",
+      url: "https://alaskacc.bamboohr.com/careers/237",
+      description: "STATUS: Full-time, exempt",
+    }),
+    null
+  );
+});

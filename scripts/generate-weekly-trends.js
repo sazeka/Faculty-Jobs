@@ -27,6 +27,7 @@ import { computeInstitutionControlBreakdown } from "./lib/weekly-institution-con
 import { computeAiHiringBreakdown } from "./lib/weekly-ai-hiring-stats.js";
 import { computeDisciplineBreakdown } from "./lib/weekly-discipline-stats.js";
 import { latestPriorWeek } from "./lib/weekly-trends-history.js";
+import { readJobsFileOrNull } from "./lib/jobs-file.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -218,7 +219,7 @@ async function main() {
   else if (AI_BACKEND === "template") console.log("  Backend: deterministic template");
   else throw new Error(`Unsupported AI_BACKEND: ${AI_BACKEND}`);
 
-  const payload = readJson(JOBS_PATH);
+  const payload = readJobsFileOrNull(JOBS_PATH);
   if (!payload?.jobs?.length) { console.error("Cannot read public/jobs.json"); process.exit(1); }
   const institutionsPayload = readJson(INSTITUTIONS_PATH);
   const institutions = Array.isArray(institutionsPayload?.institutions) ? institutionsPayload.institutions : [];

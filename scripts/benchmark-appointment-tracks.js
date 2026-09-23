@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { appointmentTrackAuditCsv, buildAppointmentTrackAudit } from "./lib/appointment-track-audit.js";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 function argValue(name) {
   const index = process.argv.indexOf(name);
@@ -12,7 +13,7 @@ function readJson(filePath) {
   return JSON.parse(fs.readFileSync(path.resolve(filePath), "utf8"));
 }
 
-const jobsPayload = readJson(argValue("--jobs") || "public/jobs.json");
+const jobsPayload = readJobsFile(path.resolve(argValue("--jobs") || "public/jobs.json"));
 const institutionPolicy = readJson(argValue("--policy") || "data/institution-tenure-policy.json");
 const ipedsPolicy = readJson(argValue("--ipeds-policy") || "data/ipeds-rank-tenure-policy.json");
 const outPath = path.resolve(argValue("--out") || "generated/appointment-track-benchmark.json");

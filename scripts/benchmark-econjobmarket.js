@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { compareEconJobMarket } from "./lib/external-benchmark.js";
+import { readJobsFile } from "./lib/jobs-file.js";
 
 const EJM_FEED = "https://backend.econjobmarket.org/data/zz_public/json/Ads";
 
@@ -19,7 +20,7 @@ async function main() {
   const feedPath = argValue("--feed");
   const outPath = argValue("--out");
   const includeDetails = process.argv.includes("--details");
-  const jobsPayload = readJson(jobsPath);
+  const jobsPayload = readJobsFile(jobsPath);
   const jobs = Array.isArray(jobsPayload) ? jobsPayload : jobsPayload.jobs || [];
   const snapshotDate = argValue("--snapshot") || jobsPayload.scrapedAt || new Date().toISOString();
 
