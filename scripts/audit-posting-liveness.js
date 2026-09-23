@@ -183,10 +183,20 @@ async function fetchWithTimeout(url, opts = {}) {
       ...opts,
     });
     const contentType = res.headers.get("content-type") || "";
-    const isDoc = /pdf|msword|officedocument/i.test(contentType);
-    const docBuffer = isDoc ? Buffer.from(await res.arrayBuffer()) : null;
-    const body = isDoc ? "" : await res.text();
-    return { status: res.status, finalUrl: res.url, body, contentType, docBuffer, lastModified: res.headers.get("last-modified") || "" };
+    let isDoc = /pdf|msword|officedocument/i.test(contentType);
+    // Some servers label PDFs/Word files application/octet-stream or
+    // application/force-download; sniff the bytes instead of trusting the header.
+    const maybeDoc = isDoc || /octet-stream|force-download|binary|download/i.test(contentType) || /\.(pdf|docx?)($|\?)/i.test(res.url);
+    let docBuffer = null, body = "", docType = contentType;
+    if (maybeDoc) {
+      const buf = Buffer.from(await res.arrayBuffer());
+      if (buf.subarray(0, 4).toString() === "%PDF") { isDoc = true; docType = "application/pdf"; }
+      else if (buf.subarray(0, 2).toString() === "PK" && /\.docx($|\?)/i.test(res.url)) { isDoc = true; docType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"; }
+      if (isDoc) docBuffer = buf; else body = buf.toString("utf8");
+    } else {
+      body = await res.text();
+    }
+    return { status: res.status, finalUrl: res.url, body, contentType: isDoc ? docType : contentType, docBuffer, lastModified: res.headers.get("last-modified") || "" };
   } finally {
     clearTimeout(timer);
   }
@@ -244,6 +254,8 @@ async function checkWorkday(job, apiUrl) {
   if (r.status === 403 && /"errorCode":"S22"/.test(r.body)) {
     const health = await workdaySiteHealth(apiUrl);
     if (health === "ok") return { verdict: "closed", httpCode: 403, note: "Workday: posting no longer public (S22)" };
+    // The career site answers but lists no jobs at all ("0 JOBS FOUND")
+    if (health === "empty") return { verdict: "closed", httpCode: 403, note: "Workday: posting no longer public (S22); career site lists 0 jobs" };
     return { verdict: "unverifiable", httpCode: 403, note: `Workday S22, career site ${health}` };
   }
   if (r.status !== 200) {
@@ -263,11 +275,11 @@ async function checkWorkday(job, apiUrl) {
 // ── ADP Workforce Now: membership in the employer's open-requisition list ────
 
 const ADP_LISTS = new Map();
-function adpOpenRequisitions(cid, ccId) {
-  const key = `${cid}|${ccId}`;
+function adpOpenRequisitions(host, cid, ccId) {
+  const key = `${host}|${cid}|${ccId}`;
   if (!ADP_LISTS.has(key)) {
     ADP_LISTS.set(key, (async () => {
-      const base = "https://workforcenow.adp.com/mascsr/default/careercenter/public/events/staffing/v1/job-requisitions";
+      const base = `https://${host}/mascsr/default/careercenter/public/events/staffing/v1/job-requisitions`;
       const ids = new Map();
       let seen = 0;
       for (let skip = 0; skip < 2000; skip += 20) {
@@ -296,8 +308,16 @@ function adpOpenRequisitions(cid, ccId) {
 async function checkAdp(job, url) {
   const u = new URL(url);
   const cid = u.searchParams.get("cid"), jobId = u.searchParams.get("jobId");
-  if (!cid || !jobId) return { verdict: "unverifiable", note: "ADP link without cid/jobId" };
-  const open = await adpOpenRequisitions(cid, u.searchParams.get("ccId") || "19000101_000001");
+  if (!cid) return { verdict: "unverifiable", note: "ADP link without cid" };
+  const open = await adpOpenRequisitions(u.hostname, cid, u.searchParams.get("ccId") || "19000101_000001");
+  if (!jobId) {
+    // A link to the employer's whole job board ("Adjunct Faculty", "View
+    // Adjunct Openings"): open while the board still lists a matching role.
+    if (!open) return { verdict: "unverifiable", note: "ADP requisition list unavailable" };
+    if (!open.size) return { verdict: "closed", note: "ADP job board lists no open requisitions" };
+    const best = Math.max(...[...open.values()].map((t) => titleMatchRatio(job.title, t)));
+    return best >= 0.5 ? { verdict: "open", titleMatch: best, note: "ADP job board has a matching opening" } : { verdict: "unverifiable", titleMatch: best, note: "ADP job board link; no opening with this title" };
+  }
   if (!open) return { verdict: "unverifiable", note: "ADP requisition list unavailable" };
   if (!open.size) return { verdict: "unverifiable", note: "ADP requisition list empty" };
   if (!open.has(jobId)) return { verdict: "closed", note: "ADP: not among employer's open requisitions" };
@@ -467,9 +487,24 @@ function markSharedPages(jobs) {
   for (const j of jobs) if (clean(j.url).includes("#") && counts.get(clean(j.url).split("#")[0]) > 1) SHARED_PAGE.add(clean(j.url));
 }
 
+const SHARED_PAGE_TEXT = new Map();
+async function checkSharedPage(job, url) {
+  const base = url.split("#")[0];
+  if (!SHARED_PAGE_TEXT.has(base)) {
+    SHARED_PAGE_TEXT.set(base, fetchWithTimeout(base).then((r) => (r.status === 200 ? htmlToText(r.body) : null)).catch(() => null));
+  }
+  const text = await SHARED_PAGE_TEXT.get(base);
+  if (!text || text.length < 400) return { verdict: "unverifiable", note: "shared page (URL differs only by #fragment); page unreadable" };
+  const ratio = titleMatchRatio(job.title, text);
+  if (ratio >= 0.8) return { verdict: "open", titleMatch: ratio, note: "title listed on shared page" };
+  return { verdict: "unverifiable", titleMatch: ratio, note: "shared page (URL differs only by #fragment); title not found" };
+}
+
 async function checkJob(job) {
   const url = clean(job.url);
-  if (SHARED_PAGE.has(url)) return { verdict: "unverifiable", note: "shared page (URL differs only by #fragment)" };
+  // A "closed" phrase on a shared page can't be pinned to one posting, but the
+  // posting's own title still being on the page (or not) is per-posting evidence.
+  if (SHARED_PAGE.has(url)) return checkSharedPage(job, url);
   if (!url || url === "#") return { verdict: "dead", note: "no URL" };
   try { new URL(url); } catch { return { verdict: "dead", note: "invalid URL" }; }
 
@@ -500,17 +535,30 @@ async function browserRecheck(items, cache) {
   const ctx = await browser.newContext({ userAgent: UA });
   let done = 0;
   await pool(items, BROWSER_CONCURRENCY, async (job) => {
-    if (SHARED_PAGE.has(clean(job.url))) return;
     const page = await ctx.newPage();
     let result;
     try {
-      const resp = await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS + 10000 });
+      if (SHARED_PAGE.has(clean(job.url))) {
+        // Job lists painted by JavaScript (e.g. "#op-702842-..." widgets): render
+        // the page and look for this posting's own title.
+        await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: 60000 });
+        await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
+        await page.waitForTimeout(5000);
+        const text = clean(await page.evaluate(() => document.body?.innerText || ""));
+        const ratio = titleMatchRatio(job.title, text);
+        result = ratio >= 0.8
+          ? { verdict: "open", titleMatch: ratio, note: "title listed on shared page (rendered)", via: "browser" }
+          : { verdict: "unverifiable", titleMatch: ratio, note: "shared page (URL differs only by #fragment); title not found after render", via: "browser" };
+        cache[job.url] = { ...result, checkedAt: new Date().toISOString() };
+        return;
+      }
+      const resp = await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: Math.max(60000, TIMEOUT_MS + 10000) });
       await page.waitForLoadState("networkidle", { timeout: 12000 }).catch(() => {});
       const status = resp?.status() ?? 0;
       let text = clean(await page.evaluate(() => document.body?.innerText || ""));
       // Some career SPAs (Radancy/TalentBrew) paint their content, including
       // "404 (Not found)", well after network idle; give a near-empty page longer.
-      if (text.length < 1500) {
+      for (let wait = 0; wait < 2 && text.length < 1500; wait++) {
         await page.waitForTimeout(8000);
         text = clean(await page.evaluate(() => document.body?.innerText || ""));
       }
@@ -518,11 +566,37 @@ async function browserRecheck(items, cache) {
       // and soft-404 titles are detected the same way as in the raw-HTML pass.
       const title = clean(await page.title().catch(() => ""));
       result = classifyPage(job, { status, finalUrl: page.url(), body: `<title>${title}</title> ${title} ${text}`.padEnd(400, " ") });
-      if (clean(text).length < 150 && result.verdict !== "dead") result = { ...result, verdict: "unverifiable", note: "empty after render" };
+      // A near-empty page is only "unverifiable" if it didn't say it's gone
+      // (Cornerstone's whole closed page is "Back to Search This job is not available.")
+      if (clean(text).length < 150 && !["dead", "closed"].includes(result.verdict)) result = { ...result, verdict: "unverifiable", note: "empty after render" };
       if (result.verdict === "open" && isPastDate(job.closeDate)) result = { ...result, verdict: "expired", note: `closeDate ${job.closeDate}` };
       result.via = "browser";
     } catch (err) {
       result = { verdict: "unverifiable", note: `browser: ${String(err?.message || err).slice(0, 80)}`, via: "browser" };
+      // The URL is a file download (often a PDF on a server whose TLS chain Node
+      // rejects but Chromium completes): fetch it through the browser and read it.
+      if (/Download is starting/i.test(String(err?.message))) {
+        // (Playwright's request API runs in Node and hits the same TLS error, so
+        // take the file through the browser's own download instead.)
+        const dlPage = await ctx.newPage();
+        try {
+          const [download] = await Promise.all([
+            dlPage.waitForEvent("download", { timeout: 60000 }),
+            dlPage.goto(job.url).catch(() => {}),
+          ]);
+          const file = await download.path();
+          const buf = file ? fs.readFileSync(file) : Buffer.alloc(0);
+          const isPdf = buf.subarray(0, 4).toString() === "%PDF";
+          const isDocx = buf.subarray(0, 2).toString() === "PK" && /\.docx($|\?)/i.test(job.url);
+          if (isPdf || isDocx) {
+            const contentType = isPdf ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            result = { ...classifyDocument(job, { status: 200, finalUrl: download.url(), contentType, docBuffer: buf, lastModified: "" }), via: "browser" };
+          }
+        } catch {
+        } finally {
+          await dlPage.close().catch(() => {});
+        }
+      }
     } finally {
       await page.close().catch(() => {});
     }
@@ -611,7 +685,7 @@ async function main() {
       const flakyDead = c?.verdict === "dead" && c.httpCode === 404;
       // Documents can't render, bot challenges won't pass, and the API-backed
       // platforms already gave an exact answer.
-      const noBrowser = /^(Workday|Phenom|ADP|static document|bot challenge)/.test(c?.note || "");
+      const noBrowser = /^(Workday|Phenom|ADP|static document|bot challenge)/.test(c?.note || "") && !/Download is starting/.test(c?.note || "");
       const recheckOpen = BROWSER_ALL && c?.verdict === "open";
       return c && (["unverifiable", "mismatch", "closed"].includes(c.verdict) || flakyDead || recheckOpen) && c.via !== "browser" && !noBrowser;
     });
