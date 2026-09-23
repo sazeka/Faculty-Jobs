@@ -5,7 +5,9 @@ export function appointmentTrackHistory(history, limit = 12) {
     .filter((week) => {
       const tenureTrack = Number(week?.tenureTrack)
       const nonTenureTrack = Number(week?.nonTenureTrack)
-      return Number.isFinite(tenureTrack) && tenureTrack >= 0
+      const hasCompleteCategoryTracking = week?.variableTrack != null
+      return hasCompleteCategoryTracking
+        && Number.isFinite(tenureTrack) && tenureTrack >= 0
         && Number.isFinite(nonTenureTrack) && nonTenureTrack >= 0
         && tenureTrack + nonTenureTrack > 0
     })
