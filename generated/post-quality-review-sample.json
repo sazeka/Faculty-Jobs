@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-23T03:46:51.056Z",
+  "generatedAt": "2026-09-23T03:58:03.960Z",
   "qualityVersion": 1,
   "sampleSize": 200,
   "instructions": "Set humanLabel to valid or invalid, add optional notes, then copy confirmed labels into data/post-quality-human-labels.json.",
@@ -2343,27 +2343,27 @@
       "notes": ""
     },
     {
-      "id": "4ebcdafddbdb817f6212",
-      "score": 91,
+      "id": "ba28b79d451d97a34158",
+      "score": 97,
       "status": "review",
-      "title": "CHEMISTRY: Assistant Teaching Professor of Chemistry",
-      "college": "Hollins University",
+      "title": "Tenure-Track Faculty Position in Contagion Science Program of the University of Virginia",
+      "college": "Virginia State University",
       "source": "VA",
-      "url": "https://www.hollins.edu/about-hollins/jobs",
+      "url": "https://www.jobs.virginia.gov/jobs/tenure-track-faculty-position-in-contagion-science-program-of-the-university-of-virginia-charlottesville-virginia-united-states",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "freshness",
+          "deduction": 25,
+          "detail": "Posting date 2024-07-03 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
-          "code": "missing_deadline",
+          "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         }
       ],
       "humanLabel": null,
@@ -4595,27 +4595,27 @@
       "notes": ""
     },
     {
-      "id": "ba28b79d451d97a34158",
-      "score": 97,
+      "id": "d0214927b0c53f814a83",
+      "score": 91,
       "status": "review",
-      "title": "Tenure-Track Faculty Position in Contagion Science Program of the University of Virginia",
-      "college": "Virginia State University",
+      "title": "Open-Rank Professor of Biology",
+      "college": "Southern Virginia University",
       "source": "VA",
-      "url": "https://www.jobs.virginia.gov/jobs/tenure-track-faculty-position-in-contagion-science-program-of-the-university-of-virginia-charlottesville-virginia-united-states",
+      "url": "https://svu.edu/about/careers",
       "reasons": [
         {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "search_page_url",
           "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2024-07-03 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "dimension": "link",
+          "deduction": 45,
+          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
         },
         {
-          "code": "missing_department",
+          "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,

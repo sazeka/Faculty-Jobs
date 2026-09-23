@@ -11,6 +11,7 @@ import { synchronizeJobCount } from "./lib/dataset-invariants.js";
 import { filterExpiredDeadlineCache } from "./lib/post-expiration.js";
 import { confirmedNonFacultyReason } from "./lib/post-quality.js";
 import { loadReviewedExclusions, reviewedExclusionReason } from "./lib/post-quality-exclusions.js";
+import { loadJobUrlCorrections, applyJobUrlCorrections } from "./lib/job-url-corrections.js";
 import { consolidateSystemUmbrellaDuplicates, consolidateWorkdayRequisitionDuplicates } from "./lib/duplicate-url-consolidation.js";
 import { attachCanonicalIds } from "./lib/canonical-id.js";
 import { dedupeExactListings } from "./lib/exact-job-dedup.js";
@@ -341,6 +342,17 @@ function canonicalizeJobUrls(data) {
   data = minnStateRepair.data;
   if (minnStateRepair.repaired > 0) {
     console.log(`🏫 Repaired ${minnStateRepair.repaired} Minnesota State college misattribution(s) from description (issue #152)`);
+  }
+
+  // Reviewed per-posting link fixes, also BEFORE canonical IDs (the id can be
+  // derived from the URL). See data/job-url-corrections.json.
+  const urlFixes = applyJobUrlCorrections(
+    data.jobs,
+    loadJobUrlCorrections(path.join(__dirname, "..", "data", "job-url-corrections.json"))
+  );
+  if (urlFixes.changed > 0) {
+    data = { ...data, jobs: urlFixes.jobs };
+    console.log(`🔧 Applied ${urlFixes.changed} reviewed job-URL correction(s)`);
   }
 
   // Drop system/umbrella-labeled copies that are the exact same posting
