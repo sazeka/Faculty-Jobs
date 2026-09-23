@@ -95,9 +95,13 @@ const CLOSED_PATTERNS = [
   new RegExp(NOT_CONDITIONAL + String.raw`\b(?:job|posting) (?:has )?expired` + SENTENCE_END, "i"),
   /job (?:posting )?(?:was )?not found/i,
   /posting (?:could not be|was not) found/i,
-  /the page you (?:are looking for|requested) (?:doesn'?t|does not|could not|cannot|can'?t)/i,
-  /we couldn'?t find this job/i,                                            // Paycom
-  /can'?t provide additional information about this job/i,                  // PageUp
+  /the page you(?: are|['’]re) (?:looking for|trying to access|requested) (?:doesn['’]?t|does not|could not|cannot|can['’]?t|is (?:no longer |not )?(?:available|unavailable)|has been removed)/i,
+  /\b404\s*(?:\(not found\)|[-–—:]?\s*(?:page )?not found)/i,                  // visible "404 (Not found)" pages served with 200/202
+  /(?:it looks like )?we can['’]?t find (?:this|that|the) page/i,
+  /this job is (?:no longer |not )available/i,                              // Cornerstone
+  /(?:sorry, )?we have no current job openings/i,
+  /we couldn['’]?t find this job/i,                                          // Paycom
+  /can['’]?t provide additional information about this job/i,                // PageUp
   /(?:job|posting|position) (?:you are looking for |you requested )?(?:could not|cannot|can'?t) be found/i,
   /recruitment (?:has|is) (?:now )?closed/i,
 ];
@@ -500,7 +504,13 @@ async function browserRecheck(items, cache) {
       const resp = await page.goto(job.url, { waitUntil: "domcontentloaded", timeout: TIMEOUT_MS + 10000 });
       await page.waitForLoadState("networkidle", { timeout: 12000 }).catch(() => {});
       const status = resp?.status() ?? 0;
-      const text = clean(await page.evaluate(() => document.body?.innerText || ""));
+      let text = clean(await page.evaluate(() => document.body?.innerText || ""));
+      // Some career SPAs (Radancy/TalentBrew) paint their content, including
+      // "404 (Not found)", well after network idle; give a near-empty page longer.
+      if (text.length < 1500) {
+        await page.waitForTimeout(8000);
+        text = clean(await page.evaluate(() => document.body?.innerText || ""));
+      }
       // Wrap the rendered text in a <title> so title-only job names still match
       // and soft-404 titles are detected the same way as in the raw-HTML pass.
       const title = clean(await page.title().catch(() => ""));
