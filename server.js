@@ -10284,6 +10284,22 @@ async function scrapeUsgPortalRows(context, startUrl) {
   return [...seenIds.values()];
 }
 
+// OneUSG's search page is a PeopleSoft SPA; a "#jobId=" fragment never reaches
+// the server, so those links landed every visitor on the generic Search Jobs
+// page. PeopleSoft's job-posting page takes the opening id as a query param.
+export function usgPostingUrl(startUrl, jobId) {
+  const u = new URL(startUrl);
+  // The system-wide search (no SiteId) is PeopleSoft careers site 1; campus
+  // pages carry their own (e.g. 03000). The wrong site id falls back to search.
+  const siteId = u.searchParams.get("SiteId") || "1";
+  u.search = "";
+  u.hash = "";
+  for (const [k, v] of [["Page", "HRS_APP_JBPST_FL"], ["Action", "U"], ["FOCUS", "Applicant"], ["SiteId", siteId], ["JobOpeningId", String(jobId)], ["PostingSeq", "1"]]) {
+    u.searchParams.set(k, v);
+  }
+  return u.toString();
+}
+
 async function scrapeUsgFaculty(context) {
   const rows = await scrapeUsgPortalRows(context, USG_URL);
 
@@ -10295,7 +10311,7 @@ async function scrapeUsgFaculty(context) {
     if (!campus) { unmatched++; continue; }
     jobs.push({
       title: clean(j.title),
-      url: `${USG_URL}#jobId=${j.jobId}`,
+      url: usgPostingUrl(USG_URL, j.jobId),
       source: "USG",
       category: "faculty",
       college: campus,
@@ -10318,7 +10334,7 @@ async function scrapeUsgSiteAs(context, startUrl, campusName, sourceName, exclud
     .filter((job) => !excludeRe?.test(job.title))
     .map((job) => ({
       title: clean(job.title),
-      url: `${startUrl}#jobId=${job.jobId}`,
+      url: usgPostingUrl(startUrl, job.jobId),
       source: sourceName,
       category: "faculty",
       college: campusName,

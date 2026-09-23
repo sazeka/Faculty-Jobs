@@ -73,6 +73,13 @@ export function extractRequisitionId(url) {
   // by hostname so the same posting_id on two different tenants (a very real
   // possibility -- PeopleAdmin issues small sequential IDs per tenant) never
   // collides into one canonical group.
+  // OneUSG links moved from "#jobId=N" to "?JobOpeningId=N"; keep the id in the
+  // original fragment namespace so existing postings keep their canonical ids.
+  if (/(^|\.)onehcm\.usg\.edu$/.test(host)) {
+    const opening = parsed.searchParams.get("JobOpeningId");
+    if (clean(opening)) return `h:${host}:jobid:${normalizeKeyPart(opening)}`;
+  }
+
   for (const [key, value] of parsed.searchParams.entries()) {
     const normalizedKey = key.toLowerCase();
     if (ID_QUERY_KEYS.includes(normalizedKey) && clean(value)) {

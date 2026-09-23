@@ -28,7 +28,7 @@
  *   --per-host <n>         parallel requests per host (default 2)
  *   --timeout-ms <n>       per-request timeout (default 20000)
  *   --limit <n>            only audit the first n jobs (for testing)
- *   --browser              re-check unverifiable/mismatch/closed results in headless Chromium
+ *   --browser              re-check unverifiable/mismatch/closed/404 results in headless Chromium
  *   --browser-concurrency  parallel browser pages (default 4)
  *   --fresh                ignore the resume cache
  */
@@ -88,6 +88,9 @@ const CLOSED_PATTERNS = [
   /job (?:posting )?(?:was )?not found/i,
   /posting (?:could not be|was not) found/i,
   /the page you (?:are looking for|requested) (?:doesn'?t|does not|could not|cannot|can'?t)/i,
+  /we couldn'?t find this job/i,                                            // Paycom
+  /can'?t provide additional information about this job/i,                  // PageUp
+  /(?:job|posting|position) (?:you are looking for |you requested )?(?:could not|cannot|can'?t) be found/i,
   /recruitment (?:has|is) (?:now )?closed/i,
 ];
 
@@ -132,12 +135,14 @@ function findClosedPhrase(text) {
 // (PeopleAdmin /postings/123 -> /postings) means the posting is gone. Moving
 // to a new address for the same job (governmentjobs -> schooljobs, /node/12 ->
 // /slug, files moved to a CDN) is not, so only the landing page's shape counts.
-const LISTING_PATH = /^\/?(?:[a-z]{2}(?:-[a-z]{2})?\/)?(?:postings|jobs|careers|search|job-search|search-results|employment|opportunities|openings|vacancies|positions)?\/?$/i;
+const LISTING_PATH = /^\/?(?:[a-z]{2}(?:-[a-z]{2})?\/?)?$|^\/?(?:[a-z]{2}(?:-[a-z]{2})?\/)?(?:[\w-]+\/)?(?:postings|jobs|careers|search|job-search|search-results|employment|opportunities|openings|vacancies|positions|listing)(?:\.html?|\.php)?\/?$/i;
+const trimSlash = (p) => p.replace(/\/+$/, "") || "/";
 
 function isHomepageRedirect(originalUrl, finalUrl) {
   try {
     const o = new URL(originalUrl), f = new URL(finalUrl);
-    if (o.pathname === f.pathname && o.hostname === f.hostname) return false;
+    // Same page modulo a trailing slash (e.g. /career?x -> /career/?x)
+    if (o.hostname === f.hostname && trimSlash(o.pathname) === trimSlash(f.pathname)) return false;
     const oSeg = o.pathname.split("/").filter(Boolean);
     if (oSeg.length === 0) return false;
     return LISTING_PATH.test(f.pathname) && !/[?&](?:id|jobid|job_id|posting_id|reqid)=/i.test(f.search);
@@ -233,6 +238,10 @@ function classifyPage(job, { status, finalUrl, body, contentType = "", lastModif
   if (status < 200 || status >= 400) return { verdict: "unverifiable", httpCode: status, note: `HTTP ${status}` };
   // Cookie/login walls (e.g. PeopleSoft "errorPg=ckreq") aren't evidence the posting is gone
   if (finalUrl && /[?&]cmd=login\b|\/login\b|signin/i.test(finalUrl)) return { verdict: "unverifiable", httpCode: status, finalUrl, note: "redirected to login/cookie wall" };
+  if (finalUrl && /[?&]jobnotfound=/i.test(finalUrl)) return { verdict: "dead", httpCode: status, finalUrl, note: "redirected to job-not-found" };
+  // Soft 404: HTTP 200 with a "404 / Page Not Found" page title
+  const pageTitle = (String(body).match(/<title[^>]*>([^<]*)<\/title>/i) || [])[1] || "";
+  if (/\b404\b|page not found/i.test(pageTitle)) return { verdict: "dead", httpCode: status, finalUrl, note: `soft 404: ${clean(pageTitle).slice(0, 60)}` };
   if (finalUrl && isHomepageRedirect(job.url, finalUrl)) return { verdict: "dead", httpCode: status, finalUrl, note: "redirected away from posting" };
 
   if (/pdf|msword|officedocument/i.test(contentType)) {
@@ -308,7 +317,10 @@ async function browserRecheck(items, cache) {
       await page.waitForLoadState("networkidle", { timeout: 12000 }).catch(() => {});
       const status = resp?.status() ?? 0;
       const text = clean(await page.evaluate(() => document.body?.innerText || ""));
-      result = classifyPage(job, { status, finalUrl: page.url(), body: text.padEnd(400, " ") });
+      // Wrap the rendered text in a <title> so title-only job names still match
+      // and soft-404 titles are detected the same way as in the raw-HTML pass.
+      const title = clean(await page.title().catch(() => ""));
+      result = classifyPage(job, { status, finalUrl: page.url(), body: `<title>${title}</title> ${title} ${text}`.padEnd(400, " ") });
       if (clean(text).length < 150 && result.verdict !== "dead") result = { ...result, verdict: "unverifiable", note: "empty after render" };
       if (result.verdict === "open" && isPastDate(job.closeDate)) result = { ...result, verdict: "expired", note: `closeDate ${job.closeDate}` };
       result.via = "browser";
@@ -397,9 +409,12 @@ async function main() {
       const c = cache[clean(j.url)];
       // Raw-HTML "closed" hits are re-confirmed against the rendered, visible text:
       // some sites ship a hidden "no longer available" template on every page.
-      return c && ["unverifiable", "mismatch", "closed"].includes(c.verdict) && c.via !== "browser" && !/^(Workday|Phenom)/.test(c.note || "");
+      // Plain-fetch 404s are re-confirmed too: some career sites (jobs.<school>.edu/jobs/<slug>)
+      // return 404 to fetchers at random while serving the posting to browsers.
+      const flakyDead = c?.verdict === "dead" && c.httpCode === 404;
+      return c && (["unverifiable", "mismatch", "closed"].includes(c.verdict) || flakyDead) && c.via !== "browser" && !/^(Workday|Phenom)/.test(c.note || "");
     });
-    console.log(`\nRe-checking ${retry.length} unverifiable/mismatch/closed pages in headless Chromium...`);
+    console.log(`\nRe-checking ${retry.length} unverifiable/mismatch/closed/404 pages in headless Chromium...`);
     if (retry.length) await browserRecheck(retry, cache);
     writeJson(CACHE_PATH, cache);
   }

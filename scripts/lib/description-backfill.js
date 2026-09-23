@@ -18,9 +18,10 @@ function hasHttpUrl(job) {
 export function isUnsupportedDescriptionUrl(url) {
   const value = String(url || "");
 
-  // OneUSG/PeopleSoft listing rows use a virtual #jobId fragment. Fragments
-  // never reach the server and anonymous visits redirect to a sign-in error.
-  if (/careers\.hprod\.onehcm\.usg\.edu/i.test(value) && /#jobId=\d+/i.test(value)) return true;
+  // OneUSG/PeopleSoft needs a browser session cookie: anonymous fetches of both
+  // the old "#jobId=" rows and the JobOpeningId posting page redirect to a
+  // sign-in error.
+  if (/careers\.hprod\.onehcm\.usg\.edu/i.test(value) && /#jobId=\d+|[?&]JobOpeningId=\d+/i.test(value)) return true;
 
   // InterviewExchange/Hirezon returns its explicit "resource not authorized"
   // WAF response to direct pages and public RSS feeds from GitHub-hosted,
