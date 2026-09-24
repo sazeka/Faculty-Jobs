@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { appointmentTrackHistory, academicCoverageHistory } from '../lib/trendsHistory.js'
 import { POSITION_TYPE_GROUPS } from '../../../scripts/lib/weekly-position-type-stats.js'
+import AcademicCategoryDetail from './AcademicCategoryDetail.vue'
 
 const props = defineProps({
   baseUrl: { type: String, default: '/' },
@@ -10,6 +11,10 @@ const props = defineProps({
 const emit = defineEmits(['open-methodology', 'explore-position-type'])
 
 const trends = ref(null)
+const categoryData = ref(null)
+const categoryError = ref(false)
+const selectedDiscipline = ref('')
+const selectedDepartment = ref('')
 const loading = ref(true)
 const error = ref(null)
 
@@ -20,6 +25,15 @@ onMounted(async () => {
     })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     trends.value = await res.json()
+    try {
+      const categoryRes = await fetch(`${props.baseUrl}data/weekly-academic-categories.json?v=academic-categories-1`, { cache: 'no-store' })
+      if (!categoryRes.ok) throw new Error(`HTTP ${categoryRes.status}`)
+      const payload = await categoryRes.json()
+      if (payload.weekEnd !== trends.value.weekEnd) throw new Error('Category snapshot is out of date')
+      categoryData.value = payload
+    } catch {
+      categoryError.value = true
+    }
   } catch {
     error.value = 'Weekly trends data is not yet available — check back after the next Sunday run.'
   } finally {
@@ -29,6 +43,7 @@ onMounted(async () => {
 
 const disciplineStats = computed(() => trends.value?.stats?.disciplineBreakdown || null)
 const departmentStats = computed(() => trends.value?.stats?.departmentBreakdown || null)
+const categoryWeeks = computed(() => categoryData.value?.weeks || [])
 const disciplineHistory = computed(() => academicCoverageHistory(trends.value?.history, 'discipline'))
 const departmentHistory = computed(() => academicCoverageHistory(trends.value?.history, 'department'))
 const topDisciplines = computed(() => {
@@ -444,12 +459,14 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
             <span><i class="tenure-key academic-key-unknown"></i>Not identified</span>
           </div>
           <div class="fa-meta academic-subhead">Leading disciplines this week</div>
-          <div v-for="item in topDisciplines" :key="item.discipline" class="position-type-row academic-category-row">
+          <button v-for="item in topDisciplines" :key="item.discipline" type="button" class="position-type-row academic-category-row" :class="{ active: selectedDiscipline === item.discipline }" :aria-label="`Explore ${item.discipline} discipline trends`" @click="selectedDiscipline = item.discipline">
             <span class="position-type-label">{{ item.discipline }}</span>
             <span class="position-type-track" aria-hidden="true"><span class="position-type-fill" :style="{ width: item.barWidth }"></span></span>
             <span class="position-type-value fa-num"><strong>{{ fmt(item.count) }}</strong><small>{{ item.shareLabel }}</small></span>
-          </div>
+          </button>
           <p class="fa-meta academic-note">Percentages for leading disciplines use the {{ fmt(disciplineStats.classified) }} classified listings. Bar lengths compare the disciplines shown.</p>
+          <AcademicCategoryDetail v-if="categoryWeeks.length" v-model:selected="selectedDiscipline" kind="discipline" :weeks="categoryWeeks" :classified="disciplineStats.classified" />
+          <p v-else-if="categoryError" class="fa-meta academic-note">Detailed discipline counts are updating. The coverage chart above is still available.</p>
         </template>
       </section>
 
@@ -483,6 +500,8 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
           </div>
           <p v-if="departmentHistory.length === 1" class="fa-meta academic-note">Department tracking starts with this snapshot; weekly comparisons will appear after the next digest.</p>
           <p class="fa-meta academic-note">{{ fmt(departmentStats.unknown) }} listings have no usable Department. This measures field coverage using the same validation as job listings; it does not mean every displayed Department was independently verified.</p>
+          <AcademicCategoryDetail v-if="categoryWeeks.length" v-model:selected="selectedDepartment" kind="department" :weeks="categoryWeeks" :classified="departmentStats.classified" />
+          <p v-else-if="categoryError" class="fa-meta academic-note">Detailed Department counts are updating. The coverage chart above is still available.</p>
         </template>
         <p v-else class="fa-meta academic-note">Department history will appear with the next weekly digest.</p>
       </section>
@@ -863,6 +882,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   text-transform: uppercase;
 }
 .academic-category-row .position-type-fill { background: var(--sage); }
+.academic-category-row.active { background: var(--paper-3); }
 .academic-note { margin: 18px 0 0; color: var(--ink-4); line-height: 1.55; }
 
 .trends-citation { max-width: 820px; }

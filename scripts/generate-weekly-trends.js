@@ -15,6 +15,7 @@
  *   public/data/weekly-trends.json
  *   web-vue/public/data/weekly-trends.json (included in frontend builds)
  *   generated/weekly-stats-history.json  (rolling 52-week record)
+ *   data/weekly-academic-categories.json (12 recorded weeks of selectable categories)
  *
  * Usage:
  *   node scripts/generate-weekly-trends.js [--dry-run]
@@ -28,6 +29,7 @@ import { computeInstitutionControlBreakdown } from "./lib/weekly-institution-con
 import { computeAiHiringBreakdown } from "./lib/weekly-ai-hiring-stats.js";
 import { computeDisciplineBreakdown } from "./lib/weekly-discipline-stats.js";
 import { computeDepartmentBreakdown } from "./lib/weekly-department-stats.js";
+import { computeAcademicCategorySnapshot, updateAcademicCategoryHistory } from "./lib/weekly-academic-category-stats.js";
 import { computePositionTypeFacets } from "./lib/weekly-position-type-stats.js";
 import { latestPriorWeek } from "./lib/weekly-trends-history.js";
 import { readJobsFileOrNull } from "./lib/jobs-file.js";
@@ -38,10 +40,16 @@ const ROOT = path.resolve(__dirname, "..");
 const JOBS_PATH    = path.join(ROOT, "public", "jobs.json");
 const INSTITUTIONS_PATH = path.join(ROOT, "data", "institutions-master.json");
 const HISTORY_PATH = path.join(ROOT, "generated", "weekly-stats-history.json");
+const ACADEMIC_HISTORY_PATH = path.join(ROOT, "generated", "weekly-academic-category-history.json");
 const OUT_PATHS    = [
   path.join(ROOT, "docs",   "data", "weekly-trends.json"),
   path.join(ROOT, "public", "data", "weekly-trends.json"),
   path.join(ROOT, "web-vue", "public", "data", "weekly-trends.json"),
+];
+const ACADEMIC_OUT_PATHS = [
+  path.join(ROOT, "docs", "data", "weekly-academic-categories.json"),
+  path.join(ROOT, "public", "data", "weekly-academic-categories.json"),
+  path.join(ROOT, "web-vue", "public", "data", "weekly-academic-categories.json"),
 ];
 
 // ── CLI / env ─────────────────────────────────────────────────────────────────
@@ -60,6 +68,11 @@ function readJson(p) {
 function writeJson(p, v) {
   fs.mkdirSync(path.dirname(p), { recursive: true });
   fs.writeFileSync(p, JSON.stringify(v, null, 2) + "\n", "utf8");
+}
+
+function writeCompactJson(p, v) {
+  fs.mkdirSync(path.dirname(p), { recursive: true });
+  fs.writeFileSync(p, JSON.stringify(v) + "\n", "utf8");
 }
 
 function isoWeekEnd() {
@@ -239,6 +252,8 @@ async function main() {
   const weekEnd = isoWeekEnd();
   const prev    = latestPriorWeek(history, weekEnd);
   const stats   = computeStats(payload.jobs, institutions, payload.scrapedAt || null);
+  const academicSnapshot = computeAcademicCategorySnapshot(payload.jobs, weekEnd);
+  const academicHistory = updateAcademicCategoryHistory(readJson(ACADEMIC_HISTORY_PATH) || [], academicSnapshot);
   if (stats.positionTypeFacets.total !== stats.totalJobs) {
     throw new Error('Position type snapshot and weekly digest totals must match');
   }
@@ -355,10 +370,14 @@ async function main() {
 
   for (const p of OUT_PATHS) writeJson(p, out);
   writeJson(HISTORY_PATH, updatedHistory);
+  const academicOutput = { weekEnd, generatedAt: out.generatedAt, weeks: academicHistory };
+  writeCompactJson(ACADEMIC_HISTORY_PATH, academicHistory);
+  for (const p of ACADEMIC_OUT_PATHS) writeCompactJson(p, academicOutput);
 
   console.log("\n  Files written:");
   for (const p of OUT_PATHS) console.log(`    ${path.relative(ROOT, p)}`);
   console.log(`    ${path.relative(ROOT, HISTORY_PATH)}`);
+  for (const p of ACADEMIC_OUT_PATHS) console.log(`    ${path.relative(ROOT, p)}`);
   console.log("");
 }
 
