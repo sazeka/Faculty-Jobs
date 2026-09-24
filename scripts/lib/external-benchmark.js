@@ -142,7 +142,9 @@ export function compareEconJobMarket({ ads, jobs, snapshotDate, includeDetails =
     report.matches = matches.map((match) => ({
       institution: canonicalInstitutionName(match.ad.name),
       benchmarkTitle: clean(match.ad.adtitle),
+      benchmarkUrl: clean(match.ad.url) || null,
       atlasTitle: clean(match.job.title),
+      atlasUrl: clean(match.job.url) || null,
       score: Number(match.score.toFixed(3)),
       benchmarkTenure: match.benchmarkTenure,
       atlasTenure: match.atlasTenure,
@@ -152,6 +154,8 @@ export function compareEconJobMarket({ ads, jobs, snapshotDate, includeDetails =
       .map((ad) => ({
         institution: canonicalInstitutionName(ad.name),
         title: clean(ad.adtitle),
+        benchmarkUrl: clean(ad.url) || null,
+        deadline: dateOnly(ad.deadline_date),
         institutionPresentInAtlas: institutionsInAtlas.has(canonicalInstitutionName(ad.name)),
       }));
   }

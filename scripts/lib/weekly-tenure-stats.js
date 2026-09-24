@@ -400,36 +400,59 @@ export function classifyTenureTrackWithEvidence(job = {}) {
     return { value: false, evidence: "title-rank" };
   }
 
-  // Verified title taxonomies can correct stale carried-forward enrichment
-  // values, but remain a last resort when no stored boolean exists so that an
-  // explicit statement in the current posting still wins.
+  const descriptionSignals = explicitSignals(job.description);
+  const structuredDescription = structuredAppointmentSignal(job.description);
+  const directDescription = directDescriptionAppointmentSignal(job.description);
+  const descriptionText = insertConcatenationBoundaries(String(job.description || ""));
+
+  // The current posting is stronger evidence than a carried-forward stored
+  // boolean or an institution-wide title convention. When a stored boolean is
+  // present, override it only with one-directional explicit posting language,
+  // a direct opening claim, or a structured field that is not contradicted by
+  // the posting itself. This avoids treating weak ATS text such as
+  // "Appointment Term: Term" as stronger than an explicit tenure-track claim.
   if (value === true || value === false) {
+    if (descriptionSignals.nonTenure && !descriptionSignals.tenure) {
+      return { value: false, evidence: "description-explicit" };
+    }
+    if (descriptionSignals.tenure && !descriptionSignals.nonTenure) {
+      return { value: true, evidence: "description-explicit" };
+    }
+    if (directDescription !== null) {
+      return { value: directDescription, evidence: "description-direct-claim" };
+    }
+    if (
+      structuredDescription !== null &&
+      !(structuredDescription === false && descriptionSignals.tenure) &&
+      !(structuredDescription === true && descriptionSignals.nonTenure)
+    ) {
+      return { value: structuredDescription, evidence: "description-structured-field" };
+    }
+    if (HOURLY_SALARY_RE.test(descriptionText) || NON_TENURE_JOB_TYPE_FIELD_RE.test(descriptionText)) {
+      return { value: false, evidence: "description-job-type" };
+    }
     const institutionMatch = matchInstitutionPolicy(job);
     if (institutionMatch && institutionMatch.value !== value) return institutionMatch;
     return { value, evidence: job.tenureEvidence || "stored" };
+  }
+
+  if (structuredDescription !== null) {
+    return { value: structuredDescription, evidence: "description-structured-field" };
+  }
+  if (descriptionSignals.nonTenure && !descriptionSignals.tenure) return { value: false, evidence: "description-explicit" };
+  if (descriptionSignals.tenure && !descriptionSignals.nonTenure) return { value: true, evidence: "description-explicit" };
+  if (directDescription !== null) {
+    return { value: directDescription, evidence: "description-direct-claim" };
+  }
+
+  if (HOURLY_SALARY_RE.test(descriptionText) || NON_TENURE_JOB_TYPE_FIELD_RE.test(descriptionText)) {
+    return { value: false, evidence: "description-job-type" };
   }
 
   const status = String(value || "").toLowerCase().trim();
   const stored = explicitSignals(status);
   if (stored.nonTenure && !stored.tenure) return { value: false, evidence: job.tenureEvidence || "stored" };
   if (stored.tenure && !stored.nonTenure) return { value: true, evidence: job.tenureEvidence || "stored" };
-
-  const descriptionSignals = explicitSignals(job.description);
-  const structuredDescription = structuredAppointmentSignal(job.description);
-  if (structuredDescription !== null) {
-    return { value: structuredDescription, evidence: "description-structured-field" };
-  }
-  if (descriptionSignals.nonTenure && !descriptionSignals.tenure) return { value: false, evidence: "description-explicit" };
-  if (descriptionSignals.tenure && !descriptionSignals.nonTenure) return { value: true, evidence: "description-explicit" };
-  const directDescription = directDescriptionAppointmentSignal(job.description);
-  if (directDescription !== null) {
-    return { value: directDescription, evidence: "description-direct-claim" };
-  }
-
-  const descriptionText = insertConcatenationBoundaries(String(job.description || ""));
-  if (HOURLY_SALARY_RE.test(descriptionText) || NON_TENURE_JOB_TYPE_FIELD_RE.test(descriptionText)) {
-    return { value: false, evidence: "description-job-type" };
-  }
 
   const sourceUrlSignal = sourceUrlAppointmentSignal(job.url);
   if (sourceUrlSignal !== null) return { value: sourceUrlSignal, evidence: "source-url-explicit" };

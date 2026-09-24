@@ -65,3 +65,27 @@ test("builds a date-aligned, deduplicated external benchmark", () => {
   assert.equal(report.rates.tenureAgreementPercent, 100);
   assert.equal(report.matches[0].institution === "UC Berkeley" || report.matches[1].institution === "UC Berkeley", true);
 });
+
+test("matches the comma spelling of University of California, San Diego", () => {
+  const ads = [{
+    name: "University of California, San Diego",
+    adtitle: "Assistant/Associate/Full Professor of Economics",
+    adtext: "Tenure-track position.",
+    startdate: "2026-09-01",
+    deadline_date: "2026-11-01",
+    locations: us,
+    position_types: professor,
+    url: "https://econjobmarket.org/positions/12696",
+  }];
+  const jobs = [{
+    college: "University of California-San Diego",
+    title: "Assistant/Associate/Full Professor of Economics",
+    tenureTrack: true,
+    url: "https://apol-recruit.ucsd.edu/JPF04622",
+  }];
+
+  const report = compareEconJobMarket({ ads, jobs, snapshotDate: "2026-09-23", includeDetails: true });
+  assert.equal(report.counts.matchedAds, 1);
+  assert.equal(report.matches[0].benchmarkUrl, "https://econjobmarket.org/positions/12696");
+  assert.equal(report.matches[0].atlasUrl, "https://apol-recruit.ucsd.edu/JPF04622");
+});

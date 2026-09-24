@@ -9,6 +9,7 @@ const ALIASES = new Map(
     ["University of California, Berkeley", "UC Berkeley"],
     ["University of California, Davis", "UC Davis"],
     ["University of California, Riverside", "UC Riverside"],
+    ["University of California, San Diego", "University of California-San Diego"],
     ["University of Wisconsin, Madison", "UW-Madison"],
     ["University of Wisconsin-Madison", "UW-Madison"],
     ["Baruch College", "CUNY Bernard M Baruch College"],

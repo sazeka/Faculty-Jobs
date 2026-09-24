@@ -3449,8 +3449,8 @@ const NY_PRIVATE_CAMPUSES = [
   { campus: "New York Institute of Technology", type: "icims", url: "https://careers-nyit.icims.com/jobs/intro" },
   {
     campus: "Marist College",
-    type: "generic",
-    url: "https://careers.marist.edu/",
+    type: "pageup",
+    url: "https://careers.marist.edu/cw/en-us/filter?search-keyword=&work-type=full-time&location=poughkeepsie%20ny&category=faculty",
   },
   {
     campus: "Iona University",
@@ -17817,6 +17817,20 @@ export async function scrapeLifeWestCaliforniaAs(context, startUrl, campusName, 
 
 // AcademicJobsOnline (AJO) scraper: uses aria-labelledby/adjacent span text
 // because listing link text is often an internal code (e.g., "APO").
+export function academicJobsOnlineSpecificTitle(baseTitle, subjectAreas = [], keywords = "") {
+  const base = clean(baseTitle);
+  if (!/^(?:Assistant Professor|Associate(?:\s*\/\s*|\s+or\s+)Full Professor)$/i.test(base)) return base;
+  const keyword = clean(keywords);
+  const subjects = subjectAreas
+    .flatMap((value) => String(value || "").split(/\s*(?:\/|,)\s*/))
+    .map((value) => clean(value).replace(/^[A-Z]\d?\s*(?:-|:)\s*/i, ""))
+    .filter((value) => value && !/^(?:Economics|Default:?\s*Any Field|Any Field)$/i.test(value));
+  const specialty = keyword && keyword.length <= 100 && !/^(?:any|all)\s+fields?$/i.test(keyword)
+    ? keyword
+    : subjects.at(-1);
+  return specialty ? `${base.replace("/", " or ")} in ${specialty}` : base;
+}
+
 export async function scrapeAcademicJobsOnlineAs(context, startUrl, campusName, sourceName) {
   const page = await context.newPage();
   try {
@@ -17872,6 +17886,32 @@ export async function scrapeAcademicJobsOnlineAs(context, startUrl, campusName, 
       }
       return out;
     });
+
+    const detailPage = await context.newPage();
+    for (const job of jobs.filter((row) => /^(?:Assistant Professor|Associate(?:\s*\/\s*|\s+or\s+)Full Professor)$/i.test(row.title)).slice(0, 30)) {
+      try {
+        await gotoWithRetry(detailPage, job.url, { waitUntil: "domcontentloaded", timeout: 30_000 });
+        const detail = await safeEvaluate(detailPage, () => {
+          const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+          const cells = Array.from(document.querySelectorAll(".grid2 > div"));
+          const valueAfter = (label) => {
+            const cell = cells.find((node) => clean(node.textContent).replace(/:$/, "") === label);
+            return clean(cell?.nextElementSibling?.textContent);
+          };
+          const subjects = valueAfter("Subject Areas")
+            .split("/")
+            .map(clean)
+            .filter(Boolean);
+          const description = clean(document.querySelector("section")?.textContent);
+          const keywords = description.match(/\bKeywords:\s*(.*?)\s+Deadline Date:/i)?.[1] || "";
+          return { subjects, keywords };
+        });
+        job.title = academicJobsOnlineSpecificTitle(job.title, detail?.subjects, detail?.keywords);
+      } catch {
+        // Keep the list-page title when one detail page is unavailable.
+      }
+    }
+    await detailPage.close().catch(() => {});
 
     const filtered = jobs
       .map((j) => ({ ...j, title: normalizeJobTitle(j.title) }))

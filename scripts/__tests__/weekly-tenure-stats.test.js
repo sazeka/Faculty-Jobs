@@ -4729,3 +4729,26 @@ test("confines the September 23 exact-posting evidence", () => {
     null
   );
 });
+
+test("current posting language overrides stale stored and institution-policy values", () => {
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University of Florida",
+      title: "Clinical Hospitalist Assistant Professor",
+      tenureTrack: true,
+      tenureEvidence: "institution-policy",
+      description: "Work type: Non-Tenure-Track Faculty",
+    }),
+    { value: false, evidence: "description-explicit" }
+  );
+  assert.deepEqual(
+    classifyTenureTrackWithEvidence({
+      college: "University at Buffalo",
+      title: "Empire Innovation Professor, Quantum Computing",
+      tenureTrack: true,
+      tenureEvidence: "description-explicit",
+      description: "Appointment Term Term Position Type UUP Faculty. The department invites candidates to apply for a tenure-track EIP position.",
+    }),
+    { value: true, evidence: "description-explicit" }
+  );
+});
