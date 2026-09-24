@@ -1,27 +1,89 @@
+const CLINICAL_APPOINTMENT_PATTERNS = [
+  /\bclinical\b(?:\s*[/,-]?\s*(?:track|assistant|associate|full|visiting|adjunct|teaching|or|and))*[\s/,-]+(?:professor|faculty|instructor|lecturer)s?\b/,
+  /\b(?:professor|faculty|instructor|lecturer)s?\s*[,(/-]\s*clinical\b(?=\s*(?:$|[,;)/-]|\bor\b|\btrack\b))/,
+  /\bprofessor\s+(?:of\s+)?clinical\s+practice\b/,
+  /\bprofessor\s+of\s+clinical\s*[-–]\s*/,
+  /\bclinical\s+nursing\s+faculty\b/,
+  /\bclinical\)\s+faculty\b/,
+]
+
+const RESEARCH_APPOINTMENT_PATTERNS = [
+  /\bresearch\s+(?:(?:track|assistant|asst|associate|assoc|full|visiting|adjunct|or|and)[\s/,-]+)*(?:professor|faculty)\b/,
+  /\b(?:professor|faculty)\s*[,(/-]\s*research\b(?=\s*(?:$|[,;)/-]|\bor\b|\btrack\b))/,
+  /\bprofessor\s+research\b/,
+  /\bacademic\s*[/,-]\s*research\s+faculty\b/,
+]
+
+const TEACHING_APPOINTMENT_PATTERNS = [
+  /\bteaching\s+(?:professor|faculty)\b/,
+  /\binstructional\s+(?:(?:assistant|associate|full)\s+)?(?:professor|faculty)\b/,
+  /\bprofessor\s+of\s+(?:(?:the|professional)\s+)?practice\b/,
+  /\bprofessor\s+of\s+instruction\b/,
+]
+
+function hasClinicalAppointment(title) {
+  return CLINICAL_APPOINTMENT_PATTERNS.some((pattern) => pattern.test(title))
+}
+
+function hasResearchAppointment(title) {
+  return !/\bpost[\s-]?(?:doc(?:toral)?|doctorate)\b/.test(title) &&
+    RESEARCH_APPOINTMENT_PATTERNS.some((pattern) => pattern.test(title))
+}
+
+function hasTeachingAppointment(title) {
+  return TEACHING_APPOINTMENT_PATTERNS.some((pattern) => pattern.test(title))
+}
+
+function professorRanks(title) {
+  title = title.replace(/_/g, ' ')
+  const ranks = new Set()
+  if (/\b(?:assistant|asst)\s*[-–]?\s*to\s*[-–]?\s*full\s+professor\b/.test(title)) ranks.add('Associate Professor')
+  for (const professor of title.matchAll(/\bprofessors?\b/g)) {
+    const before = title.slice(0, professor.index)
+    for (const match of before.matchAll(/\b(assistant|asst|associate|assoc|full)\b/g)) {
+      const between = before.slice(match.index + match[0].length)
+      if (between.length > 65) continue
+      const words = between.toLowerCase().split(/[\s/,.|–-]+/).filter(Boolean)
+      const rankWords = /^(?:assistant|asst|associate|assoc|full|clinical|research|teaching|instructional|or|and|to)$/
+      const subjectWords = words.filter((word) => !rankWords.test(word))
+      if (subjectWords.length > 2 || subjectWords.some((word) => /^(?:dean|director|chair|vice|chief|head|time)$/.test(word))) continue
+      if (/^(?:assistant|asst)$/.test(match[1])) ranks.add('Assistant Professor')
+      if (/^(?:associate|assoc)$/.test(match[1])) ranks.add('Associate Professor')
+      if (match[1] === 'full') ranks.add('Full Professor')
+    }
+  }
+  return ['Assistant Professor', 'Associate Professor', 'Full Professor'].filter((rank) => ranks.has(rank))
+}
+
 export function getPositionType(title) {
   const t = String(title || '').toLowerCase()
-  if (t.includes('assistant professor')) return 'Assistant Professor'
-  if (t.includes('associate professor')) return 'Associate Professor'
+  const clinicalAppointment = hasClinicalAppointment(t)
+  const researchAppointment = hasResearchAppointment(t)
+  const ranks = professorRanks(t)
+  if (ranks.length > 1 && hasTeachingAppointment(t)) return 'Teaching Faculty'
+  if (ranks.includes('Assistant Professor')) return 'Assistant Professor'
+  if (ranks.includes('Associate Professor')) return 'Associate Professor'
   // "Professor" combined with an explicit appointment modifier (Adjunct,
   // Visiting, Research, Clinical, Teaching, Professor of Practice) should
-  // resolve to that modifier, not the generic Full Professor fallback below
+  // resolve to that modifier, not the generic Professor fallback below
   // — e.g. "Adjunct Professor of X" was incorrectly resolving to Full
   // Professor (issue #117). Skip the fallback here and let the modifier
   // checks further down (unchanged, same order as before this fix) pick it
   // up, so non-professor titles ("Adjunct Instructor", "Visiting Lecturer",
   // "Postdoctoral Research Fellow", ...) keep their existing precedence.
   const hasProfessorModifier =
-    t.includes('adjunct') || t.includes('visiting') || t.includes('research') || t.includes('clinical') ||
-    t.includes('teaching professor') || t.includes('professor of practice')
-  if (!hasProfessorModifier && (t.includes('full professor') || (/(^|\W)professor(\W|$)/.test(t) && !t.includes('assistant') && !t.includes('associate')))) return 'Full Professor'
+    t.includes('adjunct') || t.includes('visiting') || researchAppointment || clinicalAppointment ||
+    hasTeachingAppointment(t)
+  if (!hasProfessorModifier && ranks.includes('Full Professor')) return 'Full Professor'
+  if (!hasProfessorModifier && /\bprofessor\b/.test(t)) return 'Professor'
   if (t.includes('lecturer')) return 'Lecturer'
   if (t.includes('instructor')) return 'Instructor'
   if (t.includes('visiting')) return 'Visiting Faculty'
   if (t.includes('adjunct')) return 'Adjunct'
-  if (/\bpost[\s-]?doc(?:toral)?\b/.test(t)) return 'Postdoctoral'
-  if (t.includes('research')) return 'Research Faculty'
-  if (t.includes('clinical')) return 'Clinical Faculty'
-  if (t.includes('teaching professor') || t.includes('professor of practice')) return 'Teaching Faculty'
+  if (/\bpost[\s-]?(?:doc(?:toral)?|doctorate)\b/.test(t)) return 'Postdoctoral'
+  if (researchAppointment) return 'Research Faculty'
+  if (clinicalAppointment) return 'Clinical Faculty'
+  if (hasTeachingAppointment(t)) return 'Teaching Faculty'
   return 'Faculty'
 }
 
@@ -29,16 +91,14 @@ export function getPositionType(title) {
 export function getPositionTypes(title) {
   const t = String(title || '').toLowerCase()
   const isAdjunct = t.includes('adjunct')
-  if (/professor/.test(t)) {
-    if (/\b(all ranks|open rank|any rank|all levels|various ranks)\b/.test(t)) {
+  if (/\bprofessors?\b/.test(t)) {
+    const explicitRanks = professorRanks(t)
+    if (/\b(all ranks|all levels|various ranks)\b/.test(t) || (!explicitRanks.length && /\b(open rank|any rank)\b/.test(t))) {
       const ranks = ['Assistant Professor', 'Associate Professor', 'Full Professor']
       if (isAdjunct) ranks.push('Adjunct')
       return ranks
     }
-    const ranks = []
-    if (/\b(?:assistant|asst)\b/.test(t)) ranks.push('Assistant Professor')
-    if (/\b(?:associate|assoc)\b/.test(t)) ranks.push('Associate Professor')
-    if (/\bfull professor\b/.test(t)) ranks.push('Full Professor')
+    const ranks = explicitRanks
     if (ranks.length) {
       if (isAdjunct) ranks.push('Adjunct')
       return ranks
@@ -47,6 +107,27 @@ export function getPositionTypes(title) {
   const primary = getPositionType(t)
   if (isAdjunct && primary !== 'Adjunct') return [primary, 'Adjunct']
   return [primary]
+}
+
+// Search facets include both the specific rank and the broader appointment
+// family. A Clinical Assistant Professor should match Professor, Assistant
+// Professor, and Clinical Faculty searches without losing any of those facts.
+export function getPositionFilterTypes(title, rank = null) {
+  const t = String(title || '').toLowerCase()
+  const types = rank ? [rank] : getPositionTypes(title)
+  const add = (value) => { if (!types.includes(value)) types.push(value) }
+
+  if (/\bprofessors?\b/.test(t) || types.some((type) => /professor/i.test(type))) add('Professor')
+  if (hasClinicalAppointment(t)) add('Clinical Faculty')
+  if (hasResearchAppointment(t)) add('Research Faculty')
+  if (/\b(?:lecturer|instructor)\b/.test(t)) {
+    if (/\blecturer\b/.test(t)) add('Lecturer')
+    if (/\binstructor\b/.test(t)) add('Instructor')
+  }
+  if (/\badjunct\b/.test(t)) add('Adjunct')
+  if (/\bvisiting\b/.test(t) && /\b(?:professor|faculty|lecturer|instructor)\b/.test(t)) add('Visiting Faculty')
+  if (hasTeachingAppointment(t)) add('Teaching Faculty')
+  return types
 }
 
 export function normalizeTenureTrack(value, title = '') {

@@ -26,6 +26,7 @@ import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
 import { computeInstitutionControlBreakdown } from "./lib/weekly-institution-control-stats.js";
 import { computeAiHiringBreakdown } from "./lib/weekly-ai-hiring-stats.js";
 import { computeDisciplineBreakdown } from "./lib/weekly-discipline-stats.js";
+import { computePositionTypeFacets } from "./lib/weekly-position-type-stats.js";
 import { latestPriorWeek } from "./lib/weekly-trends-history.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -114,6 +115,7 @@ function computeStats(jobs, institutions) {
     totalJobs: jobs.length,
     bySource,
     byType,
+    positionTypeFacets: computePositionTypeFacets(jobs),
     topSources,
     topInstitutions,
     tenureTrackBreakdown: computeTenureTrackBreakdown(jobs),
@@ -242,6 +244,7 @@ async function main() {
     totalDeltaPct: prev ? Number(((( stats.totalJobs - prev.totalJobs) / prev.totalJobs) * 100).toFixed(1)) : null,
     topSourcesByJobs: stats.topSources.slice(0, 8),
     positionTypeBreakdown: stats.byType,
+    positionTypeFacets: stats.positionTypeFacets,
     tenureTrackBreakdown: stats.tenureTrackBreakdown,
     institutionControlBreakdown: stats.institutionControlBreakdown,
     aiHiringBreakdown: {

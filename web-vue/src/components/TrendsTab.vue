@@ -38,6 +38,23 @@ const sortedPositionTypes = computed(() => {
   return Object.entries(types).sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count }))
 })
 const maxTypeCount = computed(() => sortedPositionTypes.value[0]?.count || 1)
+const positionGroups = computed(() => {
+  const facets = trends.value?.stats?.positionTypeFacets
+  if (!facets?.groups || !Number.isFinite(facets.total)) return []
+  return [
+    { key: 'roles', label: 'Role', values: ['Professor', 'Lecturer', 'Instructor', 'Postdoctoral', 'Other / unspecified'] },
+    { key: 'ranks', label: 'Professor rank', values: ['Assistant Professor', 'Associate Professor', 'Full Professor', 'Rank unspecified'] },
+    { key: 'appointments', label: 'Appointment type', values: ['Adjunct', 'Clinical Faculty', 'Research Faculty', 'Teaching Faculty', 'Visiting Faculty'] },
+  ].map((group) => {
+    const rows = group.values.map((label) => {
+      const count = Number(facets.groups[group.key]?.[label] || 0)
+      const share = facets.total ? (count / facets.total) * 100 : 0
+      return { label, count, shareLabel: share > 0 && share < 0.1 ? '<0.1%' : `${share.toFixed(1)}%` }
+    })
+    const max = Math.max(1, ...rows.map((row) => row.count))
+    return { ...group, rows: rows.map((row) => ({ ...row, barWidth: `${(row.count / max) * 100}%` })) }
+  })
+})
 const tenureStats = computed(() => trends.value?.stats?.tenureTrackBreakdown || null)
 const tenureHistory = computed(() => {
   const items = appointmentTrackHistory(trends.value?.history || [])
@@ -230,16 +247,29 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
       </section>
 
       <!-- Position types -->
-      <div class="trends-col">
-        <div class="fa-label" style="margin-bottom: 20px;">Position types</div>
-        <div v-for="t in sortedPositionTypes" :key="t.label" class="trends-bar-row">
-          <div class="trends-bar-label fa-meta">{{ t.label }}</div>
-          <div class="trends-bar-track">
-            <div class="trends-bar-fill" :style="{ width: `${Math.round((t.count / maxTypeCount) * 100)}%` }"></div>
+      <section class="trends-col position-types-panel" aria-labelledby="position-types-title">
+        <div class="fa-label" id="position-types-title">Position types</div>
+        <template v-if="positionGroups.length">
+          <p class="fa-meta position-types-intro">{{ fmt(trends.stats.positionTypeFacets.total) }} listings · title-based labels</p>
+          <div v-for="group in positionGroups" :key="group.key" class="position-type-group" :class="`position-type-group--${group.key}`">
+            <h3 class="fa-meta position-type-group-title">{{ group.label }}</h3>
+            <div v-for="row in group.rows" :key="row.label" class="position-type-row">
+              <span class="position-type-label">{{ row.label }}</span>
+              <span class="position-type-track" aria-hidden="true"><span class="position-type-fill" :style="{ width: row.barWidth }"></span></span>
+              <span class="position-type-value fa-num"><strong>{{ fmt(row.count) }}</strong><small>{{ row.shareLabel }}</small></span>
+            </div>
           </div>
-          <div class="fa-num trends-bar-count">{{ fmt(t.count) }}</div>
-        </div>
-      </div>
+          <p class="fa-meta position-types-note">A listing can appear in multiple rows. Percentages use all listings; bar lengths compare types within each group.</p>
+        </template>
+        <template v-else>
+          <div v-for="t in sortedPositionTypes" :key="t.label" class="trends-bar-row">
+            <div class="trends-bar-label fa-meta">{{ t.label }}</div>
+            <div class="trends-bar-track"><div class="trends-bar-fill" :style="{ width: `${Math.round((t.count / maxTypeCount) * 100)}%` }"></div></div>
+            <div class="fa-num trends-bar-count">{{ fmt(t.count) }}</div>
+          </div>
+          <p class="fa-meta position-types-note">One title-based category per listing. Updated detail will appear with the next weekly data refresh.</p>
+        </template>
+      </section>
 
     </div>
 
@@ -613,6 +643,35 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   color: var(--ink-2);
 }
 
+.position-types-intro { margin: 8px 0 18px; color: var(--ink-3); }
+.position-type-group { margin-top: 18px; }
+.position-type-group-title {
+  margin: 0 0 7px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.position-type-row {
+  display: grid;
+  grid-template-columns: minmax(132px, 1.2fr) minmax(65px, 1.5fr) 76px;
+  gap: 12px;
+  align-items: center;
+  min-height: 34px;
+}
+.position-type-label { color: var(--ink-2); font-size: 12px; line-height: 1.25; }
+.position-type-track { height: 8px; background: var(--paper-3); overflow: hidden; border-radius: 999px; }
+.position-type-fill { display: block; height: 100%; background: var(--ink-2); border-radius: inherit; }
+.position-type-group--ranks .position-type-fill { background: var(--sage); }
+.position-type-group--appointments .position-type-fill { background: var(--accent); }
+.position-type-value { text-align: right; color: var(--ink-2); line-height: 1.05; }
+.position-type-value strong { display: block; font-size: 12px; font-weight: 600; }
+.position-type-value small { display: block; margin-top: 3px; color: var(--ink-4); font-size: 10px; }
+.position-types-note { margin: 18px 0 0; color: var(--ink-4); line-height: 1.5; }
+
 .trends-disciplines { max-width: 560px; }
 .trends-inst-row {
   display: flex;
@@ -664,5 +723,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   .trends-bar-row { grid-template-columns: 96px 1fr 40px; gap: 10px; }
   .trends-bar-label { font-size: 10px; }
   .trends-bar-count { font-size: 12px; }
+  .position-type-row { grid-template-columns: minmax(105px, 1.15fr) minmax(50px, 1fr) 65px; gap: 8px; }
+  .position-type-label { font-size: 11px; }
 }
 </style>

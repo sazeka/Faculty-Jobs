@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { ALL_FILTER_VALUE, createDefaultFilters } from '../config/appConfig.js'
 import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxonomy.js'
-import { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
+import { getPositionType, getPositionTypes, getPositionFilterTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
 import { classifySourceLink, institutionTitleConflict, sanitizePostingDate } from '../lib/listingTrust.js'
 import { inferAlaskaCampus } from '../../../scripts/lib/alaska-campus.js'
 import { normalizeSearchText } from '../../../scripts/lib/jobs-search-index.js'
@@ -433,6 +433,7 @@ function normalizeJob(job) {
     isClosed: Boolean(job?.closeDate && !job?.openUntilFilled && String(job.closeDate) < TODAY_ISO),
     tenureTrack: normalizeTenureTrack(job?.tenureTrack, job?.titleClean || job?.title || ''),
     positionTypes: job?.rank ? [job.rank] : getPositionTypes(job?.titleClean || job?.title || ''),
+    positionFilterTypes: getPositionFilterTypes(job?.titleClean || job?.title || '', job?.rank),
     positionType: job?.rank || getPositionType(job?.titleClean || job?.title || ''),
     state,
     datePosted,
@@ -539,8 +540,15 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     }
   })
   const allStateValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.state))
+  const positionTypeOrder = ['Professor', 'Lecturer', 'Instructor', 'Clinical Faculty', 'Research Faculty', 'Assistant Professor', 'Associate Professor', 'Full Professor']
   const allPositionTypeValues = computed(() =>
-    [...new Set(normalizedJobs.value.flatMap((job) => job.positionTypes || []).filter(Boolean))].sort((a, b) => a.localeCompare(b))
+    [...new Set(normalizedJobs.value.flatMap((job) => job.positionFilterTypes || []).filter(Boolean))]
+      .sort((a, b) => {
+        const aIndex = positionTypeOrder.indexOf(a)
+        const bIndex = positionTypeOrder.indexOf(b)
+        if (aIndex !== bIndex) return (aIndex < 0 ? Infinity : aIndex) - (bIndex < 0 ? Infinity : bIndex)
+        return a.localeCompare(b)
+      })
   )
   const allCollegeValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.college))
   const allDepartmentValues = computed(() => sortedDistinct(normalizedJobs.value, (job) => job.department))
@@ -580,7 +588,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
       const disciplines = selectedValues(filterValues.discipline)
       const subdisciplines = selectedValues(filterValues.subdiscipline)
       const stateOk = states.length === 0 || states.includes(job.state)
-      const positionTypeOk = positionTypes.length === 0 || positionTypes.some((type) => (job.positionTypes || []).includes(type))
+      const positionTypeOk = positionTypes.length === 0 || positionTypes.some((type) => (job.positionFilterTypes || []).includes(type))
       const collegeOk = filterValues.college === ALL_FILTER_VALUE || job.college === filterValues.college
       const departmentOk = filterValues.department === ALL_FILTER_VALUE || job.department === filterValues.department
       const disciplineOk = disciplines.length === 0 || disciplines.includes(job.discipline)
@@ -600,7 +608,7 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
 
       if (positionTypeOk && collegeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.state, job.state)
       if (stateOk && collegeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) {
-        for (const positionType of job.positionTypes || []) increment(facets.positionType, positionType)
+        for (const positionType of job.positionFilterTypes || []) increment(facets.positionType, positionType)
       }
       if (stateOk && positionTypeOk && departmentOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.college, job.college)
       if (stateOk && positionTypeOk && collegeOk && disciplineOk && subdisciplineOk && cityOk && employmentTypeOk && workModeOk && tenureTrackOk) increment(facets.department, job.department)
