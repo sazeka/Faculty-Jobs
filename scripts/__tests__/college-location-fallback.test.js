@@ -162,3 +162,14 @@ test('normalizeLocationByCollege leaves an institution with no known campus city
   })
   assert.equal(job.location, 'Totally Fictional University, XX')
 });
+
+test('normalizes Stanford to Stanford, CA and rejects description prose captured as its location', () => {
+  assert.equal(getCollegeLocationFallback('Stanford University'), 'Stanford, CA')
+
+  const job = normalizeLocationByCollege({
+    college: 'Stanford University',
+    location: 'We are particularly interested in candidates who have an MD, MD',
+    source: 'CA Private',
+  })
+  assert.equal(job.location, 'Stanford, CA')
+})

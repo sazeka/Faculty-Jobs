@@ -9133,6 +9133,19 @@ export function normalizeLocationByCollege(job) {
   const looksLikeInstitutionName = (text) =>
     /\b(university|college|institute|school|campus|polytechnic|academy|system)\b/i.test(String(text || ""));
 
+  // Some ATS feeds occasionally put the first sentence of a description in
+  // the location field. When an institution has a reviewed campus fallback,
+  // reject long sentence-like values before the generic city-token branch can
+  // append a state abbreviation and make the bad value look geographic.
+  const rawLocation = clean(job.location || "");
+  const looksLikeProse =
+    rawLocation.length > 80 ||
+    (rawLocation.length > 40 &&
+      /\b(?:applicants?|candidates?|interested|position|search|degree|must|should|will|have|through)\b/i.test(rawLocation));
+  if (fallback && looksLikeProse) {
+    return { ...job, location: fallback };
+  }
+
   // A location like "Wilson Community College, NC" or "Medical College of
   // Wisconsin, WI" parses as a syntactically valid "City, ST" pattern to
   // normalizeUsLocation() below, but the "city" part is just the
@@ -9149,7 +9162,7 @@ export function normalizeLocationByCollege(job) {
   }
 
   // If we only have a city-like token, preserve it and append the source state.
-  const raw = clean(job.location || "");
+  const raw = rawLocation;
   const state = sourceToState[job.source] || null;
   const rawNoCampus = clean(raw.replace(/\s*\([^)]*campus[^)]*\)\s*$/i, ""));
   if (rawNoCampus && state && /^[\p{L}][\p{L} .'-]{1,80}$/u.test(rawNoCampus)) {

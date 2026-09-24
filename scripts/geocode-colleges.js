@@ -249,6 +249,7 @@ const manualOverrides = {
   "Stanford University": {
     lat: 37.4275,
     lon: -122.1697,
+    location: "Stanford, CA",
     displayName: "Stanford University, Stanford, California, United States"
   },
   "University of Hawaii at Manoa": {
@@ -444,7 +445,7 @@ async function main() {
         ...manualOverrides[name],
         count: info.count,
         state,
-        location,
+        location: manualOverrides[name].location || location,
         query: "manualOverride"
       };
       cachedCount += 1;
