@@ -19,6 +19,7 @@ const git = (...args) => execFileSync('git', args, { cwd: root, maxBuffer: 160 *
 const current = read('docs/data/weekly-trends.json')
 const recent = read('generated/weekly-stats-history.json').slice(-12)
 const existing = read('generated/weekly-academic-category-history.json')
+const rebuild = process.argv.includes('--rebuild')
 if (recent.at(-1)?.weekEnd !== current.weekEnd) throw new Error('Weekly history and current digest disagree')
 if (!existing.some((week) => week.weekEnd === current.weekEnd)) throw new Error('Current category snapshot is missing')
 
@@ -34,6 +35,13 @@ for (const commit of commits) {
 }
 
 let weeks = existing
+if (rebuild) {
+  const payload = read('public/jobs.json')
+  if (!Array.isArray(payload.jobs) || payload.jobs.length !== current.stats?.totalJobs) {
+    throw new Error('Current job feed and weekly digest totals differ')
+  }
+  weeks = [computeAcademicCategorySnapshot(payload.jobs, current.weekEnd)]
+}
 for (const [weekEnd, totalJobs] of wanted) {
   if (weeks.some((week) => week.weekEnd === weekEnd)) continue
   const commit = matching.get(weekEnd)

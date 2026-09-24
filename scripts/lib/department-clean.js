@@ -25,5 +25,8 @@ export function cleanDepartment(dept) {
   if (/\b(position|posted|internal only|open until filled|all ranks|region:)\b/i.test(s)) return null
   // Administrative hiring buckets and copied job titles are not academic units.
   if (/^(?:human resources|academic affairs|provost(?:\/|\b)|faculty\s*[-–—]\s*university transfer|(?:associate|adjunct|assistant|visiting)\s+faculty\s*[-–—])/i.test(s)) return null
+  // Some sources put the job role in the Department field. A standalone role
+  // cannot identify a hiring unit, even when it is a non-empty string.
+  if (/^(?:adjunct(?: faculty)?|instructor|lecturer|professor|faculty(?:\s*\(open rank\))?|open pool|visiting faculty|research faculty|clinical faculty)$/i.test(s)) return null
   return s
 }

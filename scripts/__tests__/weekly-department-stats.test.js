@@ -8,5 +8,7 @@ test('Department coverage follows the same usable-value rule as the listing view
     { department: 'Academic Affairs' },
     { department: null },
     { department: 'Nursing' },
-  ]), { classified: 2, unknown: 2, classifiedPct: 50 })
+    { department: 'Adjunct' },
+    { department: 'Faculty (Open Rank)' },
+  ]), { classified: 2, unknown: 4, classifiedPct: 33.3 })
 })
