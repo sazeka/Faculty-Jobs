@@ -87,7 +87,7 @@ function detectPositionType(title) {
 
 // ── Stats computation ─────────────────────────────────────────────────────────
 
-function computeStats(jobs, institutions) {
+function computeStats(jobs, institutions, sourceScrapedAt) {
   const bySource     = {};
   const byType       = {};
   const byInstitution = {};
@@ -116,7 +116,7 @@ function computeStats(jobs, institutions) {
     totalJobs: jobs.length,
     bySource,
     byType,
-    positionTypeFacets: computePositionTypeFacets(jobs),
+    positionTypeFacets: { ...computePositionTypeFacets(jobs), sourceScrapedAt },
     topSources,
     topInstitutions,
     tenureTrackBreakdown: computeTenureTrackBreakdown(jobs),
@@ -230,7 +230,7 @@ async function main() {
   const history = readJson(HISTORY_PATH) || [];
   const weekEnd = isoWeekEnd();
   const prev    = latestPriorWeek(history, weekEnd);
-  const stats   = computeStats(payload.jobs, institutions);
+  const stats   = computeStats(payload.jobs, institutions, payload.scrapedAt || null);
 
   console.log(`\n  Week ending : ${weekEnd}`);
   console.log(`  Total jobs  : ${stats.totalJobs.toLocaleString()}`);

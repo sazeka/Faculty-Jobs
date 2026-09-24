@@ -38,13 +38,18 @@ const sortedPositionTypes = computed(() => {
   return Object.entries(types).sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count }))
 })
 const maxTypeCount = computed(() => sortedPositionTypes.value[0]?.count || 1)
+const positionSnapshotDate = computed(() => {
+  const value = trends.value?.stats?.positionTypeFacets?.sourceScrapedAt || trends.value?.generatedAt
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+})
 const positionGroups = computed(() => {
   const facets = trends.value?.stats?.positionTypeFacets
   if (!facets?.groups || !Number.isFinite(facets.total)) return []
   return [
     { key: 'roles', label: 'Role', values: ['Professor', 'Lecturer', 'Instructor', 'Postdoctoral', 'Other / unspecified'] },
     { key: 'ranks', label: 'Professor rank', values: ['Assistant Professor', 'Associate Professor', 'Full Professor', 'Rank unspecified'] },
-    { key: 'appointments', label: 'Appointment type', values: ['Adjunct', 'Clinical Faculty', 'Research Faculty', 'Teaching Faculty', 'Visiting Faculty'] },
+    { key: 'appointments', label: 'Additional title labels', values: ['Adjunct', 'Clinical Faculty', 'Research Faculty', 'Teaching Faculty', 'Visiting Faculty'] },
   ].map((group) => {
     const rows = group.values.map((label) => {
       const count = Number(facets.groups[group.key]?.[label] || 0)
@@ -265,7 +270,11 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
       <section class="trends-col position-types-panel" aria-labelledby="position-types-title">
         <div class="fa-label" id="position-types-title">Position types</div>
         <template v-if="positionGroups.length">
-          <p class="fa-meta position-types-intro">{{ fmt(trends.stats.positionTypeFacets.total) }} listings in this breakdown · title-based labels</p>
+          <p class="fa-meta position-types-intro">
+            {{ fmt(trends.stats.positionTypeFacets.total) }} listings in this breakdown
+            <span v-if="positionSnapshotDate"> · Snapshot {{ positionSnapshotDate }} (UTC)</span>
+            · title-based labels
+          </p>
           <div v-for="group in positionGroups" :key="group.key" class="position-type-group" :class="`position-type-group--${group.key}`">
             <h3 class="fa-meta position-type-group-title">{{ group.label }}</h3>
             <div v-for="row in group.rows" :key="row.label" class="position-type-row">

@@ -3,7 +3,7 @@ import { getPositionFilterTypes } from '../../web-vue/src/lib/jobClassification.
 export const POSITION_TYPE_GROUPS = [
   { key: 'roles', label: 'Role', values: ['Professor', 'Lecturer', 'Instructor', 'Postdoctoral', 'Other / unspecified'] },
   { key: 'ranks', label: 'Professor rank', values: ['Assistant Professor', 'Associate Professor', 'Full Professor', 'Rank unspecified'] },
-  { key: 'appointments', label: 'Appointment type', values: ['Adjunct', 'Clinical Faculty', 'Research Faculty', 'Teaching Faculty', 'Visiting Faculty'] },
+  { key: 'appointments', label: 'Additional title labels', values: ['Adjunct', 'Clinical Faculty', 'Research Faculty', 'Teaching Faculty', 'Visiting Faculty'] },
 ]
 
 export function computePositionTypeFacets(jobs) {
