@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://facultyatlas.org/data/release-schema.json",
+  "title": "Faculty Atlas Research Release",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "scrapedAt", "count", "jobs"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "scrapedAt": { "type": ["string", "null"], "format": "date-time" },
+    "count": { "type": "integer", "minimum": 0 },
+    "jobs": { "type": "array", "items": { "$ref": "#/$defs/job" } }
+  },
+  "$defs": {
+    "nullableString": { "type": ["string", "null"] },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalJobId", "canonicalGroupId", "title", "url", "source", "category",
+        "college", "location", "state", "department", "specialization", "discipline",
+        "positionType", "appointmentTrack", "appointmentTrackEvidence", "datePosted",
+        "closeDate", "startDate", "firstSeen", "openUntilFilled", "systemGroup"
+      ],
+      "properties": {
+        "canonicalJobId": { "$ref": "#/$defs/nullableString" },
+        "canonicalGroupId": { "$ref": "#/$defs/nullableString" },
+        "title": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri" },
+        "source": { "type": "string", "minLength": 1 },
+        "category": { "$ref": "#/$defs/nullableString" },
+        "college": { "$ref": "#/$defs/nullableString" },
+        "location": { "$ref": "#/$defs/nullableString" },
+        "state": { "type": ["string", "null"], "pattern": "^[A-Z]{2}$" },
+        "department": { "$ref": "#/$defs/nullableString" },
+        "specialization": { "$ref": "#/$defs/nullableString" },
+        "discipline": { "$ref": "#/$defs/nullableString" },
+        "positionType": { "$ref": "#/$defs/nullableString" },
+        "appointmentTrack": { "enum": ["tenure-track", "non-tenure-track", "variable", "unclassified"] },
+        "appointmentTrackEvidence": { "$ref": "#/$defs/nullableString" },
+        "datePosted": { "$ref": "#/$defs/nullableString" },
+        "closeDate": { "$ref": "#/$defs/nullableString" },
+        "startDate": { "$ref": "#/$defs/nullableString" },
+        "firstSeen": { "$ref": "#/$defs/nullableString" },
+        "openUntilFilled": { "type": ["boolean", "null"] },
+        "systemGroup": { "$ref": "#/$defs/nullableString" }
+      }
+    }
+  }
+}

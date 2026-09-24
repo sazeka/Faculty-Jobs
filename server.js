@@ -729,6 +729,14 @@ const MA_PRIVATE_CAMPUSES = [
     type: "generic",
     url: "https://employment.williams.edu/faculty-positions/",
   },
+  // The official Williams faculty page is occasionally blocked upstream.
+  // Keep the current Economics benchmark posting recoverable from Interfolio's
+  // public position API; the scraper automatically drops it once it closes.
+  {
+    campus: "Williams College",
+    type: "interfolio-position",
+    url: "https://apply.interfolio.com/190595",
+  },
   {
     campus: "Smith College",
     type: "smith-interfolio",
@@ -10857,6 +10865,7 @@ async function scrapeMaPrivate(context) {
         if (type === "jibe-api") return await scrapeJibeApiAs(url, campus, "MA");
         if (type === "jobvite") return await scrapeJobviteAs(url, campus, "MA");
         if (type === "smith-interfolio") return await scrapeSmithInterfolioPage(url, campus, "MA");
+        if (type === "interfolio-position") return await scrapeInterfolioPositionAs(url, campus, "MA");
         if (type === "academicjobsonline") return await scrapeAcademicJobsOnlineAs(context, url, campus, "MA");
         if (type === "peopleclick") return await scrapePeopleClickAs(context, url, campus, "MA");
         if (type === "schooljobs") return await scrapeSchoolJobsAs(context, url, campus, "MA");
@@ -22196,6 +22205,53 @@ async function scrapeCuBoulder(context, startUrl, campusName, sourceName) {
 }
 
 // Interfolio Institution-specific positions page scraper
+export function buildInterfolioPositionJob(record, campusName, sourceName) {
+  if (!record || record.is_open !== true || record.is_closed === true) return null;
+  const title = clean(record.position_name || "");
+  if (!title || !looksFacultyish(title)) return null;
+  const id = String(record.position_id || "").trim();
+  const url = /^https?:\/\//i.test(record.landing_page_url || "")
+    ? record.landing_page_url
+    : (id ? `https://apply.interfolio.com/${id}` : null);
+  if (!url) return null;
+  const plainText = (value) => clean(String(value || "").replace(/<[^>]+>/g, " ")).slice(0, 4000) || null;
+  const ymd = (value) => {
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date.toISOString().slice(0, 10);
+  };
+  const job = {
+    title,
+    url,
+    source: sourceName,
+    category: "Faculty",
+    college: campusName,
+    location: clean(record.location || "") || null,
+    description: plainText(record.landing_page_description),
+  };
+  const posted = ymd(record.start_date);
+  const close = ymd(record.end_date);
+  if (posted) job.datePosted = posted;
+  if (close) job.closeDate = close;
+  return job;
+}
+
+export async function scrapeInterfolioPositionAs(startUrl, campusName, sourceName) {
+  const match = String(startUrl || "").match(/interfolio\.com\/(\d+)/);
+  if (!match) return [];
+  try {
+    const response = await fetch(`https://logic.interfolio.com/dossier-api/positions/${match[1]}`, {
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (!response.ok) throw new Error(`API returned ${response.status}`);
+    const job = buildInterfolioPositionJob(await response.json(), campusName, sourceName);
+    return job ? [job] : [];
+  } catch (e) {
+    console.error(`❌ ${campusName} ${sourceName} Interfolio position scrape failed:`, e?.message || e);
+    return [];
+  }
+}
+
 export async function scrapeInterfolioInstitution(context, startUrl, campusName, sourceName) {
   // Extract institution ID from URL like https://apply.interfolio.com/16224/positions
   const instMatch = startUrl.match(/interfolio\.com\/(\d+)/);

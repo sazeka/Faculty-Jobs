@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.org/faculty-jobs/schema.json",
-  "title": "Faculty Jobs Snapshot",
+  "$id": "https://facultyatlas.org/data/schema.json",
+  "title": "Faculty Atlas Internal Working Snapshot",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -34,7 +34,7 @@
     },
     "job": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "required": [
         "title",
         "url",

@@ -1,9 +1,9 @@
 # Faculty Atlas
 
-**A scholarly directory of open faculty positions across North American higher education.**
+**A scholarly directory of open faculty positions across United States higher education.**
 Free to browse, no account required → **[www.facultyatlas.org](https://www.facultyatlas.org)**
 
-Faculty Atlas aggregates **14,000+ open faculty listings** from **1,000+ institutions** across **50+ state systems and university networks**, normalizes them into a single searchable catalog, and refreshes automatically every other day.
+Faculty Atlas aggregates **20,000+ open faculty listings** from **1,000+ institutions** across the 50 states and Washington, D.C., normalizes them into a single searchable catalog, and refreshes automatically every other day.
 
 ---
 
@@ -64,7 +64,8 @@ npm test
 - Research guide: `docs/researchers.md`
 - Benchmarking register: `BENCHMARKING.md`
 - Data dictionary: `data/data-dictionary.md`
-- JSON schema: `data/schema.json`
+- Release JSON schema: `data/release-schema.json`
+- Internal working-snapshot schema: `data/schema.json`
 - Citation metadata: `CITATION.cff`
 - Data usage / license notes: `LICENSE-DATA.md`
 
@@ -75,6 +76,8 @@ npm run release:dataset
 # optional custom date:
 node scripts/release-dataset.js --date 2026-02-23
 ```
+
+The release export contains metadata and source links rather than full posting descriptions. It also writes a metadata manifest and SHA-256 checksum file so an archived snapshot can be traced to its source commit and verified after download.
 
 Data-quality checks:
 
