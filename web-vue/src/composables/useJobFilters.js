@@ -1,7 +1,8 @@
 import { computed } from 'vue'
 import { ALL_FILTER_VALUE, createDefaultFilters } from '../config/appConfig.js'
 import { SOURCE_TO_STATE_ALIASES, US_STATES_BY_ABBREV } from '../config/jobTaxonomy.js'
-import { getPositionType, getPositionTypes, getPositionFilterTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
+import { getPositionType, getPositionTypes, normalizeTenureTrack } from '../lib/jobClassification.js'
+import { getPositionFacetLabels } from '../../../scripts/lib/weekly-position-type-stats.js'
 import { classifySourceLink, institutionTitleConflict, sanitizePostingDate } from '../lib/listingTrust.js'
 import { inferAlaskaCampus } from '../../../scripts/lib/alaska-campus.js'
 import { normalizeSearchText } from '../../../scripts/lib/jobs-search-index.js'
@@ -439,7 +440,7 @@ function normalizeJob(job) {
     isClosed: Boolean(job?.closeDate && !job?.openUntilFilled && String(job.closeDate) < TODAY_ISO),
     tenureTrack: normalizeTenureTrack(job?.tenureTrack, job?.titleClean || job?.title || ''),
     positionTypes: job?.rank ? [job.rank] : getPositionTypes(job?.titleClean || job?.title || ''),
-    positionFilterTypes: getPositionFilterTypes(job?.titleClean || job?.title || '', job?.rank),
+    positionFilterTypes: getPositionFacetLabels(job),
     positionType: job?.rank || getPositionType(job?.titleClean || job?.title || ''),
     state,
     datePosted,

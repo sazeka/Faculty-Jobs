@@ -25,11 +25,27 @@ export function getPositionDisplayRoles(job, typeLabels = getPositionFilterTypes
   return [hasFacultyRole(job.titleClean || job.title) ? 'Faculty, role unspecified' : 'Other / unclear']
 }
 
+// The chart and catalog use the same title-derived labels. These two fallback
+// roles and the unspecified rank are searchable even though they are absent
+// from the underlying classifier's more specific labels.
+export function getPositionFacetLabels(job) {
+  const types = getPositionFilterTypes(job.titleClean || job.title || '', job.rank)
+  const roles = getPositionDisplayRoles(job, types)
+  const labels = new Set(types)
+  for (const role of roles) labels.add(role)
+  if (labels.has('Professor') && !POSITION_TYPE_GROUPS[1].values.slice(0, -1).some((rank) => labels.has(rank))) {
+    labels.add('Rank unspecified')
+  }
+  return [...labels]
+}
+
 export function computePositionTypeFacets(jobs) {
   const groups = Object.fromEntries(POSITION_TYPE_GROUPS.map(({ key, values }) => [key, Object.fromEntries(values.map((value) => [value, 0]))]))
+  let unspecifiedAdjunct = 0
   for (const job of jobs) {
-    const types = new Set(getPositionFilterTypes(job.titleClean || job.title || '', job.rank))
+    const types = new Set(getPositionFacetLabels(job))
     for (const role of getPositionDisplayRoles(job, types)) groups.roles[role]++
+    if (types.has('Faculty, role unspecified') && types.has('Adjunct')) unspecifiedAdjunct++
 
     if (types.has('Professor')) {
       let hasRank = false
@@ -45,5 +61,5 @@ export function computePositionTypeFacets(jobs) {
       }
     }
   }
-  return { total: jobs.length, groups }
+  return { total: jobs.length, groups, unspecifiedAdjunct }
 }

@@ -7,7 +7,7 @@ const props = defineProps({
   baseUrl: { type: String, default: '/' },
 })
 
-const emit = defineEmits(['open-methodology'])
+const emit = defineEmits(['open-methodology', 'explore-position-type'])
 
 const trends = ref(null)
 const loading = ref(true)
@@ -58,6 +58,22 @@ const positionGroups = computed(() => {
     return { ...group, rows: rows.map((row) => ({ ...row, barWidth: `${(row.count / max) * 100}%` })) }
   })
 })
+const selectedPositionHistory = ref('Professor')
+const positionHistory = computed(() => {
+  const items = (trends.value?.history || [])
+    .filter((week) => week.positionTypeFacets?.total > 0)
+    .slice(-12)
+    .map((week) => {
+      const facets = week.positionTypeFacets
+      const count = Number(Object.values(facets.groups || {}).find((group) =>
+        Object.hasOwn(group, selectedPositionHistory.value))?.[selectedPositionHistory.value] || 0)
+      return { weekEnd: week.weekEnd, count, share: count / facets.total * 100 }
+    })
+  const max = Math.max(1, ...items.map((item) => item.share))
+  return items.map((item) => ({ ...item, height: `${Math.max(4, item.share / max * 100)}%` }))
+})
+const positionSnapshotAligned = computed(() =>
+  trends.value?.stats?.positionTypeFacets?.total === trends.value?.stats?.totalJobs)
 const tenureStats = computed(() => trends.value?.stats?.tenureTrackBreakdown || null)
 const tenureHistory = computed(() => {
   const items = appointmentTrackHistory(trends.value?.history || [])
@@ -273,18 +289,44 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
             <span v-if="positionSnapshotDate"> · Snapshot {{ positionSnapshotDate }} (UTC)</span>
             · title-based labels
           </p>
+          <p v-if="!positionSnapshotAligned" class="fa-meta position-types-sync-note">
+            This position snapshot differs from the weekly digest above; its counts use the date shown here.
+          </p>
           <div v-for="group in positionGroups" :key="group.key" class="position-type-group" :class="`position-type-group--${group.key}`">
             <h3 class="fa-meta position-type-group-title">{{ group.label }}</h3>
-            <div v-for="row in group.rows" :key="row.label" class="position-type-row">
+            <button v-for="row in group.rows" :key="row.label" type="button" class="position-type-row" :disabled="row.count === 0" :aria-label="`Explore ${row.label} jobs; ${fmt(row.count)} in this snapshot`" @click="emit('explore-position-type', row.label)">
               <span class="position-type-label">{{ row.label }}</span>
               <span class="position-type-track" aria-hidden="true"><span class="position-type-fill" :style="{ width: row.barWidth }"></span></span>
               <span class="position-type-value fa-num"><strong>{{ fmt(row.count) }}</strong><small>{{ row.shareLabel }}</small></span>
+            </button>
+          </div>
+          <div v-if="positionHistory.length" class="position-history">
+            <div class="position-history-head">
+              <h3 class="fa-meta position-type-group-title">Weekly history</h3>
+              <label class="fa-meta">Show
+                <select v-model="selectedPositionHistory" aria-label="Position type history category">
+                  <optgroup v-for="group in positionGroups" :key="group.key" :label="group.label">
+                    <option v-for="row in group.rows" :key="row.label" :value="row.label">{{ row.label }}</option>
+                  </optgroup>
+                </select>
+              </label>
             </div>
+            <div class="position-history-bars" role="img" :aria-label="`Weekly share of ${selectedPositionHistory} listings: ${positionHistory.map((week) => `${fmtWeek(week.weekEnd)} ${week.share.toFixed(1)} percent`).join(', ')}`">
+              <div v-for="week in positionHistory" :key="week.weekEnd" class="position-history-week" :title="`${fmtWeek(week.weekEnd)}: ${fmt(week.count)} ${selectedPositionHistory} listings, ${week.share.toFixed(1)}% of all listings`">
+                <span class="position-history-value">{{ week.share.toFixed(1) }}%</span>
+                <span class="position-history-track"><span :style="{ height: week.height }"></span></span>
+                <span class="position-history-date">{{ fmtWeek(week.weekEnd) }}</span>
+              </div>
+            </div>
+            <p class="fa-meta position-history-note">Bar heights are relative to the highest week for the selected category.</p>
+            <p v-if="positionHistory.length === 1" class="fa-meta position-history-note">Tracking starts with this digest. Weekly comparisons will appear as new digests are published.</p>
           </div>
           <p class="fa-meta position-types-note">
             Position types are inferred from job titles and available rank data; a title may be incomplete or ambiguous.
             “Faculty, role unspecified” identifies a faculty position without a more specific role; “Other / unclear” has no clear role label. “Rank unspecified” means a professor role was identified without a specific rank.
+            <span v-if="trends.stats.positionTypeFacets.unspecifiedAdjunct"> {{ fmt(trends.stats.positionTypeFacets.unspecifiedAdjunct) }} of the faculty listings with an unspecified role are labeled Adjunct; that identifies appointment status, not a specific role.</span>
             A listing can appear in multiple rows, so percentages may not sum to 100%. Each percentage uses all {{ fmt(trends.stats.positionTypeFacets.total) }} listings; bar lengths use one scale across all groups.
+            Select a row to see matching jobs in the current catalog; its total may differ as listings change or duplicate posts are grouped.
             <button type="button" class="trends-methods-link" @click="emit('open-methodology', 'methodology-position-types')">How this is classified</button>
           </p>
         </template>
@@ -679,6 +721,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 }
 
 .position-types-intro { margin: 8px 0 18px; color: var(--ink-3); }
+.position-types-sync-note { margin: -10px 0 16px; color: var(--accent); }
 .position-type-group { margin-top: 18px; }
 .position-type-group-title {
   margin: 0 0 7px;
@@ -696,7 +739,18 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   gap: 12px;
   align-items: center;
   min-height: 34px;
+  width: 100%;
+  padding: 2px 4px;
+  margin: 0 -4px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
 }
+.position-type-row:hover, .position-type-row:focus-visible { background: var(--paper-3); }
+.position-type-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.position-type-row:disabled { cursor: default; opacity: .5; }
 .position-type-label { color: var(--ink-2); font-size: 12px; line-height: 1.25; }
 .position-type-track { height: 8px; background: var(--paper-3); overflow: hidden; border-radius: 999px; }
 .position-type-fill { display: block; height: 100%; background: var(--ink-2); border-radius: inherit; }
@@ -707,6 +761,18 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 .position-type-value strong { display: block; font-size: 12px; font-weight: 600; }
 .position-type-value small { display: block; margin-top: 3px; color: var(--ink-4); font-size: 10px; }
 .position-types-note { margin: 18px 0 0; color: var(--ink-4); line-height: 1.5; }
+.position-history { margin-top: 22px; }
+.position-history-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.position-history-head .position-type-group-title { flex: 1; }
+.position-history-head label { white-space: nowrap; }
+.position-history-head select { max-width: 180px; margin-left: 4px; padding: 4px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink-2); font: inherit; }
+.position-history-bars { display: flex; gap: 5px; height: 115px; margin-top: 12px; align-items: stretch; }
+.position-history-week { display: flex; flex: 1; min-width: 0; flex-direction: column; align-items: center; gap: 3px; }
+.position-history-value, .position-history-date { color: var(--ink-4); font-size: 10px; white-space: nowrap; }
+.position-history-week:not(:first-child):not(:last-child) .position-history-date { visibility: hidden; }
+.position-history-track { display: flex; flex: 1; width: min(100%, 26px); align-items: end; background: var(--paper-3); }
+.position-history-track > span { display: block; width: 100%; background: var(--sage); }
+.position-history-note { margin: 10px 0 0; color: var(--ink-4); }
 
 .trends-disciplines { max-width: 560px; }
 .trends-inst-row {

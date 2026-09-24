@@ -265,6 +265,11 @@ function focusCatalog() {
   requestAnimationFrame(() => catalogSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
 }
 
+function explorePositionType(label) {
+  updateFilters({ ...createDefaultFilters(), positionType: [label] })
+  focusCatalog()
+}
+
 async function openMethodology(sectionId) {
   methodologyTrigger = document.activeElement
   showMethodology.value = true
@@ -486,6 +491,7 @@ async function reportBadListing(job) {
       id="main-content"
       :base-url="baseUrl"
       @open-methodology="openMethodology($event || 'methodology-classification')"
+      @explore-position-type="explorePositionType"
     />
 
     <section

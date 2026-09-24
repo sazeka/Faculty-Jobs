@@ -131,7 +131,11 @@ function computeStats(jobs, institutions, sourceScrapedAt) {
 function templateSummary(stats, prev) {
   const delta = prev ? stats.totalJobs - prev.totalJobs : 0;
   const sign  = delta >= 0 ? "+" : "";
-  const topType = Object.entries(stats.byType).sort((a, b) => b[1] - a[1])[0];
+  const topType = Object.entries({
+    ...stats.positionTypeFacets.groups.roles,
+    ...stats.positionTypeFacets.groups.appointmentStatus,
+  }).filter(([label]) => !['Faculty, role unspecified', 'Other / unclear'].includes(label))
+    .sort((a, b) => b[1] - a[1])[0];
   return [
     `Faculty Atlas is currently tracking ${stats.totalJobs.toLocaleString()} open faculty positions` +
       (prev ? ` — ${sign}${delta} compared to last week.` : "."),
@@ -231,6 +235,9 @@ async function main() {
   const weekEnd = isoWeekEnd();
   const prev    = latestPriorWeek(history, weekEnd);
   const stats   = computeStats(payload.jobs, institutions, payload.scrapedAt || null);
+  if (stats.positionTypeFacets.total !== stats.totalJobs) {
+    throw new Error('Position type snapshot and weekly digest totals must match');
+  }
 
   console.log(`\n  Week ending : ${weekEnd}`);
   console.log(`  Total jobs  : ${stats.totalJobs.toLocaleString()}`);
@@ -281,6 +288,7 @@ async function main() {
     totalJobs: stats.totalJobs,
     bySource: stats.bySource,
     byType: stats.byType,
+    positionTypeFacets: stats.positionTypeFacets,
     tenureTrackBreakdown: stats.tenureTrackBreakdown,
     institutionControlBreakdown: stats.institutionControlBreakdown,
     aiHiringBreakdown: statsForPrompt.aiHiringBreakdown,
@@ -309,6 +317,7 @@ async function main() {
     history: updatedHistory.map((h) => ({
       weekEnd: h.weekEnd,
       totalJobs: h.totalJobs,
+      positionTypeFacets: h.positionTypeFacets ?? null,
       tenureTrack: h.tenureTrackBreakdown?.tenureTrack ?? null,
       nonTenureTrack: h.tenureTrackBreakdown?.nonTenureTrack ?? null,
       variableTrack: h.tenureTrackBreakdown?.variableTrack ?? null,

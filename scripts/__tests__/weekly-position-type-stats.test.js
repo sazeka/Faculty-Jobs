@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { computePositionTypeFacets } from '../lib/weekly-position-type-stats.js'
+import { computePositionTypeFacets, getPositionFacetLabels } from '../lib/weekly-position-type-stats.js'
 
 test('counts overlapping roles, ranks, appointment status, and faculty focus', () => {
   const result = computePositionTypeFacets([
@@ -27,4 +27,21 @@ test('counts overlapping roles, ranks, appointment status, and faculty focus', (
   assert.equal(result.groups.facultyFocus['Clinical Faculty'], 1)
   assert.equal(result.groups.appointmentStatus.Adjunct, 2)
   assert.equal(result.groups.facultyFocus['Research Faculty'], 0)
+  assert.equal(result.unspecifiedAdjunct, 0)
+})
+
+test('catalog labels match chart fallback rows and known professorial faculty', () => {
+  assert.deepEqual(getPositionFacetLabels({ title: 'Adjunct Faculty - Biology' }).filter((label) =>
+    ['Adjunct', 'Faculty, role unspecified'].includes(label)).sort(), ['Adjunct', 'Faculty, role unspecified'])
+  assert.ok(getPositionFacetLabels({ title: 'CFS Professorial Faculty' }).includes('Professor'))
+  assert.ok(getPositionFacetLabels({ title: 'Professor of Biology' }).includes('Rank unspecified'))
+  assert.ok(getPositionFacetLabels({ title: 'Faculty Leave Manager' }).includes('Other / unclear'))
+
+  const result = computePositionTypeFacets([
+    { title: 'Adjunct Faculty - Biology' },
+    { title: 'CFS Professorial Faculty' },
+  ])
+  assert.equal(result.unspecifiedAdjunct, 1)
+  assert.equal(result.groups.roles.Professor, 1)
+  assert.equal(result.groups.roles['Faculty, role unspecified'], 1)
 })

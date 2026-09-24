@@ -75,6 +75,7 @@ export function getPositionType(title) {
     t.includes('adjunct') || t.includes('visiting') || researchAppointment || clinicalAppointment ||
     hasTeachingAppointment(t)
   if (!hasProfessorModifier && ranks.includes('Full Professor')) return 'Full Professor'
+  if (/\bprofessorial\s+faculty\b/.test(t)) return 'Professor'
   if (!hasProfessorModifier && /\bprofessor\b/.test(t)) return 'Professor'
   if (t.includes('lecturer')) return 'Lecturer'
   if (t.includes('instructor')) return 'Instructor'
@@ -124,7 +125,7 @@ export function getPositionFilterTypes(title, rank = null) {
       !/\bfaculty development chairs?\b/.test(t)
   )) return []
 
-  if (/\bprofessors?\b/.test(t) || types.some((type) => /professor/i.test(type))) add('Professor')
+  if (/\bprofessors?\b|\bprofessorial\s+faculty\b/.test(t) || types.some((type) => /professor/i.test(type))) add('Professor')
   if (hasClinicalAppointment(t)) add('Clinical Faculty')
   if (hasResearchAppointment(t)) add('Research Faculty')
   if (/\b(?:lecturers?|lect\.?|instructors?|inst\.?)\b/.test(t)) {
