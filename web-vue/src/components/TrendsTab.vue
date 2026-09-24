@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { appointmentTrackHistory, academicCoverageHistory } from '../lib/trendsHistory.js'
 import { POSITION_TYPE_GROUPS } from '../../../scripts/lib/weekly-position-type-stats.js'
+import { categoryOptions } from '../lib/academicCategoryTrends.js'
 import AcademicCategoryDetail from './AcademicCategoryDetail.vue'
 
 const props = defineProps({
@@ -50,6 +51,16 @@ const topDisciplines = computed(() => {
   const items = disciplineStats.value?.topDisciplines?.slice(0, 8) || []
   const max = Math.max(1, ...items.map((item) => item.count))
   const classified = disciplineStats.value?.classified || 0
+  return items.map((item) => ({
+    ...item,
+    barWidth: `${(item.count / max) * 100}%`,
+    shareLabel: classified ? `${((item.count / classified) * 100).toFixed(1)}%` : '0.0%',
+  }))
+})
+const topDepartments = computed(() => {
+  const items = categoryOptions(categoryWeeks.value, 'department').slice(0, 8)
+  const max = Math.max(1, ...items.map((item) => item.count))
+  const classified = departmentStats.value?.classified || 0
   return items.map((item) => ({
     ...item,
     barWidth: `${(item.count / max) * 100}%`,
@@ -432,6 +443,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
     <div class="trends-stats-grid academic-stats-grid">
       <section class="trends-col academic-panel" aria-labelledby="discipline-trends-title">
         <div class="fa-label" id="discipline-trends-title">Academic disciplines over time</div>
+        <p class="fa-meta academic-note">Discipline means the subject area of a position.</p>
         <template v-if="disciplineStats">
           <div class="academic-current">
             <div class="fa-display academic-current-value">{{ fmt(disciplineStats.classified) }}</div>
@@ -472,6 +484,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 
       <section class="trends-col academic-panel" aria-labelledby="department-trends-title">
         <div class="fa-label" id="department-trends-title">Department data over time</div>
+        <p class="fa-meta academic-note">Department means the hiring unit named in a listing.</p>
         <template v-if="departmentStats">
           <div class="academic-current">
             <div class="fa-display academic-current-value">{{ fmt(departmentStats.classified) }}</div>
@@ -498,6 +511,15 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
             <span><i class="tenure-key academic-key-known academic-key-department"></i>Usable Department</span>
             <span><i class="tenure-key academic-key-unknown"></i>Missing</span>
           </div>
+          <template v-if="topDepartments.length">
+            <div class="fa-meta academic-subhead">Leading departments this week</div>
+            <button v-for="item in topDepartments" :key="item.name" type="button" class="position-type-row academic-category-row" :class="{ active: selectedDepartment === item.name }" :aria-label="`Explore ${item.name} Department trends`" @click="selectedDepartment = item.name">
+              <span class="position-type-label">{{ item.name }}</span>
+              <span class="position-type-track" aria-hidden="true"><span class="position-type-fill" :style="{ width: item.barWidth }"></span></span>
+              <span class="position-type-value fa-num"><strong>{{ fmt(item.count) }}</strong><small>{{ item.shareLabel }}</small></span>
+            </button>
+            <p class="fa-meta academic-note">Percentages for leading departments use the {{ fmt(departmentStats.classified) }} listings with a usable Department. Bar lengths compare the departments shown.</p>
+          </template>
           <p v-if="departmentHistory.length === 1" class="fa-meta academic-note">Department tracking starts with this snapshot; weekly comparisons will appear after the next digest.</p>
           <p class="fa-meta academic-note">{{ fmt(departmentStats.unknown) }} listings have no usable Department. This measures field coverage using the same validation as job listings; it does not mean every displayed Department was independently verified.</p>
           <AcademicCategoryDetail v-if="categoryWeeks.length" v-model:selected="selectedDepartment" kind="department" :weeks="categoryWeeks" :classified="departmentStats.classified" />
