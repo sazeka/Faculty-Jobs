@@ -1,26 +1,26 @@
 {
-  "date": "2026-09-24T16:43:48.502Z",
+  "date": "2026-09-24T13:22:18.872Z",
   "reviewed": 120,
   "totalSample": 120,
   "overallSample": {
-    "count": 104,
-    "exactMatch": 1,
+    "count": 120,
+    "exactMatch": 0.9833333333333333,
     "perLabel": [
       {
         "label": "Professor",
-        "support": 43,
+        "support": 47,
         "precision": 1,
         "recall": 1,
-        "truePositive": 43,
+        "truePositive": 47,
         "falsePositive": 0,
         "falseNegative": 0
       },
       {
         "label": "Assistant Professor",
-        "support": 35,
+        "support": 39,
         "precision": 1,
         "recall": 1,
-        "truePositive": 35,
+        "truePositive": 39,
         "falsePositive": 0,
         "falseNegative": 0
       },
@@ -53,19 +53,19 @@
       },
       {
         "label": "Instructor",
-        "support": 19,
+        "support": 20,
         "precision": 1,
         "recall": 1,
-        "truePositive": 19,
+        "truePositive": 20,
         "falsePositive": 0,
         "falseNegative": 0
       },
       {
         "label": "Clinical Faculty",
-        "support": 12,
+        "support": 13,
         "precision": 1,
         "recall": 1,
-        "truePositive": 12,
+        "truePositive": 13,
         "falsePositive": 0,
         "falseNegative": 0
       },
@@ -80,10 +80,10 @@
       },
       {
         "label": "Adjunct",
-        "support": 45,
+        "support": 50,
         "precision": 1,
         "recall": 1,
-        "truePositive": 45,
+        "truePositive": 50,
         "falsePositive": 0,
         "falseNegative": 0
       },
@@ -107,34 +107,34 @@
       },
       {
         "label": "Postdoctoral",
-        "support": 2,
+        "support": 4,
         "precision": 1,
         "recall": 1,
-        "truePositive": 2,
+        "truePositive": 4,
         "falsePositive": 0,
         "falseNegative": 0
       }
     ]
   },
   "randomSample": {
-    "count": 71,
+    "count": 80,
     "exactMatch": 1,
     "perLabel": [
       {
         "label": "Professor",
-        "support": 23,
+        "support": 26,
         "precision": 1,
         "recall": 1,
-        "truePositive": 23,
+        "truePositive": 26,
         "falsePositive": 0,
         "falseNegative": 0
       },
       {
         "label": "Assistant Professor",
-        "support": 18,
+        "support": 21,
         "precision": 1,
         "recall": 1,
-        "truePositive": 18,
+        "truePositive": 21,
         "falsePositive": 0,
         "falseNegative": 0
       },
@@ -167,10 +167,10 @@
       },
       {
         "label": "Instructor",
-        "support": 18,
+        "support": 19,
         "precision": 1,
         "recall": 1,
-        "truePositive": 18,
+        "truePositive": 19,
         "falsePositive": 0,
         "falseNegative": 0
       },
@@ -194,10 +194,10 @@
       },
       {
         "label": "Adjunct",
-        "support": 42,
+        "support": 46,
         "precision": 1,
         "recall": 1,
-        "truePositive": 42,
+        "truePositive": 46,
         "falsePositive": 0,
         "falseNegative": 0
       },
@@ -221,33 +221,39 @@
       },
       {
         "label": "Postdoctoral",
-        "support": 0,
-        "precision": null,
-        "recall": null,
-        "truePositive": 0,
+        "support": 1,
+        "precision": 1,
+        "recall": 1,
+        "truePositive": 1,
         "falsePositive": 0,
         "falseNegative": 0
       }
     ]
   },
-  "missing": [
-    "job_5a2dad5607407786",
-    "job_7fe549b72d17f2eb",
-    "job_28823af9520d3a35",
-    "job_49c508541032d67c",
-    "job_9dd30ed880920548",
-    "job_5577cfbfd94ac847",
-    "job_9222c1938a3714dc",
-    "job_1157d914d45ea2b0",
-    "job_4f072f4a53a1210a",
-    "job_4ab2124e648d6296",
-    "job_e3783e779b62303b",
-    "job_39802729aef51b92",
-    "job_253fc4602bf1dcc8",
-    "job_cc0c03132d64b1b2",
-    "job_9e1082803b119ec0",
-    "job_e309173208c491dd"
-  ],
+  "missing": [],
   "changed": [],
-  "disagreements": []
+  "disagreements": [
+    {
+      "id": "job_ddb4ad790ed85679",
+      "bucket": "research-holdout",
+      "title": "Research Fellow in Atherosclerosis Inflammation at MGH Cardiovascular Research Center’s Jaffer Lab",
+      "stored": null,
+      "gold": [],
+      "reviewStatus": "reviewed",
+      "predicted": [
+        "Faculty"
+      ]
+    },
+    {
+      "id": "job_9e1082803b119ec0",
+      "bucket": "generic-faculty-holdout",
+      "title": "Faculty Learning Communities",
+      "stored": "Other",
+      "gold": [],
+      "reviewStatus": "reviewed",
+      "predicted": [
+        "Faculty"
+      ]
+    }
+  ]
 }

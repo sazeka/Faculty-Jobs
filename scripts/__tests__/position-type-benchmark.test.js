@@ -35,3 +35,18 @@ test('does not score an annotation after its source title changes', () => {
   assert.equal(result.count, 0)
   assert.deepEqual(result.changed, [{ id: 'one', reviewedTitle: 'Professor of History', currentTitle: 'Professor of Chemistry' }])
 })
+
+test('matches a changed job id through a unique source URL but rejects ambiguous URLs', () => {
+  const sample = [{ id: 'old-id', url: 'https://example.edu/job/1', title: 'Visiting Lecturer', gold: ['Lecturer', 'Visiting Faculty'] }]
+  const jobs = [{ canonicalJobId: 'new-id', url: 'https://example.edu/job/1', title: 'Visiting Lecturer' }]
+  assert.equal(evaluatePositionSample(sample, jobs).exactMatch, 1)
+  assert.deepEqual(evaluatePositionSample(sample, [...jobs, { ...jobs[0], canonicalJobId: 'another-id' }]).missing, ['old-id'])
+})
+
+test('reviews the chart role separately from overlapping filter labels', () => {
+  const rows = evaluatePositionSample(
+    [{ id: 'one', title: 'Adjunct Faculty - Biology', gold: ['Adjunct'], roleGold: ['Faculty, role unspecified'] }],
+    [{ canonicalJobId: 'one', title: 'Adjunct Faculty - Biology' }]
+  ).rows
+  assert.deepEqual(rows[0].predictedRoles, ['Faculty, role unspecified'])
+})

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { appointmentTrackHistory } from '../lib/trendsHistory.js'
+import { POSITION_TYPE_GROUPS } from '../../../scripts/lib/weekly-position-type-stats.js'
 
 const props = defineProps({
   baseUrl: { type: String, default: '/' },
@@ -46,17 +47,14 @@ const positionSnapshotDate = computed(() => {
 const positionGroups = computed(() => {
   const facets = trends.value?.stats?.positionTypeFacets
   if (!facets?.groups || !Number.isFinite(facets.total)) return []
-  return [
-    { key: 'roles', label: 'Role', values: ['Professor', 'Lecturer', 'Instructor', 'Postdoctoral', 'Other / unspecified'] },
-    { key: 'ranks', label: 'Professor rank', values: ['Assistant Professor', 'Associate Professor', 'Full Professor', 'Rank unspecified'] },
-    { key: 'appointments', label: 'Additional title labels', values: ['Adjunct', 'Clinical Faculty', 'Research Faculty', 'Teaching Faculty', 'Visiting Faculty'] },
-  ].map((group) => {
+  const groups = POSITION_TYPE_GROUPS
+  const max = Math.max(1, ...groups.flatMap((group) => group.values.map((label) => Number(facets.groups[group.key]?.[label] || 0))))
+  return groups.map((group) => {
     const rows = group.values.map((label) => {
       const count = Number(facets.groups[group.key]?.[label] || 0)
       const share = facets.total ? (count / facets.total) * 100 : 0
       return { label, count, shareLabel: share > 0 && share < 0.1 ? '<0.1%' : `${share.toFixed(1)}%` }
     })
-    const max = Math.max(1, ...rows.map((row) => row.count))
     return { ...group, rows: rows.map((row) => ({ ...row, barWidth: `${(row.count / max) * 100}%` })) }
   })
 })
@@ -285,8 +283,8 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
           </div>
           <p class="fa-meta position-types-note">
             Position types are inferred from job titles and available rank data; a title may be incomplete or ambiguous.
-            “Other / unspecified” means none of the named roles was identified, while “Rank unspecified” means a professor role was identified without a specific rank.
-            A listing can appear in multiple rows, so percentages may not sum to 100%. Each percentage uses all {{ fmt(trends.stats.positionTypeFacets.total) }} listings; bar lengths compare types within each group.
+            “Faculty, role unspecified” identifies a faculty position without a more specific role; “Other / unclear” has no clear role label. “Rank unspecified” means a professor role was identified without a specific rank.
+            A listing can appear in multiple rows, so percentages may not sum to 100%. Each percentage uses all {{ fmt(trends.stats.positionTypeFacets.total) }} listings; bar lengths use one scale across all groups.
             <button type="button" class="trends-methods-link" @click="emit('open-methodology', 'methodology-position-types')">How this is classified</button>
           </p>
         </template>
@@ -703,7 +701,8 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 .position-type-track { height: 8px; background: var(--paper-3); overflow: hidden; border-radius: 999px; }
 .position-type-fill { display: block; height: 100%; background: var(--ink-2); border-radius: inherit; }
 .position-type-group--ranks .position-type-fill { background: var(--sage); }
-.position-type-group--appointments .position-type-fill { background: var(--accent); }
+.position-type-group--appointmentStatus .position-type-fill { background: var(--accent); }
+.position-type-group--facultyFocus .position-type-fill { background: var(--ink-2); }
 .position-type-value { text-align: right; color: var(--ink-2); line-height: 1.05; }
 .position-type-value strong { display: block; font-size: 12px; font-weight: 600; }
 .position-type-value small { display: block; margin-top: 3px; color: var(--ink-4); font-size: 10px; }

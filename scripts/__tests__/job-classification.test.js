@@ -72,6 +72,18 @@ test("benchmark cases keep rank words tied to the professor appointment", () => 
   assert.deepEqual(getPositionFilterTypes("Full-Time Professor of Practice"), ["Teaching Faculty", "Professor"]);
 });
 
+test("recognizes academic title abbreviations and avoids faculty service offices", () => {
+  assert.deepEqual(getPositionFilterTypes("Anesthesiology- Research Asst. Professor"), ["Assistant Professor", "Professor", "Research Faculty"]);
+  assert.deepEqual(getPositionFilterTypes("Visiting Inst/Lect/Assist Professor Teacher Education"), ["Assistant Professor", "Professor", "Lecturer", "Instructor", "Visiting Faculty"]);
+  assert.deepEqual(getPositionFilterTypes("Visiting Lecturers"), ["Lecturer", "Visiting Faculty"]);
+  assert.deepEqual(getPositionFilterTypes("Associate Dean for Academic and Faculty Affairs"), []);
+  assert.deepEqual(getPositionFilterTypes("Faculty Services and Instructional Design Librarian"), []);
+  assert.deepEqual(getPositionFilterTypes("Dean of Faculty"), []);
+  assert.deepEqual(getPositionFilterTypes("Faculty Leave Manager"), []);
+  assert.deepEqual(getPositionFilterTypes("Research Fellow"), []);
+  assert.deepEqual(getPositionFilterTypes("Faculty Development Chairs in Materials Science"), ["Faculty"]);
+});
+
 test("normalizes stored tenure strings and explicit title language", () => {
   assert.equal(normalizeTenureTrack("tenure-track"), true);
   assert.equal(normalizeTenureTrack("non-tenure-track"), false);

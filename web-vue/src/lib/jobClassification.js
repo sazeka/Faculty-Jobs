@@ -8,7 +8,7 @@ const CLINICAL_APPOINTMENT_PATTERNS = [
 ]
 
 const RESEARCH_APPOINTMENT_PATTERNS = [
-  /\bresearch\s+(?:(?:track|assistant|asst|associate|assoc|full|visiting|adjunct|or|and)[\s/,-]+)*(?:professor|faculty)\b/,
+  /\bresearch\s+(?:(?:track|assistant|assist|asst\.?|associate|assoc\.?|full|visiting|adjunct|or|and)[\s/,.-]+)*(?:professor|faculty)\b/,
   /\b(?:professor|faculty)\s*[,(/-]\s*research\b(?=\s*(?:$|[,;)/-]|\bor\b|\btrack\b))/,
   /\bprofessor\s+research\b/,
   /\bacademic\s*[/,-]\s*research\s+faculty\b/,
@@ -37,17 +37,17 @@ function hasTeachingAppointment(title) {
 function professorRanks(title) {
   title = title.replace(/_/g, ' ')
   const ranks = new Set()
-  if (/\b(?:assistant|asst)\s*[-–]?\s*to\s*[-–]?\s*full\s+professor\b/.test(title)) ranks.add('Associate Professor')
+  if (/\b(?:assistant|assist|asst)\s*[-–]?\s*to\s*[-–]?\s*full\s+professor\b/.test(title)) ranks.add('Associate Professor')
   for (const professor of title.matchAll(/\bprofessors?\b/g)) {
     const before = title.slice(0, professor.index)
-    for (const match of before.matchAll(/\b(assistant|asst|associate|assoc|full)\b/g)) {
+    for (const match of before.matchAll(/\b(assistant|assist|asst|associate|assoc|full)\b/g)) {
       const between = before.slice(match.index + match[0].length)
       if (between.length > 65) continue
       const words = between.toLowerCase().split(/[\s/,.|–-]+/).filter(Boolean)
-      const rankWords = /^(?:assistant|asst|associate|assoc|full|clinical|research|teaching|instructional|or|and|to)$/
+      const rankWords = /^(?:assistant|assist|asst|associate|assoc|full|clinical|research|teaching|instructional|visiting|inst|lect|or|and|to)$/
       const subjectWords = words.filter((word) => !rankWords.test(word))
       if (subjectWords.length > 2 || subjectWords.some((word) => /^(?:dean|director|chair|vice|chief|head|time)$/.test(word))) continue
-      if (/^(?:assistant|asst)$/.test(match[1])) ranks.add('Assistant Professor')
+      if (/^(?:assistant|assist|asst)$/.test(match[1])) ranks.add('Assistant Professor')
       if (/^(?:associate|assoc)$/.test(match[1])) ranks.add('Associate Professor')
       if (match[1] === 'full') ranks.add('Full Professor')
     }
@@ -117,15 +117,22 @@ export function getPositionFilterTypes(title, rank = null) {
   const types = rank ? [rank] : getPositionTypes(title)
   const add = (value) => { if (!types.includes(value)) types.push(value) }
 
+  if (types.length === 1 && types[0] === 'Faculty' && (
+    /\bresearch fellow\b/.test(t) && !/\bfaculty\b/.test(t) ||
+    /\b(?:dean|director|manager|coordinator)\s+(?:of\s+)?faculty\b/.test(t) ||
+    /\bfaculty\s+(?:affairs|development|learning|leave|support|services|success|relations|resources|governance|engagement|training|evaluation|senate)\b/.test(t) &&
+      !/\bfaculty development chairs?\b/.test(t)
+  )) return []
+
   if (/\bprofessors?\b/.test(t) || types.some((type) => /professor/i.test(type))) add('Professor')
   if (hasClinicalAppointment(t)) add('Clinical Faculty')
   if (hasResearchAppointment(t)) add('Research Faculty')
-  if (/\b(?:lecturer|instructor)\b/.test(t)) {
-    if (/\blecturer\b/.test(t)) add('Lecturer')
-    if (/\binstructor\b/.test(t)) add('Instructor')
+  if (/\b(?:lecturers?|lect\.?|instructors?|inst\.?)\b/.test(t)) {
+    if (/\b(?:lecturers?|lect\.?)\b/.test(t)) add('Lecturer')
+    if (/\b(?:instructors?|inst\.?)\b/.test(t)) add('Instructor')
   }
   if (/\badjunct\b/.test(t)) add('Adjunct')
-  if (/\bvisiting\b/.test(t) && /\b(?:professor|faculty|lecturer|instructor)\b/.test(t)) add('Visiting Faculty')
+  if (/\bvisiting\b/.test(t) && /\b(?:professors?|faculty|lecturers?|lect\.?|instructors?|inst\.?)\b/.test(t)) add('Visiting Faculty')
   if (hasTeachingAppointment(t)) add('Teaching Faculty')
   return types
 }

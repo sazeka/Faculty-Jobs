@@ -1,0 +1,191 @@
+{
+  "date": "2026-09-24T16:38:08.920Z",
+  "reviewed": 48,
+  "totalSample": 48,
+  "overallSample": {
+    "count": 48,
+    "exactMatch": 0.8958333333333334,
+    "perLabel": [
+      {
+        "label": "Professor",
+        "support": 11,
+        "precision": 1,
+        "recall": 1,
+        "truePositive": 11,
+        "falsePositive": 0,
+        "falseNegative": 0
+      },
+      {
+        "label": "Assistant Professor",
+        "support": 7,
+        "precision": 1,
+        "recall": 0.8571428571428571,
+        "truePositive": 6,
+        "falsePositive": 0,
+        "falseNegative": 1
+      },
+      {
+        "label": "Associate Professor",
+        "support": 2,
+        "precision": 1,
+        "recall": 1,
+        "truePositive": 2,
+        "falsePositive": 0,
+        "falseNegative": 0
+      },
+      {
+        "label": "Full Professor",
+        "support": 1,
+        "precision": 1,
+        "recall": 1,
+        "truePositive": 1,
+        "falsePositive": 0,
+        "falseNegative": 0
+      },
+      {
+        "label": "Lecturer",
+        "support": 10,
+        "precision": 1,
+        "recall": 0.9,
+        "truePositive": 9,
+        "falsePositive": 0,
+        "falseNegative": 1
+      },
+      {
+        "label": "Instructor",
+        "support": 2,
+        "precision": 1,
+        "recall": 0.5,
+        "truePositive": 1,
+        "falsePositive": 0,
+        "falseNegative": 1
+      },
+      {
+        "label": "Clinical Faculty",
+        "support": 0,
+        "precision": null,
+        "recall": null,
+        "truePositive": 0,
+        "falsePositive": 0,
+        "falseNegative": 0
+      },
+      {
+        "label": "Research Faculty",
+        "support": 2,
+        "precision": 1,
+        "recall": 0.5,
+        "truePositive": 1,
+        "falsePositive": 0,
+        "falseNegative": 1
+      },
+      {
+        "label": "Adjunct",
+        "support": 9,
+        "precision": 1,
+        "recall": 1,
+        "truePositive": 9,
+        "falsePositive": 0,
+        "falseNegative": 0
+      },
+      {
+        "label": "Visiting Faculty",
+        "support": 8,
+        "precision": 1,
+        "recall": 0.875,
+        "truePositive": 7,
+        "falsePositive": 0,
+        "falseNegative": 1
+      },
+      {
+        "label": "Teaching Faculty",
+        "support": 0,
+        "precision": null,
+        "recall": null,
+        "truePositive": 0,
+        "falsePositive": 0,
+        "falseNegative": 0
+      },
+      {
+        "label": "Postdoctoral",
+        "support": 9,
+        "precision": 1,
+        "recall": 1,
+        "truePositive": 9,
+        "falsePositive": 0,
+        "falseNegative": 0
+      }
+    ]
+  },
+  "disagreements": [
+    {
+      "id": "job_d6035e5e744242a4",
+      "bucket": "research-review",
+      "title": "Anesthesiology- Research Asst. Professor",
+      "stored": "Assistant Professor",
+      "gold": [
+        "Professor",
+        "Assistant Professor",
+        "Research Faculty"
+      ],
+      "reviewStatus": "reviewed",
+      "predicted": [
+        "Assistant Professor",
+        "Professor"
+      ]
+    },
+    {
+      "id": "job_dc803662b08d8b67",
+      "bucket": "visiting-review",
+      "title": "Visiting Inst/Lect/Assist Professor Teacher Education",
+      "stored": "Other",
+      "gold": [
+        "Professor",
+        "Assistant Professor",
+        "Instructor",
+        "Lecturer",
+        "Visiting Faculty"
+      ],
+      "reviewStatus": "reviewed",
+      "predicted": [
+        "Visiting Faculty",
+        "Professor"
+      ]
+    },
+    {
+      "id": "job_bf6ab14eee6a61c5",
+      "bucket": "visiting-review",
+      "title": "Visiting Lecturers",
+      "stored": "Visiting",
+      "gold": [
+        "Lecturer",
+        "Visiting Faculty"
+      ],
+      "reviewStatus": "reviewed",
+      "predicted": [
+        "Lecturer"
+      ]
+    },
+    {
+      "id": "job_222bd07075effcf1",
+      "bucket": "faculty-nonrole-review",
+      "title": "Associate Dean for Academic and Faculty Affairs, School of Veterinary Medicine, Rowan University",
+      "stored": "Other",
+      "gold": [],
+      "reviewStatus": "reviewed",
+      "predicted": [
+        "Faculty"
+      ]
+    },
+    {
+      "id": "job_e4dc92b5e013e0c9",
+      "bucket": "faculty-nonrole-review",
+      "title": "Faculty Services and Instructional Design Librarian",
+      "stored": null,
+      "gold": [],
+      "reviewStatus": "reviewed",
+      "predicted": [
+        "Faculty"
+      ]
+    }
+  ]
+}

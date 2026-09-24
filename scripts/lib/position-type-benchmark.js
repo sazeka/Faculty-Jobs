@@ -1,4 +1,5 @@
 import { getPositionFilterTypes } from '../../web-vue/src/lib/jobClassification.js'
+import { getPositionDisplayRoles } from './weekly-position-type-stats.js'
 
 export const POSITION_LABELS = [
   'Professor', 'Assistant Professor', 'Associate Professor', 'Full Professor',
@@ -37,11 +38,16 @@ export function scorePositionLabels(rows) {
 
 export function evaluatePositionSample(sample, jobs) {
   const byId = new Map(jobs.map((job) => [job.canonicalJobId || job.url, job]))
+  const byUrl = new Map()
+  for (const job of jobs) {
+    if (!job.url) continue
+    byUrl.set(job.url, byUrl.has(job.url) ? null : job)
+  }
   const rows = []
   const missing = []
   const changed = []
   for (const annotation of sample) {
-    const job = byId.get(annotation.id)
+    const job = byId.get(annotation.id) || (annotation.url ? byUrl.get(annotation.url) : null)
     if (!job) { missing.push(annotation.id); continue }
     const title = job.titleClean || job.title || ''
     if (annotation.title && annotation.title !== title) {
@@ -56,6 +62,7 @@ export function evaluatePositionSample(sample, jobs) {
       title,
       stored: job.positionType || null,
       predicted: getPositionFilterTypes(title, job.rank),
+      ...(Array.isArray(annotation.roleGold) ? { predictedRoles: getPositionDisplayRoles(job) } : {}),
     })
   }
   return { ...scorePositionLabels(rows), rows, missing, changed }
