@@ -53,3 +53,26 @@ export function appointmentTrackHistory(history, limit = 12) {
     })
     .slice(-Math.max(1, Number(limit) || 12))
 }
+
+export function academicCoverageHistory(history, prefix, limit = 12) {
+  if (!Array.isArray(history) || !['discipline', 'department'].includes(prefix)) return []
+  const classifiedKey = `${prefix}Classified`
+  const unknownKey = `${prefix}Unknown`
+  return history
+    .filter((week) => week?.[classifiedKey] != null && week?.[unknownKey] != null)
+    .map((week) => {
+      const classified = Number(week[classifiedKey])
+      const unknown = Number(week[unknownKey])
+      const total = classified + unknown
+      if (!Number.isFinite(total) || classified < 0 || unknown < 0 || total <= 0) return null
+      return {
+        weekEnd: week.weekEnd,
+        classified,
+        unknown,
+        classifiedPct: Number(((classified / total) * 100).toFixed(1)),
+        unknownPct: Number(((unknown / total) * 100).toFixed(1)),
+      }
+    })
+    .filter(Boolean)
+    .slice(-Math.max(1, Number(limit) || 12))
+}

@@ -23,5 +23,7 @@ export function cleanDepartment(dept) {
   if (/\)\s/.test(s)) return null // leftover parenthetical noise
   if (/^\d{4}\s/.test(s)) return null // starts with year
   if (/\b(position|posted|internal only|open until filled|all ranks|region:)\b/i.test(s)) return null
+  // Administrative hiring buckets and copied job titles are not academic units.
+  if (/^(?:human resources|academic affairs|provost(?:\/|\b)|faculty\s*[-–—]\s*university transfer|(?:associate|adjunct|assistant|visiting)\s+faculty\s*[-–—])/i.test(s)) return null
   return s
 }

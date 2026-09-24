@@ -13,6 +13,7 @@
  * Outputs:
  *   docs/data/weekly-trends.json     (served by GitHub Pages)
  *   public/data/weekly-trends.json
+ *   web-vue/public/data/weekly-trends.json (included in frontend builds)
  *   generated/weekly-stats-history.json  (rolling 52-week record)
  *
  * Usage:
@@ -26,6 +27,7 @@ import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
 import { computeInstitutionControlBreakdown } from "./lib/weekly-institution-control-stats.js";
 import { computeAiHiringBreakdown } from "./lib/weekly-ai-hiring-stats.js";
 import { computeDisciplineBreakdown } from "./lib/weekly-discipline-stats.js";
+import { computeDepartmentBreakdown } from "./lib/weekly-department-stats.js";
 import { computePositionTypeFacets } from "./lib/weekly-position-type-stats.js";
 import { latestPriorWeek } from "./lib/weekly-trends-history.js";
 import { readJobsFileOrNull } from "./lib/jobs-file.js";
@@ -39,6 +41,7 @@ const HISTORY_PATH = path.join(ROOT, "generated", "weekly-stats-history.json");
 const OUT_PATHS    = [
   path.join(ROOT, "docs",   "data", "weekly-trends.json"),
   path.join(ROOT, "public", "data", "weekly-trends.json"),
+  path.join(ROOT, "web-vue", "public", "data", "weekly-trends.json"),
 ];
 
 // ── CLI / env ─────────────────────────────────────────────────────────────────
@@ -123,6 +126,7 @@ function computeStats(jobs, institutions, sourceScrapedAt) {
     institutionControlBreakdown: computeInstitutionControlBreakdown(jobs, institutions),
     aiHiringBreakdown: computeAiHiringBreakdown(jobs),
     disciplineBreakdown: computeDisciplineBreakdown(jobs),
+    departmentBreakdown: computeDepartmentBreakdown(jobs),
   };
 }
 
@@ -264,6 +268,7 @@ async function main() {
     },
     topInstitutions: stats.topInstitutions.slice(0, 5),
     disciplineBreakdown: stats.disciplineBreakdown,
+    departmentBreakdown: stats.departmentBreakdown,
   };
 
   // Generate prose summary
@@ -293,6 +298,7 @@ async function main() {
     institutionControlBreakdown: stats.institutionControlBreakdown,
     aiHiringBreakdown: statsForPrompt.aiHiringBreakdown,
     disciplineBreakdown: stats.disciplineBreakdown,
+    departmentBreakdown: stats.departmentBreakdown,
     topSources: stats.topSources,
     topInstitutions: stats.topInstitutions,
     aiSummary: summary,
@@ -334,6 +340,9 @@ async function main() {
       disciplineClassified: h.disciplineBreakdown?.classified ?? null,
       disciplineUnknown: h.disciplineBreakdown?.unknown ?? null,
       disciplineClassifiedPct: h.disciplineBreakdown?.classifiedPct ?? null,
+      departmentClassified: h.departmentBreakdown?.classified ?? null,
+      departmentUnknown: h.departmentBreakdown?.unknown ?? null,
+      departmentClassifiedPct: h.departmentBreakdown?.classifiedPct ?? null,
     })),
   };
 

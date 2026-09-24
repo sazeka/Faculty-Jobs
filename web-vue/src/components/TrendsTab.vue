@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { appointmentTrackHistory } from '../lib/trendsHistory.js'
+import { appointmentTrackHistory, academicCoverageHistory } from '../lib/trendsHistory.js'
 import { POSITION_TYPE_GROUPS } from '../../../scripts/lib/weekly-position-type-stats.js'
 
 const props = defineProps({
@@ -15,7 +15,7 @@ const error = ref(null)
 
 onMounted(async () => {
   try {
-    const res = await fetch(`${props.baseUrl}data/weekly-trends.json?v=appointment-track-history-1`, {
+    const res = await fetch(`${props.baseUrl}data/weekly-trends.json?v=academic-history-1`, {
       cache: 'no-store',
     })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -28,6 +28,19 @@ onMounted(async () => {
 })
 
 const disciplineStats = computed(() => trends.value?.stats?.disciplineBreakdown || null)
+const departmentStats = computed(() => trends.value?.stats?.departmentBreakdown || null)
+const disciplineHistory = computed(() => academicCoverageHistory(trends.value?.history, 'discipline'))
+const departmentHistory = computed(() => academicCoverageHistory(trends.value?.history, 'department'))
+const topDisciplines = computed(() => {
+  const items = disciplineStats.value?.topDisciplines?.slice(0, 8) || []
+  const max = Math.max(1, ...items.map((item) => item.count))
+  const classified = disciplineStats.value?.classified || 0
+  return items.map((item) => ({
+    ...item,
+    barWidth: `${(item.count / max) * 100}%`,
+    shareLabel: classified ? `${((item.count / classified) * 100).toFixed(1)}%` : '0.0%',
+  }))
+})
 
 const controlHistory = computed(() => (trends.value?.history || [])
   .filter(h => h.publicJobs != null && h.privateNonprofitJobs != null)
@@ -400,25 +413,79 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 
     <hr class="fa-rule-thin" style="margin: 40px 0;" />
 
-    <!-- Top disciplines -->
-    <div class="trends-disciplines">
-      <div class="fa-label" style="margin-bottom: 20px;">Top disciplines</div>
-      <div v-if="disciplineStats?.topDisciplines?.length" style="border-top: 1px solid var(--rule);">
-        <div
-          v-for="(d, i) in disciplineStats.topDisciplines"
-          :key="d.discipline"
-          class="trends-inst-row"
-        >
-          <span class="fa-meta" style="font-size: 10px; width: 24px; color: var(--ink-4);">{{ String(i + 1).padStart(2, '0') }}</span>
-          <span class="fa-display" style="font-size: 18px; flex: 1; line-height: 1.2;">{{ d.discipline }}</span>
-          <span class="fa-num" style="font-size: 16px;">{{ fmt(d.count) }}</span>
-        </div>
-      </div>
-      <div class="fa-meta" style="margin-top: 10px; color: var(--ink-4); line-height: 1.5;">
-        Based on {{ fmt(disciplineStats?.classified || 0) }} listings with a discipline identified so far, out of
-        {{ fmt(disciplineStats?.classified + disciplineStats?.unknown || 0) }} tracked
-        ({{ disciplineStats?.distinctDisciplines || 0 }} distinct disciplines).
-      </div>
+    <!-- Academic fields: same current-bars + weekly-history language as position types and appointment track -->
+    <div class="trends-stats-grid academic-stats-grid">
+      <section class="trends-col academic-panel" aria-labelledby="discipline-trends-title">
+        <div class="fa-label" id="discipline-trends-title">Academic disciplines over time</div>
+        <template v-if="disciplineStats">
+          <div class="academic-current">
+            <div class="fa-display academic-current-value">{{ fmt(disciplineStats.classified) }}</div>
+            <div class="fa-meta">listings with a discipline · {{ disciplineStats.classifiedPct }}% of all listings</div>
+          </div>
+          <div v-if="disciplineHistory.length" class="tenure-history academic-history" aria-label="Weekly share of listings with an academic discipline">
+            <div
+              v-for="week in disciplineHistory"
+              :key="week.weekEnd"
+              class="tenure-week academic-week"
+              tabindex="0"
+              :aria-label="`${fmtWeek(week.weekEnd)}: ${fmt(week.classified)} listings with a discipline (${week.classifiedPct}%), ${fmt(week.unknown)} without`"
+              :data-tooltip="`${fmtWeek(week.weekEnd)} · ${week.classifiedPct}% identified · ${fmt(week.classified)} listings`"
+            >
+              <div class="academic-week-unknown" :style="{ height: `${week.unknownPct}%` }"></div>
+              <div class="academic-week-known" :style="{ height: `${week.classifiedPct}%` }"></div>
+            </div>
+          </div>
+          <div v-if="disciplineHistory.length" class="trends-spark-labels fa-meta">
+            <span>{{ fmtWeek(disciplineHistory[0].weekEnd) }}</span>
+            <span>{{ fmtWeek(disciplineHistory[disciplineHistory.length - 1].weekEnd) }}</span>
+          </div>
+          <div v-if="disciplineHistory.length" class="tenure-legend fa-meta">
+            <span><i class="tenure-key academic-key-known"></i>Identified</span>
+            <span><i class="tenure-key academic-key-unknown"></i>Not identified</span>
+          </div>
+          <div class="fa-meta academic-subhead">Leading disciplines this week</div>
+          <div v-for="item in topDisciplines" :key="item.discipline" class="position-type-row academic-category-row">
+            <span class="position-type-label">{{ item.discipline }}</span>
+            <span class="position-type-track" aria-hidden="true"><span class="position-type-fill" :style="{ width: item.barWidth }"></span></span>
+            <span class="position-type-value fa-num"><strong>{{ fmt(item.count) }}</strong><small>{{ item.shareLabel }}</small></span>
+          </div>
+          <p class="fa-meta academic-note">Percentages for leading disciplines use the {{ fmt(disciplineStats.classified) }} classified listings. Bar lengths compare the disciplines shown.</p>
+        </template>
+      </section>
+
+      <section class="trends-col academic-panel" aria-labelledby="department-trends-title">
+        <div class="fa-label" id="department-trends-title">Department data over time</div>
+        <template v-if="departmentStats">
+          <div class="academic-current">
+            <div class="fa-display academic-current-value">{{ fmt(departmentStats.classified) }}</div>
+            <div class="fa-meta">listings with a usable Department · {{ departmentStats.classifiedPct }}% of all listings</div>
+          </div>
+          <div v-if="departmentHistory.length" class="tenure-history academic-history" aria-label="Weekly share of listings with a usable Department">
+            <div
+              v-for="week in departmentHistory"
+              :key="week.weekEnd"
+              class="tenure-week academic-week academic-week--department"
+              tabindex="0"
+              :aria-label="`${fmtWeek(week.weekEnd)}: ${fmt(week.classified)} listings with a usable Department (${week.classifiedPct}%), ${fmt(week.unknown)} without`"
+              :data-tooltip="`${fmtWeek(week.weekEnd)} · ${week.classifiedPct}% tagged · ${fmt(week.classified)} listings`"
+            >
+              <div class="academic-week-unknown" :style="{ height: `${week.unknownPct}%` }"></div>
+              <div class="academic-week-known" :style="{ height: `${week.classifiedPct}%` }"></div>
+            </div>
+          </div>
+          <div v-if="departmentHistory.length" class="trends-spark-labels fa-meta">
+            <span>{{ fmtWeek(departmentHistory[0].weekEnd) }}</span>
+            <span>{{ fmtWeek(departmentHistory[departmentHistory.length - 1].weekEnd) }}</span>
+          </div>
+          <div v-if="departmentHistory.length" class="tenure-legend fa-meta">
+            <span><i class="tenure-key academic-key-known academic-key-department"></i>Usable Department</span>
+            <span><i class="tenure-key academic-key-unknown"></i>Missing</span>
+          </div>
+          <p v-if="departmentHistory.length === 1" class="fa-meta academic-note">Department tracking starts with this snapshot; weekly comparisons will appear after the next digest.</p>
+          <p class="fa-meta academic-note">{{ fmt(departmentStats.unknown) }} listings have no usable Department. This measures field coverage using the same validation as job listings; it does not mean every displayed Department was independently verified.</p>
+        </template>
+        <p v-else class="fa-meta academic-note">Department history will appear with the next weekly digest.</p>
+      </section>
     </div>
 
     <hr class="fa-rule-thin" style="margin: 40px 0;" />
@@ -774,14 +841,29 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 .position-history-track > span { display: block; width: 100%; background: var(--sage); }
 .position-history-note { margin: 10px 0 0; color: var(--ink-4); }
 
-.trends-disciplines { max-width: 560px; }
-.trends-inst-row {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--rule-2);
+.academic-stats-grid { align-items: start; }
+.academic-panel { min-width: 0; }
+.academic-current { margin-top: 18px; min-height: 70px; }
+.academic-current-value { font-size: 34px; line-height: 1.1; }
+.academic-history { margin-top: 24px; }
+.academic-week-unknown { background: var(--paper-3); }
+.academic-week-known { background: var(--sage); }
+.academic-week--department .academic-week-known { background: var(--accent); }
+.academic-key-known { background: var(--sage); }
+.academic-key-department { background: var(--accent); }
+.academic-key-unknown { background: var(--paper-3); }
+.academic-subhead {
+  margin: 24px 0 7px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
+.academic-category-row .position-type-fill { background: var(--sage); }
+.academic-note { margin: 18px 0 0; color: var(--ink-4); line-height: 1.55; }
 
 .trends-citation { max-width: 820px; }
 .trends-citation-text {
