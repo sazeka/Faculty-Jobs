@@ -1,7 +1,916 @@
 {
-  "generatedAt": "2026-09-23T22:06:59.771Z",
-  "totalJobs": 22605,
-  "filledThisRun": 0,
-  "totalWithDescription": 21227,
-  "remaining": 0
+  "generatedAt": "2026-09-24T21:59:43.600Z",
+  "totalJobs": 22828,
+  "attemptedThisRun": 400,
+  "filledThisRun": 396,
+  "datePostedFilledThisRun": 352,
+  "openDateFilledThisRun": 175,
+  "startDateFilledThisRun": 89,
+  "staleStartDateSkippedThisRun": 2,
+  "totalWithStartDate": 1922,
+  "deadlineFilledThisRun": 84,
+  "rollingFilledThisRun": 182,
+  "mode": "normal",
+  "totalWithDatePosted": 17330,
+  "totalWithDeadline": 4770,
+  "totalWithDescription": 21179,
+  "remaining": 1649,
+  "eligibleRemaining": 311,
+  "unsupportedRemaining": 678,
+  "fetchDiagnostics": {
+    "byPlatform": [
+      {
+        "platform": "generic",
+        "attempted": 148,
+        "filled": 144,
+        "empty": 0,
+        "errors": 4,
+        "fillRatePct": 97.3,
+        "failureRatePct": 2.7
+      },
+      {
+        "platform": "peopleadmin",
+        "attempted": 148,
+        "filled": 148,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "schooljobs",
+        "attempted": 56,
+        "filled": 56,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "attempted": 36,
+        "filled": 36,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "csod",
+        "attempted": 4,
+        "filled": 4,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "interfolio",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "adp",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "paycom",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      }
+    ],
+    "byHost": [
+      {
+        "platform": "generic",
+        "host": "careers.marist.edu",
+        "attempted": 9,
+        "filled": 8,
+        "empty": 0,
+        "errors": 1,
+        "fillRatePct": 88.9,
+        "failureRatePct": 11.1
+      },
+      {
+        "platform": "generic",
+        "host": "www.cisco.edu",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 0,
+        "errors": 1,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "generic",
+        "host": "www.logan.edu",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 0,
+        "errors": 1,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "generic",
+        "host": "utf.edu",
+        "attempted": 1,
+        "filled": 0,
+        "empty": 0,
+        "errors": 1,
+        "fillRatePct": 0,
+        "failureRatePct": 100
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "utah.peopleadmin.com",
+        "attempted": 136,
+        "filled": 136,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "schooljobs",
+        "host": "www.schooljobs.com",
+        "attempted": 56,
+        "filled": 56,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "www.communitycollegecareerconnect.com",
+        "attempted": 23,
+        "filled": 23,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.uh.edu",
+        "attempted": 12,
+        "filled": 12,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "ivytech.wd1.myworkdayjobs.com",
+        "attempted": 12,
+        "filled": 12,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "www.governmentjobs.com",
+        "attempted": 11,
+        "filled": 11,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "www.kellogg.northwestern.edu",
+        "attempted": 8,
+        "filled": 8,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.uc.edu",
+        "attempted": 6,
+        "filled": 6,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "wisconsin.wd1.myworkdayjobs.com",
+        "attempted": 6,
+        "filled": 6,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "zahr-prd-candidate-ada.utshare.utsystem.edu",
+        "attempted": 6,
+        "filled": 6,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "faculty.utexas.edu",
+        "attempted": 4,
+        "filled": 4,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.ua.edu",
+        "attempted": 4,
+        "filled": 4,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "sjobs.brassring.com",
+        "attempted": 4,
+        "filled": 4,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.dallascollege.edu",
+        "attempted": 4,
+        "filled": 4,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "interfolio",
+        "host": "apply.interfolio.com",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "indiana.peopleadmin.com",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "appstate.peopleadmin.com",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.wcu.edu",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.wichita.edu",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "tamus.wd1.myworkdayjobs.com",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.jmu.edu",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "adp",
+        "host": "workforcenow.adp.com",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "beloit.applicantpro.com",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.northwestern.edu",
+        "attempted": 3,
+        "filled": 3,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.charlotte.edu",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "www.gwu.jobs",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "econjobmarket.org",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "nsu.wd501.myworkdayjobs.com",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.uri.edu",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "northeastern.wd1.myworkdayjobs.com",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobsearch.illinoisstate.edu",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "osu.wd1.myworkdayjobs.com",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "ulsselu.wd503.myworkdayjobs.com",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.messiah.edu",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "harford.peopleadmin.com",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.ucf.edu",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "paycom",
+        "host": "www.paycomonline.net",
+        "attempted": 2,
+        "filled": 2,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.eku.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "www.troyuniversityjobs.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.uncp.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "spelman.peopleadmin.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "employmentopportunities.umb.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "facultycareers.gsu.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "bsu.wd12.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.bowdoin.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "uni.wd5.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "recruit.ucdavis.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.montana.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "prd.hcm.ndus.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "winthrop.peopleadmin.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.apply.vt.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.okstate.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.msu.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "egln.fa.us2.oraclecloud.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "mccneb.wd5.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.elon.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "unc.peopleadmin.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "erecruit.umsystem.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "psu.wd1.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.hrc.pdx.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.peopleclick.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "explore.jobs.ufl.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.ccri.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "csod",
+        "host": "arizona.csod.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "peopleadmin",
+        "host": "ecu.peopleadmin.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.omni.fsu.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "csod",
+        "host": "illinois.csod.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "csod",
+        "host": "gvltec.csod.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "slu.wd5.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.citadel.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "careers.georgia.gov",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "recruiting.paylocity.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "nsucareers.nova.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "coloradomesa.wd501.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "workday",
+        "host": "aims.wd1.myworkdayjobs.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "generic",
+        "host": "jobs.lcc.edu",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      },
+      {
+        "platform": "csod",
+        "host": "davenport.csod.com",
+        "attempted": 1,
+        "filled": 1,
+        "empty": 0,
+        "errors": 0,
+        "fillRatePct": 100,
+        "failureRatePct": 0
+      }
+    ]
+  },
+  "config": {
+    "max": 400,
+    "concurrency": 8,
+    "timeoutMs": 30000,
+    "minLen": 200,
+    "platform": null,
+    "host": null
+  }
 }
