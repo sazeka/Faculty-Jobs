@@ -668,6 +668,14 @@ const MA_PRIVATE_CAMPUSES = [
     url: "https://careers.peopleclick.com/careerscp/client_mit/external/results/searchResult.html",
   },
   {
+    // MIT Economics maintains its current junior-faculty search on this
+    // institution-owned page. The central PeopleClick board does not expose
+    // this search reliably to the generic campus scraper.
+    campus: "Massachusetts Institute of Technology",
+    type: "faculty-headings",
+    url: "https://economics.mit.edu/juniorfaculty",
+  },
+  {
     campus: "Tufts University",
     type: "jibe-api",
     url: "https://jobs.tufts.edu/",
@@ -2853,6 +2861,13 @@ const RI_PRIVATE_CAMPUSES = [
     campus: "Brown University",
     type: "generic",
     url: "https://www.brown.edu/careers",
+  },
+  {
+    // Brown Economics publishes its active searches here, with each posting
+    // heading followed by its application link.
+    campus: "Brown University",
+    type: "brown-economics-faculty",
+    url: "https://economics.brown.edu/about/faculty-positions",
   },
   {
     campus: "Providence College",
@@ -5280,7 +5295,10 @@ const UT_CAMPUSES = [
   {
     campus: "University of Utah",
     type: "peopleadmin",
-    url: "https://utah.peopleadmin.com/postings/search?utf8=%E2%9C%93&query=&query_v0_posted_at_date=&query_position_type_id%5B%5D=1&commit=Search",
+    // PeopleAdmin's current faculty facet is custom field 595, option 2.
+    // The former query_position_type_id=1 URL returned a broad board but
+    // omitted the active QAMO faculty search (posting 208853).
+    url: "https://utah.peopleadmin.com/postings/search?595%5B%5D=2&commit=Search&page=1&utf8=%E2%9C%93",
   },
   {
     campus: "Weber State University",
@@ -5562,6 +5580,14 @@ const IL_CAMPUSES = [
     campus: "Northwestern University",
     type: "peoplesoft-fluid",
     url: "https://careers.northwestern.edu/psc/hrnu_er/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB&Action=U&FOCUS=Applicant&SiteId=1&",
+  },
+  {
+    // Kellogg publishes faculty searches that are not consistently visible
+    // through Northwestern's central PeopleSoft board.
+    campus: "Northwestern University",
+    type: "generic",
+    url: "https://www.kellogg.northwestern.edu/academics-research/faculty-recruiting/",
+    excludeTitleFilter: "^Faculty (?:Teaching Awards|Recruiting)",
   },
   {
     campus: "University of Chicago",
@@ -12627,6 +12653,7 @@ async function scrapeRiAll(context) {
         if (type === "workday") return await scrapeWorkdayAs(context, url, campus, "RI");
         if (type === "interviewexchange") return await scrapeInterviewExchangeAs(context, url, campus, "RI");
         if (type === "pageup-campus") return await scrapePageUpCampusAs(context, url, campus, "RI", locationFilter);
+        if (type === "brown-economics-faculty") return await scrapeBrownEconomicsFacultyAs(context, url, campus, "RI");
         if (type === "generic") return await scrapeGenericJobPage(context, url, campus, "RI");
         return [];
       } catch (e) {
@@ -16950,6 +16977,53 @@ export function linkPlausiblyMatchesHeading(title, url) {
     }
   }
   return false;
+}
+
+export async function scrapeBrownEconomicsFacultyAs(context, startUrl, campusName, sourceName) {
+  const page = await context.newPage();
+  try {
+    await gotoWithRetry(page, startUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+    const rows = await safeEvaluate(page, () => {
+      const cleanText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+      return [...document.querySelectorAll("h3")].map((heading) => {
+        let sibling = heading.nextElementSibling;
+        let applicationUrl = "";
+        while (sibling && sibling.tagName !== "H3") {
+          const link = sibling.matches?.("a[href*='econjobmarket.org/positions/']")
+            ? sibling
+            : sibling.querySelector?.("a[href*='econjobmarket.org/positions/']");
+          if (link) {
+            applicationUrl = link.href;
+            break;
+          }
+          sibling = sibling.nextElementSibling;
+        }
+        return { title: cleanText(heading.textContent), url: applicationUrl };
+      });
+    });
+    const seen = new Set();
+    const jobs = (rows || [])
+      .filter((row) => row.url && looksFacultyish(row.title))
+      .map((row) => ({ ...row, title: normalizeJobTitle(row.title) }))
+      // Brown currently has two Applied Microeconomics searches with the same
+      // public title. Keep one catalog row per distinct title, matching the
+      // benchmark's title-level comparison and avoiding duplicate cards.
+      .filter((row) => {
+        const key = row.title.toLowerCase();
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map((row) => toNjJob(row.title, row.url, campusName, "Faculty", sourceName));
+    console.log(`${campusName} ${sourceName} listings scraped: ${jobs.length} (Brown Economics faculty)`);
+    return jobs;
+  } catch (error) {
+    console.error(`❌ ${campusName} ${sourceName} Brown Economics scrape failed:`, error?.message || error);
+    return [];
+  } finally {
+    await page.close().catch(() => {});
+  }
 }
 
 export async function scrapeFacultyHeadingPageAs(context, startUrl, campusName, sourceName) {

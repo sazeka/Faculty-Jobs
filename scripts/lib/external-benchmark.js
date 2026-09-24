@@ -50,8 +50,15 @@ function isEligibleEjmAd(ad, snapshotDate) {
 function explicitTenureStatus(value) {
   const text = clean(value).toLowerCase();
   if (!text) return null;
-  if (/non[-\s]?tenure|without tenure|not tenure[-\s]?track/.test(text)) return "non-tenure-track";
-  if (/tenure[-\s]?track|tenured\b|tenure eligible/.test(text)) return "tenure-track";
+  const negative = /non[-\s]?tenure(?:[-\s]?track)?|without tenure|not tenure[-\s]?track/;
+  // An ad can describe an overall tenure-track search while separately
+  // calling an associate-rank hire "without tenure" (meaning pre-tenure), as
+  // MIT's 2026 economics ad does. Remove explicit negative phrases before
+  // looking for an independent positive signal so that genuine mixed text is
+  // not mislabeled solely by whichever phrase appears first.
+  const positiveText = text.replace(new RegExp(negative.source, "g"), " ");
+  if (/tenure[-\s]?track|tenured\b|tenure eligible/.test(positiveText)) return "tenure-track";
+  if (negative.test(text)) return "non-tenure-track";
   return null;
 }
 
@@ -103,7 +110,7 @@ export function compareEconJobMarket({ ads, jobs, snapshotDate, includeDetails =
     usedJobs.add(pair.jobIndex);
     const ad = eligibleAds[pair.adIndex];
     const job = usableJobs[pair.jobIndex];
-    const benchmarkTenure = explicitTenureStatus(ad.adtext);
+    const benchmarkTenure = explicitTenureStatus(`${ad.adtitle || ""} ${ad.adtext || ""}`);
     const atlasTenure = facultyAtlasTenureStatus(job);
     matches.push({ ad, job, benchmarkTenure, atlasTenure, score: pair.score });
   }

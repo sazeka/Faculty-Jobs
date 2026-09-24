@@ -89,3 +89,25 @@ test("matches the comma spelling of University of California, San Diego", () => 
   assert.equal(report.matches[0].benchmarkUrl, "https://econjobmarket.org/positions/12696");
   assert.equal(report.matches[0].atlasUrl, "https://apol-recruit.ucsd.edu/JPF04622");
 });
+
+test("treats a tenure-track search as tenure-track when a rank is hired without tenure", () => {
+  const ads = [{
+    name: "Massachusetts Institute of Technology",
+    adtitle: "Assistant or Untenured Associate Professor – Tenure Track",
+    adtext: "The department has tenure-track faculty openings. Associate without tenure: $257,000.",
+    startdate: "2026-09-01",
+    deadline_date: "2026-11-01",
+    locations: us,
+    position_types: professor,
+  }];
+  const jobs = [{
+    college: "Massachusetts Institute of Technology",
+    title: "Assistant or Untenured Associate Professor – Tenure Track",
+    tenureTrack: true,
+  }];
+
+  const report = compareEconJobMarket({ ads, jobs, snapshotDate: "2026-09-23", includeDetails: true });
+  assert.equal(report.counts.evaluableTenureMatches, 1);
+  assert.equal(report.counts.tenureAgreements, 1);
+  assert.equal(report.matches[0].benchmarkTenure, "tenure-track");
+});
