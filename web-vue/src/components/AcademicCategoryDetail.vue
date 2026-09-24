@@ -28,6 +28,7 @@ const chart = computed(() => {
   }))
 })
 const label = computed(() => props.kind === 'department' ? 'Department' : 'discipline')
+const hasArchivedBaseline = computed(() => props.weeks.some((week) => week.sourceCommit))
 
 function choose(name) {
   emit('update:selected', name)
@@ -98,6 +99,7 @@ function fmtWeek(weekEnd) {
         </div>
       </div>
       <p class="fa-meta category-note">Bar heights compare the recorded weeks for this selection.</p>
+      <p v-if="hasArchivedBaseline" class="fa-meta category-note">Earlier weeks were rebuilt from archived job listings. Changes in how listings were classified can affect this trend.</p>
       <p v-if="chart.length === 1" class="fa-meta category-note">Named-category tracking starts with this digest. Earlier counts were not recorded.</p>
       <p class="fa-meta category-note">Counts use the exact category names stored with each listing; differently worded names appear separately.</p>
     </div>
