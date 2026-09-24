@@ -257,7 +257,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
           Based on {{ fmt(tenureStats.classified) }} listings resolved to tenure-track or non-tenure-track.
           {{ fmt(tenureStats.variableTrack || 0) }} additional searches explicitly offer multiple tracks or determine the track from the selected candidate; they are known variable-track searches and excluded from the binary percentages.
           {{ fmt(tenureStats.unknown) }} additional listings are unclassified and excluded from the percentages.
-          <button type="button" class="tenure-methods-link" @click="emit('open-methodology')">How this is classified</button>
+          <button type="button" class="trends-methods-link" @click="emit('open-methodology')">How this is classified</button>
         </div>
       </section>
 
@@ -274,7 +274,12 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
               <span class="position-type-value fa-num"><strong>{{ fmt(row.count) }}</strong><small>{{ row.shareLabel }}</small></span>
             </div>
           </div>
-          <p class="fa-meta position-types-note">A listing can appear in multiple rows. Percentages use all listings; bar lengths compare types within each group.</p>
+          <p class="fa-meta position-types-note">
+            Position types are inferred from job titles and available rank data; a title may be incomplete or ambiguous.
+            “Other / unspecified” means none of the named roles was identified, while “Rank unspecified” means a professor role was identified without a specific rank.
+            A listing can appear in multiple rows, so percentages may not sum to 100%. Each percentage uses all {{ fmt(trends.stats.positionTypeFacets.total) }} listings; bar lengths compare types within each group.
+            <button type="button" class="trends-methods-link" @click="emit('open-methodology', 'methodology-position-types')">How this is classified</button>
+          </p>
         </template>
         <template v-else>
           <div v-for="t in sortedPositionTypes" :key="t.label" class="trends-bar-row">
@@ -282,7 +287,11 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
             <div class="trends-bar-track"><div class="trends-bar-fill" :style="{ width: `${Math.round((t.count / maxTypeCount) * 100)}%` }"></div></div>
             <div class="fa-num trends-bar-count">{{ fmt(t.count) }}</div>
           </div>
-          <p class="fa-meta position-types-note">One title-based category per listing. Updated detail will appear with the next weekly data refresh.</p>
+          <p class="fa-meta position-types-note">
+            This older breakdown assigns one inferred title label per listing; ambiguous or unstated roles may be grouped under “Faculty.”
+            The detailed role, rank, and appointment breakdown will appear with the next weekly refresh.
+            <button type="button" class="trends-methods-link" @click="emit('open-methodology', 'methodology-position-types')">How this is classified</button>
+          </p>
         </template>
       </section>
 
@@ -541,7 +550,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   line-height: 1.6;
   margin-top: 10px;
 }
-.tenure-methods-link {
+.trends-methods-link {
   display: inline;
   margin-left: 4px;
   padding: 0;
@@ -554,8 +563,8 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
   text-underline-offset: 2px;
 }
-.tenure-methods-link:hover,
-.tenure-methods-link:focus-visible { color: var(--accent); }
+.trends-methods-link:hover,
+.trends-methods-link:focus-visible { color: var(--accent); }
 
 .trends-stats-grid {
   display: grid;

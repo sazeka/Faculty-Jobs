@@ -485,7 +485,7 @@ async function reportBadListing(job) {
       v-if="activeTab === 'trends'"
       id="main-content"
       :base-url="baseUrl"
-      @open-methodology="openMethodology('methodology-classification')"
+      @open-methodology="openMethodology($event || 'methodology-classification')"
     />
 
     <section
@@ -693,6 +693,17 @@ async function reportBadListing(job) {
             >
               <div class="fa-label" style="margin-bottom: 10px;">Classification</div>
               <p><b>Rank</b> is inferred from job titles — "Assistant Professor," "Lecturer," "Visiting Faculty," etc. <b>Tenure-track</b> status is determined by whether the title or posting explicitly mentions tenure or tenure-track. <b>Discipline</b> is inferred by matching job titles and department names against a curated keyword taxonomy covering 13 broad academic fields.</p>
+            </div>
+
+            <div
+              id="methodology-position-types"
+              class="fa-modal-section"
+              :class="{ 'fa-modal-section-highlighted': highlightedMethodologySection === 'methodology-position-types' }"
+              tabindex="-1"
+            >
+              <div class="fa-label" style="margin-bottom: 10px;">Position types</div>
+              <p>Position type labels are inferred from each listing’s title and any supplied rank. A professor can also have a specific rank and an appointment label, so the categories overlap. Assistant, associate, and full rank require explicit rank wording; an unranked “Professor” is not assumed to be full rank. Clinical and research faculty require appointment wording, not merely a clinical or research subject. Postdoctoral roles are counted separately from research faculty.</p>
+              <p>“Other / unspecified” means the title did not identify one of the named roles. “Rank unspecified” means a professor role was identified without a specific rank. These labels do not verify the appointment terms in the full posting, and ambiguous titles can be classified incorrectly. A separately reviewed set of 120 listings had 95.0% exact label match on its first evaluation. After rule changes informed by that set, it scored 98.3%; neither score establishes accuracy across every listing.</p>
             </div>
 
             <div class="fa-modal-section">
