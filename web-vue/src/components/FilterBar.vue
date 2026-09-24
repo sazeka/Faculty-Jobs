@@ -338,7 +338,7 @@ function toggleCity(value) {
 
     <!-- Position Type -->
     <div style="margin-bottom: 28px;">
-      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Rank</div>
+      <div class="fa-display" style="font-size: 18px; margin-bottom: 12px;">Position type</div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <label
           v-for="opt in visibleRankOptions"
