@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T10:20:49.459Z",
+  "generatedAt": "2026-09-27T10:45:01.473Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json",
@@ -20,17 +20,17 @@
     "target": "degree-granting"
   },
   "totals": {
-    "eligible_universe": 3324,
-    "covered": 3025,
+    "eligible_universe": 3325,
+    "covered": 3026,
     "missing": 0,
     "excluded_policy": 299,
     "pending_review": 0,
-    "extraction_warnings": 1483
+    "extraction_warnings": 1490
   },
   "percentages": {
-    "covered": 91,
+    "covered": 91.01,
     "missing": 0,
-    "excluded_policy": 9,
+    "excluded_policy": 8.99,
     "pending_review": 0
   },
   "byState": {
@@ -364,8 +364,8 @@
       "pending_review": 0
     },
     "Unknown": {
-      "total": 13,
-      "covered": 13,
+      "total": 14,
+      "covered": 14,
       "missing": 0,
       "excluded_policy": 0,
       "pending_review": 0
@@ -415,8 +415,8 @@
       "pending_review": 0
     },
     "Unknown": {
-      "total": 13,
-      "covered": 13,
+      "total": 14,
+      "covered": 14,
       "missing": 0,
       "excluded_policy": 0,
       "pending_review": 0
@@ -438,8 +438,8 @@
       "pending_review": 0
     },
     "Unknown": {
-      "total": 13,
-      "covered": 13,
+      "total": 14,
+      "covered": 14,
       "missing": 0,
       "excluded_policy": 0,
       "pending_review": 0
@@ -461,16 +461,16 @@
       "official_employment_page": 1647,
       "homepage_fallback": 420,
       "no_public_hiring_source": 219,
-      "unresolved": 96,
+      "unresolved": 97,
       "closed_or_out_of_scope": 32
     },
     "percentages": {
-      "direct_job_board": 21.57,
-      "verified_shared_system_board": 5.81,
-      "official_employment_page": 49.55,
-      "homepage_fallback": 12.64,
+      "direct_job_board": 21.56,
+      "verified_shared_system_board": 5.8,
+      "official_employment_page": 49.53,
+      "homepage_fallback": 12.63,
       "no_public_hiring_source": 6.59,
-      "unresolved": 2.89,
+      "unresolved": 2.92,
       "closed_or_out_of_scope": 0.96
     }
   },
@@ -8264,6 +8264,17 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned."
     },
     {
+      "name": "Gavilan CCD",
+      "state": null,
+      "control": null,
+      "level": null,
+      "coverage_status": "covered",
+      "coverage_quality": "unresolved",
+      "homepage_url": null,
+      "career_url": null,
+      "reason": null
+    },
+    {
       "name": "Glendale Community College",
       "state": "CA",
       "control": "public",
@@ -8995,14 +9006,6 @@
       "career_url": "https://www.alfredadler.edu/about/employment-opportunities"
     },
     {
-      "name": "AdventHealth University",
-      "state": "FL",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://jobs.adventhealth.com/job-search-results?department%5B%5D=AdventHealth%20University"
-    },
-    {
       "name": "Agora University",
       "state": "VA",
       "warning": "covered_zero_jobs",
@@ -9041,6 +9044,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.akbible.edu/employment"
+    },
+    {
+      "name": "Alaska Christian College",
+      "state": "AK",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://alaskacc.edu/about/employment"
     },
     {
       "name": "Albany Law School",
@@ -9097,14 +9108,6 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.alc.edu/"
-    },
-    {
-      "name": "Allegany College of Maryland",
-      "state": "MD",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://www.schooljobs.com/careers/allegany"
     },
     {
       "name": "Allegheny College",
@@ -9203,14 +9206,6 @@
       "career_url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=be310d42-8bd7-429d-b06f-97f3e3a8fb26&ccId=19000101_000001&lang=en_US"
     },
     {
-      "name": "American College of Financial Services",
-      "state": "PA",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=0EC6D26D6ACC066E0F0E668BFD94D104"
-    },
-    {
       "name": "American College of the Building Arts",
       "state": "SC",
       "warning": "covered_zero_jobs",
@@ -9257,6 +9252,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.ambs.edu/employment"
+    },
+    {
+      "name": "Anderson University (IN)",
+      "state": "IN",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://anderson.edu/hr/faculty-staff-employment"
     },
     {
       "name": "Angelina College",
@@ -9659,6 +9662,14 @@
       "career_url": "https://www.buf.edu/"
     },
     {
+      "name": "Baptist University of the Americas",
+      "state": "TX",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.bua.edu/about/employment-opportunities"
+    },
+    {
       "name": "Barclay College",
       "state": "KS",
       "warning": "covered_zero_jobs",
@@ -9809,14 +9820,6 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://bennington.hire.trakstar.com/"
-    },
-    {
-      "name": "Bergen Community College",
-      "state": "NJ",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://www.bergen.edu/"
     },
     {
       "name": "Berkeley City College",
@@ -9995,14 +9998,6 @@
       "career_url": "https://careers-blackhawk.icims.com/"
     },
     {
-      "name": "Bladen Community College",
-      "state": "NC",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://bladencc.edu/"
-    },
-    {
       "name": "Blessing Rieman College of Nursing and Health Sciences",
       "state": "IL",
       "warning": "covered_zero_jobs",
@@ -10057,14 +10052,6 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.mississippi.edu/"
-    },
-    {
-      "name": "Bob Jones University",
-      "state": "SC",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://bju.careers/bju-faculty"
     },
     {
       "name": "Boise Bible College",
@@ -10755,6 +10742,14 @@
       "career_url": "https://www.charteroak.edu/aboutus/employment.php"
     },
     {
+      "name": "Chemeketa Community College",
+      "state": "OR",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.governmentjobs.com/careers/chemeketacc"
+    },
+    {
       "name": "CHI Health School of Radiologic Technology",
       "state": "NE",
       "warning": "covered_zero_jobs",
@@ -11313,14 +11308,6 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.columbusstate.edu/"
-    },
-    {
-      "name": "Columbus Technical College",
-      "state": "GA",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4931&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All"
     },
     {
       "name": "Commonwealth Institute of Funeral Service",
@@ -12411,6 +12398,14 @@
       "career_url": "https://fpctx.edu/jobs"
     },
     {
+      "name": "Franklin College",
+      "state": "IN",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://franklincollege.edu/about/key-offices/office-of-human-resources/employment-opportunities"
+    },
+    {
       "name": "Freed-Hardeman University",
       "state": "TN",
       "warning": "covered_zero_jobs",
@@ -12627,14 +12622,6 @@
       "career_url": "https://www.gratz.edu/employment"
     },
     {
-      "name": "Grayson College",
-      "state": "TX",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://www.grayson.edu/employment"
-    },
-    {
       "name": "Green River College",
       "state": "WA",
       "warning": "covered_zero_jobs",
@@ -12691,6 +12678,14 @@
       "career_url": "https://www.gcc.edu/Utility/Portals/Employment"
     },
     {
+      "name": "Gulf Coast State College",
+      "state": "FL",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.schooljobs.com/careers/gulfcoast"
+    },
+    {
       "name": "Gupton Jones College of Funeral Service",
       "state": "GA",
       "warning": "covered_zero_jobs",
@@ -12729,6 +12724,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.hsc.edu/human-resources/job-openings"
+    },
+    {
+      "name": "Hannibal-LaGrange University",
+      "state": "MO",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.hlg.edu/about-hlgu/employment-opportunities"
     },
     {
       "name": "Hanover College",
@@ -12883,14 +12886,6 @@
       "career_url": "https://recruiting2.ultipro.com/HER1009HRZ/JobBoard/267d2e37-abff-4559-8a18-a754503d3749"
     },
     {
-      "name": "Herzing University-Atlanta",
-      "state": "GA",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://recruiting2.ultipro.com/HER1009HRZ/JobBoard/267d2e37-abff-4559-8a18-a754503d3749"
-    },
-    {
       "name": "Herzing University-Brookfield",
       "state": "WI",
       "warning": "covered_zero_jobs",
@@ -12977,6 +12972,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://hccfl.wd1.myworkdayjobs.com/hccjobs"
+    },
+    {
+      "name": "Hiram College",
+      "state": "OH",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.hiram.edu/about-hiram-college/human-resources/careers-at-hiram"
     },
     {
       "name": "HJ International Graduate School for Peace and Public Leadership",
@@ -13289,6 +13292,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://iirp.applicantpro.com/jobs"
+    },
+    {
+      "name": "Iona University",
+      "state": "NY",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.paycomonline.net/v4/ats/web.php/portal/F28471DFA0F4183976163E181A695BE1/career-page"
     },
     {
       "name": "Iowa Central Community College",
@@ -13865,14 +13876,6 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.landmark.edu/about/employment/category/faculty"
-    },
-    {
-      "name": "Lanier Technical College",
-      "state": "GA",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4956&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All"
     },
     {
       "name": "Laredo College",
@@ -14835,6 +14838,14 @@
       "career_url": "https://www.milescc.edu/employment"
     },
     {
+      "name": "Milligan University",
+      "state": "TN",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://milligan.edu/employment"
+    },
+    {
       "name": "Millsaps College",
       "state": "MS",
       "warning": "covered_zero_jobs",
@@ -15427,14 +15438,6 @@
       "career_url": "https://nbts.edu/employment-at-nbts"
     },
     {
-      "name": "New College of Florida",
-      "state": "FL",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://www.schooljobs.com/careers/ncfl"
-    },
-    {
       "name": "New England College of Optometry",
       "state": "MA",
       "warning": "covered_zero_jobs",
@@ -15449,6 +15452,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://phe.tbe.taleo.net/phe03/ats/careers/v2/searchResults?org=NJCU&cws=41"
+    },
+    {
+      "name": "New Jersey Institute of Technology",
+      "state": "NJ",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://njit.csod.com/ux/ats/careersite/1/home?c=njit&cfdd[0][id]=71&cfdd[0][options][0]=35"
     },
     {
       "name": "New Mexico Highlands University",
@@ -15835,6 +15846,14 @@
       "career_url": "https://nwfsc.interviewexchange.com/static/clients/531NFM1/index.jsp"
     },
     {
+      "name": "Northwest Iowa Community College",
+      "state": "IA",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://nwicc.edu/employment-opportunities/employment-application"
+    },
+    {
       "name": "Northwest Nazarene University",
       "state": "ID",
       "warning": "covered_zero_jobs",
@@ -16171,6 +16190,14 @@
       "career_url": "https://otero.edu/about/careers"
     },
     {
+      "name": "Otis College of Art and Design",
+      "state": "CA",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://otis.csod.com/ux/ats/careersite/4/home?c=otis"
+    },
+    {
       "name": "Ottawa University-Kansas City",
       "state": "KS",
       "warning": "covered_zero_jobs",
@@ -16225,6 +16252,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://ollusa.interviewexchange.com/static/clients/485OLM1/index.jsp"
+    },
+    {
+      "name": "Owensboro Community and Technical College",
+      "state": "KY",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://careers.kctcs.edu/jobs/search/owensboro-jobs"
     },
     {
       "name": "Oxnard College",
@@ -16369,6 +16404,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.schooljobs.com/careers/pasadenaedu"
+    },
+    {
+      "name": "Pasco-Hernando State College",
+      "state": "FL",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.governmentjobs.com/careers/phsc"
     },
     {
       "name": "Patrick & Henry Community College",
@@ -17051,6 +17094,22 @@
       "career_url": "https://www.rsu.edu/offices-services/human-resources/employment"
     },
     {
+      "name": "Rogue Community College",
+      "state": "OR",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.governmentjobs.com/careers/roguecc"
+    },
+    {
+      "name": "Rollins College",
+      "state": "FL",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://jobs.rollins.edu/"
+    },
+    {
       "name": "Rose State College",
       "state": "OK",
       "warning": "covered_zero_jobs",
@@ -17091,6 +17150,14 @@
       "career_url": "https://www.governmentjobs.com/careers/bccedu"
     },
     {
+      "name": "Rowan College of South Jersey-Gloucester Campus",
+      "state": "NJ",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.schooljobs.com/careers/rcsjedu"
+    },
+    {
       "name": "Roxbury Community College",
       "state": "MA",
       "warning": "covered_zero_jobs",
@@ -17113,6 +17180,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.sage.edu/about/work-at-russell-sage"
+    },
+    {
+      "name": "Rust College",
+      "state": "MS",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://rustcollege.edu/job-listings"
     },
     {
       "name": "Sacramento City College",
@@ -17323,6 +17398,14 @@
       "career_url": "https://www.svots.edu/about/employment"
     },
     {
+      "name": "Salina Area Technical College",
+      "state": "KS",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://salinatech.edu/hr/current-openings"
+    },
+    {
       "name": "Salish Kootenai College",
       "state": "MT",
       "warning": "covered_zero_jobs",
@@ -17387,6 +17470,14 @@
       "career_url": "https://recruiting.paylocity.com/recruiting/jobs/All/a77350b7-382e-4ebc-be83-5ce68f2b9d07/San-Francisco-Conservatory-of-Music"
     },
     {
+      "name": "San Jacinto Community College",
+      "state": "TX",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://sanjac.csod.com/ux/ats/careersite/3/home?c=sanjac"
+    },
+    {
       "name": "San Joaquin Delta College",
       "state": "CA",
       "warning": "covered_zero_jobs",
@@ -17443,20 +17534,20 @@
       "career_url": "https://www.schooljobs.com/careers/rsccd/transferjobs"
     },
     {
-      "name": "Sarah Lawrence College",
-      "state": "NY",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://slc.peopleadmin.com/postings/search"
-    },
-    {
       "name": "Sattler College",
       "state": "MA",
       "warning": "covered_zero_jobs",
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://app.trinethire.com/companies/20243-sattler-college-inc/jobs"
+    },
+    {
+      "name": "Savannah Technical College",
+      "state": "GA",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://careers.georgia.gov/jobs-search?search_api_fulltext=&field_agency_name=4976&field_job_family=All&field_employee_status=All&field_job_level=All&field_schedule=All&field_shift=All"
     },
     {
       "name": "Saybrook University",
@@ -17787,14 +17878,6 @@
       "career_url": "https://www.sehcollege.edu/job-opportunities"
     },
     {
-      "name": "Southeast Technical College",
-      "state": "SD",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://www.southeasttech.edu/employment-hr/index.php"
-    },
-    {
       "name": "Southeastern Baptist Theological Seminary",
       "state": "NC",
       "warning": "covered_zero_jobs",
@@ -17857,6 +17940,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://inside.southernct.edu/human-resources/jobs"
+    },
+    {
+      "name": "Southern Illinois University Carbondale",
+      "state": "IL",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.schooljobs.com/careers/siu"
     },
     {
       "name": "Southern Illinois University-System Office",
@@ -18011,14 +18102,6 @@
       "career_url": "https://www.sipi.edu/apps/pages/humanresources"
     },
     {
-      "name": "Southwestern University",
-      "state": "TX",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://www.schooljobs.com/careers/southwestern"
-    },
-    {
       "name": "SOWELA Technical Community College",
       "state": "LA",
       "warning": "covered_zero_jobs",
@@ -18113,14 +18196,6 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://sctcc.edu/employment-opportunities"
-    },
-    {
-      "name": "St Joseph School of Nursing",
-      "state": "NH",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://careers.covenanthealth.net/?keyword=instructor"
     },
     {
       "name": "St Luke's College",
@@ -18275,14 +18350,6 @@
       "career_url": "https://stephens.edu/why-stephens/leadership/office-of-finance-administration/human-resources"
     },
     {
-      "name": "Sterling College",
-      "state": "KS",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://www.sterling.edu/academics/faculty-jobs"
-    },
-    {
       "name": "Sterling College (VT)",
       "state": "VT",
       "warning": "covered_zero_jobs",
@@ -18347,14 +18414,6 @@
       "career_url": "https://www.summitcc.edu/academics/faculty-jobs"
     },
     {
-      "name": "SUNY Adirondack",
-      "state": "NY",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://www.sunyacc.edu/careers"
-    },
-    {
       "name": "SUNY at Purchase College",
       "state": "NY",
       "warning": "covered_zero_jobs",
@@ -18385,6 +18444,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://jobs.surry.edu/"
+    },
+    {
+      "name": "Swarthmore College",
+      "state": "PA",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://careers.pageuppeople.com/819/cw/en-us/listing"
     },
     {
       "name": "Tacoma Community College",
@@ -18643,20 +18710,20 @@
       "career_url": "https://inside.sbts.edu/human-resources/employment"
     },
     {
-      "name": "The Southwestern Baptist Theological Seminary",
-      "state": "TX",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://swbts.edu/campus-life/offices/human-resources"
-    },
-    {
       "name": "The University of Montana-Western",
       "state": "MT",
       "warning": "covered_zero_jobs",
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.umwestern.edu/section/working-at-UMW"
+    },
+    {
+      "name": "The University of Olivet",
+      "state": "MI",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.uolivet.edu/employment"
     },
     {
       "name": "The University of Tampa",
@@ -18985,6 +19052,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://ucc.peopleadmin.com/"
+    },
+    {
+      "name": "UMass Dartmouth",
+      "state": "MA",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://careers.umassd.edu/en-us/filter"
     },
     {
       "name": "Union Adventist University",
@@ -19483,6 +19558,14 @@
       "career_url": "https://mountsaintvincent.edu/campus-life/campus-services/human-resources"
     },
     {
+      "name": "University of Mount Union",
+      "state": "OH",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://www.schooljobs.com/careers/mountunion/faculty"
+    },
+    {
       "name": "University of Nebraska-Central Administration System Office",
       "state": "NE",
       "warning": "covered_zero_jobs",
@@ -19507,14 +19590,6 @@
       "career_url": "https://www.newhaven.edu/about/employment/index.php"
     },
     {
-      "name": "University of New Mexico",
-      "state": "NM",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://unm.csod.com/ux/ats/careersite/18/home?c=unm"
-    },
-    {
       "name": "University of New Mexico-Gallup Campus",
       "state": "NM",
       "warning": "covered_zero_jobs",
@@ -19537,14 +19612,6 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://myapps.northcarolina.edu/hr/careers"
-    },
-    {
-      "name": "University of North Dakota",
-      "state": "ND",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://careers.und.edu/jobs/search"
     },
     {
       "name": "University of North Texas System",
@@ -19729,14 +19796,6 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://utep.interviewexchange.com/static/clients/533UTM1/index.jsp"
-    },
-    {
-      "name": "University of Texas Southwestern Medical Center",
-      "state": "TX",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://jobs.utsouthwestern.edu/job-search-results?category=Faculty+and+Physicians"
     },
     {
       "name": "University of the Incarnate Word",
@@ -20489,6 +20548,14 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://www.widener.edu/employment"
+    },
+    {
+      "name": "Wilberforce University",
+      "state": "OH",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://wilberforce.edu/careers"
     },
     {
       "name": "Wiley University",
