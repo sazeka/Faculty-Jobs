@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["schemaVersion", "scrapedAt", "count", "jobs"],
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "const": "1.1.0" },
     "scrapedAt": { "type": ["string", "null"], "format": "date-time" },
     "count": { "type": "integer", "minimum": 0 },
     "jobs": { "type": "array", "items": { "$ref": "#/$defs/job" } }
@@ -18,8 +18,9 @@
       "additionalProperties": false,
       "required": [
         "canonicalJobId", "canonicalGroupId", "title", "url", "source", "category",
-        "college", "location", "state", "department", "specialization", "discipline",
-        "positionType", "appointmentTrack", "appointmentTrackEvidence", "datePosted",
+        "college", "unitid", "institutionControl", "institutionLevel", "location", "state",
+        "department", "specialization", "discipline", "positionType",
+        "appointmentTrack", "appointmentTrackEvidence", "datePosted",
         "closeDate", "startDate", "firstSeen", "openUntilFilled", "systemGroup"
       ],
       "properties": {
@@ -30,6 +31,9 @@
         "source": { "type": "string", "minLength": 1 },
         "category": { "$ref": "#/$defs/nullableString" },
         "college": { "$ref": "#/$defs/nullableString" },
+        "unitid": { "type": ["integer", "null"], "minimum": 100000, "maximum": 999999 },
+        "institutionControl": { "enum": ["public", "private nonprofit", null] },
+        "institutionLevel": { "enum": ["4-year", "2-year", null] },
         "location": { "$ref": "#/$defs/nullableString" },
         "state": { "type": ["string", "null"], "pattern": "^[A-Z]{2}$" },
         "department": { "$ref": "#/$defs/nullableString" },

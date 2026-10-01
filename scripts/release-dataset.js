@@ -13,6 +13,7 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, "..");
+const SCHEMA_VERSION = "1.1.0";
 
 function parseArgs(argv) {
   const out = {};
@@ -96,6 +97,50 @@ function deriveState(job) {
   return parsed && US_STATE_CODES.has(parsed) ? parsed : null;
 }
 
+// Index the IPEDS-backed master list by lowercased name and alias so each
+// release record can carry its institution's UNITID. A name shared by several
+// institutions resolves only when the posting's state picks out exactly one.
+function loadInstitutionIndex() {
+  const master = readJsonOrNull(path.join(ROOT, "data", "institutions-master.json"));
+  const byName = new Map();
+  for (const inst of master?.institutions || []) {
+    if (!Number.isInteger(inst?.unitid)) continue;
+    for (const name of [inst.name, ...(inst.aliases || [])]) {
+      const key = nullableString(name)?.toLowerCase();
+      if (!key) continue;
+      if (!byName.has(key)) byName.set(key, []);
+      byName.get(key).push(inst);
+    }
+  }
+  return byName;
+}
+
+function resolveInstitution(index, college, state) {
+  const candidates = index.get(nullableString(college)?.toLowerCase()) || [];
+  const unitids = new Set(candidates.map((inst) => inst.unitid));
+  if (unitids.size === 1) return candidates[0];
+  const inState = candidates.filter((inst) => inst.state === state);
+  return new Set(inState.map((inst) => inst.unitid)).size === 1 ? inState[0] : null;
+}
+
+// The post-quality audit's quarantine list is regenerated with every scrape.
+// Postings failing its relevance dimension (e.g. compliance notices for
+// positions already filled) are not open faculty jobs, so the release omits
+// them. Other quarantine reasons, such as attribution heuristics, can be false
+// positives and stay in the release, listed in the manifest for review.
+function loadQuarantine() {
+  const quarantine = readJsonOrNull(path.join(ROOT, "generated", "post-quality-quarantine.json"));
+  const items = Array.isArray(quarantine?.items) ? quarantine.items : [];
+  const isRelevanceError = (item) =>
+    (item.reasons || []).some((r) => r?.dimension === "relevance" && r?.severity === "error");
+  return {
+    generatedAt: quarantine?.generatedAt || null,
+    excludedUrls: new Set(items.filter(isRelevanceError).map((item) => item.url)),
+    items,
+    isRelevanceError,
+  };
+}
+
 function appointmentTrack(job) {
   const classified = classifyTenureTrackWithEvidence(job);
   if (classified.value === true) {
@@ -110,8 +155,10 @@ function appointmentTrack(job) {
   return { appointmentTrack: "unclassified", appointmentTrackEvidence: null };
 }
 
-function projectJob(job) {
+function projectJob(job, institutionIndex) {
   const track = appointmentTrack(job);
+  const state = deriveState(job);
+  const institution = resolveInstitution(institutionIndex, job?.college, state);
   return {
     canonicalJobId: nullableString(job?.canonicalJobId),
     canonicalGroupId: nullableString(job?.canonicalGroupId),
@@ -120,8 +167,11 @@ function projectJob(job) {
     source: nullableString(job?.source),
     category: nullableString(job?.category),
     college: nullableString(job?.college),
+    unitid: institution?.unitid ?? null,
+    institutionControl: nullableString(institution?.control),
+    institutionLevel: nullableString(institution?.level),
     location: nullableString(job?.location),
-    state: deriveState(job),
+    state,
     department: nullableString(job?.department),
     specialization: nullableString(job?.specialization),
     discipline: nullableString(job?.discipline),
@@ -210,7 +260,13 @@ function main() {
 
   const payload = readJobsFile(inputPath);
   const sourceJobs = Array.isArray(payload?.jobs) ? payload.jobs : [];
-  const { records: jobs, removed: duplicateIdsRemoved } = dedupeByCanonicalId(sourceJobs.map(projectJob));
+  const institutionIndex = loadInstitutionIndex();
+  const quarantine = loadQuarantine();
+  const eligibleJobs = sourceJobs.filter((job) => !quarantine.excludedUrls.has(job?.url));
+  const quarantineExcludedCount = sourceJobs.length - eligibleJobs.length;
+  const { records: jobs, removed: duplicateIdsRemoved } = dedupeByCanonicalId(
+    eligibleJobs.map((job) => projectJob(job, institutionIndex)),
+  );
   const headers = [
     "canonicalJobId",
     "canonicalGroupId",
@@ -219,6 +275,9 @@ function main() {
     "source",
     "category",
     "college",
+    "unitid",
+    "institutionControl",
+    "institutionLevel",
     "location",
     "state",
     "department",
@@ -275,7 +334,7 @@ function main() {
   const linkHealthCounts = linkHealth?.counts || null;
 
   const releasePayload = {
-    schemaVersion: "1.0.0",
+    schemaVersion: SCHEMA_VERSION,
     scrapedAt: payload?.scrapedAt || null,
     count: jobs.length,
     jobs,
@@ -292,7 +351,7 @@ function main() {
 
   const metadata = {
     title: "Faculty Atlas: Point-in-Time Faculty Job Postings in United States Higher Education",
-    schemaVersion: "1.0.0",
+    schemaVersion: SCHEMA_VERSION,
     methodologyVersion: "2026-09",
     generatedAt: new Date().toISOString(),
     date: dateTag,
@@ -331,6 +390,22 @@ function main() {
       },
       duplicateJobUrls: {
         count: duplicateUrlCount,
+      },
+      unitidMatched: {
+        count: jobs.filter((job) => job.unitid !== null).length,
+        source: "data/institutions-master.json",
+      },
+      postQualityQuarantine: {
+        source: "generated/post-quality-quarantine.json",
+        generatedAt: quarantine.generatedAt,
+        excludedCount: quarantineExcludedCount,
+        excluded: quarantine.items.filter(quarantine.isRelevanceError).map(({ url, title, college, reasons }) => ({
+          url, title, college, reasons: reasons.map((r) => r.code),
+        })),
+        retained: quarantine.items.filter((item) => !quarantine.isRelevanceError(item)).map(({ url, title, college, reasons }) => ({
+          url, title, college, reasons: reasons.map((r) => r.code),
+        })),
+        note: "Quarantined postings failing the relevance dimension (not open faculty jobs) are excluded; other quarantine reasons are retained.",
       },
       duplicateCanonicalIdsRemoved: {
         count: duplicateIdsRemoved,

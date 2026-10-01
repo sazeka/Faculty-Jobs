@@ -88,6 +88,7 @@ function summarize(jobs) {
   return {
     count: jobs.length,
     institutions: new Set(jobs.map((j) => j.college).filter(Boolean)).size,
+    unitidShare: jobs.length ? jobs.filter((j) => j.unitid !== null && j.unitid !== undefined).length / jobs.length : 0,
     states: new Set(jobs.map((j) => j.state).filter(Boolean)).size,
     firstSeenMin: firstSeen[0] || null,
     // Share of records whose firstSeen is the earliest value: a large share
@@ -205,7 +206,12 @@ function buildDescription({ manifest, stats }) {
   ].join(" ");
 }
 
-function buildReadme({ deposit, manifest, stats, fileRows, dataDictionary }) {
+function doiUrl(pid) {
+  const doi = String(pid || "").match(/^doi:(.+)$/i)?.[1];
+  return doi ? `https://doi.org/${doi}` : null;
+}
+
+function buildReadme({ deposit, manifest, stats, fileRows, dataDictionary, validation }) {
   const tc = manifest.appointmentTrackCounts;
   const pct = (v) => `${(v * 100).toFixed(1)}%`;
   const authorList = deposit.authors.map((a) => a.name).join("; ");
@@ -219,7 +225,7 @@ Snapshot date: **${manifest.date}** · Schema version: **${manifest.schemaVersio
 This dataset is a point-in-time snapshot of publicly listed faculty job postings at United States higher-education institutions, collected by Faculty Atlas (${deposit.relatedUrls.website}).
 
 - Records: ${formatInt(stats.count)} postings
-- Institutions: ${formatInt(stats.institutions)}
+- Institutions: ${formatInt(stats.institutions)} (${pct(stats.unitidShare)} of records carry an IPEDS UNITID)
 - Geography: ${stats.states} jurisdictions (the 50 states and Washington, D.C.)
 - Snapshot captured: ${manifest.scrapedAt}
 
@@ -239,7 +245,7 @@ The CSV and JSON contain the same records. Empty CSV cells correspond to JSON \`
 2. **Scraping.** Automated collection with Playwright on a recurring schedule (roughly every other day).
 3. **Normalization.** Institution names, locations, and dates are normalized; each posting gets a stable \`canonicalJobId\`, and probable duplicates share a \`canonicalGroupId\`.
 4. **Classification.** Discipline and position type come from source fields, deterministic rules, and AI-assisted extraction. Appointment track is recomputed at release time by a versioned deterministic classifier using explicit posting language, structured fields, title rules, and source-cited institution tenure policies. \`appointmentTrackEvidence\` records which rule family applied.
-5. **Release export.** Only research metadata and source links are exported. Repeated captures of a single \`canonicalJobId\` are collapsed to the most complete record (${manifest.diagnostics?.duplicateCanonicalIdsRemoved?.count ?? 0} removed in this snapshot).
+5. **Release export.** Only research metadata and source links are exported. Each record is linked to its institution's IPEDS UNITID, control, and level by exact name or alias match against the project's IPEDS-derived institution list. Postings that the automated quality audit flags as not being open faculty jobs, such as notices for positions already filled, are excluded (${manifest.diagnostics?.postQualityQuarantine?.excludedCount ?? 0} in this snapshot). Repeated captures of a single \`canonicalJobId\` are collapsed to the most complete record (${manifest.diagnostics?.duplicateCanonicalIdsRemoved?.count ?? 0} removed in this snapshot).
 
 Code for every step is public at ${deposit.relatedUrls.code}. This snapshot was produced from commit \`${manifest.sourceCommit}\`.
 
@@ -264,6 +270,8 @@ ${Object.entries(stats.completeness).map(([f, v]) => `| \`${f}\` | ${pct(v)} |`)
 
 ${dataDictionary.replace(/^# Data Dictionary\s*/m, "").replace(/^## /gm, "### ").trim()}
 
+${validation.replace(/^# Release Validation\s*/m, "## Validation\n\n").replace(/^Accuracy and coverage evidence[^\n]*\n\n/m, "").replace(/^## (?!Validation)/gm, "### ").trim()}
+
 ## Known limitations
 
 - Coverage is broad but not a census. A missing institution or posting can reflect an unavailable source, technical blocking, a policy exclusion, or no visible opening at collection time.
@@ -287,7 +295,7 @@ Released under ${deposit.license.name} (${deposit.license.uri}). The license cov
 
 ## Citation
 
-${authorList} (${year}). *${deposit.title}* (snapshot ${manifest.date}). Harvard Dataverse. [DOI assigned on publication]
+${authorList} (${year}). *${deposit.title}* (snapshot ${manifest.date}). Harvard Dataverse. ${doiUrl(deposit.datasetPid) || "[DOI assigned on publication]"}
 
 Please cite the snapshot date and dataset version you used.
 `;
@@ -380,6 +388,7 @@ function main() {
   const { jobs } = readJson(release("json"));
   const stats = summarize(jobs);
   const dataDictionary = fs.readFileSync(path.join(ROOT, "data", "data-dictionary.md"), "utf8");
+  const validation = fs.readFileSync(path.join(ROOT, "data", "release-validation.md"), "utf8");
 
   fs.rmSync(outDir, { recursive: true, force: true });
   fs.mkdirSync(filesDir, { recursive: true });
@@ -402,7 +411,7 @@ function main() {
   fs.copyFileSync(path.join(ROOT, "data", "release-schema.json"), path.join(filesDir, "release-schema.json"));
   fs.writeFileSync(
     path.join(filesDir, "README.md"),
-    buildReadme({ deposit, manifest, stats, fileRows, dataDictionary }),
+    buildReadme({ deposit, manifest, stats, fileRows, dataDictionary, validation }),
     "utf8",
   );
   const checksums = fileRows

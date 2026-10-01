@@ -74,7 +74,7 @@ test("research release is publication-safe, classified, and reproducible", () =>
   const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
   const checksums = fs.readFileSync(path.join(outDir, "2026-09-23.sha256"), "utf8");
 
-  assert.equal(release.schemaVersion, "1.0.0");
+  assert.equal(release.schemaVersion, "1.1.0");
   assert.equal(release.count, 4);
   assert.deepEqual(release.jobs.map((job) => job.appointmentTrack), [
     "tenure-track",
@@ -95,4 +95,47 @@ test("research release is publication-safe, classified, and reproducible", () =>
   assert.equal(metadata.hashes.csv.value, digest(csvPath));
   assert.match(checksums, new RegExp(`^${digest(jsonPath)}  2026-09-23\\.json$`, "m"));
   assert.match(checksums, new RegExp(`^${digest(metadataPath)}  2026-09-23\\.metadata\\.json$`, "m"));
+});
+
+test("release validates states, collapses repeated ids, and links IPEDS UNITIDs", () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "faculty-atlas-release-"));
+  const inputPath = path.join(tempDir, "jobs.json");
+  const outDir = path.join(tempDir, "release");
+  const base = { source: "TEST", url: "https://example.edu/jobs/1" };
+  const fixture = {
+    scrapedAt: "2026-09-23T12:00:00.000Z",
+    jobs: [
+      { ...base, canonicalJobId: "job-1", title: "Instructor I, II", college: "Example University", location: "Instructor I, II" },
+      { ...base, canonicalJobId: "job-1", title: "Instructor I, II", college: "Example University", location: "Instructor I, II", department: "Mathematics" },
+      {
+        ...base,
+        canonicalJobId: "job-2",
+        url: "https://example.edu/jobs/2",
+        title: "Assistant Professor",
+        college: "A T Still University of Health Sciences",
+        location: "Kirksville, MO",
+      },
+    ],
+  };
+  fs.writeFileSync(inputPath, `${JSON.stringify(fixture)}\n`);
+
+  const result = spawnSync(process.execPath, [SCRIPT, "--input", inputPath, "--outdir", outDir, "--date", "2026-09-23"], {
+    cwd: ROOT,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+
+  const release = JSON.parse(fs.readFileSync(path.join(outDir, "2026-09-23.json"), "utf8"));
+  const metadata = JSON.parse(fs.readFileSync(path.join(outDir, "2026-09-23.metadata.json"), "utf8"));
+  assert.equal(release.count, 2);
+  assert.equal(metadata.diagnostics.duplicateCanonicalIdsRemoved.count, 1);
+  const [unmatched, matched] = release.jobs;
+  assert.equal(unmatched.department, "Mathematics", "keeps the most complete duplicate");
+  assert.equal(unmatched.state, null, "a title fragment is not a state code");
+  assert.equal(unmatched.unitid, null);
+  assert.equal(unmatched.institutionControl, null);
+  assert.equal(matched.state, "MO");
+  assert.equal(matched.unitid, 177834);
+  assert.equal(matched.institutionControl, "private nonprofit");
+  assert.equal(matched.institutionLevel, "4-year");
 });

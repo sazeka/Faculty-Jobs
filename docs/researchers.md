@@ -6,6 +6,7 @@ Faculty Atlas publishes point-in-time metadata about publicly listed faculty job
 
 - Live application snapshot: `public/jobs.json`
 - Versioned research releases: `data/releases/YYYY-MM-DD.{json,csv}`
+- Archived deposit: Harvard Dataverse, [doi:10.7910/DVN/FP3SME](https://doi.org/10.7910/DVN/FP3SME)
 - Release manifest: `data/releases/YYYY-MM-DD.metadata.json`
 - Integrity checks: `data/releases/YYYY-MM-DD.sha256`
 - Latest-release aliases: `data/releases/latest.*`
@@ -65,4 +66,4 @@ To reproduce a cited release, check out the manifest's `sourceCommit`, use the r
 
 ## Recommended citation
 
-Cite the dataset DOI once published, plus the exact snapshot date, schema version, and access date. Repository citation metadata is in `CITATION.cff`; current data-use terms are in `LICENSE-DATA.md`.
+Cite the Harvard Dataverse dataset, [doi:10.7910/DVN/FP3SME](https://doi.org/10.7910/DVN/FP3SME), with the dataset version and snapshot date you used, plus the schema version and access date. Accuracy and coverage evidence for each field is summarized in `data/release-validation.md`. Repository citation metadata is in `CITATION.cff`; current data-use terms are in `LICENSE-DATA.md`.

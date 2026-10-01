@@ -33,6 +33,9 @@ This dictionary describes the publication files created by `npm run release:data
 | `source` | string | no | Faculty Atlas source/system code. |
 | `category` | string | yes | Broad role category. |
 | `college` | string | yes | Normalized institution name. |
+| `unitid` | integer | yes | IPEDS UNITID for the institution, for joining to federal IPEDS data. Matched by exact normalized name or alias against `data/institutions-master.json`; null when no unambiguous match exists. |
+| `institutionControl` | enum | yes | `public` or `private nonprofit`, from IPEDS. Null when `unitid` is null. |
+| `institutionLevel` | enum | yes | `4-year` or `2-year`, from IPEDS. Null when `unitid` is null. |
 | `location` | string | yes | Location text supplied or normalized from the source. |
 | `state` | two-letter string | yes | United States postal abbreviation, taken from a structured field or parsed from `location`. |
 | `department` | string | yes | Department or program when recoverable. |
@@ -48,11 +51,15 @@ This dictionary describes the publication files created by `npm run release:data
 | `openUntilFilled` | boolean | yes | Whether the posting explicitly indicates open-until-filled status. |
 | `systemGroup` | string | yes | Source-family or higher-education-system grouping. |
 
+Postings that the post-quality audit quarantines for relevance, such as compliance notices for positions already filled, are excluded because they are not open faculty jobs. Postings quarantined for other reasons stay in the release. The manifest's `diagnostics.postQualityQuarantine` lists both groups.
+
 Each `canonicalJobId` appears at most once: when a posting was captured more than once, the export keeps the most complete copy and records the number collapsed in the manifest's `diagnostics.duplicateCanonicalIdsRemoved`. `state` is null unless it resolves to one of the 50 states or DC.
 
 Empty CSV cells correspond to JSON `null`. Dates may be absent or reflect source-provided precision; researchers should not infer an exact day where the source did not provide one.
 
 ## Working snapshot versus research release
+
+Schema 1.1.0 added `unitid`, `institutionControl`, and `institutionLevel`. Releases dated before 2026-10-01 use schema 1.0.0 and lack these fields.
 
 `public/jobs.json` is the live application input and may contain additional operational fields. It is not the archival research contract. The exact publication contract is `data/release-schema.json`; future incompatible changes require a new `schemaVersion`.
 
