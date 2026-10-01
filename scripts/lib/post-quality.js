@@ -677,7 +677,16 @@ export function scorePost(job, { today = new Date() } = {}) {
     // metadata (issue #129).
     const positionTypeValue = clean(job?.positionType)
     const hasPositionTypeEvidence = Boolean(positionTypeValue) && positionTypeValue !== 'Other'
-    if (!hasAcademicAppointmentTitle && !hasPositionTypeEvidence && !clean(job?.tenureTrack)) {
+    // `job.tenureTrack` is frequently stored as a raw boolean (true/false)
+    // rather than a string (see job-posting-classification.js) -- `false` is
+    // a real, meaningful "non-tenure-track" classification, not an absence
+    // of evidence. Passing it through clean() (`String(value || '')`) would
+    // collapse it to '' identically to null/undefined, since `false || ''`
+    // short-circuits on the falsy boolean. Treat any boolean as evidence and
+    // only fall back to clean() for the string ("tenure-track" /
+    // "non-tenure-track") form.
+    const hasTenureTrackEvidence = typeof job?.tenureTrack === 'boolean' || Boolean(clean(job?.tenureTrack))
+    if (!hasAcademicAppointmentTitle && !hasPositionTypeEvidence && !hasTenureTrackEvidence) {
       addReason(reasons, dimensions, 'weak_academic_evidence', 'warning', 'relevance', 30, 'No strong academic appointment signal appears in the title or normalized metadata.')
     }
   }
