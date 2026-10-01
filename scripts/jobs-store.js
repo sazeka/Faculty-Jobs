@@ -3,7 +3,8 @@
 //
 //   node scripts/jobs-store.js normalize   move inline descriptions into shards
 //   node scripts/jobs-store.js check       fail if jobs.json carries inline
-//                                          descriptions or any file nears the limit
+//                                          descriptions, repeats a canonicalJobId,
+//                                          or any file nears the limit
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -23,6 +24,9 @@ if (cmd === "normalize") {
   const raw = JSON.parse(fs.readFileSync(JOBS, "utf8"));
   const inline = (raw.jobs || []).filter((j) => j && j.description).length;
   if (inline) problems.push(`${inline} job(s) in public/jobs.json carry an inline description; run \`npm run jobs:normalize\``);
+  const ids = (raw.jobs || []).map((j) => j?.canonicalJobId).filter(Boolean);
+  const repeated = ids.length - new Set(ids).size;
+  if (repeated) problems.push(`${repeated} canonicalJobId(s) in public/jobs.json appear more than once; run \`npm run jobs:normalize\``);
   const files = [JOBS, ...fs.readdirSync(descriptionsDirFor(JOBS)).map((f) => path.join(descriptionsDirFor(JOBS), f))];
   for (const f of files) {
     const size = fs.statSync(f).size;

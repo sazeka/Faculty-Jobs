@@ -15,7 +15,7 @@ import { loadJobUrlCorrections, applyJobUrlCorrections } from "./lib/job-url-cor
 import { consolidateSystemUmbrellaDuplicates, consolidateWorkdayRequisitionDuplicates } from "./lib/duplicate-url-consolidation.js";
 import { attachCanonicalIds } from "./lib/canonical-id.js";
 import { dedupeExactListings } from "./lib/exact-job-dedup.js";
-import { repairMinnStateCollegeFromDescription } from "./lib/institution-attribution.js";
+import { repairKnownInstitutionAttribution, repairKnownSourceOwnership } from "./lib/institution-attribution.js";
 import { readJobsFile, writeJobsFile } from "./lib/jobs-file.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -71,12 +71,16 @@ function normalizeJobTitles(data) {
 // from each job's own scraped `Institution:` field BEFORE canonical IDs are
 // assigned, so a stale, city-guessed college can never get baked into a
 // canonicalGroupId (title|college|dept|state) that downstream consolidation
-// and the frontend then treat as stable identity.
-function repairMinnStateAttribution(data) {
+// and the frontend then treat as stable identity. The authoritative host/path
+// ownership rules (issue #143: SUNY Brockport, Geneseo, Monroe CC tenants that
+// the Finger Lakes CC pass absorbs) apply here for the same reason; when they
+// only ran later, in agent:job-presence, the stored ids kept the wrong college
+// and the source-heal step restored a second copy of each posting.
+function repairKnownAttribution(data) {
   if (!data || !Array.isArray(data.jobs)) return { data, repaired: 0 };
   let repaired = 0;
   const jobs = data.jobs.map((job) => {
-    const after = repairMinnStateCollegeFromDescription(job);
+    const after = repairKnownSourceOwnership(repairKnownInstitutionAttribution(job));
     if (after !== job) repaired += 1;
     return after;
   });
@@ -335,14 +339,14 @@ function canonicalizeJobUrls(data) {
     console.log(`✂️  Normalized ${titled.changed} job titles`);
   }
 
-  // Correct Minnesota State's shared-tenant college misattribution from each
-  // job's own description BEFORE canonical IDs are assigned (issue #152) --
-  // same reasoning as normalizeJobTitles above: canonicalGroupId includes
-  // `college`, so a stale, city-guessed college must never get baked in.
-  const minnStateRepair = repairMinnStateAttribution(data);
-  data = minnStateRepair.data;
-  if (minnStateRepair.repaired > 0) {
-    console.log(`🏫 Repaired ${minnStateRepair.repaired} Minnesota State college misattribution(s) from description (issue #152)`);
+  // Correct known college misattributions (Minnesota State from each job's own
+  // description, issue #152; tenant-owned NY hosts, issue #143) BEFORE canonical
+  // IDs are assigned -- same reasoning as normalizeJobTitles above:
+  // canonicalGroupId includes `college`, so a wrong college must never get baked in.
+  const attributionRepair = repairKnownAttribution(data);
+  data = attributionRepair.data;
+  if (attributionRepair.repaired > 0) {
+    console.log(`🏫 Repaired ${attributionRepair.repaired} known college misattribution(s) before canonical IDs (issues #143, #152)`);
   }
 
   // Reviewed per-posting link fixes, also BEFORE canonical IDs (the id can be

@@ -65,3 +65,31 @@ export function dedupeExactListings(jobs = []) {
     duplicateGroups,
   };
 }
+
+// canonicalJobId is the dataset's record key (description shards, presence
+// ledger, release exports), so the stored file must carry each id once. Copies
+// sharing an id collapse to the richest one, in the first copy's position;
+// jobs without an id pass through untouched.
+export function dedupeByCanonicalJobId(jobs = []) {
+  const groups = new Map();
+  const out = [];
+  for (const job of jobs) {
+    const id = clean(job?.canonicalJobId);
+    if (!id) {
+      out.push(job);
+      continue;
+    }
+    if (!groups.has(id)) {
+      groups.set(id, { index: out.length, copies: [] });
+      out.push(null);
+    }
+    groups.get(id).copies.push(job);
+  }
+
+  let removed = 0;
+  for (const { index, copies } of groups.values()) {
+    out[index] = copies.length > 1 ? mergeExactCopies(copies) : copies[0];
+    removed += copies.length - 1;
+  }
+  return { jobs: out, removed };
+}

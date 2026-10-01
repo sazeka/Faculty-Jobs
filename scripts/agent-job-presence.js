@@ -242,10 +242,13 @@ const cleanedJobs = deadlinePartition.kept
   .map(repairKnownSourceOwnership);
 // Stamp each surviving job with firstSeen from the presence ledger so the
 // frontend can sort "Most recent" (newest postings first) without a per-job
-// posting date from the source.
+// posting date from the source. An earlier firstSeen already on the job (carried
+// by URL from the previous snapshot) wins, so a posting whose canonicalJobId
+// changed -- e.g. after its college attribution was corrected -- isn't re-dated
+// as new.
 for (const job of cleanedJobs) {
   const p = presence.jobs[job.canonicalJobId];
-  if (p && p.firstSeen) job.firstSeen = p.firstSeen;
+  if (p && p.firstSeen && !(job.firstSeen && job.firstSeen < p.firstSeen)) job.firstSeen = p.firstSeen;
 
   // Persist the same trust guardrails used by the frontend so downstream
   // exports cannot present a future source date or a title/status conflict as

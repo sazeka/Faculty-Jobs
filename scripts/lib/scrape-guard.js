@@ -125,9 +125,21 @@ export function healCrateredSources(newData, prevData, { minBaseline, dropPct })
     return cratered.has(source) || crateredColleges.has(sourceCollegeKey(job));
   };
   const jobs = newData.jobs.filter((job) => !shouldRestore(job));
+  // A group can look cratered only because the fresh scrape filed its postings
+  // under another college (SUNY Brockport's schooljobs.com tenant landing on
+  // "Finger Lakes Community College"). Those fresh copies survive the filter
+  // above, so restoring the previous copy too would store the posting twice.
+  const freshKeys = new Set();
+  for (const job of jobs) {
+    if (job?.url) freshKeys.add(`url:${job.url}`);
+    if (job?.canonicalJobId) freshKeys.add(`id:${job.canonicalJobId}`);
+  }
+  const alreadyFresh = (job) =>
+    (job?.url && freshKeys.has(`url:${job.url}`)) ||
+    (job?.canonicalJobId && freshKeys.has(`id:${job.canonicalJobId}`));
   let jobsRestored = 0;
   for (const job of prevData.jobs) {
-    if (shouldRestore(job)) {
+    if (shouldRestore(job) && !alreadyFresh(job)) {
       jobs.push(job);
       jobsRestored += 1;
     }

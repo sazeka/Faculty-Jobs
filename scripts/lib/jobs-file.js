@@ -12,6 +12,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
+import { dedupeByCanonicalJobId } from "./exact-job-dedup.js";
 
 export const SHARD_COUNT = 32;
 export const DESCRIPTIONS_DIRNAME = "job-descriptions";
@@ -66,9 +67,13 @@ export function readJobsFile(jobsPath, { descriptions = true } = {}) {
 // never keep descriptions for jobs that are gone. A job with no `description`
 // property keeps its stored one (so writing back a slim read loses nothing);
 // an explicitly empty description removes it. Unchanged shards are left
-// byte-identical (git sees no diff).
+// byte-identical (git sees no diff). Each canonicalJobId is stored once: a
+// pass that re-attributes jobs after the scraper's own dedup can leave two
+// copies of one posting, and they collapse here to the most complete copy.
 export function writeJobsFile(jobsPath, payload, { pretty = true } = {}) {
-  const jobs = Array.isArray(payload?.jobs) ? payload.jobs : [];
+  const deduped = dedupeByCanonicalJobId(Array.isArray(payload?.jobs) ? payload.jobs : []);
+  const jobs = deduped.jobs;
+  if (deduped.removed > 0 && typeof payload?.count === "number") payload = { ...payload, count: jobs.length };
   const dir = descriptionsDirFor(jobsPath);
   const existing = readShards(dir);
   const shards = Array.from({ length: SHARD_COUNT }, () => ({}));
