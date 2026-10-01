@@ -7,10 +7,14 @@
 // Writes generated/dataverse/<date>/:
 //   files/          everything to upload (data, README, codebook, schema, checksums)
 //   dataset.json    Dataverse native-API payload for creating the dataset
-//   upload.sh       creates a DRAFT dataset and uploads files/; never publishes
+//   dataset-version.json  the same metadata, for updating an existing draft
+//   upload.sh       fills a DRAFT dataset (existing or new) with metadata and
+//                   files/; never publishes
 //
-// Deposit settings (authors, contact, license, target collection) live in
-// data/dataverse-deposit.json. Unfilled required fields are reported here and
+// Deposit settings (authors, contact, license, and either an existing draft's
+// datasetPid or a collection to create one in) live in
+// data/dataverse-deposit.json. Private values such as the contact email go in
+// the git-ignored data/dataverse-deposit.local.json, merged over it. Unfilled required fields are reported here and
 // block upload.sh, so placeholder metadata cannot reach a minted DOI.
 import fs from "fs";
 import path from "path";
@@ -54,9 +58,22 @@ function formatInt(n) {
   return Number(n).toLocaleString("en-US");
 }
 
+// Merge the git-ignored local overrides into the committed settings. Objects
+// merge one level deep, so { "contact": { "email": ... } } keeps contact.name.
+function readDepositConfig(configPath) {
+  const deposit = readJson(configPath);
+  const localPath = configPath.replace(/\.json$/, ".local.json");
+  if (!fs.existsSync(localPath)) return deposit;
+  for (const [key, value] of Object.entries(readJson(localPath))) {
+    const isObject = value && typeof value === "object" && !Array.isArray(value);
+    deposit[key] = isObject ? { ...deposit[key], ...value } : value;
+  }
+  return deposit;
+}
+
 function missingDepositFields(deposit) {
   const missing = [];
-  if (!deposit.collection) missing.push("collection");
+  if (!deposit.datasetPid && !deposit.collection) missing.push("datasetPid (or collection)");
   if (!deposit.contact?.email) missing.push("contact.email");
   deposit.authors.forEach((author, i) => {
     if (!author.name) missing.push(`authors[${i}].name`);
@@ -295,7 +312,7 @@ cd "$(dirname "$0")"
 : "\${DATAVERSE_API_TOKEN:?Set DATAVERSE_API_TOKEN (Dataverse: Account > API Token)}"
 SERVER="\${DATAVERSE_SERVER:-$(python3 -c 'import json;print(json.load(open("deposit.json"))["server"])')}"
 COLLECTION="\${DATAVERSE_COLLECTION:-$(python3 -c 'import json;print(json.load(open("deposit.json"))["collection"] or "")')}"
-: "\${COLLECTION:?Set collection in data/dataverse-deposit.json or DATAVERSE_COLLECTION}"
+DATASET_PID="\${DATASET_PID:-$(python3 -c 'import json;print(json.load(open("deposit.json"))["datasetPid"] or "")')}"
 
 missing=$(python3 -c 'import json;print("\\n".join(json.load(open("deposit.json"))["missing"]))')
 if [[ -n "$missing" ]]; then
@@ -306,9 +323,15 @@ fi
 
 ( cd files && shasum -a 256 -c SHA256SUMS.txt >/dev/null ) || { echo "Checksum mismatch in files/" >&2; exit 1; }
 
-if [[ -z "\${DATASET_PID:-}" ]]; then
+if [[ -n "$DATASET_PID" ]]; then
+  echo "Updating metadata of draft $DATASET_PID on $SERVER ..."
+  curl -sS --fail-with-body -H "X-Dataverse-key: $DATAVERSE_API_TOKEN" \\
+    -X PUT "$SERVER/api/datasets/:persistentId/versions/:draft?persistentId=$DATASET_PID" \\
+    -H "Content-Type: application/json" --upload-file dataset-version.json >/dev/null
+else
+  : "\${COLLECTION:?Set datasetPid or collection in data/dataverse-deposit.json}"
   echo "Creating draft dataset in collection '$COLLECTION' on $SERVER ..."
-  response=$(curl -sS -f -H "X-Dataverse-key: $DATAVERSE_API_TOKEN" \\
+  response=$(curl -sS --fail-with-body -H "X-Dataverse-key: $DATAVERSE_API_TOKEN" \\
     -X POST "$SERVER/api/dataverses/$COLLECTION/datasets" \\
     -H "Content-Type: application/json" --upload-file dataset.json)
   DATASET_PID=$(printf '%s' "$response" | python3 -c 'import json,sys;print(json.load(sys.stdin)["data"]["persistentId"])')
@@ -318,7 +341,7 @@ fi
 
 upload() {
   echo "Uploading $1 ..."
-  curl -sS -f -H "X-Dataverse-key: $DATAVERSE_API_TOKEN" \\
+  curl -sS --fail-with-body -H "X-Dataverse-key: $DATAVERSE_API_TOKEN" \\
     -X POST "$SERVER/api/datasets/:persistentId/add?persistentId=$DATASET_PID" \\
     -F "file=@files/$1" -F "jsonData=$2" >/dev/null
 }
@@ -338,7 +361,7 @@ function main() {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date))) {
     throw new Error(`Invalid --date value: "${date}". Use YYYY-MM-DD.`);
   }
-  const deposit = readJson(path.resolve(ROOT, args.config || "data/dataverse-deposit.json"));
+  const deposit = readDepositConfig(path.resolve(ROOT, args.config || "data/dataverse-deposit.json"));
   const outDir = path.resolve(ROOT, args.outdir || "generated/dataverse", date);
   const filesDir = path.join(outDir, "files");
 
@@ -389,16 +412,23 @@ function main() {
   fs.writeFileSync(path.join(filesDir, "SHA256SUMS.txt"), `${checksums}\n`, "utf8");
 
   const description = buildDescription({ manifest, stats });
-  writeJson(path.join(outDir, "dataset.json"), buildDatasetJson({ deposit, manifest, stats, description }));
+  const datasetJson = buildDatasetJson({ deposit, manifest, stats, description });
+  writeJson(path.join(outDir, "dataset.json"), datasetJson);
+  writeJson(path.join(outDir, "dataset-version.json"), datasetJson.datasetVersion);
   const missing = missingDepositFields(deposit);
-  writeJson(path.join(outDir, "deposit.json"), { server: deposit.server, collection: deposit.collection, missing });
+  writeJson(path.join(outDir, "deposit.json"), {
+    server: deposit.server,
+    datasetPid: deposit.datasetPid || null,
+    collection: deposit.collection,
+    missing,
+  });
   fs.writeFileSync(path.join(outDir, "upload.sh"), buildUploadScript({ fileRows }), { encoding: "utf8", mode: 0o755 });
 
   console.log(`Packaged ${date} for Dataverse: ${path.relative(ROOT, outDir)}`);
   console.log(`- ${formatInt(stats.count)} records, ${formatInt(stats.institutions)} institutions, ${stats.states} states`);
   console.log(`- ${fileRows.length} files in files/, plus dataset.json and upload.sh`);
   if (missing.length) {
-    console.log(`\nFill these in data/dataverse-deposit.json, then re-run (upload.sh refuses until they are set):`);
+    console.log(`\nFill these in data/dataverse-deposit.json (private values in data/dataverse-deposit.local.json), then re-run (upload.sh refuses until they are set):`);
     for (const field of missing) console.log(`  - ${field}`);
   }
 }
