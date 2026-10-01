@@ -301,16 +301,51 @@ Please cite the snapshot date and dataset version you used.
 `;
 }
 
+// Helper for upload.sh. Given a package file name and the draft/published file
+// listings, prints "<action> <fileId>": replace (published file with the same
+// role), readd (unpublished draft file, which Dataverse cannot replace), or add.
+// With --leftover, prints draft files that match no package file.
+const UPLOAD_PLAN_PY = `import json, re, sys
+
+def role(name):
+    return re.sub(r"_\\d{4}-\\d{2}-\\d{2}", "", name)
+
+def files(listing):
+    out = {}
+    for entry in json.loads(listing).get("data", []):
+        df = entry.get("dataFile", {})
+        # Ingested CSVs are listed as .tab; originalFileName keeps the upload name.
+        name = df.get("originalFileName") or df.get("filename") or entry.get("label", "")
+        out[role(name)] = (df.get("id"), name)
+    return out
+
+if sys.argv[1] == "--leftover":
+    wanted = {role(n) for n in sys.argv[3:]}
+    print(" ".join(name for r, (_, name) in files(sys.argv[2]).items() if r not in wanted))
+else:
+    name, draft, published = sys.argv[1], files(sys.argv[2]), files(sys.argv[3])
+    file_id = draft.get(role(name), (None, None))[0]
+    published_ids = {fid for fid, _ in published.values()}
+    if file_id is None:
+        print("add -")
+    elif file_id in published_ids:
+        print(f"replace {file_id}")
+    else:
+        print(f"readd {file_id}")
+`;
+
 function buildUploadScript({ fileRows }) {
   const lines = fileRows
     .map((r) => {
       const jsonData = JSON.stringify({ description: r.description, categories: [r.category] }).replace(/'/g, "'\\''");
-      return `upload "${r.name}" '${jsonData}'`;
+      return `sync_file "${r.name}" '${jsonData}'`;
     })
     .join("\n");
   return `#!/usr/bin/env bash
-# Create a DRAFT Harvard Dataverse dataset and upload this package's files.
-# Nothing is published: review the draft in the web UI, then click Publish.
+# Fill a DRAFT Harvard Dataverse dataset with this package's metadata and
+# files. For a published dataset this starts a new draft version and replaces
+# the previous snapshot's files. Nothing is published: review the draft in the
+# web UI, then click Publish.
 #
 #   export DATAVERSE_API_TOKEN=...   # Account > API Token on the Dataverse site
 #   bash upload.sh
@@ -332,7 +367,7 @@ fi
 ( cd files && shasum -a 256 -c SHA256SUMS.txt >/dev/null ) || { echo "Checksum mismatch in files/" >&2; exit 1; }
 
 if [[ -n "$DATASET_PID" ]]; then
-  echo "Updating metadata of draft $DATASET_PID on $SERVER ..."
+  echo "Updating draft metadata for $DATASET_PID on $SERVER ..."
   curl -sS --fail-with-body -H "X-Dataverse-key: $DATAVERSE_API_TOKEN" \\
     -X PUT "$SERVER/api/datasets/:persistentId/versions/:draft?persistentId=$DATASET_PID" \\
     -H "Content-Type: application/json" --upload-file dataset-version.json >/dev/null
@@ -347,14 +382,47 @@ else
   echo "(If an upload below fails, re-run with DATASET_PID=$DATASET_PID to add files to this draft.)"
 fi
 
-upload() {
-  echo "Uploading $1 ..."
-  curl -sS --fail-with-body -H "X-Dataverse-key: $DATAVERSE_API_TOKEN" \\
-    -X POST "$SERVER/api/datasets/:persistentId/add?persistentId=$DATASET_PID" \\
-    -F "file=@files/$1" -F "jsonData=$2" >/dev/null
+api() {
+  curl -sS --fail-with-body -H "X-Dataverse-key: $DATAVERSE_API_TOKEN" "$@"
+}
+
+# Files already in the draft (carried over from the last published version, or
+# from an earlier run of this script) are matched to package files by name with
+# the snapshot date removed, so a new snapshot replaces the previous one.
+draft_files=$(api "$SERVER/api/datasets/:persistentId/versions/:draft/files?persistentId=$DATASET_PID")
+# Fails with 404 until the dataset has been published once.
+published_files=$(api "$SERVER/api/datasets/:persistentId/versions/:latest-published/files?persistentId=$DATASET_PID" 2>/dev/null) \\
+  || published_files='{"data":[]}'
+
+
+sync_file() {
+  local name="$1" json="$2" action id
+  read -r action id < <(python3 upload-plan.py "$name" "$draft_files" "$published_files")
+  case "$action" in
+    replace)
+      echo "Replacing $name (file $id) ..."
+      api -X POST "$SERVER/api/files/$id/replace" -F "file=@files/$name" \\
+        -F "jsonData=$(python3 -c 'import json,sys;d=json.loads(sys.argv[1]);d["forceReplace"]=True;print(json.dumps(d))' "$json")" >/dev/null ;;
+    readd)
+      echo "Re-adding $name (removing unpublished draft file $id) ..."
+      api -X DELETE "$SERVER/api/files/$id" >/dev/null
+      api -X POST "$SERVER/api/datasets/:persistentId/add?persistentId=$DATASET_PID" \\
+        -F "file=@files/$name" -F "jsonData=$json" >/dev/null ;;
+    *)
+      echo "Uploading $name ..."
+      api -X POST "$SERVER/api/datasets/:persistentId/add?persistentId=$DATASET_PID" \\
+        -F "file=@files/$name" -F "jsonData=$json" >/dev/null ;;
+  esac
 }
 
 ${lines}
+
+leftover=$(python3 upload-plan.py --leftover "$draft_files" ${fileRows.map((r) => `"${r.name}"`).join(" ")})
+if [[ -n "$leftover" ]]; then
+  echo
+  echo "These draft files match nothing in this package; delete them in the web UI if they are obsolete:"
+  printf '  - %s\\n' $leftover
+fi
 
 echo
 echo "Done. Review the draft, then publish from the web UI:"
@@ -432,6 +500,7 @@ function main() {
     missing,
   });
   fs.writeFileSync(path.join(outDir, "upload.sh"), buildUploadScript({ fileRows }), { encoding: "utf8", mode: 0o755 });
+  fs.writeFileSync(path.join(outDir, "upload-plan.py"), UPLOAD_PLAN_PY, "utf8");
 
   console.log(`Packaged ${date} for Dataverse: ${path.relative(ROOT, outDir)}`);
   console.log(`- ${formatInt(stats.count)} records, ${formatInt(stats.institutions)} institutions, ${stats.states} states`);

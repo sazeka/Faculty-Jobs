@@ -44,6 +44,7 @@ The scraper (`server.js` + `scripts/scrape-to-json.js`) writes `public/jobs.json
 | `data-hygiene.yml` | Periodic data-quality cleanup |
 | `weekly-trends.yml` | Generate trend digests |
 | `frontend-deploy.yml` | Rebuild & deploy the Vue bundle on frontend-source changes |
+| `quarterly-release.yml` | Quarterly: build, validate, and commit a dated research release; open an issue to upload it to Harvard Dataverse |
 
 ## Run locally
 
@@ -76,6 +77,8 @@ npm run release:dataset
 # optional custom date:
 node scripts/release-dataset.js --date 2026-02-23
 ```
+
+Releases are archived on Harvard Dataverse at [doi:10.7910/DVN/FP3SME](https://doi.org/10.7910/DVN/FP3SME). `quarterly-release.yml` builds one each quarter; `npm run package:dataverse` then prepares the upload (see `scripts/package-dataverse.js`).
 
 The release export contains metadata and source links rather than full posting descriptions. It also writes a metadata manifest and SHA-256 checksum file so an archived snapshot can be traced to its source commit and verified after download.
 
