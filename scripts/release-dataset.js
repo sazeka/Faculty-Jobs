@@ -78,12 +78,22 @@ function nullableString(value) {
   return normalized || null;
 }
 
+// The 50 states plus DC; the release's geographic scope.
+const US_STATE_CODES = new Set([
+  "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS",
+  "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC",
+  "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
+]);
+
 function deriveState(job) {
-  const direct = nullableString(job?.state);
-  if (direct && /^[A-Z]{2}$/.test(direct.toUpperCase())) return direct.toUpperCase();
+  const direct = nullableString(job?.state)?.toUpperCase();
+  if (direct && US_STATE_CODES.has(direct)) return direct;
+  // Location text sometimes carries title fragments ("Instructor I, II"), so
+  // a trailing two-letter token only counts when it is a real state code.
   const location = nullableString(job?.location);
   const match = location?.match(/,\s*([A-Z]{2})(?:\s+\d{5}(?:-\d{4})?)?\s*$/i);
-  return match ? match[1].toUpperCase() : null;
+  const parsed = match?.[1].toUpperCase();
+  return parsed && US_STATE_CODES.has(parsed) ? parsed : null;
 }
 
 function appointmentTrack(job) {
@@ -125,6 +135,32 @@ function projectJob(job) {
     openUntilFilled: typeof job?.openUntilFilled === "boolean" ? job.openUntilFilled : null,
     systemGroup: nullableString(job?.systemGroup),
   };
+}
+
+function filledFieldCount(record) {
+  return Object.values(record).filter((v) => v !== null && v !== undefined && v !== "").length;
+}
+
+// canonicalJobId is the release's record key, so collapse repeated captures of
+// one posting to its most complete copy. Records without an id pass through.
+function dedupeByCanonicalId(records) {
+  const byId = new Map();
+  const out = [];
+  for (const record of records) {
+    const id = record.canonicalJobId;
+    if (!id) {
+      out.push(record);
+      continue;
+    }
+    const index = byId.get(id);
+    if (index === undefined) {
+      byId.set(id, out.length);
+      out.push(record);
+    } else if (filledFieldCount(record) > filledFieldCount(out[index])) {
+      out[index] = record;
+    }
+  }
+  return { records: out, removed: records.length - out.length };
 }
 
 function sha256(filePath) {
@@ -174,7 +210,7 @@ function main() {
 
   const payload = readJobsFile(inputPath);
   const sourceJobs = Array.isArray(payload?.jobs) ? payload.jobs : [];
-  const jobs = sourceJobs.map(projectJob);
+  const { records: jobs, removed: duplicateIdsRemoved } = dedupeByCanonicalId(sourceJobs.map(projectJob));
   const headers = [
     "canonicalJobId",
     "canonicalGroupId",
@@ -295,6 +331,10 @@ function main() {
       },
       duplicateJobUrls: {
         count: duplicateUrlCount,
+      },
+      duplicateCanonicalIdsRemoved: {
+        count: duplicateIdsRemoved,
+        note: "Repeated captures of one canonicalJobId collapsed to the most complete record.",
       },
       institutionCareerLinkHealth: linkHealthCounts
         ? {

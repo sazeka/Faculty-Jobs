@@ -36,3 +36,11 @@ web-vue/public/jobs.json
 # scripts/lib/jobs-file.js). The site reads data/ chunks, so a published copy is
 # only a ~90 MB file that pushes the repo toward GitHub's 100 MB limit.
 docs/jobs.json
+
+# Dataverse deposit packages: rebuilt from data/releases/ by
+# `npm run package:dataverse`, so committing them would duplicate the release.
+generated/dataverse/
+
+# Private Dataverse deposit values (e.g. contact email), merged over
+# data/dataverse-deposit.json by scripts/package-dataverse.js.
+data/dataverse-deposit.local.json
