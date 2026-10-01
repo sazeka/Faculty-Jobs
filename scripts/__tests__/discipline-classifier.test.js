@@ -94,3 +94,16 @@ test('"management" does not override an explicit clinical specialty named alongs
 test('a title with only "management" and no more specific subject still falls back to Business & Economics', () => {
   assert.equal(getDiscipline({ title: 'Assistant Professor of Management', department: null }), 'Business & Economics')
 })
+
+test('a generic Arts and Sciences school name does not mask a named subject', () => {
+  assert.equal(getDiscipline({ title: 'Department of Mathematics, College of Arts and Sciences', department: null }), 'Mathematics & Statistics')
+  assert.equal(getDiscipline({ title: 'Life Science and AI — Faculty of Arts and Sciences', department: null }), 'Biological Sciences')
+  assert.equal(getDiscipline({ title: 'Adjunct Faculty/PRN Professionals - College of Liberal Arts and Sciences', department: null }), 'Other')
+})
+
+test('trade and clinical subject phrases classify without borrowing a parent field', () => {
+  assert.equal(getDiscipline({ title: 'Adjunct Agriculture Diesel Service Instructor', department: null }), 'Other')
+  assert.equal(getDiscipline({ title: 'Adjunct Faculty: Residential Electrical', department: null }), 'Computer Science & Engineering')
+  assert.equal(getDiscipline({ title: 'Assistant Professor of Biological Psychology', department: null }), 'Psychology & Social Work')
+  assert.equal(getDiscipline({ title: 'Adjunct Faculty, Surgical Services', department: null }), 'Health & Medicine')
+})

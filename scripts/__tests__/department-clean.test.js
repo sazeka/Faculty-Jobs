@@ -21,6 +21,9 @@ test('rejects the audited malformed department patterns (issue #130)', () => {
   assert.equal(cleanDepartment(''), null)
   assert.equal(cleanDepartment(null), null)
   assert.equal(cleanDepartment('Ch'), null) // too short to be a real department
+  assert.equal(cleanDepartment('Faculty - University Transfer'), null)
+  assert.equal(cleanDepartment('Provost/Academic & Student Affairs'), null)
+  assert.equal(cleanDepartment('Associate Faculty — Physics'), null)
 })
 
 test('accepts real department values', () => {

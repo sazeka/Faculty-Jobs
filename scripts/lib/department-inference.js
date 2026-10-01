@@ -3,9 +3,8 @@
 // over coverage, since a wrong department is worse than an honestly empty
 // one.
 //
-// inferDepartmentFromTitle: title patterns like "Professor of X", "Lecturer
-// in Y", "Chair, Z" -- the department is explicitly named right after the
-// rank, right in the job's own stated title.
+// A subject after a rank ("Professor of Chemistry") does not establish the
+// hiring unit. Only an explicitly named academic unit in the title does.
 //
 // A separate, more sophisticated extractor already exists for the
 // description-label case ("Department: X" in the posting body) --
@@ -83,23 +82,23 @@ function normalizeDepartmentValue(value) {
 export function inferDepartmentFromTitle(title) {
   const t = clean(title);
   if (!t) return null;
-
-  let m = t.match(/\b(?:Professor|Lecturer|Instructor|Chair|Faculty)\s+(?:of|in)\s+(.+)$/i);
-  if (!m) m = t.match(/\bPost(?:doc|doctoral)\b.*?\bin\s+(.+)$/i);
-  if (!m) {
-    const commaMatch = t.match(/\b(?:Professor|Lecturer|Instructor|Chair|Faculty)[^,]*,\s*([A-Za-z][A-Za-z0-9 &/'().-]{2,100})$/i);
-    if (commaMatch) m = [commaMatch[0], commaMatch[1]];
+  const divisionHead = t.match(/\bDivision\s+Head\s+of\s+([A-Za-z][A-Za-z &/'().-]{2,70})/i);
+  if (divisionHead) {
+    const specialty = divisionHead[1].split(/[,;–—]|\s+(?:at|in|for)\b/i)[0].trim();
+    const candidate = normalizeDepartmentValue(`Division of ${specialty}`);
+    if (looksLikeSafeDepartmentValue(candidate)) return candidate;
   }
-  if (!m) {
-    // "Adjunct Faculty – English, Literature, & Writing" -- an em/en-dash
-    // (or plain hyphen set off by spaces, to avoid matching a hyphenated
-    // compound word) after "Faculty" instead of a comma or "of/in".
-    const dashMatch = t.match(/\bFaculty\s*[-–—]\s*([A-Za-z][A-Za-z0-9 &,/'().-]{2,100})$/i);
-    if (dashMatch) m = [dashMatch[0], dashMatch[1]];
-  }
-  if (!m || !m[1]) return null;
-
-  const normalized = normalizeDepartmentValue(m[1]);
+  const match = t.match(/\b(?:Department|Division|School|College|Program|Institute|Center)\s+(?:of|for)\s+[A-Za-z][A-Za-z ,&+/'().-]{2,100}/i);
+  if (!match) return null;
+  const chosen = (t.match(/\b(?:Department|Division)\s+of\s+[A-Za-z][A-Za-z ,&+/'().-]{2,100}/i) || match)[0];
+  const unit = chosen
+    .split(/\s+[-–—]\s+/)[0]
+    .split(/[,;]\s*(?=[A-Za-z/ ]{0,55}\b(?:Director|Professor|Faculty|Head)\b)|\s*\((?=[^)]*(?:program head|faculty|director))/i)[0]
+    .replace(/\s+(?:and\s+)?(?:Department|Division|School|College|Program)\s+of\s+.*$/i, '')
+    .replace(/\s+(?:non[- ]tenure|tenure[- ]track|faculty|professor|instructor|lecturer|applicant pool|instruction|chair)\b.*$/i, '')
+    .replace(/\s*\([^)]*(?:pool|posting|tenure|rank|track|clinical field supervisor)[^)]*\).*$/i, '')
+    .replace(/\)+$/, '');
+  const normalized = normalizeDepartmentValue(unit.replace(/\([^)]*$/, '').trim());
   return normalized && looksLikeSafeDepartmentValue(normalized) ? normalized : null;
 }
 

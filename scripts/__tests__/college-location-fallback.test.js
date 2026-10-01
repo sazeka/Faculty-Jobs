@@ -136,6 +136,22 @@ test('normalizeLocationByCollege resolves a "College Name, ST" placeholder to th
   assert.equal(harvard.location, 'Cambridge, MA')
 });
 
+test('normalizeLocationByCollege resolves punctuation variants and institution-only placeholders', () => {
+  const eauClaire = normalizeLocationByCollege({
+    college: 'University of Wisconsin-Eau Claire',
+    location: 'University of Wisconsin Eau Claire, WI',
+    source: 'WI',
+  })
+  assert.equal(eauClaire.location, 'Eau Claire, WI')
+
+  const augusta = normalizeLocationByCollege({
+    college: 'Augusta University',
+    location: 'Augusta University',
+    source: 'USG',
+  })
+  assert.equal(augusta.location, 'Augusta, GA')
+});
+
 test('normalizeLocationByCollege leaves a legitimate real city/state location untouched', () => {
   const job = normalizeLocationByCollege({
     college: 'Wilson Community College',

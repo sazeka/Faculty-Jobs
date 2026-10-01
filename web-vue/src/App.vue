@@ -698,7 +698,7 @@ async function reportBadListing(job) {
               tabindex="-1"
             >
               <div class="fa-label" style="margin-bottom: 10px;">Classification</div>
-              <p><b>Rank</b> is inferred from job titles — "Assistant Professor," "Lecturer," "Visiting Faculty," etc. <b>Tenure-track</b> status is determined by whether the title or posting explicitly mentions tenure or tenure-track. <b>Discipline</b> is inferred by matching job titles and department names against a curated keyword taxonomy covering 13 broad academic fields.</p>
+              <p><b>Rank</b> is inferred from job titles — “Assistant Professor,” “Lecturer,” “Visiting Faculty,” and similar labels. <b>Appointment track</b> uses an evidence hierarchy: source-provided status, explicit title or posting language, labeled hiring-system fields, unambiguous appointment types, and institution-specific title conventions documented from official faculty policies or current postings. A listing remains unclassified when evidence is absent, conflicting, or a title can belong to either track at that institution. <b>Discipline</b> is inferred by matching job titles and department names against a curated keyword taxonomy covering 13 broad academic fields.</p>
             </div>
 
             <div

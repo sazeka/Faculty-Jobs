@@ -3,17 +3,10 @@ import test from "node:test";
 
 import { inferDepartmentFromTitle, validateAiDepartmentEvidence } from "../lib/department-inference.js";
 
-test("infers department from explicit 'Professor of/in X' title patterns", () => {
-  assert.equal(inferDepartmentFromTitle("Assistant Professor of Chemistry"), "Chemistry");
-  assert.equal(inferDepartmentFromTitle("Lecturer in Applied Mathematics"), "Applied Mathematics");
-  assert.equal(
-    inferDepartmentFromTitle("Postdoctoral Fellow in Computational Biology"),
-    "Computational Biology"
-  );
-  assert.equal(
-    inferDepartmentFromTitle("Assistant Professor, Political Science"),
-    "Political Science"
-  );
+test("subjects in job titles are not assumed to be departments", () => {
+  for (const title of ["Assistant Professor of Chemistry", "Lecturer in Applied Mathematics", "Postdoctoral Fellow in Computational Biology", "Assistant Professor, Political Science", "Adjunct Faculty in Criminology", "9.5 Faculty, MATH", "Adjunct Faculty – Mechanical Engineering"]) {
+    assert.equal(inferDepartmentFromTitle(title), null, title);
+  }
 });
 
 test("returns null from a title with no department signal", () => {
@@ -23,37 +16,19 @@ test("returns null from a title with no department signal", () => {
   assert.equal(inferDepartmentFromTitle(null), null);
 });
 
-test("strips a leaked academic-year prefix from the captured value", () => {
-  assert.equal(
-    inferDepartmentFromTitle("Assistant Professor of 2026/2027: Biology"),
-    "Biology"
-  );
+test("extracts an explicitly named academic unit", () => {
+  assert.equal(inferDepartmentFromTitle("Adjunct Faculty in the Department of Political Science and International Affairs"), "Department of Political Science and International Affairs");
+  assert.equal(inferDepartmentFromTitle("Professor, School of Nursing"), "School of Nursing");
+  assert.equal(inferDepartmentFromTitle("Accounting Instructors for the College of Business & Entrepreneurship Non-Tenure Track Faculty (Applicant Pool)"), "College of Business & Entrepreneurship");
+  assert.equal(inferDepartmentFromTitle("Professor, Department of Medicine and Department of Pediatrics"), "Department of Medicine");
+  assert.equal(inferDepartmentFromTitle("College of Arts and Sciences - Department of Mathematics (Mathematics Faculty)"), "Department of Mathematics");
+  assert.equal(inferDepartmentFromTitle("Professor WOT, Division of Hematology and Oncology (Leukemia Program Head) Medicine"), "Division of Hematology and Oncology");
+  assert.equal(inferDepartmentFromTitle("Physician - Department of Physical Medicine & Rehabilitation, Prosthetics/Orthotics/Limb Loss Medical Director"), "Department of Physical Medicine & Rehabilitation");
 });
 
 test("rejects candidate values that don't look like a real department name", () => {
   assert.equal(inferDepartmentFromTitle("Professor of https://example.edu"), null);
   assert.equal(inferDepartmentFromTitle("Professor of Click Here To Apply"), null);
-});
-
-test("infers department from 'Faculty of/in X' and comma-separated 'Faculty, X' titles", () => {
-  assert.equal(inferDepartmentFromTitle("Adjunct Faculty in Criminology"), "Criminology");
-  assert.equal(inferDepartmentFromTitle("9.5 Faculty, MATH"), "MATH");
-  assert.equal(
-    inferDepartmentFromTitle("Adjunct Faculty, Computer Programming and Networking Technology"),
-    "Computer Programming and Networking Technology"
-  );
-});
-
-test("infers department from a dash-separated 'Faculty – X' title (no comma or of/in)", () => {
-  assert.equal(inferDepartmentFromTitle("Adjunct Faculty – Mechanical Engineering"), "Mechanical Engineering");
-  assert.equal(inferDepartmentFromTitle("Adjunct Faculty - Dental Hygiene"), "Dental Hygiene");
-});
-
-test("strips a leaked leading article from a captured department value", () => {
-  assert.equal(
-    inferDepartmentFromTitle("Adjunct Faculty in the Department of Political Science and International Affairs"),
-    "Department of Political Science and International Affairs"
-  );
 });
 
 test("rejects a captured value with a glued street address (Fresno-area community college titles)", () => {

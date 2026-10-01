@@ -80,7 +80,7 @@ function openDetail(event) {
 
       <div class="fa-listing-inst">
         {{ props.job.college || 'Institution not specified' }}
-        <span v-if="props.job.location || props.job.state"> · {{ props.job.location || props.job.state }}</span>
+        <span v-if="props.job.displayLocation || props.job.state"> · {{ props.job.displayLocation || props.job.state }}</span>
       </div>
 
       <div class="fa-listing-tags">

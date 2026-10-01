@@ -27,6 +27,22 @@ test("appointment-track history starts when all four categories are tracked", ()
   }]);
 });
 
+test("academic coverage starts only when each field was recorded", () => {
+  const weeks = [
+    { weekEnd: "2026-09-13", disciplineClassified: 75, disciplineUnknown: 25 },
+    { weekEnd: "2026-09-20", disciplineClassified: 80, disciplineUnknown: 20 },
+    { weekEnd: "2026-09-27", disciplineClassified: 90, disciplineUnknown: 10, departmentClassified: 60, departmentUnknown: 40 },
+  ];
+  assert.deepEqual(academicCoverageHistory(weeks, "discipline").map((week) => week.classifiedPct), [75, 80, 90]);
+  assert.deepEqual(academicCoverageHistory(weeks, "department"), [{
+    weekEnd: "2026-09-27",
+    classified: 60,
+    unknown: 40,
+    classifiedPct: 60,
+    unknownPct: 40,
+  }]);
+});
+
 test("appointment-track history calculates missing percentages and keeps the latest 12 weeks", () => {
   const input = Array.from({ length: 14 }, (_, index) => ({
     weekEnd: `week-${index + 1}`,

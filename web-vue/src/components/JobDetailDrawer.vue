@@ -77,7 +77,7 @@ onUnmounted(() => {
       </div>
 
       <dl class="detail-facts">
-        <div><dt>Location</dt><dd>{{ props.job.location || props.job.state || 'Not provided' }}</dd></div>
+        <div><dt>Location</dt><dd>{{ props.job.displayLocation || props.job.state || 'Not provided' }}</dd></div>
         <div><dt>{{ props.job.datePosted ? 'Posted' : 'Atlas listed' }}</dt><dd>{{ posted || 'Not provided' }}</dd></div>
         <div><dt>Deadline</dt><dd>{{ deadline || 'Not provided' }}</dd></div>
         <div v-if="startDate"><dt>Anticipated start</dt><dd>{{ startDate }}</dd></div>

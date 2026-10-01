@@ -92,6 +92,7 @@ import { alaskaCampusLocation, inferAlaskaCampus } from "./scripts/lib/alaska-ca
 import { canonicalCsuInstitutionFromLocation, repairKnownInstitutionAttribution } from "./scripts/lib/institution-attribution.js";
 import { peopleSoftJobDetailUrl } from "./scripts/lib/peoplesoft-job-url.js";
 import { isPlaceholderLocation } from "./scripts/lib/post-quality.js";
+import { inferDepartmentFromTitle } from "./scripts/lib/department-inference.js";
 // ===== Local summarizer client (Node -> FastAPI /summarize) =====
 const LOCAL_LLM_URLS = (process.env.LOCAL_LLM_URLS || process.env.LOCAL_LLM_URL || "http://127.0.0.1:9000/summarize")
   .split(",").map(s => s.trim()).filter(Boolean);
@@ -8547,11 +8548,11 @@ function inferAcademicFieldsFromTitle(title) {
       let normalized = normalizeField(value);
       normalized = normalized?.replace(/^of\s+practice,\s*/i, "");
       normalized = normalized?.replace(/^practice,\s*/i, "");
-      dept = normalized;
       spec = normalized;
     }
   }
 
+  dept = inferDepartmentFromTitle(t);
   return { department: dept || null, specialization: spec || null };
 }
 
@@ -8590,7 +8591,7 @@ function normalizeJobEnrichment(job) {
   const inferred = inferAcademicFieldsFromTitle(job.title || "");
   const inferredDept = cleanDepartmentField(inferred.department || inferred.specialization);
 
-  if (!department) department = specialization || inferredDept || null;
+  if (!department) department = cleanDepartmentField(inferred.department) || null;
   if (!specialization) specialization = inferredDept || department || null;
 
   return {

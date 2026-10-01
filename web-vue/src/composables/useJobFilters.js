@@ -36,13 +36,13 @@ const STALE_DATE_CUTOFF_ISO = (() => {
 // is otherwise unchanged.
 export const DISCIPLINE_RULES = [
   { label: 'Arts & Music', subdisciplines: [
-    { label: 'Visual Arts',      terms: ['art', 'studio', 'visual art', 'fine art', 'sculpture', 'painting', 'ceramics', 'graphic design', 'illustration', 'photography'] },
-    { label: 'Music',            terms: ['music'] },
+    { label: 'Visual Arts',      terms: ['art', 'studio', 'visual art', 'fine art', 'sculpture', 'painting', 'ceramics', 'graphic design', 'illustration', 'photography', 'interior design'] },
+    { label: 'Music',            terms: ['music', 'digital audio production'] },
     { label: 'Theatre & Dance',  terms: ['theatre', 'theater', 'dance', 'performing'] },
     { label: 'Film',             terms: ['film'] },
   ]},
   { label: 'Biological Sciences', subdisciplines: [
-    { label: 'General & Organismal Biology',          terms: ['biology', 'biolog', 'botany', 'zoology', 'wildlife'] },
+    { label: 'General & Organismal Biology',          terms: ['biology', 'biolog', 'life science', 'botany', 'zoology', 'wildlife', 'animal science', 'animal breeding', 'livestock', 'agriculture', 'horticulture'] },
     { label: 'Ecology & Evolution',                   terms: ['ecology', 'evolutionary', 'marine biology'] },
     { label: 'Genetics & Genomics',                   terms: ['genetics', 'genomics'] },
     { label: 'Neuroscience',                          terms: ['neuroscience'] },
@@ -53,7 +53,7 @@ export const DISCIPLINE_RULES = [
   { label: 'Business & Economics', subdisciplines: [
     { label: 'Economics',                     terms: ['economics', 'econom'] },
     { label: 'Accounting & Finance',          terms: ['accounting', 'finance', 'taxation', 'audit'] },
-    { label: 'Management & Entrepreneurship', terms: ['management', 'entrepreneurship'] },
+    { label: 'Management & Entrepreneurship', terms: ['management', 'entrepreneurship', 'executive leadership', 'organizational performance', 'human and org performance'] },
     { label: 'Marketing',                     terms: ['marketing'] },
     { label: 'Operations & Supply Chain',     terms: ['supply chain', 'operations'] },
     { label: 'Hospitality & Real Estate',     terms: ['hospitality', 'real estate'] },
@@ -64,12 +64,13 @@ export const DISCIPLINE_RULES = [
     { label: 'General Business',              terms: ['business', 'mba', 'commerce'] },
   ]},
   { label: 'Computer Science & Engineering', subdisciplines: [
-    { label: 'Computer Science & Software',          terms: ['computer science', 'software', 'data science', 'artificial intelligence', 'machine learning', 'cybersecurity'] },
-    { label: 'Electrical & Computer Engineering',    terms: ['electrical engineering', 'computer engineering', 'robotics'] },
+    { label: 'Computer Science & Software',          terms: ['computer science', 'software', 'data science', 'artificial intelligence', 'machine learning', 'cybersecurity', 'computing', 'computer programming', 'information technology'] },
+    { label: 'Electrical & Computer Engineering',    terms: ['electrical engineering', 'electrical technology', 'residential electrical', 'plc/industrial automation', 'computer engineering', 'robotics'] },
     { label: 'Mechanical & Aerospace Engineering',   terms: ['mechanical engineering', 'aerospace'] },
     { label: 'Civil & Industrial Engineering',       terms: ['civil engineering', 'industrial engineering', 'systems engineering'] },
     { label: 'Chemical & Materials Engineering',     terms: ['chemical engineering', 'materials science'] },
     { label: 'Biomedical Engineering',               terms: ['biomedical engineering'] },
+    { label: 'General Engineering',                   terms: ['engineering', 'mechatronics', 'process technology'] },
   ]},
   { label: 'Education', subdisciplines: [
     // These subject-area terms are new (not in the original flat list) — the
@@ -84,7 +85,7 @@ export const DISCIPLINE_RULES = [
     { label: 'Science Education',                  terms: ['science education', 'stem education'] },
     { label: 'Social Studies Education',            terms: ['social studies education', 'history education', 'civics education'] },
     { label: 'Language & Literacy Education',       terms: ['literacy education', 'english education', 'language arts education', 'reading education', 'esl education'] },
-    { label: 'Arts Education',                      terms: ['art education', 'music education', 'arts education'] },
+    { label: 'Arts Education',                      terms: ['art education', 'music education', 'arts education', 'art methods'] },
     { label: 'Physical & Health Education',         terms: ['physical education', 'health education'] },
     { label: 'Curriculum & Instruction',            terms: ['curriculum', 'pedagogy', 'instructional design', 'teaching', 'education'] },
     { label: 'Early Childhood & Literacy',          terms: ['early childhood', 'literacy'] },
@@ -98,22 +99,25 @@ export const DISCIPLINE_RULES = [
     // before the generic medicine/clinical/medical catch-all so, e.g., a
     // surgery posting that also happens to say "Department of Medicine"
     // still lands under Surgery rather than the generic bucket.
-    { label: 'Surgery',                          terms: ['surgery'] },
+    { label: 'Surgery',                          terms: ['surgery', 'surgical services', 'heart transplant', 'burn, wound', 'reconstruction'] },
     { label: 'Pediatrics',                       terms: ['pediatrics'] },
     { label: 'Psychiatry',                       terms: ['psychiatry'] },
     { label: 'Pathology',                        terms: ['pathology'] },
     { label: 'Anesthesiology',                   terms: ['anesthesiology'] },
     { label: 'Oncology',                         terms: ['oncology'] },
     { label: 'Radiology',                        terms: ['radiolog'] },
-    { label: 'General & Internal Medicine',      terms: ['medicine', 'clinical', 'medical'] },
-    { label: 'Nursing',                          terms: ['nursing'] },
+    { label: 'General & Internal Medicine',      terms: ['medicine', 'clinical', 'medical', 'cardiology', 'endoscopy', 'neurology', 'neurologist'] },
+    { label: 'Obstetrics & Gynecology',          terms: ['obstetrics and gynecology', 'gynecology', 'obstetrics'] },
+    { label: 'Nursing',                          terms: ['nursing', 'nurse', 'nurse aide', 'nurse practitioner', 'neonatal np', 'absn', 'bsn'] },
     { label: 'Pharmacy',                         terms: ['pharmacy'] },
-    { label: 'Dental',                           terms: ['dental'] },
+    { label: 'Dental',                           terms: ['dental', 'dentistry'] },
+    { label: 'Veterinary Medicine',              terms: ['veterinary', 'veterinarian', 'emergency and critical care'] },
+    { label: 'Health Informatics & Administration', terms: ['health information', 'health informatics', 'medical coding', 'healthcare administration'] },
     { label: 'Public Health & Epidemiology',     terms: ['public health', 'epidemiology', 'nutrition', 'health'] },
-    { label: 'Rehabilitation Sciences',          terms: ['physical therapy', 'occupational therapy', 'kinesiology', 'exercise science', 'physician assistant'] },
+    { label: 'Rehabilitation Sciences',          terms: ['physical therapy', 'occupational therapy', 'kinesiology', 'exercise science', 'physician assistant', 'respiratory care', 'respiratory therapy', 'speech-language pathology', 'physical medicine & rehabilitation'] },
   ]},
   { label: 'Humanities', subdisciplines: [
-    { label: 'English & Literature',            terms: ['english', 'literature', 'writing', 'comparative literature'] },
+    { label: 'English & Literature',            terms: ['english', 'literature', 'writing', 'writing studies', 'comparative literature'] },
     { label: 'History',                         terms: ['history', 'medieval', 'american studies'] },
     { label: 'Philosophy & Ethics',             terms: ['philosophy', 'ethics'] },
     { label: 'Religious Studies & Theology',    terms: ['religious studies', 'theology'] },
@@ -125,15 +129,15 @@ export const DISCIPLINE_RULES = [
     { label: 'General Humanities & Cultural Studies', terms: ['humanities', 'cultural studies'] },
   ]},
   { label: 'Languages & Linguistics', subdisciplines: [
-    { label: 'Linguistics & Applied Linguistics', terms: ['linguistics', 'applied linguistics', 'esl', 'tesol', 'second language', 'translation'] },
+    { label: 'Linguistics & Applied Linguistics', terms: ['linguistics', 'applied linguistics', 'esl', 'tesol', 'second language', 'translation', 'english language studies'] },
     { label: 'Romance Languages',                 terms: ['spanish', 'french', 'italian', 'portuguese'] },
     { label: 'Germanic Languages',                terms: ['german'] },
     { label: 'East Asian Languages',              terms: ['chinese', 'japanese', 'korean'] },
-    { label: 'Other World Languages',             terms: ['arabic', 'russian', 'language'] },
+    { label: 'Other World Languages',             terms: ['arabic', 'russian', 'foreign language', 'language', 'sign language'] },
   ]},
   { label: 'Law & Criminal Justice', subdisciplines: [
     { label: 'Law',                               terms: ['law', 'legal', 'jurisprudence', 'paralegal'] },
-    { label: 'Criminal Justice & Criminology',    terms: ['criminology', 'criminal justice', 'forensic', 'corrections', 'policing', 'homeland security'] },
+    { label: 'Criminal Justice & Criminology',    terms: ['criminology', 'criminal justice', 'forensic', 'corrections', 'policing', 'homeland security', 'aviation security'] },
   ]},
   { label: 'Mathematics & Statistics', subdisciplines: [
     // 'analysis' alone used to sit here as a bare term, so substring matching
@@ -141,7 +145,7 @@ export const DISCIPLINE_RULES = [
     // analysis", "data analysis" — see issue #116. Only the specific
     // mathematical-analysis subfields imply Mathematics.
     { label: 'Mathematics',                   terms: ['mathematics', 'math', 'applied math', 'calculus', 'algebra', 'real analysis', 'complex analysis', 'functional analysis', 'numerical analysis', 'harmonic analysis', 'mathematical analysis'] },
-    { label: 'Statistics & Data Analytics',   terms: ['statistics', 'actuarial', 'probability', 'data analytics'] },
+    { label: 'Statistics & Data Analytics',   terms: ['statistics', 'biostatistics', 'quantitative methodology', 'actuarial', 'probability', 'data analytics'] },
   ]},
   { label: 'Natural Sciences', subdisciplines: [
     { label: 'Physics & Astronomy',              terms: ['physics', 'astronomy', 'astrophysics'] },
@@ -149,18 +153,18 @@ export const DISCIPLINE_RULES = [
     { label: 'Earth & Environmental Sciences',    terms: ['geology', 'geophysics', 'environmental science', 'earth science', 'atmospheric', 'oceanography', 'climate', 'geoscience', 'material science'] },
   ]},
   { label: 'Psychology & Social Work', subdisciplines: [
-    { label: 'Psychology',                    terms: ['psychology', 'behavioral', 'cognitive', 'developmental psychology', 'clinical psychology'] },
+    { label: 'Psychology',                    terms: ['psychology', 'biological psychology', 'psychologist', 'behavioral', 'cognitive', 'developmental psychology', 'clinical psychology', 'counseling psychology', 'child and family studies'] },
     { label: 'Social Work & Counseling',      terms: ['social work', 'counseling', 'mental health', 'human services'] },
   ]},
   { label: 'Social Sciences', subdisciplines: [
     { label: 'Sociology & Anthropology',              terms: ['sociology', 'anthropology', 'demography'] },
-    { label: 'Political Science & Public Policy',     terms: ['political science', 'public administration', 'public policy', 'international relations'] },
+    { label: 'Political Science & Public Policy',     terms: ['political science', 'politics', 'public administration', 'public policy', 'international relations'] },
     { label: 'Geography & Urban Planning',            terms: ['geography', 'urban planning'] },
-    { label: 'Communications & Media',                terms: ['communications', 'journalism', 'media studies'] },
+    { label: 'Communications & Media',                terms: ['communications', 'communication', 'journalism', 'media studies', 'mass media', 'media and cinema', 'video broadcast', 'public speaking', 'speech'] },
     // 'social science' used to sit in this group's term list, so a job
     // generically titled "Social Science" got mislabeled with the specific
     // Gender & Ethnic Studies tag. It now has its own generic bucket.
-    { label: 'Gender & Ethnic Studies',               terms: ['gender studies', 'ethnic studies', 'african american', 'chicano', 'latinx'] },
+    { label: 'Gender & Ethnic Studies',               terms: ['gender studies', 'ethnic studies', 'native american studies', 'african american', 'chicano', 'latinx'] },
     { label: 'General Social Sciences',                terms: ['social science'] },
   ]},
 ]
@@ -176,9 +180,14 @@ export const DISCIPLINE_RULES = [
 // compound-catching behavior — require it to appear as a whole word instead
 // (tolerant of a trailing plural "s" so "arts" still matches).
 const ART_TERM_REGEX = /\barts?\b/i
+const BIOLOGY_TERM_REGEX = /\bbiolog/i
+const GENERIC_SCHOOL_NAME_REGEX = /\b(?:college|faculty|school) of (?:liberal )?arts? and sciences\b/gi
 
 function matchesTerm(hay, term) {
   if (term === 'art') return ART_TERM_REGEX.test(hay)
+  if (term === 'biology') return /\bbiology\b/i.test(hay)
+  if (term === 'biolog') return BIOLOGY_TERM_REGEX.test(hay)
+  if (term === 'translation') return /\btranslation\b/i.test(hay)
   return hay.includes(term)
 }
 
@@ -194,7 +203,7 @@ function matchesTerm(hay, term) {
 // signals — a title with ONLY "teaching" and nothing more specific should
 // still land in Education — but they must never outrank a real subject match
 // found anywhere else in the table.
-const GENERIC_CONTEXT_TERMS = new Set(['teaching', 'clinical', 'management'])
+const GENERIC_CONTEXT_TERMS = new Set(['teaching', 'clinical', 'management', 'medicine', 'medical', 'health'])
 
 // A match's specificity: a generic contextual term (see above) is weakest: it
 // only wins when nothing else in the table matched at all. Among the rest, a
@@ -205,7 +214,8 @@ const GENERIC_CONTEXT_TERMS = new Set(['teaching', 'clinical', 'management'])
 // Health & Medicine's bare "health".
 function termSpecificity(term) {
   if (GENERIC_CONTEXT_TERMS.has(term)) return 0
-  return term.includes(' ') ? 2 : 1
+  if (['veterinary', 'pediatrics', 'neurology', 'neurologist', 'biostatistics', 'ethnic studies', 'psychologist'].includes(term)) return 3
+  return term.split(' ').length >= 3 ? 3 : term.includes(' ') ? 2 : 1
 }
 
 // Scores every top-level rule by the single most specific term it matches
@@ -215,14 +225,18 @@ function termSpecificity(term) {
 // documented priority list for equally-specific matches (see e.g. the "art"
 // vs "history" case in "Lecturer in Art History": both are single-word
 // matches, and Arts & Music is intentionally checked before Humanities).
-function bestDisciplineMatch(hay) {
+function bestDisciplineMatch(job) {
+  const title = String(job.title || '').toLowerCase().replace(GENERIC_SCHOOL_NAME_REGEX, ' ')
+  const department = String(job.department || '').toLowerCase().replace(GENERIC_SCHOOL_NAME_REGEX, ' ')
   let best = null
   for (const rule of DISCIPLINE_RULES) {
     let ruleScore = -1
     for (const sub of rule.subdisciplines) {
       for (const term of sub.terms) {
-        if (!matchesTerm(hay, term)) continue
-        const score = termSpecificity(term)
+        const inTitle = matchesTerm(title, term)
+        if (!inTitle && !matchesTerm(department, term)) continue
+        const specificity = termSpecificity(term)
+        const score = (inTitle && specificity > 0 ? 10 : 0) + specificity
         if (score > ruleScore) ruleScore = score
       }
     }
@@ -234,8 +248,9 @@ function bestDisciplineMatch(hay) {
 }
 
 export function getDiscipline(job) {
-  const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
-  return bestDisciplineMatch(hay)?.label || 'Other'
+  if (/\b(?:multiple departments|division of math, science, it & bachelor programs)\b/i.test(String(job.title || ''))) return 'Other'
+  if (/\b(?:agriculture diesel|diesel service)\b/i.test(String(job.title || ''))) return 'Other'
+  return bestDisciplineMatch(job)?.label || 'Other'
 }
 
 // Finds which sub-discipline within the job's already-determined discipline
@@ -244,11 +259,22 @@ export function getDiscipline(job) {
 export function getSubdiscipline(job) {
   const rule = DISCIPLINE_RULES.find((r) => r.label === job.discipline)
   if (!rule) return null
-  const hay = `${job.title || ''} ${job.department || ''}`.toLowerCase()
+  const title = String(job.title || '').toLowerCase().replace(GENERIC_SCHOOL_NAME_REGEX, ' ')
+  const department = String(job.department || '').toLowerCase().replace(GENERIC_SCHOOL_NAME_REGEX, ' ')
+  let best = null
   for (const sub of rule.subdisciplines) {
-    if (sub.terms.some((t) => matchesTerm(hay, t))) return sub.label
+    for (const term of sub.terms) {
+      // A named subject beats role and setting words such as "clinical".
+      // When terms are equally specific, the job title is more direct
+      // evidence of the position's specialty than its parent school.
+      const inTitle = matchesTerm(title, term)
+      if (!inTitle && !matchesTerm(department, term)) continue
+      const specificity = termSpecificity(term)
+      const score = (inTitle && specificity > 0 ? 10 : 0) + specificity
+      if (!best || score > best.score) best = { label: sub.label, score }
+    }
   }
-  return null
+  return best?.label || null
 }
 
 export function subdisciplinesForDiscipline(label) {
@@ -355,6 +381,34 @@ export function extractCity(location, college) {
   return `${cityPart}, ${statePart}`
 }
 
+function locationIdentity(value) {
+  return clean(value)
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/\buniv\b/g, 'university')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+
+// Prefer a parsed city for display, but never repeat an institution name in
+// the location slot. The raw value remains on `job.location` for search and
+// diagnostics; this is only the user-facing label.
+export function displayLocation(location, college, state) {
+  const city = extractCity(location, college)
+  if (city) return city
+
+  const raw = clean(location)
+  if (!raw) return state || null
+  if (/\bremote\b/i.test(raw)) return 'Remote'
+
+  const withoutState = raw.replace(/,\s*[A-Z]{2}$/i, '').trim()
+  if (college && locationIdentity(withoutState) === locationIdentity(college)) {
+    return state || null
+  }
+
+  return raw
+}
+
 function normalizeForKey(value) {
   return clean(value).toLowerCase().replace(/[^a-z0-9]+/g, ' ')
 }
@@ -411,13 +465,15 @@ function normalizeJob(job) {
   const canonicalJobId = clean(job?.canonicalJobId) || clean(job?.url) || `${title}|${college || ''}`
 
   const candidateFields = deriveCandidateFields(job)
+  const city = extractCity(job?.location, job?.college)
   const normalized = {
     title,
     url: linkQuality === 'invalid' ? '#' : (job?.url || '#'),
     source: job?.source || null,
     college,
     location: job?.location || null,
-    city: extractCity(job?.location, job?.college),
+    city,
+    displayLocation: displayLocation(job?.location, job?.college, state),
     department,
     description: job?.description || null,
     summary: job?.summary || null,

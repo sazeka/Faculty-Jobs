@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { extractCity } from '../../web-vue/src/composables/useJobFilters.js'
+import { displayLocation, extractCity } from '../../web-vue/src/composables/useJobFilters.js'
 
 // Regression coverage for issue #120: a nonempty location that's just the
 // institution's own name plus a state suffix was exposed as a real city in
@@ -27,4 +27,20 @@ test('keeps a real satellite-campus city even when the college name embeds the c
     extractCity("Saint Joseph's University - Lancaster, PA", "Saint Joseph's University - Lancaster"),
     'Lancaster, PA',
   )
+})
+
+test('uses the parsed city as the user-facing location', () => {
+  assert.equal(displayLocation('Main Campus - Starkville, MS', 'Mississippi State University', 'MS'), 'Starkville, MS')
+  assert.equal(displayLocation('Brandeis - Waltham, MA', 'Brandeis University', 'MA'), 'Waltham, MA')
+})
+
+test('does not repeat the institution name as the user-facing location', () => {
+  assert.equal(displayLocation('Augusta University', 'Augusta University', 'GA'), 'GA')
+  assert.equal(displayLocation('Fairleigh Dickinson University, NJ', 'Fairleigh Dickinson University', 'NJ'), 'NJ')
+  assert.equal(displayLocation('University of Wisconsin Eau Claire, WI', 'University of Wisconsin-Eau Claire', 'WI'), 'WI')
+})
+
+test('keeps non-placeholder locations and remote roles visible', () => {
+  assert.equal(displayLocation('College Station, TX', 'Texas A&M University', 'TX'), 'College Station, TX')
+  assert.equal(displayLocation('Remote', 'Harvard University', 'MA'), 'Remote')
 })
