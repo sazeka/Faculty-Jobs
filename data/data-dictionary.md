@@ -48,6 +48,8 @@ This dictionary describes the publication files created by `npm run release:data
 | `openUntilFilled` | boolean | yes | Whether the posting explicitly indicates open-until-filled status. |
 | `systemGroup` | string | yes | Source-family or higher-education-system grouping. |
 
+Each `canonicalJobId` appears at most once: when a posting was captured more than once, the export keeps the most complete copy and records the number collapsed in the manifest's `diagnostics.duplicateCanonicalIdsRemoved`. `state` is null unless it resolves to one of the 50 states or DC.
+
 Empty CSV cells correspond to JSON `null`. Dates may be absent or reflect source-provided precision; researchers should not infer an exact day where the source did not provide one.
 
 ## Working snapshot versus research release
