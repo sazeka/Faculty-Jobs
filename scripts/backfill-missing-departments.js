@@ -11,8 +11,18 @@ const REPORT_PATH = path.join(ROOT, 'generated', 'department-backfill-report.jso
 const source = readJobsFile(JOBS_PATH)
 
 let filled = 0
+let clearedTitleSubjects = 0
 
 const jobs = source.jobs.map((job) => {
+  if (job.departmentInferredFrom === 'title') {
+    const namedUnit = inferDepartmentFromTitle(job.title)
+    if (!namedUnit) {
+      clearedTitleSubjects++
+      const { departmentInferredFrom, ...rest } = job
+      return { ...rest, department: null }
+    }
+    return { ...job, department: namedUnit }
+  }
   if (job.department && String(job.department).trim()) return job
   const titleMatch = inferDepartmentFromTitle(job.title)
   if (!titleMatch) return job
@@ -23,6 +33,6 @@ const jobs = source.jobs.map((job) => {
 const output = { ...source, count: jobs.length, jobs }
 writeJobsFile(JOBS_PATH, output)
 
-const report = { generatedAt: new Date().toISOString(), totalJobs: jobs.length, filledFromTitle: filled }
+const report = { generatedAt: new Date().toISOString(), totalJobs: jobs.length, filledFromTitle: filled, clearedTitleSubjects }
 fs.writeFileSync(REPORT_PATH, `${JSON.stringify(report, null, 2)}\n`)
 console.log(JSON.stringify(report, null, 2))

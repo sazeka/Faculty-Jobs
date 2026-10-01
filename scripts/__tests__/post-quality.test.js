@@ -79,6 +79,256 @@ test("faculty navigation, governance, awards, and news labels are quarantined", 
   assert.equal(confirmedNonFacultyReason(job({ title: "Faculty, Nursing" }), { today: TODAY }), null);
 });
 
+test("faculty governance documents, directories, and employee portals are quarantined", () => {
+  for (const title of [
+    "Allocation of Faculty Resources",
+    "Becoming a Faculty Member",
+    "Directory (Faculty & Staff)",
+    "Faculty & Employee Handbook",
+    "Faculty Bylaws",
+    "Faculty Committees",
+    "Faculty Credentialing Policy",
+    "Faculty Email",
+    "Faculty Governance and Committees",
+    "Faculty Housing",
+    "Faculty Manual",
+    "Faculty Policies and Procedures",
+    "Office of Faculty Resources",
+    "Procedures and Responsibilities Regarding Faculty",
+    "Resources for Early-Career Faculty",
+    "SECTION II: Faculty",
+    "Teaching Faculty Policy Handbook",
+  ]) {
+    assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
+  }
+});
+
+test("reviewed department faculty rosters are quarantined without catching ATS vacancies", () => {
+  for (const candidate of [
+    {
+      college: "Brookdale Community College",
+      title: "Accounting Faculty & Staff",
+      url: "https://www.brookdalecc.edu/academic-institutes-and-departments/business-social-sciences/accounting-2/accounting-faculty-staff",
+    },
+    {
+      college: "Northeastern Illinois University",
+      title: "Mathematics Faculty",
+      url: "https://www.neiu.edu/academics/colleges-departments/arts-and-sciences/departments/mathematics/mathematics-faculty",
+    },
+    {
+      college: "Northeastern Illinois University",
+      title: "Faculty Employment Opportunities",
+      url: "https://www.neiu.edu/academics",
+    },
+    {
+      college: "College of Biblical Studies-Houston",
+      title: "Full-time Faculty",
+      url: "https://cbshouston.edu/faculty#full-time",
+    },
+    {
+      college: "New England College of Optometry",
+      title: "Research Faculty",
+      url: "https://www.neco.edu/research-innovation/graduate-faculty",
+    },
+    {
+      college: "Northwest Mississippi Community College",
+      title: "Fine Arts Faculty",
+      url: "https://www.northwestms.edu/programs/academic/fine-arts-department/fine-arts-faculty",
+    },
+  ]) {
+    assert.equal(confirmedNonFacultyReason(job(candidate), { today: TODAY }), "resource_page_title");
+  }
+
+  assert.equal(confirmedNonFacultyReason(job({
+    college: "Brookdale Community College",
+    title: "Faculty, Accounting",
+    url: "https://jobs.example.edu/postings/123",
+  }), { today: TODAY }), null);
+});
+
+test("faculty awards, policy, profile, research, and portal pages are quarantined", () => {
+  for (const title of [
+    "Faculty Appreciation Awards",
+    "2021 Faculty Appreciation Awards",
+    "Faculty Salary Scale",
+    "Administration & Faculty",
+    "Current Faculty",
+    "Emeritus Faculty",
+    "Faculty Emeritus",
+    "Faculty Emeriti/ae",
+    "Faculty Remembrances",
+    "Faculty Roster",
+    "Faculty Home",
+    "Faculty Finder",
+    "Faculty Vitae",
+    "Featured Faculty",
+    "Faculty Careers at St. Thomas",
+    "Faculty Jobs@UIowa",
+    "My Faculty Jobs",
+    "Welcome to the Johns Hopkins University Faculty Careers site",
+    "Faculty & Board Members",
+    "Faculty & Staff Benefits",
+    "Faculty and Course Profiles",
+    "Faculty Employment Application",
+    "Faculty Research & Publications",
+    "Faculty Scholarship",
+    "Faculty Publications",
+    "Faculty Misconduct",
+    "Faculty Publication Index",
+    "Faculty/Staff Email",
+    "Faculty + Staff",
+    "Faculty & Staff Guide to Title IX",
+    "Faculty assisted at Healthcare Careers Camp for high school students",
+    "Faculty-led Research",
+    "DAISY Award for Nursing Faculty",
+    "Administraton, Leadership & Faculty",
+    "Employment Opportunities :: Category - Faculty",
+    "Faculty and Clinical Specialists",
+    "For Faculty",
+    "Full Time Faculty Expectations",
+    "National Applied AI Consortium Spotlights Wright College Professor Gustavo Alatta",
+    "Clinical/Professional Faculty Appointment and Promotion",
+    "Faculty Comprehensive Checklist",
+    "Faculty Emeritus/Emerita Guidelines",
+    "Faculty Expectations",
+    "Faculty Life & Development",
+    "Faculty Positions & Hiring",
+    "Faculty Recruiting Guidelines",
+    "Faculty Rules of Procedure",
+    "Faculty Self Service Banner (SSB9)",
+    "Faculty Services",
+    "Faculty/Staff Login",
+    "Faculty/Staff Navigate Login",
+    "Faculty and Staff Positions >",
+    "Lecturer Hire Document Checklist",
+    "Plan for Determining the Effectiveness of Student And Faculty Services",
+    "Professional Development for Dance Instructors",
+    "Spotlight on Faculty Culture",
+    "Toggle Faculty Professional Development Menu",
+    "College of the Siskiyous Paramedic Program Instructor Theresa Gowan Honored with Statewide Clinical Excellence Award",
+    "Harold Washington College Professor Honored with National Maxwell/Hanrahan Award in Craft",
+    "Professor Melda Beaty’s Sabbatical Revives Play Production Course at Olive-Harvey and Playwriting Award",
+    "Christopher Newport University is a special place. We seek talented faculty and staff.",
+    "AI Use: A How-To Guide for Instructors",
+    "Faculty Contract",
+    "Faculty Employment",
+    "Faculty Guide to Ethical & Legal Standards in Student Hiring",
+    "Faculty Negotiated Agreement",
+    "Faculty PAWS",
+    "Faculty Qualifications & Documentation Required",
+    "Faculty Vacancy Announcements",
+    "Faculty/Staff Portal (Okta Dashboard)",
+    "For Faculty: Course Adoptions",
+    "About MCC Faculty",
+    "Faculty Annual Report Guide",
+    "Faculty Advising Appointment Scheduling",
+    "Faculty & Inventors",
+    "Course Information & Faculty Credentials (House Bill 2504)",
+    "Minimum Qualifications for Faculty and Administrators in California Community Colleges",
+    "Staff and Faculty Orientation",
+    "YSU Faculty Syllabi",
+    "Faculty Assembly",
+    "Faculty Books",
+    "Faculty Labs",
+    "Faculty Mentorship",
+    "Faculty Position Openings",
+    "Instructor Approved Prerequisite Override",
+    "Research Appointments for Faculty",
+    "Welcoming Seven New Faculty Members",
+    "AR Professor of the Year",
+    "Faculty (Business, Media & Writing)",
+    "Faculty Members",
+    "Malcolm X College Instructor Wins Prestigious Poetry Prize",
+    "Stony Brook Faculty Positions",
+    "Leadership & Faculty",
+    "Program Leadership & Faculty",
+    "Student-Faculty Research",
+  ]) {
+    assert.equal(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
+  }
+
+  assert.equal(confirmedNonFacultyReason(job({
+    college: "West Shore Community College",
+    title: "Full Time Faculty",
+    url: "https://www.westshore.edu/wp-content/uploads/2026/02/Benefit-Summary-Faculty-2026.pdf",
+  }), { today: TODAY }), "resource_page_title");
+  assert.equal(confirmedNonFacultyReason(job({
+    college: "Covenant Theological Seminary",
+    title: "Professor of New Testament",
+  }), { today: TODAY }), "resource_page_title");
+  assert.equal(confirmedNonFacultyReason(job({
+    college: "Southern College of Optometry",
+    title: "Residency Faculty",
+  }), { today: TODAY }), "resource_page_title");
+  assert.equal(confirmedNonFacultyReason(job({
+    college: "College of Biblical Studies-Houston",
+    title: "Dr. William Blocker President; Professor",
+  }), { today: TODAY }), "resource_page_title");
+  assert.equal(confirmedNonFacultyReason(job({
+    college: "Western Michigan University Homer Stryker M.D. School of Medicine",
+    title: "Executive Faculty",
+  }), { today: TODAY }), "resource_page_title");
+});
+
+test("reviewed staff roles and student-services pages do not inflate the faculty inventory", () => {
+  for (const title of [
+    "Program Manager 1 - Graduate and Professional Programs",
+    "Systems Analyst 2 - College of Pharmacy",
+    "K14 Workforce Program Manager — 270101 - EAS MCECS Dean Maseeh College",
+    "Program Manager L3 - (Manager of Faculty Awards, Titles, and Recognition)",
+    "Senior Director Credentialing & Contracting (Hybrid) - Faculty Practice Plan",
+    "Senior Policy & Research Manager, Office of the Faculty Director",
+    "Shiley Dean's Office Student Assistant",
+    "Student Affairs & Dean of Students",
+    "Student Affairs-Dean of Students Office",
+    "VSB Dean's Office Student Assistant",
+  ]) {
+    assert.equal(confirmedNonFacultyReason(job({ title })), "resource_page_title", title);
+  }
+
+  assert.equal(
+    confirmedNonFacultyReason(job({ title: "Associate Dean for Medical Education and Professor" })),
+    null
+  );
+});
+
+test("reviewed dean assistants and athletics fundraising fellowships are staff records", () => {
+  for (const [title, description] of [
+    ["Assistant to the Dean", "Position Category Staff. Provides administrative support to the dean."],
+    ["Bulldog Club (Fellow)", "Athletics support staff fellowship in fundraising and donor stewardship."],
+    ["Director of Faculty Practice Operations, Dental", "Position Type Staff. Job Family Operations and Administrative Services."],
+    ["Director, Center for Applied Artificial Intelligence/ Faculty Program Director", "Job Type Staff. Reports To Provost."],
+    ["Patient Care Academy Instructor", "Position Type: Staff. Department: Patient Care Academy."],
+    ["Registered Nurse Instructor", "Position Type Staff. Temporary/Permanent Temporary."],
+    ["Riding Instructor/Eventing Coach", "Job Type Administrative Staff."],
+    ["Welding Instructor and Lab Specialist", "Job Type Staff. Division Workforce Programs."],
+    ["Workforce Instructor", "Job Type Staff. Department Workforce Development."],
+    ["Yoga Instructor, FitWell Group Exercise", "Job Type Staff Part-Time."],
+  ]) {
+    assert.ok(confirmedNonFacultyReason({ title, description, url: "https://example.edu/jobs/123" }), title);
+  }
+});
+
+test("informational-title cleanup does not catch substantive faculty appointments", () => {
+  for (const title of [
+    "Adjunct Faculty - Video Production I",
+    "Adjunct Faculty, Film and Video",
+    "Applicant Pool for Adjunct Faculty, Broadcasting/Video Production",
+    "Associate Dean for Academic and Faculty Affairs",
+    "Assistant Professor, Staff Veterinarian - Biomedical Resource Center",
+    "Distinguished and Faculty Development Chairs in Materials Science",
+    "E-Resource Management Librarian/Instructor of Library Services",
+    "Professor of Public Policy",
+    "Faculty Member, Biology",
+    "Nursing Faculty",
+    "Research Faculty",
+    "Associate Faculty - Forestry/Natural Resources",
+    "Assistant International Faculty and Scholar Advisor",
+  ]) {
+    assert.notEqual(confirmedNonFacultyReason(job({ title }), { today: TODAY }), "resource_page_title", title);
+  }
+});
+
 test("faculty affairs staff roles are quarantined", () => {
   const quality = scorePost(job({ title: "Faculty Affairs Coordinator" }), { today: TODAY });
   assert.equal(quality.status, "quarantine");
@@ -133,6 +383,14 @@ test("truncated institution text does not create a false attribution conflict", 
   assert.ok(!quality.reasons.some((reason) => reason.code === "institution_title_conflict"));
 });
 
+test("a university organizational unit is not mistaken for another institution", () => {
+  const quality = scorePost(job({
+    college: "University of Washington",
+    title: "Associate Librarian or Librarian - Associate Dean, Research and Learning Services University Libraries",
+  }), { today: TODAY });
+  assert.ok(!quality.reasons.some((reason) => reason.code === "institution_title_conflict"));
+});
+
 test("the publishing gate removes only confirmed non-postings", () => {
   assert.equal(confirmedNonFacultyReason(job({ title: "Faculty Affairs Coordinator" }), { today: TODAY }), "administrative_staff_title");
   assert.equal(confirmedNonFacultyReason(job({
@@ -140,11 +398,50 @@ test("the publishing gate removes only confirmed non-postings", () => {
     url: "https://www.example.edu/faculty-affairs/faculty-awards",
   }), { today: TODAY }), "resource_page_title");
   assert.equal(confirmedNonFacultyReason(job({ title: "Staff, Faculty & Student Employment Opportunities" }), { today: TODAY }), "resource_page_title");
+  assert.equal(confirmedNonFacultyReason(job({ title: "Fellow Athletic Trainer - Baseball" }), { today: TODAY }), "nonacademic_staff_title");
+  assert.equal(confirmedNonFacultyReason(job({ title: "Group Fitness Instructor (Adjunct)" }), { today: TODAY }), "nonacademic_staff_title");
+  assert.equal(confirmedNonFacultyReason(job({ title: "Faculty/Staff Fitness Instructor Pool" }), { today: TODAY }), "nonacademic_staff_title");
+  assert.equal(confirmedNonFacultyReason(job({ title: "WCL Dean's Fellow (Student)" }), { today: TODAY }), "student_service_title");
   assert.equal(confirmedNonFacultyReason(job({
     title: "Electrician Faculty - Greenville Center",
     description: "Teach electrician courses and provide quality education to students.",
   }), { today: TODAY }), null);
   assert.equal(confirmedNonFacultyReason(job({ title: "Assistant Professor of Biology" }), { today: TODAY }), null);
+  assert.equal(confirmedNonFacultyReason(job({ title: "Assistant Professor of Exercise Science" }), { today: TODAY }), null);
+});
+
+test("source-labeled full-time staff records are not treated as faculty appointments", () => {
+  const staff = job({
+    title: "GED Instructor (Downtown)",
+    description: "Department:Adult EducationType:Full-Time StaffLocation:Main Campus",
+  });
+  assert.equal(confirmedNonFacultyReason(staff, { today: TODAY }), "source_labeled_staff_role");
+  assert.ok(scorePost(staff, { today: TODAY }).reasons.some((reason) => reason.code === "source_labeled_staff_role"));
+
+  assert.equal(confirmedNonFacultyReason(job({
+    title: "Electrical Technology Instructor",
+    description: "Department:Electrical TechnologyType:Full-Time FacultyLocation:Main Campus",
+  }), { today: TODAY }), null);
+});
+
+test("reviewed student-worker and transition job-coach records are quarantined", () => {
+  for (const title of [
+    "Student Worker - A&D Faculty Offices",
+    "Job Coach & PreEts Instructor, Toledo Transition, Seasonal",
+    "Assistant International Faculty and Scholar Advisor",
+    "Faculty Services Assistant",
+    "Personal Trainer, Duke Faculty Club",
+  ]) {
+    const result = scorePost(job({ title }), { today: TODAY });
+    assert.equal(result.status, "quarantine", title);
+    assert.ok(confirmedNonFacultyReason(job({ title })), title);
+  }
+});
+
+test("a reviewed faculty retirement-incentive information page is quarantined", () => {
+  const result = scorePost(job({ title: "Faculty Volunteer Early Retirement Incentive" }), { today: TODAY });
+  assert.equal(result.status, "quarantine");
+  assert.equal(confirmedNonFacultyReason(job({ title: "Faculty Volunteer Early Retirement Incentive" })), "resource_page_title");
 });
 
 test("adjunct appointments remain eligible when their subject resembles student services", () => {
@@ -274,6 +571,8 @@ test("detects institution-name-as-city location placeholders (issue #120)", () =
   assert.equal(isPlaceholderLocation("Wilson Community College, NC", "Wilson Community College"), true);
   assert.equal(isPlaceholderLocation("Harvard University, MA", "Harvard University"), true);
   assert.equal(isPlaceholderLocation("Medical College of Wisconsin, WI", "Medical College of Wisconsin"), true);
+  assert.equal(isPlaceholderLocation("University of Wisconsin Eau Claire, WI", "University of Wisconsin-Eau Claire"), true);
+  assert.equal(isPlaceholderLocation("Augusta University", "Augusta University"), true);
   // Real cities, including one that happens to share a word with the college name.
   assert.equal(isPlaceholderLocation("Milwaukee, WI", "Medical College of Wisconsin"), false);
   assert.equal(isPlaceholderLocation("Cambridge, MA", "Harvard University"), false);

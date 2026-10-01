@@ -114,6 +114,11 @@ const positionHistory = computed(() => {
 const positionSnapshotAligned = computed(() =>
   trends.value?.stats?.positionTypeFacets?.total === trends.value?.stats?.totalJobs)
 const tenureStats = computed(() => trends.value?.stats?.tenureTrackBreakdown || null)
+const tenureCoveragePct = computed(() => {
+  const classified = Number(tenureStats.value?.classified || 0)
+  const total = classified + Number(tenureStats.value?.unknown || 0)
+  return total ? ((classified / total) * 100).toFixed(1) : '0.0'
+})
 const tenureHistory = computed(() => {
   const items = appointmentTrackHistory(trends.value?.history || [])
   const max = Math.max(1, ...items.map(w => w.total))

@@ -7,6 +7,266 @@ export const POST_QUALITY_VERSION = 1
 
 const PLACEHOLDER_TITLE_RE = /^(?:faculty|staff|faculty jobs|employment|careers?|view details|learn more|read more|click here)$/i
 const RESOURCE_TITLE_RE = /^(?:\/?\s*faculty\s*(?:\/|&|and)\s*staff(?:\s+(?:resources?|panel))?|faculty careers?|faculty handbook|faculty affairs|faculty support|faculty support services\b.*|faculty resources?|faculty development|academic affairs|human resources|office of faculty affairs(?:\s*&\s*strategic planning)?|contract faculty payroll calendar|staff,? faculty (?:&|and) student employment opportunities|view lecturer opportunities|access center resources for faculty|affiliate faculty resources|center for faculty excellence|faculty accompanying students(?: \(fas\))? grant|faculty awards|faculty employment handbook|faculty forms|faculty offer letter templates\b.*|faculty performance|faculty review|(?:msu denver )?faculty fellowships|recruiting excellent faculty workshops|academic leadership (?:&|and) faculty|faculty experience|faculty overview)$/i
+// Additional exact informational-page shapes found in the live unresolved
+// appointment-track pool. These titles name governance documents, employee
+// portals, directories, or general faculty resources -- never an individual
+// vacancy. Keep the expression whole-title anchored so real appointments such
+// as "Associate Dean for Faculty Affairs" and "E-Resource Librarian/Instructor"
+// are not affected merely because they contain one of the same nouns.
+const INFORMATIONAL_FACULTY_TITLE_RE = /^(?:academic affairs available faculty positions|all faculty\s*(?:&|and)\s*staff resources|allocation of faculty resources|becoming a faculty member|directory \(faculty\s*(?:&|and)\s*staff\)|faculty\s*(?:&|and)\s*(?:employee|staff) handbook|faculty\s*(?:&|and)\s*staff email|faculty and staff human resources guide(?:: employment)?|faculty and staff-student non-fraternization policy|faculty applicants?(?: should use this form)?|faculty bylaws|faculty center(?: for innovation)?|faculty committees?|faculty credentialing policy|faculty email|faculty employment handbook change proposal dates.*|faculty forms\s*(?:&|and)\s*resources.*|faculty governance(?: and committees)?|faculty handbook\s*(?:&|and)\s*professional development|faculty handbook-springfield|faculty housing|faculty manual|faculty online resources|faculty policies(?: and procedures)?|instructor resources for online learning|new faculty resources|office of faculty resources|online faculty resources|procedures and responsibilities regarding faculty|prospective faculty resources|resources for (?:early-career )?faculty|section ii:\s*faculty|sexual misconduct policy for students, faculty, and staff|staff\s*(?:&|and)\s*faculty committees|student,? faculty(?:,?\s*(?:&|and)\s*staff)? internal resources|student,? faculty,?\s*(?:&|and)\s*staff resources|teaching faculty policy handbook)$/i
+const FACULTY_EMPLOYMENT_LANDING_TITLE_RE = /^faculty employment opportunities$/i
+// Additional whole-page labels uncovered by the next unresolved-pool audit.
+// These are institutional information, recognition, policy, or login pages,
+// not vacancy titles. Keep the shapes anchored and enumerated: generic job
+// titles such as "Nursing Faculty" and "Faculty Member, Biology" must remain
+// eligible.
+const FACULTY_INFORMATION_PAGE_TITLE_RE = /^(?:\/careers\/faculty\.php|(?:\d{4}\s+)?faculty appreciation awards?|faculty salary scale|(?:administration|administration, leadership)\s*(?:&|and)\s*faculty|current faculty(?:\s*\/\s*staff)?|emeritus faculty|faculty emerit(?:us|i\/ae)|faculty remembrances|faculty roster|employee\s*\/\s*faculty handbooks?|faculty\s*(?:&|and)\s*(?:board members|leadership|members|professional application|research|residents|scholars|scholarship|staff benefits|staff dashboard|staff forms|staff gateway|staff login|staff menu)|faculty and course profiles|faculty bookstore login|faculty employment application|faculty gateway|faculty handbooks?|faculty online application|faculty pic application|faculty research(?:\s*(?:&|and)\s*publications| forum)?|faculty scholarship|faculty teaching award recipients|faculty textbook order form|full[- ]time faculty benefits|hiring faculty:\s*manual and resources|leadership\s*(?:&|and)\s*faculty|program leadership\s*(?:&|and)\s*faculty|special appointment faculty resources|sponsored faculty research|student[-\/]faculty (?:login|research)|terms and conditions of employment of faculty members)$/i
+// A further reviewed batch of exact navigation, news, recognition, employee-
+// service, and research-index labels. This deliberately avoids broad matches
+// on words such as "research", "staff", or "campus" so substantive academic
+// appointments containing those words remain publishable.
+const REVIEWED_FACULTY_INFORMATION_TITLE_RE = /^(?:administraton, leadership\s*(?:&|and)\s*faculty|african american faculty\s*(?:&|and)\s*staff coalition|award-winning faculty|christopher newport university is a special place\..*|clinical\/professional faculty appointment and promotion|college of the siskiyous paramedic program instructor theresa gowan honored with statewide clinical excellence award|daisy award for nursing faculty|disability and accessibility resources for faculty|employment opportunities :: category - faculty|faculty and clinical specialists|faculty assisted at healthcare careers camp for high school students|faculty comprehensive checklist|faculty emeritus\/emerita guidelines|faculty expectations|faculty in the news|faculty life\s*(?:&|and)\s*development|faculty positions\s*(?:&|and)\s*hiring|faculty recruiting guidelines|faculty rules of procedure|faculty self service banner \(ssb9\)|faculty services|faculty spotlight|faculty\/staff (?:login|navigate login)|faculty publications?|faculty publication index|faculty researchers|faculty-led research|faculty\s*\/\s*staff remote email|faculty\/staff email|faculty\s*(?:&|and)\s*staff (?:assistance office|canvas information|compensation and classification study|development|downloads|engagement|giving|guide to title ix|info|intranet|links|mail services|member|mentor program|mentors|news|page|parking|positions\s*>|resources click to collapse click to expand|website)|faculty\s*\+\s*staff|faculty\/staff member|faculty or staff member|faculty campus connect|faculty, staff, and students|for faculty|full time faculty expectations|harold washington college professor honored with national maxwell\/hanrahan award in craft|lecturer hire document checklist|national applied ai consortium spotlights wright college professor gustavo alatta|plan for determining the effectiveness of student and faculty services|professional development for dance instructors|professor melda beaty’s sabbatical revives play production course at olive-harvey and playwriting award|spotlight on faculty culture|the west shore community college benefits in brief document offers detailed information regarding benefits to full-time administrators, faculty, and educational support staff\.|toggle faculty professional development menu)$/i
+const REVIEWED_NON_POSTING_EXACT_TITLES = new Set([
+  '▷ students & faculty',
+  'a faculty for the church',
+  'a faculty guide to ethical and legal standards in student hiring',
+  'about mcc faculty',
+  'ai use: a how-to guide for instructors',
+  'allied faculty',
+  'asl faculty',
+  'associate faculty salary schedule effective 7.1.2026',
+  'caring faculty',
+  'center for institutional, faculty, and student success',
+  'coa faculty application',
+  'council of university system faculty',
+  'course information & faculty credentials (house bill 2504)',
+  'deans and full-time faculty',
+  'exceptional faculty',
+  'expertise & faculty search',
+  'faculty & administration',
+  'faculty & advisors',
+  'faculty & instructors',
+  'faculty & inventors',
+  'faculty & students',
+  'faculty access',
+  'faculty achievements',
+  'faculty (3)',
+  'faculty (11)',
+  'faculty careers at st. thomas',
+  'faculty job fair seeks passionate educators: join the river community!',
+  'faculty jobs@uiowa',
+  'faculty advising appointment scheduling',
+  'faculty advisors',
+  'faculty and academic deans',
+  'faculty and academics',
+  'faculty and advisory committee',
+  'faculty and educational affiliates',
+  'faculty and providers',
+  'faculty annual report guide',
+  'faculty application',
+  'faculty career center',
+  'faculty contract',
+  'faculty credentials',
+  'faculty distance education support',
+  'faculty dual career and relocation services',
+  'faculty employment',
+  'faculty exchange',
+  'faculty experts guide',
+  'faculty fellows',
+  'faculty finder',
+  'faculty flashport',
+  'faculty funding and support',
+  'faculty guide to disability services',
+  'faculty guide to ethical & legal standards in student hiring',
+  'faculty guide to ethical and legal standards in student hiring',
+  'faculty home',
+  'faculty intellectual contributions',
+  'faculty information',
+  'faculty interviews',
+  'faculty led travel',
+  'faculty life',
+  'faculty load pay dates',
+  'faculty negotiated agreement',
+  'faculty office hours (file download)',
+  'faculty ombudsperson',
+  'faculty pages',
+  'faculty paws',
+  'faculty qualifications & documentation required',
+  'faculty meetings and activities calendar',
+  'faculty meeting',
+  'faculty mentoring guide',
+  'faculty mentoring',
+  'faculty olsis',
+  'faculty pd calendar',
+  'faculty recruitment guide',
+  'faculty searches',
+  'faculty sounding board',
+  'faculty ssb',
+  'faculty student exchange (fse)',
+  'faculty student collaboration',
+  'faculty testing services',
+  'faculty training',
+  'faculty unions',
+  'faculty vitae',
+  'faculty vacancy announcements',
+  'faculty volunteer early retirement incentive',
+  'faculty/staff career opportunities',
+  'faculty/staff dialogues',
+  'faculty/staff giving',
+  'faculty/staff j1 web',
+  'faculty/staff opportunities',
+  'faculty/staff portal (okta dashboard)',
+  'for faculty: course adoptions',
+  'full-time faculty & instructional staff',
+  'featured faculty',
+  'full-time faculty non-teaching salary schedule effective 7.1.2025 approved 1.15.2026',
+  'full-time faculty teaching salary schedule effective 7.1.2025 approved 1.15.2026',
+  'general employment application - administration or faculty',
+  'get support for instructional faculty icon',
+  'guide for faculty',
+  'instructional/faculty support7 available jobs',
+  'innovative faculty',
+  'my faculty jobs',
+  'pnw faculty',
+  'faculty, physician and psychologist jobs',
+  'welcome to the johns hopkins university faculty careers site',
+  'unt faculty',
+  'information for faculty',
+  'inside chapman (faculty & staff)',
+  'leaders, faculty, staff & board',
+  'library services for faculty',
+  'minimum qualifications for faculty and administrators in california community colleges',
+  'msu denver faculty federation',
+  'music faculty achievements',
+  'new faculty information',
+  'nyu abu dhabi proposal form for nyu faculty: academic year',
+  'open employee (non-faculty) positions',
+  'professional conduct review for new faculty hires',
+  'request tracking system (rts) - faculty hiring proposal',
+  'sample faculty reference letter',
+  'search staff, faculty, and student positions',
+  'staff & faculty publications',
+  'staff & full-time faculty jobs',
+  'staff and faculty orientation',
+  'staff and faculty relations services',
+  'staff/faculty webmail',
+  'student faculty & staff library access',
+  'students, faculty & researchers',
+  'students, faculty, and staff',
+  'through community and faculty mentorship, flc students find purpose and support at flc',
+  'total compensation for full-time faculty',
+  '10 questions with... diana rohlman, associate professor and senior researcher in the department of environmental and molecular toxicology link is external',
+  'aha instructor classes',
+  'class search, course syllabi, and instructor information (hb 2504)',
+  'faculty & professor page',
+  'faculty absences',
+  'faculty assembly',
+  'faculty blog',
+  'faculty blogs',
+  'faculty books',
+  'faculty cms sign on',
+  'faculty code',
+  'faculty compliance',
+  'faculty constitution',
+  'faculty credentialing review process',
+  'faculty ctl',
+  'faculty curricula vitae',
+  'faculty experts hub',
+  'faculty faqs',
+  'faculty misconduct',
+  'faculty labs',
+  'faculty mentorship',
+  'faculty mentorships',
+  'faculty online',
+  'faculty position openings',
+  'faculty-student collaboration',
+  'global language faculty',
+  'gove county faculty',
+  'honors faculty',
+  'instructor approved pre-requisite override',
+  'instructor approved prerequisite override',
+  'instructor authorized exams',
+  'instructor qualifications and credentialing requirements',
+  'lay formation faculty',
+  'mentored faculty programs',
+  'music faculty',
+  'music program faculty',
+  "o'leary travel grants for faculty",
+  'online ce instructors',
+  'professors emeriti',
+  'research appointments for faculty',
+  'research with faculty',
+  'sandburg faculty',
+  'seminary faculty',
+  'theatre program faculty',
+  'united faculty of florida',
+  'university transfer faculty',
+  'welcoming seven new faculty members',
+  'west virginia professor of the year',
+  'ar professor of the year',
+  'atlanta’s john marshall law school welcomes an array of new faculty for fall 2026',
+  'cdl instructor qualification form',
+  'college of medicine available faculty positions',
+  'cypress college professor foster stanback named 2027 orange county teacher of the year nominee',
+  'endowed chairs and professors',
+  'faculty (business, media & writing)',
+  'faculty (education & humanities)',
+  'faculty (equine)',
+  'faculty (fine arts & theatre)',
+  'faculty (nhsb sciences)',
+  'faculty diversity internship program (fdip)',
+  'faculty hiring process',
+  'faculty members',
+  'faculty office hours',
+  'faculty positions (herc)',
+  'faculty positions, latest positions page 1',
+  'faculty, lecturer, and academic staff jobs',
+  'in memory of dr. israel loken (1968-2026) chair, bible and theology departments; senior professor',
+  'instructional faculty',
+  'ma degree program faculty',
+  'ma transformational teaching, learning, & leadership faculty',
+  'malcolm x college instructor wins prestigious poetry prize',
+  'martin university faculty',
+  'memorial service honoring dr. reddy s. gurramkonda, professor of biology june 15, 2026 at 10:00 am',
+  'music instructor hiring process',
+  'no days off: aviation faculty member runs summer camp for small pilots',
+  'núria rodríguez-planas is named a distinguished professor',
+  'oriental medicine faculty',
+  'phd faculty',
+  'pontifical faculty of theology',
+  'priestly formation faculty',
+  'professor erin corken publishes two-part series on ai ethics and legal practice',
+  'professor lance mcmillian discusses writing and ai at georgia supreme court and court of appeals',
+  'resident faculty',
+  'stony brook faculty positions',
+  'upstate faculty positions available web site',
+  'vice president for ethics and compliance faculty search and screen',
+  'western medicine faculty',
+  'ysu faculty syllabi',
+  'assistant to dean- college of medicine',
+  'assistant to the dean',
+  'bulldog club (fellow)',
+  'director of faculty practice operations, dental',
+  'director, center for applied artificial intelligence/ faculty program director',
+  'patient care academy instructor',
+  'registered nurse instructor',
+  'riding instructor/eventing coach',
+  'welding instructor and lab specialist',
+  'workforce instructor',
+  'dean of enrollment and marketing',
+  'k14 workforce program manager — 270101 - eas mcecs dean maseeh college',
+  'program manager 1 - graduate and professional programs',
+  'program manager l3 - (manager of faculty awards, titles, and recognition)',
+  "shiley dean's office student assistant",
+  'senior director credentialing & contracting (hybrid) - faculty practice plan',
+  'senior policy & research manager, office of the faculty director',
+  'student affairs & dean of students',
+  'student affairs-dean of students office',
+  'systems analyst 2 - college of pharmacy',
+  'vice president of student affairs & dean of students',
+  "vsb dean's office student assistant",
+  'vp/dean of students',
+])
 const SEARCH_PAGE_CHROME_TITLE_RE = /^(?:faculty (?:&|and|\+) staff(?: jobs| resources| employment)?|faculty and staff faqclick to open|faculty and staff human resources guide: employment|faculty employment|faculty stories|faculty, lecturer, and academic staff jobs|faculty\/staff resources|full-time faculty|prospective faculty & staff|regular faculty and staff|staff and faculty)$/i
 // Exact information-page labels observed in institution navigation and news
 // feeds. These pages discuss current faculty, policies, awards, resources, or
@@ -59,9 +319,11 @@ const DEAN_TITLE_RE = /\b(?:assistant|associate)?\s*dean\b/i
 const DEAN_REPORTING_RELATIONSHIP_RE = /\b(?:to|for|of|under)\s+(?:the\s+)?(?:assistant|associate)?\s*dean\b/i
 const STRONG_ACADEMIC_TITLE_RE = /\b(?:assistant|associate|full|distinguished|endowed|visiting|adjunct|clinical|research|teaching)?\s*professor\b|\bprofessor of\b|\blecturer\b|\binstructor\b|\bpost[- ]?doctoral\b|\bpost[- ]?doc\b|\bfaculty fellow\b|\bresearch (?:scientist|associate|fellow)\b|\bdepartment chair\b|\b(?:academic|assistant|associate|faculty) librarian\b/i
 const STAFF_ROLE_RE = /\b(?:faculty affairs|faculty development|faculty support|human resources|hr associate|hr business|coordinator|specialist|recruiter|talent acquisition|administrative assistant|executive assistant|office manager|program assistant|assistant director|associate director|operations manager|business manager)\b/i
-const CLEAR_NONACADEMIC_RE = /\b(?:custodian|groundskeeper|maintenance technician|police officer|security officer|bus driver|food service|payroll|accounts payable|facilities technician|electrician|plumber|carpenter|head coach|assistant coach|athletic trainer)\b/i
+const CLEAR_NONACADEMIC_RE = /\b(?:custodian|groundskeeper|maintenance technician|police officer|security officer|bus driver|food service|payroll|accounts payable|facilities technician|electrician|plumber|carpenter|head coach|assistant coach|athletic trainer|student worker)\b/i
 const CLEAR_NON_APPOINTMENT_TITLE_RE = /^(?:Assistant Dean of Student Affairs|Assistant Dean of Student Success|Assistant Dean of Students for Reslife\/Wellness|Assistant Dean, Faculty Affairs and Professional Development \(Revised\)|Assistant Provost for Academic Budgets & Faculty Relations|Assistant to the Department Chair|Associate Dean of Campus Operations|Associate Dean of Equity and Special Programs|Associate Dean of Students|Associate Dean of Studies|Associate Dean of Workforce \(Abilene\)|Associate Director for Faculty and Research Communications|Climbing Wall Student Instructor|Dean of Enrollment Management|Dean of Enrollment Management, Systems, and Innovation|Dean of Experiential Learning, Career Development and Employer Partnerships|Dean of Students, Ashley Curry|FitWell Group Exercise Instructor|Fitness Instructor|Fitness-Group Exercise Instructor|Personal Trainer, Duke Faculty Club|Research Professional 2 - Chemical Engineering - Professor Bruggeman|Riding Instructor\/Eventing Coach|Senior Director Credentialing & Contracting \(Hybrid\) - Faculty Practice Plan|Staff Instructor III\/EMT Program|Staff Instructor IV - Workforce|Staff Instructor Line Worker Hagerhill, KY Big Sandy Community & Technical College|Student Affairs & Dean of Students|Swim Instructor|Swim Instructor \/ Coach|Vice President of Student Affairs & Dean of Students|VP\/Dean of Students|Yoga Instructor, FitWell Group Exercise)$/i
-const STUDENT_RESOURCE_RE = /\b(?:student services|career services|career center|disability services|office for students|student employment|academic advis(?:or|ing))\b/i
+const REVIEWED_NONACADEMIC_TITLE_RE = /^(?:Assistant International Faculty and Scholar Advisor|Director, Teaching & Research Faculty Compensation Strategy|Faculty and Student Support Associate|Faculty Information Services Specialist \(FIS\)|Faculty Services Assistant|Job Coach & PreEts Instructor, Toledo Transition, Seasonal|Night\/ Weekend On-Site Supervisor for the Duke Faculty Club|Personal Trainer, Duke Faculty Club|Student Worker - A&D Faculty Offices)$/i
+const RECREATIONAL_INSTRUCTOR_RE = /\b(?:group fitness|fitness|group exercise|swim(?:ming lessons)?|learn to swim|water aerobics|water fitness|pickleball)\s+instructor\b/i
+const STUDENT_RESOURCE_RE = /\b(?:student services|career services|career center|disability services|office for students|student employment|student fellow|fellow\s*\(student\)|academic advis(?:or|ing))(?:\b|$)/i
 const APPOINTMENT_CONTEXT_RE = /\b(?:12[- ]month|adjunct|clinical|core|ft|full[- ]time|instructional|non[- ]tenure|ntt|open[- ]rank|part[- ]time|professional|rank (?:doq|open|tbd)|research|teaching|tenure(?:d|[- ]track)?)\b/i
 const NON_APPOINTMENT_FACULTY_CONTEXT_RE = /\b(?:faculty affairs|faculty development|faculty recruitment|faculty shared services|faculty support|recruit(?:er|ing|ment))\b/i
 const GENERIC_INSTITUTION_WORDS = new Set(['and', 'at', 'college', 'institute', 'of', 'school', 'system', 'the', 'university'])
@@ -136,6 +398,36 @@ function hasEvergreenPoolSignal(title, description) {
   return EVERGREEN_POOL_RE.test(hay) || EVERGREEN_STATEMENT_RE.test(hay)
 }
 
+// Two reviewed institutional crawls admitted department faculty rosters as
+// vacancies. Scope this repair to their known academic-directory trees so a
+// real posting titled "Faculty, Accounting" on an ATS is never affected.
+function isReviewedInstitutionFacultyDirectory(job) {
+  const college = clean(job?.college)
+  const title = clean(job?.title)
+  const url = clean(job?.url)
+  if (college === 'Covenant Theological Seminary' && /^Professor of New Testament$/i.test(title)) return true
+  if (college === 'College of Biblical Studies-Houston' && /^Dr\..*\bProfessor\b/i.test(title)) return true
+  if (college === 'Western Michigan University Homer Stryker M.D. School of Medicine' && /^Executive Faculty$/i.test(title)) return true
+  if (college === 'Appalachian School of Law' && /^Faculty Assistant$/i.test(title)) return true
+  if (college === 'College of Biblical Studies-Houston' && /^Full-time Faculty$/i.test(title)) return true
+  if (college === 'Malone University' && /^Full-time Faculty$/i.test(title)) return true
+  if (college === 'New England College of Optometry' && /^Research Faculty$/i.test(title)) return true
+  if (college === 'Southern College of Optometry' && /^Research Faculty$/i.test(title)) return true
+  if (college === 'Northwest Mississippi Community College' && /^Fine Arts Faculty$/i.test(title)) return true
+  if (!/\bfaculty\b/i.test(title)) return false
+  if (college === 'Brookdale Community College') {
+    return /^https:\/\/(?:www\.)?brookdalecc\.edu\/academic-institutes-and-departments\//i.test(url)
+  }
+  if (college === 'Northeastern Illinois University') {
+    return /^https:\/\/(?:www\.)?neiu\.edu\/academics\/colleges-departments\//i.test(url)
+  }
+  if (college === 'West Shore Community College' && /^Full Time Faculty$/i.test(title)) {
+    return /\/Benefit-Summary-Faculty-\d{4}\.pdf(?:$|\?)/i.test(url)
+  }
+  if (college === 'Southern College of Optometry' && /^Residency Faculty$/i.test(title)) return true
+  return false
+}
+
 function clean(value) {
   return String(value || '').replace(/\s+/g, ' ').trim()
 }
@@ -163,8 +455,8 @@ function institutionTokens(value) {
 function explicitInstitutionInTitle(title) {
   const segments = clean(title).split(/\s+[—–-]\s+/).slice(1)
   for (const segment of segments.reverse()) {
-    const match = segment.match(/\b(University\s+of\s+[A-Z][A-Za-z0-9&.'’()-]*(?:\s+(?:at|and|the|[A-Z][A-Za-z0-9&.'’()-]*)){0,6})\b/)
-      || segment.match(/\b([A-Z][A-Za-z0-9&.'’()-]*(?:\s+(?:of|the|and|at|in|for|[A-Z][A-Za-z0-9&.'’()-]*)){1,9}\s+University)\b/)
+    const match = segment.match(/\b(University\s+of\s+[A-Z][A-Za-z0-9&.'’()-]*(?:\s+(?:at|and|the|[A-Z][A-Za-z0-9&.'’()-]*)){0,6})\s*$/)
+      || segment.match(/\b([A-Z][A-Za-z0-9&.'’()-]*(?:\s+(?:of|the|and|at|in|for|[A-Z][A-Za-z0-9&.'’()-]*)){1,9}\s+University)\s*$/)
     if (match) return clean(match[1])
   }
   return null
@@ -174,7 +466,7 @@ function explicitInstitutionInTitle(title) {
 // ("Wilson Community College, NC", "Harvard University, MA") is a
 // placeholder, not a real city — it passes a plain non-empty check, which
 // undercounts how many jobs actually lack a usable location (issue #120).
-// This is an exact-string check (not a token-overlap one) because several
+// This is a whole-name check (not a token-overlap one) because several
 // real institutions are named after — and legitimately located in — a city
 // of the same name (Santa Clara University → "Santa Clara, CA", University
 // of Houston → "Houston, TX", Radford University → "Radford, VA", Villanova
@@ -190,12 +482,19 @@ function explicitInstitutionInTitle(title) {
 // segment is compared, matching how the frontend already parses this.
 export function isPlaceholderLocation(location, college) {
   const col = clean(college)
-  if (!col) return false
-  const segments = clean(location).split(' - ')
+  const loc = clean(location)
+  if (!col || !loc) return false
+  const segments = loc.split(' - ')
   const last = clean(segments[segments.length - 1])
   const stateMatch = last.match(/,\s*([A-Za-z]{2})$/)
-  if (!stateMatch) return false
-  return last.toLowerCase() === `${col}, ${stateMatch[1]}`.toLowerCase()
+  const locationName = stateMatch ? clean(last.slice(0, stateMatch.index)) : last
+  const identity = (value) => clean(value)
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/\buniv\b/g, 'university')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+  return identity(locationName) === identity(col)
 }
 
 function institutionConflict(title, college) {
@@ -246,7 +545,7 @@ export function reviewedWeakEvidenceFalsePositiveReason(job) {
 
   const allowedFellow = /\b(?:CORL Fellow Translational Research|Fellow of Law - Fixed Term|Pro Bono Clinic Fellow|SUNY PRODiG Plus Fellow|Visiting Fellow in the Creative Arts)\b/i.test(title)
   if (/\bfellow\b/i.test(title) && !allowedFellow && !/\bpost[- ]?doc(?:toral)?\b|(?:research and teaching|teaching|research) fellow/i.test(title)) return 'nonfaculty_fellowship'
-  if (/^(?:Advising Assistant|Executive Director, Executive Education|Extra Help\/Bowen Fellow - Student Worker|Federal Work-Study|Program Manager 2)/i.test(title)) return 'nonfaculty_role'
+  if (/^(?:Advising Assistant|Executive Director, Executive Education|Extra Help\/Bowen Fellow - Student Worker|Federal Work-Study|Job Coach & PreEts Instructor, Toledo Transition, Seasonal|Program Manager 2|Student Worker - A&D Faculty Offices)/i.test(title)) return 'nonfaculty_role'
   return null
 }
 
@@ -287,6 +586,8 @@ export function scorePost(job, { today = new Date() } = {}) {
 
   const hasStrongAcademicTitle = STRONG_ACADEMIC_TITLE_RE.test(title) || hasDeanAppointmentTitle(title)
   const isExplicitAdjunctAppointment = EXPLICIT_ADJUNCT_APPOINTMENT_RE.test(title)
+  const hasExplicitFacultyAppointmentQualifier =
+    /\b(?:adjunct|clinical|research|teaching|visiting)\s+faculty\b|\bfaculty\s+(?:appointment|position)\b|\bapplicant pool\b/i.test(title)
   const isFacultyStaffResourcePage =
     FACULTY_STAFF_RESOURCE_TITLE_RE.test(title)
     && !hasStrongAcademicTitle
@@ -295,8 +596,14 @@ export function scorePost(job, { today = new Date() } = {}) {
     RESOURCE_TITLE_RE.test(title)
     || NON_POSTING_INFORMATION_TITLE_RE.test(title)
     || NON_POSTING_NEWS_TITLE_RE.test(title)
+    || INFORMATIONAL_FACULTY_TITLE_RE.test(title)
+    || FACULTY_EMPLOYMENT_LANDING_TITLE_RE.test(title)
+    || FACULTY_INFORMATION_PAGE_TITLE_RE.test(title)
+    || REVIEWED_FACULTY_INFORMATION_TITLE_RE.test(title)
+    || REVIEWED_NON_POSTING_EXACT_TITLES.has(title.toLowerCase())
+    || isReviewedInstitutionFacultyDirectory(job)
     || (SEARCH_PAGE_CHROME_TITLE_RE.test(title) && classifyLink(url) === 'search-page')
-    || (FACULTY_RESOURCE_KEYWORD_RE.test(title) && !hasStrongAcademicTitle && !isExplicitAdjunctAppointment)
+    || (FACULTY_RESOURCE_KEYWORD_RE.test(title) && !hasStrongAcademicTitle && !isExplicitAdjunctAppointment && !hasExplicitFacultyAppointmentQualifier)
     || APPLICANT_INFORMATION_PAGE_RE.test(title)
     || CAMPUS_VISIT_MARKETING_RE.test(title)
     || isFacultyStaffResourcePage
@@ -320,6 +627,14 @@ export function scorePost(job, { today = new Date() } = {}) {
     addReason(reasons, dimensions, 'reviewed_non_posting', 'error', 'relevance', 100, `Reviewed as ${reviewedFalsePositive.replaceAll('_', ' ')}.`)
     hardQuarantine = true
   }
+  // Some ApplicantStack pages concatenate labeled metadata without spaces
+  // (for example, "Type:Full-Time StaffLocation:..."). The source's own job
+  // type is stronger than an ambiguous title such as "Instructor" or "Dean":
+  // these are staff searches, not faculty appointments.
+  if (/Type:\s*Full-Time Staff(?=Location\b)/i.test(description)) {
+    addReason(reasons, dimensions, 'source_labeled_staff_role', 'error', 'relevance', 100, 'The source labels this opening as full-time staff rather than faculty.')
+    hardQuarantine = true
+  }
 
   const startsWithAppointment = /^(?:adjunct\b|associate\s+faculty\b|faculty\b)/i.test(title) && !/^(?:faculty affairs|faculty support|faculty development|faculty resources?)\b/i.test(title)
   const contextualFacultyAppointment =
@@ -339,13 +654,14 @@ export function scorePost(job, { today = new Date() } = {}) {
     && !NON_APPOINTMENT_FACULTY_CONTEXT_RE.test(title)
   const reviewedAcademicAppointment = clean(job?.qualityEvidence) === 'reviewed-academic-appointment'
   const hasAcademicAppointmentTitle = hasStrongAcademicTitle || startsWithAppointment || contextualFacultyAppointment || coordinatedFacultyAppointment || namedChairAppointment || facultySpecialistAppointment || adjunctAppointment || descriptionBackedFacultyAppointment || reviewedAcademicAppointment
+  const explicitStudentRole = /\b(?:student fellow|fellow\s*\(student\))(?:\b|$)/i.test(title)
   if (STAFF_ROLE_RE.test(title) && !hasAcademicAppointmentTitle) {
     addReason(reasons, dimensions, 'administrative_staff_title', 'error', 'relevance', 90, 'Administrative or support role lacks an academic appointment title.')
     hardQuarantine = true
-  } else if (CLEAR_NONACADEMIC_RE.test(title) && !hasAcademicAppointmentTitle) {
+  } else if ((CLEAR_NONACADEMIC_RE.test(title) && !hasAcademicAppointmentTitle) || RECREATIONAL_INSTRUCTOR_RE.test(title) || REVIEWED_NONACADEMIC_TITLE_RE.test(title)) {
     addReason(reasons, dimensions, 'nonacademic_staff_title', 'error', 'relevance', 100, 'Clearly nonacademic staff role.')
     hardQuarantine = true
-  } else if (STUDENT_RESOURCE_RE.test(title) && !hasAcademicAppointmentTitle) {
+  } else if (STUDENT_RESOURCE_RE.test(title) && (!hasAcademicAppointmentTitle || explicitStudentRole)) {
     addReason(reasons, dimensions, 'student_service_title', 'error', 'relevance', 90, 'Student-facing service role lacks an academic appointment title.')
     hardQuarantine = true
   } else {
@@ -458,6 +774,7 @@ export function confirmedNonFacultyReason(job, options = {}) {
   if (codes.has('administrative_staff_title')) return 'administrative_staff_title'
   if (codes.has('nonacademic_staff_title')) return 'nonacademic_staff_title'
   if (codes.has('student_service_title')) return 'student_service_title'
+  if (codes.has('source_labeled_staff_role')) return 'source_labeled_staff_role'
   if (codes.has('resource_page_url') && !quality.academicAppointment) return 'resource_page_url'
   return null
 }
