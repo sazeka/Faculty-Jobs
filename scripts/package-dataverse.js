@@ -269,7 +269,7 @@ ${dataDictionary.replace(/^# Data Dictionary\s*/m, "").replace(/^## /gm, "### ")
 - Coverage is broad but not a census. A missing institution or posting can reflect an unavailable source, technical blocking, a policy exclusion, or no visible opening at collection time.
 - Dates, departments, disciplines, and position types may be absent or normalized from uneven source metadata. Do not infer a precise day where the source gave none.
 - Appointment-track classification is benchmarked but not error-free.
-- \`firstSeen\` is the first Faculty Atlas observation, not necessarily the institution's original posting date. ${pct(stats.firstSeenAtMin)} of records share the earliest value (${stats.firstSeenMin}), which marks when the current observation history begins; for those records \`firstSeen\` is a lower bound only. Use \`datePosted\` where available for posting age.
+- \`firstSeen\` is the first Faculty Atlas observation, not necessarily the institution's original posting date, and observation history begins on ${stats.firstSeenMin}.${stats.firstSeenAtMin >= 0.1 ? ` ${pct(stats.firstSeenAtMin)} of records share that earliest value, so for them \`firstSeen\` is a lower bound only.` : ""} Use \`datePosted\` where available for posting age.
 - \`canonicalGroupId\` reduces obvious repetition but is not a perfect vacancy-level identifier; one vacancy can appear under several titles or sources.
 - Source URLs can close or redirect after the snapshot.
 
