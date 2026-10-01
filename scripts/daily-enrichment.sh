@@ -33,10 +33,23 @@ log() { echo "[$(date '+%F %T')] $*"; }
 exec 9>"$RUNS/.lock"
 flock -w 10800 9 || { log "Clone busy for 3h; skipping today's enrichment."; exit 0; }
 
-if ! curl -sf "http://${OLLAMA_HOST:-localhost:11434}/api/tags" | grep -q "\"$OLLAMA_MODEL\""; then
+OLLAMA_URL="http://${OLLAMA_HOST:-localhost:11434}"
+if ! curl -sf "$OLLAMA_URL/api/tags" | grep -q "\"$OLLAMA_MODEL\""; then
   log "ERROR: Ollama is not serving $OLLAMA_MODEL; skipping."
   exit 1
 fi
+
+# If Ollama started before the NVIDIA driver was ready (e.g. right after a
+# reboot) it silently falls back to CPU, which is ~12x slower and would spend
+# the whole 3h window on a fraction of the batch. Load the model and refuse
+# to run unless it's on the GPU (restart ollama to re-detect it).
+curl -sf "$OLLAMA_URL/api/generate" -d "{\"model\":\"$OLLAMA_MODEL\",\"prompt\":\"ok\",\"stream\":false,\"options\":{\"num_predict\":1}}" >/dev/null || true
+VRAM="$(curl -sf "$OLLAMA_URL/api/ps" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{let m;try{m=(JSON.parse(s.trim()||"{}").models||[]).find(x=>x.name===process.argv[1])}catch{}console.log(m?m.size_vram:0)})' "$OLLAMA_MODEL" || echo 0)"
+if [[ "${VRAM:-0}" -eq 0 ]]; then
+  log "ERROR: $OLLAMA_MODEL loaded on CPU only (size_vram=0); Ollama didn't detect the GPU. Run 'sudo systemctl restart ollama' and re-run. Skipping."
+  exit 1
+fi
+log "Model on GPU ($((VRAM / 1048576)) MiB VRAM)"
 
 cd "$REPO"
 
