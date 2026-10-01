@@ -1,13 +1,13 @@
 {
   "title": "Faculty Atlas: Point-in-Time Faculty Job Postings in United States Higher Education",
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "methodologyVersion": "2026-09",
-  "generatedAt": "2026-10-01T22:51:18.176Z",
+  "generatedAt": "2026-10-01T22:57:19.872Z",
   "date": "2026-10-01",
   "input": "public/jobs.json",
   "scrapedAt": "2026-10-01T11:42:22.618Z",
-  "sourceCommit": "714086fe55f6fadf7774b6145089ff3fc54c1ddf",
-  "count": 23269,
+  "sourceCommit": "098ce9370eb9f58af0731f477c6340cdaf015927",
+  "count": 23265,
   "fields": [
     "canonicalJobId",
     "canonicalGroupId",
@@ -16,6 +16,9 @@
     "source",
     "category",
     "college",
+    "unitid",
+    "institutionControl",
+    "institutionLevel",
     "location",
     "state",
     "department",
@@ -38,7 +41,7 @@
     "note": "The release contains research metadata and source links, not full job descriptions."
   },
   "appointmentTrackCounts": {
-    "tenureTrack": 4899,
+    "tenureTrack": 4895,
     "nonTenureTrack": 16537,
     "variable": 286,
     "unclassified": 1547
@@ -52,13 +55,13 @@
   "hashes": {
     "json": {
       "algorithm": "sha256",
-      "value": "a0b80319362f3e773eecb91fc58f35244b85b064af4445a6c34cab1fec49a845",
-      "bytes": 20598281
+      "value": "522c916527b9807b8e694d63de6d254e864a62022cd7b988fa056c54658186c6",
+      "bytes": 22946520
     },
     "csv": {
       "algorithm": "sha256",
-      "value": "84add55a5667b0d6d476ac7a2c3f08d55ebde1ced7c86fe668f6089d441cc29d",
-      "bytes": 8691058
+      "value": "4d75a5d4a2dc51ffe6d337ab89cce0e602c8ff219e6285c0b69e28d146747dbf",
+      "bytes": 9247699
     }
   },
   "diagnostics": {
@@ -69,6 +72,62 @@
     },
     "duplicateJobUrls": {
       "count": 67
+    },
+    "unitidMatched": {
+      "count": 22978,
+      "source": "data/institutions-master.json"
+    },
+    "postQualityQuarantine": {
+      "source": "generated/post-quality-quarantine.json",
+      "generatedAt": "2026-10-01T11:43:32.272Z",
+      "excludedCount": 4,
+      "excluded": [
+        {
+          "url": "https://wisconsin.wd1.myworkdayjobs.com/UW_Comprehensives/job/Menomonie-WI/Assistant-Professor-in-Industrial---Product-Design_JR10014888-1",
+          "title": "Assistant Professor in Industrial & Product Design",
+          "college": "University of Wisconsin-Stout",
+          "reasons": [
+            "filled_compliance_notice"
+          ]
+        },
+        {
+          "url": "https://wisconsin.wd1.myworkdayjobs.com/UW_Comprehensives/job/Menomonie-WI/Assistant-Professor-of-Computer-Science_JR10014886",
+          "title": "Assistant Professor of Computer Science",
+          "college": "University of Wisconsin-Stout",
+          "reasons": [
+            "filled_compliance_notice"
+          ]
+        },
+        {
+          "url": "https://wisconsin.wd1.myworkdayjobs.com/UW_Comprehensives/job/Menomonie-WI/Assistant-Professor-of-Fashion-Design---Development_JR10014889",
+          "title": "Assistant Professor of Fashion Design & Development",
+          "college": "University of Wisconsin-Stout",
+          "reasons": [
+            "filled_compliance_notice"
+          ]
+        },
+        {
+          "url": "https://wisconsin.wd1.myworkdayjobs.com/UW_Comprehensives/job/Eau-Claire-WI/Music-and-Theatre-Arts--Assistant-Professor-as-Orchestra-Director_JR10009364",
+          "title": "Music and Theatre Arts: Assistant Professor as Orchestra Director",
+          "college": "University of Wisconsin-Eau Claire",
+          "reasons": [
+            "filled_compliance_notice",
+            "missing_department",
+            "missing_deadline"
+          ]
+        }
+      ],
+      "retained": [
+        {
+          "url": "https://ap.washington.edu/ahr/position-details?job_id=191783",
+          "title": "Associate Librarian or Librarian - Associate Dean, Research and Learning Services University Libraries",
+          "college": "University of Washington",
+          "reasons": [
+            "institution_title_conflict"
+          ]
+        }
+      ],
+      "note": "Quarantined postings failing the relevance dimension (not open faculty jobs) are excluded; other quarantine reasons are retained."
     },
     "duplicateCanonicalIdsRemoved": {
       "count": 0,
