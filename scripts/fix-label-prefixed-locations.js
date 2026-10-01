@@ -46,7 +46,7 @@ const HAND_VERIFIED_FIXES_BY_URL = new Map([
   ["https://careers.kctcs.edu/jobs/nursing-instructor-lpn-carrollton-ky-kentucky-united-states-louisville", "Carrollton, KY"],
 ]);
 
-const CITY_STATE_SHAPE = /^[A-Za-z .'-]{2,60},\s*[A-Z]{2}$/;
+const CITY_STATE_SHAPE = /^[A-Za-z .'-]{2,160},\s*[A-Z]{2}$/;
 
 function main() {
   const sourcePath = path.join(ROOT, TARGETS[0]);
@@ -60,15 +60,19 @@ function main() {
   const stillUnresolved = [];
 
   jobs = jobs.map((job) => {
-    if (!job.location || !CITY_STATE_SHAPE.test(job.location) || isPlausibleCityStateLocation(job.location)) {
-      return job;
-    }
+    if (!job.location) return job;
 
+    // Checked before the plausibility gate: short label prefixes ("Oncology
+    // Health Science Campus College Toledo, OH") pass it whole.
     const ruleRecovered = recoverLabelPrefixedLocation(job.location);
     if (ruleRecovered) {
       ruleRecoveredCount += 1;
       ruleRecoveredSamples.push({ url: job.url, before: job.location, after: ruleRecovered });
       return { ...job, location: ruleRecovered };
+    }
+
+    if (!CITY_STATE_SHAPE.test(job.location) || isPlausibleCityStateLocation(job.location)) {
+      return job;
     }
 
     const handFix = HAND_VERIFIED_FIXES_BY_URL.get(job.url);
