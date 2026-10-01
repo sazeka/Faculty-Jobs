@@ -10,7 +10,8 @@
  *   2. Load generated/job-presence.json (or start fresh if not present)
  *   3. Build a Set of canonicalJobId values from today's jobs
  *   4. For every job in today's scrape: upsert into presence history
- *      (firstSeen=today if new, lastSeen=today and consecutiveMisses=0 always)
+ *      (firstSeen=earliest of the job's carried firstSeen and today if new,
+ *      lastSeen=today and consecutiveMisses=0 always)
  *   5. For every tracked job NOT in today's scrape: increment consecutiveMisses
  *   6. Any job with consecutiveMisses >= EXPIRY_DAYS is purged from
  *      public/jobs.json
@@ -37,6 +38,7 @@ import { partitionExpiredJobs } from "./lib/post-expiration.js";
 import { repairKnownInstitutionAttribution, repairKnownSourceOwnership } from "./lib/institution-attribution.js";
 import { normalizeTenureTrack } from "../web-vue/src/lib/jobClassification.js";
 import { readJobsFileOrNull, writeJobsFile } from "./lib/jobs-file.js";
+import { updatePresenceLedger } from "./lib/job-presence-ledger.js";
 import {
   classifySourceLink,
   institutionTitleConflict,
@@ -146,42 +148,18 @@ for (const item of previousPresenceReport?.purgedJobs || []) {
   };
 }
 
-// ── 3. Build a Set of today's canonicalJobIds ─────────────────────────────────
+// ── 3-5. Update presence history ─────────────────────────────────────────────
+// A new ledger entry inherits the job's carried firstSeen (preserveEnrichment
+// matches the previous snapshot by id or url), so a canonicalJobId re-key does
+// not reset every listing's firstSeen to today.
 
-const todayIds = new Set(
-  todayJobs
-    .map((j) => j.canonicalJobId)
-    .filter((id) => typeof id === "string" && id.length > 0)
-);
+const todayIds = updatePresenceLedger(presence, todayJobs, today);
 
 // Build a lookup map from canonicalJobId → job object for jobs seen today
 // (used later when composing the purged-jobs report)
 const todayJobMap = new Map();
 for (const job of todayJobs) {
   if (job.canonicalJobId) todayJobMap.set(job.canonicalJobId, job);
-}
-
-// ── 4 & 5. Update presence history ───────────────────────────────────────────
-
-for (const id of todayIds) {
-  if (presence.jobs[id]) {
-    // Already tracked — refresh
-    presence.jobs[id].lastSeen = today;
-    presence.jobs[id].consecutiveMisses = 0;
-  } else {
-    // New job — add it
-    presence.jobs[id] = {
-      firstSeen: today,
-      lastSeen:  today,
-      consecutiveMisses: 0,
-    };
-  }
-}
-
-for (const id of Object.keys(presence.jobs)) {
-  if (!todayIds.has(id)) {
-    presence.jobs[id].consecutiveMisses += 1;
-  }
 }
 
 // ── 6. Identify jobs to purge ─────────────────────────────────────────────────
