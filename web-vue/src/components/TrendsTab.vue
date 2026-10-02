@@ -525,8 +525,6 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
             </button>
             <p class="fa-meta academic-note">Percentages for leading departments use the {{ fmt(departmentStats.classified) }} listings with a usable Department. Bar lengths compare the departments shown.</p>
           </template>
-          <p v-if="departmentHistory.length === 1" class="fa-meta academic-note">Department tracking starts with this snapshot; weekly comparisons will appear after the next digest.</p>
-          <p class="fa-meta academic-note">{{ fmt(departmentStats.unknown) }} listings have no usable Department. This measures field coverage using the same validation as job listings; it does not mean every displayed Department was independently verified.</p>
           <AcademicCategoryDetail v-if="categoryWeeks.length" v-model:selected="selectedDepartment" kind="department" :weeks="categoryWeeks" :classified="departmentStats.classified" />
           <p v-else-if="categoryError" class="fa-meta academic-note">Detailed Department counts are updating. The coverage chart above is still available.</p>
         </template>
