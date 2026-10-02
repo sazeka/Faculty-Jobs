@@ -198,11 +198,13 @@ function buildDatasetJson({ deposit, manifest, stats, description }) {
 }
 
 function buildDescription({ manifest, stats }) {
+  const unitidPct = `${(stats.unitidShare * 100).toFixed(1)}%`;
   return [
-    `Point-in-time metadata for ${formatInt(stats.count)} publicly listed faculty job postings at ${formatInt(stats.institutions)} United States colleges and universities, captured on ${manifest.date}.`,
+    `Point-in-time metadata for ${formatInt(stats.count)} publicly listed faculty job postings from ${formatInt(stats.institutions)} United States higher-education employers (colleges, universities, and some system- or district-level offices), captured on ${manifest.date}.`,
     "Faculty Atlas collects postings directly from institutional career sites and applicant-tracking systems (Workday, PageUp, Taleo, PeopleAdmin, SchoolJobs, iCIMS, Interfolio, and others), normalizes them to one schema, assigns stable identifiers, and classifies discipline, position type, and appointment track (tenure-track, non-tenure-track, variable, or unclassified).",
-    "Each record gives the position title, institution, location and state, department, discipline, position type, appointment track with its evidence family, posting/closing/start dates, the date Faculty Atlas first observed the posting, and a link to the official source. Full posting descriptions are not included.",
-    "The collection is broad but not a census; see the README for scope, method, and known limitations.",
+    `Each record gives the position title, institution, IPEDS UNITID with institutional control and level (matched for ${unitidPct} of records), location and state, department, discipline, position type, appointment track with its evidence family, posting/closing/start dates, the date Faculty Atlas first observed the posting, and a link to the official source. Full posting descriptions are not included.`,
+    "The collection is broad but not a census; see the README for scope, method, validation results, and known limitations.",
+    "New snapshots are added as versions of this dataset each quarter.",
   ].join(" ");
 }
 
@@ -308,6 +310,8 @@ Please cite the snapshot date and dataset version you used.
 const UPLOAD_PLAN_PY = `import json, re, sys
 
 def role(name):
+    # A CSV whose tabular ingest failed can be listed only under its .tab name.
+    name = re.sub(r"\\.tab$", ".csv", name)
     return re.sub(r"_\\d{4}-\\d{2}-\\d{2}", "", name)
 
 def files(listing):
@@ -348,7 +352,8 @@ function buildUploadScript({ fileRows }) {
 # web UI, then click Publish.
 #
 #   export DATAVERSE_API_TOKEN=...   # Account > API Token on the Dataverse site
-#   bash upload.sh
+#   bash upload.sh                   # metadata and every file
+#   bash upload.sh NAME...           # metadata and only the named files
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -395,8 +400,11 @@ published_files=$(api "$SERVER/api/datasets/:persistentId/versions/:latest-publi
   || published_files='{"data":[]}'
 
 
+ONLY=("$@")
+
 sync_file() {
   local name="$1" json="$2" action id
+  if (( \${#ONLY[@]} )) && [[ " \${ONLY[*]} " != *" $name "* ]]; then return; fi
   read -r action id < <(python3 upload-plan.py "$name" "$draft_files" "$published_files")
   case "$action" in
     replace)
@@ -416,6 +424,8 @@ sync_file() {
 }
 
 ${lines}
+
+(( \${#ONLY[@]} )) && { echo; echo "Done. Review the draft: $SERVER/dataset.xhtml?persistentId=$DATASET_PID&version=DRAFT"; exit 0; }
 
 leftover=$(python3 upload-plan.py --leftover "$draft_files" ${fileRows.map((r) => `"${r.name}"`).join(" ")})
 if [[ -n "$leftover" ]]; then
