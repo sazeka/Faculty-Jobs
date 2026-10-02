@@ -9,7 +9,12 @@ import { computeDisciplineBreakdown } from './lib/weekly-discipline-stats.js'
 const root = path.resolve(import.meta.dirname, '..')
 const read = (relative) => JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'))
 const write = (relative, value) => fs.writeFileSync(path.join(root, relative), `${JSON.stringify(value, null, 2)}\n`)
-const payload = read('public/jobs.json')
+// --feed <path> reads an archived job feed for the published week when the
+// live feed has already moved on.
+const feedArg = process.argv.indexOf('--feed')
+const payload = feedArg > 0
+  ? JSON.parse(fs.readFileSync(path.resolve(process.argv[feedArg + 1]), 'utf8'))
+  : read('public/jobs.json')
 const history = read('generated/weekly-stats-history.json')
 const out = read('public/data/weekly-trends.json')
 const current = history.find((entry) => entry.weekEnd === out.weekEnd)

@@ -26,7 +26,7 @@ import { getDiscipline, inferState, normalizeSystemCollege } from "../web-vue/sr
 import { derivePositionTypes, deriveTenureTrack, deriveEmploymentType } from "./lib/job-posting-classification.js";
 import { isMissingDiscipline, normalizeDisciplineValue } from "./lib/discipline-normalize.js";
 import { readJobsFile } from "./lib/jobs-file.js";
-import { cleanDepartment } from "./lib/department-clean.js";
+import { cleanJobDepartment } from "./lib/department-clean.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -139,7 +139,7 @@ function renderPage(job, groupCounts, institutionIndex) {
   const discipline = getDiscipline(job);
   const state = inferState(job);
   const college = normalizeSystemCollege(job);
-  const department = cleanDepartment(job.department);
+  const department = cleanJobDepartment(job);
   // Only link to a hub page that generate-hub-pages.js will actually emit —
   // same thresholds, checked against the same open-jobs counts.
   const browseLinks = [];

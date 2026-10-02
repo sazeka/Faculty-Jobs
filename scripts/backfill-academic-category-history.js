@@ -18,10 +18,13 @@ const git = (...args) => execFileSync('git', args, { cwd: root, maxBuffer: 160 *
 
 const current = read('docs/data/weekly-trends.json')
 const recent = read('generated/weekly-stats-history.json').slice(-12)
-const existing = read('generated/weekly-academic-category-history.json')
+// --recompute rebuilds every recorded week, the current one included, from
+// its archived feed. Use it after a counting rule changes.
+const recompute = process.argv.includes('--recompute')
+const existing = recompute ? [] : read('generated/weekly-academic-category-history.json')
 const rebuild = process.argv.includes('--rebuild')
 if (recent.at(-1)?.weekEnd !== current.weekEnd) throw new Error('Weekly history and current digest disagree')
-if (!existing.some((week) => week.weekEnd === current.weekEnd)) throw new Error('Current category snapshot is missing')
+if (!recompute && !existing.some((week) => week.weekEnd === current.weekEnd)) throw new Error('Current category snapshot is missing')
 
 const wanted = new Map(recent.map((week) => [week.weekEnd, week.totalJobs]))
 const commits = git('log', '--all', '--format=%H', '--grep=^Weekly trends digest$').toString().trim().split('\n')

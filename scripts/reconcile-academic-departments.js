@@ -2,7 +2,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { extractAcademicUnit } from './lib/academic-unit-extraction.js'
-import { cleanDepartment } from './lib/department-clean.js'
+import { cleanJobDepartment } from './lib/department-clean.js'
 import { compareAcademicUnitNames } from './lib/academic-unit-name.js'
 
 const root = path.resolve(import.meta.dirname, '..')
@@ -48,7 +48,7 @@ const jobs = payload.jobs.map((job) => {
   const extracted = allEvidence || highConfidence
     ? extractAcademicUnit(job)
     : { department: label.goldDepartment, evidence: label.departmentEvidence, source: 'source-reviewed' }
-  const before = cleanDepartment(job.department)
+  const before = cleanJobDepartment(job)
   if (highConfidence && (extracted.confidence !== 'high' || before)) return job
   // Keep source-provided values when the saved posting has no stronger
   // evidence. An explicit title-derived subject was handled by the earlier

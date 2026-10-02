@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { cleanDepartment } from '../lib/department-clean.js'
+import { cleanDepartment, cleanJobDepartment } from '../lib/department-clean.js'
 
 // Issue #130: this is the one department validator shared by scoring,
 // completeness, confidence badges, and the frontend's own display path, so
@@ -31,4 +31,41 @@ test('accepts real department values', () => {
   assert.equal(cleanDepartment('Biology'), 'Biology')
   assert.equal(cleanDepartment('Art & Art History (Studio Art)'), 'Art & Art History (Studio Art)')
   assert.equal(cleanDepartment('  Nursing  '), 'Nursing')
+})
+
+test('rejects offices, instruction-wide buckets, campuses and institution names', () => {
+  for (const value of [
+    'Instruction',
+    'INSTRUCTION',
+    'Academic Instruction',
+    'Instruction South Campus',
+    'District Office',
+    'Office of Instruction',
+    "Dean's Office - (College of Education)",
+    'Academics and Guided Career Pathways',
+    "University of Hawai'i - West O'ahu - Academic Affairs (L)",
+    'Vice President, Academic Affairs',
+    'Midland Campus',
+    'Piedmont Technical College',
+    'Windward Community College',
+    "University of Hawai'i at Hilo",
+    'State University',
+    'Academic and Student Affairs',
+    'Tenure Track',
+    'Full-Time',
+    'Fall 2026 & Spring 2027',
+  ]) assert.equal(cleanDepartment(value), null, value)
+})
+
+test("rejects a Department that repeats the listing's institution or city", () => {
+  assert.equal(cleanJobDepartment({ department: 'American River College', college: 'American River College' }), null)
+  assert.equal(cleanJobDepartment({ department: 'OKLAHOMA CITY (OKC)', college: 'Oklahoma State University-Oklahoma City', location: 'Oklahoma City, OK' }), null)
+  assert.equal(cleanJobDepartment({ department: 'Biology', college: 'American River College', location: 'Sacramento, CA' }), 'Biology')
+})
+
+test('keeps real units that mention a campus or college', () => {
+  assert.equal(cleanDepartment('Biology - Idabel Campus'), 'Biology - Idabel Campus')
+  assert.equal(cleanDepartment('College of Nursing'), 'College of Nursing')
+  assert.equal(cleanDepartment('Honors College'), 'Honors College')
+  assert.equal(cleanDepartment('Medical Office Management'), 'Medical Office Management')
 })

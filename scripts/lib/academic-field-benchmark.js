@@ -5,7 +5,7 @@ import { compareAcademicUnitNames } from './academic-unit-name.js'
 const comparable = (value) => String(value || '').replace(/\s+/g, ' ').trim().toLowerCase()
 
 export function predictAcademicFields(row) {
-  const department = cleanDepartment(row.department)
+  const department = cleanDepartment(row.department, row)
   const discipline = getDiscipline({ ...row, department })
   return {
     department,

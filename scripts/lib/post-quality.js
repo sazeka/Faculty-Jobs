@@ -569,7 +569,7 @@ export function scorePost(job, { today = new Date() } = {}) {
   const college = clean(job?.college)
   const location = clean(job?.location)
   const rawDepartment = clean(job?.department)
-  const department = cleanDepartment(rawDepartment) || ''
+  const department = cleanDepartment(rawDepartment, { college, location }) || ''
   const url = clean(job?.url)
   const todayIso = dateOnly(today) || new Date().toISOString().slice(0, 10)
   const dimensions = { relevance: 100, attribution: 100, link: 100, freshness: 100, completeness: 100, duplication: 100 }

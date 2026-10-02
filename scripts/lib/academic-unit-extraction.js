@@ -1,4 +1,4 @@
-import { cleanDepartment } from './department-clean.js'
+import { cleanDepartment, cleanJobDepartment } from './department-clean.js'
 import { inferDepartmentFromTitle } from './department-inference.js'
 
 const ADMIN_UNIT = /^(?:academic affairs|human resources|student affairs|district office|instruction|learning|provost|office of|university of|department of (?:labor|education office of civil rights)|(?:interim|contact|health) department)\b/i
@@ -106,7 +106,7 @@ function unitPriority(name) {
 export function extractAcademicUnit(job = {}) {
   const title = String(job.title || '')
   const description = String(job.description || '')
-  const raw = cleanDepartment(job.department)
+  const raw = cleanJobDepartment(job)
   const titleSuffix = !/\bDepartment of\b/i.test(title) && title.match(/\b([A-Z][A-Za-z&]+(?:\s+(?:[A-Z][A-Za-z&]+|and|of)){1,7}\s+Department)\b/)
   const titleUnit = titleSuffix?.[1]?.replace(/^.*?\b(?:Chair of|Professor of)\s+/i, '') || inferDepartmentFromTitle(title)
   const structured = structuredCandidates(description)

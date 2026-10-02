@@ -7,7 +7,7 @@ import { classifySourceLink, institutionTitleConflict, sanitizePostingDate } fro
 import { inferAlaskaCampus } from '../../../scripts/lib/alaska-campus.js'
 import { normalizeSearchText } from '../../../scripts/lib/jobs-search-index.js'
 import { deriveCandidateFields } from '../../../scripts/lib/job-candidate-fields.js'
-import { cleanDepartment } from '../../../scripts/lib/department-clean.js'
+import { cleanJobDepartment } from '../../../scripts/lib/department-clean.js'
 import { isChallengeDescription } from '../../../scripts/lib/description-quality.js'
 import { isImplausibleStartDate } from '../../../scripts/lib/start-date.js'
 
@@ -423,7 +423,7 @@ function deriveConfidenceBadges(job, { datePosted, linkQuality, institutionConfl
   // suffix, leftover parenthetical noise, etc.) so a record that would show
   // "Missing Department" to the user can't still earn a "Department Tagged"
   // badge off the raw, unvalidated value (issue #130).
-  if (cleanDepartment(job?.department)) {
+  if (cleanJobDepartment(job)) {
     badges.push({ kind: 'good', label: 'Department Tagged' })
   } else {
     badges.push({ kind: 'warn', label: 'Missing Department' })
@@ -454,7 +454,7 @@ function normalizeJob(job) {
   const title = normalizedTitle || '(No title)'
   const college = normalizeSystemCollege(job)
   const institutionConflict = institutionTitleConflict(title, college)
-  const department = cleanDepartment(job?.department)
+  const department = cleanJobDepartment(job)
   const state = inferState(job)
   const datePosted = sanitizePostingDate(job?.datePosted)
   const linkQuality = classifySourceLink(job?.url)
