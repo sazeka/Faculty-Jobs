@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T10:39:07.906Z",
+  "generatedAt": "2026-10-03T20:47:58.895Z",
   "qualityVersion": 1,
   "sampleSize": 200,
   "instructions": "Set humanLabel to valid or invalid, add optional notes, then copy confirmed labels into data/post-quality-human-labels.json.",
@@ -2399,20 +2399,20 @@
       "notes": ""
     },
     {
-      "id": "50291d7ce1f3f578fe9c",
-      "score": 90,
+      "id": "58ce5e98b08fcba6e86f",
+      "score": 97,
       "status": "review",
-      "title": "Assistant/Associate Professor of Economics",
-      "college": "Milligan University",
+      "title": "Adjunct Faculty - Business & Industry Division (Multiple Disciplines)",
+      "college": "Chattanooga State Community College",
       "source": "TN",
-      "url": "https://milligan.edu/employment",
+      "url": "https://careers.tbr.edu/jobs/7280dcb2-88f2-4517-b0b6-b5633849941e",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "freshness",
+          "deduction": 25,
+          "detail": "Posting date 2023-09-05 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_department",
@@ -2420,13 +2420,6 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -3839,14 +3832,21 @@
       "notes": ""
     },
     {
-      "id": "012b2f6a9411cdc1a721",
-      "score": 99,
+      "id": "011037349d660c8d0656",
+      "score": 95,
       "status": "pass",
-      "title": "Adjunct Faculty (Welding)",
-      "college": "Barton County Community College",
+      "title": "Adult Education Instructor – ELA Seward County Community College Your future, our legacy Liberal, KS Full Time Posted on",
+      "college": "Seward County Community College",
       "source": "KS",
-      "url": "https://bartonccc.agilehr.com/careers/JobDetail?RequisitionId=4673&SourceId=0",
+      "url": "https://sccc.edu/job/seward-county-community-college-liberal-ks-full-time-adult-education-instructor-ela",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_department",
           "severity": "info",
@@ -4184,14 +4184,36 @@
       "notes": ""
     },
     {
-      "id": "0074c3fcfefa83301864",
-      "score": 100,
+      "id": "0045d76682633b1f6848",
+      "score": 95,
       "status": "pass",
-      "title": "Postdoctoral Scholar of Natural Science - Fixed Term",
-      "college": "Michigan State University",
+      "title": "Adjunct Clinical Nursing Faculty",
+      "college": "West Shore Community College",
       "source": "MI",
-      "url": "https://careers.msu.edu/jobs/postdoctoral-scholar-fixed-term-east-lansing-michigan-united-states-27461a60-51aa-4389-bb0f-7020fe974184",
-      "reasons": [],
+      "url": "https://www.schooljobs.com/careers/westshore/jobs/2534874/adjunct-part-time-clinical-nursing-faculty?pagetype=jobOpportunitiesJobs",
+      "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
       "humanLabel": null,
       "notes": ""
     },
@@ -4559,13 +4581,13 @@
       "notes": ""
     },
     {
-      "id": "05aaea138787d78ebd61",
+      "id": "05e188e47de8c886b6f1",
       "score": 99,
       "status": "pass",
-      "title": "Assistant Professor - Earth Structure and Deformation",
-      "college": "University of New Mexico",
+      "title": "Faculty Checklist",
+      "college": "University of New Mexico-Valencia County Campus",
       "source": "NM",
-      "url": "https://unm.csod.com/ux/ats/careersite/18/home/requisition/37942?c=unm",
+      "url": "https://valencia.unm.edu/academics/faculty-resources/checklist.html",
       "reasons": [
         {
           "code": "missing_department",
@@ -4573,6 +4595,13 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -5065,13 +5094,13 @@
       "notes": ""
     },
     {
-      "id": "58ce5e98b08fcba6e86f",
+      "id": "6d0625c36e930a24b0da",
       "score": 97,
       "status": "review",
-      "title": "Adjunct Faculty - Business & Industry Division (Multiple Disciplines)",
+      "title": "Adjunct Faculty – Computer Applications and Spreadsheet Applications (Dual Enrollment at High Schools)",
       "college": "Chattanooga State Community College",
       "source": "TN",
-      "url": "https://careers.tbr.edu/jobs/7280dcb2-88f2-4517-b0b6-b5633849941e",
+      "url": "https://careers.tbr.edu/jobs/adjunct-faculty-computer-applications-and-spreadsheet-applications-dual-enrollment-at-high-schools-chattanooga-tennessee-united-states",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
