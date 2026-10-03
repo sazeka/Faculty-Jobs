@@ -29,3 +29,30 @@ test("canonicalizes Trine's 'Regional/Non-Traditional Campuses' label (issue #11
   assert.equal(isInstitutionAlias("Trine University-Regional/Non-Traditional Campuses"), true);
   assert.equal(canonicalInstitutionName("Trine University"), "Trine University");
 });
+
+// The strict institution audit failed on these job-feed labels: one repeated
+// St Cloud's UNITID, the rest had no state, control or level.
+test("folds Minnesota State campus labels, single-college districts and St. Cloud into their institutions", () => {
+  const expected = {
+    "Central Lakes College": "Central Lakes College-Brainerd",
+    "Minnesota State (Brainerd)": "Central Lakes College-Brainerd",
+    "Minnesota State (Fergus Falls)": "Minnesota State Community and Technical College",
+    "Minnesota State (Grand Rapids)": "Minnesota North College",
+    "Minnesota State (Mnor Hibbing Campus)": "Minnesota North College",
+    "Minnesota State (Ridg Willmar Campus)": "Ridgewater College",
+    "Minnesota State (Roch Rochester Campus)": "Rochester Community and Technical College",
+    "Minnesota State (Wins Winona Campus)": "Winona State University",
+    "Citrus CCD": "Citrus College",
+    "Gavilan CCD": "Gavilan College",
+    "St. Cloud Technical and Community College": "St Cloud Technical and Community College",
+  };
+  for (const [alias, canonical] of Object.entries(expected)) {
+    assert.equal(canonicalInstitutionName(alias), canonical, alias);
+  }
+});
+
+test("alias targets are canonical names, not other aliases", () => {
+  for (const name of ["Central Lakes College-Brainerd", "Minnesota North College", "St Cloud Technical and Community College", "Citrus College"]) {
+    assert.equal(isInstitutionAlias(name), false, name);
+  }
+});

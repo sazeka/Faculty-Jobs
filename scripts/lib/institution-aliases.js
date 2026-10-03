@@ -80,6 +80,18 @@ const ALIASES = new Map(
     ["Minnesota State (Rivr Owatonna Campus)", "Riverland Community College"],
     ["Minnesota State (Rosemount)", "Dakota County Technical College"],
     ["Minnesota State (Staples)", "Central Lakes College-Brainerd"],
+    ["Minnesota State (Brainerd)", "Central Lakes College-Brainerd"],
+    ["Central Lakes College", "Central Lakes College-Brainerd"],
+    ["Minnesota State (Fergus Falls)", "Minnesota State Community and Technical College"],
+    // Itasca Community College merged into Minnesota North College in 2022.
+    ["Minnesota State (Grand Rapids)", "Minnesota North College"],
+    ["Minnesota State (Mnor Hibbing Campus)", "Minnesota North College"],
+    ["Minnesota State (Ridg Willmar Campus)", "Ridgewater College"],
+    ["Minnesota State (Roch Rochester Campus)", "Rochester Community and Technical College"],
+    ["Minnesota State (Wins Winona Campus)", "Winona State University"],
+    // Same UNITID (174756); the configured scrape source uses the IPEDS
+    // spelling without the period.
+    ["St. Cloud Technical and Community College", "St Cloud Technical and Community College"],
     ["Arizona State University", "Arizona State University Campus Immersion"],
     ["Antelope Valley CCD", "Antelope Valley Community College District"],
     ["California Polytechnic State University, San Luis Obispo", "California Polytechnic State University-San Luis Obispo"],
@@ -96,6 +108,9 @@ const ALIASES = new Map(
     ["California State University, Northridge", "California State University-Northridge"],
     ["California State University, Sacramento", "California State University-Sacramento"],
     ["El Camino CCD", "El Camino Community College District"],
+    // Single-college districts.
+    ["Citrus CCD", "Citrus College"],
+    ["Gavilan CCD", "Gavilan College"],
     ["Colorado State University", "Colorado State University-Fort Collins"],
     ["SUNY Dutchess Community College", "Dutchess Community College"],
     ["SUNY Erie Community College", "Erie Community College"],
