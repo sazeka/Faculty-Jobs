@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T10:38:07.424Z",
+  "generatedAt": "2026-10-03T18:02:21.681Z",
   "inputs": {
     "institutions": "data/institutions-master.json",
     "rules": "data/policy-rules.json",
@@ -20,17 +20,17 @@
     "target": "degree-granting"
   },
   "totals": {
-    "eligible_universe": 3326,
-    "covered": 3027,
+    "eligible_universe": 3315,
+    "covered": 3016,
     "missing": 0,
     "excluded_policy": 299,
     "pending_review": 0,
-    "extraction_warnings": 1494
+    "extraction_warnings": 1495
   },
   "percentages": {
-    "covered": 91.01,
+    "covered": 90.98,
     "missing": 0,
-    "excluded_policy": 8.99,
+    "excluded_policy": 9.02,
     "pending_review": 0
   },
   "byState": {
@@ -77,15 +77,15 @@
       "pending_review": 0
     },
     "CA": {
-      "total": 332,
-      "covered": 294,
+      "total": 333,
+      "covered": 295,
       "missing": 0,
       "excluded_policy": 38,
       "pending_review": 0
     },
     "LA": {
-      "total": 52,
-      "covered": 49,
+      "total": 53,
+      "covered": 50,
       "missing": 0,
       "excluded_policy": 3,
       "pending_review": 0
@@ -98,8 +98,8 @@
       "pending_review": 0
     },
     "MN": {
-      "total": 79,
-      "covered": 76,
+      "total": 78,
+      "covered": 75,
       "missing": 0,
       "excluded_policy": 3,
       "pending_review": 0
@@ -252,8 +252,8 @@
       "pending_review": 0
     },
     "WA": {
-      "total": 67,
-      "covered": 64,
+      "total": 69,
+      "covered": 66,
       "missing": 0,
       "excluded_policy": 3,
       "pending_review": 0
@@ -294,8 +294,8 @@
       "pending_review": 0
     },
     "OK": {
-      "total": 46,
-      "covered": 44,
+      "total": 47,
+      "covered": 45,
       "missing": 0,
       "excluded_policy": 2,
       "pending_review": 0
@@ -363,13 +363,6 @@
       "excluded_policy": 2,
       "pending_review": 0
     },
-    "Unknown": {
-      "total": 15,
-      "covered": 15,
-      "missing": 0,
-      "excluded_policy": 0,
-      "pending_review": 0
-    },
     "WY": {
       "total": 9,
       "covered": 9,
@@ -408,24 +401,17 @@
       "pending_review": 0
     },
     "public": {
-      "total": 1677,
-      "covered": 1634,
+      "total": 1681,
+      "covered": 1638,
       "missing": 0,
       "excluded_policy": 43,
-      "pending_review": 0
-    },
-    "Unknown": {
-      "total": 15,
-      "covered": 15,
-      "missing": 0,
-      "excluded_policy": 0,
       "pending_review": 0
     }
   },
   "byLevel": {
     "4-year": {
-      "total": 2439,
-      "covered": 2175,
+      "total": 2443,
+      "covered": 2179,
       "missing": 0,
       "excluded_policy": 264,
       "pending_review": 0
@@ -435,13 +421,6 @@
       "covered": 837,
       "missing": 0,
       "excluded_policy": 35,
-      "pending_review": 0
-    },
-    "Unknown": {
-      "total": 15,
-      "covered": 15,
-      "missing": 0,
-      "excluded_policy": 0,
       "pending_review": 0
     }
   },
@@ -457,21 +436,21 @@
     },
     "totals": {
       "direct_job_board": 717,
-      "verified_shared_system_board": 193,
-      "official_employment_page": 1647,
-      "homepage_fallback": 420,
+      "verified_shared_system_board": 192,
+      "official_employment_page": 1645,
+      "homepage_fallback": 422,
       "no_public_hiring_source": 220,
-      "unresolved": 97,
+      "unresolved": 87,
       "closed_or_out_of_scope": 32
     },
     "percentages": {
-      "direct_job_board": 21.56,
-      "verified_shared_system_board": 5.8,
-      "official_employment_page": 49.52,
-      "homepage_fallback": 12.63,
-      "no_public_hiring_source": 6.61,
-      "unresolved": 2.92,
-      "closed_or_out_of_scope": 0.96
+      "direct_job_board": 21.63,
+      "verified_shared_system_board": 5.79,
+      "official_employment_page": 49.62,
+      "homepage_fallback": 12.73,
+      "no_public_hiring_source": 6.64,
+      "unresolved": 2.62,
+      "closed_or_out_of_scope": 0.97
     }
   },
   "qualityExceptions": [
@@ -736,7 +715,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "closed_or_out_of_scope",
       "homepage_url": "https://www.salus.edu/",
-      "career_url": null,
+      "career_url": "https://drexel.edu/hr/working-here/career-opportunities",
       "reason": "Excluded (2026-08-31): fully merged into Drexel University and now operates as Drexel's Elkins Park Campus."
     },
     {
@@ -1573,6 +1552,17 @@
       "coverage_quality": "homepage_fallback",
       "homepage_url": "https://www.ccsu.edu/",
       "career_url": "https://www.ccsu.edu/",
+      "reason": null
+    },
+    {
+      "name": "Central Lakes College-Brainerd",
+      "state": "MN",
+      "control": "public",
+      "level": "2-year",
+      "coverage_status": "covered",
+      "coverage_quality": "homepage_fallback",
+      "homepage_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545eab9a9bb0004",
+      "career_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers?Institution=a7c1912089511000d545eab9a9bb0004",
       "reason": null
     },
     {
@@ -2808,6 +2798,17 @@
       "reason": null
     },
     {
+      "name": "Gavilan College",
+      "state": "CA",
+      "control": "public",
+      "level": "2-year",
+      "coverage_status": "covered",
+      "coverage_quality": "homepage_fallback",
+      "homepage_url": "https://www.gavilan.edu/jobs",
+      "career_url": "https://www.gavilan.edu/jobs",
+      "reason": null
+    },
+    {
       "name": "Genesee Community College",
       "state": "NY",
       "control": "public",
@@ -3458,9 +3459,9 @@
     },
     {
       "name": "Oklahoma State University System",
-      "state": null,
-      "control": null,
-      "level": null,
+      "state": "OK",
+      "control": "public",
+      "level": "4-year",
       "coverage_status": "covered",
       "coverage_quality": "homepage_fallback",
       "homepage_url": "https://jobs.okstate.edu/jobs/search/search-page-oklahoma-state?page=1&employment_type_uids%5B%5D=369d5b24d91990b57f28e9ebbee41ffa&employment_type_uids%5B%5D=5c5da7ec2907fcbb8822ceda56aa53d0&query=",
@@ -3700,9 +3701,9 @@
     },
     {
       "name": "Seattle Colleges",
-      "state": null,
-      "control": null,
-      "level": null,
+      "state": "WA",
+      "control": "public",
+      "level": "4-year",
       "coverage_status": "covered",
       "coverage_quality": "homepage_fallback",
       "homepage_url": "https://hcprd.ctclink.us/psc/tam/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?FOCUS=Applicant&SiteId=060",
@@ -3788,9 +3789,9 @@
     },
     {
       "name": "Southern University System Vacancies",
-      "state": null,
-      "control": null,
-      "level": null,
+      "state": "LA",
+      "control": "public",
+      "level": "4-year",
       "coverage_status": "covered",
       "coverage_quality": "homepage_fallback",
       "homepage_url": "https://www.sus.edu/news/category/position-vacancy-announcements",
@@ -3821,9 +3822,9 @@
     },
     {
       "name": "Spokane Colleges",
-      "state": null,
-      "control": null,
-      "level": null,
+      "state": "WA",
+      "control": "public",
+      "level": "4-year",
       "coverage_status": "covered",
       "coverage_quality": "homepage_fallback",
       "homepage_url": "https://careers.ccs.spokane.edu/jobs/search",
@@ -5488,7 +5489,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.acbscollege.org/",
-      "career_url": null,
+      "career_url": "https://www.acbscollege.org/",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5543,7 +5544,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.funeraleducation.org/",
-      "career_url": null,
+      "career_url": "https://www.funeraleducation.org/",
       "reason": "Excluded from public-hiring coverage (2026-08-31): the official site provides student placement services but no public employee openings page."
     },
     {
@@ -5587,7 +5588,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.acs350.org/",
-      "career_url": null,
+      "career_url": "https://www.acs350.org/",
       "reason": "Excluded from public-hiring coverage (2026-08-31): no durable institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
@@ -5631,7 +5632,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://baisbinyominacademy.com/",
-      "career_url": null,
+      "career_url": "https://baisbinyominacademy.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5653,7 +5654,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://baismedroshelyon.com/",
-      "career_url": null,
+      "career_url": "https://baismedroshelyon.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5664,7 +5665,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://baismedrashmayanhatorah.com/",
-      "career_url": null,
+      "career_url": "https://baismedrashmayanhatorah.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5675,7 +5676,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://bmdpark.com/",
-      "career_url": null,
+      "career_url": "https://bmdpark.com/",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5730,7 +5731,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.heichaldovid.org/",
-      "career_url": null,
+      "career_url": "https://www.heichaldovid.org/",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5741,7 +5742,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://betmedrashgadolaterettorah.com/",
-      "career_url": null,
+      "career_url": "https://betmedrashgadolaterettorah.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5763,7 +5764,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://bethmedrashmeoryitzchok.com/",
-      "career_url": null,
+      "career_url": "https://bethmedrashmeoryitzchok.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5774,7 +5775,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://baismedrashzichronmeir.com/",
-      "career_url": null,
+      "career_url": "https://baismedrashzichronmeir.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5807,7 +5808,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.bnoszionbobov.com/",
-      "career_url": null,
+      "career_url": "https://www.bnoszionbobov.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
@@ -5884,7 +5885,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://californiacollege.asu.edu/",
-      "career_url": null,
+      "career_url": "https://californiacollege.asu.edu/",
       "reason": "Institution closed; no longer operating or hiring."
     },
     {
@@ -5917,7 +5918,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://centralyeshivabethjoseph.com/",
-      "career_url": null,
+      "career_url": "https://centralyeshivabethjoseph.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5983,7 +5984,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivaaleksander.org/",
-      "career_url": null,
+      "career_url": "https://yeshivaaleksander.org/",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -5994,7 +5995,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://davisny.edu/",
-      "career_url": null,
+      "career_url": "https://davisny.edu/",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6071,7 +6072,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.ftscc.org/",
-      "career_url": null,
+      "career_url": "https://www.ftscc.org/",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6093,7 +6094,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.generations.edu/",
-      "career_url": null,
+      "career_url": "https://www.generations.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
@@ -6104,7 +6105,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.gm.edu/",
-      "career_url": null,
+      "career_url": "https://www.gm.edu/",
       "reason": "Excluded from public-hiring coverage (2026-08-31): the official job board is an external community board, not an employee hiring page, and no institution-run employee openings page was found."
     },
     {
@@ -6115,7 +6116,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.hampshire.edu/",
-      "career_url": null,
+      "career_url": "https://www.hampshire.edu/",
       "reason": "Excluded from public-hiring coverage (2026-08-31): the Board of Trustees voted to permanently close the college following the fall 2026 semester."
     },
     {
@@ -6126,7 +6127,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.haven.edu/",
-      "career_url": null,
+      "career_url": "https://www.haven.edu/academics/faculty-jobs",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6137,7 +6138,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.heritagebiblecollege.edu/",
-      "career_url": null,
+      "career_url": "https://www.heritagebiblecollege.edu/",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6148,7 +6149,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.homesteadschools.net/",
-      "career_url": null,
+      "career_url": "https://www.homesteadschools.net/",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6159,7 +6160,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.horizonuniversity.edu/",
-      "career_url": null,
+      "career_url": "https://www.horizonuniversity.edu/",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6170,7 +6171,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://amerion.edu/",
-      "career_url": null,
+      "career_url": "https://www.hjc.edu/",
       "reason": "Excluded from public-hiring coverage (2026-08-31): the institution now operates as Amerion College at the same campus and federal school identity, so the former-name IPEDS row is not a separate employer."
     },
     {
@@ -6236,7 +6237,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.iwp.edu/",
-      "career_url": null,
+      "career_url": "https://www.iwp.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6247,7 +6248,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.ibcs.edu/",
-      "career_url": null,
+      "career_url": "https://ibcs.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
@@ -6379,7 +6380,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://longy.edu/",
-      "career_url": null,
+      "career_url": "https://longy.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): no separate institution-run public employee openings page was found; the discovered job board serves students and alumni rather than Longy hiring."
     },
     {
@@ -6390,7 +6391,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://mhrc.edu/",
-      "career_url": null,
+      "career_url": "https://mhrc.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6434,7 +6435,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.mechonlhoyroa.com/",
-      "career_url": null,
+      "career_url": "https://www.mechonlhoyroa.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6445,7 +6446,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://mesivtaofeasternparkway.com/",
-      "career_url": null,
+      "career_url": "https://mesivtaofeasternparkway.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6533,7 +6534,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.newhope.edu/",
-      "career_url": null,
+      "career_url": "https://www.newhope.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6566,7 +6567,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://thenyseminary.com/",
-      "career_url": null,
+      "career_url": "https://thenyseminary.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
@@ -6588,7 +6589,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.oakhills.edu/",
-      "career_url": null,
+      "career_url": "https://www.oakhills.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6610,7 +6611,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://ohelmarguliaseminary.com/",
-      "career_url": null,
+      "career_url": "https://ohelmarguliaseminary.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
@@ -6632,7 +6633,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://ohrhameir.com/",
-      "career_url": null,
+      "career_url": "https://ohrhameir.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6687,7 +6688,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.pit.edu/",
-      "career_url": null,
+      "career_url": "https://www.pit.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): the discovered URL is a student-facing career article, and no institution-run employee openings page was found."
     },
     {
@@ -6698,7 +6699,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://newkensington.psu.edu/",
-      "career_url": null,
+      "career_url": "https://newkensington.psu.edu/employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): the campus employment landing page points to Penn State's shared hiring system, but no exact New Kensington job facet was available for safe attribution."
     },
     {
@@ -6775,7 +6776,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://rabbijacobjoseph.com/",
-      "career_url": null,
+      "career_url": "https://rabbijacobjoseph.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6786,7 +6787,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://rabbinicalacademyrabbichaimberlin.com/",
-      "career_url": null,
+      "career_url": "https://rabbinicalacademyrabbichaimberlin.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6797,7 +6798,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://rabbinicalcollegebethshraga.com/",
-      "career_url": null,
+      "career_url": "https://rabbinicalcollegebethshraga.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6830,7 +6831,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://rabbinicalcollegelongisland.com/",
-      "career_url": null,
+      "career_url": "https://rabbinicalcollegelongisland.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -6984,7 +6985,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://seminarlmorosbaisyaakov.com/",
-      "career_url": null,
+      "career_url": "https://seminarlmorosbaisyaakov.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
@@ -6995,7 +6996,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.seminarybnoschaim.com/",
-      "career_url": null,
+      "career_url": "https://www.seminarybnoschaim.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-31): no institution-run public employee openings page was found after official-domain and targeted search review."
     },
     {
@@ -7094,7 +7095,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.talmudicu.edu/",
-      "career_url": null,
+      "career_url": "https://www.talmudicu.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7105,7 +7106,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://talmudicalacademynj.com/",
-      "career_url": null,
+      "career_url": "https://talmudicalacademynj.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7149,7 +7150,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://telsheyeshivachicago.com/",
-      "career_url": null,
+      "career_url": "https://telsheyeshivachicago.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7160,7 +7161,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.thechristcollege.edu/",
-      "career_url": null,
+      "career_url": "https://www.thechristcollege.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7204,7 +7205,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://torahtemimahtalmudicalseminary.com/",
-      "career_url": null,
+      "career_url": "https://torahtemimahtalmudicalseminary.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7215,7 +7216,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://tsbc.edu/",
-      "career_url": null,
+      "career_url": "https://tsbc.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7391,7 +7392,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.yeshivabaisaharon.com/",
-      "career_url": null,
+      "career_url": "https://www.yeshivabaisaharon.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7402,7 +7403,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.yeshivachemdashatorah.com/",
-      "career_url": null,
+      "career_url": "https://www.yeshivachemdashatorah.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7424,7 +7425,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivadmonsey.com/",
-      "career_url": null,
+      "career_url": "https://yeshivadmonsey.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7435,7 +7436,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://ydc.edu/",
-      "career_url": null,
+      "career_url": "https://ydc.edu/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7446,7 +7447,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivatyy.com/",
-      "career_url": null,
+      "career_url": "https://yeshivatyy.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7457,7 +7458,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivagedolatiferesyerachmiel.com/",
-      "career_url": null,
+      "career_url": "https://yeshivagedolatiferesyerachmiel.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7479,7 +7480,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivagedolahkerenhatorah.com/",
-      "career_url": null,
+      "career_url": "https://yeshivagedolahkerenhatorah.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7490,7 +7491,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivagedolahkessertorah.com/",
-      "career_url": null,
+      "career_url": "https://yeshivagedolahkessertorah.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7501,7 +7502,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivagedolahcliffwood.com/",
-      "career_url": null,
+      "career_url": "https://yeshivagedolahcliffwood.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7512,7 +7513,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.yeshivagedolahgreaterdetroit.com/",
-      "career_url": null,
+      "career_url": "https://www.yeshivagedolahgreaterdetroit.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7523,7 +7524,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivaohrzechariah.com/",
-      "career_url": null,
+      "career_url": "https://yeshivaohrzechariah.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7534,7 +7535,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivagedolahshaareishmuel.com/",
-      "career_url": null,
+      "career_url": "https://yeshivagedolahshaareishmuel.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7545,7 +7546,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivagedolahtiferesboruch.com/",
-      "career_url": null,
+      "career_url": "https://yeshivagedolahtiferesboruch.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7567,7 +7568,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivakarlinstolin.org/",
-      "career_url": null,
+      "career_url": "https://yeshivakarlinstolin.org/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7578,7 +7579,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.yeshivakolleltiferethelizer.com/",
-      "career_url": null,
+      "career_url": "https://www.yeshivakolleltiferethelizer.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7600,7 +7601,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yokny.org/",
-      "career_url": null,
+      "career_url": "https://yokny.org/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7611,7 +7612,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivaofmachzikaihadas.com/",
-      "career_url": null,
+      "career_url": "https://yeshivaofmachzikaihadas.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7633,7 +7634,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivaofocean.com/",
-      "career_url": null,
+      "career_url": "https://yeshivaofocean.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7644,7 +7645,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivatelshealumni.com/",
-      "career_url": null,
+      "career_url": "https://yeshivatelshealumni.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7666,7 +7667,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://www.yeshivaohrnaftoli.com/",
-      "career_url": null,
+      "career_url": "https://www.yeshivaohrnaftoli.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7710,7 +7711,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivasholomshachna.com/",
-      "career_url": null,
+      "career_url": "https://yeshivasholomshachna.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7721,7 +7722,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://ytclakewood.com/",
-      "career_url": null,
+      "career_url": "https://ytclakewood.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7743,7 +7744,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivayesodeihatorahlakewood.com/",
-      "career_url": null,
+      "career_url": "https://yeshivayesodeihatorahlakewood.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7754,7 +7755,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivazichronaryeh.com/",
-      "career_url": null,
+      "career_url": "https://yeshivazichronaryeh.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7787,7 +7788,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivasemekhatorah.com/",
-      "career_url": null,
+      "career_url": "https://yeshivasemekhatorah.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7798,7 +7799,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivasnovominsk.com/",
-      "career_url": null,
+      "career_url": "https://yeshivasnovominsk.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7820,7 +7821,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://hechalshemuel.com/",
-      "career_url": null,
+      "career_url": "https://hechalshemuel.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7831,7 +7832,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivabethmoshe.com/",
-      "career_url": null,
+      "career_url": "https://yeshivabethmoshe.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7853,7 +7854,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivathviznitz.com/",
-      "career_url": null,
+      "career_url": "https://yeshivathviznitz.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -7864,7 +7865,7 @@
       "coverage_status": "excluded_policy",
       "coverage_quality": "no_public_hiring_source",
       "homepage_url": "https://yeshivathzichronmoshe.com/",
-      "career_url": null,
+      "career_url": "https://yeshivathzichronmoshe.com/faculty-employment",
       "reason": "Excluded from public-hiring coverage (2026-08-30): no usable institution-run employee openings page was found after official-domain homepage, sitemap, common-path, and targeted search discovery. The institution remains active; this is a public-source limitation, not a closure determination."
     },
     {
@@ -8034,9 +8035,9 @@
     },
     {
       "name": "Calbright College",
-      "state": null,
-      "control": null,
-      "level": null,
+      "state": "CA",
+      "control": "public",
+      "level": "2-year",
       "coverage_status": "covered",
       "coverage_quality": "unresolved",
       "homepage_url": null,
@@ -8088,17 +8089,6 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned."
     },
     {
-      "name": "Central Lakes College",
-      "state": null,
-      "control": null,
-      "level": null,
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "Cincinnati College of Mortuary Science",
       "state": "OH",
       "control": "private nonprofit",
@@ -8108,17 +8098,6 @@
       "homepage_url": "https://www.ccms.edu/",
       "career_url": "https://www.ccms.edu/academics/faculty-jobs",
       "reason": "Excluded (2026-08-06): the configured /academics/faculty-jobs path redirects to the generic Academics page (dead), and the institution's real \"Job Board\" only aggregates external funeral-home apprentice/licensee listings from other employers -- no discoverable CCMS-specific faculty hiring page exists."
-    },
-    {
-      "name": "Citrus CCD",
-      "state": null,
-      "control": null,
-      "level": null,
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
     },
     {
       "name": "City University of Seattle",
@@ -8275,17 +8254,6 @@
       "reason": "Excluded (2026-08-05): hosted on InterviewExchange (interviewexchange.com), whose Hirezon WAF returns a hard 403 (\"resource not authorized\") to this project's scraper. Confirmed identically from a cloud CI IP, this project's own residential-network scraping host, and a Mullvad/Mozilla VPN exit node — not a code, config, or network-choice problem on our end. Revisit if InterviewExchange access changes or if dedicated residential/mobile proxy infrastructure is provisioned."
     },
     {
-      "name": "Gavilan CCD",
-      "state": null,
-      "control": null,
-      "level": null,
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
       "name": "Glendale Community College",
       "state": "CA",
       "control": "public",
@@ -8422,72 +8390,6 @@
       "state": "MN",
       "control": "public",
       "level": "2-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Minnesota State (Brainerd)",
-      "state": null,
-      "control": null,
-      "level": null,
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Minnesota State (Fergus Falls)",
-      "state": null,
-      "control": null,
-      "level": null,
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Minnesota State (Grand Rapids)",
-      "state": null,
-      "control": null,
-      "level": null,
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Minnesota State (Mnor Hibbing Campus)",
-      "state": null,
-      "control": null,
-      "level": null,
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Minnesota State (Ridg Willmar Campus)",
-      "state": null,
-      "control": null,
-      "level": null,
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
-    },
-    {
-      "name": "Minnesota State (Wins Winona Campus)",
-      "state": null,
-      "control": null,
-      "level": null,
       "coverage_status": "covered",
       "coverage_quality": "unresolved",
       "homepage_url": null,
@@ -8735,17 +8637,6 @@
       "homepage_url": "https://smu.taleo.net/careersection/ex/jobsearch.ftl?lang=en",
       "career_url": "https://www.smu.edu/businessfinance/hr/workingatsmu/faculty-careers",
       "reason": "Oracle terms prohibit robots/spiders/scrapers for site access."
-    },
-    {
-      "name": "St. Cloud Technical and Community College",
-      "state": "MN",
-      "control": "public",
-      "level": "2-year",
-      "coverage_status": "covered",
-      "coverage_quality": "unresolved",
-      "homepage_url": null,
-      "career_url": null,
-      "reason": null
     },
     {
       "name": "SUNY at Purchase College",
@@ -14961,6 +14852,14 @@
       "career_url": "https://mnsystem.peopleadmin.com/postings/search"
     },
     {
+      "name": "Minnesota State System",
+      "state": "MN",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers"
+    },
+    {
       "name": "Minot State University",
       "state": "ND",
       "warning": "covered_zero_jobs",
@@ -16202,7 +16101,7 @@
     },
     {
       "name": "Oklahoma State University System",
-      "state": null,
+      "state": "OK",
       "warning": "covered_zero_jobs",
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
@@ -17650,7 +17549,7 @@
     },
     {
       "name": "Seattle Colleges",
-      "state": null,
+      "state": "WA",
       "warning": "covered_zero_jobs",
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
@@ -18025,6 +17924,14 @@
       "career_url": "https://www.smu.edu/businessfinance/hr/workingatsmu/faculty-careers"
     },
     {
+      "name": "Southern New Hampshire University",
+      "state": "NH",
+      "warning": "covered_zero_jobs",
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "career_url": "https://jobs.snhu.edu/en/jobs"
+    },
+    {
       "name": "Southern State Community College",
       "state": "OH",
       "warning": "covered_zero_jobs",
@@ -18058,7 +17965,7 @@
     },
     {
       "name": "Southern University System Vacancies",
-      "state": null,
+      "state": "LA",
       "warning": "covered_zero_jobs",
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
@@ -18194,7 +18101,7 @@
     },
     {
       "name": "Spokane Colleges",
-      "state": null,
+      "state": "WA",
       "warning": "covered_zero_jobs",
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
@@ -18255,14 +18162,6 @@
       "last_seen_job_count": 0,
       "job_presence_status": "no_jobs_found",
       "career_url": "https://sc4.edu/about/careers-at-sc4"
-    },
-    {
-      "name": "St Cloud Technical and Community College",
-      "state": "MN",
-      "warning": "covered_zero_jobs",
-      "last_seen_job_count": 0,
-      "job_presence_status": "no_jobs_found",
-      "career_url": "https://sctcc.edu/employment-opportunities"
     },
     {
       "name": "St Luke's College",

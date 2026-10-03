@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-22T14:12:35.928Z",
+  "generatedAt": "2026-10-03T17:59:11.442Z",
   "apply": true,
   "inputs": {
     "master": "data/institutions-master.json",
@@ -21,13 +21,13 @@
   "counts": {
     "ipedsRows": 6072,
     "activeEligibleIpeds": 3276,
-    "alreadyAccounted": 3276,
-    "missingBeforeApply": 0,
-    "appended": 0,
+    "alreadyAccounted": 3275,
+    "missingBeforeApply": 1,
+    "appended": 1,
     "conflicts": 0,
-    "totalImported": 1881,
+    "totalImported": 1882,
     "totalNameConflictsResolved": 21,
-    "masterAfterApply": 3355,
+    "masterAfterApply": 3370,
     "classificationCounts": {
       "active_eligible": 3276,
       "inactive_or_closed": 29,
@@ -37,5 +37,29 @@
     }
   },
   "conflicts": [],
-  "missingInstitutions": []
+  "missingInstitutions": [
+    {
+      "unitid": 414878,
+      "name": "Trine University-Regional/Non-Traditional Campuses",
+      "aliases": [],
+      "state": "IN",
+      "sector": 2,
+      "level": "4-year",
+      "control": "private nonprofit",
+      "is_degree_granting": true,
+      "homepage_url": "https://trine.edu/online/index.aspx",
+      "career_url": null,
+      "platform_type": null,
+      "coverage_source": null,
+      "coverage_status": "missing",
+      "verification_status": "unchecked",
+      "last_verified_at": null,
+      "last_seen_job_count": 0,
+      "job_presence_status": "no_jobs_found",
+      "last_checked_at": "2026-10-03T17:59:11.442Z",
+      "metadata_source": "IPEDS",
+      "reconciliation_source": "IPEDS national reconciliation",
+      "national_reconciliation_status": "missing_career_url"
+    }
+  ]
 }
