@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-10-01T11:43:32.272Z",
+  "generatedAt": "2026-10-03T10:39:07.906Z",
   "qualityVersion": 1,
   "reportOnly": true,
-  "count": 5,
+  "count": 8,
   "items": [
     {
-      "id": "b89b348a47c57c154b99",
-      "score": 65,
+      "id": "bc304e46972cec1c74a0",
+      "score": 64,
       "status": "quarantine",
       "title": "Assistant Professor in Industrial & Product Design",
       "college": "University of Wisconsin-Stout",
@@ -19,12 +19,19 @@
           "dimension": "relevance",
           "deduction": 100,
           "detail": "The posting is a mandatory Department of Labor compliance notice for a position that has already been filled."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         }
       ]
     },
     {
-      "id": "dbf5b5769c31c89b2d58",
-      "score": 65,
+      "id": "f7e415480a046380c264",
+      "score": 64,
       "status": "quarantine",
       "title": "Assistant Professor of Computer Science",
       "college": "University of Wisconsin-Stout",
@@ -37,12 +44,19 @@
           "dimension": "relevance",
           "deduction": 100,
           "detail": "The posting is a mandatory Department of Labor compliance notice for a position that has already been filled."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         }
       ]
     },
     {
-      "id": "f34ee6269094a6cdde1b",
-      "score": 65,
+      "id": "df3455f1b38e87e5632a",
+      "score": 64,
       "status": "quarantine",
       "title": "Assistant Professor of Fashion Design & Development",
       "college": "University of Wisconsin-Stout",
@@ -55,24 +69,77 @@
           "dimension": "relevance",
           "deduction": 100,
           "detail": "The posting is a mandatory Department of Labor compliance notice for a position that has already been filled."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         }
       ]
     },
     {
-      "id": "dce97fea5ab9a7625736",
-      "score": 80,
+      "id": "3eadffa39543fbdee34d",
+      "score": 64,
       "status": "quarantine",
-      "title": "Associate Librarian or Librarian - Associate Dean, Research and Learning Services University Libraries",
-      "college": "University of Washington",
-      "source": "WA",
-      "url": "https://ap.washington.edu/ahr/position-details?job_id=191783",
+      "title": "Driver’s Education Instructor",
+      "college": "Kansas City Kansas Community College",
+      "source": "KS",
+      "url": "https://kckcc.applicantstack.com/x/detail/a2s0rr3s3fmz",
       "reasons": [
         {
-          "code": "institution_title_conflict",
+          "code": "source_labeled_staff_role",
           "severity": "error",
-          "dimension": "attribution",
+          "dimension": "relevance",
           "deduction": 100,
-          "detail": "Title names Research and Learning Services University, but the listing is attributed to University of Washington."
+          "detail": "The source labels this opening as full-time staff rather than faculty."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ]
+    },
+    {
+      "id": "c6a5882abce645bd5620",
+      "score": 64,
+      "status": "quarantine",
+      "title": "GED Instructor (Downtown)",
+      "college": "Kansas City Kansas Community College",
+      "source": "KS",
+      "url": "https://kckcc.applicantstack.com/x/detail/a2s0rr3gokld",
+      "reasons": [
+        {
+          "code": "source_labeled_staff_role",
+          "severity": "error",
+          "dimension": "relevance",
+          "deduction": 100,
+          "detail": "The source labels this opening as full-time staff rather than faculty."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ]
     },
@@ -98,6 +165,70 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ]
+    },
+    {
+      "id": "47eefd38c742b6106942",
+      "score": 65,
+      "status": "quarantine",
+      "title": "Pine Tree Camps - Summer 2027, Day Camp Lifeguard/Swim Instructor",
+      "college": "Lynn University",
+      "source": "FL",
+      "url": "https://lynn.wd5.myworkdayjobs.com/Careers/job/Trinity-Residence-Hall/Pine-Tree-Camps---Summer-2027--Day-Camp-Lifeguard-Swim-Instructor_R0003912-1",
+      "reasons": [
+        {
+          "code": "nonacademic_staff_title",
+          "severity": "error",
+          "dimension": "relevance",
+          "deduction": 100,
+          "detail": "Clearly nonacademic staff role."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ]
+    },
+    {
+      "id": "7d4ccaf064187d55492d",
+      "score": 60,
+      "status": "quarantine",
+      "title": "Student Assistant - Group Fitness Instructor",
+      "college": "Georgia Gwinnett College",
+      "source": "USG",
+      "url": "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=301004&PostingSeq=1",
+      "reasons": [
+        {
+          "code": "nonacademic_staff_title",
+          "severity": "error",
+          "dimension": "relevance",
+          "deduction": 100,
+          "detail": "Clearly nonacademic staff role."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "placeholder_location",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 15,
+          "detail": "Location is just the institution name, not a real city."
         },
         {
           "code": "missing_deadline",
