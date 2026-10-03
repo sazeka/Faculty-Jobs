@@ -16,8 +16,9 @@ test('Department holdouts are disjoint and reviewed labels are source grounded',
   ].map((row) => row.id))
   // Descriptions live in the job-description shards, so read through
   // readJobsFile. The holdouts were drawn before canonicalJobIds were re-keyed,
-  // so fall back to the posting URL; rows whose posting has since left the
-  // live dataset have no source text left to ground against and are skipped.
+  // so fall back to the posting URL. Rows whose posting has left the live
+  // dataset, or has returned but not had its description fetched yet, have no
+  // source text to ground against and are skipped.
   const live = readJobsFile(path.join(root, 'public/jobs.json')).jobs
   const byId = new Map(live.map((job) => [job.canonicalJobId, job]))
   const byUrl = new Map(live.map((job) => [job.url, job]))
@@ -29,8 +30,8 @@ test('Department holdouts are disjoint and reviewed labels are source grounded',
       assert.equal(earlier.has(row.id), false)
       if (row.departmentReviewStatus !== 'reviewed') continue
       const job = byId.get(row.id) || byUrl.get(row.url)
-      if (!job) continue
-      const description = job.description || ''
+      const description = job?.description || ''
+      if (!description) continue
       if (row.goldDepartment) {
         const source = `${row.title} ${description}`.replace(/\s+/g, ' ').toLowerCase()
         assert.ok(source.includes(row.departmentEvidence.toLowerCase()), row.id)
