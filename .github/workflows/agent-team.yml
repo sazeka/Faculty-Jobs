@@ -82,6 +82,18 @@ jobs:
             git commit -m "Description backfill partial checkpoint"
           fi
 
+          # The data-health and job-presence agents and the description
+          # batches changed public/jobs.json; push matching chunks with it so
+          # main stays in sync even if a later step fails.
+          node scripts/sync-web-data-files.js
+          cp -R web-vue/public/data/. docs/data/
+          cp -R web-vue/public/data/. public/data/
+          npm run --silent verify:data-sync
+          git add web-vue/public/data/ docs/data/ public/data/
+          if ! git diff --cached --quiet; then
+            git commit -m "Rebuild web data chunks for description checkpoint"
+          fi
+
           if [ "$(git rev-list --count origin/main..HEAD)" = "0" ]; then
             echo "No description changes to push."
             exit 0
@@ -120,6 +132,9 @@ jobs:
           cp -R web-vue/public/data/. public/data/
           node scripts/inject-og-meta.js
 
+      - name: Verify web data chunks/index match public/jobs.json exactly
+        run: npm run verify:data-sync
+
       - name: Commit & push if changed
         run: |
           git config user.name "github-actions[bot]"
@@ -133,6 +148,7 @@ jobs:
             public/index.html \
             docs/data/ \
             public/data/ \
+            web-vue/public/data/ \
             generated/job-url-cache.json \
             generated/job-url-report.json \
             generated/job-url-dead.json \

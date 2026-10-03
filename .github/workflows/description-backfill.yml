@@ -75,6 +75,9 @@ jobs:
           cp -R web-vue/public/data/. docs/data/
           cp -R web-vue/public/data/. public/data/
 
+      - name: Verify web data chunks/index match public/jobs.json exactly
+        run: npm run verify:data-sync
+
       - name: Commit and push checkpoint
         run: |
           git config user.name "github-actions[bot]"
