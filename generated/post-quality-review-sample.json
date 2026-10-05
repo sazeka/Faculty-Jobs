@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T20:47:58.895Z",
+  "generatedAt": "2026-10-05T11:56:09.744Z",
   "qualityVersion": 1,
   "sampleSize": 200,
   "instructions": "Set humanLabel to valid or invalid, add optional notes, then copy confirmed labels into data/post-quality-human-labels.json.",
@@ -201,13 +201,47 @@
       "notes": ""
     },
     {
-      "id": "00d75769b89ef1d6420b",
+      "id": "21b9f68ad34e03ef8f66",
+      "score": 86,
+      "status": "review",
+      "title": "Academic Faculty Director - Dental Assisting",
+      "college": "Pima Community College",
+      "source": "AZ",
+      "url": "https://www.schooljobs.com/careers/pimacc/jobs/5437973/academic-faculty-director-dental-assisting",
+      "reasons": [
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "0313443f80cdb3e37bdd",
       "score": 99,
       "status": "pass",
-      "title": "Assistant Professor of EMT/EMTP (2 positions)",
-      "college": "Southwestern College",
+      "title": "Real Estate Instructor",
+      "college": "Glendale Community College",
       "source": "CA CC",
-      "url": "https://www.communitycollegecareerconnect.com/jobs/cmue66w5t000901pmvlfsftzv",
+      "url": "https://www.communitycollegecareerconnect.com/jobs/cmro45x2d004m01prv72mwl2c",
       "reasons": [
         {
           "code": "missing_department",
@@ -693,7 +727,7 @@
     },
     {
       "id": "008a2b053a082a1cc900",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Lecturer (Marine Science)",
       "college": "University of Hawaii at Hilo",
@@ -701,25 +735,11 @@
       "url": "https://www.schooljobs.com/careers/hawaiiedu/jobs/5353915/lecturer-marine-science",
       "reasons": [
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -827,54 +847,13 @@
       "notes": ""
     },
     {
-      "id": "16a2d2423d07203a4913",
-      "score": 85,
-      "status": "review",
-      "title": "Regular Faculty",
-      "college": "University of Idaho",
-      "source": "ID",
-      "url": "https://uidaho.peopleadmin.com/postings/52963",
-      "reasons": [
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "01130f0c5eaac8c1e6fe",
+      "id": "00dbbd9da321060a7240",
       "score": 96,
       "status": "pass",
-      "title": "Correctional Adjunct Instructor at Hill Correctional Center",
-      "college": "Lake Land College",
+      "title": "Adjunct Lecturer positions in the MBA: Artificial Intelligence program",
+      "college": "Northwestern University",
       "source": "IL",
-      "url": "https://www.schooljobs.com/careers/lakelandcollege/jobs/5500715/correctional-adjunct-instructor-at-hill-correctional-center",
+      "url": "https://careers.northwestern.edu/psc/hrnu_er/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=50321&PostingSeq=1",
       "reasons": [
         {
           "code": "missing_description",
@@ -1367,20 +1346,27 @@
       "notes": ""
     },
     {
-      "id": "04ffa81fc9e1a98ef34a",
-      "score": 98,
+      "id": "0045d76682633b1f6848",
+      "score": 97,
       "status": "review",
-      "title": "Adjunct Associate Professor of Paralegal/Legal Assistant Studies Pool",
-      "college": "Delta College",
+      "title": "Adjunct Clinical Nursing Faculty",
+      "college": "West Shore Community College",
       "source": "MI",
-      "url": "https://www.schooljobs.com/careers/deltacollege/jobs/4566853/adjunct-associate-professor-of-paralegal-legal-assistant-studies-pool",
+      "url": "https://www.schooljobs.com/careers/westshore/jobs/2534874/adjunct-part-time-clinical-nursing-faculty?pagetype=jobOpportunitiesJobs",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2024-07-02 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "detail": "Posting date 2023-07-27 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         }
       ],
       "humanLabel": null,
@@ -1414,13 +1400,13 @@
       "notes": ""
     },
     {
-      "id": "f9fcc9561b49d0f276a8",
+      "id": "5c6e069bcf519ce65652",
       "score": 85,
       "status": "review",
-      "title": "Automotive Services Technology Faculty",
-      "college": "Anoka Technical College",
+      "title": "Surgical Technician- Technical College Faculty",
+      "college": "Rochester Community and Technical College",
       "source": "MN",
-      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/Anoka/Automotive-Services-Technology-Faculty_JR0000005701-1",
+      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/Rochester/Surgical-Technician--Technical-College-Faculty_JR0000005864",
       "reasons": [
         {
           "code": "weak_academic_evidence",
@@ -1645,7 +1631,7 @@
     },
     {
       "id": "0f7347ef519390ff1bcb",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Open Rank Faculty, Tenure-Track/Tenured, Psychology",
       "college": "University of North Dakota",
@@ -1653,25 +1639,11 @@
       "url": "https://careers.und.edu/jobs/open-rank-faculty-tenure-track-tenured-psychology-grand-forks-north-dakota-united-states",
       "reasons": [
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -2144,13 +2116,13 @@
       "notes": ""
     },
     {
-      "id": "00048ea78986669ca10d",
+      "id": "00646f94c7ea93377060",
       "score": 99,
       "status": "pass",
-      "title": "Assistant, Associate, or Full Teaching Professor of Health Sciences",
-      "college": "Drexel University",
+      "title": "Communication Sciences and Disorders - Director of Clinical Education – Non-Tenure Track Faculty",
+      "college": "Temple University",
       "source": "PA",
-      "url": "https://careers.pageuppeople.com/820/cw/en-us/job/507043/assistant-associate-or-full-teaching-professor-of-health-sciences",
+      "url": "https://temple.taleo.net/careersection/tu_ex_faculty/jobdetail.ftl?job=26002301&tz=GMT%2B00%3A00&tzname=UTC",
       "reasons": [
         {
           "code": "missing_department",
@@ -2158,6 +2130,13 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -2399,20 +2378,27 @@
       "notes": ""
     },
     {
-      "id": "58ce5e98b08fcba6e86f",
-      "score": 97,
+      "id": "50291d7ce1f3f578fe9c",
+      "score": 86,
       "status": "review",
-      "title": "Adjunct Faculty - Business & Industry Division (Multiple Disciplines)",
-      "college": "Chattanooga State Community College",
+      "title": "Assistant/Associate Professor of Economics",
+      "college": "Milligan University",
       "source": "TN",
-      "url": "https://careers.tbr.edu/jobs/7280dcb2-88f2-4517-b0b6-b5633849941e",
+      "url": "https://milligan.edu/employment",
       "reasons": [
         {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "search_page_url",
           "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2023-09-05 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "dimension": "link",
+          "deduction": 45,
+          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_department",
@@ -2420,6 +2406,13 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -3187,13 +3180,13 @@
       "notes": ""
     },
     {
-      "id": "0313443f80cdb3e37bdd",
+      "id": "032dab2f9043fd13fbe7",
       "score": 99,
       "status": "pass",
-      "title": "Real Estate Instructor",
-      "college": "Glendale Community College",
+      "title": "Associate Faculty - Electronic/Electromechanical Technology (Electronics & Mechatronics)",
+      "college": "Santa Rosa Junior College",
       "source": "CA CC",
-      "url": "https://www.communitycollegecareerconnect.com/jobs/cmro45x2d004m01prv72mwl2c",
+      "url": "https://www.communitycollegecareerconnect.com/jobs/cmp324dmv002z01qry74cd9cm",
       "reasons": [
         {
           "code": "missing_department",
@@ -3322,7 +3315,7 @@
     },
     {
       "id": "034b03ea4df1815a6b9a",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Instructor of Graphic Design",
       "college": "Connecticut State Community College",
@@ -3330,25 +3323,11 @@
       "url": "https://ctstatecommunitycollege.applytojob.com/apply/EJ5Yb9HNjU",
       "reasons": [
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -3724,13 +3703,13 @@
       "notes": ""
     },
     {
-      "id": "01aedf28a4909b33baa6",
+      "id": "01130f0c5eaac8c1e6fe",
       "score": 100,
       "status": "pass",
-      "title": "Adjunct Faculty, Interdisciplinary Studies @ University Center of Lake County AY",
-      "college": "Governors State University",
+      "title": "Correctional Adjunct Instructor at Hill Correctional Center",
+      "college": "Lake Land College",
       "source": "IL",
-      "url": "https://www.schooljobs.com/careers/govst/jobs/5139905/adjunct-faculty-interdisciplinary-studies-university-center-of-lake-county-ay2",
+      "url": "https://www.schooljobs.com/careers/lakelandcollege/jobs/5500715/correctional-adjunct-instructor-at-hill-correctional-center",
       "reasons": [
         {
           "code": "missing_deadline",
@@ -3744,27 +3723,20 @@
       "notes": ""
     },
     {
-      "id": "0af554934cfb3d4ab69a",
-      "score": 96,
+      "id": "09b1312120745c92b638",
+      "score": 97,
       "status": "review",
-      "title": "Health, Sports, Exercise, Physical Ed. Adjunct",
-      "college": "Triton College",
+      "title": "Adjunct Faculty Business - IT",
+      "college": "Lake Land College",
       "source": "IL",
-      "url": "https://jobopenings.triton.edu/postings/2022",
+      "url": "https://www.schooljobs.com/careers/lakelandcollege/jobs/4245880/adjunct-faculty-business-it",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2024-01-10 is more than 2 year(s) old with no evergreen/applicant-pool signal."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
+          "detail": "Posting date 2023-10-16 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_deadline",
@@ -4184,54 +4156,32 @@
       "notes": ""
     },
     {
-      "id": "0045d76682633b1f6848",
-      "score": 95,
+      "id": "0074c3fcfefa83301864",
+      "score": 100,
       "status": "pass",
-      "title": "Adjunct Clinical Nursing Faculty",
-      "college": "West Shore Community College",
+      "title": "Postdoctoral Scholar of Natural Science - Fixed Term",
+      "college": "Michigan State University",
       "source": "MI",
-      "url": "https://www.schooljobs.com/careers/westshore/jobs/2534874/adjunct-part-time-clinical-nursing-faculty?pagetype=jobOpportunitiesJobs",
-      "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
+      "url": "https://careers.msu.edu/jobs/postdoctoral-scholar-fixed-term-east-lansing-michigan-united-states-27461a60-51aa-4389-bb0f-7020fe974184",
+      "reasons": [],
       "humanLabel": null,
       "notes": ""
     },
     {
-      "id": "083deaabd937e66751f0",
+      "id": "04ffa81fc9e1a98ef34a",
       "score": 98,
       "status": "review",
-      "title": "Adjunct Associate Professor of Electron Microscopy Pool",
+      "title": "Adjunct Associate Professor of Paralegal/Legal Assistant Studies Pool",
       "college": "Delta College",
       "source": "MI",
-      "url": "https://www.schooljobs.com/careers/deltacollege/jobs/4553987/adjunct-associate-professor-of-electron-microscopy-pool",
+      "url": "https://www.schooljobs.com/careers/deltacollege/jobs/4566853/adjunct-associate-professor-of-paralegal-legal-assistant-studies-pool",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2024-06-21 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "detail": "Posting date 2024-07-02 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         }
       ],
       "humanLabel": null,
@@ -4252,6 +4202,47 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "760b23adf7f29db1f967",
+      "score": 85,
+      "status": "review",
+      "title": "Nursing A.D. Faculty Position",
+      "college": "Rochester Community and Technical College",
+      "source": "MN",
+      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/Rochester/Nursing-AD-Faculty-Position_JR0000005865",
+      "reasons": [
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -4689,27 +4680,27 @@
       "notes": ""
     },
     {
-      "id": "0589aa1381bcab9218df",
-      "score": 86,
+      "id": "059e0a0a4cccfa304722",
+      "score": 96,
       "status": "review",
-      "title": "Registered Nurse- Faculty - College of Nursing",
-      "college": "St. Joseph's College of Nursing",
+      "title": "Adjunct Instructor - MPH Department",
+      "college": "Daemen University",
       "source": "NY",
-      "url": "https://jobs.trinity-health.org/stjosephshealth/job/00698225/Registered-Nurse-Faculty-College-of-Nursing",
+      "url": "https://daemen.applicantpro.com/jobs/3437862",
       "reasons": [
         {
-          "code": "weak_academic_evidence",
+          "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+          "dimension": "freshness",
+          "deduction": 25,
+          "detail": "Posting date 2024-07-23 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
-          "code": "missing_description",
+          "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         },
         {
           "code": "missing_deadline",
@@ -4858,13 +4849,13 @@
       "notes": ""
     },
     {
-      "id": "00646f94c7ea93377060",
+      "id": "0067712ec35ec133f121",
       "score": 99,
       "status": "pass",
-      "title": "Communication Sciences and Disorders - Director of Clinical Education – Non-Tenure Track Faculty",
-      "college": "Temple University",
+      "title": "Adjunct Faculty - HVAC",
+      "college": "Harrisburg Area Community College",
       "source": "PA",
-      "url": "https://temple.taleo.net/careersection/tu_ex_faculty/jobdetail.ftl?job=26002301&tz=GMT%2B00%3A00&tzname=UTC",
+      "url": "https://careers.hacc.edu/jobs/adjunct-faculty-hvac-harrisburg-pa-pennsylvania-united-states",
       "reasons": [
         {
           "code": "missing_department",
@@ -4872,13 +4863,6 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -5094,13 +5078,13 @@
       "notes": ""
     },
     {
-      "id": "6d0625c36e930a24b0da",
+      "id": "58ce5e98b08fcba6e86f",
       "score": 97,
       "status": "review",
-      "title": "Adjunct Faculty – Computer Applications and Spreadsheet Applications (Dual Enrollment at High Schools)",
+      "title": "Adjunct Faculty - Business & Industry Division (Multiple Disciplines)",
       "college": "Chattanooga State Community College",
       "source": "TN",
-      "url": "https://careers.tbr.edu/jobs/adjunct-faculty-computer-applications-and-spreadsheet-applications-dual-enrollment-at-high-schools-chattanooga-tennessee-united-states",
+      "url": "https://careers.tbr.edu/jobs/7280dcb2-88f2-4517-b0b6-b5633849941e",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -5194,13 +5178,13 @@
       "notes": ""
     },
     {
-      "id": "125980e7f6854b6423aa",
-      "score": 86,
+      "id": "7a16916fa0cda0f6955e",
+      "score": 90,
       "status": "review",
-      "title": "Chair, Department of Clinical Pharmacy Practice (Clinical X)",
-      "college": "UC Irvine",
+      "title": "Chair, Department of Family & Community Medicine",
+      "college": "UC Davis",
       "source": "UC",
-      "url": "https://recruit.ap.uci.edu/JPF10390",
+      "url": "https://recruit.ucdavis.edu/JPF07779",
       "reasons": [
         {
           "code": "weak_academic_evidence",
@@ -5208,20 +5192,6 @@
           "dimension": "relevance",
           "deduction": 30,
           "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -5290,33 +5260,6 @@
       "source": "UT",
       "url": "https://utah.peopleadmin.com/postings/200880",
       "reasons": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "2cf0f702119811545ad4",
-      "score": 95,
-      "status": "review",
-      "title": "Assistant Professor, Associate Professor or Professor DOQ (Clinical)",
-      "college": "University of Utah",
-      "source": "UT",
-      "url": "https://utah.peopleadmin.com/postings/199585",
-      "reasons": [
-        {
-          "code": "stale_posting_no_evergreen_signal",
-          "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 40,
-          "detail": "Posting date 2018-02-12 is more than 5 year(s) old with no evergreen/applicant-pool signal."
-        },
         {
           "code": "missing_department",
           "severity": "info",
