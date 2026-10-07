@@ -84,6 +84,10 @@ function pageStyles() {
     ul.weeks li { border-bottom:1px solid var(--rule); padding:14px 0; display:flex; justify-content:space-between; align-items:baseline; }
     ul.weeks a { text-decoration:none; font-size:18px; }
     ul.weeks a:hover { text-decoration:underline; }
+    details.rt-listings { margin:12px 0 24px; }
+    details.rt-listings summary { cursor:pointer; }
+    details.rt-listings ul { margin:10px 0 0 18px; }
+    details.rt-listings li { margin:6px 0; }
     ul.weeks .n { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink3); }
     .pager { display:flex; justify-content:space-between; margin-top:36px; font-family:'JetBrains Mono',monospace; font-size:13px; }
     .pager a { text-decoration:underline; }
@@ -164,7 +168,7 @@ function renderIndexPage(history) {
   return pageShell({ title, metaDesc, pageUrl, ldBlocks: [], bodyHtml: body });
 }
 
-function renderWeekPage(entry, prevEntry, nextEntry) {
+function renderWeekPage(entry, prevEntry, nextEntry, rtListings = null) {
   const pageUrl = `${BASE_URL}/trends/${entry.weekEnd}/`;
   const weekLabel = fmtWeek(entry.weekEnd);
   const title = `Faculty Hiring Trends — Week of ${weekLabel} | Faculty Atlas`;
@@ -239,7 +243,13 @@ ${ai.delta == null ? "" : `      <tr><td>Vs prior week</td><td class="n">${ai.de
       <tr><td>Share of all listings</td><td class="n">${rt.sharePct}%</td></tr>
 ${rt.delta == null ? "" : `      <tr><td>Vs prior week</td><td class="n">${rt.delta >= 0 ? "+" : ""}${rt.delta.toLocaleString()}</td></tr>\n`}${(rt.byTheme || []).map((t) => `      <tr><td>${esc(t.theme)}</td><td class="n">${t.count.toLocaleString()}</td></tr>`).join("\n")}
     </table>
-    <p class="small">Responsible-tech classifier v${rt.classifierVersion} counts listings that reference responsible or trustworthy AI, AI and technology ethics, algorithmic fairness, AI governance and policy, public interest technology, societal impacts of technology, privacy, and information integrity. Listings may also be counted as AI-related.</p>`
+    <p class="small">Responsible-tech classifier v${rt.classifierVersion} counts listings that reference responsible or trustworthy AI, AI and technology ethics, algorithmic fairness, AI governance and policy, public interest technology, societal impacts of technology, privacy, and information integrity. Listings may also be counted as AI-related.</p>${rtListings?.length ? `
+    <details class="rt-listings">
+      <summary>View all ${rtListings.length.toLocaleString()} responsible-tech listings this week</summary>
+      <ul>
+        ${rtListings.map((job) => `<li>${job.url ? `<a href="${esc(job.url)}" rel="nofollow noopener" target="_blank">${esc(job.title)}</a>` : esc(job.title)} <span class="small">· ${esc(job.institution)} · ${esc(job.themes.join(", "))}</span></li>`).join("\n        ")}
+      </ul>
+    </details>` : ""}`
     : "";
 
   const pagerHtml = `
@@ -280,6 +290,10 @@ ${deltaHtml}${topType ? `      <div class="stat"><div class="l">Top position typ
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 const history = readJson(path.join(ROOT, "generated", "weekly-stats-history.json")) || [];
+const rtListingsByWeek = new Map(
+  (readJson(path.join(ROOT, "generated", "weekly-responsible-tech-listings.json")) || [])
+    .map((week) => [week.weekEnd, week.listings])
+);
 
 const outDir = path.join(ROOT, "docs", "trends");
 fs.rmSync(outDir, { recursive: true, force: true });
@@ -297,7 +311,7 @@ if (history.length) {
     fs.mkdirSync(weekDir, { recursive: true });
     fs.writeFileSync(
       path.join(weekDir, "index.html"),
-      renderWeekPage(entry, history[i - 1], history[i + 1]),
+      renderWeekPage(entry, history[i - 1], history[i + 1], rtListingsByWeek.get(entry.weekEnd)),
       "utf8"
     );
     manifest.push({ loc: `${BASE_URL}/trends/${entry.weekEnd}/`, lastmod: entry.weekEnd });

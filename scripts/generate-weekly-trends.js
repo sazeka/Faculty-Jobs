@@ -16,6 +16,8 @@
  *   web-vue/public/data/weekly-trends.json (included in frontend builds)
  *   generated/weekly-stats-history.json  (rolling 52-week record)
  *   data/weekly-academic-categories.json (12 recorded weeks of selectable categories)
+ *   generated/weekly-responsible-tech-listings.json (every week's matched listings,
+ *     also published to docs/ and public/ data for download)
  *
  * Usage:
  *   node scripts/generate-weekly-trends.js [--dry-run]
@@ -27,7 +29,7 @@ import { fileURLToPath } from "url";
 import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
 import { computeInstitutionControlBreakdown } from "./lib/weekly-institution-control-stats.js";
 import { computeAiHiringBreakdown } from "./lib/weekly-ai-hiring-stats.js";
-import { computeResponsibleTechBreakdown } from "./lib/weekly-responsible-tech-stats.js";
+import { computeResponsibleTechBreakdown, updateResponsibleTechListingHistory } from "./lib/weekly-responsible-tech-stats.js";
 import { computeDisciplineBreakdown } from "./lib/weekly-discipline-stats.js";
 import { computeDepartmentBreakdown } from "./lib/weekly-department-stats.js";
 import { computeAcademicCategorySnapshot, updateAcademicCategoryHistory } from "./lib/weekly-academic-category-stats.js";
@@ -46,6 +48,11 @@ const OUT_PATHS    = [
   path.join(ROOT, "docs",   "data", "weekly-trends.json"),
   path.join(ROOT, "public", "data", "weekly-trends.json"),
   path.join(ROOT, "web-vue", "public", "data", "weekly-trends.json"),
+];
+const RESPONSIBLE_TECH_LISTINGS_PATH = path.join(ROOT, "generated", "weekly-responsible-tech-listings.json");
+const RESPONSIBLE_TECH_LISTINGS_OUT_PATHS = [
+  path.join(ROOT, "docs", "data", "weekly-responsible-tech-listings.json"),
+  path.join(ROOT, "public", "data", "weekly-responsible-tech-listings.json"),
 ];
 const ACADEMIC_OUT_PATHS = [
   path.join(ROOT, "docs", "data", "weekly-academic-categories.json"),
@@ -391,11 +398,20 @@ async function main() {
   const academicOutput = { weekEnd, generatedAt: out.generatedAt, weeks: academicHistory };
   writeCompactJson(ACADEMIC_HISTORY_PATH, academicHistory);
   for (const p of ACADEMIC_OUT_PATHS) writeCompactJson(p, academicOutput);
+  const responsibleTechListings = updateResponsibleTechListingHistory(
+    readJson(RESPONSIBLE_TECH_LISTINGS_PATH) || [],
+    weekEnd,
+    stats.responsibleTechBreakdown,
+  );
+  writeCompactJson(RESPONSIBLE_TECH_LISTINGS_PATH, responsibleTechListings);
+  for (const p of RESPONSIBLE_TECH_LISTINGS_OUT_PATHS) writeCompactJson(p, responsibleTechListings);
 
   console.log("\n  Files written:");
   for (const p of OUT_PATHS) console.log(`    ${path.relative(ROOT, p)}`);
   console.log(`    ${path.relative(ROOT, HISTORY_PATH)}`);
   for (const p of ACADEMIC_OUT_PATHS) console.log(`    ${path.relative(ROOT, p)}`);
+  console.log(`    ${path.relative(ROOT, RESPONSIBLE_TECH_LISTINGS_PATH)}`);
+  for (const p of RESPONSIBLE_TECH_LISTINGS_OUT_PATHS) console.log(`    ${path.relative(ROOT, p)}`);
   console.log("");
 }
 

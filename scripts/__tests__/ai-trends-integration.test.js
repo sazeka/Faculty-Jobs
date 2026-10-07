@@ -26,3 +26,10 @@ test('responsible-tech counts persist in history and render on both surfaces', (
   assert.match(component, /Responsible-tech classifier v/);
   assert.match(pages, /<h2>Responsible tech<\/h2>/);
 });
+
+test('weekly matched responsible-tech listings are archived and committed', () => {
+  const workflow = readFileSync(new URL('../../.github/workflows/weekly-trends.yml', import.meta.url), 'utf8');
+  assert.match(generator, /updateResponsibleTechListingHistory\(/);
+  assert.match(workflow, /generated\/weekly-responsible-tech-listings\.json/);
+  assert.match(pages, /responsible-tech listings this week/);
+});

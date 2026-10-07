@@ -5,6 +5,7 @@ import {
   RESPONSIBLE_TECH_CLASSIFIER_VERSION,
   classifyResponsibleTechJob,
   computeResponsibleTechBreakdown,
+  updateResponsibleTechListingHistory,
 } from '../lib/weekly-responsible-tech-stats.js';
 
 test('classifies responsible-tech titles and descriptions', () => {
@@ -49,4 +50,16 @@ test('computes a versioned share, theme counts, and listings', () => {
     url: 'https://example.edu/1',
     themes: ['AI & technology ethics'],
   });
+});
+
+test('listing history keeps every week and replaces a re-run week', () => {
+  const week = (related) => ({ related, classifierVersion: 1, listings: Array.from({ length: related }, (_, i) => ({ title: `Job ${i}` })) });
+  let archive = updateResponsibleTechListingHistory([], '2026-10-11', week(2));
+  archive = updateResponsibleTechListingHistory(archive, '2026-10-04', week(1));
+  archive = updateResponsibleTechListingHistory(archive, '2026-10-11', week(3));
+
+  assert.deepEqual(archive.map((w) => [w.weekEnd, w.related, w.listings.length]), [
+    ['2026-10-04', 1, 1],
+    ['2026-10-11', 3, 3],
+  ]);
 });

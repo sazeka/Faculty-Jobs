@@ -92,3 +92,17 @@ export function computeResponsibleTechBreakdown(jobs = []) {
     listings: listings.sort((a, b) => a.institution.localeCompare(b.institution) || a.title.localeCompare(b.title)),
   };
 }
+
+// Keeps every week's matched listings (not just counts) so the set of
+// responsible-tech postings can be reviewed over time. Re-running a week
+// replaces that week's entry.
+export function updateResponsibleTechListingHistory(archive = [], weekEnd, breakdown) {
+  const entry = {
+    weekEnd,
+    classifierVersion: breakdown.classifierVersion,
+    related: breakdown.related,
+    listings: breakdown.listings,
+  };
+  return [...archive.filter((week) => week.weekEnd !== weekEnd), entry]
+    .sort((a, b) => a.weekEnd.localeCompare(b.weekEnd));
+}
