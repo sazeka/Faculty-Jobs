@@ -1,4 +1,4 @@
-export const RESPONSIBLE_TECH_CLASSIFIER_VERSION = 3;
+export const RESPONSIBLE_TECH_CLASSIFIER_VERSION = 4;
 
 const AI = String.raw`(?:ai|artificial[\s-]+intelligence|machine[\s-]+learning)`;
 // "Responsible AI use/integration/practices" describes adopting AI tools in
@@ -10,7 +10,9 @@ const ONLINE = String.raw`(?:online|digital|social[\s-]+media|platforms?|algorit
 // including long descriptions.
 const STRONG_SIGNALS = [
   ['Responsible & trustworthy AI', new RegExp(String.raw`\b(?:responsible|trustworthy|explainable|fair)[\s-]+${AI}\b${NOT_TOOL_USE}`, 'i')],
-  ['AI & technology ethics', new RegExp(String.raw`\b${AI}[\s-]+ethics\b|\bethics[\s-]+(?:of|in)[\s-]+(?:${AI}|technology|computing|data|algorithms)\b|\b(?:technology|tech|data|computing|digital|information)[\s-]+ethics\b`, 'i')],
+  // "Ethics in Data Analysis" is a stock business-analytics course title, and
+  // "Bio/Tech-ethics" shows up as one acceptable degree field among many.
+  ['AI & technology ethics', new RegExp(String.raw`\b${AI}[\s-]+ethics\b|\bethics[\s-]+(?:of|in)[\s-]+(?:${AI}|technology|computing|data(?![\s-]+analy)|algorithms)\b|(?<!bio\/)\b(?:technology|tech|data|computing|digital|information)[\s-]+ethics\b`, 'i')],
   ['Algorithmic fairness & accountability', /\balgorithmic[\s-]+(?:fairness|bias|justice|accountability|transparency|harms?|discrimination)\b/i],
   ['AI governance & policy', new RegExp(String.raw`\b${AI}[\s-]+(?:governance|policy|safety|regulation|law)\b|\bgovernance[\s-]+of[\s-]+(?:${AI}|technology|algorithms)\b`, 'i')],
   ['Public interest technology', /\bpublic[\s-]+interest[\s-]+(?:technology|tech|computing)\b/i],

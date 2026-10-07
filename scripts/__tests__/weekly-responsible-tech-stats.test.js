@@ -90,3 +90,9 @@ test('finance, health administration, and biostatistics need a signal in the rol
   assert.equal(classifyResponsibleTechJob({ title: 'Mid-Career Faculty, Biostatistics', description: 'The campus Responsible AI (RAI) Initiative.' }).related, false);
   assert.equal(classifyResponsibleTechJob({ title: 'Professor of Finance and AI Governance' }).related, true);
 });
+
+test('ignores data-analysis course titles and bio/tech-ethics degree fields', () => {
+  assert.equal(classifyResponsibleTechJob({ title: 'Adjunct Faculty', description: 'BUAN 302 Communication and Ethics in Data Analysis' }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'Honors Faculty', description: 'PhD in Physics, Engineering, Bio/Tech-ethics, or other STEM field.' }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'Lecturer', description: 'Teach ethics in data science and tech ethics.' }).related, true);
+});
