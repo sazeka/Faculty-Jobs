@@ -83,3 +83,10 @@ test('campus-initiative phrases count only for computing-related roles', () => {
   assert.equal(classifyResponsibleTechJob({ title: 'Advertising Faculty', description: 'Grand Challenges such as Good Systems (AI for Good).' }).related, false);
   assert.equal(classifyResponsibleTechJob({ title: 'Faculty Position in Design Justice', department: 'Architecture' }).related, false);
 });
+
+test('finance, health administration, and biostatistics need a signal in the role itself', () => {
+  assert.equal(classifyResponsibleTechJob({ title: 'Faculty: Finance', description: 'Areas include fintech and AI governance, regulation.' }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'MHA Program Faculty', description: 'Areas such as responsible artificial intelligence in healthcare.' }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'Mid-Career Faculty, Biostatistics', description: 'The campus Responsible AI (RAI) Initiative.' }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'Professor of Finance and AI Governance' }).related, true);
+});

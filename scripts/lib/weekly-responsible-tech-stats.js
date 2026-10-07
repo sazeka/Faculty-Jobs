@@ -1,4 +1,4 @@
-export const RESPONSIBLE_TECH_CLASSIFIER_VERSION = 2;
+export const RESPONSIBLE_TECH_CLASSIFIER_VERSION = 3;
 
 const AI = String.raw`(?:ai|artificial[\s-]+intelligence|machine[\s-]+learning)`;
 // "Responsible AI use/integration/practices" describes adopting AI tools in
@@ -39,6 +39,12 @@ const CORE_ONLY_SIGNALS = [
   ['Privacy, justice & information integrity', /\bdata[\s-]+privacy\b/i],
 ];
 
+// Fields where responsible-tech phrases mostly appear as one research area
+// among many or as campus-initiative boilerplate (e.g. finance listing "AI
+// governance", a biostatistics ad naming a Responsible AI Initiative). For
+// these roles a signal must be in the title, department, or specialization.
+const PERIPHERAL_FIELD = /\b(?:finance|financial|accounting|health(?:care)?[\s-]+administration|MHA|biostatistics)\b/i;
+
 export const RESPONSIBLE_TECH_THEMES = [...new Set(STRONG_SIGNALS.map(([label]) => label))];
 
 function plainText(value) {
@@ -58,11 +64,12 @@ export function classifyResponsibleTechJob(job = {}) {
     .map(plainText)
     .filter(Boolean)
     .join(' ');
+  const signalText = PERIPHERAL_FIELD.test(coreText) ? coreText : fullText;
 
   const themes = [
-    ...STRONG_SIGNALS.filter(([, pattern]) => pattern.test(fullText)),
+    ...STRONG_SIGNALS.filter(([, pattern]) => pattern.test(signalText)),
     ...CORE_ONLY_SIGNALS.filter(([, pattern]) => pattern.test(coreText)),
-    ...CONTEXT_SIGNALS.filter(([, pattern]) => pattern.test(COMPUTING_ROLE.test(coreText) ? fullText : coreText)),
+    ...CONTEXT_SIGNALS.filter(([, pattern]) => pattern.test(COMPUTING_ROLE.test(coreText) ? signalText : coreText)),
   ].map(([label]) => label);
 
   return {
