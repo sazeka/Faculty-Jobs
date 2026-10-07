@@ -63,3 +63,23 @@ test('listing history keeps every week and replaces a re-run week', () => {
     ['2026-10-11', 3, 3],
   ]);
 });
+
+test('excludes AI tool-use phrasing in teaching and operations roles', () => {
+  assert.equal(classifyResponsibleTechJob({ title: 'PE Teacher Education', description: 'Commitment to ethical AI integration in teaching.' }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'AI Instructor', description: 'Experience with responsible AI use and ethical AI practices.' }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'AI Instructor', description: 'Topics include agents and responsible AI, and evaluation.' }).related, true);
+});
+
+test('misinformation counts only near an online or AI context', () => {
+  assert.equal(classifyResponsibleTechJob({ title: 'Civics Education', description: 'Young people worry about polarization, misinformation, and civic exclusion.' }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'Political Science', description: 'Research on online mis/disinformation or deception.' }).related, true);
+  assert.equal(classifyResponsibleTechJob({ title: 'Political Science', description: 'The effects of AI on political institutions, disinformation, and discourse.' }).related, true);
+});
+
+test('campus-initiative phrases count only for computing-related roles', () => {
+  const minorsList = 'Minors include Global Studies, Human-Centered AI, and Religious Studies.';
+  assert.equal(classifyResponsibleTechJob({ title: 'Assistant Professor of History', description: minorsList }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'Assistant Professor of Computer Science', description: minorsList }).related, true);
+  assert.equal(classifyResponsibleTechJob({ title: 'Advertising Faculty', description: 'Grand Challenges such as Good Systems (AI for Good).' }).related, false);
+  assert.equal(classifyResponsibleTechJob({ title: 'Faculty Position in Design Justice', department: 'Architecture' }).related, false);
+});

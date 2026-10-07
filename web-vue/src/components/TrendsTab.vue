@@ -327,7 +327,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
           </ul>
         </details>
         <div class="fa-meta ai-method-note">
-          Responsible-tech classifier v{{ rtStats.classifierVersion }} counts listings that reference responsible or trustworthy AI, AI and technology ethics, algorithmic fairness, AI governance and policy, public interest technology, societal impacts of technology, privacy, and information integrity. Broad phrases such as "technology and society" or "data privacy" count only in a listing's title, department, or specialization. Listings may overlap with the AI count above.
+          Responsible-tech classifier v{{ rtStats.classifierVersion }} counts listings that reference responsible or trustworthy AI, AI and technology ethics, algorithmic fairness, AI governance and policy, public interest technology, societal impacts of technology, privacy, and information integrity. Broad phrases such as "technology and society" or "data privacy" count only in a listing's title, department, or specialization, and phrases about adopting AI tools, such as "responsible AI use" in teaching, are excluded. Listings may overlap with the AI count above.
         </div>
       </div>
     </section>

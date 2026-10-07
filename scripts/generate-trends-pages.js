@@ -243,7 +243,7 @@ ${ai.delta == null ? "" : `      <tr><td>Vs prior week</td><td class="n">${ai.de
       <tr><td>Share of all listings</td><td class="n">${rt.sharePct}%</td></tr>
 ${rt.delta == null ? "" : `      <tr><td>Vs prior week</td><td class="n">${rt.delta >= 0 ? "+" : ""}${rt.delta.toLocaleString()}</td></tr>\n`}${(rt.byTheme || []).map((t) => `      <tr><td>${esc(t.theme)}</td><td class="n">${t.count.toLocaleString()}</td></tr>`).join("\n")}
     </table>
-    <p class="small">Responsible-tech classifier v${rt.classifierVersion} counts listings that reference responsible or trustworthy AI, AI and technology ethics, algorithmic fairness, AI governance and policy, public interest technology, societal impacts of technology, privacy, and information integrity. Listings may also be counted as AI-related.</p>${rtListings?.length ? `
+    <p class="small">Responsible-tech classifier v${rt.classifierVersion} counts listings that reference responsible or trustworthy AI, AI and technology ethics, algorithmic fairness, AI governance and policy, public interest technology, societal impacts of technology, privacy, and information integrity. Phrases about adopting AI tools, such as "responsible AI use" in teaching, are excluded. Listings may also be counted as AI-related.</p>${rtListings?.length ? `
     <details class="rt-listings">
       <summary>View all ${rtListings.length.toLocaleString()} responsible-tech listings this week</summary>
       <ul>

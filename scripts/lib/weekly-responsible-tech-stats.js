@@ -1,17 +1,33 @@
-export const RESPONSIBLE_TECH_CLASSIFIER_VERSION = 1;
+export const RESPONSIBLE_TECH_CLASSIFIER_VERSION = 2;
 
 const AI = String.raw`(?:ai|artificial[\s-]+intelligence|machine[\s-]+learning)`;
+// "Responsible AI use/integration/practices" describes adopting AI tools in
+// teaching or operations, not responsible-tech scholarship.
+const NOT_TOOL_USE = String.raw`(?![\s-]+(?:use|usage|integration|training|practices|adoption|literacy|tools|framework))`;
+const ONLINE = String.raw`(?:online|digital|social[\s-]+media|platforms?|algorithmic|computational|${AI})`;
 
 // Specific phrases that signal responsible-tech work wherever they appear,
 // including long descriptions.
 const STRONG_SIGNALS = [
-  ['Responsible & trustworthy AI', new RegExp(String.raw`\b(?:responsible|ethical|trustworthy|explainable|human[\s-]+centered|fair)[\s-]+${AI}\b`, 'i')],
+  ['Responsible & trustworthy AI', new RegExp(String.raw`\b(?:responsible|trustworthy|explainable|fair)[\s-]+${AI}\b${NOT_TOOL_USE}`, 'i')],
   ['AI & technology ethics', new RegExp(String.raw`\b${AI}[\s-]+ethics\b|\bethics[\s-]+(?:of|in)[\s-]+(?:${AI}|technology|computing|data|algorithms)\b|\b(?:technology|tech|data|computing|digital|information)[\s-]+ethics\b`, 'i')],
   ['Algorithmic fairness & accountability', /\balgorithmic[\s-]+(?:fairness|bias|justice|accountability|transparency|harms?|discrimination)\b/i],
   ['AI governance & policy', new RegExp(String.raw`\b${AI}[\s-]+(?:governance|policy|safety|regulation|law)\b|\bgovernance[\s-]+of[\s-]+(?:${AI}|technology|algorithms)\b`, 'i')],
-  ['Public interest technology', /\bpublic[\s-]+interest[\s-]+(?:technology|tech|computing)\b|\b(?:ai|computing|technology|data[\s-]+science)[\s-]+for[\s-]+(?:social[\s-]+)?good\b/i],
+  ['Public interest technology', /\bpublic[\s-]+interest[\s-]+(?:technology|tech|computing)\b/i],
   ['Societal impacts of technology', new RegExp(String.raw`\bsocietal[\s-]+(?:impacts?|implications)[\s-]+of[\s-]+(?:${AI}|technology|computing|algorithms)\b`, 'i')],
-  ['Privacy, justice & information integrity', /\bprivacy[\s-]+(?:preserving|enhancing)\b|\b(?:data|design)[\s-]+justice\b|\bdigital[\s-]+rights\b|\btrust[\s-]+(?:and|&)[\s-]+safety\b|\b(?:mis|dis)information\b/i],
+  ['Privacy, justice & information integrity', /\bprivacy[\s-]+(?:preserving|enhancing)\b|\bdata[\s-]+justice\b|\bdigital[\s-]+rights\b|\btrust[\s-]+(?:and|&)[\s-]+safety\b/i],
+  // Misinformation counts only near an online/AI context, so civics or
+  // health-communication roles that mention it in passing are excluded.
+  ['Privacy, justice & information integrity', new RegExp(String.raw`\b${ONLINE}\b[^.;]{0,80}\b(?:mis|dis)information\b|\b(?:mis|dis)information\b[^.;]{0,80}\b${ONLINE}\b`, 'i')],
+];
+
+// Phrases that turn up in campus initiatives and program lists ("Good
+// Systems (AI for Good)", "minors in ... Human-Centered AI"), so in a
+// description they count only when the role itself is computing-related.
+const COMPUTING_ROLE = new RegExp(String.raw`\b(?:${AI}|comput\w*|informatics?|information|technolog\w*|digital|cyber\w*|software|engineering|robotics?)\b`, 'i');
+const CONTEXT_SIGNALS = [
+  ['Responsible & trustworthy AI', new RegExp(String.raw`\b(?:ethical|human[\s-]+centered)[\s-]+${AI}\b${NOT_TOOL_USE}`, 'i')],
+  ['Public interest technology', /\b(?:ai|computing|technology|data[\s-]+science)[\s-]+for[\s-]+(?:social[\s-]+)?good\b/i],
 ];
 
 // Phrases that are often program lists, course catalogs, or lab-policy
@@ -46,6 +62,7 @@ export function classifyResponsibleTechJob(job = {}) {
   const themes = [
     ...STRONG_SIGNALS.filter(([, pattern]) => pattern.test(fullText)),
     ...CORE_ONLY_SIGNALS.filter(([, pattern]) => pattern.test(coreText)),
+    ...CONTEXT_SIGNALS.filter(([, pattern]) => pattern.test(COMPUTING_ROLE.test(coreText) ? fullText : coreText)),
   ].map(([label]) => label);
 
   return {
