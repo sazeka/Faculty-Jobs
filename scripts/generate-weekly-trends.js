@@ -27,6 +27,7 @@ import { fileURLToPath } from "url";
 import { computeTenureTrackBreakdown } from "./lib/weekly-tenure-stats.js";
 import { computeInstitutionControlBreakdown } from "./lib/weekly-institution-control-stats.js";
 import { computeAiHiringBreakdown } from "./lib/weekly-ai-hiring-stats.js";
+import { computeResponsibleTechBreakdown } from "./lib/weekly-responsible-tech-stats.js";
 import { computeDisciplineBreakdown } from "./lib/weekly-discipline-stats.js";
 import { computeDepartmentBreakdown } from "./lib/weekly-department-stats.js";
 import { computeAcademicCategorySnapshot, updateAcademicCategoryHistory } from "./lib/weekly-academic-category-stats.js";
@@ -138,6 +139,7 @@ function computeStats(jobs, institutions, sourceScrapedAt) {
     tenureTrackBreakdown: computeTenureTrackBreakdown(jobs),
     institutionControlBreakdown: computeInstitutionControlBreakdown(jobs, institutions),
     aiHiringBreakdown: computeAiHiringBreakdown(jobs),
+    responsibleTechBreakdown: computeResponsibleTechBreakdown(jobs),
     disciplineBreakdown: computeDisciplineBreakdown(jobs),
     departmentBreakdown: computeDepartmentBreakdown(jobs),
   };
@@ -167,6 +169,9 @@ function templateSummary(stats, prev) {
       : "",
     stats.aiHiringBreakdown.related
       ? `${stats.aiHiringBreakdown.related.toLocaleString()} listings (${stats.aiHiringBreakdown.sharePct}%) explicitly reference artificial intelligence or a core AI method.`
+      : "",
+    stats.responsibleTechBreakdown.related
+      ? `${stats.responsibleTechBreakdown.related.toLocaleString()} listings (${stats.responsibleTechBreakdown.sharePct}%) address responsible technology, such as AI ethics, algorithmic fairness, or technology policy.`
       : "",
     stats.disciplineBreakdown.topDisciplines[0]
       ? `${stats.disciplineBreakdown.topDisciplines[0].discipline} is the most in-demand discipline among classified listings this week, with ${stats.disciplineBreakdown.topDisciplines[0].count.toLocaleString()} open positions.`
@@ -281,6 +286,12 @@ async function main() {
         ? Number((((stats.aiHiringBreakdown.related - prev.aiHiringBreakdown.related) / prev.aiHiringBreakdown.related) * 100).toFixed(1))
         : null,
     },
+    // The per-listing detail stays out of the prompt and the 52-week history;
+    // only the current week's output carries it.
+    responsibleTechBreakdown: (({ listings, ...counts }) => ({
+      ...counts,
+      delta: prev?.responsibleTechBreakdown?.related == null ? null : counts.related - prev.responsibleTechBreakdown.related,
+    }))(stats.responsibleTechBreakdown),
     topInstitutions: stats.topInstitutions.slice(0, 5),
     disciplineBreakdown: stats.disciplineBreakdown,
     departmentBreakdown: stats.departmentBreakdown,
@@ -312,6 +323,7 @@ async function main() {
     tenureTrackBreakdown: stats.tenureTrackBreakdown,
     institutionControlBreakdown: stats.institutionControlBreakdown,
     aiHiringBreakdown: statsForPrompt.aiHiringBreakdown,
+    responsibleTechBreakdown: statsForPrompt.responsibleTechBreakdown,
     disciplineBreakdown: stats.disciplineBreakdown,
     departmentBreakdown: stats.departmentBreakdown,
     topSources: stats.topSources,
@@ -332,6 +344,10 @@ async function main() {
     aiSummary: summary,
     stats: {
       ...statsForPrompt,
+      responsibleTechBreakdown: {
+        ...statsForPrompt.responsibleTechBreakdown,
+        listings: stats.responsibleTechBreakdown.listings,
+      },
       topSources: stats.topSources,
       topInstitutions: stats.topInstitutions,
     },
@@ -352,6 +368,8 @@ async function main() {
       aiRelatedJobs: h.aiHiringBreakdown?.related ?? null,
       aiRelatedPct: h.aiHiringBreakdown?.sharePct ?? null,
       aiClassifierVersion: h.aiHiringBreakdown?.classifierVersion ?? null,
+      responsibleTechJobs: h.responsibleTechBreakdown?.related ?? null,
+      responsibleTechPct: h.responsibleTechBreakdown?.sharePct ?? null,
       disciplineClassified: h.disciplineBreakdown?.classified ?? null,
       disciplineUnknown: h.disciplineBreakdown?.unknown ?? null,
       disciplineClassifiedPct: h.disciplineBreakdown?.classifiedPct ?? null,

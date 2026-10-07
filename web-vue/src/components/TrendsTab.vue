@@ -139,6 +139,23 @@ const aiHistory = computed(() => {
   }))
 })
 
+const rtStats = computed(() => trends.value?.stats?.responsibleTechBreakdown || null)
+const rtThemes = computed(() => {
+  const items = rtStats.value?.byTheme || []
+  const max = Math.max(1, ...items.map((item) => item.count))
+  return items.map((item) => ({ ...item, barWidth: `${(item.count / max) * 100}%` }))
+})
+const rtHistory = computed(() => {
+  const items = (trends.value?.history || [])
+    .filter(h => h.responsibleTechJobs != null)
+    .slice(-12)
+  const max = Math.max(1, ...items.map(h => h.responsibleTechJobs))
+  return items.map(h => ({
+    ...h,
+    heightPct: Math.max(6, Math.round((h.responsibleTechJobs / max) * 100)),
+  }))
+})
+
 const aiParagraphs = computed(() =>
   (trends.value?.aiSummary || '').split('\n\n').map(p => p.trim()).filter(Boolean)
 )
@@ -250,6 +267,68 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
       </div>
       <div class="fa-meta ai-method-note">
         Strict classifier v{{ aiStats.classifierVersion }} counts explicit references to artificial intelligence and core methods such as machine learning, generative AI, NLP, computer vision, and neural networks. Broad data-science or robotics listings are excluded unless an AI signal is present.
+      </div>
+
+      <div v-if="rtStats" class="rt-pulse" aria-labelledby="rt-pulse-title">
+        <div class="fa-label" id="rt-pulse-title">Responsible tech</div>
+        <div class="ai-pulse-head" :class="{ 'no-delta': rtStats.delta == null }">
+          <div>
+            <div class="fa-display ai-pulse-value">{{ fmt(rtStats.related) }}</div>
+            <div class="fa-meta">openings addressing responsible technology</div>
+          </div>
+          <div class="ai-pulse-secondary">
+            <div class="fa-num ai-pulse-share">{{ rtStats.sharePct }}%</div>
+            <div class="fa-meta">of all tracked listings</div>
+          </div>
+          <div v-if="rtStats.delta != null" class="ai-pulse-secondary">
+            <div class="fa-num ai-pulse-share" :class="{ positive: rtStats.delta >= 0 }">
+              {{ rtStats.delta >= 0 ? '+' : '' }}{{ fmt(rtStats.delta) }}
+            </div>
+            <div class="fa-meta">versus prior week</div>
+          </div>
+        </div>
+        <div v-if="rtThemes.length" class="rt-themes">
+          <div v-for="item in rtThemes" :key="item.theme" class="rt-theme">
+            <span class="rt-theme-label">{{ item.theme }}</span>
+            <span class="rt-theme-track"><span class="rt-theme-bar" :style="{ width: item.barWidth }"></span></span>
+            <span class="fa-num rt-theme-count">{{ fmt(item.count) }}</span>
+          </div>
+        </div>
+        <div v-if="rtHistory.length > 1" class="ai-history" aria-label="Weekly responsible-tech faculty job listings">
+          <div
+            v-for="week in rtHistory"
+            :key="week.weekEnd"
+            class="ai-week"
+            tabindex="0"
+            :style="{ height: `${week.heightPct}%` }"
+            :aria-label="`${fmtWeek(week.weekEnd)}: ${fmt(week.responsibleTechJobs)} responsible-tech listings, ${week.responsibleTechPct}% of all listings`"
+            :data-tooltip="`${fmtWeek(week.weekEnd)} · ${fmt(week.responsibleTechJobs)} openings · ${week.responsibleTechPct}%`"
+          ></div>
+        </div>
+        <div v-if="rtHistory.length > 1" class="trends-spark-labels fa-meta">
+          <span>{{ fmtWeek(rtHistory[0].weekEnd) }}</span>
+          <span>{{ fmtWeek(rtHistory[rtHistory.length - 1].weekEnd) }}</span>
+        </div>
+        <div v-if="rtStats.topInstitutions?.length" class="ai-leaders">
+          <span class="fa-meta">Leading institutions</span>
+          <span v-for="item in rtStats.topInstitutions.slice(0, 3)" :key="item.institution" class="ai-leader">
+            {{ item.institution }} <b>{{ fmt(item.count) }}</b>
+          </span>
+        </div>
+        <details v-if="rtStats.listings?.length" class="rt-listings">
+          <summary class="fa-meta">View all {{ fmt(rtStats.listings.length) }} responsible-tech listings</summary>
+          <ul>
+            <li v-for="(job, i) in rtStats.listings" :key="`${job.url}-${i}`">
+              <a v-if="job.url" :href="job.url" target="_blank" rel="noopener">{{ job.title }}</a>
+              <span v-else>{{ job.title }}</span>
+              <span class="fa-meta"> · {{ job.institution }}</span>
+              <span class="rt-listing-themes fa-meta">{{ job.themes.join(' · ') }}</span>
+            </li>
+          </ul>
+        </details>
+        <div class="fa-meta ai-method-note">
+          Responsible-tech classifier v{{ rtStats.classifierVersion }} counts listings that reference responsible or trustworthy AI, AI and technology ethics, algorithmic fairness, AI governance and policy, public interest technology, societal impacts of technology, privacy, and information integrity. Broad phrases such as "technology and society" or "data privacy" count only in a listing's title, department, or specialization. Listings may overlap with the AI count above.
+        </div>
       </div>
     </section>
 
@@ -621,6 +700,18 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 .ai-leader { padding: 6px 9px; border: 1px solid var(--rule-2); color: var(--ink-2); font-size: 11px; }
 .ai-leader b { margin-left: 5px; color: var(--accent); }
 .ai-method-note { max-width: 820px; margin-top: 16px; color: var(--ink-4); line-height: 1.55; }
+.rt-pulse { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--rule-2); }
+.rt-themes { display: grid; gap: 8px; margin-top: 22px; }
+.rt-theme { display: grid; grid-template-columns: minmax(0, 260px) 1fr 44px; gap: 12px; align-items: center; font-size: 12px; color: var(--ink-2); }
+.rt-theme-track { height: 8px; background: var(--paper-3); overflow: hidden; border-radius: 999px; }
+.rt-theme-bar { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+.rt-theme-count { text-align: right; color: var(--ink); }
+.rt-listings { margin-top: 18px; }
+.rt-listings summary { cursor: pointer; color: var(--ink-2); }
+.rt-listings ul { list-style: none; margin: 12px 0 0; padding: 0; max-height: 420px; overflow-y: auto; border-top: 1px solid var(--rule-2); }
+.rt-listings li { padding: 8px 0; border-bottom: 1px solid var(--rule-2); font-size: 13px; line-height: 1.45; }
+.rt-listings a { color: var(--ink); }
+.rt-listing-themes { display: block; color: var(--ink-4); font-size: 11px; }
 
 .tenure-comparison { max-width: 820px; }
 .tenure-metrics {
@@ -942,6 +1033,8 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
   .ai-pulse-head.no-delta { grid-template-columns: 1fr; }
   .ai-pulse-head > div { padding: 16px 18px; }
   .ai-history { gap: 4px; }
+  .rt-theme { grid-template-columns: 1fr 44px; }
+  .rt-theme-track { grid-column: 1 / -1; grid-row: 2; }
   .tenure-metrics { grid-template-columns: 1fr; }
 
   /* Stack the two-up grids — the side-by-side columns and the fixed 380px

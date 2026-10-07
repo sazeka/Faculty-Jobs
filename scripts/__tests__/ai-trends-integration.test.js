@@ -18,3 +18,11 @@ test('interactive and static trends surfaces explain the AI hiring metric', () =
   assert.match(pages, /AI hiring pulse/);
   assert.match(pages, /Broad data-science and robotics listings are excluded/);
 });
+
+test('responsible-tech counts persist in history and render on both surfaces', () => {
+  assert.match(generator, /responsibleTechBreakdown: statsForPrompt\.responsibleTechBreakdown/);
+  assert.match(generator, /responsibleTechJobs: h\.responsibleTechBreakdown\?\.related \?\? null/);
+  assert.match(component, /Responsible tech/);
+  assert.match(component, /Responsible-tech classifier v/);
+  assert.match(pages, /<h2>Responsible tech<\/h2>/);
+});

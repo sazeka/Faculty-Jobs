@@ -147,7 +147,10 @@ function renderIndexPage(history) {
       const aiLabel = h.aiHiringBreakdown?.related == null
         ? ""
         : ` · ${h.aiHiringBreakdown.related.toLocaleString()} AI-related`;
-      return `<li><a href="/trends/${esc(h.weekEnd)}/">Week of ${esc(fmtWeek(h.weekEnd))}</a><span class="n">${h.totalJobs.toLocaleString()} listings${deltaLabel}${aiLabel}</span></li>`;
+      const rtLabel = h.responsibleTechBreakdown?.related == null
+        ? ""
+        : ` · ${h.responsibleTechBreakdown.related.toLocaleString()} responsible tech`;
+      return `<li><a href="/trends/${esc(h.weekEnd)}/">Week of ${esc(fmtWeek(h.weekEnd))}</a><span class="n">${h.totalJobs.toLocaleString()} listings${deltaLabel}${aiLabel}${rtLabel}</span></li>`;
     })
     .join("\n      ");
 
@@ -228,6 +231,17 @@ ${ai.delta == null ? "" : `      <tr><td>Vs prior week</td><td class="n">${ai.de
     <p class="small">Strict classifier v${ai.classifierVersion} counts explicit references to artificial intelligence and core methods including machine learning, generative AI, natural language processing, computer vision, and neural networks. Broad data-science and robotics listings are excluded unless an AI signal is present.</p>`
     : "";
 
+  const rt = entry.responsibleTechBreakdown;
+  const rtHtml = rt
+    ? `<h2>Responsible tech</h2>
+    <table>
+      <tr><td>Openings addressing responsible technology</td><td class="n">${rt.related.toLocaleString()}</td></tr>
+      <tr><td>Share of all listings</td><td class="n">${rt.sharePct}%</td></tr>
+${rt.delta == null ? "" : `      <tr><td>Vs prior week</td><td class="n">${rt.delta >= 0 ? "+" : ""}${rt.delta.toLocaleString()}</td></tr>\n`}${(rt.byTheme || []).map((t) => `      <tr><td>${esc(t.theme)}</td><td class="n">${t.count.toLocaleString()}</td></tr>`).join("\n")}
+    </table>
+    <p class="small">Responsible-tech classifier v${rt.classifierVersion} counts listings that reference responsible or trustworthy AI, AI and technology ethics, algorithmic fairness, AI governance and policy, public interest technology, societal impacts of technology, privacy, and information integrity. Listings may also be counted as AI-related.</p>`
+    : "";
+
   const pagerHtml = `
     <div class="pager">
       <span>${prevEntry ? `<a href="/trends/${prevEntry.weekEnd}/">← Week of ${esc(fmtWeek(prevEntry.weekEnd))}</a>` : ""}</span>
@@ -244,7 +258,7 @@ ${deltaHtml}${topType ? `      <div class="stat"><div class="l">Top position typ
     </div>
     ${prose}
     ${sourcesHtml}
-    ${disciplinesHtml}${aiHtml ? `\n    ${aiHtml}` : ""}${tenureHtml ? `\n    ${tenureHtml}` : ""}
+    ${disciplinesHtml}${aiHtml ? `\n    ${aiHtml}` : ""}${rtHtml ? `\n    ${rtHtml}` : ""}${tenureHtml ? `\n    ${tenureHtml}` : ""}
     ${typesHtml}
     ${pagerHtml}
   `;
