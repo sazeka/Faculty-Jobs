@@ -7,12 +7,10 @@ import JobCard from './components/JobCard.vue'
 import JobDetailDrawer from './components/JobDetailDrawer.vue'
 import PresetBar from './components/PresetBar.vue'
 import TrendsTab from './components/TrendsTab.vue'
-import AlertSignup from './components/AlertSignup.vue'
 import { useSavedJobs } from './composables/useSavedJobs'
 import { usePresets } from './composables/usePresets'
 import { useJobFilters } from './composables/useJobFilters'
 import { useJobsData } from './composables/useJobsData'
-import { useAlerts } from './composables/useAlerts'
 import { useFilterUrlSync, buildShareUrl } from './composables/useFilterUrlSync'
 import { ALL_FILTER_VALUE, createDefaultFilters } from './config/appConfig'
 import { jobDetailPath } from './lib/jobPath'
@@ -83,10 +81,9 @@ watch(() => filters.value.q, (query) => {
 })
 onBeforeUnmount(() => clearTimeout(queryTimer))
 const { savedJobs, isSavedJob, toggleSavedJob } = useSavedJobs()
-const { catalogSummary, stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, subdisciplineOptions, collegeOptions, departmentOptions, cityOptions, employmentTypeOptions, workModeOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters, countMatches } =
+const { catalogSummary, stateOptions, positionTypeOptions, tenureTrackCount, disciplineOptions, subdisciplineOptions, collegeOptions, departmentOptions, cityOptions, employmentTypeOptions, workModeOptions, filteredJobs, activeFilterChips, updateFilters, clearFilterChip, resetFilters } =
   useJobFilters({ jobsRef: jobs, filtersRef: filters, isSavedJob, searchTermMatchesRef: searchTermMatches })
 const { presetItems, saveCurrentPreset, applyPreset, removePreset } = usePresets({ filtersRef: filters, updateFilters })
-const { alertsWithCounts, addAlert, removeAlert, subscribeAlert, subscribeStatus, subscribeError } = useAlerts({ filtersRef: filters, countMatches })
 
 // Shareable filter URLs: hydrate from the query string on load, then keep the
 // address bar in sync as filters change.
@@ -522,12 +519,9 @@ async function reportBadListing(job) {
           :city-options="cityOptions"
           :employment-type-options="employmentTypeOptions"
           :work-mode-options="workModeOptions"
-          :subscribe-status="subscribeStatus"
-          :subscribe-error="subscribeError"
           @update:filters="updateFilters"
           @update:query="updateQueryDraft"
           @reset-filters="resetFilters"
-          @subscribe-alert="subscribeAlert"
           @refresh-data="loadJobs"
         />
       </aside>
@@ -576,12 +570,6 @@ async function reportBadListing(job) {
           ><span aria-hidden="true">{{ showMapRail ? '›' : '‹' }}</span></button>
         </div>
         <p class="fa-sr-only" aria-live="polite" aria-atomic="true">{{ filteredJobs.length.toLocaleString() }} job results</p>
-        <AlertSignup
-          :match-count="filteredJobs.length"
-          :status="subscribeStatus"
-          :error="subscribeError"
-          @subscribe="subscribeAlert"
-        />
 
         <div v-if="isInitialLoading && filteredJobs.length === 0" class="fa-empty-state">
           <p class="fa-display">Loading postings…</p><span>Fetching the latest faculty listings.</span>

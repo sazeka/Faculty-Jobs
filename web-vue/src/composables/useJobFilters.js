@@ -900,12 +900,6 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     filtersRef.value = createDefaultFilters()
   }
 
-  function countMatches(filterSnapshot) {
-    const defaults = createDefaultFilters()
-    const merged = { ...defaults, ...(filterSnapshot || {}) }
-    return evaluateFilters(merged, false).results.length
-  }
-
   return {
     catalogSummary,
     stateOptions,
@@ -923,6 +917,5 @@ export function useJobFilters({ jobsRef, filtersRef, isSavedJob, searchTermMatch
     updateFilters,
     clearFilterChip,
     resetFilters,
-    countMatches,
   }
 }
