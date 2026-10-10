@@ -68,10 +68,6 @@ const topDepartments = computed(() => {
   }))
 })
 
-const controlHistory = computed(() => (trends.value?.history || [])
-  .filter(h => h.publicJobs != null && h.privateNonprofitJobs != null)
-  .slice(-12))
-const controlStats = computed(() => trends.value?.stats?.institutionControlBreakdown || null)
 
 const sortedPositionTypes = computed(() => {
   const types = trends.value?.stats?.positionTypeBreakdown || {}
@@ -469,59 +465,6 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 
     </div>
 
-    <hr v-if="tenureStats" class="fa-rule-thin" style="margin: 40px 0;" />
-
-    <!-- Public/private history -->
-    <div class="control-standalone">
-      <div class="fa-label" style="margin-bottom: 20px;">Public vs private over time</div>
-      <template v-if="controlStats">
-        <div class="control-current">
-          <div>
-            <div class="fa-meta">Public</div>
-            <div class="fa-display control-value">{{ fmt(controlStats.public) }}</div>
-            <div class="fa-num control-share">{{ controlStats.publicPct }}%</div>
-          </div>
-          <div>
-            <div class="fa-meta">Private nonprofit</div>
-            <div class="fa-display control-value">{{ fmt(controlStats.privateNonprofit) }}</div>
-            <div class="fa-num control-share">{{ controlStats.privateNonprofitPct }}%</div>
-          </div>
-        </div>
-        <div v-if="controlHistory.length" class="control-history" aria-label="Weekly share of classified public and private nonprofit job listings">
-          <div
-            v-for="week in controlHistory"
-            :key="week.weekEnd"
-            class="control-week"
-            tabindex="0"
-            :aria-label="`${fmtWeek(week.weekEnd)}: ${week.publicPct}% public and ${week.privateNonprofitPct}% private nonprofit`"
-            :data-tooltip="`${fmtWeek(week.weekEnd)} · Public ${week.publicPct}% · Private ${week.privateNonprofitPct}%`"
-          >
-            <div class="control-week-private" :style="{ height: `${week.privateNonprofitPct}%` }"></div>
-            <div class="control-week-public" :style="{ height: `${week.publicPct}%` }"></div>
-          </div>
-        </div>
-        <div v-if="controlHistory.length" class="trends-spark-labels fa-meta">
-          <span>{{ fmtWeek(controlHistory[0].weekEnd) }}</span>
-          <span>{{ fmtWeek(controlHistory[controlHistory.length - 1].weekEnd) }}</span>
-        </div>
-        <div v-if="controlHistory.length === 1" class="fa-meta control-start-note">
-          Tracking starts this week; a new comparison point will be added to this chart each week.
-        </div>
-        <div class="control-legend fa-meta">
-          <span><i class="control-key control-key-public"></i>Public</span>
-          <span><i class="control-key control-key-private"></i>Private nonprofit</span>
-        </div>
-        <div class="fa-meta control-note">
-          Percentages use {{ fmt(controlStats.classified) }} listings matched to institution control.
-          {{ fmt(controlStats.unknown) }} unmatched listings are excluded.
-        </div>
-      </template>
-      <div v-else class="fa-meta control-unavailable">
-        Institution-control history will appear after the latest weekly data finishes loading.
-      </div>
-    </div>
-
-    <hr class="fa-rule-thin" style="margin: 40px 0;" />
 
     <!-- Academic fields: same current-bars + weekly-history language as position types and appointment track -->
     <div class="trends-stats-grid academic-stats-grid">
@@ -824,74 +767,6 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 }
 .trends-col {}
 
-.control-standalone { max-width: 620px; }
-
-.control-current {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 18px;
-}
-.control-value { font-size: 28px; line-height: 1.1; margin-top: 4px; }
-.control-share { color: var(--ink-3); font-size: 11px; margin-top: 2px; }
-.control-history {
-  display: flex;
-  align-items: stretch;
-  gap: 4px;
-  height: 112px;
-  margin-top: 48px;
-  border-bottom: 1px solid var(--rule);
-}
-.control-week {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-width: 5px;
-  position: relative;
-  outline: none;
-}
-.control-week::after {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  z-index: 2;
-  padding: 7px 9px;
-  transform: translateX(-50%) translateY(3px);
-  background: var(--ink);
-  color: var(--paper);
-  content: attr(data-tooltip);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 1;
-  letter-spacing: .02em;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .12s ease, transform .12s ease;
-  white-space: nowrap;
-}
-.control-week:first-child::after { left: 0; transform: translateX(0) translateY(3px); }
-.control-week:last-child:not(:first-child)::after { right: 0; left: auto; transform: translateX(0) translateY(3px); }
-.control-week:hover::after,
-.control-week:focus-visible::after {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-.control-week:first-child:hover::after,
-.control-week:first-child:focus-visible::after,
-.control-week:last-child:not(:first-child):hover::after,
-.control-week:last-child:not(:first-child):focus-visible::after { transform: translateX(0) translateY(0); }
-.control-week:focus-visible { box-shadow: 0 0 0 2px var(--ink); }
-.control-week-public { background: var(--sage); }
-.control-week-private { background: var(--accent); }
-.control-legend { display: flex; gap: 18px; margin-top: 12px; font-size: 10px; }
-.control-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.control-key { display: inline-block; width: 9px; height: 9px; }
-.control-key-public { background: var(--sage); }
-.control-key-private { background: var(--accent); }
-.control-note { color: var(--ink-4); line-height: 1.5; margin-top: 10px; }
-.control-start-note { color: var(--ink-3); line-height: 1.5; margin-top: 10px; }
-.control-unavailable { color: var(--ink-3); line-height: 1.6; max-width: 360px; }
 
 .trends-bar-row {
   display: grid;
