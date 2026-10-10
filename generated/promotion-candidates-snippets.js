@@ -1,3 +1,3 @@
 // Candidate campus config entries generated from institutions-master
-// Generated: 2026-10-03T18:02:19.441Z
+// Generated: 2026-10-10T18:11:00.594Z
 
