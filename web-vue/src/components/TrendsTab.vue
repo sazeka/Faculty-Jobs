@@ -42,124 +42,6 @@ onMounted(async () => {
   }
 })
 
-const disciplineStats = computed(() => trends.value?.stats?.disciplineBreakdown || null)
-const departmentStats = computed(() => trends.value?.stats?.departmentBreakdown || null)
-const categoryWeeks = computed(() => categoryData.value?.weeks || [])
-const disciplineHistory = computed(() => academicCoverageHistory(trends.value?.history, 'discipline'))
-const departmentHistory = computed(() => academicCoverageHistory(trends.value?.history, 'department'))
-const topDisciplines = computed(() => {
-  const items = disciplineStats.value?.topDisciplines?.slice(0, 8) || []
-  const max = Math.max(1, ...items.map((item) => item.count))
-  const classified = disciplineStats.value?.classified || 0
-  return items.map((item) => ({
-    ...item,
-    barWidth: `${(item.count / max) * 100}%`,
-    shareLabel: classified ? `${((item.count / classified) * 100).toFixed(1)}%` : '0.0%',
-  }))
-})
-const topDepartments = computed(() => {
-  const items = categoryOptions(categoryWeeks.value, 'department').slice(0, 8)
-  const max = Math.max(1, ...items.map((item) => item.count))
-  const classified = departmentStats.value?.classified || 0
-  return items.map((item) => ({
-    ...item,
-    barWidth: `${(item.count / max) * 100}%`,
-    shareLabel: classified ? `${((item.count / classified) * 100).toFixed(1)}%` : '0.0%',
-  }))
-})
-
-
-const sortedPositionTypes = computed(() => {
-  const types = trends.value?.stats?.positionTypeBreakdown || {}
-  return Object.entries(types).sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count }))
-})
-const maxTypeCount = computed(() => sortedPositionTypes.value[0]?.count || 1)
-const positionSnapshotDate = computed(() => {
-  const value = trends.value?.stats?.positionTypeFacets?.sourceScrapedAt || trends.value?.generatedAt
-  const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? null : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
-})
-const positionGroups = computed(() => {
-  const facets = trends.value?.stats?.positionTypeFacets
-  if (!facets?.groups || !Number.isFinite(facets.total)) return []
-  const groups = POSITION_TYPE_GROUPS
-  const max = Math.max(1, ...groups.flatMap((group) => group.values.map((label) => Number(facets.groups[group.key]?.[label] || 0))))
-  return groups.map((group) => {
-    const rows = group.values.map((label) => {
-      const count = Number(facets.groups[group.key]?.[label] || 0)
-      const share = facets.total ? (count / facets.total) * 100 : 0
-      return { label, count, shareLabel: share > 0 && share < 0.1 ? '<0.1%' : `${share.toFixed(1)}%` }
-    })
-    return { ...group, rows: rows.map((row) => ({ ...row, barWidth: `${(row.count / max) * 100}%` })) }
-  })
-})
-const selectedPositionHistory = ref('Professor')
-const positionHistory = computed(() => {
-  const items = (trends.value?.history || [])
-    .filter((week) => week.positionTypeFacets?.total > 0)
-    .slice(-12)
-    .map((week) => {
-      const facets = week.positionTypeFacets
-      const count = Number(Object.values(facets.groups || {}).find((group) =>
-        Object.hasOwn(group, selectedPositionHistory.value))?.[selectedPositionHistory.value] || 0)
-      return { weekEnd: week.weekEnd, count, share: count / facets.total * 100 }
-    })
-  const max = Math.max(1, ...items.map((item) => item.share))
-  return items.map((item) => ({ ...item, height: `${Math.max(4, item.share / max * 100)}%` }))
-})
-const positionSnapshotAligned = computed(() =>
-  trends.value?.stats?.positionTypeFacets?.total === trends.value?.stats?.totalJobs)
-const tenureStats = computed(() => trends.value?.stats?.tenureTrackBreakdown || null)
-const tenureCoveragePct = computed(() => {
-  const classified = Number(tenureStats.value?.classified || 0)
-  const total = classified + Number(tenureStats.value?.unknown || 0)
-  return total ? ((classified / total) * 100).toFixed(1) : '0.0'
-})
-const tenureHistory = computed(() => {
-  const items = appointmentTrackHistory(trends.value?.history || [])
-  const max = Math.max(1, ...items.map(w => w.total))
-  return items.map(w => ({
-    ...w,
-    heightPct: Math.max(6, Math.round((w.total / max) * 100)),
-  }))
-})
-const aiStats = computed(() => trends.value?.stats?.aiHiringBreakdown || null)
-const aiHistory = computed(() => {
-  const items = (trends.value?.history || [])
-    .filter(h => h.aiRelatedJobs != null)
-    .slice(-12)
-  const max = Math.max(1, ...items.map(h => h.aiRelatedJobs))
-  return items.map(h => ({
-    ...h,
-    heightPct: Math.max(6, Math.round((h.aiRelatedJobs / max) * 100)),
-  }))
-})
-
-const rtStats = computed(() => trends.value?.stats?.responsibleTechBreakdown || null)
-const rtThemes = computed(() => {
-  const items = rtStats.value?.byTheme || []
-  const max = Math.max(1, ...items.map((item) => item.count))
-  return items.map((item) => ({ ...item, barWidth: `${(item.count / max) * 100}%` }))
-})
-const rtHistory = computed(() => {
-  const items = (trends.value?.history || [])
-    .filter(h => h.responsibleTechJobs != null)
-    .slice(-12)
-  const max = Math.max(1, ...items.map(h => h.responsibleTechJobs))
-  return items.map(h => ({
-    ...h,
-    heightPct: Math.max(6, Math.round((h.responsibleTechJobs / max) * 100)),
-  }))
-})
-
-const aiParagraphs = computed(() =>
-  (trends.value?.aiSummary || '').split('\n\n').map(p => p.trim()).filter(Boolean)
-)
-
-function fmt(n) { return Number(n).toLocaleString() }
-function fmtWeek(s) {
-  return new Date(s + 'T00:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
-}
 
 // APA style calls for a retrieval date on continuously-updated sources
 // (n.d. in place of a fixed publication year) -- computed as "today" so the
@@ -328,9 +210,6 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
       </div>
     </section>
 
-    <hr v-if="aiStats" class="fa-rule-thin" style="margin: 40px 0;" />
-
-    <!-- Appointment-track history + Position types -->
     <div class="trends-stats-grid">
 
       <!-- Appointment-track history -->
@@ -465,9 +344,6 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 
     </div>
 
-    <hr class="fa-rule-thin" style="margin: 40px 0;" />
-
-    <!-- Academic fields: same current-bars + weekly-history language as position types and appointment track -->
     <div class="trends-stats-grid academic-stats-grid">
       <section class="trends-col academic-panel" aria-labelledby="discipline-trends-title">
         <div class="fa-label" id="discipline-trends-title">Academic disciplines over time</div>
