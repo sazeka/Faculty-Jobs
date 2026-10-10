@@ -465,6 +465,7 @@ const apaCitation = `Azeka, S. (n.d.). Faculty Atlas: The academic job market, m
 
     </div>
 
+    <hr class="fa-rule-thin" style="margin: 40px 0;" />
 
     <!-- Academic fields: same current-bars + weekly-history language as position types and appointment track -->
     <div class="trends-stats-grid academic-stats-grid">
