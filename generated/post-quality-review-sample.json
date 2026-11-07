@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T12:29:42.323Z",
+  "generatedAt": "2026-11-07T16:17:09.305Z",
   "qualityVersion": 1,
   "sampleSize": 200,
   "instructions": "Set humanLabel to valid or invalid, add optional notes, then copy confirmed labels into data/post-quality-human-labels.json.",
@@ -180,34 +180,27 @@
       "notes": ""
     },
     {
-      "id": "21b9f68ad34e03ef8f66",
-      "score": 86,
+      "id": "2f330ccc7a50b1521849",
+      "score": 97,
       "status": "review",
-      "title": "Academic Faculty Director - Dental Assisting",
-      "college": "Pima Community College",
+      "title": "Professor of Nursing",
+      "college": "Central Arizona College",
       "source": "AZ",
-      "url": "https://www.schooljobs.com/careers/pimacc/jobs/5437973/academic-faculty-director-dental-assisting",
+      "url": "https://www.schooljobs.com/careers/centralaz/jobs/3981119/professor-of-nursing",
       "reasons": [
         {
-          "code": "weak_academic_evidence",
+          "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+          "dimension": "freshness",
+          "deduction": 25,
+          "detail": "Posting date 2023-03-29 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
-          "code": "missing_description",
+          "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         }
       ],
       "humanLabel": null,
@@ -361,6 +354,47 @@
       "notes": ""
     },
     {
+      "id": "8c7ddb97a4197e015915",
+      "score": 85,
+      "status": "review",
+      "title": "Conducting/Ensemble Instructors - Open Pool",
+      "college": "Colorado State University-Fort Collins",
+      "source": "CO",
+      "url": "https://csusystem.wd12.myworkdayjobs.com/fortcollins_careers/job/Fort-Collins-CO/Conducting-Ensemble-Instructors---Open-Pool_R2026108545",
+      "reasons": [
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
       "id": "01caef0342f410b87d35",
       "score": 99,
       "status": "pass",
@@ -401,13 +435,13 @@
       "notes": ""
     },
     {
-      "id": "01a251b11abed9f022b6",
+      "id": "01ab0131559c31ff6df4",
       "score": 99,
       "status": "pass",
-      "title": "Full-Time Tenure Track Faculty: Finance (Assistant Professor)",
-      "college": "Quinnipiac University",
+      "title": "Assistant Teaching Professor, Modern Languages and Literatures",
+      "college": "Fairfield University",
       "source": "CT",
-      "url": "https://careers.pageuppeople.com/871/cw/en-us/job/497325/fulltime-tenure-track-faculty-finance-assistant-professor",
+      "url": "https://ffd.wd1.myworkdayjobs.com/EmploymentOpportunities/job/Fairfield-CT/Assistant-Teaching-Professor--Modern-Languages-and-Literatures_JR0003582",
       "reasons": [
         {
           "code": "missing_department",
@@ -415,6 +449,13 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -799,28 +840,14 @@
       "notes": ""
     },
     {
-      "id": "010e171c1172715d8e10",
-      "score": 95,
+      "id": "01130f0c5eaac8c1e6fe",
+      "score": 100,
       "status": "pass",
-      "title": "Term Faculty (Non-Tenure Track) - Jaharis Health Law Faculty Fellow",
-      "college": "DePaul University",
+      "title": "Correctional Adjunct Instructor at Hill Correctional Center",
+      "college": "Lake Land College",
       "source": "IL",
-      "url": "https://academics.depaul.edu/faculty-jobs/Pages/position-detail.aspx?dpusearchbyid=962577",
+      "url": "https://www.schooljobs.com/careers/lakelandcollege/jobs/5500715/correctional-adjunct-instructor-at-hill-correctional-center",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -982,20 +1009,20 @@
       "notes": ""
     },
     {
-      "id": "3922a4d8f37122a7e499",
-      "score": 96,
+      "id": "16b28b57c6fbb97478f4",
+      "score": 95,
       "status": "review",
-      "title": "OMT Table Trainer - Adjunct Professor",
-      "college": "Kansas Health Science University",
+      "title": "Adjunct Instructor - Fine and Performing Arts",
+      "college": "Dodge City Community College",
       "source": "KS",
-      "url": "https://tcsedsystem.wd1.myworkdayjobs.com/KHSC/job/Wichita-KS/OMT-Table-Trainer---Adjunct-Professor_R0007895",
+      "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=fb38771a-5afe-4371-bf51-3936ebb49ef7&ccId=9200394771142_2&jobId=9200067866857_1&lang=en_US&source=CC2",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2024-07-18 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "deduction": 40,
+          "detail": "Posting date 2021-01-13 is more than 5 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_department",
@@ -1151,13 +1178,13 @@
       "notes": ""
     },
     {
-      "id": "2c270a6eaca90124c7e1",
-      "score": 86,
+      "id": "5312c9907985ef3afaea",
+      "score": 89,
       "status": "review",
-      "title": "Ashton B. Carter Visiting Professorship — Harvard Kennedy School",
+      "title": "Chair, Department of Restorative Dentistry and Biomaterials Sciences — School of Dental Medicine",
       "college": "Harvard University",
       "source": "MA",
-      "url": "https://academicpositions.harvard.edu/postings/17010",
+      "url": "https://academicpositions.harvard.edu/postings/16751",
       "reasons": [
         {
           "code": "weak_academic_evidence",
@@ -1165,13 +1192,6 @@
           "dimension": "relevance",
           "deduction": 30,
           "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
         },
         {
           "code": "missing_deadline",
@@ -1251,14 +1271,77 @@
       "notes": ""
     },
     {
-      "id": "0074c3fcfefa83301864",
-      "score": 100,
+      "id": "2c0354875d740aa13176",
+      "score": 86,
+      "status": "review",
+      "title": "Faculty Member in Chemistry+",
+      "college": "College of the Atlantic",
+      "source": "ME",
+      "url": "https://www.coa.edu/human-resources/careers",
+      "reasons": [
+        {
+          "code": "search_page_url",
+          "severity": "warning",
+          "dimension": "link",
+          "deduction": 45,
+          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "00164d593d1fd4a630c9",
+      "score": 95,
       "status": "pass",
-      "title": "Postdoctoral Scholar of Natural Science - Fixed Term",
-      "college": "Michigan State University",
+      "title": "Clinical Assistant/Associate Professor in Intraoperative Neurophysiology",
+      "college": "University of Michigan",
       "source": "MI",
-      "url": "https://careers.msu.edu/jobs/postdoctoral-scholar-fixed-term-east-lansing-michigan-united-states-27461a60-51aa-4389-bb0f-7020fe974184",
-      "reasons": [],
+      "url": "https://careers.umich.edu/job_detail/285258/clinical-assistantassociate-professor-intraoperative-neurophysiology",
+      "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
       "humanLabel": null,
       "notes": ""
     },
@@ -1310,20 +1393,27 @@
       "notes": ""
     },
     {
-      "id": "cf0bd1f32bda5cdeba53",
-      "score": 90,
+      "id": "4721ae8edb379ddc45bf",
+      "score": 85,
       "status": "review",
-      "title": "Diesel Mechanics Technology Instructor, Hibbing Campus",
-      "college": "Minnesota North College",
+      "title": "Practical Nursing Faculty (Pool)",
+      "college": "Anoka Technical College",
       "source": "MN",
-      "url": "https://minnesotanorth.edu/about-us/employment",
+      "url": "https://minnstate.wd115.myworkdayjobs.com/Minnesota_State_Careers/job/Anoka/Practical-Nursing-Faculty_JR0000006086",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_department",
@@ -1331,26 +1421,33 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
       "notes": ""
     },
     {
-      "id": "00f51b16dca0c383db6c",
-      "score": 99,
+      "id": "00526521836a62a1075d",
+      "score": 96,
       "status": "pass",
-      "title": "Adjunct Instructor, Theatre",
-      "college": "Lindenwood University",
+      "title": "Math Adjunct Instructor",
+      "college": "University of Missouri-St. Louis",
       "source": "MO",
-      "url": "https://lindenwood.wd1.myworkdayjobs.com/CareerOpportunities/job/St-Charles-Campus/Adjunct-Instructor--Theatre_R0010652",
+      "url": "https://erecruit.umsystem.edu/psp/tamext/STLOU/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=11&JobOpeningId=61642&PostingSeq=1",
       "reasons": [
         {
-          "code": "missing_department",
+          "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_deadline",
@@ -1465,13 +1562,13 @@
       "notes": ""
     },
     {
-      "id": "73718cee09f0c8042d63",
+      "id": "5b3007e9f99ab29e6ef5",
       "score": 85,
       "status": "review",
-      "title": "Dental Hygiene Faculty",
+      "title": "Nursing Faculty",
       "college": "Great Falls College Montana State University",
       "source": "MT",
-      "url": "https://jobs.gfcmsu.edu/postings/2593",
+      "url": "https://jobs.gfcmsu.edu/postings/2599",
       "reasons": [
         {
           "code": "weak_academic_evidence",
@@ -1539,7 +1636,7 @@
     },
     {
       "id": "055309f6df9508235136",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Teaching Assistant Professor, Analog Electronics",
       "college": "University of North Dakota",
@@ -1547,25 +1644,11 @@
       "url": "https://careers.und.edu/jobs/teaching-assistant-professor-analog-electronics-grand-forks-north-dakota-united-states",
       "reasons": [
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -1619,14 +1702,21 @@
       "notes": ""
     },
     {
-      "id": "0189585d296925920f56",
-      "score": 99,
+      "id": "0003f99b5e3ae99b2282",
+      "score": 95,
       "status": "pass",
-      "title": "Adjunct Faculty - Organic Chemistry",
-      "college": "Colby-Sawyer College",
+      "title": "Adjunct Hourly Medical Assistant",
+      "college": "University of New Hampshire System",
       "source": "NH",
-      "url": "https://secure5.entertimeonline.com/ta/ColbySawyer.careers?CareersSearch=&career_portal_id=1130757&ein_id=85020931&lang=en-US",
+      "url": "https://usnh.wd5.myworkdayjobs.com/Careers/job/University-of-New-Hampshire--Main-Campus/Adjunct-Hourly-Medical-Assistant_JR10524",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_department",
           "severity": "info",
@@ -1666,20 +1756,34 @@
       "notes": ""
     },
     {
-      "id": "0109e8e230e010ea4286",
-      "score": 99,
+      "id": "008cb8b921942682f451",
+      "score": 95,
       "status": "pass",
-      "title": "Assistant Professor, Associate Professor, Professor Adolescent Medicine",
-      "college": "Rutgers, The State University of New Jersey",
+      "title": "Adjunct Faculty, Biology-Anatomy and Physiology",
+      "college": "Mercer County Community College",
       "source": "NJ",
-      "url": "https://jobs.rutgers.edu/postings/280445",
+      "url": "https://www.schooljobs.com/careers/mcccedu/jobs/4074609/adjunct-faculty-biology-anatomy-and-physiology",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -1976,13 +2080,13 @@
       "notes": ""
     },
     {
-      "id": "49982d1709b026fe39c1",
+      "id": "3b108fef2d0cc7325d95",
       "score": 85,
       "status": "review",
-      "title": "Surgical Technologist Faculty",
-      "college": "Treasure Valley Community College",
+      "title": "Social Work Director of Field Education Faculty Position",
+      "college": "Warner Pacific University",
       "source": "OR",
-      "url": "https://resources.tvcc.cc/file_manager/download.cfm?file=10011",
+      "url": "https://warnerpacific.catsone.com/careers/1611/jobs/16871233-Social-Work-Director-of-Field-Education-Faculty-Position",
       "reasons": [
         {
           "code": "weak_academic_evidence",
@@ -2272,20 +2376,27 @@
       "notes": ""
     },
     {
-      "id": "58ce5e98b08fcba6e86f",
-      "score": 97,
+      "id": "50291d7ce1f3f578fe9c",
+      "score": 86,
       "status": "review",
-      "title": "Adjunct Faculty - Business & Industry Division (Multiple Disciplines)",
-      "college": "Chattanooga State Community College",
+      "title": "Assistant/Associate Professor of Economics",
+      "college": "Milligan University",
       "source": "TN",
-      "url": "https://careers.tbr.edu/jobs/7280dcb2-88f2-4517-b0b6-b5633849941e",
+      "url": "https://milligan.edu/employment",
       "reasons": [
         {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "search_page_url",
           "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2023-09-05 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "dimension": "link",
+          "deduction": 45,
+          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_department",
@@ -2293,6 +2404,13 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -2353,14 +2471,36 @@
       "notes": ""
     },
     {
-      "id": "0110013f4ff8994f8856",
-      "score": 100,
+      "id": "00ce88e4db34b69761c1",
+      "score": 95,
       "status": "pass",
-      "title": "Open Rank Faculty Position for Department of Informatics in Human-Computer Interaction",
+      "title": "Clinical Adult Neuropsychologist (HS Clinical Professor, Open Ranks)",
       "college": "UC Irvine",
       "source": "UC",
-      "url": "https://recruit.ap.uci.edu/JPF10388",
-      "reasons": [],
+      "url": "https://recruit.ap.uci.edu/JPF10495",
+      "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
       "humanLabel": null,
       "notes": ""
     },
@@ -2392,40 +2532,13 @@
       "notes": ""
     },
     {
-      "id": "024ad59b9a92e0d77ce5",
-      "score": 99,
-      "status": "pass",
-      "title": "Assistant Professor- Nursing",
-      "college": "UMass Boston",
-      "source": "UMass",
-      "url": "https://employmentopportunities.umb.edu/boston/en-us/job/530277/assistant-professor-nursing",
-      "reasons": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "0065ba0031debcffeeee",
+      "id": "01e452466eaa9bceff15",
       "score": 95,
       "status": "pass",
-      "title": "Assistant Professor of Information Technology",
-      "college": "Middle Georgia State University",
-      "source": "USG",
-      "url": "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=304219&PostingSeq=1",
+      "title": "Assistant Professor - Engineering",
+      "college": "UMass Boston",
+      "source": "UMass",
+      "url": "https://employmentopportunities.umb.edu/boston/en-us/job/530437/assistant-professor-engineering",
       "reasons": [
         {
           "code": "missing_description",
@@ -2453,21 +2566,14 @@
       "notes": ""
     },
     {
-      "id": "edf90e1dca6a36f026ee",
-      "score": 85,
-      "status": "review",
-      "title": "Limited Term Faculty- Forensic Science",
-      "college": "Albany State University",
+      "id": "0065ba0031debcffeeee",
+      "score": 95,
+      "status": "pass",
+      "title": "Assistant Professor of Information Technology",
+      "college": "Middle Georgia State University",
       "source": "USG",
-      "url": "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=303728&PostingSeq=1",
+      "url": "https://careers.hprod.onehcm.usg.edu/psc/careers/CAREERS/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=304219&PostingSeq=1",
       "reasons": [
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
-        },
         {
           "code": "missing_description",
           "severity": "info",
@@ -2553,20 +2659,27 @@
       "notes": ""
     },
     {
-      "id": "35c8bb4615c7e7daa489",
-      "score": 90,
+      "id": "6d6bffe9fa4fbf3c8abe",
+      "score": 85,
       "status": "review",
-      "title": "Open-Rank Professor of Biology",
-      "college": "Southern Virginia University",
+      "title": "EM Medical Education Fellow |SOM- M89994 | Emergency Medicine",
+      "college": "Virginia Commonwealth University",
       "source": "VA",
-      "url": "https://svu.edu/about/careers",
+      "url": "https://vcujobs.com/jobs/em-medical-education-fellow-som-m89994-emergency-medicine-mcv-main-campus-virginia-united-states",
       "reasons": [
         {
-          "code": "search_page_url",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "link",
-          "deduction": 45,
-          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_department",
@@ -2621,20 +2734,20 @@
       "notes": ""
     },
     {
-      "id": "0e455e2cf8b86fef24b3",
+      "id": "1b7d1ced31756df0e5a9",
       "score": 96,
       "status": "review",
-      "title": "Assistant/Associate/Professor - Inpatient Psychiatry",
+      "title": "Assistant/Associate/Professor",
       "college": "University of Vermont",
       "source": "VT",
-      "url": "https://www.uvmjobs.com/postings/88414",
+      "url": "https://www.uvmjobs.com/postings/81424",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2023-02-01 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "detail": "Posting date 2023-01-24 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_department",
@@ -2749,20 +2862,13 @@
     },
     {
       "id": "012b8ebe345a5dcef0b3",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Adjunct - EKG Technician",
       "college": "BridgeValley Community & Technical College",
       "source": "WV",
       "url": "https://www.schooljobs.com/careers/bridgevalleyedu/jobs/4185805/adjunct-ekg-technician",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
         {
           "code": "missing_department",
           "severity": "info",
@@ -2809,20 +2915,20 @@
       "notes": ""
     },
     {
-      "id": "0992e045ea141691b8c4",
-      "score": 99,
+      "id": "02f1bc214b640718a288",
+      "score": 96,
       "status": "pass",
-      "title": "Assoc Professor-Graduate Program Director (Clinical-Fixed Term)-FWWSON",
-      "college": "University of Wyoming",
+      "title": "Social Work/Human Services Instructor",
+      "college": "Central Wyoming College",
       "source": "WY",
-      "url": "https://eeik.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/job/251316",
+      "url": "https://www.schooljobs.com/careers/cwc/jobs/5539256/social-work-human-services-instructor",
       "reasons": [
         {
-          "code": "missing_department",
+          "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_deadline",
@@ -2863,34 +2969,20 @@
       "notes": ""
     },
     {
-      "id": "016194b000f1f26014a9",
-      "score": 98,
+      "id": "0fbaf5b34e1d7d2e211e",
+      "score": 99,
       "status": "pass",
-      "title": "Adjunct Faculty pool - Teaching",
-      "college": "Alaska Christian College",
+      "title": "Assistant Professor of Animal Ecology",
+      "college": "University of Alaska Fairbanks",
       "source": "AK",
-      "url": "https://alaskacc.bamboohr.com/careers/67",
+      "url": "https://careers.alaska.edu/jobs/assistant-professor-of-animal-ecology-fairbanks-alaska-united-states",
       "reasons": [
-        {
-          "code": "aging_posting_no_evergreen_signal",
-          "severity": "info",
-          "dimension": "freshness",
-          "deduction": 10,
-          "detail": "Posting date 2025-06-23 is more than 1 year(s) old with no evergreen/applicant-pool signal."
-        },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -3032,20 +3124,20 @@
       "notes": ""
     },
     {
-      "id": "0614ea121310aaaaf2d8",
-      "score": 99,
+      "id": "01da676655a7fde6b98f",
+      "score": 96,
       "status": "pass",
-      "title": "Associate/Full Professor (Tenure)",
-      "college": "University of Arizona",
+      "title": "Adjunct Faculty: Philosophy",
+      "college": "Yavapai College",
       "source": "AZ",
-      "url": "https://arizona.csod.com/ux/ats/careersite/4/home/requisition/27272?c=arizona",
+      "url": "https://www.schooljobs.com/careers/ycedu/jobs/5465297/adjunct-faculty-philosophy",
       "reasons": [
         {
-          "code": "missing_department",
+          "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_deadline",
@@ -3053,33 +3145,6 @@
           "dimension": "completeness",
           "deduction": 5,
           "detail": "Deadline is not provided."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "2f330ccc7a50b1521849",
-      "score": 97,
-      "status": "review",
-      "title": "Professor of Nursing",
-      "college": "Central Arizona College",
-      "source": "AZ",
-      "url": "https://www.schooljobs.com/careers/centralaz/jobs/3981119/professor-of-nursing",
-      "reasons": [
-        {
-          "code": "stale_posting_no_evergreen_signal",
-          "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2023-03-29 is more than 2 year(s) old with no evergreen/applicant-pool signal."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
         }
       ],
       "humanLabel": null,
@@ -3172,20 +3237,34 @@
       "notes": ""
     },
     {
-      "id": "02fd52713b0fc7bf52bf",
-      "score": 99,
+      "id": "04999e8ca6c0124cded1",
+      "score": 95,
       "status": "pass",
-      "title": "Instructor - Environmental Science",
-      "college": "Pueblo Community College",
+      "title": "Assistant or Associate Professor, Electrical Engineering, Power Electronics",
+      "college": "Colorado School of Mines",
       "source": "CO",
-      "url": "https://hr.cccs.edu/jobs/instructor-environmental-science-pueblo-colorado-united-states",
+      "url": "https://mines.wd1.myworkdayjobs.com/Mines_Careers/job/Colorado/Assistant-or-Associate-Professor--Electrical-Engineering--Power-Electronics_JR110324-1",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -3239,20 +3318,20 @@
       "notes": ""
     },
     {
-      "id": "01ab0131559c31ff6df4",
-      "score": 99,
+      "id": "047bf706419c70e188b1",
+      "score": 96,
       "status": "pass",
-      "title": "Assistant Teaching Professor, Modern Languages and Literatures",
-      "college": "Fairfield University",
+      "title": "Full-Time Faculty: School of Medicine",
+      "college": "Quinnipiac University",
       "source": "CT",
-      "url": "https://ffd.wd1.myworkdayjobs.com/EmploymentOpportunities/job/Fairfield-CT/Assistant-Teaching-Professor--Modern-Languages-and-Literatures_JR0003582",
+      "url": "https://careers.pageuppeople.com/871/cw/en-us/job/497455/fulltime-faculty-school-of-medicine",
       "reasons": [
         {
-          "code": "missing_department",
+          "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_deadline",
@@ -3266,20 +3345,20 @@
       "notes": ""
     },
     {
-      "id": "0091ca97f222607cd0f2",
-      "score": 100,
+      "id": "087f37f3b34afb591c76",
+      "score": 99,
       "status": "pass",
-      "title": "Dean of the School of Nursing and Health Professions",
-      "college": "Trinity Washington University",
+      "title": "Adjunct Professor – Life and Physical Sciences ,CCMA",
+      "college": "University of the District of Columbia",
       "source": "DC",
-      "url": "https://www2.trinitydc.edu/jobs/dean-of-the-school-of-nursing-and-health-professions",
+      "url": "https://udc.applicantstack.com/x/detail/a2hbyxhs0kd0",
       "reasons": [
         {
-          "code": "missing_deadline",
+          "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         }
       ],
       "humanLabel": null,
@@ -3361,7 +3440,7 @@
     },
     {
       "id": "00b23dda65724176f8eb",
-      "score": 95,
+      "score": 99,
       "status": "pass",
       "title": "Postdoctoral Associate - Crop Transformation Center (CTC)",
       "college": "University of Florida",
@@ -3369,25 +3448,11 @@
       "url": "https://explore.jobs.ufl.edu/en-us/job/541469/postdoctoral-associate-crop-transformation-center-ctc",
       "reasons": [
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -3529,13 +3594,13 @@
       "notes": ""
     },
     {
-      "id": "2d179160a64491efb225",
+      "id": "213867a9fad546436690",
       "score": 97,
       "status": "review",
-      "title": "Lecturer, CC (Electrical Engineering)",
+      "title": "Lecturer, CC (Hawaiian Language)",
       "college": "Kauai Community College",
       "source": "HI",
-      "url": "https://www.schooljobs.com/careers/hawaiiedu/jobs/2804178/lecturer-cc-electrical-engineering",
+      "url": "https://www.schooljobs.com/careers/hawaiiedu/jobs/2735920/lecturer-cc-hawaiian-language",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -3630,13 +3695,13 @@
       "notes": ""
     },
     {
-      "id": "01130f0c5eaac8c1e6fe",
+      "id": "01aedf28a4909b33baa6",
       "score": 100,
       "status": "pass",
-      "title": "Correctional Adjunct Instructor at Hill Correctional Center",
-      "college": "Lake Land College",
+      "title": "Adjunct Faculty, Interdisciplinary Studies @ University Center of Lake County AY",
+      "college": "Governors State University",
       "source": "IL",
-      "url": "https://www.schooljobs.com/careers/lakelandcollege/jobs/5500715/correctional-adjunct-instructor-at-hill-correctional-center",
+      "url": "https://www.schooljobs.com/careers/govst/jobs/5139905/adjunct-faculty-interdisciplinary-studies-university-center-of-lake-county-ay2",
       "reasons": [
         {
           "code": "missing_deadline",
@@ -3650,27 +3715,20 @@
       "notes": ""
     },
     {
-      "id": "0af554934cfb3d4ab69a",
-      "score": 96,
+      "id": "09b1312120745c92b638",
+      "score": 97,
       "status": "review",
-      "title": "Health, Sports, Exercise, Physical Ed. Adjunct",
-      "college": "Triton College",
+      "title": "Adjunct Faculty Business - IT",
+      "college": "Lake Land College",
       "source": "IL",
-      "url": "https://jobopenings.triton.edu/postings/2022",
+      "url": "https://www.schooljobs.com/careers/lakelandcollege/jobs/4245880/adjunct-faculty-business-it",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2024-01-10 is more than 2 year(s) old with no evergreen/applicant-pool signal."
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
+          "detail": "Posting date 2023-10-16 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_deadline",
@@ -3745,40 +3803,54 @@
       "notes": ""
     },
     {
-      "id": "011037349d660c8d0656",
-      "score": 99,
+      "id": "006b5509e2effbdcfd77",
+      "score": 95,
       "status": "pass",
-      "title": "Adult Education Instructor – ELA Seward County Community College Your future, our legacy Liberal, KS Full Time Posted on",
-      "college": "Seward County Community College",
+      "title": "Full-Time Electrical Technology Instructor",
+      "college": "Manhattan Area Technical College",
       "source": "KS",
-      "url": "https://sccc.edu/job/seward-county-community-college-liberal-ks-full-time-adult-education-instructor-ela",
+      "url": "https://manhattantech.edu/electricalinstructor",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
       "notes": ""
     },
     {
-      "id": "b522143c94267b1f1cfc",
-      "score": 96,
+      "id": "185f80d259aa66994d86",
+      "score": 95,
       "status": "review",
-      "title": "Adjunct Faculty, AMT",
-      "college": "Wichita State University-Campus of Applied Sciences and Technology",
+      "title": "Adjunct Instructor - Humanities",
+      "college": "Dodge City Community College",
       "source": "KS",
-      "url": "https://apply.workable.com/j/A79AF7037E",
+      "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=fb38771a-5afe-4371-bf51-3936ebb49ef7&ccId=9200394771142_2&jobId=9200067867493_1&lang=en_US&source=CC2",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2024-10-29 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "deduction": 40,
+          "detail": "Posting date 2021-01-13 is more than 5 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_department",
@@ -3819,20 +3891,20 @@
       "notes": ""
     },
     {
-      "id": "0a04c1120b98f7cee23f",
+      "id": "0cb422ba4c02cee260d4",
       "score": 97,
       "status": "review",
-      "title": "Adjunct Faculty - Communication",
-      "college": "Bluegrass Community and Technical College",
+      "title": "Adjunct Faculty- Math",
+      "college": "Hopkinsville Community College",
       "source": "KY",
-      "url": "https://careers.kctcs.edu/jobs/adjunct-faculty-communication-lexington-kentucky-united-states",
+      "url": "https://careers.kctcs.edu/jobs/adjunct-faculty-math-hopkinsville-kentucky-united-states",
       "reasons": [
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "deduction": 25,
-          "detail": "Posting date 2023-05-04 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "detail": "Posting date 2023-01-06 is more than 2 year(s) old with no evergreen/applicant-pool signal."
         },
         {
           "code": "missing_department",
@@ -3934,20 +4006,27 @@
       "notes": ""
     },
     {
-      "id": "5312c9907985ef3afaea",
-      "score": 89,
+      "id": "822e3b04c52611d0edf0",
+      "score": 90,
       "status": "review",
-      "title": "Chair, Department of Restorative Dentistry and Biomaterials Sciences — School of Dental Medicine",
-      "college": "Harvard University",
+      "title": "Visiting Assistant Professor of Academic Excellence, Bar Examination Preparation Program",
+      "college": "New England Law-Boston",
       "source": "MA",
-      "url": "https://academicpositions.harvard.edu/postings/16751",
+      "url": "https://www.nesl.edu/careers",
       "reasons": [
         {
-          "code": "weak_academic_evidence",
+          "code": "search_page_url",
           "severity": "warning",
-          "dimension": "relevance",
-          "deduction": 30,
-          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+          "dimension": "link",
+          "deduction": 45,
+          "detail": "URL appears to be a search or careers landing page rather than a stable posting."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
         },
         {
           "code": "missing_deadline",
@@ -3988,20 +4067,27 @@
       "notes": ""
     },
     {
-      "id": "35fdcd30e5ecbac2d34a",
-      "score": 96,
+      "id": "3512924cf31c9cdc553d",
+      "score": 85,
       "status": "review",
-      "title": "Adjunct Faculty - English",
+      "title": "Environmental Informatics and Computational Environment Science Faculty",
       "college": "Morgan State University",
       "source": "MD",
-      "url": "https://morgan.peopleadmin.com/postings/8664",
+      "url": "https://morgan.peopleadmin.com/postings/9046",
       "reasons": [
         {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2024-05-22 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_department",
@@ -4034,14 +4120,21 @@
       "notes": ""
     },
     {
-      "id": "00de7fc2ce79f7c220db",
-      "score": 99,
+      "id": "0045d76682633b1f6848",
+      "score": 95,
       "status": "pass",
-      "title": "Computer Science Faculty",
-      "college": "Calvin University",
+      "title": "Adjunct Clinical Nursing Faculty",
+      "college": "West Shore Community College",
       "source": "MI",
-      "url": "https://calvin.wd5.myworkdayjobs.com/CalvinUniversityCareers/job/Grand-Rapids-Campus/Computer-Science-Faculty_R-4995",
+      "url": "https://www.schooljobs.com/careers/westshore/jobs/2534874/adjunct-part-time-clinical-nursing-faculty?pagetype=jobOpportunitiesJobs",
       "reasons": [
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
         {
           "code": "missing_department",
           "severity": "info",
@@ -4108,14 +4201,62 @@
       "notes": ""
     },
     {
-      "id": "011325cff77537ac10c6",
-      "score": 100,
-      "status": "pass",
-      "title": "ASSISTANT/ASSOCIATE CLINICAL PROFESSOR of Acute Care/UMKC School of Dentistry/Restorative Clinical Services",
-      "college": "University of Missouri-Kansas City",
-      "source": "MO",
-      "url": "https://erecruit.umsystem.edu/psc/tamext/KCITY/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=8&JobOpeningId=60221&PostingSeq=1",
+      "id": "5b780586db1273fda768",
+      "score": 85,
+      "status": "review",
+      "title": "Social Work Faculty — Posted on: 11/2/2026 - Application Deadline",
+      "college": "Concordia College at Moorhead",
+      "source": "MN",
+      "url": "https://concordiacollege.csod.com/ux/ats/careersite/1/home/requisition/275?c=concordiacollege",
       "reasons": [
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
+        }
+      ],
+      "humanLabel": null,
+      "notes": ""
+    },
+    {
+      "id": "00f51b16dca0c383db6c",
+      "score": 99,
+      "status": "pass",
+      "title": "Adjunct Instructor, Theatre",
+      "college": "Lindenwood University",
+      "source": "MO",
+      "url": "https://lindenwood.wd1.myworkdayjobs.com/CareerOpportunities/job/St-Charles-Campus/Adjunct-Instructor--Theatre_R0010652",
+      "reasons": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
         {
           "code": "missing_deadline",
           "severity": "info",
@@ -4345,13 +4486,20 @@
     },
     {
       "id": "020d1a4df46b41e3282f",
-      "score": 99,
+      "score": 98,
       "status": "pass",
       "title": "Teaching Lecturer-General",
       "college": "Plymouth State University",
       "source": "NH",
       "url": "https://usnh.wd5.myworkdayjobs.com/Careers/job/Plymouth-State-University/Teaching-Lecturer-General_JR756",
       "reasons": [
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
+          "deduction": 10,
+          "detail": "Posting date 2025-11-05 is more than 1 year(s) old with no evergreen/applicant-pool signal."
+        },
         {
           "code": "missing_department",
           "severity": "info",
@@ -4391,34 +4539,20 @@
       "notes": ""
     },
     {
-      "id": "011b5d37306a6c45d8eb",
-      "score": 95,
+      "id": "0109e8e230e010ea4286",
+      "score": 99,
       "status": "pass",
-      "title": "Adjunct Instructor of History",
-      "college": "Sussex County Community College",
+      "title": "Assistant Professor, Associate Professor, Professor Adolescent Medicine",
+      "college": "Rutgers, The State University of New Jersey",
       "source": "NJ",
-      "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=e9e9f45e-372f-46fc-89fc-6e6dab54a985&ccId=19000101_000001&jobId=9201048287958_1&lang=en_US&source=CC2",
+      "url": "https://jobs.rutgers.edu/postings/280445",
       "reasons": [
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 35,
-          "detail": "Description is missing."
-        },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 5,
-          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -4445,20 +4579,34 @@
       "notes": ""
     },
     {
-      "id": "03c9254752a761ba1b54",
-      "score": 99,
+      "id": "04dffd099fa8e99e6693",
+      "score": 98,
       "status": "pass",
-      "title": "Assistant/Associate Professor - Stable Isotope Geochemistry",
-      "college": "University of New Mexico-Los Alamos Campus",
+      "title": "Adjunct Faculty in Cosmetology/Barbering",
+      "college": "Clovis Community College (NM)",
       "source": "NM",
-      "url": "https://unm.csod.com/ux/ats/careersite/18/home/requisition/37944?c=unm",
+      "url": "https://chess.wd1.myworkdayjobs.com/CCC/job/Clovis-Community-College-Clovis-NM/Adjunct-Faculty-in-Cosmetology_JR106306-2",
       "reasons": [
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
+          "deduction": 10,
+          "detail": "Posting date 2025-01-23 is more than 1 year(s) old with no evergreen/applicant-pool signal."
+        },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -4722,20 +4870,27 @@
       "notes": ""
     },
     {
-      "id": "5cbb2e6138b57a5794f3",
-      "score": 96,
+      "id": "49982d1709b026fe39c1",
+      "score": 85,
       "status": "review",
-      "title": "Articulated Instructor (High School Dual Credit Instructors)",
-      "college": "Clatsop Community College",
+      "title": "Surgical Technologist Faculty",
+      "college": "Treasure Valley Community College",
       "source": "OR",
-      "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=e43f1cd5-3b22-4590-ab84-adfbf606d8c7&ccId=19000101_000001&jobId=9201059498387_1&lang=en_US&source=CC2",
+      "url": "https://resources.tvcc.cc/file_manager/download.cfm?file=10011",
       "reasons": [
         {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2024-10-01 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_department",
@@ -4977,20 +5132,27 @@
       "notes": ""
     },
     {
-      "id": "6d0625c36e930a24b0da",
-      "score": 97,
+      "id": "6aab651cc0f07c658cae",
+      "score": 85,
       "status": "review",
-      "title": "Adjunct Faculty – Computer Applications and Spreadsheet Applications (Dual Enrollment at High Schools)",
-      "college": "Chattanooga State Community College",
+      "title": "Principal Faculty- Physician Assistant Program",
+      "college": "Bethel University",
       "source": "TN",
-      "url": "https://careers.tbr.edu/jobs/adjunct-faculty-computer-applications-and-spreadsheet-applications-dual-enrollment-at-high-schools-chattanooga-tennessee-united-states",
+      "url": "https://www.bethelu.edu/employees/careers/principal-faculty-physician-assistant-program-2",
       "reasons": [
         {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "freshness",
-          "deduction": 25,
-          "detail": "Posting date 2023-09-05 is more than 2 year(s) old with no evergreen/applicant-pool signal."
+          "dimension": "relevance",
+          "deduction": 30,
+          "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
         },
         {
           "code": "missing_department",
@@ -4998,6 +5160,13 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -5065,33 +5234,25 @@
       "notes": ""
     },
     {
-      "id": "03c9d79c5c27764e2b83",
-      "score": 99,
+      "id": "0110013f4ff8994f8856",
+      "score": 100,
       "status": "pass",
-      "title": "Part-Time Instructor: Montessori Teacher Education Program",
+      "title": "Open Rank Faculty Position for Department of Informatics in Human-Computer Interaction",
       "college": "UC Irvine",
       "source": "UC",
-      "url": "https://recruit.ap.uci.edu/JPF10487",
-      "reasons": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        }
-      ],
+      "url": "https://recruit.ap.uci.edu/JPF10388",
+      "reasons": [],
       "humanLabel": null,
       "notes": ""
     },
     {
-      "id": "7a16916fa0cda0f6955e",
-      "score": 90,
+      "id": "39f745e3558a73c73629",
+      "score": 85,
       "status": "review",
-      "title": "Chair, Department of Family & Community Medicine",
-      "college": "UC Davis",
+      "title": "Male Reproductive Biology Recruitment - Faculty Position",
+      "college": "UC San Francisco",
       "source": "UC",
-      "url": "https://recruit.ucdavis.edu/JPF07779",
+      "url": "https://aprecruit.ucsf.edu/JPF06279",
       "reasons": [
         {
           "code": "weak_academic_evidence",
@@ -5099,19 +5260,40 @@
           "dimension": "relevance",
           "deduction": 30,
           "detail": "No strong academic appointment signal appears in the title or normalized metadata."
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 35,
+          "detail": "Description is missing."
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 10,
+          "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
       "notes": ""
     },
     {
-      "id": "052ea98b54378e0eae11",
+      "id": "024ad59b9a92e0d77ce5",
       "score": 99,
       "status": "pass",
-      "title": "Tenure Track Assistant Professor - Plastics Engineering",
-      "college": "UMass Lowell",
+      "title": "Assistant Professor- Nursing",
+      "college": "UMass Boston",
       "source": "UMass",
-      "url": "https://explorejobs.uml.edu/lowell/en-us/job/530408/tenure-track-assistant-professor-plastics-engineering",
+      "url": "https://employmentopportunities.umb.edu/boston/en-us/job/530277/assistant-professor-nursing",
       "reasons": [
         {
           "code": "missing_department",
@@ -5119,6 +5301,13 @@
           "dimension": "completeness",
           "deduction": 10,
           "detail": "Department is missing or does not look like a valid department name."
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "deduction": 5,
+          "detail": "Deadline is not provided."
         }
       ],
       "humanLabel": null,
@@ -5194,26 +5383,6 @@
           "deduction": 40,
           "detail": "Posting date 2017-08-21 is more than 5 year(s) old with no evergreen/applicant-pool signal."
         },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "deduction": 10,
-          "detail": "Department is missing or does not look like a valid department name."
-        }
-      ],
-      "humanLabel": null,
-      "notes": ""
-    },
-    {
-      "id": "0119e4b404aba52a5311",
-      "score": 99,
-      "status": "pass",
-      "title": "Postdoctoral Associate",
-      "college": "Virginia Tech",
-      "source": "VA",
-      "url": "https://jobs.apply.vt.edu/jobs/postdoctoral-associate-blacksburg-virginia-united-states-fe0097b5-b379-4fdb-937e-349dbe1c736c",
-      "reasons": [
         {
           "code": "missing_department",
           "severity": "info",
