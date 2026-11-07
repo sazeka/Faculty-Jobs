@@ -55,7 +55,7 @@ cd "$REPO"
 
 sync_to_origin() {
   git fetch --quiet origin main
-  git checkout --quiet -B main origin/main
+  git checkout --quiet --force -B main origin/main
   git reset --quiet --hard origin/main
   git clean -fdq -e node_modules -e web-vue/node_modules
 }
