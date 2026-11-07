@@ -42,7 +42,7 @@ concurrency:
 
 jobs:
   backfill:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       DESC_PLATFORM: ${{ inputs.platform }}
       DESC_MAX: ${{ inputs.max }}
