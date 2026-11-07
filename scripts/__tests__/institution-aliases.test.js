@@ -51,6 +51,21 @@ test("folds Minnesota State campus labels, single-college districts and St. Clou
   }
 });
 
+// The strict institution audit failed on these job-feed labels from
+// 2026-10-17: two repeated an existing UNITID, two had no metadata.
+test("folds Mt. San Antonio, MSU Moorhead, Cañada and Contra Costa CCD spellings", () => {
+  const expected = {
+    "Mt. San Antonio College": "Mt San Antonio College",
+    "Minnesota State University, Moorhead": "Minnesota State University Moorhead",
+    "Cañada College": "Canada College",
+    "Contra Costa CCD": "Contra Costa Community College District Office",
+  };
+  for (const [alias, canonical] of Object.entries(expected)) {
+    assert.equal(canonicalInstitutionName(alias), canonical, alias);
+    assert.equal(isInstitutionAlias(canonical), false, canonical);
+  }
+});
+
 test("alias targets are canonical names, not other aliases", () => {
   for (const name of ["Central Lakes College-Brainerd", "Minnesota North College", "St Cloud Technical and Community College", "Citrus College"]) {
     assert.equal(isInstitutionAlias(name), false, name);

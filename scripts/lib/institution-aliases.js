@@ -111,6 +111,13 @@ const ALIASES = new Map(
     // Single-college districts.
     ["Citrus CCD", "Citrus College"],
     ["Gavilan CCD", "Gavilan College"],
+    // Job-feed spellings of configured IPEDS names (same UNITID / campus).
+    ["Mt. San Antonio College", "Mt San Antonio College"],
+    ["Minnesota State University, Moorhead", "Minnesota State University Moorhead"],
+    ["Cañada College", "Canada College"],
+    // Three-college district posting on the statewide CA CC board without a
+    // campus; file under the district office record (UNITID 112817).
+    ["Contra Costa CCD", "Contra Costa Community College District Office"],
     ["Colorado State University", "Colorado State University-Fort Collins"],
     ["SUNY Dutchess Community College", "Dutchess Community College"],
     ["SUNY Erie Community College", "Erie Community College"],
