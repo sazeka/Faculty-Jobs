@@ -657,11 +657,15 @@ async function main() {
     errors: [],
   };
 
+  // With nothing firing there is nothing to create, but still fall through
+  // (outside dry-run) so the auto-close step below closes recovered alerts.
   if (candidates.length === 0) {
-    console.log("\n  No alert conditions triggered. Nothing to do.");
-    writeJson(ALERT_REPORT_PATH, report);
-    console.log(`\n  Report saved: generated/alert-issues-report.json\n`);
-    return;
+    console.log("\n  No alert conditions triggered.");
+    if (DRY_RUN) {
+      writeJson(ALERT_REPORT_PATH, report);
+      console.log(`\n  Report saved: generated/alert-issues-report.json\n`);
+      return;
+    }
   }
 
   // ── Dry-run mode ──────────────────────────────────────────────────────────
