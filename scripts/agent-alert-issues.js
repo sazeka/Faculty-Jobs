@@ -10,9 +10,15 @@
  *   2. Scraper drop    — data-health-report.json sourceDropWarnings entry with dropPct >= 60
  *   3. Live site fail  — live-site-health.json overallStatus === "FAIL" (case-insensitive)
  *   4. Data staleness  — jobs.json generatedAt (or scrapedAt) more than 48 hours old
- *   5. Scheduled scrape heartbeat — no "Scheduled scrape update" commit in the
- *      last 60 hours. Distinct from #4 because a manually dispatched scrape can
- *      refresh jobs.json without proving that the unattended schedule works.
+ *   5. Scheduled job heartbeats — no commit carrying an unattended job's
+ *      signature within its window (see COMMIT_HEARTBEATS):
+ *        - "Scheduled scrape update" (GitHub Actions scrape.yml), 60 hours.
+ *          Distinct from #4 because a manually dispatched scrape can refresh
+ *          jobs.json without proving that the unattended schedule works.
+ *        - "Daily LLM enrichment" (Dell cron), 50 hours.
+ *        - "Weekly liveness audit" (Dell cron), 204 hours.
+ *      The Dell jobs have no other monitoring: from 2026-09-25 to 2026-11-07
+ *      both failed every run without anyone noticing.
  *
  * Usage:
  *   node scripts/agent-alert-issues.js [--dry-run]
@@ -46,7 +52,62 @@ const DEAD_PCT_THRESHOLD  = 50;   // % dead job URLs before alerting
 const DEAD_MIN_CHECKED    = 5;    // minimum checked URLs required
 const DROP_PCT_THRESHOLD  = 60;   // % scraper count drop before alerting
 const STALENESS_HOURS     = 48;   // hours before jobs.json is considered stale
-const HEARTBEAT_HOURS     = 60;   // alternating-day schedule plus a 12-hour delay allowance
+
+// Unattended jobs that prove they ran by pushing a commit with a fixed subject
+// prefix. Titles must stay stable: open issues are matched (and auto-closed)
+// by title, with digits ignored.
+const COMMIT_HEARTBEATS = [
+  {
+    id: "scheduled-scrape",
+    grep: "^Scheduled scrape update",
+    label: "Scheduled scrape update",
+    hours: 60, // alternating-day schedule plus a 12-hour delay allowance
+    title: "🔴 Scheduled scrape heartbeat: no update in 60+ hours",
+    heading: "Scheduled Scrape Heartbeat Alert",
+    explanation:
+      "Manual workflow runs use a different signature, so they cannot conceal a failure of the unattended schedule.",
+    causes: [
+      "The scheduled GitHub Actions run failed or was delayed",
+      "Repository Actions or scheduled workflows were disabled",
+      "The scrape completed without reaching its commit/push step",
+    ],
+  },
+  {
+    id: "dell-enrichment",
+    grep: "^Daily LLM enrichment",
+    label: "Daily LLM enrichment",
+    hours: 50, // daily at 02:00 ET; tolerates one skipped night
+    title: "🔴 Dell enrichment heartbeat: no update in 50+ hours",
+    heading: "Dell Enrichment Heartbeat Alert",
+    explanation:
+      "scripts/daily-enrichment.sh runs from cron on the Dell (`dellctl`) at 02:00 ET and commits after every run that enriched anything. " +
+      "Logs: `~/liveness-runs/enrich-<date>/run.log` and `~/liveness-runs/enrich-cron.log`.",
+    causes: [
+      "The Dell is off, asleep or offline",
+      "Ollama isn't serving the model, or fell back to CPU (the script refuses to run; `sudo systemctl restart ollama`)",
+      "The clone at `~/faculty-jobs-liveness` can't sync to origin/main",
+      "The push was rejected 3 times, or the overwrite guard aborted the run",
+      "Rarely: nothing was left to enrich (no commit is made then)",
+    ],
+  },
+  {
+    id: "dell-liveness",
+    grep: "^Weekly liveness audit",
+    label: "Weekly liveness audit",
+    hours: 204, // weekly on Saturdays 12:00 ET, plus 12 hours
+    title: "🔴 Dell liveness audit heartbeat: no update in 8+ days",
+    heading: "Dell Liveness Audit Heartbeat Alert",
+    explanation:
+      "scripts/weekly-liveness-audit.sh runs from cron on the Dell (`dellctl`) on Saturdays at 12:00 ET and commits when it removes postings. " +
+      "Log: `~/liveness-runs/cron.log`.",
+    causes: [
+      "The Dell is off, asleep or offline",
+      "The clone at `~/faculty-jobs-liveness` can't sync to origin/main",
+      "The removal count looked implausible and the run aborted",
+      "Rarely: the audit flagged nothing new that week (no commit is made then)",
+    ],
+  },
+];
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
 
@@ -452,57 +513,54 @@ function checkDataStaleness() {
 }
 
 /**
- * Alert when no commit from an unattended scrape.yml schedule has landed
- * within HEARTBEAT_HOURS. Deliberately independent of jobs.json's scrapedAt
- * field: manual workflow dispatches use a different commit signature and
- * therefore cannot mask a failed schedule.
+ * Alert when an unattended job (COMMIT_HEARTBEATS) hasn't pushed a commit with
+ * its signature within its window. Deliberately independent of jobs.json's
+ * scrapedAt field: manual runs use different commit subjects and therefore
+ * cannot mask a failed schedule.
  */
-function checkScheduledScrapeHeartbeat() {
+function checkCommitHeartbeats() {
   const alerts = [];
 
-  // %cI = committer date, strict ISO 8601 — stable to parse regardless of the
-  // runner's locale/timezone. Requires the workflow's checkout to have enough
-  // history to contain the last real commit; too-shallow a clone looks
-  // identical to "no commit found" here, so this intentionally does NOT alert
-  // when the log is empty — that's a workflow config problem, not a pipeline
-  // outage, and a false "down" alert would be worse than staying silent until
-  // the checkout is fixed.
-  const out = runCommand(
-    `git log -1 --grep="^Scheduled scrape update" --format=%cI`,
-    "git log (scheduled scrape heartbeat)"
-  );
-  const dateStr = out ? out.trim() : "";
-  if (!dateStr) {
-    console.log(`  [SKIP] No "Scheduled scrape update" commit found in the fetched git history.`);
-    return alerts;
-  }
+  for (const hb of COMMIT_HEARTBEATS) {
+    // %cI = committer date, strict ISO 8601 — stable to parse regardless of the
+    // runner's locale/timezone. Requires the workflow's checkout to have enough
+    // history to contain the last real commit; too-shallow a clone looks
+    // identical to "no commit found" here, so this intentionally does NOT alert
+    // when the log is empty — that's a workflow config problem, not a pipeline
+    // outage, and a false "down" alert would be worse than staying silent until
+    // the checkout is fixed.
+    const out = runCommand(
+      `git log -1 --grep="${hb.grep}" --format=%cI`,
+      `git log (${hb.id} heartbeat)`
+    );
+    const dateStr = out ? out.trim() : "";
+    if (!dateStr) {
+      console.log(`  [SKIP] No "${hb.label}" commit found in the fetched git history.`);
+      continue;
+    }
 
-  const commitDate = new Date(dateStr);
-  if (isNaN(commitDate.getTime())) {
-    console.log(`  [SKIP] Could not parse commit date "${dateStr}".`);
-    return alerts;
-  }
+    const commitDate = new Date(dateStr);
+    if (isNaN(commitDate.getTime())) {
+      console.log(`  [SKIP] Could not parse ${hb.id} commit date "${dateStr}".`);
+      continue;
+    }
 
-  const ageHours = (Date.now() - commitDate.getTime()) / (1000 * 60 * 60);
+    const ageHours = (Date.now() - commitDate.getTime()) / (1000 * 60 * 60);
+    if (ageHours < hb.hours) continue;
 
-  if (ageHours >= HEARTBEAT_HOURS) {
     const ageDays = (ageHours / 24).toFixed(1);
-    const title = `🔴 Scheduled scrape heartbeat: no update in 60+ hours`;
     const body = [
-      `## Scheduled Scrape Heartbeat Alert`,
+      `## ${hb.heading}`,
       ``,
-      `**Last "Scheduled scrape update" commit:** ${dateStr}`,
+      `**Last "${hb.label}" commit:** ${dateStr}`,
       `**Age:** ~${ageDays} days (${Math.round(ageHours)} hours)`,
-      `**Threshold:** ${HEARTBEAT_HOURS} hours`,
+      `**Threshold:** ${hb.hours} hours`,
       ``,
       `### What triggered this alert`,
-      `No commit matching the scheduled workflow signature ("Scheduled scrape update <date>") has landed in ${Math.round(ageHours)} hours. ` +
-        `Manual workflow runs use a different signature, so they cannot conceal a failure of the unattended schedule.`,
+      `No commit matching "${hb.label} …" has landed in ${Math.round(ageHours)} hours. ${hb.explanation}`,
       ``,
       `### Likely causes`,
-      `- The scheduled GitHub Actions run failed or was delayed`,
-      `- Repository Actions or scheduled workflows were disabled`,
-      `- The scrape completed without reaching its commit/push step`,
+      ...hb.causes.map((c) => `- ${c}`),
       ``,
       `### Timestamp`,
       `${nowIso()}`,
@@ -512,10 +570,10 @@ function checkScheduledScrapeHeartbeat() {
     ].join("\n");
 
     alerts.push({
-      title,
+      title: hb.title,
       body,
       source: "git log",
-      detail: { lastCommitDate: dateStr, ageHours: Math.round(ageHours) },
+      detail: { heartbeat: hb.id, lastCommitDate: dateStr, ageHours: Math.round(ageHours) },
     });
   }
 
@@ -574,7 +632,7 @@ async function main() {
     ...checkScraperHealthDrops(),
     ...checkLiveSite(),
     ...checkDataStaleness(),
-    ...checkScheduledScrapeHeartbeat(),
+    ...checkCommitHeartbeats(),
     ...checkCoverageRegression(),
   ];
 
@@ -590,7 +648,7 @@ async function main() {
       "Scraper health drop (data-health-report.json sourceDropWarnings, dropPct >= 60)",
       `Live site fail (live-site-health.json overallStatus === "FAIL")`,
       "Data staleness (public/jobs.json generatedAt/scrapedAt > 48 hours old)",
-      `Scheduled scrape heartbeat (no "Scheduled scrape update" commit in > ${HEARTBEAT_HOURS} hours)`,
+      ...COMMIT_HEARTBEATS.map((hb) => `Heartbeat: no "${hb.label}" commit in > ${hb.hours} hours`),
       "Coverage regression (missing or pending-review institutions above accepted watermark)",
     ],
     candidatesFound: candidates.length,

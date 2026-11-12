@@ -16,7 +16,21 @@ test("scheduled and manual scrapes have distinct commit signatures", () => {
 });
 
 test("heartbeat monitors the scheduled signature with alternating-day tolerance", () => {
-  assert.match(heartbeat, /const HEARTBEAT_HOURS\s*=\s*60/);
-  assert.match(heartbeat, /git log -1 --grep="\^Scheduled scrape update"/);
+  assert.match(heartbeat, /grep: "\^Scheduled scrape update",[\s\S]*?hours: 60,/);
+  assert.match(heartbeat, /git log -1 --grep="\$\{hb\.grep\}"/);
   assert.doesNotMatch(heartbeat, /checkJetsonHeartbeat/);
+});
+
+// The Dell jobs went 2026-09-25 → 2026-11-07 failing silently; the heartbeat
+// must keep watching both of their commit signatures.
+test("heartbeat also watches the Dell's daily enrichment and weekly liveness commits", () => {
+  for (const script of ["daily-enrichment.sh", "weekly-liveness-audit.sh"]) {
+    assert.ok(fs.existsSync(new URL(`../${script}`, import.meta.url)), script);
+  }
+  const enrich = fs.readFileSync(new URL("../daily-enrichment.sh", import.meta.url), "utf8");
+  const liveness = fs.readFileSync(new URL("../weekly-liveness-audit.sh", import.meta.url), "utf8");
+  assert.match(enrich, /^Daily LLM enrichment \$STAMP:/m);
+  assert.match(liveness, /^Weekly liveness audit \$STAMP:/m);
+  assert.match(heartbeat, /grep: "\^Daily LLM enrichment",[\s\S]*?hours: 50,/);
+  assert.match(heartbeat, /grep: "\^Weekly liveness audit",[\s\S]*?hours: 204,/);
 });
