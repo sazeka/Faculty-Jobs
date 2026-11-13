@@ -1,16 +1,16 @@
 {
-  "generatedAt": "2026-11-11T12:30:24.635Z",
+  "generatedAt": "2026-11-13T12:33:20.015Z",
   "qualityVersion": 1,
-  "jobsCount": 25774,
+  "jobsCount": 25877,
   "counts": {
     "nonJob": 0,
     "nonHttps": 0,
-    "missingDesc": 2155,
+    "missingDesc": 2119,
     "placeholderTitles": 0
   },
   "percents": {
     "nonHttpsPct": 0,
-    "missingDescPct": 8.36
+    "missingDescPct": 8.19
   },
   "thresholds": {
     "maxNonJob": 0,
@@ -20,23 +20,23 @@
     "maxQuarantinePct": 2,
     "minAverageScore": 94
   },
-  "averageScore": 98.61,
+  "averageScore": 98.62,
   "statusCounts": {
-    "pass": 24116,
-    "review": 1657,
+    "pass": 24258,
+    "review": 1618,
     "quarantine": 1
   },
   "statusPercents": {
-    "pass": 93.57,
-    "review": 6.43,
+    "pass": 93.74,
+    "review": 6.25,
     "quarantine": 0
   },
   "dimensionAverages": {
-    "relevance": 99.91,
+    "relevance": 99.92,
     "attribution": 100,
     "link": 99.98,
-    "freshness": 97.67,
-    "completeness": 86.01,
+    "freshness": 97.71,
+    "completeness": 86.04,
     "duplication": 100
   },
   "reasonCounts": [
@@ -44,55 +44,55 @@
       "code": "missing_department",
       "severity": "info",
       "dimension": "completeness",
-      "count": 20061
+      "count": 20190
     },
     {
       "code": "missing_deadline",
       "severity": "info",
       "dimension": "completeness",
-      "count": 16477
+      "count": 16552
     },
     {
       "code": "missing_description",
       "severity": "info",
       "dimension": "completeness",
-      "count": 2155
+      "count": 2119
     },
     {
       "code": "aging_posting_no_evergreen_signal",
       "severity": "info",
       "dimension": "freshness",
-      "count": 1700
+      "count": 1708
     },
     {
       "code": "stale_posting_no_evergreen_signal",
       "severity": "warning",
       "dimension": "freshness",
-      "count": 1574
+      "count": 1541
     },
     {
       "code": "placeholder_location",
       "severity": "info",
       "dimension": "completeness",
-      "count": 85
+      "count": 78
     },
     {
       "code": "weak_academic_evidence",
       "severity": "warning",
       "dimension": "relevance",
-      "count": 72
+      "count": 65
     },
     {
       "code": "thin_description",
       "severity": "info",
       "dimension": "completeness",
-      "count": 50
+      "count": 57
     },
     {
       "code": "search_page_url",
       "severity": "warning",
       "dimension": "link",
-      "count": 11
+      "count": 12
     },
     {
       "code": "source_labeled_staff_role",
@@ -110,34 +110,34 @@
   "bySource": [
     {
       "source": "TX",
-      "count": 2566,
+      "count": 2572,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 250,
+        "missingDesc": 179,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 9.74
+        "missingDescPct": 6.96
       },
-      "averageScore": 98.56,
+      "averageScore": 98.68,
       "statusCounts": {
-        "pass": 2319,
-        "review": 247,
+        "pass": 2327,
+        "review": 245,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 90.37,
-        "review": 9.63,
+        "pass": 90.47,
+        "review": 9.53,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 99.93,
+        "relevance": 99.95,
         "attribution": 100,
         "link": 100,
-        "freshness": 96.9,
-        "completeness": 86.43,
+        "freshness": 96.91,
+        "completeness": 87.52,
         "duplication": 100
       },
       "reasonCounts": [
@@ -145,19 +145,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 1826
+          "count": 1825
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 1564
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 250
+          "count": 1516
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -166,49 +160,55 @@
           "count": 241
         },
         {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 179
+        },
+        {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 123
+          "count": 124
         },
         {
           "code": "weak_academic_evidence",
           "severity": "warning",
           "dimension": "relevance",
-          "count": 6
+          "count": 4
         }
       ]
     },
     {
       "source": "NY",
-      "count": 2329,
+      "count": 2268,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 638,
+        "missingDesc": 597,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 27.39
+        "missingDescPct": 26.32
       },
-      "averageScore": 97.62,
+      "averageScore": 97.67,
       "statusCounts": {
-        "pass": 2200,
-        "review": 129,
+        "pass": 2144,
+        "review": 124,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 94.46,
-        "review": 5.54,
+        "pass": 94.53,
+        "review": 5.47,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 99.83,
+        "relevance": 99.87,
         "attribution": 100,
         "link": 99.96,
-        "freshness": 97.92,
-        "completeness": 76.4,
+        "freshness": 97.88,
+        "completeness": 76.76,
         "duplication": 100
       },
       "reasonCounts": [
@@ -216,19 +216,19 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 2130
+          "count": 2067
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 1888
+          "count": 1843
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 638
+          "count": 597
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -240,25 +240,25 @@
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "count": 114
-        },
-        {
-          "code": "placeholder_location",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 61
+          "count": 112
         },
         {
           "code": "thin_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 49
+          "count": 56
+        },
+        {
+          "code": "placeholder_location",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 54
         },
         {
           "code": "weak_academic_evidence",
           "severity": "warning",
           "dimension": "relevance",
-          "count": 13
+          "count": 10
         },
         {
           "code": "search_page_url",
@@ -270,34 +270,34 @@
     },
     {
       "source": "NC",
-      "count": 1300,
+      "count": 1301,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 39,
+        "missingDesc": 32,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 3
+        "missingDescPct": 2.46
       },
-      "averageScore": 98.94,
+      "averageScore": 98.96,
       "statusCounts": {
-        "pass": 1170,
-        "review": 130,
+        "pass": 1172,
+        "review": 129,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 90,
-        "review": 10,
+        "pass": 90.08,
+        "review": 9.92,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 99.91,
+        "relevance": 99.88,
         "attribution": 100,
         "link": 100,
-        "freshness": 96.66,
-        "completeness": 90.98,
+        "freshness": 96.68,
+        "completeness": 91.16,
         "duplication": 100
       },
       "reasonCounts": [
@@ -305,96 +305,96 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 755
+          "count": 759
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 561
+          "count": 559
         },
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "count": 126
+          "count": 124
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 100
+          "count": 103
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 39
+          "count": 32
         },
         {
           "code": "weak_academic_evidence",
           "severity": "warning",
           "dimension": "relevance",
-          "count": 4
+          "count": 5
         }
       ]
     },
     {
       "source": "FL",
-      "count": 1091,
+      "count": 1188,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 75,
+        "missingDesc": 132,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 6.87
+        "missingDescPct": 11.11
       },
-      "averageScore": 98.66,
+      "averageScore": 98.5,
       "statusCounts": {
-        "pass": 1054,
+        "pass": 1151,
         "review": 37,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 96.61,
-        "review": 3.39,
+        "pass": 96.89,
+        "review": 3.11,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 99.92,
         "attribution": 100,
         "link": 100,
-        "freshness": 97.75,
-        "completeness": 85.61,
+        "freshness": 97.93,
+        "completeness": 83.95,
         "duplication": 100
       },
       "reasonCounts": [
         {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 875
-        },
-        {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 870
+          "count": 966
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 957
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 157
+          "count": 158
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 75
+          "count": 132
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -412,34 +412,34 @@
     },
     {
       "source": "OH",
-      "count": 1085,
+      "count": 1096,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 40,
+        "missingDesc": 44,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 3.69
+        "missingDescPct": 4.01
       },
-      "averageScore": 98.88,
+      "averageScore": 98.87,
       "statusCounts": {
-        "pass": 1041,
+        "pass": 1052,
         "review": 44,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 95.94,
-        "review": 4.06,
+        "pass": 95.99,
+        "review": 4.01,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 99.97,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.29,
-        "completeness": 86.99,
+        "freshness": 98.31,
+        "completeness": 86.85,
         "duplication": 100
       },
       "reasonCounts": [
@@ -447,13 +447,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 856
+          "count": 866
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 832
+          "count": 842
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -462,16 +462,16 @@
           "count": 60
         },
         {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 44
+        },
+        {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "count": 43
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 40
         },
         {
           "code": "weak_academic_evidence",
@@ -483,34 +483,34 @@
     },
     {
       "source": "IL",
-      "count": 990,
+      "count": 993,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 61,
+        "missingDesc": 48,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 6.16
+        "missingDescPct": 4.83
       },
-      "averageScore": 98.86,
+      "averageScore": 98.93,
       "statusCounts": {
-        "pass": 950,
-        "review": 40,
+        "pass": 957,
+        "review": 36,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 95.96,
-        "review": 4.04,
+        "pass": 96.37,
+        "review": 3.63,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 99.82,
+        "relevance": 99.94,
         "attribution": 100,
         "link": 99.95,
-        "freshness": 98.09,
-        "completeness": 88.01,
+        "freshness": 98.03,
+        "completeness": 88.27,
         "duplication": 100
       },
       "reasonCounts": [
@@ -518,25 +518,25 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 711
+          "count": 715
         },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 618
+          "count": 639
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 105
+          "count": 109
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 61
+          "count": 48
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -548,7 +548,7 @@
           "code": "weak_academic_evidence",
           "severity": "warning",
           "dimension": "relevance",
-          "count": 6
+          "count": 2
         },
         {
           "code": "search_page_url",
@@ -560,26 +560,26 @@
     },
     {
       "source": "CA Private",
-      "count": 964,
+      "count": 968,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 39,
+        "missingDesc": 28,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 4.05
+        "missingDescPct": 2.89
       },
-      "averageScore": 98.92,
+      "averageScore": 98.96,
       "statusCounts": {
-        "pass": 895,
+        "pass": 899,
         "review": 69,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 92.84,
-        "review": 7.16,
+        "pass": 92.87,
+        "review": 7.13,
         "quarantine": 0
       },
       "dimensionAverages": {
@@ -587,7 +587,7 @@
         "attribution": 100,
         "link": 100,
         "freshness": 97.55,
-        "completeness": 88.85,
+        "completeness": 89.23,
         "duplication": 100
       },
       "reasonCounts": [
@@ -595,13 +595,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 658
+          "count": 666
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 561
+          "count": 558
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -613,46 +613,46 @@
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 59
+          "count": 60
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 39
+          "count": 28
         }
       ]
     },
     {
       "source": "PA",
-      "count": 956,
+      "count": 944,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 27,
+        "missingDesc": 24,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 2.82
+        "missingDescPct": 2.54
       },
-      "averageScore": 98.44,
+      "averageScore": 98.43,
       "statusCounts": {
-        "pass": 811,
-        "review": 145,
+        "pass": 800,
+        "review": 144,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 84.83,
-        "review": 15.17,
+        "pass": 84.75,
+        "review": 15.25,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 99.94,
         "attribution": 100,
         "link": 99.95,
-        "freshness": 94.99,
-        "completeness": 85.97,
+        "freshness": 94.93,
+        "completeness": 85.94,
         "duplication": 100
       },
       "reasonCounts": [
@@ -660,31 +660,31 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 832
+          "count": 831
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 830
+          "count": 825
         },
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "count": 142
+          "count": 141
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 52
+          "count": 54
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 27
+          "count": 24
         },
         {
           "code": "weak_academic_evidence",
@@ -702,34 +702,34 @@
     },
     {
       "source": "NJ",
-      "count": 876,
+      "count": 841,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 24,
+        "missingDesc": 21,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 2.74
+        "missingDescPct": 2.5
       },
-      "averageScore": 98.75,
+      "averageScore": 98.77,
       "statusCounts": {
-        "pass": 787,
-        "review": 89,
+        "pass": 774,
+        "review": 67,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 89.84,
-        "review": 10.16,
+        "pass": 92.03,
+        "review": 7.97,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 99.95,
-        "freshness": 96.55,
-        "completeness": 88.25,
+        "freshness": 97.05,
+        "completeness": 87.98,
         "duplication": 100
       },
       "reasonCounts": [
@@ -737,37 +737,37 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 653
+          "count": 650
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 513
-        },
-        {
-          "code": "stale_posting_no_evergreen_signal",
-          "severity": "warning",
-          "dimension": "freshness",
-          "count": 88
+          "count": 503
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 79
+          "count": 80
         },
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 24
+          "code": "stale_posting_no_evergreen_signal",
+          "severity": "warning",
+          "dimension": "freshness",
+          "count": 66
         },
         {
           "code": "placeholder_location",
           "severity": "info",
           "dimension": "completeness",
           "count": 24
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 21
         },
         {
           "code": "search_page_url",
@@ -779,34 +779,34 @@
     },
     {
       "source": "VA",
-      "count": 739,
+      "count": 750,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 29,
+        "missingDesc": 23,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 3.92
+        "missingDescPct": 3.07
       },
-      "averageScore": 98.88,
+      "averageScore": 98.96,
       "statusCounts": {
-        "pass": 733,
-        "review": 6,
+        "pass": 747,
+        "review": 3,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 99.19,
-        "review": 0.81,
+        "pass": 99.6,
+        "review": 0.4,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 99.84,
+        "relevance": 99.96,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.99,
-        "completeness": 88.24,
+        "freshness": 99,
+        "completeness": 88.55,
         "duplication": 100
       },
       "reasonCounts": [
@@ -814,13 +814,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 594
+          "count": 603
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 347
+          "count": 351
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -832,52 +832,52 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 29
-        },
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "count": 4
+          "count": 23
         },
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "count": 2
+        },
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "count": 1
         }
       ]
     },
     {
       "source": "IN",
-      "count": 736,
+      "count": 740,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 31,
+        "missingDesc": 27,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 4.21
+        "missingDescPct": 3.65
       },
-      "averageScore": 98.76,
+      "averageScore": 98.79,
       "statusCounts": {
-        "pass": 721,
-        "review": 15,
+        "pass": 726,
+        "review": 14,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 97.96,
-        "review": 2.04,
+        "pass": 98.11,
+        "review": 1.89,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 99.92,
         "attribution": 100,
         "link": 99.94,
-        "freshness": 99.24,
-        "completeness": 84.33,
+        "freshness": 99.26,
+        "completeness": 84.58,
         "duplication": 100
       },
       "reasonCounts": [
@@ -885,31 +885,31 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 697
+          "count": 700
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 695
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 31
+          "count": 693
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 26
+          "count": 27
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 27
         },
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "count": 12
+          "count": 11
         },
         {
           "code": "weak_academic_evidence",
@@ -931,14 +931,14 @@
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 36,
+        "missingDesc": 31,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 4.99
+        "missingDescPct": 4.3
       },
-      "averageScore": 99.04,
+      "averageScore": 99.08,
       "statusCounts": {
         "pass": 717,
         "review": 4,
@@ -954,7 +954,7 @@
         "attribution": 100,
         "link": 99.94,
         "freshness": 99.72,
-        "completeness": 86.8,
+        "completeness": 87.17,
         "duplication": 100
       },
       "reasonCounts": [
@@ -962,19 +962,19 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 661
+          "count": 657
         },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 495
+          "count": 488
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 36
+          "count": 31
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -1004,20 +1004,20 @@
     },
     {
       "source": "WI",
-      "count": 616,
+      "count": 622,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 20,
+        "missingDesc": 19,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 3.25
+        "missingDescPct": 3.05
       },
-      "averageScore": 98.91,
+      "averageScore": 98.92,
       "statusCounts": {
-        "pass": 615,
+        "pass": 621,
         "review": 1,
         "quarantine": 0
       },
@@ -1030,8 +1030,8 @@
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 99.55,
-        "completeness": 85.17,
+        "freshness": 99.56,
+        "completeness": 85.26,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1039,13 +1039,13 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 565
+          "count": 571
         },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 561
+          "count": 565
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -1057,7 +1057,7 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 20
+          "count": 19
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -1069,7 +1069,7 @@
     },
     {
       "source": "WA",
-      "count": 615,
+      "count": 617,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
@@ -1078,25 +1078,25 @@
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 2.93
+        "missingDescPct": 2.92
       },
-      "averageScore": 99.03,
+      "averageScore": 99.01,
       "statusCounts": {
-        "pass": 604,
+        "pass": 606,
         "review": 11,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 98.21,
-        "review": 1.79,
+        "pass": 98.22,
+        "review": 1.78,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 99.95,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.71,
-        "completeness": 90.43,
+        "freshness": 98.7,
+        "completeness": 90.34,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1104,19 +1104,19 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 447
+          "count": 451
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 157
+          "count": 164
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 53
+          "count": 54
         },
         {
           "code": "missing_description",
@@ -1139,106 +1139,35 @@
       ]
     },
     {
-      "source": "GA",
-      "count": 563,
-      "counts": {
-        "nonJob": 0,
-        "nonHttps": 0,
-        "missingDesc": 126,
-        "placeholderTitles": 0
-      },
-      "percents": {
-        "nonHttpsPct": 0,
-        "missingDescPct": 22.38
-      },
-      "averageScore": 98.06,
-      "statusCounts": {
-        "pass": 550,
-        "review": 13,
-        "quarantine": 0
-      },
-      "statusPercents": {
-        "pass": 97.69,
-        "review": 2.31,
-        "quarantine": 0
-      },
-      "dimensionAverages": {
-        "relevance": 99.84,
-        "attribution": 100,
-        "link": 100,
-        "freshness": 99.18,
-        "completeness": 79.96,
-        "duplication": 100
-      },
-      "reasonCounts": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 513
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 349
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 126
-        },
-        {
-          "code": "aging_posting_no_evergreen_signal",
-          "severity": "info",
-          "dimension": "freshness",
-          "count": 21
-        },
-        {
-          "code": "stale_posting_no_evergreen_signal",
-          "severity": "warning",
-          "dimension": "freshness",
-          "count": 10
-        },
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "count": 3
-        }
-      ]
-    },
-    {
       "source": "AL",
-      "count": 545,
+      "count": 549,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 49,
+        "missingDesc": 52,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 8.99
+        "missingDescPct": 9.47
       },
-      "averageScore": 98.59,
+      "averageScore": 98.57,
       "statusCounts": {
-        "pass": 424,
+        "pass": 428,
         "review": 121,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 77.8,
-        "review": 22.2,
+        "pass": 77.96,
+        "review": 22.04,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 93.76,
-        "completeness": 90.63,
+        "freshness": 93.81,
+        "completeness": 90.4,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1246,13 +1175,13 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 232
+          "count": 236
         },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 223
+          "count": 227
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -1264,7 +1193,7 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 49
+          "count": 52
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -1276,34 +1205,34 @@
     },
     {
       "source": "SC",
-      "count": 533,
+      "count": 537,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 28,
+        "missingDesc": 20,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 5.25
+        "missingDescPct": 3.72
       },
-      "averageScore": 98.57,
+      "averageScore": 98.66,
       "statusCounts": {
-        "pass": 468,
-        "review": 65,
+        "pass": 473,
+        "review": 64,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 87.8,
-        "review": 12.2,
+        "pass": 88.08,
+        "review": 11.92,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 99.94,
+        "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 95.9,
-        "completeness": 87.54,
+        "freshness": 95.93,
+        "completeness": 88.23,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1311,13 +1240,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 439
+          "count": 440
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 254
+          "count": 244
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -1335,46 +1264,40 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 28
-        },
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "count": 1
+          "count": 20
         }
       ]
     },
     {
       "source": "MI",
-      "count": 527,
+      "count": 530,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 37,
+        "missingDesc": 34,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 7.02
+        "missingDescPct": 6.42
       },
-      "averageScore": 98.75,
+      "averageScore": 98.79,
       "statusCounts": {
-        "pass": 446,
-        "review": 81,
+        "pass": 451,
+        "review": 79,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 84.63,
-        "review": 15.37,
+        "pass": 85.09,
+        "review": 14.91,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 94.31,
-        "completeness": 90.66,
+        "freshness": 94.47,
+        "completeness": 90.86,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1382,7 +1305,7 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 265
+          "count": 271
         },
         {
           "code": "missing_department",
@@ -1394,52 +1317,123 @@
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "count": 81
+          "count": 79
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 48
+          "count": 46
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 37
+          "count": 34
+        }
+      ]
+    },
+    {
+      "source": "GA",
+      "count": 520,
+      "counts": {
+        "nonJob": 0,
+        "nonHttps": 0,
+        "missingDesc": 169,
+        "placeholderTitles": 0
+      },
+      "percents": {
+        "nonHttpsPct": 0,
+        "missingDescPct": 32.5
+      },
+      "averageScore": 97.61,
+      "statusCounts": {
+        "pass": 507,
+        "review": 13,
+        "quarantine": 0
+      },
+      "statusPercents": {
+        "pass": 97.5,
+        "review": 2.5,
+        "quarantine": 0
+      },
+      "dimensionAverages": {
+        "relevance": 99.71,
+        "attribution": 100,
+        "link": 100,
+        "freshness": 99.24,
+        "completeness": 75.76,
+        "duplication": 100
+      },
+      "reasonCounts": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 477
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 384
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 169
+        },
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
+          "count": 18
+        },
+        {
+          "code": "stale_posting_no_evergreen_signal",
+          "severity": "warning",
+          "dimension": "freshness",
+          "count": 8
+        },
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "count": 5
         }
       ]
     },
     {
       "source": "MO",
-      "count": 512,
+      "count": 507,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 30,
+        "missingDesc": 39,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 5.86
+        "missingDescPct": 7.69
       },
-      "averageScore": 99.09,
+      "averageScore": 99.05,
       "statusCounts": {
-        "pass": 489,
-        "review": 23,
+        "pass": 487,
+        "review": 20,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 95.51,
-        "review": 4.49,
+        "pass": 96.06,
+        "review": 3.94,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 99.94,
         "attribution": 100,
         "link": 99.91,
-        "freshness": 98.56,
-        "completeness": 88.42,
+        "freshness": 98.76,
+        "completeness": 87.83,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1447,31 +1441,31 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 486
+          "count": 487
         },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 245
+          "count": 237
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 30
+          "count": 39
         },
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "count": 21
+          "count": 18
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 15
+          "count": 12
         },
         {
           "code": "search_page_url",
@@ -1489,34 +1483,34 @@
     },
     {
       "source": "MD",
-      "count": 468,
+      "count": 465,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 14,
+        "missingDesc": 4,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 2.99
+        "missingDescPct": 0.86
       },
-      "averageScore": 98.8,
+      "averageScore": 98.88,
       "statusCounts": {
-        "pass": 459,
+        "pass": 456,
         "review": 9,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 98.08,
-        "review": 1.92,
+        "pass": 98.06,
+        "review": 1.94,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.62,
-        "completeness": 86.78,
+        "freshness": 98.61,
+        "completeness": 87.63,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1524,13 +1518,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 438
+          "count": 435
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 263
+          "count": 252
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -1539,49 +1533,49 @@
           "count": 42
         },
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 14
-        },
-        {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "count": 9
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 4
         }
       ]
     },
     {
       "source": "LA",
-      "count": 424,
+      "count": 428,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 28,
+        "missingDesc": 15,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 6.6
+        "missingDescPct": 3.5
       },
-      "averageScore": 98.54,
+      "averageScore": 98.67,
       "statusCounts": {
-        "pass": 399,
+        "pass": 403,
         "review": 25,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 94.1,
-        "review": 5.9,
+        "pass": 94.16,
+        "review": 5.84,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.2,
-        "completeness": 85.24,
+        "freshness": 98.21,
+        "completeness": 86.43,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1589,25 +1583,25 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 417
+          "count": 421
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 218
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 28
+          "count": 211
         },
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "count": 25
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 15
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -1625,34 +1619,34 @@
     },
     {
       "source": "KY",
-      "count": 418,
+      "count": 425,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 24,
+        "missingDesc": 21,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 5.74
+        "missingDescPct": 4.94
       },
-      "averageScore": 98.57,
+      "averageScore": 98.6,
       "statusCounts": {
-        "pass": 384,
-        "review": 34,
+        "pass": 389,
+        "review": 36,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 91.87,
-        "review": 8.13,
+        "pass": 91.53,
+        "review": 8.47,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 99.86,
         "attribution": 100,
         "link": 100,
-        "freshness": 97.48,
-        "completeness": 87.5,
+        "freshness": 97.4,
+        "completeness": 87.86,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1660,19 +1654,19 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 391
+          "count": 396
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 95
+          "count": 93
         },
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "count": 32
+          "count": 34
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -1684,7 +1678,7 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 24
+          "count": 21
         },
         {
           "code": "weak_academic_evidence",
@@ -1696,20 +1690,20 @@
     },
     {
       "source": "CO",
-      "count": 382,
+      "count": 389,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 6,
+        "missingDesc": 8,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 1.57
+        "missingDescPct": 2.06
       },
-      "averageScore": 99.03,
+      "averageScore": 99.01,
       "statusCounts": {
-        "pass": 382,
+        "pass": 389,
         "review": 0,
         "quarantine": 0
       },
@@ -1722,8 +1716,8 @@
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 99.87,
-        "completeness": 87.92,
+        "freshness": 99.85,
+        "completeness": 87.74,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1731,58 +1725,58 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 342
+          "count": 349
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 197
+          "count": 200
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 6
+          "count": 8
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 5
+          "count": 6
         }
       ]
     },
     {
       "source": "OK",
-      "count": 360,
+      "count": 366,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 28,
+        "missingDesc": 31,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 7.78
+        "missingDescPct": 8.47
       },
-      "averageScore": 98.74,
+      "averageScore": 98.71,
       "statusCounts": {
-        "pass": 319,
+        "pass": 325,
         "review": 41,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 88.61,
-        "review": 11.39,
+        "pass": 88.8,
+        "review": 11.2,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 95.38,
-        "completeness": 89.68,
+        "freshness": 95.45,
+        "completeness": 89.36,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1790,13 +1784,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 193
+          "count": 198
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 161
+          "count": 166
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -1814,40 +1808,40 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 28
+          "count": 31
         }
       ]
     },
     {
       "source": "TN",
-      "count": 323,
+      "count": 332,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 8,
+        "missingDesc": 20,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 2.48
+        "missingDescPct": 6.02
       },
-      "averageScore": 98.93,
+      "averageScore": 98.76,
       "statusCounts": {
-        "pass": 320,
-        "review": 3,
+        "pass": 328,
+        "review": 4,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 99.07,
-        "review": 0.93,
+        "pass": 98.8,
+        "review": 1.2,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 100,
+        "relevance": 99.91,
         "attribution": 100,
         "link": 99.86,
-        "freshness": 99.5,
-        "completeness": 85.98,
+        "freshness": 99.52,
+        "completeness": 84.62,
         "duplication": 100
       },
       "reasonCounts": [
@@ -1855,25 +1849,25 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 291
+          "count": 299
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 268
+          "count": 283
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 20
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
           "count": 11
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 8
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -1886,187 +1880,69 @@
           "severity": "warning",
           "dimension": "link",
           "count": 1
-        }
-      ]
-    },
-    {
-      "source": "UT",
-      "count": 309,
-      "counts": {
-        "nonJob": 0,
-        "nonHttps": 0,
-        "missingDesc": 14,
-        "placeholderTitles": 0
-      },
-      "percents": {
-        "nonHttpsPct": 0,
-        "missingDescPct": 4.53
-      },
-      "averageScore": 98.72,
-      "statusCounts": {
-        "pass": 278,
-        "review": 31,
-        "quarantine": 0
-      },
-      "statusPercents": {
-        "pass": 89.97,
-        "review": 10.03,
-        "quarantine": 0
-      },
-      "dimensionAverages": {
-        "relevance": 100,
-        "attribution": 100,
-        "link": 100,
-        "freshness": 96.1,
-        "completeness": 90.47,
-        "duplication": 100
-      },
-      "reasonCounts": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 228
         },
         {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 35
-        },
-        {
-          "code": "stale_posting_no_evergreen_signal",
+          "code": "weak_academic_evidence",
           "severity": "warning",
-          "dimension": "freshness",
-          "count": 31
-        },
-        {
-          "code": "aging_posting_no_evergreen_signal",
-          "severity": "info",
-          "dimension": "freshness",
-          "count": 25
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 14
-        }
-      ]
-    },
-    {
-      "source": "CSU",
-      "count": 300,
-      "counts": {
-        "nonJob": 0,
-        "nonHttps": 0,
-        "missingDesc": 0,
-        "placeholderTitles": 0
-      },
-      "percents": {
-        "nonHttpsPct": 0,
-        "missingDescPct": 0
-      },
-      "averageScore": 99.22,
-      "statusCounts": {
-        "pass": 300,
-        "review": 0,
-        "quarantine": 0
-      },
-      "statusPercents": {
-        "pass": 100,
-        "review": 0,
-        "quarantine": 0
-      },
-      "dimensionAverages": {
-        "relevance": 100,
-        "attribution": 100,
-        "link": 100,
-        "freshness": 99.97,
-        "completeness": 87.77,
-        "duplication": 100
-      },
-      "reasonCounts": [
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 270
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 232
-        },
-        {
-          "code": "aging_posting_no_evergreen_signal",
-          "severity": "info",
-          "dimension": "freshness",
+          "dimension": "relevance",
           "count": 1
         }
       ]
     },
     {
-      "source": "OR",
-      "count": 296,
+      "source": "CSU",
+      "count": 309,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 36,
+        "missingDesc": 10,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 12.16
+        "missingDescPct": 3.24
       },
-      "averageScore": 98.44,
+      "averageScore": 99.06,
       "statusCounts": {
-        "pass": 294,
-        "review": 2,
+        "pass": 308,
+        "review": 1,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 99.32,
-        "review": 0.68,
+        "pass": 99.68,
+        "review": 0.32,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 99.9,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.26,
-        "completeness": 84.05,
+        "freshness": 99.97,
+        "completeness": 86.55,
         "duplication": 100
       },
       "reasonCounts": [
         {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 255
-        },
-        {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 182
+          "count": 279
         },
         {
-          "code": "aging_posting_no_evergreen_signal",
+          "code": "missing_department",
           "severity": "info",
-          "dimension": "freshness",
-          "count": 49
+          "dimension": "completeness",
+          "count": 241
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 36
+          "count": 10
         },
         {
-          "code": "stale_posting_no_evergreen_signal",
-          "severity": "warning",
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
           "dimension": "freshness",
           "count": 1
         },
@@ -2079,35 +1955,35 @@
       ]
     },
     {
-      "source": "MS",
-      "count": 286,
+      "source": "UT",
+      "count": 303,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 12,
+        "missingDesc": 8,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 4.2
+        "missingDescPct": 2.64
       },
-      "averageScore": 98.88,
+      "averageScore": 98.78,
       "statusCounts": {
-        "pass": 281,
-        "review": 5,
+        "pass": 272,
+        "review": 31,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 98.25,
-        "review": 1.75,
+        "pass": 89.77,
+        "review": 10.23,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 99.9,
+        "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.95,
-        "completeness": 88.67,
+        "freshness": 96.02,
+        "completeness": 91.09,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2115,13 +1991,78 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 235
+          "count": 227
+        },
+        {
+          "code": "stale_posting_no_evergreen_signal",
+          "severity": "warning",
+          "dimension": "freshness",
+          "count": 31
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 94
+          "count": 30
+        },
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
+          "count": 25
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "source": "MS",
+      "count": 289,
+      "counts": {
+        "nonJob": 0,
+        "nonHttps": 0,
+        "missingDesc": 13,
+        "placeholderTitles": 0
+      },
+      "percents": {
+        "nonHttpsPct": 0,
+        "missingDescPct": 4.5
+      },
+      "averageScore": 98.86,
+      "statusCounts": {
+        "pass": 284,
+        "review": 5,
+        "quarantine": 0
+      },
+      "statusPercents": {
+        "pass": 98.27,
+        "review": 1.73,
+        "quarantine": 0
+      },
+      "dimensionAverages": {
+        "relevance": 99.9,
+        "attribution": 100,
+        "link": 100,
+        "freshness": 98.96,
+        "completeness": 88.49,
+        "duplication": 100
+      },
+      "reasonCounts": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 239
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 96
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -2133,7 +2074,7 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 12
+          "count": 13
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -2150,35 +2091,106 @@
       ]
     },
     {
-      "source": "AR",
-      "count": 269,
+      "source": "OR",
+      "count": 283,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 36,
+        "missingDesc": 31,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 13.38
+        "missingDescPct": 10.95
       },
-      "averageScore": 98.36,
+      "averageScore": 98.43,
       "statusCounts": {
-        "pass": 248,
-        "review": 21,
+        "pass": 280,
+        "review": 3,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 92.19,
-        "review": 7.81,
+        "pass": 98.94,
+        "review": 1.06,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 99.78,
+        "relevance": 99.79,
+        "attribution": 100,
+        "link": 100,
+        "freshness": 98.18,
+        "completeness": 84.42,
+        "duplication": 100
+      },
+      "reasonCounts": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 249
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 167
+        },
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
+          "count": 49
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 31
+        },
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "count": 2
+        },
+        {
+          "code": "stale_posting_no_evergreen_signal",
+          "severity": "warning",
+          "dimension": "freshness",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "source": "AR",
+      "count": 270,
+      "counts": {
+        "nonJob": 0,
+        "nonHttps": 0,
+        "missingDesc": 22,
+        "placeholderTitles": 0
+      },
+      "percents": {
+        "nonHttpsPct": 0,
+        "missingDescPct": 8.15
+      },
+      "averageScore": 98.64,
+      "statusCounts": {
+        "pass": 251,
+        "review": 19,
+        "quarantine": 0
+      },
+      "statusPercents": {
+        "pass": 92.96,
+        "review": 7.04,
+        "quarantine": 0
+      },
+      "dimensionAverages": {
+        "relevance": 100,
         "attribution": 100,
         "link": 100,
         "freshness": 97.83,
-        "completeness": 83.22,
+        "completeness": 85.07,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2186,19 +2198,19 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 229
+          "count": 226
         },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 211
+          "count": 213
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 36
+          "count": 22
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -2211,45 +2223,39 @@
           "severity": "info",
           "dimension": "freshness",
           "count": 8
-        },
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "count": 2
         }
       ]
     },
     {
       "source": "IA",
-      "count": 242,
+      "count": 243,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 14,
+        "missingDesc": 13,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 5.79
+        "missingDescPct": 5.35
       },
-      "averageScore": 98.25,
+      "averageScore": 98.39,
       "statusCounts": {
-        "pass": 218,
-        "review": 24,
+        "pass": 222,
+        "review": 21,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 90.08,
-        "review": 9.92,
+        "pass": 91.36,
+        "review": 8.64,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 99.01,
+        "relevance": 99.38,
         "attribution": 100,
         "link": 100,
-        "freshness": 97.48,
-        "completeness": 85.19,
+        "freshness": 97.49,
+        "completeness": 85.39,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2257,13 +2263,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 229
+          "count": 230
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 161
+          "count": 159
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -2275,7 +2281,7 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 14
+          "count": 13
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -2287,26 +2293,150 @@
           "code": "weak_academic_evidence",
           "severity": "warning",
           "dimension": "relevance",
-          "count": 8
+          "count": 5
+        }
+      ]
+    },
+    {
+      "source": "UC",
+      "count": 239,
+      "counts": {
+        "nonJob": 0,
+        "nonHttps": 0,
+        "missingDesc": 6,
+        "placeholderTitles": 0
+      },
+      "percents": {
+        "nonHttpsPct": 0,
+        "missingDescPct": 2.51
+      },
+      "averageScore": 98.8,
+      "statusCounts": {
+        "pass": 232,
+        "review": 7,
+        "quarantine": 0
+      },
+      "statusPercents": {
+        "pass": 97.07,
+        "review": 2.93,
+        "quarantine": 0
+      },
+      "dimensionAverages": {
+        "relevance": 99.12,
+        "attribution": 100,
+        "link": 100,
+        "freshness": 100,
+        "completeness": 90.96,
+        "duplication": 100
+      },
+      "reasonCounts": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 192
+        },
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "count": 7
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 6
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "source": "HI",
+      "count": 239,
+      "counts": {
+        "nonJob": 0,
+        "nonHttps": 0,
+        "missingDesc": 48,
+        "placeholderTitles": 0
+      },
+      "percents": {
+        "nonHttpsPct": 0,
+        "missingDescPct": 20.08
+      },
+      "averageScore": 98.26,
+      "statusCounts": {
+        "pass": 224,
+        "review": 15,
+        "quarantine": 0
+      },
+      "statusPercents": {
+        "pass": 93.72,
+        "review": 6.28,
+        "quarantine": 0
+      },
+      "dimensionAverages": {
+        "relevance": 100,
+        "attribution": 100,
+        "link": 100,
+        "freshness": 98.01,
+        "completeness": 83.37,
+        "duplication": 100
+      },
+      "reasonCounts": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 184
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 91
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 48
+        },
+        {
+          "code": "stale_posting_no_evergreen_signal",
+          "severity": "warning",
+          "dimension": "freshness",
+          "count": 15
+        },
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
+          "count": 10
         }
       ]
     },
     {
       "source": "NV",
-      "count": 234,
+      "count": 238,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 5,
+        "missingDesc": 9,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 2.14
+        "missingDescPct": 3.78
       },
-      "averageScore": 99.11,
+      "averageScore": 99.05,
       "statusCounts": {
-        "pass": 234,
+        "pass": 238,
         "review": 0,
         "quarantine": 0
       },
@@ -2320,7 +2450,7 @@
         "attribution": 100,
         "link": 100,
         "freshness": 99.96,
-        "completeness": 89.15,
+        "completeness": 88.57,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2328,19 +2458,19 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 190
+          "count": 192
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 93
+          "count": 97
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 5
+          "count": 9
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -2351,78 +2481,19 @@
       ]
     },
     {
-      "source": "UC",
-      "count": 233,
-      "counts": {
-        "nonJob": 0,
-        "nonHttps": 0,
-        "missingDesc": 10,
-        "placeholderTitles": 0
-      },
-      "percents": {
-        "nonHttpsPct": 0,
-        "missingDescPct": 4.29
-      },
-      "averageScore": 98.72,
-      "statusCounts": {
-        "pass": 226,
-        "review": 7,
-        "quarantine": 0
-      },
-      "statusPercents": {
-        "pass": 97,
-        "review": 3,
-        "quarantine": 0
-      },
-      "dimensionAverages": {
-        "relevance": 99.1,
-        "attribution": 100,
-        "link": 100,
-        "freshness": 100,
-        "completeness": 90.21,
-        "duplication": 100
-      },
-      "reasonCounts": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 188
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 10
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 10
-        },
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "count": 7
-        }
-      ]
-    },
-    {
       "source": "DC",
       "count": 227,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 12,
+        "missingDesc": 13,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 5.29
+        "missingDescPct": 5.73
       },
-      "averageScore": 98.1,
+      "averageScore": 98.08,
       "statusCounts": {
         "pass": 158,
         "review": 69,
@@ -2438,7 +2509,7 @@
         "attribution": 100,
         "link": 100,
         "freshness": 90.79,
-        "completeness": 87.91,
+        "completeness": 87.71,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2446,7 +2517,7 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 195
+          "count": 196
         },
         {
           "code": "missing_deadline",
@@ -2464,7 +2535,7 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 12
+          "count": 13
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -2476,34 +2547,34 @@
     },
     {
       "source": "CA CC",
-      "count": 225,
+      "count": 222,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 9,
+        "missingDesc": 3,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 4
+        "missingDescPct": 1.35
       },
-      "averageScore": 98.78,
+      "averageScore": 98.88,
       "statusCounts": {
-        "pass": 224,
+        "pass": 221,
         "review": 1,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 99.56,
-        "review": 0.44,
+        "pass": 99.55,
+        "review": 0.45,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 99.36,
-        "completeness": 84.42,
+        "freshness": 99.35,
+        "completeness": 85.36,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2511,13 +2582,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 224
+          "count": 221
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 190
+          "count": 187
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -2529,7 +2600,7 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 9
+          "count": 3
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -2541,34 +2612,34 @@
     },
     {
       "source": "MN",
-      "count": 213,
+      "count": 209,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 12,
+        "missingDesc": 18,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 5.63
+        "missingDescPct": 8.61
       },
-      "averageScore": 98.78,
+      "averageScore": 98.61,
       "statusCounts": {
-        "pass": 212,
-        "review": 1,
+        "pass": 207,
+        "review": 2,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 99.53,
-        "review": 0.47,
+        "pass": 99.04,
+        "review": 0.96,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 100,
+        "relevance": 99.86,
         "attribution": 100,
-        "link": 99.79,
+        "link": 99.78,
         "freshness": 99.95,
-        "completeness": 86.24,
+        "completeness": 85.24,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2576,19 +2647,19 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 202
+          "count": 198
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 98
+          "count": 95
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 12
+          "count": 18
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -2601,25 +2672,31 @@
           "severity": "warning",
           "dimension": "link",
           "count": 1
+        },
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "count": 1
         }
       ]
     },
     {
       "source": "NE",
-      "count": 203,
+      "count": 205,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 8,
+        "missingDesc": 6,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 3.94
+        "missingDescPct": 2.93
       },
-      "averageScore": 98.75,
+      "averageScore": 98.8,
       "statusCounts": {
-        "pass": 202,
+        "pass": 204,
         "review": 1,
         "quarantine": 0
       },
@@ -2632,8 +2709,8 @@
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.69,
-        "completeness": 85.91,
+        "freshness": 98.71,
+        "completeness": 86.34,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2641,13 +2718,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 195
+          "count": 197
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 126
+          "count": 124
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -2659,117 +2736,46 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 8
+          "count": 6
         },
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
-          "count": 1
-        }
-      ]
-    },
-    {
-      "source": "HI",
-      "count": 203,
-      "counts": {
-        "nonJob": 0,
-        "nonHttps": 0,
-        "missingDesc": 7,
-        "placeholderTitles": 0
-      },
-      "percents": {
-        "nonHttpsPct": 0,
-        "missingDescPct": 3.45
-      },
-      "averageScore": 98.85,
-      "statusCounts": {
-        "pass": 187,
-        "review": 16,
-        "quarantine": 0
-      },
-      "statusPercents": {
-        "pass": 92.12,
-        "review": 7.88,
-        "quarantine": 0
-      },
-      "dimensionAverages": {
-        "relevance": 99.85,
-        "attribution": 100,
-        "link": 100,
-        "freshness": 97.66,
-        "completeness": 89.9,
-        "duplication": 100
-      },
-      "reasonCounts": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 155
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 51
-        },
-        {
-          "code": "stale_posting_no_evergreen_signal",
-          "severity": "warning",
-          "dimension": "freshness",
-          "count": 15
-        },
-        {
-          "code": "aging_posting_no_evergreen_signal",
-          "severity": "info",
-          "dimension": "freshness",
-          "count": 10
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 7
-        },
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
           "count": 1
         }
       ]
     },
     {
       "source": "NH",
-      "count": 202,
+      "count": 204,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 2,
+        "missingDesc": 5,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 0.99
+        "missingDescPct": 2.45
       },
-      "averageScore": 98.93,
+      "averageScore": 98.86,
       "statusCounts": {
-        "pass": 198,
+        "pass": 200,
         "review": 4,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 98.02,
-        "review": 1.98,
+        "pass": 98.04,
+        "review": 1.96,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.86,
-        "completeness": 86.24,
+        "freshness": 98.82,
+        "completeness": 85.74,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2777,64 +2783,64 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 187
+          "count": 189
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 168
+          "count": 169
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 13
+          "count": 14
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 5
         },
         {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "count": 4
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 2
         }
       ]
     },
     {
       "source": "KS",
-      "count": 186,
+      "count": 190,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 17,
+        "missingDesc": 14,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 9.14
+        "missingDescPct": 7.37
       },
-      "averageScore": 98.23,
+      "averageScore": 98.31,
       "statusCounts": {
-        "pass": 176,
+        "pass": 180,
         "review": 9,
         "quarantine": 1
       },
       "statusPercents": {
-        "pass": 94.62,
-        "review": 4.84,
-        "quarantine": 0.54
+        "pass": 94.74,
+        "review": 4.74,
+        "quarantine": 0.53
       },
       "dimensionAverages": {
-        "relevance": 99.46,
+        "relevance": 99.47,
         "attribution": 100,
         "link": 100,
-        "freshness": 97.93,
-        "completeness": 82.42,
+        "freshness": 97.97,
+        "completeness": 83.11,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2842,19 +2848,19 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 186
+          "count": 190
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 163
+          "count": 164
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 17
+          "count": 14
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -2931,7 +2937,7 @@
     },
     {
       "source": "WV",
-      "count": 147,
+      "count": 146,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
@@ -2940,25 +2946,25 @@
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 2.04
+        "missingDescPct": 2.05
       },
       "averageScore": 98.34,
       "statusCounts": {
-        "pass": 108,
+        "pass": 107,
         "review": 39,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 73.47,
-        "review": 26.53,
+        "pass": 73.29,
+        "review": 26.71,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 91.84,
-        "completeness": 89.25,
+        "freshness": 91.78,
+        "completeness": 89.28,
         "duplication": 100
       },
       "reasonCounts": [
@@ -2966,13 +2972,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 106
+          "count": 105
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 83
+          "count": 82
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -2996,20 +3002,20 @@
     },
     {
       "source": "MT",
-      "count": 142,
+      "count": 141,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 2,
+        "missingDesc": 1,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 1.41
+        "missingDescPct": 0.71
       },
-      "averageScore": 99.08,
+      "averageScore": 99.11,
       "statusCounts": {
-        "pass": 142,
+        "pass": 141,
         "review": 0,
         "quarantine": 0
       },
@@ -3023,7 +3029,7 @@
         "attribution": 100,
         "link": 100,
         "freshness": 100,
-        "completeness": 86.37,
+        "completeness": 86.63,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3031,52 +3037,52 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 129
+          "count": 128
         },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 122
+          "count": 121
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 2
+          "count": 1
         }
       ]
     },
     {
       "source": "NM",
-      "count": 131,
+      "count": 139,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 8,
+        "missingDesc": 15,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 6.11
+        "missingDescPct": 10.79
       },
-      "averageScore": 98.31,
+      "averageScore": 98.16,
       "statusCounts": {
-        "pass": 111,
+        "pass": 119,
         "review": 20,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 84.73,
-        "review": 15.27,
+        "pass": 85.61,
+        "review": 14.39,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 94.2,
-        "completeness": 86.49,
+        "freshness": 94.53,
+        "completeness": 84.82,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3084,13 +3090,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 107
+          "count": 113
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 84
+          "count": 91
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -3108,7 +3114,7 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 8
+          "count": 15
         }
       ]
     },
@@ -3118,30 +3124,30 @@
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 12,
+        "missingDesc": 10,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 9.92
+        "missingDescPct": 8.26
       },
-      "averageScore": 98.91,
+      "averageScore": 98.9,
       "statusCounts": {
-        "pass": 121,
-        "review": 0,
+        "pass": 120,
+        "review": 1,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 100,
-        "review": 0,
+        "pass": 99.17,
+        "review": 0.83,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
-        "link": 100,
+        "link": 99.63,
         "freshness": 99.92,
-        "completeness": 86.69,
+        "completeness": 87.31,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3155,117 +3161,58 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 72
+          "count": 71
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 12
+          "count": 10
         },
         {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
+          "count": 1
+        },
+        {
+          "code": "search_page_url",
+          "severity": "warning",
+          "dimension": "link",
           "count": 1
         }
       ]
     },
     {
       "source": "CT",
-      "count": 114,
+      "count": 118,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 21,
+        "missingDesc": 15,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 18.42
+        "missingDescPct": 12.71
       },
-      "averageScore": 98.26,
+      "averageScore": 98.58,
       "statusCounts": {
-        "pass": 113,
-        "review": 1,
+        "pass": 118,
+        "review": 0,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 99.12,
-        "review": 0.88,
-        "quarantine": 0
-      },
-      "dimensionAverages": {
-        "relevance": 99.74,
-        "attribution": 100,
-        "link": 100,
-        "freshness": 99.74,
-        "completeness": 81.84,
-        "duplication": 100
-      },
-      "reasonCounts": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 101
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 65
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 21
-        },
-        {
-          "code": "aging_posting_no_evergreen_signal",
-          "severity": "info",
-          "dimension": "freshness",
-          "count": 3
-        },
-        {
-          "code": "weak_academic_evidence",
-          "severity": "warning",
-          "dimension": "relevance",
-          "count": 1
-        }
-      ]
-    },
-    {
-      "source": "RI",
-      "count": 100,
-      "counts": {
-        "nonJob": 0,
-        "nonHttps": 0,
-        "missingDesc": 4,
-        "placeholderTitles": 0
-      },
-      "percents": {
-        "nonHttpsPct": 0,
-        "missingDescPct": 4
-      },
-      "averageScore": 99,
-      "statusCounts": {
-        "pass": 98,
-        "review": 2,
-        "quarantine": 0
-      },
-      "statusPercents": {
-        "pass": 98,
-        "review": 2,
+        "pass": 100,
+        "review": 0,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.8,
-        "completeness": 90.45,
+        "freshness": 99.75,
+        "completeness": 83.98,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3273,13 +3220,72 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 72
+          "count": 105
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 19
+          "count": 63
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 15
+        },
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "source": "RI",
+      "count": 102,
+      "counts": {
+        "nonJob": 0,
+        "nonHttps": 0,
+        "missingDesc": 3,
+        "placeholderTitles": 0
+      },
+      "percents": {
+        "nonHttpsPct": 0,
+        "missingDescPct": 2.94
+      },
+      "averageScore": 99.04,
+      "statusCounts": {
+        "pass": 100,
+        "review": 2,
+        "quarantine": 0
+      },
+      "statusPercents": {
+        "pass": 98.04,
+        "review": 1.96,
+        "quarantine": 0
+      },
+      "dimensionAverages": {
+        "relevance": 100,
+        "attribution": 100,
+        "link": 100,
+        "freshness": 98.82,
+        "completeness": 90.83,
+        "duplication": 100
+      },
+      "reasonCounts": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 74
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 18
         },
         {
           "code": "aging_posting_no_evergreen_signal",
@@ -3291,7 +3297,7 @@
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 4
+          "count": 3
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -3302,19 +3308,90 @@
       ]
     },
     {
+      "source": "AZ",
+      "count": 94,
+      "counts": {
+        "nonJob": 0,
+        "nonHttps": 0,
+        "missingDesc": 19,
+        "placeholderTitles": 0
+      },
+      "percents": {
+        "nonHttpsPct": 0,
+        "missingDescPct": 20.21
+      },
+      "averageScore": 97.85,
+      "statusCounts": {
+        "pass": 88,
+        "review": 6,
+        "quarantine": 0
+      },
+      "statusPercents": {
+        "pass": 93.62,
+        "review": 6.38,
+        "quarantine": 0
+      },
+      "dimensionAverages": {
+        "relevance": 98.4,
+        "attribution": 100,
+        "link": 100,
+        "freshness": 98.67,
+        "completeness": 81.44,
+        "duplication": 100
+      },
+      "reasonCounts": [
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 88
+        },
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 64
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 19
+        },
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
+          "count": 10
+        },
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "count": 5
+        },
+        {
+          "code": "stale_posting_no_evergreen_signal",
+          "severity": "warning",
+          "dimension": "freshness",
+          "count": 1
+        }
+      ]
+    },
+    {
       "source": "UMass",
       "count": 83,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 6,
+        "missingDesc": 2,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 7.23
+        "missingDescPct": 2.41
       },
-      "averageScore": 98.8,
+      "averageScore": 98.99,
       "statusCounts": {
         "pass": 83,
         "review": 0,
@@ -3330,7 +3407,7 @@
         "attribution": 100,
         "link": 100,
         "freshness": 100,
-        "completeness": 85.72,
+        "completeness": 87.65,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3344,84 +3421,19 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 43
+          "count": 39
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
-          "count": 6
+          "count": 2
         }
       ]
     },
     {
       "source": "VT",
-      "count": 77,
-      "counts": {
-        "nonJob": 0,
-        "nonHttps": 0,
-        "missingDesc": 8,
-        "placeholderTitles": 0
-      },
-      "percents": {
-        "nonHttpsPct": 0,
-        "missingDescPct": 10.39
-      },
-      "averageScore": 98.38,
-      "statusCounts": {
-        "pass": 67,
-        "review": 10,
-        "quarantine": 0
-      },
-      "statusPercents": {
-        "pass": 87.01,
-        "review": 12.99,
-        "quarantine": 0
-      },
-      "dimensionAverages": {
-        "relevance": 100,
-        "attribution": 100,
-        "link": 100,
-        "freshness": 95.71,
-        "completeness": 84.48,
-        "duplication": 100
-      },
-      "reasonCounts": [
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 71
-        },
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 56
-        },
-        {
-          "code": "stale_posting_no_evergreen_signal",
-          "severity": "warning",
-          "dimension": "freshness",
-          "count": 10
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 8
-        },
-        {
-          "code": "aging_posting_no_evergreen_signal",
-          "severity": "info",
-          "dimension": "freshness",
-          "count": 5
-        }
-      ]
-    },
-    {
-      "source": "AZ",
-      "count": 75,
+      "count": 80,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
@@ -3430,25 +3442,25 @@
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 6.67
+        "missingDescPct": 6.25
       },
-      "averageScore": 98.79,
+      "averageScore": 98.55,
       "statusCounts": {
-        "pass": 74,
-        "review": 1,
+        "pass": 70,
+        "review": 10,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 98.67,
-        "review": 1.33,
+        "pass": 87.5,
+        "review": 12.5,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.33,
-        "completeness": 85.13,
+        "freshness": 95.88,
+        "completeness": 85.88,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3456,7 +3468,7 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 70
+          "count": 73
         },
         {
           "code": "missing_department",
@@ -3465,55 +3477,55 @@
           "count": 59
         },
         {
+          "code": "stale_posting_no_evergreen_signal",
+          "severity": "warning",
+          "dimension": "freshness",
+          "count": 10
+        },
+        {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
-          "count": 10
+          "count": 5
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
           "count": 5
-        },
-        {
-          "code": "stale_posting_no_evergreen_signal",
-          "severity": "warning",
-          "dimension": "freshness",
-          "count": 1
         }
       ]
     },
     {
       "source": "SD",
-      "count": 64,
+      "count": 60,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 3,
+        "missingDesc": 4,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 4.69
+        "missingDescPct": 6.67
       },
-      "averageScore": 98.69,
+      "averageScore": 98.62,
       "statusCounts": {
-        "pass": 63,
+        "pass": 59,
         "review": 1,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 98.44,
-        "review": 1.56,
+        "pass": 98.33,
+        "review": 1.67,
         "quarantine": 0
       },
       "dimensionAverages": {
         "relevance": 100,
         "attribution": 100,
         "link": 100,
-        "freshness": 98.75,
-        "completeness": 86.48,
+        "freshness": 98.83,
+        "completeness": 85.75,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3521,24 +3533,24 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 64
+          "count": 60
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 24
-        },
-        {
-          "code": "aging_posting_no_evergreen_signal",
-          "severity": "info",
-          "dimension": "freshness",
-          "count": 4
+          "count": 23
         },
         {
           "code": "missing_description",
           "severity": "info",
           "dimension": "completeness",
+          "count": 4
+        },
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
           "count": 3
         },
         {
@@ -3555,14 +3567,14 @@
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 2,
+        "missingDesc": 0,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 3.39
+        "missingDescPct": 0
       },
-      "averageScore": 99.41,
+      "averageScore": 99.54,
       "statusCounts": {
         "pass": 59,
         "review": 0,
@@ -3578,7 +3590,7 @@
         "attribution": 100,
         "link": 100,
         "freshness": 99.83,
-        "completeness": 89.49,
+        "completeness": 90.68,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3595,12 +3607,6 @@
           "count": 26
         },
         {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 2
-        },
-        {
           "code": "aging_posting_no_evergreen_signal",
           "severity": "info",
           "dimension": "freshness",
@@ -3610,34 +3616,34 @@
     },
     {
       "source": "DE",
-      "count": 48,
+      "count": 51,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 5,
+        "missingDesc": 4,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 10.42
+        "missingDescPct": 7.84
       },
-      "averageScore": 98.13,
+      "averageScore": 98.12,
       "statusCounts": {
-        "pass": 42,
-        "review": 6,
+        "pass": 44,
+        "review": 7,
         "quarantine": 0
       },
       "statusPercents": {
-        "pass": 87.5,
-        "review": 12.5,
+        "pass": 86.27,
+        "review": 13.73,
         "quarantine": 0
       },
       "dimensionAverages": {
-        "relevance": 100,
+        "relevance": 99.41,
         "attribution": 100,
         "link": 100,
-        "freshness": 94.17,
-        "completeness": 86.35,
+        "freshness": 94.51,
+        "completeness": 87.94,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3654,22 +3660,28 @@
           "count": 13
         },
         {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 6
-        },
-        {
           "code": "stale_posting_no_evergreen_signal",
           "severity": "warning",
           "dimension": "freshness",
           "count": 6
         },
         {
-          "code": "missing_description",
+          "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
           "count": 5
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 4
+        },
+        {
+          "code": "weak_academic_evidence",
+          "severity": "warning",
+          "dimension": "relevance",
+          "count": 1
         }
       ]
     },
@@ -3679,14 +3691,14 @@
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 1,
+        "missingDesc": 0,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 2.44
+        "missingDescPct": 0
       },
-      "averageScore": 98.8,
+      "averageScore": 98.9,
       "statusCounts": {
         "pass": 39,
         "review": 2,
@@ -3702,7 +3714,7 @@
         "attribution": 100,
         "link": 100,
         "freshness": 98.54,
-        "completeness": 88.29,
+        "completeness": 89.27,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3716,7 +3728,7 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 11
+          "count": 10
         },
         {
           "code": "stale_posting_no_evergreen_signal",
@@ -3729,77 +3741,12 @@
           "severity": "info",
           "dimension": "freshness",
           "count": 1
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 1
-        }
-      ]
-    },
-    {
-      "source": "ND",
-      "count": 38,
-      "counts": {
-        "nonJob": 0,
-        "nonHttps": 0,
-        "missingDesc": 3,
-        "placeholderTitles": 0
-      },
-      "percents": {
-        "nonHttpsPct": 0,
-        "missingDescPct": 7.89
-      },
-      "averageScore": 98.71,
-      "statusCounts": {
-        "pass": 38,
-        "review": 0,
-        "quarantine": 0
-      },
-      "statusPercents": {
-        "pass": 100,
-        "review": 0,
-        "quarantine": 0
-      },
-      "dimensionAverages": {
-        "relevance": 100,
-        "attribution": 100,
-        "link": 100,
-        "freshness": 99.74,
-        "completeness": 86.84,
-        "duplication": 100
-      },
-      "reasonCounts": [
-        {
-          "code": "missing_department",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 36
-        },
-        {
-          "code": "missing_deadline",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 7
-        },
-        {
-          "code": "missing_description",
-          "severity": "info",
-          "dimension": "completeness",
-          "count": 3
-        },
-        {
-          "code": "aging_posting_no_evergreen_signal",
-          "severity": "info",
-          "dimension": "freshness",
-          "count": 1
         }
       ]
     },
     {
       "source": "ID",
-      "count": 36,
+      "count": 37,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
@@ -3808,11 +3755,11 @@
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 5.56
+        "missingDescPct": 5.41
       },
       "averageScore": 98.92,
       "statusCounts": {
-        "pass": 36,
+        "pass": 37,
         "review": 0,
         "quarantine": 0
       },
@@ -3826,7 +3773,7 @@
         "attribution": 100,
         "link": 100,
         "freshness": 100,
-        "completeness": 86.11,
+        "completeness": 86.08,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3834,13 +3781,13 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 31
+          "count": 32
         },
         {
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 24
+          "count": 25
         },
         {
           "code": "missing_description",
@@ -3856,14 +3803,14 @@
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 0,
+        "missingDesc": 1,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 0
+        "missingDescPct": 2.78
       },
-      "averageScore": 98.86,
+      "averageScore": 98.75,
       "statusCounts": {
         "pass": 34,
         "review": 2,
@@ -3879,7 +3826,7 @@
         "attribution": 100,
         "link": 98.75,
         "freshness": 99.31,
-        "completeness": 87.08,
+        "completeness": 85.97,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3887,13 +3834,19 @@
           "code": "missing_deadline",
           "severity": "info",
           "dimension": "completeness",
-          "count": 35
+          "count": 36
         },
         {
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
           "count": 29
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 1
         },
         {
           "code": "search_page_url",
@@ -3910,21 +3863,80 @@
       ]
     },
     {
-      "source": "CT State",
-      "count": 9,
+      "source": "ND",
+      "count": 34,
       "counts": {
         "nonJob": 0,
         "nonHttps": 0,
-        "missingDesc": 0,
+        "missingDesc": 8,
         "placeholderTitles": 0
       },
       "percents": {
         "nonHttpsPct": 0,
-        "missingDescPct": 0
+        "missingDescPct": 23.53
       },
-      "averageScore": 99,
+      "averageScore": 98.09,
       "statusCounts": {
-        "pass": 9,
+        "pass": 34,
+        "review": 0,
+        "quarantine": 0
+      },
+      "statusPercents": {
+        "pass": 100,
+        "review": 0,
+        "quarantine": 0
+      },
+      "dimensionAverages": {
+        "relevance": 100,
+        "attribution": 100,
+        "link": 100,
+        "freshness": 99.71,
+        "completeness": 80.59,
+        "duplication": 100
+      },
+      "reasonCounts": [
+        {
+          "code": "missing_department",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 32
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 12
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 8
+        },
+        {
+          "code": "aging_posting_no_evergreen_signal",
+          "severity": "info",
+          "dimension": "freshness",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "source": "CT State",
+      "count": 10,
+      "counts": {
+        "nonJob": 0,
+        "nonHttps": 0,
+        "missingDesc": 1,
+        "placeholderTitles": 0
+      },
+      "percents": {
+        "nonHttpsPct": 0,
+        "missingDescPct": 10
+      },
+      "averageScore": 98.6,
+      "statusCounts": {
+        "pass": 10,
         "review": 0,
         "quarantine": 0
       },
@@ -3938,7 +3950,7 @@
         "attribution": 100,
         "link": 100,
         "freshness": 100,
-        "completeness": 90,
+        "completeness": 86,
         "duplication": 100
       },
       "reasonCounts": [
@@ -3946,7 +3958,19 @@
           "code": "missing_department",
           "severity": "info",
           "dimension": "completeness",
-          "count": 9
+          "count": 10
+        },
+        {
+          "code": "missing_deadline",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 1
+        },
+        {
+          "code": "missing_description",
+          "severity": "info",
+          "dimension": "completeness",
+          "count": 1
         }
       ]
     },
