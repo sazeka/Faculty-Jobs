@@ -89,6 +89,11 @@ const ALIASES = new Map(
     ["Minnesota State (Ridg Willmar Campus)", "Ridgewater College"],
     ["Minnesota State (Roch Rochester Campus)", "Rochester Community and Technical College"],
     ["Minnesota State (Wins Winona Campus)", "Winona State University"],
+    ["Minnesota State (Coon Rapids)", "Anoka-Ramsey Community College"],
+    ["Minnesota State (Msta Detroit Lakes Campus)", "Minnesota State Community and Technical College"],
+    // Scraper spelling variants of IPEDS names (ampersand, diacritic).
+    ["Alexandria Technical and Community College", "Alexandria Technical & Community College"],
+    ["San José City College", "San Jose City College"],
     // Same UNITID (174756); the configured scrape source uses the IPEDS
     // spelling without the period.
     ["St. Cloud Technical and Community College", "St Cloud Technical and Community College"],
